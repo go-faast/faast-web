@@ -1,0 +1,23 @@
+@import "variables";
+
+.container {
+  text-align: center;
+}
+
+.importPrivKey {
+  color: $primary-color;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.downloadContainer {
+  margin-top: 20px;
+}
+
+.download {
+  @extend .cursor-pointer;
+  border-color: $primary-color;
+  border-style: solid;
+  border-width: 1px;
+  padding: 4px;
+}

@@ -1,0 +1,12 @@
+@import "variables";
+
+.container {
+  @extend .padding-bottom-100;
+  @extend .padding-top-50;
+}
+
+@media (max-width: 991px) {
+  .container {
+    padding-top: 0px;
+  }
+}

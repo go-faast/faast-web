@@ -1,0 +1,54 @@
+@import "variables";
+
+.container {
+  text-align: center;
+}
+
+.header {
+  padding-left: 10px;
+}
+
+.content {
+  text-align: left;
+  padding-top: 20px;
+}
+
+.tileContainer {
+  background-color: $ultra-dark-grey;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 20px;
+  box-shadow: 5px 10px 15px #090909;
+  @extend .cursor-pointer;
+  @extend .text-center;
+  height: 150px;
+  padding: 20px;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.importHeader {
+  @extend .text-small;
+  @extend .text-medium-grey;
+  @extend .margin-top-30;
+}
+
+.walletDesc {
+  @extend .text-medium;
+  @extend .text-gradient;
+}
+
+.modalContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+}
+
+.instructions {
+  @extend .margin-top-30;
+}

@@ -1,0 +1,41 @@
+@import "variables";
+
+.container {
+  background-color: $pageBgColor2;
+}
+
+.noAction {
+  @extend .margin-top-100;
+}
+
+.headerTitle {
+  color: $primary-color;
+  font-size: $text-large;
+}
+
+.headerDesc {
+  color: $medium-grey;
+  font-size: $text-medium;
+}
+
+.actions {
+  @extend .gradient-background;
+  height: 50px;
+  color: $secondary-color-text;
+  @extend .text-small;
+  padding: 10px 20px;
+  width: 250px;
+  @extend .text-center;
+  float: right;
+  @extend .box-shadow;
+  font-weight: 300;
+  letter-spacing: 1px;
+  line-height: 30px;
+  @extend .cursor-pointer;
+  @extend .margin-top-15;
+}
+
+.disabled {
+  @extend .cursor-disabled;
+  opacity: 0.6;
+}

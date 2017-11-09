@@ -1,0 +1,7 @@
+*.min.js
+*.*.min.js
+*.*.map
+*.min.css
+*.svg
+bundle.js
+dist/vendor

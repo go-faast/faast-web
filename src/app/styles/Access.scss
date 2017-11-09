@@ -1,0 +1,62 @@
+@import "variables";
+
+.startContainer {
+  @extend .margin-top-50;
+}
+
+.tileContainer {
+  background-color: $ultra-dark-grey;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 20px;
+  box-shadow: 5px 10px 15px #090909;
+  @extend .cursor-pointer;
+  @extend .text-center;
+  height: 150px;
+  padding: 20px;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.importHeader {
+  @extend .text-small;
+  @extend .text-medium-grey;
+  @extend .margin-top-30;
+}
+
+.walletDesc {
+  @extend .text-medium;
+  @extend .text-gradient;
+}
+
+.addNew {
+  @extend .margin-top-30;
+  background-image: url('https://faa.st/img/add.png');
+  background-size: 32px 32px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 40px;
+  width: 100%;
+
+}
+
+// .dropdownContainer {
+//   padding-top: 60px;
+// }
+//
+// .dropdownToggle {
+//   background-color: #0DD390 !important;
+//   color: black !important;
+//   border: none !important;
+// }
+//
+// .dropdownMenu {
+//   width: 100%;
+// }
+//
+// .dropdownItem {
+//   color: black !important;
+// }
+//
+// .contentContainer {
+//   padding-top: 40px;
+// }

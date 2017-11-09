@@ -1,0 +1,6 @@
+@import "variables";
+
+.innerContainer {
+  @extend .padding-bottom-100;
+  @extend .padding-top-50;
+}
