@@ -24,6 +24,19 @@ const Access = (props) => {
           <CreateWalletController />
         </div>
       </div>
+      <div className={`row ${styles.bottomContainer}`}>
+        <div className='col'>
+          <div className={styles.openSourceContainer}>
+            <a className={styles.openSourceLink} href='https://github.com/go-faast/faast-portfolio' target='_blank' rel='noopener'>
+              <div className={styles.openSource}>
+                <i className='fa fa-github fa-2x' />
+                <span className={styles.openSourceText}>open source and secure</span>
+                <i className='fa fa-lock fa-2x' />
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
     </LayoutController>
   )
 }

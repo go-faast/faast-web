@@ -17,6 +17,34 @@
   margin-bottom: 10px;
 }
 
+.bottomContainer {
+  @extend .margin-top-75;
+}
+
+.openSourceContainer {
+  @include flex(row, center, center);
+}
+
+.openSourceLink {
+  @extend .text-medium-grey;
+  &:hover {
+    text-decoration: none;
+    @extend .gradient-text;
+  }
+}
+
+.openSource {
+  @include flex(row, center, center);
+  border: 1px solid $medium-grey;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.openSourceText {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
 .importHeader {
   @extend .text-small;
   @extend .text-medium-grey;
