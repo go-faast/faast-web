@@ -124,7 +124,7 @@ const Modify = (props) => {
         <AssetListController {...props.assetListProps} className='gradient-background' />
       }
       <SignTxModalController showModal={props.showSignTxModal} toggleModal={props.handleToggleSignTxModal} />
-      <Sticky innerZ={config.sticky.ZIndex} top='#header'>
+      <Sticky innerZ={config.sticky.zIndex} top='#header'>
         <div className={`row stats-container ${styles.header}`}>
           <div className='col-md-4 tile-outer-container'>
             <div className='tile-container'>

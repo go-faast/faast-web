@@ -27,7 +27,7 @@ const Header = (props) => {
   }
   const containerClass = props.showAction ? `row ${styles.container}` : `row ${styles.container} ${styles.noAction}`
   return (
-    <Sticky enabled={!!props.stickyHeader} innerZ={config.sticky.ZIndex}>
+    <Sticky enabled={!!props.stickyHeader} innerZ={config.sticky.zIndex}>
       <div id='header' className={containerClass}>
         <div className='col-md-6'>
           <div className={styles.headerTitle}>faast Portfolio <sup className='text-medium-grey beta-tag'>beta</sup></div>

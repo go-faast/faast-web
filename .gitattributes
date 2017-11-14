@@ -21,3 +21,4 @@
 
 *.min.js -diff
 *.bundle.js -diff
+bundle.js -diff
