@@ -35,6 +35,7 @@
     "hdkey": "^0.7.1",
     "highcharts": "^5.0.14",
     "idb-wrapper": "^1.7.1",
+    "lodash": "^4.17.4",
     "node-sass": "^4.5.3",
     "open-browser-webpack-plugin": "0.0.5",
     "pad-left": "^2.1.0",

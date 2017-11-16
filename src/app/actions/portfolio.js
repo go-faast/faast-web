@@ -1,7 +1,9 @@
-import { insertSwapData, updateSwapTx } from 'Actions/redux'
+import { insertSwapData, updateSwapTx, setSwap, setEncryptedWallet, setHardwareWallet } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus } from 'Actions/request'
-import { mockTransaction } from 'Actions/mock'
+import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus } from 'Actions/mock'
 import { processArray } from 'Utilities/helpers'
+import { getSwapStatus } from 'Utilities/swap'
+import { restoreSwap } from 'Utilities/storage'
 import log from 'Utilities/log'
 import {
   toSmallestDenomination,
@@ -15,7 +17,9 @@ import {
   tokenTxData,
   signTxWithPrivateKey,
   signTxWithHardwareWallet,
-  sendSignedTransaction
+  sendSignedTransaction,
+  getTransactionReceipt,
+  toChecksumAddress
 } from 'Utilities/wallet'
 
 const swapFinish = (type, swap, error, addition) => {
@@ -268,23 +272,13 @@ export const sendSignedTransactions = (swap, mock) => {
         } else {
           if (receive.tx.signed) {
             sendSignedTransaction(receive.tx.signed)
-            .on('transactionHash', (txHash) => {
+            .once('transactionHash', (txHash) => {
               log.info(`tx hash obtained - ${txHash}`)
               dispatch(insertSwapData(send.symbol, receive.symbol, { txHash }))
             })
-            .on('receipt', (receipt) => {
+            .once('receipt', (receipt) => {
               log.info('tx receipt obtained')
               dispatch(updateSwapTx(send.symbol, receive.symbol, { receipt }))
-              let orderStatusInterval
-              orderStatusInterval = window.setInterval(() => {
-                dispatch(getOrderStatus(send.symbol, receive.symbol, receive.order.deposit))
-                .then((order) => {
-                  if (order && (order.status === 'complete' || order.status === 'failed')) {
-                    return window.clearInterval(orderStatusInterval)
-                  }
-                })
-                .catch(log.error)
-              }, 10000)
             })
             .on('confirmation', (conf) => {
               log.info(`tx confirmation obtained - ${conf}`)
@@ -294,6 +288,10 @@ export const sendSignedTransactions = (swap, mock) => {
               log.error(error)
               dispatch(insertSwapData(send.symbol, receive.symbol, { error }))
             })
+            .then(() => {
+              // once receipt is obtained
+              dispatch(pollOrderStatus(send, receive))
+            })
           } else {
             dispatch(insertSwapData(send.symbol, receive.symbol, { error: new Error('transaction not signed') }))
           }
@@ -301,5 +299,85 @@ export const sendSignedTransactions = (swap, mock) => {
       })
     })
     // })
+  }
+}
+
+export const pollOrderStatus = (send, receive) => {
+  return (dispatch) => {
+    let orderStatusInterval
+    orderStatusInterval = window.setInterval(() => {
+      dispatch(getOrderStatus(send.symbol, receive.symbol, receive.order.deposit))
+      .then((order) => {
+        if (order && (order.status === 'complete' || order.status === 'failed')) {
+          return window.clearInterval(orderStatusInterval)
+        }
+      })
+      .catch(log.error)
+    }, 10000)
+  }
+}
+
+export const pollTransactionReceipt = (send, receive) => {
+  return (dispatch) => {
+    const txHash = receive.txHash
+    let receiptInterval
+    receiptInterval = window.setInterval(() => {
+      getTransactionReceipt(txHash)
+      .then((receipt) => {
+        if (receipt) {
+          window.clearInterval(receiptInterval)
+          log.info('tx receipt obtained')
+          dispatch(updateSwapTx(send.symbol, receive.symbol, { receipt }))
+          dispatch(pollOrderStatus(send, receive))
+        }
+      })
+      .catch(log.error)
+    }, 5000)
+  }
+}
+
+export const restorePolling = (swap, isMocking) => {
+  return (dispatch) => {
+    swap.forEach((send) => {
+      if (send && send.list) {
+        send.list.forEach((receive) => {
+          const status = getSwapStatus(receive)
+          if (status.details === 'waiting for transaction receipt') {
+            if (isMocking) {
+              dispatch(mockPollTransactionReceipt(send, receive))
+            } else {
+              dispatch(pollTransactionReceipt(send, receive))
+            }
+          } else if (status.details === 'waiting for confirmations' || status.details === 'processing swap') {
+            if (isMocking) {
+              dispatch(mockPollOrderStatus(send, receive))
+            } else {
+              dispatch(pollOrderStatus(send, receive))
+            }
+          }
+        })
+      }
+    })
+  }
+}
+
+export const openWallet = (type, wallet, isMocking) => {
+  return (dispatch) => {
+    const address = toChecksumAddress(wallet.address)
+    if (address) {
+      const swap = restoreSwap(address)
+      if (swap) {
+        dispatch(setSwap(swap))
+        dispatch(restorePolling(swap, isMocking))
+      }
+    }
+    switch (type) {
+      case 'keystore':
+        dispatch(setEncryptedWallet(address, wallet))
+        break
+      case 'hardware':
+        dispatch(setHardwareWallet(address, wallet))
+        break
+    }
   }
 }

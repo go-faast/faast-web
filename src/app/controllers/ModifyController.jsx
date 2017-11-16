@@ -8,7 +8,7 @@ import { updateObjectInArray } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
 import { setSwap, resetSwap, setPortfolioItem, toggleOrderModal, showOrderModal } from 'Actions/redux'
-import { initiateSwaps } from 'Actions/swap'
+import { initiateSwaps } from 'Actions/portfolio'
 
 const ZERO = new BigNumber(0)
 

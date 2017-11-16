@@ -6,8 +6,8 @@ import { getPrivateKeyString, closeTrezorWindow } from 'Utilities/wallet'
 import { toTxFee, toUnit, toPrecision } from 'Utilities/convert'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
-import { getSwapStatus } from 'Utilities/helpers'
-import { signTransactions, sendSignedTransactions } from 'Actions/swap'
+import { getSwapStatus } from 'Utilities/swap'
+import { signTransactions, sendSignedTransactions } from 'Actions/portfolio'
 
 class SignTxModalController extends Component {
   constructor (props) {
@@ -159,6 +159,7 @@ class SignTxModalController extends Component {
     }
     const portfolio = this.props.portfolio
     const swapList = this.props.swap.reduce((a, b) => {
+      if (!portfolio.list.length) return []
       return a.concat(b.list.map((c) => {
         const from = portfolio.list.find(d => d.symbol === b.symbol)
         const to = portfolio.list.find(d => d.symbol === c.symbol)

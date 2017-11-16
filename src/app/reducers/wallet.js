@@ -6,13 +6,13 @@ export default (state = initialState, action) => {
       return initialState
     case 'SET_ENCRYPTED_WALLET':
       return {
-        address: window.faast.web3.utils.toChecksumAddress(action.payload.address),
-        encrypted: action.payload
+        address: action.payload.address,
+        encrypted: action.payload.wallet
       }
     case 'SET_HARDWARE_WALLET':
       return {
-        address: window.faast.web3.utils.toChecksumAddress(action.payload.address),
-        hw: action.payload
+        address: action.payload.address,
+        hw: action.payload.wallet
       }
     default:
       return state

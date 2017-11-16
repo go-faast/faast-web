@@ -4,12 +4,13 @@ import HDKey from 'hdkey'
 import EthereumJsUtil from 'ethereumjs-util'
 import HardwareWallet from 'Views/HardwareWallet'
 import toastr from 'Utilities/toastrWrapper'
-import { timer, sessionStorageSet } from 'Utilities/helpers'
+import { timer } from 'Utilities/helpers'
+import { sessionStorageSet } from 'Utilities/storage'
 import { toMainDenomination } from 'Utilities/convert'
 import log from 'Utilities/log'
 import { closeTrezorWindow } from 'Utilities/wallet'
 import config from 'Config'
-import { setHardwareWallet } from 'Actions/redux'
+import { openWallet } from 'Actions/portfolio'
 import { mockAddress } from 'Actions/mock'
 
 const CONNECT_SECONDS = 6
@@ -185,7 +186,7 @@ class HardwareWalletController extends Component {
     const endIndex = startIndex + (ADDRESS_GROUP_SIZE - 1)
     for (let i = startIndex; i <= endIndex; i++) {
       new Promise((resolve, reject) => {
-        if (mock.mocking && mock.hw.length) {
+        if (mock.mocking && mock.hw && mock.hw.length) {
           return resolve(this.props.mockAddress(derPath, i))
         }
         if (this.props.type === 'ledger') {
@@ -258,7 +259,7 @@ class HardwareWalletController extends Component {
       derivationPath: `${this.state.derivationPath}/${ix}`
     }
     sessionStorageSet('hardwareWallet', JSON.stringify(hardwareWallet))
-    this.props.setHardwareWallet(hardwareWallet)
+    this.props.openWallet('hardware', hardwareWallet, this.props.mock.mocking)
     log.info('Hardware wallet set')
   }
 
@@ -307,8 +308,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  setHardwareWallet: (info) => {
-    dispatch(setHardwareWallet(info))
+  openWallet: (type, wallet, isMocking) => {
+    dispatch(openWallet(type, wallet, isMocking))
   },
   mockAddress: (path, ix) => {
     return dispatch(mockAddress(path, ix))

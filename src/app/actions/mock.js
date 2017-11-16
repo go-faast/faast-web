@@ -1,29 +1,43 @@
 import log from 'Utilities/log'
 import { generateWallet } from 'Utilities/wallet'
 import toastr from 'Utilities/toastrWrapper'
-import { updateSwapTx, updateSwapOrder } from 'Actions/redux'
+import { insertSwapData, updateSwapTx, updateSwapOrder } from 'Actions/redux'
 
 let addresses = []
 
 export const mockTransaction = (send, receive) => {
-  console.log('mockTransaction')
+  return (dispatch) => {
+    window.setTimeout(() => {
+      dispatch(insertSwapData(send.symbol, receive.symbol, { txHash: '0x123456' }))
+      dispatch(mockPollTransactionReceipt(send, receive))
+    }, 2000)
+  }
+}
+
+export const mockPollTransactionReceipt = (send, receive) => {
   return (dispatch) => {
     window.setTimeout(() => {
       const receipt = { mock: true }
       log.info('mock tx receipt obtained')
       dispatch(updateSwapTx(send.symbol, receive.symbol, { receipt }))
-      let orderStatusInterval
-      let status
-      orderStatusInterval = window.setInterval(() => {
-        status = mockOrderStatus(status)
-        console.log(status)
-        if (status.status === 'complete') window.clearInterval(orderStatusInterval)
-        dispatch(updateSwapOrder(send.symbol, receive.symbol, {
-          status: status.status,
-          transaction: status.transaction
-        }))
-      }, 10000)
+      dispatch(mockPollOrderStatus(send, receive))
     }, 3000)
+  }
+}
+
+export const mockPollOrderStatus = (send, receive) => {
+  return (dispatch) => {
+    let orderStatusInterval
+    let status
+    orderStatusInterval = window.setInterval(() => {
+      status = mockOrderStatus(status)
+      console.log(status)
+      if (status.status === 'complete') window.clearInterval(orderStatusInterval)
+      dispatch(updateSwapOrder(send.symbol, receive.symbol, {
+        status: status.status,
+        transaction: status.transaction
+      }))
+    }, 10000)
   }
 }
 

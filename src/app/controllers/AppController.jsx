@@ -4,9 +4,8 @@ import { connect } from 'react-redux'
 import toastr from 'Utilities/toastrWrapper'
 import App from 'Views/App'
 import withMockHandling from '../hoc/withMockHandling'
-import log from 'Utilities/log'
-import { sessionStorageClear, statusAllSwaps } from 'Utilities/helpers'
-import { resetAll, resetSwap } from 'Actions/redux'
+import { restorePolling } from 'Actions/portfolio'
+import { setSwap } from 'Actions/redux'
 
 const widths = new Map()
 widths.set('sm', '(min-width: 768px)')
@@ -23,8 +22,12 @@ class AppController extends Component {
         lg: true
       }
     }
-    this._closeWallet = this._closeWallet.bind(this)
-    this._handleBack = this._handleBack.bind(this)
+  }
+
+  componentWillMount () {
+    if (this.props.swap.length) {
+      this.props.restorePolling(this.props.swap, this.props.mocking)
+    }
   }
 
   componentDidMount () {
@@ -51,40 +54,7 @@ class AppController extends Component {
     this.setState({ mq: Object.assign({}, this.state.mq, { [type]: mediaQuery.matches }) })
   }
 
-  _closeWallet () {
-    sessionStorageClear()
-    this.props.resetAll()
-    log.info('wallet closed')
-  }
-
-  _handleBack () {
-    if (this.state.view === 'swap') {
-      this.setState({ view: 'balances' })
-      this.props.resetSwap()
-    } else if (this.state.view === 'orders') {
-      switch (statusAllSwaps(this.props.swap)) {
-        case 'unsigned':
-          this.setState({ view: 'edit' })
-          break
-        case 'pending':
-          this.setState({ view: 'balances' })
-          break
-        case 'finalized':
-          this.setState({ view: 'balances' })
-          this.props.resetSwap()
-      }
-    }
-  }
-
   render () {
-    let initialValues = {}
-    if (this.props.swap.length) {
-      this.props.swap.forEach((s) => {
-        s.list.forEach((r) => {
-          initialValues[`${s.symbol}_${r.symbol}`] = r.unit.number
-        })
-      })
-    }
     return (
       <App />
     )
@@ -92,21 +62,21 @@ class AppController extends Component {
 }
 
 AppController.propTypes = {
-  swap: PropTypes.array.isRequired,
-  resetAll: PropTypes.func.isRequired,
-  resetSwap: PropTypes.func.isRequired
+  wallet: PropTypes.object.isRequired,
+  swap: PropTypes.array.isRequired
 }
 
 const mapStateToProps = (state) => ({
+  wallet: state.wallet,
   swap: state.swap
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  resetAll: () => {
-    dispatch(resetAll())
+  restorePolling: (swap, isMocking) => {
+    dispatch(restorePolling(swap, isMocking))
   },
-  resetSwap: () => {
-    dispatch(resetSwap())
+  setSwap: (swap) => {
+    dispatch(setSwap(swap))
   }
 })
 

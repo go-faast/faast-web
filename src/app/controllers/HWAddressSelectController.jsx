@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import HWAddressSelect from 'Views/HWAddressSelect'
 import toastr from 'Utilities/toastrWrapper'
-import { setHardwareWallet } from 'Actions/redux'
 
 class HWAddressSelectController extends Component {
   constructor () {
@@ -63,12 +61,4 @@ class HWAddressSelectController extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({})
-
-const mapDispatchToProps = (dispatch) => ({
-  setHardwareWallet: (info) => {
-    dispatch(setHardwareWallet(info))
-  }
-})
-
-export default connect(mapStateToProps, mapDispatchToProps)(HWAddressSelectController)
+export default HWAddressSelectController

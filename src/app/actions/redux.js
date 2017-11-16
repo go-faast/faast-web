@@ -2,14 +2,20 @@ export const resetAll = () => ({
   type: 'RESET_ALL'
 })
 
-export const setEncryptedWallet = (wallet) => ({
+export const setEncryptedWallet = (address, wallet) => ({
   type: 'SET_ENCRYPTED_WALLET',
-  payload: wallet
+  payload: {
+    address,
+    wallet
+  }
 })
 
-export const setHardwareWallet = (wallet) => ({
+export const setHardwareWallet = (address, wallet) => ({
   type: 'SET_HARDWARE_WALLET',
-  payload: wallet
+  payload: {
+    address,
+    wallet
+  }
 })
 
 export const setAssets = (assets) => ({

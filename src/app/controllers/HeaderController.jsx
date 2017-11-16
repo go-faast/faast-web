@@ -2,7 +2,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Header from 'Views/Header'
-import { sessionStorageClear } from 'Utilities/helpers'
+import { sessionStorageClear } from 'Utilities/storage'
 import log from 'Utilities/log'
 import { resetAll, toggleOrderModal } from 'Actions/redux'
 

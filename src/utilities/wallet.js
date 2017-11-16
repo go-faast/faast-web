@@ -236,3 +236,11 @@ export const sendSignedTransaction = (signedTx) => {
 export const closeTrezorWindow = () => {
   if (window.faast.hw && window.faast.hw.trezor && window.faast.hw.trezor.close) window.faast.hw.trezor.close()
 }
+
+export const getTransactionReceipt = (txHash) => {
+  return window.faast.web3.eth.getTransactionReceipt(txHash)
+}
+
+export const toChecksumAddress = (address) => {
+  return window.faast.web3.utils.toChecksumAddress(address)
+}

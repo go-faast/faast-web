@@ -10,9 +10,10 @@ import {
   getFileName
 } from 'Utilities/wallet'
 import toastr from 'Utilities/toastrWrapper'
-import { downloadJson, sessionStorageSet } from 'Utilities/helpers'
+import { downloadJson } from 'Utilities/helpers'
+import { sessionStorageSet } from 'Utilities/storage'
 import log from 'Utilities/log'
-import { setEncryptedWallet } from 'Actions/redux'
+import { openWallet } from 'Actions/portfolio'
 
 const initialState = {
   encryptedWallet: null,
@@ -91,7 +92,7 @@ class CreateWalletModalController extends Component {
     }
     sessionStorageSet('encryptedWallet', JSON.stringify(this.state.encryptedWallet))
 
-    this.props.setEncryptedWallet(this.state.encryptedWallet)
+    this.props.openWallet('keystore', this.state.encryptedWallet, this.props.mock.mocking)
   }
 
   _handleCloseModal () {
@@ -144,16 +145,19 @@ class CreateWalletModalController extends Component {
 }
 
 CreateWalletModalController.propTypes = {
-  setEncryptedWallet: PropTypes.func.isRequired,
+  mock: PropTypes.object.isRequired,
+  openWallet: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
   showModal: PropTypes.bool
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => ({
+  mock: state.mock
+})
 
 const mapDispatchToProps = (dispatch) => ({
-  setEncryptedWallet: (encryptedWallet) => {
-    dispatch(setEncryptedWallet(encryptedWallet))
+  openWallet: (type, wallet, isMocking) => {
+    dispatch(openWallet(type, wallet, isMocking))
   }
 })
 

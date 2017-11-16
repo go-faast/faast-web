@@ -3,10 +3,10 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import Keystore from 'Views/Keystore'
 import { parseEncryptedWalletString } from 'Utilities/wallet'
-import { sessionStorageSet } from 'Utilities/helpers'
+import { sessionStorageSet } from 'Utilities/storage'
 import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
-import { setEncryptedWallet } from 'Actions/redux'
+import { openWallet } from 'Actions/portfolio'
 
 const KeystoreController = (props) => {
   const handleDrop = (files) => {
@@ -18,7 +18,7 @@ const KeystoreController = (props) => {
       if (!encryptedWallet) return toastr.error('Not a valid wallet keystore file')
 
       sessionStorageSet('encryptedWallet', event.target.result)
-      props.setEncryptedWallet(encryptedWallet)
+      props.openWallet('keystore', encryptedWallet, props.mock.mocking)
       log.info('Encrypted wallet set')
     }
 
@@ -31,14 +31,16 @@ const KeystoreController = (props) => {
 }
 
 KeystoreController.propTypes = {
-  setEncryptedWallet: PropTypes.func.isRequired
+  openWallet: PropTypes.func.isRequired
 }
 
-const mapStateToProps = (state) => ({})
+const mapStateToProps = (state) => ({
+  mock: state.mock
+})
 
 const mapDispatchToProps = (dispatch) => ({
-  setEncryptedWallet: (encryptedWallet) => {
-    dispatch(setEncryptedWallet(encryptedWallet))
+  openWallet: (type, wallet, isMocking) => {
+    dispatch(openWallet(type, wallet, isMocking))
   }
 })
 
