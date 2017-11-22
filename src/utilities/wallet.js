@@ -27,6 +27,20 @@ export const getFileName = (wallet) => {
   return wallet.getV3Filename()
 }
 
+export const parseWalletString = (value) => {
+  let wallet
+  try {
+    wallet = JSON.parse(value)
+  } catch (err) {
+    return null
+  }
+  if (!wallet || (wallet.type === 'keystore' && !wallet.data.hasOwnProperty('crypto') && !wallet.data.hasOwnProperty('Crypto'))) {
+    return null
+  }
+
+  return wallet
+}
+
 export const parseEncryptedWalletString = (value) => {
   let encryptedWallet
   try {
@@ -34,20 +48,11 @@ export const parseEncryptedWalletString = (value) => {
   } catch (err) {
     return null
   }
-  if (encryptedWallet && (encryptedWallet.hasOwnProperty('crypto') || encryptedWallet.hasOwnProperty('Crypto'))) {
-    return encryptedWallet
-  }
-  return null
-}
-
-export const parseHardwareWalletString = (value) => {
-  let hardwareWallet
-  try {
-    hardwareWallet = JSON.parse(value)
-  } catch (err) {
+  if (!encryptedWallet || (!encryptedWallet.hasOwnProperty('crypto') && !encryptedWallet.hasOwnProperty('Crypto'))) {
     return null
   }
-  return hardwareWallet
+
+  return encryptedWallet
 }
 
 export const tokenBalanceData = (walletAddress) => {
@@ -111,6 +116,18 @@ const validateTx = (txParams) => {
   return required.every((a) => {
     return txParams.hasOwnProperty(a)
   })
+}
+
+export const txWeb3 = (txParams) => {
+  return {
+    from: txParams.from,
+    to: txParams.to,
+    value: toBigNumber(txParams.value),
+    gas: toBigNumber(txParams.gasLimit).toNumber(),
+    gasPrice: toBigNumber(txParams.gasPrice),
+    data: txParams.data,
+    nonce: toBigNumber(txParams.nonce).toNumber()
+  }
 }
 
 export const signTxWithPrivateKey = (txParams, privateKey, mock) => {
@@ -233,6 +250,10 @@ export const sendSignedTransaction = (signedTx) => {
   return window.faast.web3.eth.sendSignedTransaction(addHexPrefix(signedTx))
 }
 
+export const sendTransaction = (txObject, cb) => {
+  return window.faast.web3.eth.sendTransaction(txObject, cb)
+}
+
 export const closeTrezorWindow = () => {
   if (window.faast.hw && window.faast.hw.trezor && window.faast.hw.trezor.close) window.faast.hw.trezor.close()
 }
@@ -243,4 +264,12 @@ export const getTransactionReceipt = (txHash) => {
 
 export const toChecksumAddress = (address) => {
   return window.faast.web3.utils.toChecksumAddress(address)
+}
+
+export const setWeb3 = (providerType) => {
+  if (providerType === 'metamask' && typeof window.web3 !== 'undefined') {
+    window.faast.web3 = new window.Web3(window.web3.currentProvider)
+  } else {
+    window.faast.web3 = new window.Web3(new window.Web3.providers.HttpProvider(config.web3Provider))
+  }
 }

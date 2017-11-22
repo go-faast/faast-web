@@ -7,18 +7,19 @@ import { toTxFee, toUnit, toPrecision } from 'Utilities/convert'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 import { getSwapStatus } from 'Utilities/swap'
-import { signTransactions, sendSignedTransactions } from 'Actions/portfolio'
+import { signTransactions, sendSignedTransactions, sendTransactions } from 'Actions/portfolio'
 
 class SignTxModalController extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      view: props.view || (props.wallet.hasOwnProperty('hw') ? 'hardwareWallet' : 'keystorePassword'),
+      view: props.view || props.wallet.type,
       isSigning: false
     }
     this._handleCloseModal = this._handleCloseModal.bind(this)
     this._handleKeystorePassword = this._handleKeystorePassword.bind(this)
     this._handleSignHardwareWallet = this._handleSignHardwareWallet.bind(this)
+    this._handleMetaMask = this._handleMetaMask.bind(this)
   }
 
   _handleCloseModal () {
@@ -35,7 +36,7 @@ class SignTxModalController extends Component {
 
     return new Promise((resolve, reject) => {
       new Promise((resolve, reject) => {
-        getPrivateKeyString(wallet.encrypted, values.password, isMocking)
+        getPrivateKeyString(wallet.data, values.password, isMocking)
         .then(resolve)
         .catch((e) => {
           toastr.error('Unable to decrypt wallet. Wrong password?')
@@ -84,6 +85,21 @@ class SignTxModalController extends Component {
     })
     .then(() => {
       if (!this.props.showModal) throw new Error('modal closed')
+      dispatch(push('/balances'))
+    })
+    .catch((e) => {
+      log.error(e)
+      this._handleCloseModal()
+    })
+  }
+
+  _handleMetaMask (values, dispatch) {
+    const isMocking = this.props.mock.mocking
+
+    this.setState({ isSigning: true })
+
+    return dispatch(sendTransactions(this.props.swap, isMocking))
+    .then((result) => {
       dispatch(push('/balances'))
     })
     .catch((e) => {
@@ -177,14 +193,22 @@ class SignTxModalController extends Component {
     }, [])
     return (
       <SignTxModal
-        view={this.state.view}
         showModal={this.props.showModal}
-        handleCloseModal={this._handleCloseModal}
+        view={this.state.view}
         handleKeystorePassword={this._handleKeystorePassword}
         handleSignHardwareWallet={this._handleSignHardwareWallet}
-        swapList={swapList}
-        readyToSign={readyToSign()}
-        isSigning={this.state.isSigning}
+        handleMetaMask={this._handleMetaMask}
+        signTxProps={{
+          readyToSign: readyToSign(),
+          handleCancel: this._handleCloseModal,
+          isSigning: this.state.isSigning,
+          swapList: swapList,
+          type: this.state.view
+        }}
+        orderStatusProps={{
+          swapList: swapList,
+          handleClose: this._handleCloseModal
+        }}
       />
     )
   }

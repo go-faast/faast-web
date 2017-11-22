@@ -1,0 +1,25 @@
+@import "variables";
+
+.tileContainer {
+  background-color: $ultra-dark-grey;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 20px;
+  box-shadow: 5px 10px 15px #090909;
+  @extend .cursor-pointer;
+  @extend .text-center;
+  height: 150px;
+  padding: 20px;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+}
+
+.importHeader {
+  @extend .text-small;
+  @extend .text-medium-grey;
+  @extend .margin-top-30;
+}
+
+.walletDesc {
+  @extend .text-medium;
+  @extend .text-gradient;
+}

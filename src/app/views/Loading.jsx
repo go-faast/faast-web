@@ -8,9 +8,11 @@ const Loading = (props) => (
       <div className={styles.loadingInnerContainer}>
         <div className={styles.loading}>
           <img src='https://faa.st/img/faast-transparent-bad.png' height='50' />
-          <span className={styles.spinnerContainer}>
-            <div className='faast-loading loading-large' />
-          </span>
+          {props.showSpinner &&
+            <span className={styles.spinnerContainer}>
+              <div className='faast-loading loading-large' />
+            </span>
+          }
         </div>
       </div>
     </div>

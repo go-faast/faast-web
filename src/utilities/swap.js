@@ -43,7 +43,7 @@ export const getSwapStatus = (swap) => {
   }
   if (swap.tx.signed == null) {
     return {
-      status: 'waiting',
+      status: 'working',
       details: 'waiting for transaction to be signed'
     }
   }

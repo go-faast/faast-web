@@ -8,8 +8,9 @@ import Balances from 'Views/Balances'
 import log from 'Utilities/log'
 import { updateObjectInArray } from 'Utilities/helpers'
 import { getSwapStatus } from 'Utilities/swap'
+import { clearSwap } from 'Utilities/storage'
 import { getBalances } from 'Actions/request'
-import { toggleOrderModal } from 'Actions/redux'
+import { toggleOrderModal, resetSwap } from 'Actions/redux'
 
 let balancesInterval
 
@@ -25,6 +26,7 @@ class BalancesController extends Component {
     this._setChartSelect = this._setChartSelect.bind(this)
     this._assetRows = this._assetRows.bind(this)
     this._setList = this._setList.bind(this)
+    this._orderStatus = this._orderStatus.bind(this)
   }
 
   componentWillMount () {
@@ -35,6 +37,11 @@ class BalancesController extends Component {
 
   componentWillUnmount () {
     window.clearInterval(balancesInterval)
+    const orderStatus = this._orderStatus()
+    if (orderStatus === 'error' || orderStatus === 'complete') {
+      this.props.resetSwap()
+      clearSwap(this.props.wallet.address)
+    }
   }
 
   _setList () {
@@ -108,17 +115,19 @@ class BalancesController extends Component {
     }).filter(a => a)
   }
 
-  render () {
-    const orderStatus = (() => {
-      if (!this.props.swap.length) return false
+  _orderStatus () {
+    if (!this.props.swap.length) return false
 
-      const statuses = this.props.swap.reduce((a, b) => {
-        return a.concat(b.list.map(getSwapStatus).map(c => c.status))
-      }, [])
-      if (statuses.some(s => s === 'working')) return 'working'
-      if (statuses.some(s => s === 'error')) return 'error'
-      return 'complete'
-    })()
+    const statuses = this.props.swap.reduce((a, b) => {
+      return a.concat(b.list.map(getSwapStatus).map(c => c.status))
+    }, [])
+    if (statuses.some(s => s === 'working')) return 'working'
+    if (statuses.some(s => s === 'error')) return 'error'
+    return 'complete'
+  }
+
+  render () {
+    const orderStatus = this._orderStatus()
 
     const portfolio = this.props.portfolio
     const layoutProps = {
@@ -178,6 +187,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   toggleOrderModal: () => {
     dispatch(toggleOrderModal())
+  },
+  resetSwap: () => {
+    dispatch(resetSwap())
   }
 })
 

@@ -2,7 +2,7 @@ import queryString from 'query-string'
 import { statusAllSwaps } from 'Utilities/swap'
 import {
   parseEncryptedWalletString,
-  parseHardwareWalletString,
+  parseWalletString,
   toChecksumAddress
 } from 'Utilities/wallet'
 
@@ -65,6 +65,12 @@ export const localStorageGet = (key) => {
   }
 }
 
+export const localStorageRemove = (key) => {
+  if (storageAvailable('localStorage')) {
+    window.localStorage.removeItem(key)
+  }
+}
+
 export const restoreSwap = (address) => {
   if (!address) return undefined
 
@@ -92,30 +98,30 @@ export const saveSwap = (address, state) => {
   }
 }
 
+export const clearSwap = (address) => {
+  if (!address) return
+
+  localStorageSet(address, JSON.stringify({ swap: [] }))
+}
+
 export const restoreWallet = () => {
   const query = queryString.parse(window.location.search)
-  let encryptedWallet
+  let wallet
   if (query.wallet) {
     const encryptedWalletString = Buffer.from(query.wallet, 'base64').toString()
-    encryptedWallet = parseEncryptedWalletString(encryptedWalletString)
-    sessionStorageSet('encryptedWallet', encryptedWalletString)
-  } else {
-    encryptedWallet = parseEncryptedWalletString(sessionStorageGet('encryptedWallet'))
-  }
-  if (encryptedWallet) {
-    return {
-      address: toChecksumAddress(encryptedWallet.address),
-      encrypted: encryptedWallet
+    const encryptedWallet = parseEncryptedWalletString(encryptedWalletString)
+    if (encryptedWallet) {
+      wallet = JSON.stringify({
+        type: 'keystore',
+        address: toChecksumAddress(encryptedWallet.address),
+        data: encryptedWallet
+      })
+      sessionStorageSet('wallet', wallet)
     }
   } else {
-    const hardwareWallet = parseHardwareWalletString(sessionStorageGet('hardwareWallet'))
-    if (hardwareWallet) {
-      return {
-        address: toChecksumAddress(hardwareWallet.address),
-        hw: hardwareWallet
-      }
-    } else {
-      return undefined
-    }
+    wallet = parseWalletString(sessionStorageGet('wallet'))
   }
+  if (!wallet) return undefined
+
+  return wallet
 }

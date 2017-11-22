@@ -1,9 +1,9 @@
-import { insertSwapData, updateSwapTx, setSwap, setEncryptedWallet, setHardwareWallet } from 'Actions/redux'
+import { insertSwapData, updateSwapTx, setSwap, setWallet } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus } from 'Actions/request'
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus } from 'Actions/mock'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus } from 'Utilities/swap'
-import { restoreSwap } from 'Utilities/storage'
+import { restoreSwap, sessionStorageSet } from 'Utilities/storage'
 import log from 'Utilities/log'
 import {
   toSmallestDenomination,
@@ -18,8 +18,11 @@ import {
   signTxWithPrivateKey,
   signTxWithHardwareWallet,
   sendSignedTransaction,
+  sendTransaction,
   getTransactionReceipt,
-  toChecksumAddress
+  toChecksumAddress,
+  setWeb3,
+  txWeb3
 } from 'Utilities/wallet'
 
 const swapFinish = (type, swap, error, addition) => {
@@ -242,8 +245,8 @@ export const signTransactions = (swap, wallet, pk, isMocking) => {
                 resolve(signedTx)
               })
               .catch(reject)
-            } else if (wallet && wallet.hw) {
-              signTxWithHardwareWallet(wallet.hw.type, wallet.hw.derivationPath, receive.tx, isMocking)
+            } else if (wallet.type === 'hardware') {
+              signTxWithHardwareWallet(wallet.data.type, wallet.data.derivationPath, receive.tx, isMocking)
               .then((signedTx) => {
                 resolve(signedTx)
               })
@@ -262,6 +265,24 @@ export const signTransactions = (swap, wallet, pk, isMocking) => {
   }
 }
 
+// used for metamask
+export const sendTransactions = (swap, isMocking) => {
+  return (dispatch) => {
+    return processArray(swap, (send) => {
+      return processArray(send.list, (receive) => {
+        return new Promise((resolve, reject) => {
+          if (isMocking) {
+            dispatch(mockTransaction(send, receive))
+            return resolve()
+          }
+
+          dispatch(txPromiEvent(sendTransaction(txWeb3(receive.tx), resolve), send, receive, true))
+        })
+      })
+    })
+  }
+}
+
 export const sendSignedTransactions = (swap, mock) => {
   return (dispatch) => {
     // new Promise((resolve, reject) => {
@@ -271,27 +292,7 @@ export const sendSignedTransactions = (swap, mock) => {
           dispatch(mockTransaction(send, receive))
         } else {
           if (receive.tx.signed) {
-            sendSignedTransaction(receive.tx.signed)
-            .once('transactionHash', (txHash) => {
-              log.info(`tx hash obtained - ${txHash}`)
-              dispatch(insertSwapData(send.symbol, receive.symbol, { txHash }))
-            })
-            .once('receipt', (receipt) => {
-              log.info('tx receipt obtained')
-              dispatch(updateSwapTx(send.symbol, receive.symbol, { receipt }))
-            })
-            .on('confirmation', (conf) => {
-              log.info(`tx confirmation obtained - ${conf}`)
-              dispatch(updateSwapTx(send.symbol, receive.symbol, { confirmations: conf }))
-            })
-            .on('error', (error) => {
-              log.error(error)
-              dispatch(insertSwapData(send.symbol, receive.symbol, { error }))
-            })
-            .then(() => {
-              // once receipt is obtained
-              dispatch(pollOrderStatus(send, receive))
-            })
+            dispatch(txPromiEvent(sendSignedTransaction(receive.tx.signed), send, receive))
           } else {
             dispatch(insertSwapData(send.symbol, receive.symbol, { error: new Error('transaction not signed') }))
           }
@@ -299,6 +300,39 @@ export const sendSignedTransactions = (swap, mock) => {
       })
     })
     // })
+  }
+}
+
+const txPromiEvent = (p, send, receive, markSigned) => {
+  return (dispatch) => {
+    p
+    .once('transactionHash', (txHash) => {
+      log.info(`tx hash obtained - ${txHash}`)
+      dispatch(insertSwapData(send.symbol, receive.symbol, { txHash }))
+      if (markSigned) dispatch(updateSwapTx(send.symbol, receive.symbol, { signed: true }))
+    })
+    .once('receipt', (receipt) => {
+      log.info('tx receipt obtained')
+      dispatch(updateSwapTx(send.symbol, receive.symbol, { receipt }))
+    })
+    .on('confirmation', (conf) => {
+      log.info(`tx confirmation obtained - ${conf}`)
+      dispatch(updateSwapTx(send.symbol, receive.symbol, { confirmations: conf }))
+    })
+    .on('error', (error) => {
+      log.error(error)
+      // Don't mark the following as a tx error, start polling for receipt instead
+      if (error.message.includes('Transaction was not mined within')) {
+        return dispatch(pollTransactionReceipt(send, receive))
+      }
+      const declined = error.message.includes('User denied transaction signature')
+      dispatch(insertSwapData(send.symbol, receive.symbol, { error, declined }))
+    })
+    .then(() => {
+      // once receipt is obtained
+      dispatch(pollOrderStatus(send, receive))
+    })
+    .catch(log.error)
   }
 }
 
@@ -370,14 +404,14 @@ export const openWallet = (type, wallet, isMocking) => {
         dispatch(setSwap(swap))
         dispatch(restorePolling(swap, isMocking))
       }
-    }
-    switch (type) {
-      case 'keystore':
-        dispatch(setEncryptedWallet(address, wallet))
-        break
-      case 'hardware':
-        dispatch(setHardwareWallet(address, wallet))
-        break
+      sessionStorageSet('wallet', JSON.stringify({
+        type,
+        address,
+        data: wallet
+      }))
+
+      setWeb3(type)
+      dispatch(setWallet(type, address, wallet))
     }
   }
 }

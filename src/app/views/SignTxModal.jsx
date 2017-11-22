@@ -7,30 +7,37 @@ import config from 'Config'
 const SignTxModal = (props) => {
   const renderView = () => {
     switch (props.view) {
-      case 'keystorePassword':
+      case 'keystore':
         return (
-          <KeystorePasswordForm
-            readyToSign={props.readyToSign}
+          <SignTxForm
             onSubmit={props.handleKeystorePassword}
-            handleCancel={props.handleCloseModal}
-            swapList={props.swapList}
+            description='your wallet password'
+            buttonText='I agree'
+            {...props.signTxProps}
           />
         )
-      case 'hardwareWallet':
+      case 'hardware':
         return (
-          <HardwareWalletForm
-            readyToSign={props.readyToSign}
-            isSigning={props.isSigning}
+          <SignTxForm
             onSubmit={props.handleSignHardwareWallet}
-            handleCancel={props.handleCloseModal}
-            swapList={props.swapList}
+            description='your hardware wallet'
+            buttonText='Sign'
+            {...props.signTxProps}
+          />
+        )
+      case 'metamask':
+        return (
+          <SignTxForm
+            onSubmit={props.handleMetaMask}
+            description='MetaMask'
+            buttonText='Sign'
+            {...props.signTxProps}
           />
         )
       case 'orderStatus':
         return (
           <OrderStatus
-            handleClose={props.handleCloseModal}
-            swapList={props.swapList}
+            {...props.orderStatusProps}
           />
         )
     }
@@ -43,104 +50,8 @@ const SignTxModal = (props) => {
   )
 }
 
-const KeystorePasswordForm = reduxForm({
-  form: 'keystorePasswordForm'
-})((props) => {
-  const buttonStyle = {}
-  if (!props.readyToSign) {
-    buttonStyle.opacity = 0.3
-    buttonStyle.cursor = 'not-allowed'
-  }
-  const swapRow = props.swapList.map((a, i) => (
-    <div key={i} className='margin-top-10'>
-      <div className='row color-bg-3'>
-        <div className='col-md-4 padding-10'>
-          <div className='coin-container pull-left'>
-            <div className='coin-icon margin-top-5' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${a.from.symbol}.png)` }} />
-            <div className='coin-info text-left'>
-              <div className='text-white text-small'>{display.units(a.swap.unit, a.from.symbol, a.from.price)}</div>
-              <div className='text-medium-grey text-small'>{a.from.name}</div>
-            </div>
-          </div>
-        </div>
-        <div className='col-md-4 padding-10'>
-          <div className='right-icon margin-top-5' />
-        </div>
-        <div className='col-md-4 padding-10'>
-          <div className='coin-container pull-right'>
-            <div className='coin-icon margin-top-5' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${a.to.symbol}.png)` }} />
-            <div className='coin-info text-right'>
-              <div className='text-white text-small'>{display.units(a.receiveAmount, a.to.symbol, a.to.price)}</div>
-              <div className='text-medium-grey text-small'>{a.to.name}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div className='row color-bg-1 text-x-small padding-5 text-medium-grey'>
-        <div className='col-md-4 text-left'>
-          <div className='text-medium-grey pull-left margin-right-10'>swap fee </div>
-          {(a.swap.hasOwnProperty('fee') &&
-            <div className='pull-left'>{a.swap.fee} {a.to.symbol}</div>) ||
-            <div>{(!!a.error && <span className='pull-left text-danger'> - </span>) ||
-              <div className='faast-loading loading-small pull-left margin-top-10' />
-            }</div>
-          }
-        </div>
-        <div className='col-md-4 text-center'>
-          {(!!a.error && <span className='text-danger'>{a.error}</span>) ||
-            <div>
-              {(a.swap.hasOwnProperty('rate') &&
-                <span>1 {a.from.symbol} = {a.swap.rate} {a.to.symbol}</span>) ||
-                <div className='faast-loading loading-small margin-auto margin-top-10' />
-              }
-            </div>
-          }
-        </div>
-        <div className='col-md-4 text-right'>
-          {(a.txFee &&
-            <div className='pull-right'>{display.units(a.txFee, 'ETH')}</div>) ||
-            <div>{(!!a.error && <span className='pull-right text-danger'> - </span>) ||
-              <div className='faast-loading loading-small pull-right margin-top-10' />
-            }</div>
-          }
-          <div className='text-medium-grey pull-right margin-right-10'>txn fee</div>
-        </div>
-      </div>
-    </div>
-  ))
-  return (
-    <form onSubmit={props.handleSubmit}>
-      <ModalBody className='text-center'>
-        <div className='modal-title'>review and sign</div>
-        <div className='modal-text'>
-          The following transactions will take place to save the changes you made to your wallet. Please review and sign them with your wallet password.
-          <br />
-          The receive amount is an estimate based on the current rate and swap fee. Actual amount may vary.
-        </div>
-        <div className='review-list'>
-          {swapRow}
-        </div>
-        <div className='form-group'>
-          <Field
-            name='password'
-            component='input'
-            type='password'
-            placeholder='enter your wallet password'
-          />
-        </div>
-        <div className='form-group'>
-          <div className='button-primary cursor-pointer' onClick={props.readyToSign && props.handleSubmit}>I agree</div>
-        </div>
-        <div className='form-group'>
-          <div className='cancel cursor-pointer' onClick={props.handleCancel}>cancel</div>
-        </div>
-      </ModalBody>
-    </form>
-  )
-})
-
-const HardwareWalletForm = reduxForm({
-  form: 'hardwareWalletForm'
+const SignTxForm = reduxForm({
+  form: 'signTxForm'
 })((props) => {
   const buttonStyle = {}
   if (!props.readyToSign || props.isSigning) {
@@ -154,6 +65,11 @@ const HardwareWalletForm = reduxForm({
         nextToSign += 1
         return (
           <div className='text-gradient text-small'>signed</div>
+        )
+      } else if (a.swap && a.swap.error) {
+        nextToSign += 1
+        return (
+          <div className='text-red text-small'>declined</div>
         )
       } else if (props.isSigning && i === nextToSign) {
         return (
@@ -221,19 +137,29 @@ const HardwareWalletForm = reduxForm({
     )
   })
   return (
-    <form onSubmit={props.handlleSubmit}>
+    <form onSubmit={props.handleSubmit}>
       <ModalBody className='text-center'>
         <div className='modal-title'>review and sign</div>
         <div className='modal-text'>
-          The following transactions will take place to save the changes you made to your wallet. Please review and sign them with your hardware wallet.
+          The following transactions will take place to save the changes you made to your wallet. Please review and sign them with {props.description}.
           <br />
           The receive amount is an estimate based on the current rate and swap fee. Actual amount may vary.
         </div>
         <div className='review-list'>
           {swapRow}
         </div>
+        {props.type === 'keystore' &&
+          <div className='form-group'>
+            <Field
+              name='password'
+              component='input'
+              type='password'
+              placeholder='enter your wallet password'
+            />
+          </div>
+        }
         <div className='form-group'>
-          <div style={buttonStyle} className='button-primary cursor-pointer' onClick={props.readyToSign && !props.isSigning && props.handleSubmit}>Sign</div>
+          <div style={buttonStyle} className='button-primary cursor-pointer' onClick={props.readyToSign && !props.isSigning && props.handleSubmit}>{props.buttonText}</div>
         </div>
         <div className='form-group'>
           <div className='cancel cursor-pointer' onClick={props.handleCancel}>cancel</div>

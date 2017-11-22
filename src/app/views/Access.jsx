@@ -1,6 +1,7 @@
 import React from 'react'
 import LayoutController from 'Controllers/LayoutController'
 import KeystoreController from 'Controllers/KeystoreController'
+import MetaMaskController from 'Controllers/MetaMaskController'
 import CreateWalletController from 'Controllers/CreateWalletController'
 import HardwareWalletController from 'Controllers/HardwareWalletController'
 import styles from 'Styles/Access.scss'
@@ -15,11 +16,16 @@ const Access = (props) => {
           </div>
         </div>
         <div className='col-md-3'>
+          <MetaMaskController />
+        </div>
+        <div className='col-md-3'>
           <HardwareWalletController type='ledger' />
         </div>
         <div className='col-md-3'>
           <HardwareWalletController type='trezor' />
         </div>
+      </div>
+      <div className='row justify-content-center margin-top-20'>
         <div className='col-md-3'>
           <CreateWalletController />
         </div>

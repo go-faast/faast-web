@@ -2,11 +2,14 @@ import BigNumber from 'bignumber.js'
 
 if (!window.faast.dev) {
   BigNumber.config({ ERRORS: false })
+} else {
+  window.BigNumber = BigNumber
 }
 
 const TEN = new BigNumber(10)
 
 export const toBigNumber = (value = 0) => {
+  if (value === '0x') value = 0
   if (!(value instanceof BigNumber)) return new BigNumber(String(value))
   return value
 }

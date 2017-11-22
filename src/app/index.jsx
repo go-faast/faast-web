@@ -12,19 +12,9 @@ import { Route } from 'react-router-dom'
 import ReduxToastr from 'react-redux-toastr'
 import EntryController from 'Controllers/EntryController'
 import reducers from './reducers'
-import log from 'Utilities/log'
 import { restoreWallet, restoreSwap, saveSwap } from 'Utilities/storage'
-import config from 'Config'
 import 'react-redux-toastr/src/styles/index.scss?nsm'
 import 'Styles/style.scss?nsm'
-
-if (window.Web3) {
-  window.faast.web3 = new window.Web3(new window.Web3.providers.HttpProvider(config.web3Provider))
-}
-
-if (!('indexedDB' in window)) {
-  log.warn('This browser doesn\'t support IndexedDB')
-}
 
 const persistedState = () => {
   const wallet = restoreWallet()
@@ -40,25 +30,14 @@ const middleware = [
   thunk,
   routerMiddleware(history)
 ]
-if (window.faast && window.faast.dev) middleware.push(logger)
+if (!window.faast) window.faast = {}
+if (window.faast.dev) middleware.push(logger)
 const store = createStore(reducers, persistedState(), applyMiddleware(...middleware))
 
 store.subscribe(throttle(() => {
   const state = store.getState()
   if (state.wallet) saveSwap(state.wallet.address, state.swap)
 }, 1000))
-
-window.faast.hw = {}
-if (window.ledger) {
-  window.ledger.comm_u2f.create_async()
-  .then((comm) => {
-    window.faast.hw.ledger = new window.ledger.eth(comm)
-  })
-  .fail(log.error)
-}
-if (window.TrezorConnect) {
-  window.faast.hw.trezor = window.TrezorConnect
-}
 
 const Portfolio = () => {
   return (

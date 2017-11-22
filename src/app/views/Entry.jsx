@@ -10,7 +10,7 @@ const Entry = (props) => {
     <div className={styles.container}>
       <div className={`container-fluid ${styles.content}`}>
         {props.ready && <Route component={AppController} />}
-        {props.loading && <LoadingController />}
+        {props.loading && <LoadingController {...props.loadingProps} />}
       </div>
     </div>
   )
