@@ -4,7 +4,11 @@ import { connect } from 'react-redux'
 import AddressModal from 'Views/AddressModal'
 
 const AddressModalController = (props) => (
-  <AddressModal address={props.wallet.address} {...props} />
+  <AddressModal
+    address={props.wallet.address}
+    showDownloadKeystore={props.wallet.type === 'blockstack'}
+    {...props}
+  />
 )
 
 AddressModalController.propTypes = {

@@ -5,12 +5,12 @@
   "main": "dist/bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "serve dist --open",
-    "build-webpack": "cross-env NODE_ENV=production webpack -p --progress --colors",
+    "start": "serve dist --cors --open",
+    "build-webpack": "cross-env NODE_ENV=production webpack --progress --profile",
     "lint": "standard --verbose",
     "build": "npm run lint && npm run build-webpack",
     "dev-server": "cross-env WEBPACK_PORT=8080 webpack-dev-server",
-    "dev": "concurrently --kill-others \"serve dist\" \"npm run dev-server\""
+    "dev": "concurrently --kill-others \"serve dist --cors\" \"npm run dev-server\""
   },
   "author": "Nathan Wood <nathan@bitaccess.co>",
   "license": "MIT",
@@ -21,10 +21,10 @@
     "accounting": "^0.4.1",
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "bignumber.js": "^4.0.4",
+    "blockstack": "^0.13.5",
     "concurrently": "^3.5.0",
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
@@ -61,6 +61,7 @@
     "sass-loader": "^6.0.6",
     "standard": "^10.0.3",
     "style-loader": "^0.18.2",
+    "uglifyjs-webpack-plugin": "^1.1.1",
     "webpack": "^3.5.5",
     "webpack-dev-server": "^2.7.1"
   },

@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import isEqual from 'lodash/isEqual'
 import toastr from 'Utilities/toastrWrapper'
+import blockstack from 'Utilities/blockstack'
 import App from 'Views/App'
 import withMockHandling from '../hoc/withMockHandling'
 import { restorePolling } from 'Actions/portfolio'
@@ -48,6 +50,9 @@ class AppController extends Component {
         )
       })
     }
+    if (this.props.wallet.type === 'blockstack' && !isEqual(prevProps.settings, this.props.settings)) {
+      blockstack.saveSettings(this.props.settings)
+    }
   }
 
   _mediaQueryChange (mediaQuery, type) {
@@ -68,7 +73,8 @@ AppController.propTypes = {
 
 const mapStateToProps = (state) => ({
   wallet: state.wallet,
-  swap: state.swap
+  swap: state.swap,
+  settings: state.settings
 })
 
 const mapDispatchToProps = (dispatch) => ({

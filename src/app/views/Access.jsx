@@ -4,17 +4,13 @@ import KeystoreController from 'Controllers/KeystoreController'
 import MetaMaskController from 'Controllers/MetaMaskController'
 import CreateWalletController from 'Controllers/CreateWalletController'
 import HardwareWalletController from 'Controllers/HardwareWalletController'
+import BlockstackController from 'Controllers/BlockstackController'
 import styles from 'Styles/Access.scss'
 
 const Access = (props) => {
   return (
     <LayoutController>
       <div className={`row ${styles.startContainer}`}>
-        <div className='col-md-3'>
-          <div id='keystore-container' className={styles.tileContainer}>
-            <KeystoreController />
-          </div>
-        </div>
         <div className='col-md-3'>
           <MetaMaskController />
         </div>
@@ -24,8 +20,16 @@ const Access = (props) => {
         <div className='col-md-3'>
           <HardwareWalletController type='trezor' />
         </div>
+        <div className='col-md-3'>
+          <BlockstackController />
+        </div>
       </div>
       <div className='row justify-content-center margin-top-20'>
+        <div className='col-md-3'>
+          <div id='keystore-container' className={styles.tileContainer}>
+            <KeystoreController />
+          </div>
+        </div>
         <div className='col-md-3'>
           <CreateWalletController />
         </div>

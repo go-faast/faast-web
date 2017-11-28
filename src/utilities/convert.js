@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import EthereumjsUtil from 'ethereumjs-util'
 
 if (!window.faast.dev) {
   BigNumber.config({ ERRORS: false })
@@ -58,4 +59,8 @@ export const toHex = (value) => {
     return window.faast.web3.utils.numberToHex(value)
   }
   return '0x0'
+}
+
+export const toChecksumAddress = (address) => {
+  return EthereumjsUtil.toChecksumAddress(address)
 }

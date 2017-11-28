@@ -18,6 +18,11 @@ const AddressModal = (props) => (
         <div className={styles.addressText}>
           {props.address}
         </div>
+        {props.showDownloadKeystore &&
+          <div onClick={props.handleDownloadKeystore} className='cursor-pointer'>
+            download keystore file
+          </div>
+        }
       </div>
     </ModalBody>
   </Modal>

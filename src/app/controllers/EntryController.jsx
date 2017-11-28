@@ -9,7 +9,11 @@ import idb from 'Utilities/idb'
 import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
 import { setWeb3 } from 'Utilities/wallet'
+import { filterUrl } from 'Utilities/helpers'
+import blockstack from 'Utilities/blockstack'
 import { getAssets } from 'Actions/request'
+import { openWallet } from 'Actions/portfolio'
+import { setSettings } from 'Actions/redux'
 
 class EntryController extends Component {
   constructor () {
@@ -21,6 +25,7 @@ class EntryController extends Component {
 
   componentWillMount () {
     const query = queryString.parse(window.location.search)
+
     if (query.log_level) window.faast.log_level = query.log_level
 
     idb.setup(['logging'])
@@ -34,6 +39,40 @@ class EntryController extends Component {
     })
     .then(() => {
       return idb.removeOld('logging')
+    })
+    .then(() => {
+      return new Promise((resolve, reject) => {
+        if (blockstack.isSignInPending()) {
+          log.info('blockstack signin pending')
+          blockstack.handlePendingSignIn()
+          .then((userData) => {
+            window.location.replace(filterUrl())
+          })
+          .catch((err) => {
+            log.error(err)
+            resolve()
+          })
+        } else {
+          resolve()
+        }
+      })
+    })
+    .then(() => {
+      return new Promise((resolve, reject) => {
+        if (this.props.wallet.type === 'blockstack') {
+          blockstack.getSettings()
+          .then((settings) => {
+            this.props.setSettings(settings)
+            resolve()
+          })
+          .catch((err) => {
+            log.error(err)
+            resolve()
+          })
+        } else {
+          resolve()
+        }
+      })
     })
     .then(() => {
       if (window.Web3) {
@@ -86,12 +125,19 @@ EntryController.propTypes = {
 
 const mapStateToProps = (state) => ({
   portfolio: state.portfolio,
-  wallet: state.wallet
+  wallet: state.wallet,
+  mock: state.mock
 })
 
 const mapDispatchToProps = (dispatch) => ({
   getAssets: () => {
     return dispatch(getAssets())
+  },
+  openWallet: (type, wallet, isMocking, noSessionStorage) => {
+    dispatch(openWallet(type, wallet, isMocking, noSessionStorage))
+  },
+  setSettings: (settings) => {
+    dispatch(setSettings(settings))
   }
 })
 

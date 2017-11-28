@@ -87,3 +87,8 @@ export const showOrderModal = () => ({
 export const hideOrderModal = () => ({
   type: 'HIDE_ORDER_MODAL'
 })
+
+export const setSettings = (settings) => ({
+  type: 'SET_SETTINGS',
+  payload: settings
+})

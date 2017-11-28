@@ -1,4 +1,5 @@
 import pad from 'pad-left'
+import queryString from 'query-string'
 
 export const uppercase = (str) => {
   if (typeof str !== 'string') return str
@@ -171,4 +172,12 @@ export const fixPercentageRounding = (list, total) => {
   } else {
     return list
   }
+}
+
+export const filterUrl = () => {
+  const query = queryString.parse(window.location.search)
+  delete query.authResponse
+  let newSearch = queryString.stringify(query)
+  if (newSearch) newSearch = '?' + newSearch
+  return window.location.origin + window.location.pathname + newSearch
 }

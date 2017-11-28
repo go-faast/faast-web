@@ -1,26 +1,25 @@
 import React from 'react'
 import { Modal, ModalBody } from 'reactstrap'
 import { reduxForm } from 'redux-form'
+import AccessTileController from 'Controllers/AccessTileController'
 import HWAddressSelectController from 'Controllers/HWAddressSelectController'
 import display from 'Utilities/display'
 import styles from 'Styles/HardwareWallet.scss'
 
 const HardwareWallet = (props) => {
-  const name = () => {
-    if (props.type === 'ledger') {
-      return 'Ledger Wallet'
-    }
-    if (props.type === 'trezor') {
-      return 'TREZOR'
-    }
+  let name
+  switch (props.type) {
+    case 'ledger':
+      name = 'Ledger Wallet'
+      break
+    case 'trezor':
+      name = 'TREZOR'
+      break
   }
   return (
-    <div onClick={props.handleClick} className={styles.tileContainer}>
-      <div className={`text-uppercase ${styles.importHeader}`}>Access With</div>
-      <div className={styles.walletDesc}>
-        {name()}
-      </div>
-      <HardwareWalletModal name={name()} type={props.type} {...props.modalProps} />
+    <div>
+      <AccessTileController name={name} handleClick={props.handleClick} />
+      <HardwareWalletModal name={name} type={props.type} {...props.modalProps} />
     </div>
   )
 }

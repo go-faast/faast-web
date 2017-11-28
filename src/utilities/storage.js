@@ -1,10 +1,6 @@
 import queryString from 'query-string'
-import { statusAllSwaps } from 'Utilities/swap'
-import {
-  parseEncryptedWalletString,
-  parseWalletString,
-  toChecksumAddress
-} from 'Utilities/wallet'
+import { parseEncryptedWalletString, parseWalletString } from 'Utilities/wallet'
+import { toChecksumAddress } from 'Utilities/convert'
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
 export const storageAvailable = (type) => {
@@ -71,27 +67,25 @@ export const localStorageRemove = (key) => {
   }
 }
 
-export const restoreSwap = (address) => {
+export const restoreFromAddress = (address) => {
   if (!address) return undefined
 
   try {
     const serialized = localStorageGet(address)
     if (serialized === null) return undefined
 
-    const swap = JSON.parse(serialized).swap
-    const status = statusAllSwaps(swap)
-    if (status === 'unavailable' || status === 'unsigned' || status === 'unsent') return undefined
-
-    return swap
+    return JSON.parse(serialized)
   } catch (err) {
     return undefined
   }
 }
 
-export const saveSwap = (address, state) => {
+export const saveToAddress = (address, newState) => {
   if (!address) return
+
+  const currentState = restoreFromAddress(address)
   try {
-    const serialized = JSON.stringify({ swap: state })
+    const serialized = JSON.stringify(Object.assign({}, currentState, newState))
     localStorageSet(address, serialized)
   } catch (err) {
     console.error(err)
@@ -101,22 +95,23 @@ export const saveSwap = (address, state) => {
 export const clearSwap = (address) => {
   if (!address) return
 
-  localStorageSet(address, JSON.stringify({ swap: [] }))
+  const currentState = restoreFromAddress(address)
+  localStorageSet(address, JSON.stringify(Object.assign({}, currentState, { swap: [] })))
 }
 
-export const restoreWallet = () => {
+export const restoreWalletFromStorage = () => {
   const query = queryString.parse(window.location.search)
   let wallet
   if (query.wallet) {
     const encryptedWalletString = Buffer.from(query.wallet, 'base64').toString()
     const encryptedWallet = parseEncryptedWalletString(encryptedWalletString)
     if (encryptedWallet) {
-      wallet = JSON.stringify({
+      wallet = {
         type: 'keystore',
         address: toChecksumAddress(encryptedWallet.address),
         data: encryptedWallet
-      })
-      sessionStorageSet('wallet', wallet)
+      }
+      sessionStorageSet('wallet', JSON.stringify(wallet))
     }
   } else {
     wallet = parseWalletString(sessionStorageGet('wallet'))

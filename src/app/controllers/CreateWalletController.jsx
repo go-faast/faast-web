@@ -22,7 +22,8 @@ class CreateWalletController extends Component {
   render () {
     const modalProps = {
       showModal: this.state.showPasswordModal,
-      toggleModal: this._toggleModal
+      toggleModal: this._toggleModal,
+      isNewWallet: true
     }
     return (
       <CreateWallet

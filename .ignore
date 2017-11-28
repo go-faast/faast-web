@@ -3,5 +3,6 @@
 *.*.map
 *.min.css
 *.svg
-bundle.js
+portfolio.bundle.js
+portfolio.bundle.js.map
 dist/vendor

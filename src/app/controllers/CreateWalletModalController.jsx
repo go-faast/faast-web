@@ -7,7 +7,8 @@ import {
   generateWalletFromPrivateKey,
   encryptWallet,
   decryptWallet,
-  getFileName
+  getFileName,
+  getPrivateKeyString
 } from 'Utilities/wallet'
 import toastr from 'Utilities/toastrWrapper'
 import { downloadJson } from 'Utilities/helpers'
@@ -22,9 +23,9 @@ const initialState = {
   downloaded: false
 }
 
-const validateCreatePassword = (values) => {
+const validateCreatePassword = (values, name = 'wallet') => {
   if (!values || !values.password || values.password.length < 8) {
-    toastr.error('It is important to secure your wallet with a strong password. Please use a minimum of 8 characters', { timeOut: 8000 })
+    toastr.error(`It is important to secure your ${name} with a strong password. Please use a minimum of 8 characters`, { timeOut: 8000 })
     return false
   }
   return true
@@ -47,6 +48,12 @@ class CreateWalletModalController extends Component {
   }
 
   _handleCreatePassword (values) {
+    if (!this.props.isNewWallet && this.props.wallet.type === 'blockstack') {
+      return getPrivateKeyString(this.props.wallet.data)
+      .then((privateKey) => {
+        this._handleCreatePasswordWithPrivKey(Object.assign({}, values, { privateKey }))
+      })
+    }
     if (validateCreatePassword(values)) {
       const encryptedWallet = this._generateNewWallet(values.password)
       if (encryptedWallet) {
@@ -58,7 +65,8 @@ class CreateWalletModalController extends Component {
   }
 
   _handleCreatePasswordWithPrivKey (values) {
-    if (validateCreatePassword(values)) {
+    const name = this.props.isNewWallet ? 'wallet' : 'keystore file'
+    if (validateCreatePassword(values, name)) {
       const encryptedWallet = this._generateFromPrivKey(values.privateKey, values.password)
       if (encryptedWallet) {
         this.setState({ encryptedWallet, view: 'confirm' })
@@ -90,9 +98,13 @@ class CreateWalletModalController extends Component {
     if (!this.state.download) {
       return toastr.error('Please download the wallet keystore file before continuing')
     }
-    sessionStorageSet('encryptedWallet', JSON.stringify(this.state.encryptedWallet))
+    if (this.props.isNewWallet) {
+      sessionStorageSet('encryptedWallet', JSON.stringify(this.state.encryptedWallet))
 
-    this.props.openWallet('keystore', this.state.encryptedWallet, this.props.mock.mocking)
+      this.props.openWallet('keystore', this.state.encryptedWallet, this.props.mock.mocking)
+    } else {
+      this.props.handleContinue ? this.props.handleContinue() : this._handleCloseModal()
+    }
   }
 
   _handleCloseModal () {
@@ -139,6 +151,7 @@ class CreateWalletModalController extends Component {
         handleContinue={this._handleContinue}
         handleImportPrivKey={this._handleImportPrivKey}
         showModal={this.props.showModal}
+        isNewWallet={this.props.isNewWallet}
       />
     )
   }
@@ -146,13 +159,15 @@ class CreateWalletModalController extends Component {
 
 CreateWalletModalController.propTypes = {
   mock: PropTypes.object.isRequired,
+  wallet: PropTypes.object.isRequired,
   openWallet: PropTypes.func.isRequired,
   toggleModal: PropTypes.func.isRequired,
   showModal: PropTypes.bool
 }
 
 const mapStateToProps = (state) => ({
-  mock: state.mock
+  mock: state.mock,
+  wallet: state.wallet
 })
 
 const mapDispatchToProps = (dispatch) => ({

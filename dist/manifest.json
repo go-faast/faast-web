@@ -1,0 +1,10 @@
+{
+  "name": "faast portfolio",
+  "start_url": "localhost:5000",
+  "description": "Manage your crypto assets collection with faast portfolio",
+  "icons": [{
+    "src": "https://faa.st/img/faast-logo.png",
+    "sizes": "300x300",
+    "type": "image/png"
+  }]
+}

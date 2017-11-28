@@ -1,15 +1,15 @@
 var webpack = require('webpack')
 var path = require('path')
 var OpenBrowserPlugin = require('open-browser-webpack-plugin')
+var UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 var WEBPACK_PORT = process.env.WEBPACK_PORT
 
 var config = {
-  devtool: 'eval-source-map',
-  entry: ['babel-polyfill', 'whatwg-fetch', path.join(__dirname, 'src', 'index.jsx')],
+  entry: path.join(__dirname, 'src', 'index.jsx'),
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'bundle.js',
+    filename: 'portfolio.bundle.js',
     publicPath: 'http://localhost:' + WEBPACK_PORT
   },
   module: {
@@ -41,26 +41,37 @@ var config = {
       Actions: path.resolve(__dirname, 'src', 'app', 'actions')
     },
     extensions: ['.js', '.jsx', '.json']
-  },
-  plugins: [
-    new OpenBrowserPlugin({ url: 'http://localhost:5000/?dev=true' }),
+  }
+}
+
+if (process.env.NODE_ENV === 'production') {
+  config.devtool = 'source-map'
+  config.plugins = [
     new webpack.DefinePlugin({
-      SITE_URL: JSON.stringify(process.env.SITE_URL)
+      'process.env.NODE_ENV': JSON.stringify('production')
+    }),
+    new UglifyJsPlugin({
+      sourceMap: true,
+      uglifyOptions: {
+        mangle: {
+          reserved: ['BigInteger', 'ECPair', 'Point']
+        }
+      }
     })
-  ],
-  devServer: {
+  ]
+} else {
+  config.devtool = 'eval-source-map'
+  config.devServer = {
     compress: true,
     historyApiFallback: true,
     inline: true
   }
-}
-
-/*
- * PRODUCTION
- */
-if (process.env.NODE_ENV === 'production') {
-  config.devtool = false
-  config.plugins = new webpack.optimize.UglifyJsPlugin({ comments: false })
+  config.plugins = [
+    new OpenBrowserPlugin({ url: 'http://localhost:5000/?dev=true' }),
+    new webpack.DefinePlugin({
+      SITE_URL: JSON.stringify(process.env.SITE_URL)
+    })
+  ]
 }
 
 module.exports = config

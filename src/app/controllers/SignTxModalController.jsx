@@ -29,28 +29,24 @@ class SignTxModalController extends Component {
   }
 
   _handleKeystorePassword (values, dispatch) {
-    if (!values.password) return toastr.error('Enter your wallet password to sign the transactions')
+    if (this.state.view === 'keystore' && !values.password) {
+      return toastr.error('Enter your wallet password to sign the transactions')
+    }
 
     const wallet = this.props.wallet
     const isMocking = this.props.mock.mocking
 
     return new Promise((resolve, reject) => {
-      new Promise((resolve, reject) => {
-        getPrivateKeyString(wallet.data, values.password, isMocking)
-        .then(resolve)
-        .catch((e) => {
-          toastr.error('Unable to decrypt wallet. Wrong password?')
-          reject(e)
-        })
+      getPrivateKeyString(wallet.data, values.password, isMocking)
+      .catch((e) => {
+        toastr.error('Unable to decrypt wallet. Wrong password?')
+        throw e
       })
       .then((pk) => {
-        return new Promise((resolve, reject) => {
-          dispatch(signTransactions(this.props.swap, wallet, pk, isMocking))
-          .then(resolve)
-          .catch((e) => {
-            toastr.error('Unable to sign transactions')
-            reject(e)
-          })
+        return dispatch(signTransactions(this.props.swap, wallet, pk, isMocking))
+        .catch((e) => {
+          toastr.error('Unable to sign transactions')
+          throw e
         })
       })
       .then((result) => {
@@ -60,11 +56,9 @@ class SignTxModalController extends Component {
       .catch(reject)
     })
     .then(() => {
-      // this.setState({ view: 'orderStatus' })
       dispatch(push('/balances'))
     })
     .catch(log.error)
-    // this.props.toggleModal()
   }
 
   _handleSignHardwareWallet (values, dispatch) {
@@ -106,6 +100,10 @@ class SignTxModalController extends Component {
       log.error(e)
       this._handleCloseModal()
     })
+  }
+
+  _handleBlockstack (values, dispatch) {
+
   }
 
   render () {

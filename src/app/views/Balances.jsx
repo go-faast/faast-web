@@ -6,6 +6,7 @@ import LayoutController from 'Controllers/LayoutController'
 import AddressController from 'Controllers/AddressController'
 import PriceChartController from 'Controllers/PriceChartController'
 import SignTxModalController from 'Controllers/SignTxModalController'
+import WelcomeController from 'Controllers/WelcomeController'
 import display from 'Utilities/display'
 import styles from 'Styles/Balances.scss'
 import config from 'Config'
@@ -148,6 +149,7 @@ const Balances = (props) => {
   return (
     <LayoutController {...props.layoutProps}>
       <SignTxModalController showModal={props.showOrderModal} toggleModal={props.handleToggleOrderModal} view='orderStatus' />
+      <WelcomeController />
       {!!props.orderStatus &&
         <OrderInProgress status={props.orderStatus} handleViewStatus={props.handleToggleOrderModal} />
       }

@@ -7,6 +7,7 @@ import wallet from './wallet'
 import swap from './swap'
 import mock from './mock'
 import orderModal from './orderModal'
+import settings from './settings'
 
 export default combineReducers({
   wallet,
@@ -15,6 +16,7 @@ export default combineReducers({
   swap,
   mock,
   orderModal,
+  settings,
   form: formReducer,
   toastr: toastrReducer
 })

@@ -1,16 +1,18 @@
-import { insertSwapData, updateSwapTx, setSwap, setWallet } from 'Actions/redux'
+import { insertSwapData, updateSwapTx, setSwap, setWallet, resetAll } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus } from 'Actions/request'
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus } from 'Actions/mock'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus } from 'Utilities/swap'
-import { restoreSwap, sessionStorageSet } from 'Utilities/storage'
+import { restoreFromAddress, sessionStorageSet, sessionStorageClear } from 'Utilities/storage'
 import log from 'Utilities/log'
+import blockstack from 'Utilities/blockstack'
 import {
   toSmallestDenomination,
   toBigNumber,
   toHex,
   toTxFee,
   toPrecision,
+  toChecksumAddress,
   toUnit
 } from 'Utilities/convert'
 import {
@@ -20,7 +22,6 @@ import {
   sendSignedTransaction,
   sendTransaction,
   getTransactionReceipt,
-  toChecksumAddress,
   setWeb3,
   txWeb3
 } from 'Utilities/wallet'
@@ -395,23 +396,34 @@ export const restorePolling = (swap, isMocking) => {
   }
 }
 
-export const openWallet = (type, wallet, isMocking) => {
+export const openWallet = (type, wallet, isMocking, noSessionStorage) => {
   return (dispatch) => {
     const address = toChecksumAddress(wallet.address)
     if (address) {
-      const swap = restoreSwap(address)
-      if (swap) {
-        dispatch(setSwap(swap))
-        dispatch(restorePolling(swap, isMocking))
+      const state = restoreFromAddress(address)
+      if (state && state.swap) {
+        dispatch(setSwap(state.swap))
+        dispatch(restorePolling(state.swap, isMocking))
       }
-      sessionStorageSet('wallet', JSON.stringify({
-        type,
-        address,
-        data: wallet
-      }))
+      if (!noSessionStorage) {
+        sessionStorageSet('wallet', JSON.stringify({
+          type,
+          address,
+          data: wallet
+        }))
+      }
 
       setWeb3(type)
       dispatch(setWallet(type, address, wallet))
     }
+  }
+}
+
+export const closeWallet = () => {
+  return (dispatch) => {
+    blockstack.signUserOut()
+    sessionStorageClear()
+    dispatch(resetAll())
+    log.info('wallet closed')
   }
 }

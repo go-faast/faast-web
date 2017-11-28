@@ -2,9 +2,8 @@ import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import Header from 'Views/Header'
-import { sessionStorageClear } from 'Utilities/storage'
-import log from 'Utilities/log'
-import { resetAll, toggleOrderModal } from 'Actions/redux'
+import { toggleOrderModal } from 'Actions/redux'
+import { closeWallet } from 'Actions/portfolio'
 
 const HeaderController = (props) => {
   const handleModify = (e) => {
@@ -12,24 +11,20 @@ const HeaderController = (props) => {
       props.handleModify(e)
     }
   }
-  const closeWallet = () => {
-    sessionStorageClear()
-    props.resetAll()
-    log.info('wallet closed')
-  }
 
   return (
     <Header
       {...props}
       handleModify={handleModify}
-      handleCloseWallet={closeWallet}
+      handleCloseWallet={props.closeWallet}
     />
   )
 }
 
 HeaderController.propTypes = {
   disableAction: PropTypes.bool,
-  resetAll: PropTypes.func.isRequired
+  closeWallet: PropTypes.func.isRequired,
+  toggleOrderModal: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
@@ -37,8 +32,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  resetAll: () => {
-    dispatch(resetAll())
+  closeWallet: () => {
+    dispatch(closeWallet())
   },
   toggleOrderModal: () => {
     dispatch(toggleOrderModal())

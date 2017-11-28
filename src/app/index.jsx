@@ -12,16 +12,23 @@ import { Route } from 'react-router-dom'
 import ReduxToastr from 'react-redux-toastr'
 import EntryController from 'Controllers/EntryController'
 import reducers from './reducers'
-import { restoreWallet, restoreSwap, saveSwap } from 'Utilities/storage'
+import { restoreFromAddress, saveToAddress } from 'Utilities/storage'
+import { restoreWallet } from 'Utilities/wallet'
+import { statusAllSwaps } from 'Utilities/swap'
 import 'react-redux-toastr/src/styles/index.scss?nsm'
 import 'Styles/style.scss?nsm'
 
 const persistedState = () => {
   const wallet = restoreWallet()
-  const swap = restoreSwap(wallet && wallet.address)
+  const addressState = restoreFromAddress(wallet && wallet.address) || {}
+  const status = statusAllSwaps(addressState.swap)
+  const swap = (status === 'unavailable' || status === 'unsigned' || status === 'unsent') ? undefined : addressState.swap
+  const settings = addressState.settings
+
   return {
     wallet,
-    swap
+    swap,
+    settings
   }
 }
 
@@ -36,7 +43,12 @@ const store = createStore(reducers, persistedState(), applyMiddleware(...middlew
 
 store.subscribe(throttle(() => {
   const state = store.getState()
-  if (state.wallet) saveSwap(state.wallet.address, state.swap)
+  if (state.wallet) {
+    saveToAddress(state.wallet.address, {
+      swap: state.swap,
+      settings: state.settings
+    })
+  }
 }, 1000))
 
 const Portfolio = () => {

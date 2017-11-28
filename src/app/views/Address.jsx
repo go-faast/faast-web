@@ -1,12 +1,16 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import AddressModalController from 'Controllers/AddressModalController'
+import CreateWalletModalController from 'Controllers/CreateWalletModalController'
 
 const Address = (props) => {
   return (
     <div>
       <span onClick={props.handleClick} className={props.className}>{props.address}</span>
-      <AddressModalController {...props.modalProps} />
+      {(props.view === 'downloadKeystore' &&
+        <CreateWalletModalController {...props.modalProps} />) ||
+        <AddressModalController {...props.modalProps} />
+      }
     </div>
   )
 }

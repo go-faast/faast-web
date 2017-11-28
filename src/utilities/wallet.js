@@ -5,6 +5,8 @@ import RLP from 'rlp'
 import { toBigNumber } from 'Utilities/convert'
 import { stripHexPrefix, addHexPrefix } from 'Utilities/helpers'
 import log from 'Utilities/log'
+import { restoreWalletFromStorage } from 'Utilities/storage'
+import blockstack from 'Utilities/blockstack'
 import toastr from 'Utilities/toastrWrapper'
 import { mockHardwareWalletSign } from 'Actions/mock'
 import config from 'Config'
@@ -73,11 +75,11 @@ export const tokenTxData = (address, amount, decimals) => {
   return { data: config.tokenFunctionSignatures.transfer + dataAddress + dataAmount }
 }
 
-export const encryptWallet = (wallet, password) => {
+export const encryptWallet = (wallet, password = '') => {
   return wallet.toV3(password, config.encrOpts)
 }
 
-export const decryptWallet = (encryptedWallet, password) => {
+export const decryptWallet = (encryptedWallet, password = '') => {
   return new Promise((resolve, reject) => {
     if (typeof encryptedWallet !== 'object') return reject(new Error('wallet not an object'))
     if (!encryptedWallet.hasOwnProperty('crypto') && !encryptedWallet.hasOwnProperty('Crypto')) {
@@ -262,14 +264,18 @@ export const getTransactionReceipt = (txHash) => {
   return window.faast.web3.eth.getTransactionReceipt(txHash)
 }
 
-export const toChecksumAddress = (address) => {
-  return window.faast.web3.utils.toChecksumAddress(address)
-}
-
 export const setWeb3 = (providerType) => {
   if (providerType === 'metamask' && typeof window.web3 !== 'undefined') {
     window.faast.web3 = new window.Web3(window.web3.currentProvider)
   } else {
     window.faast.web3 = new window.Web3(new window.Web3.providers.HttpProvider(config.web3Provider))
+  }
+}
+
+export const restoreWallet = () => {
+  if (blockstack.isUserSignedIn()) {
+    return blockstack.restoreWallet()
+  } else {
+    return restoreWalletFromStorage()
   }
 }

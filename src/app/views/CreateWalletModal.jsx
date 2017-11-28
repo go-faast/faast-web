@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, ModalBody } from 'reactstrap'
 import { Field, reduxForm } from 'redux-form'
+import { addKeys } from 'Utilities/reactFuncs'
 import styles from 'Styles/CreateWalletModal.scss'
 
 const CreateWalletModal = (props) => {
@@ -13,6 +14,7 @@ const CreateWalletModal = (props) => {
             onSubmit={props.handleCreatePassword}
             handleCancel={props.handleCloseModal}
             handleImportPrivKey={props.handleImportPrivKey}
+            {...props}
           />
         )
       case 'import':
@@ -20,6 +22,7 @@ const CreateWalletModal = (props) => {
           <ImportWalletForm
             onSubmit={props.handleCreatePasswordWithPrivKey}
             handleCancel={props.handleCloseModal}
+            {...props}
           />
         )
       case 'confirm':
@@ -27,14 +30,14 @@ const CreateWalletModal = (props) => {
           <ConfirmPasswordForm
             onSubmit={props.handleConfirmPassword}
             handleCancel={props.handleCloseModal}
+            {...props}
           />
         )
       case 'download':
         return (
           <DownloadKeystore
-            handleDownload={props.handleDownload}
-            handleContinue={props.handleContinue}
             handleCancel={props.handleCloseModal}
+            {...props}
           />
         )
     }
@@ -58,33 +61,43 @@ CreateWalletModal.propTypes = {
   handleContinue: PropTypes.func
 }
 
-let CreatePasswordForm = (props) => (
-  <form onSubmit={props.handleSubmit}>
-    <ModalBody>
-      <div className='modal-title'>Create a new wallet</div>
-      <div className='modal-text'>
-        Enter a password for your wallet. Please make a note of your password. You will not be able to access the funds in your wallet without your password.
-      </div>
-      <div className='form-group'>
-        <Field
-          name='password'
-          component='input'
-          type='password'
-          placeholder='enter a password'
-        />
-      </div>
-      <div className='form-group'>
-        <div className='button-primary cursor-pointer' onClick={props.handleSubmit}>Create</div>
-      </div>
-      <div className='form-group'>
-        <div className={styles.importPrivKey} onClick={props.handleImportPrivKey}>import private key</div>
-      </div>
-      <div className='form-group'>
-        <div className='cancel cursor-pointer' onClick={props.handleCancel}>cancel</div>
-      </div>
-    </ModalBody>
-  </form>
-)
+let CreatePasswordForm = (props) => {
+  const name = props.isNewWallet ? 'wallet' : 'keystore file'
+  return (
+    <form onSubmit={props.handleSubmit}>
+      <ModalBody>
+        <div className='modal-title'>
+          {(props.isNewWallet &&
+            <span>Create a new wallet</span>) ||
+            <span>download keystore file</span>
+          }
+        </div>
+        <div className='modal-text'>
+          Enter a password for your {name}. Please make a note of your password. You will not be able to access the funds in your {name} without your password.
+        </div>
+        <div className='form-group'>
+          <Field
+            name='password'
+            component='input'
+            type='password'
+            placeholder='enter a password'
+          />
+        </div>
+        <div className='form-group'>
+          <div className='button-primary cursor-pointer' onClick={props.handleSubmit}>Create</div>
+        </div>
+        {props.isNewWallet &&
+          <div className='form-group'>
+            <div className={styles.importPrivKey} onClick={props.handleImportPrivKey}>import private key</div>
+          </div>
+        }
+        <div className='form-group'>
+          <div className='cancel cursor-pointer' onClick={props.handleCancel}>cancel</div>
+        </div>
+      </ModalBody>
+    </form>
+  )
+}
 
 CreatePasswordForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
@@ -99,7 +112,12 @@ CreatePasswordForm = reduxForm({
 let ConfirmPasswordForm = (props) => (
   <form onSubmit={props.handleSubmit}>
     <ModalBody>
-      <div className='modal-title'>Create a new wallet</div>
+      <div className='modal-title'>
+        {(props.isNewWallet &&
+          <span>Create a new wallet</span>) ||
+          <span>download keystore file</span>
+        }
+      </div>
       <div className='modal-text'>
         Please confirm your password
       </div>
@@ -174,12 +192,20 @@ ImportWalletForm = reduxForm({
 const DownloadKeystore = (props) => (
   <div>
     <ModalBody>
-      <div className='modal-title'>Create a new wallet</div>
+      <div className='modal-title'>
+        {(props.isNewWallet &&
+          <span>Create a new wallet</span>) ||
+          <span>download keystore file</span>
+        }
+      </div>
       <div onClick={props.handleDownload} className={`download-keystore ${styles.downloadContainer}`}>
         <div className='download-keystore-icon' />
         <div className='download-text'>
           <span className={styles.download}>
-            Download keystore file
+            {(props.isNewWallet &&
+              <span>Download keystore file</span>) ||
+              <span>download</span>
+            }
           </span>
         </div>
       </div>
@@ -187,8 +213,12 @@ const DownloadKeystore = (props) => (
         <ul>
           <li>Your wallet's private key allows you to send funds</li>
           <li>The keystore file contains your private key and is encrypted with the password you entered</li>
-          <li>If you lose access to the file or your password, then you will lose access to your funds</li>
-          <li>It is highly recommended to backup this file. This procedure was all done on your computer, we do not hold your file or password</li>
+          {(props.isNewWallet && addKeys([
+            <li>If you lose access to the file or your password, then you will lose access to your funds</li>,
+            <li>It is highly recommended to backup this file. This procedure was all done on your computer, we do not hold your file or password</li>
+          ])) ||
+            <li>The keystore file, as well as your password, can be used to send assets from other wallets</li>
+          }
         </ul>
       </div>
       <div className='form-group'>

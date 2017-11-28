@@ -34,6 +34,15 @@ const SignTxModal = (props) => {
             {...props.signTxProps}
           />
         )
+      case 'blockstack':
+        return (
+          <SignTxForm
+            onSubmit={props.handleKeystorePassword}
+            description='your Blockstack wallet'
+            buttonText='I agree'
+            {...props.signTxProps}
+          />
+        )
       case 'orderStatus':
         return (
           <OrderStatus
