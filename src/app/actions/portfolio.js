@@ -306,9 +306,11 @@ export const sendSignedTransactions = (swap, mock) => {
 
 const txPromiEvent = (p, send, receive, markSigned) => {
   return (dispatch) => {
+    let tx
     p
     .once('transactionHash', (txHash) => {
       log.info(`tx hash obtained - ${txHash}`)
+      tx = txHash
       dispatch(insertSwapData(send.symbol, receive.symbol, { txHash }))
       if (markSigned) dispatch(updateSwapTx(send.symbol, receive.symbol, { signed: true }))
     })
@@ -324,7 +326,7 @@ const txPromiEvent = (p, send, receive, markSigned) => {
       log.error(error)
       // Don't mark the following as a tx error, start polling for receipt instead
       if (error.message.includes('Transaction was not mined within')) {
-        return dispatch(pollTransactionReceipt(send, receive))
+        return dispatch(pollTransactionReceipt(send, receive, tx))
       }
       const declined = error.message.includes('User denied transaction signature')
       dispatch(insertSwapData(send.symbol, receive.symbol, { error, declined }))
@@ -352,9 +354,14 @@ export const pollOrderStatus = (send, receive) => {
   }
 }
 
-export const pollTransactionReceipt = (send, receive) => {
+export const pollTransactionReceipt = (send, receive, tx) => {
   return (dispatch) => {
-    const txHash = receive.txHash
+    const txHash = tx || receive.txHash
+    if (!txHash) {
+      const error = new Error('tx hash is missing, unable to poll for receipt')
+      log.error(error)
+      return dispatch(insertSwapData(send.symbol, receive.symbol, { error }))
+    }
     let receiptInterval
     receiptInterval = window.setInterval(() => {
       getTransactionReceipt(txHash)
