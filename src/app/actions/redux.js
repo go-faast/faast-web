@@ -12,6 +12,10 @@ export const setAssets = (assets) => ({
   payload: assets
 })
 
+export const resetPortfolio = () => ({
+  type: 'RESET_PORTFOLIO'
+})
+
 export const loadingPortfolio = (bool) => ({
   type: 'LOADING_PORTFOLIO',
   payload: bool

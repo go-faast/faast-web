@@ -3,7 +3,7 @@ import Access from 'Views/Access'
 
 const AccessController = (props) => {
   return (
-    <Access />
+    <Access layoutProps={{ showAddressSearch: true }} />
   )
 }
 

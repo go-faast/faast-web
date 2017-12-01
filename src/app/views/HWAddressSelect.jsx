@@ -20,12 +20,12 @@ const HWAddressSelect = (props) => (
                   onChange={props.handleSelectAddressIx}
                 />
               </div>
-              <div className='col-sm-6 color-bg-3 padding-10'>
+              <div className='col-sm-7 color-bg-3 padding-10'>
                 <a href={`https://etherscan.io/address/${a.address}`} className={`text-white word-break-all ${styles.address}`} target='_blank' rel='noopener'>
                   {a.address}
                 </a>
               </div>
-              <div className='col-sm-5 color-bg-3 padding-10'>
+              <div className='col-sm-4 color-bg-3 padding-10'>
                 {(a.hasOwnProperty('balance') &&
                   <div>{display.units(a.balance, 'ETH', 1)}</div>) ||
                   <div className='faast-loading loading-small margin-top-10 pull-right' />

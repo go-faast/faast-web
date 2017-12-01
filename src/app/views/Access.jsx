@@ -9,7 +9,7 @@ import styles from 'Styles/Access.scss'
 
 const Access = (props) => {
   return (
-    <LayoutController>
+    <LayoutController {...props.layoutProps}>
       <div className={`row ${styles.startContainer}`}>
         <div className='col-md-3'>
           <MetaMaskController />

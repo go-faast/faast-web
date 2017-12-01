@@ -168,6 +168,15 @@
   @extend .downIcon;
 }
 
+.viewMode {
+  @extend .gradient-text;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 10px;
+  border-color: $medium-grey;
+  padding: 5px;
+}
+
 // .container {
 //   height: calc(100% - 30px);
 // }

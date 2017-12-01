@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
 import Address from 'Views/Address'
 
 class AddressController extends Component {
@@ -31,7 +30,6 @@ class AddressController extends Component {
     return (
       <Address
         view={this.state.view}
-        address={this.props.wallet.address}
         handleClick={this._handleClick}
         modalProps={modalProps}
         {...this.props}
@@ -40,8 +38,4 @@ class AddressController extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  wallet: state.wallet
-})
-
-export default connect(mapStateToProps)(AddressController)
+export default AddressController

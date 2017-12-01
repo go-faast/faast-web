@@ -148,9 +148,20 @@ const Balances = (props) => {
 
   return (
     <LayoutController {...props.layoutProps}>
-      <SignTxModalController showModal={props.showOrderModal} toggleModal={props.handleToggleOrderModal} view='orderStatus' />
-      <WelcomeController />
-      {!!props.orderStatus &&
+      {props.viewOnly &&
+        <div className='col-md-12 margin-top-40'>
+          <div className={`text-center ${styles.viewMode}`}>
+            You are in VIEW MODE. If this is your address, you will need to access the wallet before you can trade assets.
+          </div>
+        </div>
+      }
+      {!props.viewOnly &&
+        <SignTxModalController showModal={props.showOrderModal} toggleModal={props.handleToggleOrderModal} view='orderStatus' />
+      }
+      {!props.viewOnly &&
+        <WelcomeController />
+      }
+      {!props.viewOnly && !!props.orderStatus &&
         <OrderInProgress status={props.orderStatus} handleViewStatus={props.handleToggleOrderModal} />
       }
       <div className={`row ${styles.statsContainer}`}>
@@ -161,8 +172,9 @@ const Balances = (props) => {
           <div className={styles.tileContainer}>
             <div style={{ textAlign: 'right' }}>
               <div className={styles.addressTitle}>address</div>
-              <AddressController className={styles.link} />
-              {/* <div>{props.address} <i className={`fa fa-external-link ${styles.link}`} /></div> */}
+              {(props.viewOnly && props.addressProps.address) ||
+                <AddressController className={styles.link} {...props.addressProps} />
+              }
             </div>
             {props.pieChart}
           </div>

@@ -2,7 +2,7 @@ import React from 'react'
 import { Modal, ModalBody } from 'reactstrap'
 
 const WelcomeModal = (props) => (
-  <Modal backdrop='static' isOpen={props.showModal}>
+  <Modal size='lg' backdrop='static' isOpen={props.showModal}>
     <ModalBody className='text-center'>
       <div className='modal-title padding-bottom-20'>welcome</div>
       <div className='padding-bottom-20 text-medium-grey'>

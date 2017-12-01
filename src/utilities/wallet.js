@@ -279,3 +279,7 @@ export const restoreWallet = () => {
     return restoreWalletFromStorage()
   }
 }
+
+export const isValidAddress = (address) => {
+  return window.faast.web3.utils.isAddress(address)
+}

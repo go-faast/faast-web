@@ -62,7 +62,7 @@ export default {
     }),
     title: null,
     tooltip: Object.assign({}, baseConfig.tooltip, {
-      pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      pointFormat: '{series.name}: <b>{point.percentage:.2f}%</b>'
     }),
     plotOptions: {
       pie: {
@@ -71,7 +71,7 @@ export default {
         cursor: 'pointer',
         dataLabels: {
           enabled: true,
-          format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+          format: '<b>{point.name}</b>: {point.percentage:.2f} %',
           style: {
             color: 'white'
           },

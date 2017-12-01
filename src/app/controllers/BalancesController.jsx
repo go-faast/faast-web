@@ -10,62 +10,80 @@ import { updateObjectInArray } from 'Utilities/helpers'
 import { getSwapStatus } from 'Utilities/swap'
 import { clearSwap } from 'Utilities/storage'
 import { getBalances } from 'Actions/request'
-import { toggleOrderModal, resetSwap } from 'Actions/redux'
+import { toggleOrderModal, resetSwap, resetPortfolio } from 'Actions/redux'
 
 let balancesInterval
 
 class BalancesController extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
     this.state = {
       list: [],
-      chartSelect: {}
+      chartSelect: {},
+      address: props.viewOnlyAddress || props.wallet.address
     }
     this._getBalances = this._getBalances.bind(this)
     this._toggleChart = this._toggleChart.bind(this)
     this._setChartSelect = this._setChartSelect.bind(this)
-    this._assetRows = this._assetRows.bind(this)
     this._setList = this._setList.bind(this)
     this._orderStatus = this._orderStatus.bind(this)
   }
 
   componentWillMount () {
-    balancesInterval = window.setInterval(this._getBalances, 30000)
+    const refreshBalances = () => {
+      this._getBalances(this.state.address)
+    }
+    balancesInterval = window.setInterval(refreshBalances, 30000)
     this._setList()
-    this._getBalances()
+    refreshBalances()
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.viewOnlyAddress && nextProps.viewOnlyAddress !== this.state.address) {
+      this.setState({ list: [], address: nextProps.viewOnlyAddress })
+      window.clearInterval(balancesInterval)
+      this.props.resetPortfolio()
+      balancesInterval = window.setInterval(() => this._getBalances(nextProps.viewOnlyAddress), 30000)
+      this._getBalances(nextProps.viewOnlyAddress, true)
+    }
   }
 
   componentWillUnmount () {
     window.clearInterval(balancesInterval)
-    const orderStatus = this._orderStatus()
-    if (orderStatus === 'error' || orderStatus === 'complete') {
-      this.props.resetSwap()
-      clearSwap(this.props.wallet.address)
+    if (!this.props.viewOnlyAddress) {
+      const orderStatus = this._orderStatus()
+      if (orderStatus === 'error' || orderStatus === 'complete') {
+        this.props.resetSwap()
+        clearSwap(this.props.wallet.address)
+      }
     }
   }
 
   _setList () {
-    const list = this.props.portfolio.list.map((a, i) => {
-      if (a.shown) {
-        return {
-          name: a.name,
-          symbol: a.symbol,
-          units: a.balance,
-          weight: a.percentage,
-          price: a.price,
-          value: a.fiat,
-          change: a.change24,
-          infoUrl: a.infoUrl,
-          priceDecrease: a.change24.isNegative(),
-          chartOpen: false
+    if (this.props.portfolio.list && this.props.portfolio.list.length) {
+      const list = this.props.portfolio.list.map((a, i) => {
+        if (a.shown) {
+          return {
+            name: a.name,
+            symbol: a.symbol,
+            units: a.balance,
+            weight: a.percentage,
+            price: a.price,
+            value: a.fiat,
+            change: a.change24,
+            infoUrl: a.infoUrl,
+            priceDecrease: a.change24.isNegative(),
+            chartOpen: false
+          }
         }
-      }
-    }).filter(a => a)
-    this.setState({ list })
+      }).filter(a => a)
+      this.setState({ list })
+    }
   }
 
-  _getBalances () {
-    this.props.getBalances(this.props.assets, this.props.portfolio, this.props.wallet.address, this.props.mock)
+  _getBalances (address, resetPortfolio) {
+    const portfolio = resetPortfolio ? {} : this.props.portfolio
+    this.props.getBalances(this.props.assets, portfolio, address, this.props.mock)
     .then(() => {
       this._setChartSelect('ETH')
       this._setList()
@@ -98,23 +116,6 @@ class BalancesController extends Component {
     } })
   }
 
-  _assetRows () {
-    return this.props.portfolio.list.map((a, i) => {
-      if (a.shown) {
-        return {
-          name: a.name,
-          symbol: a.symbol,
-          units: a.balance,
-          weight: a.percentage,
-          price: a.price,
-          value: a.fiat,
-          change: a.change24,
-          priceDecrease: a.change24.isNegative()
-        }
-      }
-    }).filter(a => a)
-  }
-
   _orderStatus () {
     if (!this.props.swap.length) return false
 
@@ -132,19 +133,21 @@ class BalancesController extends Component {
     const portfolio = this.props.portfolio
     const layoutProps = {
       showAction: true,
-      view: 'balances',
+      showAddressSearch: true,
+      view: this.props.viewOnlyAddress ? 'view' : 'balances',
       disableAction: !portfolio || !portfolio.list || !portfolio.list.length || orderStatus === 'working',
       handleModify: () => this.props.routerPush('/modify')
+    }
+    const addressProps = {
+      address: this.state.address,
+      showDownloadKeystore: !this.props.viewOnlyAddress && this.props.wallet.type === 'blockstack'
     }
     const totalDecrease = portfolio.totalChange && portfolio.totalChange.isNegative()
     return (
       <Balances
         pieChart={<PieChartController chartSelect={this.state.chartSelect} handleChartSelect={this._setChartSelect} />}
         priceChart={<PriceChartController chartSelect={this.state.chartSelect} />}
-        chartSelect={this.state.chartSelect}
         layoutProps={layoutProps}
-        address={this.props.wallet.address}
-        onRefreshBalances={this._getBalances}
         total={portfolio.total}
         total24hAgo={portfolio.total24hAgo}
         totalChange={portfolio.totalChange}
@@ -153,8 +156,9 @@ class BalancesController extends Component {
         toggleChart={this._toggleChart}
         showOrderModal={this.props.orderModal.show}
         handleToggleOrderModal={this.props.toggleOrderModal}
-        ready={!!portfolio.list.length}
         orderStatus={orderStatus}
+        addressProps={addressProps}
+        viewOnly={!!this.props.viewOnlyAddress}
       />
     )
   }
@@ -190,6 +194,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   resetSwap: () => {
     dispatch(resetSwap())
+  },
+  resetPortfolio: () => {
+    dispatch(resetPortfolio())
   }
 })
 

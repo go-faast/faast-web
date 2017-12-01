@@ -126,7 +126,7 @@ let HardwareWalletModal = (props) => {
   }
 
   return (
-    <Modal className={styles.container} isOpen={props.isOpen} toggle={props.handleToggle}>
+    <Modal size='lg' className={styles.container} isOpen={props.isOpen} toggle={props.handleToggle}>
       <ModalBody>
         <div className='modal-title'>Connect to {props.name}</div>
         <div className='modal-text'>

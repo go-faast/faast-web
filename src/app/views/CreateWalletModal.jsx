@@ -43,7 +43,7 @@ const CreateWalletModal = (props) => {
     }
   }
   return (
-    <Modal className={styles.container} backdrop='static' isOpen={props.showModal}>
+    <Modal size='lg' className={styles.container} backdrop='static' isOpen={props.showModal}>
       {/* <ModalHeader toggle={props.handleCloseModal}></ModalHeader> */}
       {renderView()}
     </Modal>

@@ -52,7 +52,7 @@ const SignTxModal = (props) => {
     }
   }
   return (
-    <Modal backdrop='static' isOpen={props.showModal}>
+    <Modal size='lg' backdrop='static' isOpen={props.showModal}>
       {/* <ModalHeader toggle={props.handleCloseModal}></ModalHeader> */}
       {renderView()}
     </Modal>

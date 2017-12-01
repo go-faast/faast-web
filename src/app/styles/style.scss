@@ -60,7 +60,6 @@ body {
   }
 
   .modal-dialog {
-    max-width: 50%;
     min-height: 500px;
     //height: 60%;
     top: 15%;
@@ -77,7 +76,7 @@ body {
         margin-top: 7%;
        }
        .modal-text {
-         width: 60%;
+         width: 80%;
          margin: auto;
          @extend .text-small;
          @extend .text-medium-grey;
@@ -917,7 +916,6 @@ body {
         padding-top: 0px;
       }
       .modal-dialog {
-        max-width: 95%;
         top: 0;
         .modal-content {
           .modal-text {
