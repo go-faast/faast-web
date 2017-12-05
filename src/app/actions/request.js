@@ -253,7 +253,7 @@ export const getAssets = () => {
 export const getMarketInfo = (pair) => {
   return (dispatch) => (
     new Promise((resolve, reject) => {
-      fetchGet(`${config.siteUrl}/app/portfolio-marketinfo?pair=${pair}`)
+      fetchGet(`${config.apiUrl}/marketinfo/${pair}`)
       .then((data) => {
         if (data.error) throw new Error(data.error)
 
@@ -267,7 +267,7 @@ export const getMarketInfo = (pair) => {
 export const postExchange = (info) => {
   return (dispatch) => (
     new Promise((resolve, reject) => {
-      fetchPost(`${config.siteUrl}/app/portfolio-exchange`, info)
+      fetchPost(`${config.apiUrl}/shift`, info)
       .then((data) => {
         if (data.error || !data.orderId) throw new Error(data.error)
 
@@ -282,11 +282,12 @@ export const postExchange = (info) => {
   )
 }
 
-export const getOrderStatus = (depositSymbol, receiveSymbol, address) => {
+export const getOrderStatus = (depositSymbol, receiveSymbol, address, timestamp) => {
   return (dispatch) => (
     new Promise((resolve, reject) => {
-      const pair = depositSymbol.toLowerCase() + '_' + receiveSymbol.toLowerCase()
-      fetchGet(`${config.siteUrl}/app/portfolio-order/${address}?pair=${pair}`)
+      let url = `${config.apiUrl}/txStat/${address}`
+      if (timestamp) url += `?after=${timestamp}`
+      fetchGet(url)
       .then((data) => {
         log.info('order status receive', data)
         // if (data.error || !data.status) throw new Error(data.error)

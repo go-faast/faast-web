@@ -1,10 +1,11 @@
-/* global SITE_URL */
+/* global SITE_URL, API_URL */
 import highCharts from './highCharts'
 import tokenFunctionSignatures from './tokenFunctionSignatures'
 
 export default {
   web3Provider: 'https://web3.faa.st:443/eth',
   siteUrl: typeof SITE_URL !== 'undefined' ? SITE_URL : 'https://faa.st',
+  apiUrl: typeof API_URL !== 'undefined' ? API_URL : 'https://api.faa.st/api/v1/public',
   hdDerivationPath: {
     ledger: 'm/44\'/60\'/0\'',
     trezor: 'm/44\'/60\'/0\'/0'

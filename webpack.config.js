@@ -69,7 +69,8 @@ if (process.env.NODE_ENV === 'production') {
   config.plugins = [
     new OpenBrowserPlugin({ url: 'http://localhost:5000/?dev=true' }),
     new webpack.DefinePlugin({
-      SITE_URL: JSON.stringify(process.env.SITE_URL)
+      SITE_URL: JSON.stringify(process.env.SITE_URL),
+      API_URL: JSON.stringify(process.env.API_URL)
     })
   ]
 }

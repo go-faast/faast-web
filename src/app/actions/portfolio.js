@@ -343,7 +343,7 @@ export const pollOrderStatus = (send, receive) => {
   return (dispatch) => {
     let orderStatusInterval
     orderStatusInterval = window.setInterval(() => {
-      dispatch(getOrderStatus(send.symbol, receive.symbol, receive.order.deposit))
+      dispatch(getOrderStatus(send.symbol, receive.symbol, receive.order.deposit, receive.order.created))
       .then((order) => {
         if (order && (order.status === 'complete' || order.status === 'failed')) {
           return window.clearInterval(orderStatusInterval)
