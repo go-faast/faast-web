@@ -40,6 +40,10 @@
   opacity: 0.6;
 }
 
+.searchForm {
+  width: 100%;
+}
+
 .searchInput {
   background-color: #121212;
   border: 1px solid #222222;
@@ -47,7 +51,8 @@
   text-align: center;
   letter-spacing: 1px;
   @extend .text-x-small;
-  min-width: 350px;
+  width: 100%;
+  display: block;
   outline: none;
   @extend .text-medium-grey;
   &:active, &:focus {
