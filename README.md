@@ -53,6 +53,11 @@ npm run dev
 
 Once compiled, the browser will open to **http://localhost:5000#dev**. The **#dev** hash indicates that the bundle should be read from the Webpack Dev Server on port 8080.
 
+### Branches
+
+The [OneFlow](http://endoflineblog.com/oneflow-a-git-branching-model-and-workflow) model will be followed as best as possible, with **develop** being the working branch and **master** pointing to the latest release tag.
+
+
 ### Testing
 
 Instructions to come...
