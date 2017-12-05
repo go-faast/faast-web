@@ -9,7 +9,7 @@ import styles from 'Styles/Header.scss'
 import config from 'Config'
 
 let AddressSearchForm = (props) => (
-  <form onSubmit={props.handleSubmit}>
+  <form onSubmit={props.handleSubmit} className={styles.searchForm}>
     <div className='form-group'>
       <InputGroup>
         <Field
