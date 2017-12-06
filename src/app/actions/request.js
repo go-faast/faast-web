@@ -13,7 +13,7 @@ import { loadingPortfolio, setPortfolio, setAssets, updateSwapOrder } from 'Acti
 import config from 'Config'
 
 export const getETHBalance = (address, batch) => {
-  return (dispatch) => (
+  return () => (
     new Promise((resolve, reject) => {
       if (batch) {
         batch.add(
@@ -37,7 +37,7 @@ export const getETHBalance = (address, batch) => {
 }
 
 export const getTokenBalance = (symbol, contractAddress, walletAddress, batch) => {
-  return (dispatch) => (
+  return () => (
     new Promise((resolve, reject) => {
       const data = tokenBalanceData(walletAddress)
       if (batch) {
@@ -81,7 +81,7 @@ export const getBalance = (asset, walletAddress, mock, batch) => {
 }
 
 export const getFiatPrice = (symbol, mock) => {
-  return (dispatch) => (
+  return () => (
     new Promise((resolve, reject) => {
       if (mock && mock[symbol] && mock[symbol].hasOwnProperty('price')) {
         return resolve({ price_usd: toBigNumber(mock[symbol].price) })
@@ -98,7 +98,7 @@ export const getFiatPrice = (symbol, mock) => {
 }
 
 export const getPriceChart = (symbol) => {
-  return (dispatch) => (
+  return () => (
     new Promise((resolve, reject) => {
       fetchGet(`${config.siteUrl}/app/portfolio-chart/${symbol}`)
       .then((data) => {
@@ -112,8 +112,8 @@ export const getPriceChart = (symbol) => {
 }
 
 export const getFiatPrices = (list, mock) => {
-  return (dispatch) => (
-    new Promise((resolve, reject) => {
+  return () => (
+    new Promise((resolve) => {
       fetchGet(`${config.siteUrl}/app/portfolio-price`)
       .then((data) => {
         if (data.error) throw new Error(data.error)
@@ -144,7 +144,7 @@ export const getFiatPrices = (list, mock) => {
 }
 
 const preparePortfolio = (assets, mock) => {
-  return (dispatch) => {
+  return () => {
     log.info('preparing portfolio')
     const portfolio = []
     portfolio.push(assets.find((a) => a.symbol === 'ETH'))
@@ -177,13 +177,13 @@ export const getBalances = (assets, portfolio, walletAddress, mock) => {
       .then((p) => {
         const batch = new window.faast.web3.BatchRequest()
         const promises = Promise.all(p.map((a) => {
-          return new Promise((resolve, reject) => {
+          return new Promise((resolve) => {
             dispatch(getBalance(a, walletAddress, mock, batch))
             .then((b) => {
               const converted = toMainDenomination(b, a.decimals)
               resolve(Object.assign({}, a, { balance: converted }))
             })
-            .catch((e) => {
+            .catch(() => {
               resolve(a)
             })
           })
@@ -201,7 +201,7 @@ export const getBalances = (assets, portfolio, walletAddress, mock) => {
             return a
           }
         })
-        newPortfolio = newPortfolio.map((b, i) => {
+        newPortfolio = newPortfolio.map((b) => {
           const fiat = toUnit(b.balance, b.price, 2)
           const price24hAgo = b.price.div(b.change24.plus(100).div(100))
           const fiat24hAgo = toUnit(b.balance, price24hAgo, 2)
@@ -251,7 +251,7 @@ export const getAssets = () => {
 }
 
 export const getMarketInfo = (pair) => {
-  return (dispatch) => (
+  return () => (
     new Promise((resolve, reject) => {
       fetchGet(`${config.apiUrl}/marketinfo/${pair}`)
       .then((data) => {
@@ -265,7 +265,7 @@ export const getMarketInfo = (pair) => {
 }
 
 export const postExchange = (info) => {
-  return (dispatch) => (
+  return () => (
     new Promise((resolve, reject) => {
       fetchPost(`${config.apiUrl}/shift`, info)
       .then((data) => {

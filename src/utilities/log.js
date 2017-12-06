@@ -3,16 +3,16 @@ import { dateNowString } from './helpers'
 
 const logLevelInt = (level) => {
   switch (level) {
-    case 'error':
-      return 5
-    case 'warn':
-      return 4
-    case 'info':
-      return 3
-    case 'debug':
-      return 2
-    case 'trace':
-      return 1
+  case 'error':
+    return 5
+  case 'warn':
+    return 4
+  case 'info':
+    return 3
+  case 'debug':
+    return 2
+  case 'trace':
+    return 1
   }
 }
 

@@ -40,7 +40,7 @@ const swapFinish = (type, swap, error, addition) => {
 const swapMarketInfo = (swapList) => {
   return (dispatch) => {
     return processArray(swapList, (a) => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         const finish = (e, x) => {
           resolve(dispatch(swapFinish('swapMarketInfo', a, e, x)))
         }
@@ -80,7 +80,7 @@ const swapMarketInfo = (swapList) => {
 const swapPostExchange = (swapList, portfolio, address) => {
   return (dispatch) => {
     return processArray(swapList, (a) => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         const finish = (e, x) => {
           resolve(dispatch(swapFinish('swapPostExchange', a, e, x)))
         }
@@ -124,7 +124,7 @@ const swapPostExchange = (swapList, portfolio, address) => {
 
 const swapEstimateTxFee = (swapList, address) => {
   return (dispatch) => {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       Promise.all([
         window.faast.web3.eth.getTransactionCount(address),
         window.faast.web3.eth.getGasPrice()
@@ -133,7 +133,7 @@ const swapEstimateTxFee = (swapList, address) => {
         let nonce = res[0]
         const gasPrice = res[1]
         processArray(swapList, (a) => {
-          return new Promise((resolve, reject) => {
+          return new Promise((resolve) => {
             const finish = (e, x) => {
               resolve(dispatch(swapFinish('swapEstimateTxFee', a, e, x)))
             }
@@ -177,7 +177,7 @@ const swapEstimateTxFee = (swapList, address) => {
 const swapSufficientDeposit = (swapList, portfolio) => {
   return (dispatch) => {
     return processArray(swapList, (a) => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         const finish = (e, x) => {
           resolve(dispatch(swapFinish('swapSufficientDeposit', a, e, x)))
         }
@@ -196,7 +196,7 @@ const swapSufficientEther = (swapList, portfolio) => {
   return (dispatch) => {
     let etherBalance = portfolio.list.find(a => a.symbol === 'ETH').balance
     return processArray(swapList, (a) => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         const finish = (e, x) => {
           resolve(dispatch(swapFinish('swapSufficientEther', a, e, x)))
         }
@@ -271,7 +271,7 @@ export const sendTransactions = (swap, isMocking) => {
   return (dispatch) => {
     return processArray(swap, (send) => {
       return processArray(send.list, (receive) => {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
           if (isMocking) {
             dispatch(mockTransaction(send, receive))
             return resolve()

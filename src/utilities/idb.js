@@ -7,7 +7,7 @@ const stores = {}
 const setup = (storeNames) => {
   return Promise.all(
     storeNames.map((storeName) => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         if (!stores[storeName]) { stores[storeName] = {} }
         stores[storeName].store = new IDBStore({
           dbVersion: 1,

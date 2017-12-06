@@ -52,23 +52,23 @@ const mockOrderStatus = (prevStatus) => {
     return Object.assign({}, status, { mockCounter: status.mockCounter + 1 })
   }
   switch (prevStatus.status) {
-    case 'no_deposits':
-      if (rand(prevStatus.mockCounter) > 4) {
-        return { status: 'received', mockCounter: 1 }
-      }
-      return incrCounter(prevStatus)
-    case 'received':
-      if (rand(prevStatus.mockCounter) > 7) {
-        return { status: 'complete', transaction: 'mock123', mockCounter: 1 }
-      }
-      return incrCounter(prevStatus)
-    default:
-      return prevStatus
+  case 'no_deposits':
+    if (rand(prevStatus.mockCounter) > 4) {
+      return { status: 'received', mockCounter: 1 }
+    }
+    return incrCounter(prevStatus)
+  case 'received':
+    if (rand(prevStatus.mockCounter) > 7) {
+      return { status: 'complete', transaction: 'mock123', mockCounter: 1 }
+    }
+    return incrCounter(prevStatus)
+  default:
+    return prevStatus
   }
 }
 
 export const mockAddress = (path = 'm', ix = 0) => {
-  return (dispatch) => {
+  return () => {
     let wallet
     if (addresses[path] && addresses[path][ix]) {
       wallet = addresses[path][ix]
