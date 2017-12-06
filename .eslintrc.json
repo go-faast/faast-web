@@ -1,0 +1,41 @@
+{
+    "env": {
+        "browser": true,
+        "node": true,
+        "es6": true
+    },
+    "extends": [
+        "eslint:recommended",
+        "plugin:react/recommended"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true,
+            "modules": true
+        }
+    },
+    "parser": "babel-eslint",
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+        "indent": [
+            "error",
+            2
+        ],
+        "linebreak-style": [
+            "error",
+            "unix"
+        ],
+        "quotes": [
+            "error",
+            "single"
+        ],
+        "react/jsx-uses-vars": "error",
+        "react/jsx-uses-react": "error",
+        "react/react-in-jsx-scope": "error",
+        "react/prop-types": "off",
+        "no-console": "off",
+        "react/no-find-dom-node": "off"
+    }
+}
