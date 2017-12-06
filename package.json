@@ -14,6 +14,10 @@
   },
   "author": "Nathan Wood <nathan@bitaccess.co>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/go-faast/faast-portfolio.git"
+  },
   "dependencies": {
     "serve": "^6.0.6"
   },
