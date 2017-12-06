@@ -2,7 +2,7 @@ import { insertSwapData, updateSwapTx, setSwap, setWallet, resetAll } from 'Acti
 import { getMarketInfo, postExchange, getOrderStatus } from 'Actions/request'
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus } from 'Actions/mock'
 import { processArray } from 'Utilities/helpers'
-import { getSwapStatus } from 'Utilities/swap'
+import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
 import { restoreFromAddress, sessionStorageSet, sessionStorageClear } from 'Utilities/storage'
 import log from 'Utilities/log'
 import blockstack from 'Utilities/blockstack'
@@ -408,9 +408,13 @@ export const openWallet = (type, wallet, isMocking, noSessionStorage) => {
     const address = toChecksumAddress(wallet.address)
     if (address) {
       const state = restoreFromAddress(address)
-      if (state && state.swap) {
-        dispatch(setSwap(state.swap))
-        dispatch(restorePolling(state.swap, isMocking))
+
+      const status = statusAllSwaps(state && state.swap)
+      const swap = (!state || status === 'unavailable' || status === 'unsigned' || status === 'unsent') ? undefined : state.swap
+
+      if (swap) {
+        dispatch(setSwap(swap))
+        dispatch(restorePolling(swap, isMocking))
       }
       if (!noSessionStorage) {
         sessionStorageSet('wallet', JSON.stringify({
