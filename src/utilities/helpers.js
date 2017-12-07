@@ -54,14 +54,13 @@ export const timer = (seconds = 1, cb, done) => {
 
 export const processArray = (array, fn) => {
   const results = []
-  return array.reduce((p, item) => {
-    return p.then(() => {
-      return fn(item).then((data) => {
-        results.push(data)
-        return results
-      })
-    })
-  }, Promise.resolve())
+  return array.reduce((p, item) => p
+    .then(() => fn(item))
+    .then((data) => {
+      results.push(data)
+      return results
+    }),
+    Promise.resolve())
 }
 
 export const stripHexPrefix = (hex) => {
