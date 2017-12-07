@@ -252,8 +252,8 @@ export const sendSignedTransaction = (signedTx) => {
   return window.faast.web3.eth.sendSignedTransaction(addHexPrefix(signedTx))
 }
 
-export const sendTransaction = (txObject, cb) => {
-  return window.faast.web3.eth.sendTransaction(txObject, cb)
+export const sendTransaction = (txObject) => {
+  return window.faast.web3.eth.sendTransaction(txObject)
 }
 
 export const closeTrezorWindow = () => {

@@ -5,40 +5,34 @@ import { insertSwapData, updateSwapTx, updateSwapOrder } from 'Actions/redux'
 
 let addresses = []
 
-export const mockTransaction = (send, receive) => {
-  return (dispatch) => {
-    window.setTimeout(() => {
-      dispatch(insertSwapData(send.symbol, receive.symbol, { txHash: '0x123456' }))
-      dispatch(mockPollTransactionReceipt(send, receive))
-    }, 2000)
-  }
+export const mockTransaction = (send, receive) => (dispatch) => {
+  window.setTimeout(() => {
+    dispatch(insertSwapData(send.symbol, receive.symbol, { txHash: '0x123456' }))
+    dispatch(mockPollTransactionReceipt(send, receive))
+  }, 2000)
 }
 
-export const mockPollTransactionReceipt = (send, receive) => {
-  return (dispatch) => {
-    window.setTimeout(() => {
-      const receipt = { mock: true }
-      log.info('mock tx receipt obtained')
-      dispatch(updateSwapTx(send.symbol, receive.symbol, { receipt }))
-      dispatch(mockPollOrderStatus(send, receive))
-    }, 3000)
-  }
+export const mockPollTransactionReceipt = (send, receive) => (dispatch) => {
+  window.setTimeout(() => {
+    const receipt = { mock: true }
+    log.info('mock tx receipt obtained')
+    dispatch(updateSwapTx(send.symbol, receive.symbol, { receipt }))
+    dispatch(mockPollOrderStatus(send, receive))
+  }, 3000)
 }
 
-export const mockPollOrderStatus = (send, receive) => {
-  return (dispatch) => {
-    let orderStatusInterval
-    let status
-    orderStatusInterval = window.setInterval(() => {
-      status = mockOrderStatus(status)
-      console.log(status)
-      if (status.status === 'complete') window.clearInterval(orderStatusInterval)
-      dispatch(updateSwapOrder(send.symbol, receive.symbol, {
-        status: status.status,
-        transaction: status.transaction
-      }))
-    }, 10000)
-  }
+export const mockPollOrderStatus = (send, receive) => (dispatch) => {
+  let orderStatusInterval
+  let status
+  orderStatusInterval = window.setInterval(() => {
+    status = mockOrderStatus(status)
+    console.log(status)
+    if (status.status === 'complete') window.clearInterval(orderStatusInterval)
+    dispatch(updateSwapOrder(send.symbol, receive.symbol, {
+      status: status.status,
+      transaction: status.transaction
+    }))
+  }, 10000)
 }
 
 const mockOrderStatus = (prevStatus) => {
@@ -67,18 +61,16 @@ const mockOrderStatus = (prevStatus) => {
   }
 }
 
-export const mockAddress = (path = 'm', ix = 0) => {
-  return () => {
-    let wallet
-    if (addresses[path] && addresses[path][ix]) {
-      wallet = addresses[path][ix]
-    } else {
-      wallet = generateWallet()
-      if (!addresses[path]) addresses[path] = []
-      addresses[path][ix] = wallet
-    }
-    return wallet.getChecksumAddressString()
+export const mockAddress = (path = 'm', ix = 0) => () => {
+  let wallet
+  if (addresses[path] && addresses[path][ix]) {
+    wallet = addresses[path][ix]
+  } else {
+    wallet = generateWallet()
+    if (!addresses[path]) addresses[path] = []
+    addresses[path][ix] = wallet
   }
+  return wallet.getChecksumAddressString()
 }
 
 export const mockHardwareWalletSign = (type) => {
