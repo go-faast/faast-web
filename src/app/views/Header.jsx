@@ -22,7 +22,9 @@ let AddressSearchForm = (props) => (
           spellCheck={false}
           placeholder='view by address'
         />
-        <InputGroupButton><button type='submit' className='button-container button-outline cursor-pointer' style={{ width: 'inherit' }}>go</button></InputGroupButton>
+        <InputGroupButton>
+          <button type='submit' className='button-container button-outline cursor-pointer' style={{ width: 'inherit' }}>go</button>
+        </InputGroupButton>
       </InputGroup>
     </div>
   </form>

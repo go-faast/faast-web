@@ -11,6 +11,11 @@
   padding: 20px;
   letter-spacing: 1px;
   margin-bottom: 10px;
+  @media #{$small-and-down} {
+      width: 60%;
+      margin-left: 80px;
+      margin-top: 20px;
+  }
 }
 
 .header {

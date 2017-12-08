@@ -11,11 +11,19 @@
 .headerTitle {
   color: $primary-color;
   font-size: $text-large;
+  @media #{$small-and-down} {
+    text-align: center;
+  }
 }
 
 .headerDesc {
   color: $medium-grey;
   font-size: $text-medium;
+  @media #{$small-and-down} {
+    font-size: $text-small;
+    text-align: center;
+    margin-top: 5px;
+  }
 }
 
 .actions {
@@ -45,6 +53,9 @@
 }
 
 .searchInput {
+  @media #{$small-and-down} {
+    margin-top: 40px;
+  }
   background-color: #121212;
   border: 1px solid #222222;
   padding: 15px 30px;
@@ -58,5 +69,11 @@
   &:active, &:focus {
     outline: none;
     color: $secondary-color;
+  }
+}
+
+button{
+  @media #{$small-and-down} {
+    margin-top: 40px;
   }
 }
