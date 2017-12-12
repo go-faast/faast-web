@@ -169,12 +169,10 @@ const Balances = (props) => {
       </div>
       <div className={`row ${styles.chartContainer}`}>
         <div className={`col ${styles.tileOuterContainer}`}>
-          <div className={styles.tileContainer}>
+          <div className={styles.tileContainerAddress}>
             <div style={{ textAlign: 'right' }}>
               <div className={styles.addressTitle}>address</div>
-              {(props.viewOnly && props.addressProps.address) ||
                 <AddressController className={styles.link} {...props.addressProps} />
-              }
             </div>
             {props.pieChart}
           </div>
