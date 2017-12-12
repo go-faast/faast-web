@@ -43,7 +43,7 @@ const Header = (props) => {
           <div disabled={props.disableAction} onClick={props.handleModify} className={balanceStyles}>
             modify your portfolio
           </div>
-          <div onClick={props.handleCloseWallet} className='button-container button-small button-outline cursor-pointer margin-top-15 pull-right margin-right-20'>close</div>
+          <div onClick={props.handleCloseWallet} className='button-container button-small button-outline cursor-pointer margin-top--50 pull-right'>close</div>
         </div>)
       case 'view':
         return addKeys([

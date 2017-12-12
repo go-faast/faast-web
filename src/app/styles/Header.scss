@@ -41,6 +41,18 @@
   line-height: 30px;
   @extend .cursor-pointer;
   @extend .margin-top-15;
+  @media #{$small-and-down} {
+      width: 50%;
+      float: left;
+      text-align: center;
+      padding-left: 10px;
+      padding-right: 10px;
+      margin-left: 30px;
+      margin-right: 10px;
+      left: 0;
+      margin-top: 0px;
+      position: absolute;
+  }
 }
 
 .disabled {
