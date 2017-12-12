@@ -174,8 +174,8 @@ const Balances = (props) => {
               <div className={styles.addressTitle}>address</div>
                 <AddressController className={styles.link} {...props.addressProps} />
             </div>
-            {props.pieChart}
           </div>
+          {props.pieChart}
         </div>
       </div>
       <div className={`row ${styles.tableHeader}`}>
