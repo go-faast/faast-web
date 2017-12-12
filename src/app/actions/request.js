@@ -27,25 +27,26 @@ const batchRequest = (batch, batchableFn, ...fnArgs) => {
   return batchableFn(...fnArgs)
 }
 
-export const getBTCBalance = () => () => {
-  // TODO: implement balance discovery using trezor/hd-wallet
-  return Promise.resolve(0)
-}
-
-export const getETHBalance = (address, batch) => () => {
-  return batchRequest(batch, window.faast.web3.eth.getBalance, address, 'latest')
-}
-
-export const getTokenBalance = (symbol, contractAddress, walletAddress, batch) => () => {
-  return batchRequest(batch, window.faast.web3.eth.call, {
+const getETHTokenBalance = (address, symbol, contractAddress, batch = null) => () =>
+  batchRequest(batch, window.faast.web3.eth.call, {
     to: contractAddress,
-    data: tokenBalanceData(walletAddress)
+    data: tokenBalanceData(address)
   }, 'latest')
-}
 
 const getBalanceActions = {
-  BTC: getBTCBalance,
-  ETH: getETHBalance
+  ETH: (address, batch = null) => () => batchRequest(batch, window.faast.web3.eth.getBalance, address, 'latest'),
+  ETC: () => () => Promise.resolve(0), // TODO
+
+  BTC: () => () => Promise.resolve(0), // TODO: implement balance discovery using trezor/hd-wallet
+  BCH: () => () => Promise.resolve(0), // TODO
+  BTG: () => () => Promise.resolve(0), // TODO
+  
+  LTC: () => () => Promise.resolve(0), // TODO
+  ZEC: () => () => Promise.resolve(0), // TODO
+  DASH: () => () => Promise.resolve(0), // TODO
+  MIOTA: () => () => Promise.resolve(0), // TODO
+  XMR: () => () => Promise.resolve(0), // TODO
+  NEO: () => () => Promise.resolve(0), // TODO
 }
 
 export const getBalance = (asset, walletAddress, mock, batch) => (dispatch) => {
@@ -57,8 +58,8 @@ export const getBalance = (asset, walletAddress, mock, batch) => (dispatch) => {
   let balance;
   if (getBalanceAction) {
     balance = dispatch(getBalanceAction(walletAddress, batch))
-  } else if (asset.contractAddress) {
-    balance = dispatch(getTokenBalance(symbol, asset.contractAddress, walletAddress, batch))
+  } else if (asset.ERC20) {
+    balance = dispatch(getETHTokenBalance(walletAddress, symbol, asset.contractAddress, batch))
   } else {
     console.log(`Cannot get balance for asset ${symbol}`)
     balance = Promise.resolve(0)
@@ -123,7 +124,13 @@ const preparePortfolio = (assets, mock) => () => {
       decimals: a.decimals,
       infoUrl: a.infoUrl
     }
-    if (a.contractAddress) assetObj.contractAddress = a.contractAddress
+    if (a.ERC20) {
+      assetObj.ERC20 = a.ERC20
+      assetObj.contractAddress = a.contractAddress
+      if (!a.contractAddress) {
+        console.log(`contractAddress is missing for ERC20 token ${a.symbol}`)
+      }
+    }
     if (mock && mock[a.symbol] && mock[a.symbol].price) {
       assetObj.price = mock[a.symbol].price
     }
