@@ -4,10 +4,12 @@ import { connect } from 'react-redux'
 import isEqual from 'lodash/isEqual'
 import toastr from 'Utilities/toastrWrapper'
 import blockstack from 'Utilities/blockstack'
+import { statusAllSwaps } from 'Utilities/swap'
 import App from 'Views/App'
 import withMockHandling from '../hoc/withMockHandling'
 import { restorePolling } from 'Actions/portfolio'
 import { setSwap } from 'Actions/redux'
+import { postSwundle } from 'Actions/request'
 
 const widths = new Map()
 widths.set('sm', '(min-width: 768px)')
@@ -53,6 +55,13 @@ class AppController extends Component {
     if (this.props.wallet.type === 'blockstack' && !isEqual(prevProps.settings, this.props.settings)) {
       blockstack.saveSettings(this.props.settings)
     }
+    const statusPrevSwap = statusAllSwaps(prevProps.swap)
+    const statusCurrSwap = statusAllSwaps(this.props.swap)
+    if (statusPrevSwap !== 'pending_receipts' && statusCurrSwap === 'pending_receipts') {
+      this.props.postSwundle(this.props.wallet.address, this.props.swap)
+    } else if (statusPrevSwap !== 'pending_receipts_restored' && statusCurrSwap === 'pending_receipts_restored') {
+      this.props.restorePolling(this.props.swap, this.props.mock.mocking)
+    }
   }
 
   _mediaQueryChange (mediaQuery, type) {
@@ -74,7 +83,8 @@ AppController.propTypes = {
 const mapStateToProps = (state) => ({
   wallet: state.wallet,
   swap: state.swap,
-  settings: state.settings
+  settings: state.settings,
+  mock: state.mock
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -83,6 +93,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   setSwap: (swap) => {
     dispatch(setSwap(swap))
+  },
+  postSwundle: (address, swap) => {
+    dispatch(postSwundle(address, swap))
   }
 })
 

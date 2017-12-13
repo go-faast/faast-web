@@ -49,3 +49,22 @@ export const fetchPost = (path, body) => {
     })
   )
 }
+
+export const fetchDelete = (path) => {
+  const querySeparator = path.includes('?') ? '&' : '?'
+  const newPath = `${path}${querySeparator}cachebuster=${Date.now().toString()}`
+  log.debug(`requesting DELETE ${newPath}`)
+  return fetch(newPath, {
+    method: 'delete',
+    headers: {
+      'Accept': 'application/json'
+    }
+  })
+  .then((response) => {
+    try {
+      return response.json()
+    } catch (err) {
+      throw new Error(response.status)
+    }
+  })
+}

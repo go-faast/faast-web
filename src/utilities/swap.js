@@ -1,3 +1,5 @@
+import { toUnit, toPrecision } from 'Utilities/convert'
+
 export const getSwapStatus = (swap) => {
   if (swap.error) {
     if (swap.error.message && swap.error.message.startsWith('Returned error: Insufficient funds')) {
@@ -60,12 +62,12 @@ export const getSwapStatus = (swap) => {
     }
   }
   // number of confirmations doesn't correlate to anything here
-  if ((swap.order.status == null || swap.order.status === 'no_deposits') && (swap.tx.confirmations == null || swap.tx.confirmations < 3)) {
-    return {
-      status: 'working',
-      details: 'waiting for confirmations'
-    }
-  }
+  // if ((swap.order.status == null || swap.order.status === 'no_deposits') && (swap.tx.confirmations == null || swap.tx.confirmations < 3)) {
+  //   return {
+  //     status: 'working',
+  //     details: 'waiting for confirmations'
+  //   }
+  // }
   if (swap.order.status == null || swap.order.status !== 'complete') {
     return {
       status: 'working',
@@ -80,12 +82,12 @@ export const getSwapStatus = (swap) => {
 
 export const statusAllSwaps = (swapList) => {
   if (!swapList || !swapList.length) return 'unavailable'
-  const someSigned = swapList.some((send) => {
-    return send.list.some((receive) => {
-      return receive.tx.signed
+  const allSigned = swapList.every((send) => {
+    return send.list.every((receive) => {
+      return receive.tx && receive.tx.signed
     })
   })
-  if (!someSigned) return 'unsigned'
+  if (!allSigned) return 'unsigned'
   const allSent = swapList.every((send) => {
     return send.list.every((receive) => {
       return !!receive.txHash
@@ -97,7 +99,16 @@ export const statusAllSwaps = (swapList) => {
       return !!receive.tx.receipt
     })
   })
-  if (!allReceipts) return 'pending_receipts'
+  if (!allReceipts) {
+    const allRestored = swapList.every((send) => {
+      return send.restored
+    })
+    if (allRestored) {
+      return 'pending_receipts_restored'
+    } else {
+      return 'pending_receipts'
+    }
+  }
   const finalized = swapList.every((send) => {
     return send.list.every((receive) => {
       return receive.order && (receive.order.status === 'complete' || receive.order.status === 'failed')
@@ -107,5 +118,12 @@ export const statusAllSwaps = (swapList) => {
     return 'finalized'
   } else {
     return 'pending_orders'
+  }
+}
+
+export const estimateReceiveAmount = (a, b) => {
+  if (a.hasOwnProperty('fee') && a.hasOwnProperty('rate') && a.hasOwnProperty('unit')) {
+    const converted = toUnit(a.unit, a.rate, b.decimals)
+    return toPrecision(converted.minus(a.fee), b.decimals)
   }
 }

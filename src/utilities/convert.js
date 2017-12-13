@@ -11,7 +11,14 @@ const TEN = new BigNumber(10)
 
 export const toBigNumber = (value = 0) => {
   if (value === '0x') value = 0
-  if (!(value instanceof BigNumber)) return new BigNumber(String(value))
+  if (!(value instanceof BigNumber)) {
+    try {
+      const bn = new BigNumber(String(value))
+      return bn
+    } catch (e) {
+      return new BigNumber(0)
+    }
+  }
   return value
 }
 

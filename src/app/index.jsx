@@ -39,6 +39,10 @@ const middleware = [
 ]
 if (!window.faast) window.faast = {}
 if (window.faast.dev) middleware.push(logger)
+window.faast.intervals = {
+  orderStatus: [],
+  txReceipt: []
+}
 const store = createStore(reducers, persistedState(), applyMiddleware(...middleware))
 
 store.subscribe(throttle(() => {

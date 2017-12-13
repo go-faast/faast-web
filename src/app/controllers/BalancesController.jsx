@@ -8,8 +8,7 @@ import Balances from 'Views/Balances'
 import log from 'Utilities/log'
 import { updateObjectInArray } from 'Utilities/helpers'
 import { getSwapStatus } from 'Utilities/swap'
-import { clearSwap } from 'Utilities/storage'
-import { getBalances } from 'Actions/request'
+import { getBalances, removeSwundle } from 'Actions/request'
 import { toggleOrderModal, resetSwap, resetPortfolio } from 'Actions/redux'
 
 let balancesInterval
@@ -54,7 +53,7 @@ class BalancesController extends Component {
       const orderStatus = this._orderStatus()
       if (orderStatus === 'error' || orderStatus === 'complete') {
         this.props.resetSwap()
-        clearSwap(this.props.wallet.address)
+        this.props.removeSwundle(this.props.wallet.address)
       }
     }
   }
@@ -83,7 +82,7 @@ class BalancesController extends Component {
 
   _getBalances (address, resetPortfolio) {
     const portfolio = resetPortfolio ? {} : this.props.portfolio
-    this.props.getBalances(this.props.assets, portfolio, address, this.props.mock)
+    this.props.getBalances(this.props.assets, portfolio, address, this.props.mock, this.props.swap)
     .then(() => {
       this._setChartSelect('ETH')
       this._setList()
@@ -131,6 +130,7 @@ class BalancesController extends Component {
     const orderStatus = this._orderStatus()
 
     const portfolio = this.props.portfolio
+
     const layoutProps = {
       showAction: true,
       showAddressSearch: true,
@@ -149,6 +149,7 @@ class BalancesController extends Component {
         priceChart={<PriceChartController chartSelect={this.state.chartSelect} />}
         layoutProps={layoutProps}
         total={portfolio.total}
+        pending={portfolio.pending}
         total24hAgo={portfolio.total24hAgo}
         totalChange={portfolio.totalChange}
         totalDecrease={totalDecrease}
@@ -183,8 +184,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getBalances: (assets, portfolio, walletAddress, mock) => {
-    return dispatch(getBalances(assets, portfolio, walletAddress, mock))
+  getBalances: (assets, portfolio, walletAddress, mock, swap) => {
+    return dispatch(getBalances(assets, portfolio, walletAddress, mock, swap))
   },
   routerPush: (path) => {
     dispatch(push(path))
@@ -197,6 +198,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   resetPortfolio: () => {
     dispatch(resetPortfolio())
+  },
+  removeSwundle: (address) => {
+    dispatch(removeSwundle(address))
   }
 })
 

@@ -1,9 +1,10 @@
+
 import { insertSwapData, updateSwapTx, setSwap, setWallet, resetAll } from 'Actions/redux'
-import { getMarketInfo, postExchange, getOrderStatus } from 'Actions/request'
+import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus } from 'Actions/mock'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
-import { restoreFromAddress, sessionStorageSet, sessionStorageClear } from 'Utilities/storage'
+import { sessionStorageSet, sessionStorageClear, restoreFromAddress } from 'Utilities/storage'
 import log from 'Utilities/log'
 import blockstack from 'Utilities/blockstack'
 import {
@@ -23,7 +24,8 @@ import {
   sendTransaction,
   getTransactionReceipt,
   setWeb3,
-  txWeb3
+  txWeb3,
+  getTransaction
 } from 'Utilities/wallet'
 
 const swapFinish = (type, swap, error, addition) => {
@@ -57,12 +59,13 @@ const swapMarketInfo = (swapList) => (dispatch) => {
         if ((res.hasOwnProperty('limit') && a.amount.greaterThan(res.limit)) || (res.maxLimit && a.amount.greaterThan(res.maxLimit))) {
           return finish(`maximum amount is ${res.limit}`)
         }
-        const fee = res.hasOwnProperty('outgoing_network_fee') ? res.outgoing_network_fee : res.minerFee
+        const fee = res.hasOwnProperty('outgoing_network_fee') ? toBigNumber(res.outgoing_network_fee) : toBigNumber(res.minerFee)
+        const rate = toBigNumber(res.rate)
         dispatch(insertSwapData(a.from, a.to, {
-          rate: res.rate,
+          rate,
           fee
         }))
-        return finish(null, { rate: res.rate, fee })
+        return finish(null, { rate, fee })
       })
       .catch((e) => {
         log.error(e)
@@ -279,8 +282,7 @@ const txPromiEvent = (p, send, receive, markSigned) => (dispatch) => {
 }
 
 export const pollOrderStatus = (send, receive) => (dispatch) => {
-  let orderStatusInterval
-  orderStatusInterval = window.setInterval(() => {
+  const orderStatusInterval = window.setInterval(() => {
     dispatch(getOrderStatus(send.symbol, receive.symbol, receive.order.deposit, receive.order.created))
     .then((order) => {
       if (order && (order.status === 'complete' || order.status === 'failed')) {
@@ -289,6 +291,8 @@ export const pollOrderStatus = (send, receive) => (dispatch) => {
     })
     .catch(log.error)
   }, 10000)
+
+  window.faast.intervals.orderStatus.push(orderStatusInterval)
 }
 
 export const pollTransactionReceipt = (send, receive, tx) => (dispatch) => {
@@ -298,8 +302,7 @@ export const pollTransactionReceipt = (send, receive, tx) => (dispatch) => {
     log.error(error)
     return dispatch(insertSwapData(send.symbol, receive.symbol, { error }))
   }
-  let receiptInterval
-  receiptInterval = window.setInterval(() => {
+  const receiptInterval = window.setInterval(() => {
     getTransactionReceipt(txHash)
     .then((receipt) => {
       if (receipt) {
@@ -311,6 +314,8 @@ export const pollTransactionReceipt = (send, receive, tx) => (dispatch) => {
     })
     .catch(log.error)
   }, 5000)
+
+  window.faast.intervals.txReceipt.push(receiptInterval)
 }
 
 export const restorePolling = (swap, isMocking) => (dispatch) => {
@@ -341,12 +346,16 @@ export const openWallet = (type, wallet, isMocking, noSessionStorage) => (dispat
   if (address) {
     const state = restoreFromAddress(address)
 
-    const status = statusAllSwaps(state && state.swap)
-    const swap = (!state || status === 'unavailable' || status === 'unsigned' || status === 'unsent') ? undefined : state.swap
+    if (state && state.swap && state.swap.length) {
+      const status = statusAllSwaps(state.swap)
+      const swap = (status === 'unavailable' || status === 'unsigned' || status === 'unsent') ? undefined : state.swap
 
-    if (swap) {
-      dispatch(setSwap(swap))
-      dispatch(restorePolling(swap, isMocking))
+      if (swap) {
+        dispatch(setSwap(swap))
+        dispatch(restorePolling(swap, isMocking))
+      }
+    } else {
+      dispatch(getSwundle(address, isMocking))
     }
     if (!noSessionStorage) {
       sessionStorageSet('wallet', JSON.stringify({
@@ -362,8 +371,74 @@ export const openWallet = (type, wallet, isMocking, noSessionStorage) => (dispat
 }
 
 export const closeWallet = () => (dispatch) => {
+  clearAllIntervals()
   blockstack.signUserOut()
   sessionStorageClear()
   dispatch(resetAll())
   log.info('wallet closed')
+}
+
+export const restoreSwundle = (swundle) => (dispatch) => {
+  if (validateSwundle(swundle)) {
+    const newSwundle = swundle.map((send) => {
+      return {
+        symbol: send.symbol,
+        list: send.list.map((receive) => {
+          return {
+            fee: toBigNumber(receive.fee),
+            order: receive.order,
+            rate: toBigNumber(receive.rate),
+            symbol: receive.symbol,
+            txHash: receive.txHash,
+            unit: toBigNumber(receive.unit)
+          }
+        }),
+        restored: true
+      }
+    })
+    dispatch(setSwap(newSwundle))
+    processArray(newSwundle, (send) => {
+      return processArray(send.list, (receive) => {
+        return getTransaction(receive.txHash)
+          .then((tx) => {
+            dispatch(updateSwapTx(send.symbol, receive.symbol, {
+              gasPrice: toHex(tx.gasPrice),
+              signed: true
+            }))
+          })
+          .catch(log.error)
+      })
+    })
+    // .then(() => {
+      // receipt polling restoration is done in AppController
+      // when statusAllSwaps changes to pending_receipts_restored
+    // })
+    .catch(log.error)
+  }
+}
+
+const validateSwundle = (swundle) => {
+  if (!swundle) return false
+  // if (swundle.version !== config.swundleVersion) return false // convert old to new swundle here
+  if (!Array.isArray(swundle)) return false
+  const sendSymbols = []
+  return swundle.every((send) => {
+    if (!send.symbol) return false
+    if (sendSymbols.includes(send.symbol)) return false
+    sendSymbols.push(send.symbol)
+    return send.list.every((receive) => {
+      const receiveSymbols = []
+      if (!receive.symbol) return false
+      if (receiveSymbols.includes(receive.symbol)) return false
+      if (toBigNumber(receive.unit).lessThanOrEqualTo(0)) return false
+      if (!receive.order || !receive.order.deposit || !receive.order.orderId) return false
+      return true
+    })
+  })
+}
+
+const clearAllIntervals = () => {
+  Object.keys(window.faast.intervals).forEach((key) => {
+    window.faast.intervals[key].forEach(a => window.clearInterval(a))
+  })
 }

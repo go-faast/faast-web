@@ -184,7 +184,11 @@ class ModifyController extends Component {
         })
       }, { toSwap: sVal.fiatToSwap, toSend: [], list: [] })
       return Object.assign({}, sAcc, {
-        swapList: sAcc.swapList.concat({ symbol: sVal.symbol, list: receiveReduce.toSend, emptyAsset: sVal.emptyAsset }),
+        swapList: sAcc.swapList.concat({
+          symbol: sVal.symbol,
+          list: receiveReduce.toSend,
+          emptyAsset: sVal.emptyAsset
+        }),
         receiveList: receiveReduce.list
       })
     }, { receiveList: swapReceive, swapList: [] })

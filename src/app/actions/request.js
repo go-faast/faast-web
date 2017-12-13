@@ -4,12 +4,16 @@ import {
   toSmallestDenomination,
   toMainDenomination,
   toUnit,
-  toPercentage
+  toPercentage,
+  toPrecision
 } from 'Utilities/convert'
 import { fixPercentageRounding, filterErrors, filterObj } from 'Utilities/helpers'
-import { fetchGet, fetchPost } from 'Utilities/fetch'
+import { fetchGet, fetchPost, fetchDelete } from 'Utilities/fetch'
+import { clearSwap } from 'Utilities/storage'
 import log from 'Utilities/log'
+import { estimateReceiveAmount, getSwapStatus } from 'Utilities/swap'
 import { loadingPortfolio, setPortfolio, setAssets, updateSwapOrder } from 'Actions/redux'
+import { restoreSwundle } from 'Actions/portfolio'
 import config from 'Config'
 
 const ENABLED_ASSETS = ['ETH']
@@ -137,7 +141,7 @@ const preparePortfolio = (assets, mock) => () => {
   })
 }
 
-export const getBalances = (assets, portfolio, walletAddress, mock) => (dispatch) => {
+export const getBalances = (assets, portfolio, walletAddress, mock, swap) => (dispatch) => {
   let portfolioList = portfolio.list
   if (!portfolioList || !portfolioList.length) {
     dispatch(loadingPortfolio(true))
@@ -157,7 +161,24 @@ export const getBalances = (assets, portfolio, walletAddress, mock) => (dispatch
       return promises
     })
     .then((p) => {
-      let totalFiat = toBigNumber(0)
+      let pendingFiat = toBigNumber(0)
+      if (swap) {
+        pendingFiat = swap.reduce((sCurr, send) => {
+          const rFiat = send.list.reduce((rCurr, receive) => {
+            const status = getSwapStatus(receive)
+            if (status.details === 'waiting for transaction receipt' || status.details === 'processing swap') {
+              const toAsset = p.find(a => a.symbol === receive.symbol)
+              const receiveEst = estimateReceiveAmount(receive, toAsset)
+              return toPrecision(receiveEst.times(toAsset.price), 2).add(rCurr)
+            } else {
+              return rCurr
+            }
+          }, toBigNumber(0))
+          return rFiat.add(sCurr)
+        }, toBigNumber(0))
+      }
+
+      let totalFiat = toBigNumber(0);
       let totalFiat24hAgo = toBigNumber(0)
       let newPortfolio = p.map(a => {
         if (a.symbol === 'ETH' || a.balance.greaterThan(0)) {
@@ -185,6 +206,7 @@ export const getBalances = (assets, portfolio, walletAddress, mock) => (dispatch
         total: totalFiat,
         total24hAgo: totalFiat24hAgo,
         totalChange: totalChange,
+        pending: pendingFiat,
         list: newPortfolio
       }))
       dispatch(loadingPortfolio(false))
@@ -249,4 +271,28 @@ export const getOrderStatus = (depositSymbol, receiveSymbol, address, timestamp)
       const errMsg = filterErrors(err)
       throw new Error(errMsg)
     })
+}
+
+export const getSwundle = (address, isMocking) => (dispatch) => {
+  let url = `${config.apiUrl}/swundle/${address}`
+  fetchGet(url)
+  .then((data) => {
+    if (data.result && data.result.swap) {
+      dispatch(restoreSwundle(data.result.swap, address, isMocking))
+    }
+  })
+  .catch(log.error)
+}
+
+export const postSwundle = (address, swap) => () => {
+  const url = `${config.apiUrl}/swundle/${address}`
+  fetchPost(url, { swap })
+  .catch(log.error)
+}
+
+export const removeSwundle = (address) => () => {
+  clearSwap(address)
+  const url = `${config.apiUrl}/swundle/${address}`
+  fetchDelete(url)
+  .catch(log.error)
 }

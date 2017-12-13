@@ -3,10 +3,10 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import SignTxModal from 'Views/SignTxModal'
 import { getPrivateKeyString, closeTrezorWindow } from 'Utilities/wallet'
-import { toTxFee, toUnit, toPrecision } from 'Utilities/convert'
+import { toTxFee } from 'Utilities/convert'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
-import { getSwapStatus } from 'Utilities/swap'
+import { getSwapStatus, estimateReceiveAmount } from 'Utilities/swap'
 import { signTransactions, sendSignedTransactions, sendTransactions } from 'Actions/portfolio'
 
 class SignTxModalController extends Component {
@@ -121,12 +121,6 @@ class SignTxModalController extends Component {
         return toTxFee(a.tx.gasLimit, a.tx.gasPrice)
       }
     }
-    const calculateReceiveAmount = (a, b) => {
-      if (a.hasOwnProperty('fee') && a.hasOwnProperty('rate') && a.hasOwnProperty('unit')) {
-        const converted = toUnit(a.unit, a.rate, b.decimals)
-        return toPrecision(converted.minus(a.fee), b.decimals)
-      }
-    }
     const getStatus = (a) => {
       const status = getSwapStatus(a)
       if (status.status === 'error') {
@@ -183,7 +177,7 @@ class SignTxModalController extends Component {
           pair: `${b.symbol}_${c.symbol}`,
           swap: c,
           txFee: estimateTxFee(c),
-          receiveAmount: calculateReceiveAmount(c, to),
+          receiveAmount: estimateReceiveAmount(c, to),
           status: getStatus(c),
           error: getError(c)
         }

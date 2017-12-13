@@ -116,7 +116,7 @@ const SignTxForm = reduxForm({
           <div className='col-md-4 text-left'>
             <div className='text-medium-grey pull-left margin-right-10'>swap fee </div>
             {(a.swap.hasOwnProperty('fee') &&
-              <div className='pull-left'>{a.swap.fee} {a.to.symbol}</div>) ||
+              <div className='pull-left'>{display.units(a.swap.fee)} {a.to.symbol}</div>) ||
               <div>{(!!a.error && <span className='pull-left text-danger'> - </span>) ||
                 <div className='faast-loading loading-small pull-left margin-top-10' />
               }</div>
@@ -126,7 +126,7 @@ const SignTxForm = reduxForm({
             {(!!a.error && <span className='text-danger'>{a.error}</span>) ||
               <div>
                 {(a.swap.hasOwnProperty('rate') &&
-                  <span>1 {a.from.symbol} = {a.swap.rate} {a.to.symbol}</span>) ||
+                  <span>1 {a.from.symbol} = {display.units(a.swap.rate)} {a.to.symbol}</span>) ||
                   <div className='faast-loading loading-small margin-auto margin-top-10' />
                 }
               </div>

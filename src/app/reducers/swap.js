@@ -12,6 +12,7 @@ const insertIntoReceive = (state, depSymbol, recSymbol, toInsert, key) => {
   const recIx = getIndex(state[depIx].list, recSymbol)
   let keyData
   if (key) {
+    if (!state[depIx].list[recIx][key]) state[depIx].list[recIx][key] = {}
     keyData = state[depIx].list[recIx][key]
   }
   if (depIx >= 0 && recIx >= 0) {

@@ -11,7 +11,7 @@ import toastr from 'Utilities/toastrWrapper'
 import { setWeb3 } from 'Utilities/wallet'
 import { filterUrl } from 'Utilities/helpers'
 import blockstack from 'Utilities/blockstack'
-import { getAssets } from 'Actions/request'
+import { getAssets, getSwundle } from 'Actions/request'
 import { openWallet } from 'Actions/portfolio'
 import { setSettings } from 'Actions/redux'
 
@@ -41,11 +41,11 @@ class EntryController extends Component {
       return idb.removeOld('logging')
     })
     .then(() => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         if (blockstack.isSignInPending()) {
           log.info('blockstack signin pending')
           blockstack.handlePendingSignIn()
-          .then((userData) => {
+          .then(() => {
             window.location.replace(filterUrl())
           })
           .catch((err) => {
@@ -58,7 +58,7 @@ class EntryController extends Component {
       })
     })
     .then(() => {
-      return new Promise((resolve, reject) => {
+      return new Promise((resolve) => {
         if (this.props.wallet.type === 'blockstack') {
           blockstack.getSettings()
           .then((settings) => {
@@ -90,6 +90,9 @@ class EntryController extends Component {
           window.faast.hw.ledger = new window.ledger.eth(comm)
         })
         .fail(log.error)
+      }
+      if (this.props.wallet.address && !this.props.swap.length) {
+        this.props.getSwundle(this.props.wallet.address, this.props.mock.mocking)
       }
 
       return this.props.getAssets()
@@ -126,6 +129,7 @@ EntryController.propTypes = {
 const mapStateToProps = (state) => ({
   portfolio: state.portfolio,
   wallet: state.wallet,
+  swap: state.swap,
   mock: state.mock
 })
 
@@ -138,6 +142,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   setSettings: (settings) => {
     dispatch(setSettings(settings))
+  },
+  getSwundle: (address, isMocking) => {
+    dispatch(getSwundle(address, isMocking))
   }
 })
 

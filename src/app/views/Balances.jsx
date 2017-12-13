@@ -79,12 +79,19 @@ const Balances = (props) => {
     {
       title: 'current (USD)',
       value: display.fiat(props.total)
-    },
-    {
-      title: 'number of assets',
-      value: props.assetRows.length
     }
   ]
+  if (props.viewOnly) {
+    values.push({
+      title: 'number of assets',
+      value: props.assetRows.length
+    })
+  } else {
+    values.push({
+      title: 'pending (USD)',
+      value: display.fiat(props.pending)
+    })
+  }
   const renderStats = () => {
     return values.map((a, i) => (
       <div key={i} className={`col-md-3 ${styles.tileOuterContainer}`}>

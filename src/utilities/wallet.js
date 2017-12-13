@@ -260,6 +260,10 @@ export const closeTrezorWindow = () => {
   if (window.faast.hw && window.faast.hw.trezor && window.faast.hw.trezor.close) window.faast.hw.trezor.close()
 }
 
+export const getTransaction = (txHash) => {
+  return window.faast.web3.eth.getTransaction(txHash)
+}
+
 export const getTransactionReceipt = (txHash) => {
   return window.faast.web3.eth.getTransactionReceipt(txHash)
 }
