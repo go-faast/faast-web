@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Field, reduxForm } from 'redux-form'
 import { chunkify, shortener } from 'Utilities/helpers'
 import styles from 'Styles/AssetList.scss'
+import config from 'Config'
 
 const SearchInput = (props) => (
   <input type='text' autoFocus autoComplete='off' className={styles.inputText} placeholder='search or select your asset' {...props.input} onChange={props.handleChange} value={props.value} />
@@ -19,7 +20,7 @@ const AssetList = (props) => {
             const isUnavailable = !(ignoreUnavailable || isAvailableTest(asset))
             return (
               <div key={j} className={`col-4 col-lg-${bsColSize} ${styles.assetListItem} ${isUnavailable ? styles.itemDisabled : ''}`} onClick={() => handleSelect(asset)}>
-                <div className={styles.assetListItemIcon} style={{ backgroundImage: `url(https://faa.st/img/coins/coin_${asset.symbol}.png)` }} />
+                <div className={styles.assetListItemIcon} style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${asset.symbol}.png)` }} />
                 <div>{asset.name}</div>
                 {isUnavailable &&
                   <div style={{ fontSize: 9 }}>(coming soon)</div>
