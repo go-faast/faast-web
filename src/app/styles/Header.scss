@@ -41,6 +41,9 @@
   line-height: 30px;
   @extend .cursor-pointer;
   @extend .margin-top-15;
+  position: relative;
+  margin-left: 20px;
+  margin-top: 0px;
   @media #{$small-and-down} {
       width: 50%;
       float: left;

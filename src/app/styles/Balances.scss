@@ -9,6 +9,7 @@
   padding-left: 0px;
   &:last-child {
     padding-right: 0px;
+    width: 50%;
   }
   @media #{$small-and-down} {
     &:last-child {
@@ -46,6 +47,13 @@
       display: flex;
       margin-left: 5px;
   }
+}
+
+.chart{
+  background-color: $ultra-dark-grey;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 20px;
+  box-shadow: 5px 10px 15px #090909;
 }
 
 .upIcon {
