@@ -5,8 +5,6 @@ import Fuse from 'fuse.js'
 import AssetList from 'Views/AssetList'
 import { sortByProperty } from 'Utilities/helpers'
 
-let fuse
-
 class AssetListController extends Component {
   constructor () {
     super()
@@ -22,22 +20,14 @@ class AssetListController extends Component {
   }
 
   componentWillMount () {
-    this._setList(this.props.type)
+    this._setList()
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (this.props.type !== nextProps.type) {
-      this._setList(nextProps.type)
-    }
-  }
-
-  _setList (type) {
-    const filteredList = this.props.assets.filter((a) => {
-      return (!a.onlyShow || a.onlyShow === type)
-    })
-    // sort by `type`=true (i.e. deposit=true)
-    const list = sortByProperty(filteredList, type)
-    fuse = new Fuse(list, {
+  _setList () {
+    const { assets } = this.props
+    const sorted = [...assets].sort((a, b) => b.marketCap.cmp(a.marketCap))
+    const list = sortByProperty(sorted, 'portfolio')
+    this.fuse = new Fuse(list, {
       shouldSort: true,
       threshold: 0.6,
       location: 0,
@@ -57,7 +47,7 @@ class AssetListController extends Component {
     if (!newValue) {
       newList = this.state.originalList
     } else {
-      newList = sortByProperty(fuse.search(newValue), this.props.type)
+      newList = this.fuse.search(newValue)
     }
     this.setState({
       value: newValue,

@@ -107,7 +107,9 @@ export const getFiatPrices = (list, mock) => () => {
 
         return Object.assign({}, a, {
           price: toBigNumber(priceData.price_usd || 0),
-          change24: toBigNumber(priceData.percent_change_24h || 0)
+          change24: toBigNumber(priceData.percent_change_24h || 0),
+          volume24: toBigNumber(priceData['24h_volume_usd'] || 0),
+          marketCap: toBigNumber(priceData.market_cap_usd || 0),
         })
       })
     })
