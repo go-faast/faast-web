@@ -12,6 +12,8 @@ import log from 'Utilities/log'
 import { loadingPortfolio, setPortfolio, setAssets, updateSwapOrder } from 'Actions/redux'
 import config from 'Config'
 
+const ENABLED_ASSETS = ['ETH']
+
 const batchRequest = (batch, batchableFn, ...fnArgs) => {
   if (batch) {
     return new Promise((resolve, reject) => {
@@ -40,7 +42,7 @@ const getBalanceActions = {
   BTC: () => () => Promise.resolve(0), // TODO: implement balance discovery using trezor/hd-wallet
   BCH: () => () => Promise.resolve(0), // TODO
   BTG: () => () => Promise.resolve(0), // TODO
-  
+
   LTC: () => () => Promise.resolve(0), // TODO
   ZEC: () => () => Promise.resolve(0), // TODO
   DASH: () => () => Promise.resolve(0), // TODO
@@ -118,19 +120,14 @@ export const getFiatPrices = (list, mock) => () => {
 const preparePortfolio = (assets, mock) => () => {
   log.info('preparing portfolio')
   return assets.map((a) => {
-    const assetObj = {
-      symbol: a.symbol,
-      name: a.name,
-      decimals: a.decimals,
-      infoUrl: a.infoUrl
+    if (a.ERC20 && !a.contractAddress) {
+      console.log(`contractAddress is missing for ERC20 token ${a.symbol}`)
     }
-    if (a.ERC20) {
-      assetObj.ERC20 = a.ERC20
-      assetObj.contractAddress = a.contractAddress
-      if (!a.contractAddress) {
-        console.log(`contractAddress is missing for ERC20 token ${a.symbol}`)
-      }
-    }
+    const portfolioSupport = (a.ERC20 && a.contractAddress) || ENABLED_ASSETS.includes(a.symbol)
+    const swapSupport = a.deposit && a.receive
+    const assetObj = Object.assign({}, a, {
+      portfolio: portfolioSupport && swapSupport
+    })
     if (mock && mock[a.symbol] && mock[a.symbol].price) {
       assetObj.price = mock[a.symbol].price
     }

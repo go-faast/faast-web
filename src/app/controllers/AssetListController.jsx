@@ -73,38 +73,46 @@ class AssetListController extends Component {
   }
 
   _handleSelect (asset) {
-    const type = this.props.type
-    if (!this.props.ignoreUnavailable && !asset[type]) {
-      return toastr.warning('COMING SOON', `${asset.name} is not yet available to ${type}`)
+    const { isAvailableTest, ignoreUnavailable, selectAsset } = this.props
+    if (!ignoreUnavailable && !isAvailableTest(asset)) {
+      return toastr.warning('COMING SOON', `${asset.name} is not available yet`)
     }
-    this.props.selectAsset(asset)
+    selectAsset(asset)
   }
 
   render () {
+    const { columns, ignoreUnavailable, isAvailableTest, showBalance, handleClose } = this.props
+    const { list, value } = this.state
+    const { _handleSelect, _handleChange, _handleSubmit } = this
     return (
       <AssetList
-        type={this.props.type}
-        columns={this.props.columns}
-        list={this.state.list}
-        handleSelect={this._handleSelect}
-        ignoreUnavailable={this.props.ignoreUnavailable}
-        showBalance={this.props.showBalance}
-        searchValue={this.state.value}
-        handleSearchChange={this._handleChange}
-        handleClose={this.props.handleClose}
-        onSubmit={this._handleSubmit}
+        columns={columns}
+        list={list}
+        handleSelect={_handleSelect}
+        ignoreUnavailable={ignoreUnavailable}
+        isAvailableTest={isAvailableTest}
+        showBalance={showBalance}
+        searchValue={value}
+        handleSearchChange={_handleChange}
+        handleClose={handleClose}
+        onSubmit={_handleSubmit}
       />
     )
   }
 }
 
 AssetListController.propTypes = {
-  type: PropTypes.string,
   columns: PropTypes.number,
   assets: PropTypes.array,
   ignoreUnavailable: PropTypes.bool,
+  isAvailableTest: PropTypes.func,
   showBalance: PropTypes.bool,
   handleClose: PropTypes.func
+}
+
+AssetListController.defaultProps = {
+  ignoreUnavailable: false,
+  isAvailableTest: (asset) => asset.portfolio
 }
 
 export default AssetListController
