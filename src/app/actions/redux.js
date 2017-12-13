@@ -92,6 +92,11 @@ export const hideOrderModal = () => ({
   type: 'HIDE_ORDER_MODAL'
 })
 
+export const setMediaQueries = (mq) => ({
+  type: 'SET_MEDIA_QUERIES',
+  payload: mq
+})
+
 export const setSettings = (settings) => ({
   type: 'SET_SETTINGS',
   payload: settings

@@ -9,21 +9,9 @@ import withMockHandling from '../hoc/withMockHandling'
 import { restorePolling } from 'Actions/portfolio'
 import { setSwap } from 'Actions/redux'
 
-const widths = new Map()
-widths.set('sm', '(min-width: 768px)')
-widths.set('md', '(min-width: 992px)')
-widths.set('lg', '(min-width: 1200px)')
-
 class AppController extends Component {
   constructor () {
     super()
-    this.state = {
-      mq: {
-        sm: true,
-        md: true,
-        lg: true
-      }
-    }
   }
 
   componentWillMount () {
@@ -32,31 +20,20 @@ class AppController extends Component {
     }
   }
 
-  componentDidMount () {
-    widths.forEach((value, key) => {
-      this._mediaQueryChange(window.matchMedia(value), key)
-      window.matchMedia(value).addListener((e) => { this._mediaQueryChange(e, key) })
-    })
-  }
-
   componentDidUpdate (prevProps, prevState) {
-    if (prevState.mq.lg && !this.state.mq.lg) {
-      toastr.confirm(null, {
-        disableCancel: true,
-        component: () => (
-          <div style={{ padding: 10, color: 'black' }}>
-            The portfolio is only optimized for large screens at this time. Support for smaller screens is in progress
-          </div>
-        )
-      })
-    }
-    if (this.props.wallet.type === 'blockstack' && !isEqual(prevProps.settings, this.props.settings)) {
-      blockstack.saveSettings(this.props.settings)
-    }
-  }
-
-  _mediaQueryChange (mediaQuery, type) {
-    this.setState({ mq: Object.assign({}, this.state.mq, { [type]: mediaQuery.matches }) })
+    // if (prevState.mq.lg && !this.state.mq.lg) {
+    //   toastr.confirm(null, {
+    //     disableCancel: true,
+    //     component: () => (
+    //       <div style={{ padding: 10, color: 'black' }}>
+    //         The portfolio is only optimized for large screens at this time. Support for smaller screens is in progress
+    //       </div>
+    //     )
+    //   })
+    // }
+    // if (this.props.wallet.type === 'blockstack' && !isEqual(prevProps.settings, this.props.settings)) {
+    //   blockstack.saveSettings(this.props.settings)
+    // }
   }
 
   render () {
