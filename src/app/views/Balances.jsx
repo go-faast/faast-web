@@ -106,6 +106,7 @@ const Balances = (props) => {
   }
 
   const renderAssets = () => {
+    console.log(props)
     return props.assetRows.map((a, i) => (
       <div key={i}>
         <div onClick={() => props.toggleChart(a.symbol)} className={`row ${styles.tableRow}`}>

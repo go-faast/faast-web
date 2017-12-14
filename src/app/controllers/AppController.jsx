@@ -51,7 +51,8 @@ AppController.propTypes = {
 const mapStateToProps = (state) => ({
   wallet: state.wallet,
   swap: state.swap,
-  settings: state.settings
+  settings: state.settings,
+  mq: state.setMediaQueries
 })
 
 const mapDispatchToProps = (dispatch) => ({

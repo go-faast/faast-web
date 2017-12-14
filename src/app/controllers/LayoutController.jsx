@@ -6,6 +6,9 @@ import { connect } from 'react-redux'
 import withMockHandling from '../hoc/withMockHandling'
 
 const widths = new Map()
+widths.set('smPh', '(max-width: 320px)')
+widths.set('mdPh', '(max-width: 375px)')
+widths.set('lgPh', '(max-width: 425px)')
 widths.set('sm', '(min-width: 768px)')
 widths.set('md', '(min-width: 992px)')
 widths.set('lg', '(min-width: 1200px)')
@@ -38,7 +41,7 @@ LayoutController.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-  mq: state.setMediaQueries
+  mq: state.mediaQueries
 })
 
 const mapDispatchToProps = (dispatch) => ({
