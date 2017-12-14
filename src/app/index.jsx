@@ -10,7 +10,7 @@ import createHistory from 'history/createHashHistory'
 import { ConnectedRouter, routerMiddleware } from 'react-router-redux'
 import { Route } from 'react-router-dom'
 import ReduxToastr from 'react-redux-toastr'
-import EntryController from 'Controllers/EntryController'
+import Entry from 'Components/Entry'
 import reducers from './reducers'
 import { restoreFromAddress, saveToAddress } from 'Utilities/storage'
 import { restoreWallet } from 'Utilities/wallet'
@@ -60,7 +60,7 @@ const Portfolio = () => {
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <div id='portfolio-page'>
-          <Route component={EntryController} />
+          <Route component={Entry} />
           <ReduxToastr
             timeOut={4000}
             newestOnTop={false}

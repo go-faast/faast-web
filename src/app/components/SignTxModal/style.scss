@@ -1,0 +1,7 @@
+@import "~Styles/variables";
+
+.note {
+  font-size: 0.9em;
+  color: $secondary-color;
+  @extend .cursor-pointer;
+}

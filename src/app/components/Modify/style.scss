@@ -1,0 +1,37 @@
+@import "~Styles/variables";
+
+.header {
+  padding-top: 40px;
+  background-color: $pageBgColor2;
+}
+
+.editable {
+  color: $primary-color;
+  @extend .cursor-pointer;
+}
+
+.editableEditing {
+  text-decoration: none;
+  background-color: inherit;
+  width: calc(100% - 30px);
+  color: $secondary-color;
+  outline: 0;
+  border: 1px solid $secondary-color;
+  @extend .gradient-border;
+  position: relative;
+  padding: 2px;
+
+  /* Spin Buttons modified */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    background: $secondary-color url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKUlEQVQYlWNgwAT/sYhhKPiPT+F/LJgEsHv37v+EMGkmkuImoh2NoQAANlcun/q4OoYAAAAASUVORK5CYII=) no-repeat center center;
+    width: 1em;
+    opacity: 1; /* shows Spin Buttons per default (Chrome >= 39) */
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    @extend .cursor-pointer;
+  }
+}
