@@ -13,13 +13,6 @@ widths.set('lg', '(min-width: 1200px)')
 class LayoutController extends Component {
   constructor () {
     super()
-    this.state = {
-      mq: {
-        sm: true,
-        md: true,
-        lg: true
-      }
-    }
     this._mediaQueryChange = this._mediaQueryChange.bind(this)
   }
 
@@ -30,8 +23,8 @@ class LayoutController extends Component {
     })
   }
 
-  _mediaQueryChange (mediaQuery, type) {
-    this.setState({ mq: Object.assign({}, this.state.mq, { [type]: mediaQuery.matches }) })
+  _mediaQueryChange (mq, type) {
+    this.props.setMediaQueries({ [type]: mq.matches })
   }
 
   render () {

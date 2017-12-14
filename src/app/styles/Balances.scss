@@ -6,11 +6,7 @@
 
 .tileOuterContainer {
   padding-right: 10px;
-  padding-left: 0px;
-  &:last-child {
-    padding-right: 0px;
-    width: 50%;
-  }
+  padding-left: 0px;  
   @media #{$small-and-down} {
     &:last-child {
       padding-right: 10px;
