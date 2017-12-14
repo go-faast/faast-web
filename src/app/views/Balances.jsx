@@ -106,7 +106,14 @@ const Balances = (props) => {
   }
 
   const renderAssets = () => {
-    console.log(props)
+    let mq = props.mq;
+
+    let largePhone = mq.lgPh && !mq.mdPh && !mq.smPh
+    let mediumPhone = mq.mdPh && mq.lgPh && !mq.smPh
+    let smallPhone = mq.smPh && mq.mdPh && mq.lgPh
+
+    console.log(smallPhone)
+
     return props.assetRows.map((a, i) => (
       <div key={i}>
         <div onClick={() => props.toggleChart(a.symbol)} className={`row ${styles.tableRow}`}>
