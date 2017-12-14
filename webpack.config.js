@@ -35,6 +35,7 @@ var config = {
       Src: path.resolve(__dirname, 'src'),
       Config: 'Src/config',
       Utilities: 'Src/utilities',
+      Services: 'Src/services',
       App: 'Src/app',
       Components: 'App/components',
       Styles: 'App/styles',

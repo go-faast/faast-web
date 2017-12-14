@@ -23,10 +23,10 @@ import {
   sendSignedTransaction,
   sendTransaction,
   getTransactionReceipt,
-  setWeb3,
   txWeb3,
   getTransaction
 } from 'Utilities/wallet'
+import web3 from 'Services/Web3'
 
 const swapFinish = (type, swap, error, addition) => {
   return (dispatch) => {
@@ -115,8 +115,8 @@ const swapPostExchange = (swapList, portfolio, address) => (dispatch) => {
 
 const swapEstimateTxFee = (swapList, address) => (dispatch) => {
   return Promise.all([
-    window.faast.web3.eth.getTransactionCount(address),
-    window.faast.web3.eth.getGasPrice()
+    web3.eth.getTransactionCount(address),
+    web3.eth.getGasPrice()
   ])
   .then(([nonce, gasPrice]) => {
     return processArray(swapList, (a) => {
@@ -125,7 +125,7 @@ const swapEstimateTxFee = (swapList, address) => (dispatch) => {
       if (!a.tx) return finish('no tx')
       if (!a.order) return finish('no order')
 
-      return window.faast.web3.eth.estimateGas({
+      return web3.eth.estimateGas({
         from: a.tx.from,
         to: a.tx.to,
         data: a.tx.data
@@ -364,8 +364,6 @@ export const openWallet = (type, wallet, isMocking, noSessionStorage) => (dispat
         data: wallet
       }))
     }
-
-    setWeb3(type)
     dispatch(setWallet(type, address, wallet))
   }
 }

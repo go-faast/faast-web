@@ -15,6 +15,7 @@ import { estimateReceiveAmount, getSwapStatus } from 'Utilities/swap'
 import { loadingPortfolio, setPortfolio, setAssets, updateSwapOrder } from 'Actions/redux'
 import { restoreSwundle } from 'Actions/portfolio'
 import config from 'Config'
+import web3 from 'Services/Web3'
 
 const ENABLED_ASSETS = ['ETH']
 
@@ -34,13 +35,13 @@ const batchRequest = (batch, batchableFn, ...fnArgs) => {
 }
 
 const getETHTokenBalance = (address, symbol, contractAddress, batch = null) => () =>
-  batchRequest(batch, window.faast.web3.eth.call, {
+  batchRequest(batch, web3.eth.call, {
     to: contractAddress,
     data: tokenBalanceData(address)
   }, 'latest')
 
 const getBalanceActions = {
-  ETH: (address, batch = null) => () => batchRequest(batch, window.faast.web3.eth.getBalance, address, 'latest'),
+  ETH: (address, batch = null) => () => batchRequest(batch, web3.eth.getBalance, address, 'latest'),
   ETC: () => () => Promise.resolve(0), // TODO
 
   BTC: () => () => Promise.resolve(0), // TODO: implement balance discovery using trezor/hd-wallet
@@ -149,7 +150,7 @@ export const getBalances = (assets, portfolio, walletAddress, mock, swap) => (di
   }
   return dispatch(getFiatPrices(portfolioList, mock))
     .then((p) => {
-      const batch = new window.faast.web3.BatchRequest()
+      const batch = new web3.BatchRequest()
       const promises = Promise.all(p.map((a) => 
         dispatch(getBalance(a, walletAddress, mock, batch))
           .then((b) => Object.assign({}, a, { balance: toMainDenomination(b, a.decimals) }))

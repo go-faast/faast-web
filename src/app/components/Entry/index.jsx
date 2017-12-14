@@ -8,7 +8,6 @@ import EntryView from './view'
 import idb from 'Utilities/idb'
 import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
-import { setWeb3 } from 'Utilities/wallet'
 import { filterUrl } from 'Utilities/helpers'
 import blockstack from 'Utilities/blockstack'
 import { getAssets, getSwundle } from 'Actions/request'
@@ -75,11 +74,6 @@ class Entry extends Component {
       })
     })
     .then(() => {
-      if (window.Web3) {
-        setWeb3(this.props.wallet.type)
-      } else {
-        throw new Error('Web3 not found')
-      }
       window.faast.hw = {}
       if (window.TrezorConnect) {
         window.faast.hw.trezor = window.TrezorConnect

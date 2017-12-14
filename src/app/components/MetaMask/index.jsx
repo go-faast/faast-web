@@ -4,37 +4,36 @@ import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 import MetaMaskView from './view'
 import { openWallet } from 'Actions/portfolio'
+import web3 from 'Services/Web3'
 
 const MetaMask = (props) => {
   const handleClick = () => {
-    if (!window.web3) {
-      return toastr.error('Please enable the MetaMaskView extension')
+    if (web3.providerType !== 'user') {
+      return toastr.error('Please enable the MetaMask extension')
     }
 
-    if (!window.web3.version || !window.web3.version.getNetwork) {
+    if (!web3.version || !web3.eth.net.getId) {
       return toastr.error('Unable to determine network ID')
     }
-    window.web3.version.getNetwork((err, id) => {
+    web3.eth.net.getId((err, id) => {
       if (err) {
         log.error(err)
         return toastr.error('Error getting network ID')
       }
-      if (id !== '1') {
-        return toastr.error('Please adjust your MetaMaskView to use the "Main Ethereum Network"', { timeOut: 10000 })
+      if (id !== 1) {
+        return toastr.error('Please adjust your MetaMask to use the "Main Ethereum Network"', { timeOut: 10000 })
       }
 
-      log.info('switching to metamask provider')
-      window.faast.web3 = new window.Web3(window.web3.currentProvider)
-      window.faast.web3.eth.getAccounts()
+      web3.eth.getAccounts()
       .then((accounts) => {
         const address = accounts[0]
-        if (!address) return toastr.error('Unable to retrieve MetaMaskView account. Please ensure your account is unlocked.', { timeOut: 10000 })
+        if (!address) return toastr.error('Unable to retrieve MetaMask account. Please ensure your account is unlocked.', { timeOut: 10000 })
 
         props.openWallet('metamask', { address }, props.mock.mocking)
       })
       .catch((err) => {
         log.error(err)
-        toastr.error('Error retrieving MetaMaskView account')
+        toastr.error('Error retrieving MetaMask account')
       })
     })
   }

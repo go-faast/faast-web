@@ -12,6 +12,7 @@ import { closeTrezorWindow } from 'Utilities/wallet'
 import config from 'Config'
 import { openWallet } from 'Actions/portfolio'
 import { mockAddress } from 'Actions/mock'
+import web3 from 'Services/Web3'
 
 const CONNECT_SECONDS = 6
 const ADDRESS_GROUP_SIZE = 5
@@ -208,7 +209,7 @@ class HardwareWallet extends Component {
         const addresses = this.state.addresses
         addresses[i] = { address }
         this.setState({ addresses })
-        window.faast.web3.eth.getBalance(address)
+        web3.eth.getBalance(address)
         .then((res) => {
           this.setState({
             addresses: this.state.addresses.map((item, index) => {
