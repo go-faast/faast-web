@@ -1,0 +1,27 @@
+@import "~Styles/variables";
+
+.dropzoneContent {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.fileInput {
+  border-left: 1px dashed $primary-color;
+  border-top: 1px dashed $primary-color;
+  border-right: 1px dashed $secondary-color;
+  border-bottom: 1px dashed $secondary-color;
+  position: relative;
+  height: 100%;
+}
+
+.fileDesc {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  color: $medium-grey;
+  text-align: center;
+  padding: 30px 10px 10px 10px;
+}

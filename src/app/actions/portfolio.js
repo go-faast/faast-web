@@ -410,7 +410,7 @@ export const restoreSwundle = (swundle) => (dispatch) => {
       })
     })
     // .then(() => {
-      // receipt polling restoration is done in AppController
+      // receipt polling restoration is done in App component
       // when statusAllSwaps changes to pending_receipts_restored
     // })
     .catch(log.error)

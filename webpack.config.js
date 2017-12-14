@@ -32,15 +32,16 @@ var config = {
   },
   resolve: {
     alias: {
-      Config: path.resolve(__dirname, 'src', 'config'),
-      Utilities: path.resolve(__dirname, 'src', 'utilities'),
-      Components: path.resolve(__dirname, 'src', 'components'),
-      Controllers: path.resolve(__dirname, 'src', 'app', 'controllers'),
-      Views: path.resolve(__dirname, 'src', 'app', 'views'),
-      Styles: path.resolve(__dirname, 'src', 'app', 'styles'),
-      Actions: path.resolve(__dirname, 'src', 'app', 'actions')
+      Src: path.resolve(__dirname, 'src'),
+      Config: 'Src/config',
+      Utilities: 'Src/utilities',
+      App: 'Src/app',
+      Components: 'App/components',
+      Styles: 'App/styles',
+      Actions: 'App/actions',
+      Hoc: 'App/hoc'
     },
-    extensions: ['.js', '.jsx', '.json']
+    extensions: ['.js', '.jsx', '.json', '.scss', '.css']
   }
 }
 
