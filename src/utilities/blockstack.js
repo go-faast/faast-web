@@ -1,6 +1,5 @@
 import {
   isUserSignedIn,
-  loadUserData,
   signUserOut,
   isSignInPending,
   handlePendingSignIn,
@@ -9,22 +8,7 @@ import {
   putFile
 } from 'blockstack'
 import log from 'Utilities/log'
-import { generateWalletFromPrivateKey } from 'Utilities/wallet'
-import { toChecksumAddress } from 'Utilities/convert'
 
-const restoreWallet = () => {
-  const userData = loadUserData()
-  const encryptedWallet = generateWalletFromPrivateKey(userData.appPrivateKey)
-  if (encryptedWallet) {
-    return {
-      type: 'blockstack',
-      address: toChecksumAddress(encryptedWallet.address),
-      data: encryptedWallet
-    }
-  }
-
-  return undefined
-}
 
 const saveSettings = (settings = {}) => {
   putFile('settings.json', JSON.stringify(settings), true)
@@ -45,7 +29,6 @@ const getSettings = () => {
 
 export default {
   signUserOut,
-  restoreWallet,
   isUserSignedIn,
   saveSettings,
   getSettings,

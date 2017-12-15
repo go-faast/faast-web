@@ -1,6 +1,3 @@
-import queryString from 'query-string'
-import { parseEncryptedWalletString, parseWalletString } from 'Utilities/wallet'
-import { toChecksumAddress } from 'Utilities/convert'
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
 export const storageAvailable = (type) => {
@@ -97,26 +94,4 @@ export const clearSwap = (address) => {
 
   const currentState = restoreFromAddress(address)
   localStorageSet(address, JSON.stringify(Object.assign({}, currentState, { swap: [] })))
-}
-
-export const restoreWalletFromStorage = () => {
-  const query = queryString.parse(window.location.search)
-  let wallet
-  if (query.wallet) {
-    const encryptedWalletString = Buffer.from(query.wallet, 'base64').toString()
-    const encryptedWallet = parseEncryptedWalletString(encryptedWalletString)
-    if (encryptedWallet) {
-      wallet = {
-        type: 'keystore',
-        address: toChecksumAddress(encryptedWallet.address),
-        data: encryptedWallet
-      }
-      sessionStorageSet('wallet', JSON.stringify(wallet))
-    }
-  } else {
-    wallet = parseWalletString(sessionStorageGet('wallet'))
-  }
-  if (!wallet) return undefined
-
-  return wallet
 }
