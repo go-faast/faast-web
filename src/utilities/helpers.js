@@ -180,3 +180,19 @@ export const filterUrl = () => {
   if (newSearch) newSearch = '?' + newSearch
   return window.location.origin + window.location.pathname + newSearch
 }
+
+export const promisifySync = (syncFn) => (...args) => new Promise((resolve, reject) => {
+  try {
+    resolve(syncFn(...args))
+  } catch (err) {
+    reject(err)
+  }
+})
+
+export const parseJson = (jsonStr) => {
+  try {
+    return typeof serialized === 'string' ? JSON.parse(jsonStr) : jsonStr
+  } catch (_) {
+    return null
+  }
+}
