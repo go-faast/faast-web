@@ -32,14 +32,23 @@ const renderAssetsPhone = (props) => {
           </div>
         </div>
         <div className={`col-md-2 text-white ${styles.tableCell}`}>
-          <div className={styles.unitTitles}>Portfolio value(USD):</div>{display.fiat(a.value)}
+          <div className={styles.unitTitles}>Portfolio value(USD):</div>
+          <div className={styles.balanceValues}>
+            {display.fiat(a.value)}
+          </div>
         </div>
         <div className={`col-md-2 text-white ${styles.tableCell}`}>
-          <div className={styles.unitTitles}>Price (USD):</div>{display.fiat(a.price)}
+          <div className={styles.unitTitles}>Price (USD):</div>
+          <div className={styles.balanceValues}>
+            {display.fiat(a.price)}
+          </div>
         </div>
         <div className={`col-md-2 text-white ${styles.tableCell}`}>
-            <div className={styles.unitTitles}>24h change (USD):</div>{display.percentage(a.change, true)}
-              <div className={styles.tableChangeValue}>
+            <div className={styles.unitTitles}>24h change (USD):</div>
+            <div className={styles.balanceValues}>
+              {display.percentage(a.change, true)}
+            </div>
+            <div className={styles.tableChangeValue}>
 
           </div>
           <div className={a.priceDecrease ? styles.tableChangeDownIcon : styles.tableChangeUpIcon} />

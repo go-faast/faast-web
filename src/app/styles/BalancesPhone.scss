@@ -18,6 +18,7 @@
  padding-right: 10px;
  padding-left: 0px;
  margin-bottom: 50px;
+ width:50%;
 }
 
 .tileContainer {
@@ -165,9 +166,12 @@ opacity: 0.4;
 }
 
 .balanceValues{
-  text-align: center;
   display: inline;
   margin: 0 auto;
+  text-align: center;
+  left: 50%;
+  margin-top: 0px;
+  position: absolute;
 }
 
 .tableCoinIcon {
@@ -182,13 +186,18 @@ opacity: 0.4;
 }
 
 .tableCoinName {
- @extend .pull-left;
- text-align: center;
  white-space: nowrap;
- width: calc(100% - 36px);
  overflow: hidden;
- text-overflow: ellipsis;
  display: inline;
+ left: 50%;
+ margin: 0 auto;
+ text-align: center;
+ margin-top: 0px;
+ position: absolute;
+ font-weight: 300;
+ @extend .gradient-text;
+ @extend .text-small;
+ @extend .text-shadow;
 }
 
 .tableChangeValue {
