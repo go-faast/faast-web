@@ -10,6 +10,7 @@ import WelcomeController from 'Controllers/WelcomeController'
 import display from 'Utilities/display'
 import styles from 'Styles/Balances.scss'
 import config from 'Config'
+import {renderAssetsPhone} from './BalancesPhone'
 
 const OrderInProgress = (props) => {
   const statusIcon = () => {
@@ -66,6 +67,13 @@ const OrderInProgress = (props) => {
 }
 
 const Balances = (props) => {
+  let mq = props.mq
+
+  let largePhone = mq.lgPh && !mq.mdPh && !mq.smPh
+  let mediumPhone = mq.mdPh && mq.lgPh && !mq.smPh
+  let smallPhone = mq.smPh && mq.mdPh && mq.lgPh
+  let tablet = mq.sm
+
   const values = [
     {
       title: '24h change',
@@ -106,14 +114,6 @@ const Balances = (props) => {
   }
 
   const renderAssets = () => {
-    let mq = props.mq;
-
-    let largePhone = mq.lgPh && !mq.mdPh && !mq.smPh
-    let mediumPhone = mq.mdPh && mq.lgPh && !mq.smPh
-    let smallPhone = mq.smPh && mq.mdPh && mq.lgPh
-
-    console.log(smallPhone)
-
     return props.assetRows.map((a, i) => (
       <div key={i}>
         <div onClick={() => props.toggleChart(a.symbol)} className={`row ${styles.tableRow}`}>
@@ -175,27 +175,53 @@ const Balances = (props) => {
       <div className={`row ${styles.statsContainer}`}>
         {renderStats()}
       </div>
-      <div className={`row ${styles.chartContainer}`}>
+
+      { tablet && //different chart and address for tablet and up
+        <div className={`row ${styles.chartContainer}`}>
+
         <div className={`col ${styles.tileOuterContainer}`}>
-          <div className={styles.tileContainerAddress}>
+          <div className={styles.tileContainer}>
             <div style={{ textAlign: 'right' }}>
               <div className={styles.addressTitle}>address</div>
+              {(props.viewOnly && props.addressProps.address) ||
                 <AddressController className={styles.link} {...props.addressProps} />
+              }
             </div>
+            {props.pieChart}
           </div>
-          {props.pieChart}
         </div>
       </div>
-      <div className={`row ${styles.tableHeader}`}>
-        <div className={`col-md-2 text-left ${styles.columnTitle}`}>Asset name</div>
-        <div className={`col-md-2 ${styles.columnTitle}`}>Units</div>
-        <div className={`col-md-2 ${styles.columnTitle}`}>Portfolio weight</div>
-        <div className={`col-md-2 ${styles.columnTitle}`}>Portfolio value (USD)</div>
-        <div className={`col-md-2 ${styles.columnTitle}`}>Price (USD)</div>
-        <div className={`col-md-2 text-right ${styles.columnTitle}`}>24h change</div>
-      </div>
+      }
+      { !tablet&&
+        <div className={`row ${styles.chartContainer}`}>
+          <div className={`col ${styles.tileOuterContainer}`}>
+            <div className={styles.tileContainerAddress}>
+              <div style={{ textAlign: 'right' }}>
+                <div className={styles.addressTitle}>address</div>
+                  <AddressController className={styles.link} {...props.addressProps} />
+              </div>
+            </div>
+            {props.pieChart}
+          </div>
+        </div>
+      }
+      { tablet&&
+        <div className={`row ${styles.tableHeader}`}>
+          <div className={`col-md-2 text-left ${styles.columnTitle}`}>Asset name</div>
+          <div className={`col-md-2 ${styles.columnTitle}`}>Units</div>
+          <div className={`col-md-2 ${styles.columnTitle}`}>Portfolio weight</div>
+          <div className={`col-md-2 ${styles.columnTitle}`}>Portfolio value (USD)</div>
+          <div className={`col-md-2 ${styles.columnTitle}`}>Price (USD)</div>
+          <div className={`col-md-2 text-right ${styles.columnTitle}`}>24h change</div>
+        </div>
+      }
       <div className={`row ${styles.gradientSeparator}`} />
-      {renderAssets()}
+      {tablet &&
+        renderAssets()
+      }
+      {!tablet &&
+        renderAssetsPhone(props)
+      }
     </LayoutController>
   )
 }
