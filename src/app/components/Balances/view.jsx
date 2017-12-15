@@ -14,37 +14,37 @@ import config from 'Config'
 const OrderInProgress = (props) => {
   const statusIcon = () => {
     switch (props.status) {
-      case 'working':
-        return <div className='faast-loading loading-medium margin-top-30 margin-left-10' />
-      case 'complete':
-        return <div className='margin-top-30 margin-left-10' />
-      case 'error':
-        return <div className='margin-top-30 margin-left-10' />
+    case 'working':
+      return <div className='faast-loading loading-medium margin-top-30 margin-left-10' />
+    case 'complete':
+      return <div className='margin-top-30 margin-left-10' />
+    case 'error':
+      return <div className='margin-top-30 margin-left-10' />
     }
   }
   const statusTitle = () => {
     switch (props.status) {
-      case 'working':
-        return 'orders in progress'
-      case 'complete':
-        return 'orders complete'
-      case 'error':
-        return 'orders done with errors'
+    case 'working':
+      return 'orders in progress'
+    case 'complete':
+      return 'orders complete'
+    case 'error':
+      return 'orders done with errors'
     }
   }
   const statusContent = () => {
     switch (props.status) {
-      case 'working':
-        return 'The orders placed with respect to your previous transaction is still in progress. You cannot modify your portfolio until your previous orders have been fulfilled.'
-      case 'complete':
-        return 'The orders have completed successfully. It may take a short amount of time to see the adjusted balances reflected in your portfolio.'
-      case 'error':
-        return 'There was an issue with one or more of your orders. Select "view status" for more details.'
+    case 'working':
+      return 'The orders placed with respect to your previous transaction is still in progress. You cannot modify your portfolio until your previous orders have been fulfilled.'
+    case 'complete':
+      return 'The orders have completed successfully. It may take a short amount of time to see the adjusted balances reflected in your portfolio.'
+    case 'error':
+      return 'There was an issue with one or more of your orders. Select "view status" for more details.'
     }
   }
   return (
     <div className='row padding-0 margin-top-30'>
-      <div className={`col tile-container`}>
+      <div className='col tile-container'>
         <div onClick={props.handleViewStatus} className='tile-new' style={{ zIndex: 10 }}>view status</div>
         <div className='row'>
           <div className='col-md-3'>
@@ -79,19 +79,12 @@ const BalancesView = (props) => {
     {
       title: 'current (USD)',
       value: display.fiat(props.total)
-    }
-  ]
-  if (props.viewOnly) {
-    values.push({
+    },
+    {
       title: 'number of assets',
       value: props.assetRows.length
-    })
-  } else {
-    values.push({
-      title: 'pending (USD)',
-      value: display.fiat(props.pending)
-    })
-  }
+    }
+  ]
   const renderStats = () => {
     return values.map((a, i) => (
       <div key={i} className={`col-md-3 ${styles.tileOuterContainer}`}>

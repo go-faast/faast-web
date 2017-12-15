@@ -4,14 +4,12 @@ import {
   toSmallestDenomination,
   toMainDenomination,
   toUnit,
-  toPercentage,
-  toPrecision
+  toPercentage
 } from 'Utilities/convert'
 import { fixPercentageRounding, filterErrors, filterObj } from 'Utilities/helpers'
 import { fetchGet, fetchPost, fetchDelete } from 'Utilities/fetch'
 import { clearSwap } from 'Utilities/storage'
 import log from 'Utilities/log'
-import { estimateReceiveAmount, getSwapStatus } from 'Utilities/swap'
 import { loadingPortfolio, setPortfolio, setAssets, updateSwapOrder } from 'Actions/redux'
 import { restoreSwundle } from 'Actions/portfolio'
 import config from 'Config'
@@ -142,7 +140,7 @@ const preparePortfolio = (assets, mock) => () => {
   })
 }
 
-export const getBalances = (assets, portfolio, walletAddress, mock, swap) => (dispatch) => {
+export const getBalances = (assets, portfolio, walletAddress, mock) => (dispatch) => {
   let portfolioList = portfolio.list
   if (!portfolioList || !portfolioList.length) {
     dispatch(loadingPortfolio(true))
@@ -151,7 +149,7 @@ export const getBalances = (assets, portfolio, walletAddress, mock, swap) => (di
   return dispatch(getFiatPrices(portfolioList, mock))
     .then((p) => {
       const batch = new web3.BatchRequest()
-      const promises = Promise.all(p.map((a) => 
+      const promises = Promise.all(p.map((a) =>
         dispatch(getBalance(a, walletAddress, mock, batch))
           .then((b) => Object.assign({}, a, { balance: toMainDenomination(b, a.decimals) }))
           .catch((err) => {
@@ -162,22 +160,22 @@ export const getBalances = (assets, portfolio, walletAddress, mock, swap) => (di
       return promises
     })
     .then((p) => {
-      let pendingFiat = toBigNumber(0)
-      if (swap) {
-        pendingFiat = swap.reduce((sCurr, send) => {
-          const rFiat = send.list.reduce((rCurr, receive) => {
-            const status = getSwapStatus(receive)
-            if (status.details === 'waiting for transaction receipt' || status.details === 'processing swap') {
-              const toAsset = p.find(a => a.symbol === receive.symbol)
-              const receiveEst = estimateReceiveAmount(receive, toAsset)
-              return toPrecision(receiveEst.times(toAsset.price), 2).add(rCurr)
-            } else {
-              return rCurr
-            }
-          }, toBigNumber(0))
-          return rFiat.add(sCurr)
-        }, toBigNumber(0))
-      }
+      // let pendingFiat = toBigNumber(0)
+      // if (swap) {
+      //   pendingFiat = swap.reduce((sCurr, send) => {
+      //     const rFiat = send.list.reduce((rCurr, receive) => {
+      //       const status = getSwapStatus(receive)
+      //       if (status.details === 'waiting for transaction receipt' || status.details === 'processing swap') {
+      //         const toAsset = p.find(a => a.symbol === receive.symbol)
+      //         const receiveEst = estimateReceiveAmount(receive, toAsset)
+      //         return toPrecision(receiveEst.times(toAsset.price), 2).add(rCurr)
+      //       } else {
+      //         return rCurr
+      //       }
+      //     }, toBigNumber(0))
+      //     return rFiat.add(sCurr)
+      //   }, toBigNumber(0))
+      // }
 
       let totalFiat = toBigNumber(0);
       let totalFiat24hAgo = toBigNumber(0)
@@ -207,7 +205,7 @@ export const getBalances = (assets, portfolio, walletAddress, mock, swap) => (di
         total: totalFiat,
         total24hAgo: totalFiat24hAgo,
         totalChange: totalChange,
-        pending: pendingFiat,
+        // pending: pendingFiat,
         list: newPortfolio
       }))
       dispatch(loadingPortfolio(false))

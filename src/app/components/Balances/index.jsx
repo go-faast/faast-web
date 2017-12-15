@@ -60,7 +60,7 @@ class Balances extends Component {
 
   _setList () {
     if (this.props.portfolio.list && this.props.portfolio.list.length) {
-      const list = this.props.portfolio.list.map((a, i) => {
+      const list = this.props.portfolio.list.map((a) => {
         if (a.shown) {
           return {
             name: a.name,
@@ -149,7 +149,6 @@ class Balances extends Component {
         priceChart={<PriceChart chartSelect={this.state.chartSelect} />}
         layoutProps={layoutProps}
         total={portfolio.total}
-        pending={portfolio.pending}
         total24hAgo={portfolio.total24hAgo}
         totalChange={portfolio.totalChange}
         totalDecrease={totalDecrease}
