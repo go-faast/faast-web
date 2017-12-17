@@ -5,21 +5,23 @@ import { stripHexPrefix, addHexPrefix } from 'Utilities/helpers'
 import { toHex } from 'Utilities/convert'
 import { mockHardwareWalletSign } from 'Actions/mock'
 
-import EthereumWallet from './EthereumWallet'
+import EthereumWalletSigner from './EthereumWalletSigner'
 
-export default class EthereumWalletTrezor extends EthereumWallet {
+export default class EthereumWalletTrezor extends EthereumWalletSigner {
 
-  constructor(derivationPath) {
-    super()
+  constructor(derivationPath, isMocking) {
+    super('EthereumWalletTrezor')
     this.derivationPath = derivationPath
+    this._isMocking = isMocking
   }
   
   closeTrezorWindow = () => {
     if (window.faast.hw && window.faast.hw.trezor && window.faast.hw.trezor.close) window.faast.hw.trezor.close()
   };
 
-  signTx = (txParams, isMocking) => {
-    if (isMocking) return mockHardwareWalletSign('trezor')
+  signTx = (txParams) => {
+    this._validateTx(txParams)
+    if (this._isMocking) return mockHardwareWalletSign('trezor')
     return new Promise((resolve, reject) => {
       window.faast.hw.trezor.closeAfterSuccess(false)
       window.faast.hw.trezor.signEthereumTx(

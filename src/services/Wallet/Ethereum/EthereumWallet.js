@@ -3,13 +3,12 @@ import pad from 'pad-left'
 import config from 'Config'
 import web3 from 'Services/Web3'
 import log from 'Utilities/log'
-import { toBigNumber, toSmallestDenomination, toHex } from 'Utilities/convert'
-import { addHexPrefix } from 'Utilities/helpers'
+import { toBigNumber, toSmallestDenomination, toMainDenomination, toHex } from 'Utilities/convert'
 import { assertMethods, assertExtended } from 'Utilities/reflect'
 
 import Wallet from '../Wallet'
 
-const tokenTxData = (address, amount, decimals) => {
+const tokenSendData = (address, amount, decimals) => {
   amount = toBigNumber(amount)
 
   if (!web3.utils.isAddress(address)) return { error: 'invalid address' }
@@ -26,44 +25,6 @@ const tokenBalanceData = (walletAddress) => {
   if (walletAddress.startsWith('0x')) walletAddress = walletAddress.slice(2)
   return config.tokenFunctionSignatures.balanceOf + pad(walletAddress, 64, '0')
 };
-
-const metamaskTx = (txParams) => ({
-  from: txParams.from,
-  to: txParams.to,
-  value: toBigNumber(txParams.value),
-  gas: toBigNumber(txParams.gasLimit).toNumber(),
-  gasPrice: toBigNumber(txParams.gasPrice),
-  data: txParams.data,
-  nonce: toBigNumber(txParams.nonce).toNumber()
-});
-
-const isValidTx = (txParams) => {
-  const required = ['chainId', 'data', 'from', 'gasLimit', 'gasPrice', 'nonce', 'to', 'value']
-  if (typeof txParams !== 'object') return false
-  return required.every((a) => {
-    return txParams.hasOwnProperty(a)
-  })
-};
-
-const validateTx = (txParams) => {
-  if (!this.isValidTx(txParams)) {
-    throw new Error('invalid tx', txParams)
-  }
-};
-
-const finishTx = (tx) => Promise.all([
-  web3.eth.getTransactionCount(tx.from),
-  web3.eth.getGasPrice(),
-  web3.eth.estimateGas(tx)
-])
-.then(([nonce, gasPrice, gasLimit]) => ({
-  ...tx,
-  nonce: toHex(nonce),
-  gasPrice: toHex(gasPrice),
-  gasLimit: toHex(gasLimit)
-}))
-.catch(log.error);
-
 
 const batchRequest = (batch, batchableFn, ...fnArgs) => {
   if (batch) {
@@ -82,62 +43,70 @@ const batchRequest = (batch, batchableFn, ...fnArgs) => {
 
 export default class EthereumWallet extends Wallet {
 
-  constructor() {
-    super()
+  constructor(type) {
+    super(type)
     assertExtended(this, EthereumWallet)
-    assertMethods(this, EthereumWallet, 'getAddress', 'signTx')
+    assertMethods(this, EthereumWallet, 'getAddress', 'transfer')
   }
 
-  isSupportedAsset = (asset) => {
-    if (typeof asset === 'string') {
-      asset = this.getAsset(asset)
-    }
-    return asset.symbol === 'ETH' || asset.ERC20
+  isAssetSupported = (assetOrSymbol) => {
+    const asset = this.getAsset(assetOrSymbol)
+    return asset && (asset.symbol === 'ETH' || asset.ERC20)
   };
 
-  send = (symbol, amount, to) => {
-    let tx = {
-      from: this.getAddress(),
-      chainId: 1
-    }
-    const asset = this.getAsset(symbol)
-    if (symbol === 'ETH') {
-      tx = {
-        ...tx,
-        to,
-        value: toSmallestDenomination(amount, asset.decimals),
-        data: ''
-      }
+  getBalance = (assetOrSymbol, batch = null) => {
+    const asset = this.assertAssetSupported(assetOrSymbol)
+    let request
+    if (asset.symbol === 'ETH') {
+      request = batchRequest(batch, web3.eth.getBalance, this.getAddress(), 'latest')
     } else {
-      if (!asset.ERC20) {
-        throw new Error(`Asset ${symbol} not supported by EthereumWallet`)
-      }
-      tx = {
-        ...tx,
-        to: asset.contractAddress,
-        value: toBigNumber(0),
-        data: tokenTxData(to, amount, asset.decimals)
-      }
-    }
-    return finishTx(tx)
-      .then(this.signTx)
-      .then(addHexPrefix)
-      .then(web3.eth.sendSignedTransaction)
-  };
-
-  getBalance = (symbol, batch) => {
-    const asset = this.getAsset(symbol)
-    if (symbol === 'ETH') {
-      return batchRequest(batch, web3.eth.getBalance, this.getAddress(), 'latest')
-    } else {
-      if (!asset.ERC20) {
-        throw new Error(`Asset ${symbol} not supported by EthereumWallet`)
-      }
-      return batchRequest(batch, web3.eth.call, {
+      // Handle ERC20
+      request = batchRequest(batch, web3.eth.call, {
         to: asset.contractAddress,
         data: tokenBalanceData(this.getAddress())
       }, 'latest')
     }
+    return request.then((balance) => toMainDenomination(balance, asset.decimals))
+  };
+
+  getAllBalances = () => {
+    const batch = new web3.BatchRequest()
+    const balancePromises = this.getAllAssets().map((asset) => 
+      this.getBalance(asset, batch).then((balance) => [asset.symbol, balance]))
+    const result = Promise.all(balancePromises)
+      .then((balances) => balances.reduce((result, [symbol, balance]) => ({
+        ...result,
+        [symbol]: balance
+      })))
+    batch.execute()
+    return result
+  };
+
+  _createTransferTx = (toAddress, amount, asset) => {
+    let tx = {
+      from: this.getAddress(),
+      chainId: 1,
+      value: toBigNumber(0),
+      data: ''
+    }
+    if (asset.symbol === 'ETH') {
+      tx.to = toAddress
+      tx.value = toSmallestDenomination(amount, asset.decimals)
+    } else {
+      // Handle ERC20
+      tx.to = asset.contractAddress,
+      tx.data = tokenSendData(toAddress, amount, asset.decimals)
+    }
+    return Promise.all([
+      web3.eth.getTransactionCount(tx.from),
+      web3.eth.getGasPrice(),
+      web3.eth.estimateGas(tx)
+    ]).then(([nonce, gasPrice, gasLimit]) => ({
+      ...tx,
+      nonce: toHex(nonce),
+      gasPrice: toHex(gasPrice),
+      gasLimit: toHex(gasLimit)
+    })).catch(log.error)
   };
 
 }

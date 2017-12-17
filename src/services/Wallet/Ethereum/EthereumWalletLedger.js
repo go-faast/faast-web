@@ -5,17 +5,19 @@ import log from 'Utilities/log'
 import { addHexPrefix } from 'Utilities/helpers'
 import { mockHardwareWalletSign } from 'Actions/mock'
 
-import EthereumWallet from './EthereumWallet'
+import EthereumWalletSigner from './EthereumWalletSigner'
 
-export default class EthereumWalletTrezor extends EthereumWallet {
+export default class EthereumWalletLedger extends EthereumWalletSigner {
 
-  constructor(derivationPath) {
-    super()
+  constructor(derivationPath, isMocking) {
+    super('EthereumWalletLedger')
     this.derivationPath = derivationPath
+    this._isMocking = isMocking
   }
 
-  signTx = (txParams, isMocking) => {
-    if (isMocking) return mockHardwareWalletSign('ledger')
+  signTx = (txParams) => {
+    this._validateTx(txParams)
+    if (this._isMocking) return mockHardwareWalletSign('ledger')
     let tx
     try {
       tx = new EthereumjsTx(txParams)

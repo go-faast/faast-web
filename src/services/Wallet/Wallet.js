@@ -3,16 +3,30 @@ import { assertMethods, assertExtended } from 'Utilities/reflect'
 
 export class Wallet {
 
-  constructor(assetList) {
+  constructor(type) {
     assertExtended(this, Wallet)
-    assertMethods(this, Wallet, 'send', 'getBalance', 'isSupportedAsset', 'serialize', 'deserialize', 'canDeserialize')
-    this.assetList = assetList
+    assertMethods(this, Wallet, 'transfer', 'getBalance', 'getAllBalances', 'isAssetSupported')
+    this.type = type
+    this._allAssets = {}
   }
 
+  setAllAssets = (allAssets) => {
+    this._allAssets = allAssets
+  };
+
+  getAllAssets = () => this._allAssets;
+
   getAsset = (symbol) => {
-    const asset = this.assetList[symbol]
-    if (!asset) {
-      throw new Error(`Unknown asset ${symbol}`)
+    if (typeof symbol === 'object') {
+      // Support passing in an asset object as argument
+      symbol = symbol.symbol
+    }
+    return this.allAssets[symbol]
+  };
+
+  assertAssetSupported = (asset) => {
+    if (!this.isAssetSupported(asset)) {
+      throw new Error(`Asset ${asset.symbol || asset} not supported by ${this.type}`)
     }
     return asset
   };
