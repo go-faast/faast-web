@@ -17,10 +17,6 @@ const Modify = (props) => {
   }
 
   let mq = props.mq
-
-  let largePhone = mq.lgPh && !mq.mdPh && !mq.smPh
-  let mediumPhone = mq.mdPh && mq.lgPh && !mq.smPh
-  let smallPhone = mq.smPh && mq.mdPh && mq.lgPh
   let tablet = mq.sm
 
   const renderAssetRows = () => {
@@ -63,11 +59,13 @@ const Modify = (props) => {
             <div className='col-md-6'>
               <div className='status-data-container'>
                 <div className='row'>
-                  <div className='col-md-3'>
-                    <div className='status-table-label'>Status</div>
-                    <div className='status-table-value'>Before</div>
-                    <div className='status-table-value'>After</div>
-                  </div>
+                  {tablet&&
+                    <div className='col-md-3'>
+                      <div className='status-table-label'>Status</div>
+                      <div className='status-table-value'>Before</div>
+                      <div className='status-table-value'>After</div>
+                    </div>
+                  }
                   <div className='col-md-3'>
                     <div className='status-table-label'>Value ($)</div>
                     <div className='status-table-value'>{display.fiat(asset.fiat.original)}</div>
