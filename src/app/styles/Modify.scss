@@ -5,6 +5,15 @@
   background-color: $pageBgColor2;
 }
 
+.tileContainer{
+  background-color: $ultra-dark-grey;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 20px;
+  box-shadow: 5px 10px 15px #090909;
+  width: 50%;
+  height: 80px;
+}
+
 .editable {
   color: $primary-color;
   @extend .cursor-pointer;

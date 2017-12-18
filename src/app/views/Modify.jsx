@@ -15,6 +15,14 @@ const Modify = (props) => {
     fiat: {},
     weight: {}
   }
+
+  let mq = props.mq
+
+  let largePhone = mq.lgPh && !mq.mdPh && !mq.smPh
+  let mediumPhone = mq.mdPh && mq.lgPh && !mq.smPh
+  let smallPhone = mq.smPh && mq.mdPh && mq.lgPh
+  let tablet = mq.sm
+
   const renderAssetRows = () => {
     return props.list.map((asset, i) => {
       const changeIconDirection = asset.priceDecrease ? 'down-icon' : 'up-icon'
@@ -118,6 +126,8 @@ const Modify = (props) => {
     })
   }
 
+  let tile = tablet? 'tile-container' : `${styles.tileContainer}`
+
   return (
     <LayoutController {...props.layoutProps}>
       {props.showAssetList &&
@@ -127,7 +137,7 @@ const Modify = (props) => {
       <Sticky innerZ={config.sticky.zIndex} top='#header'>
         <div className={`row stats-container ${styles.header}`}>
           <div className='col-md-4 tile-outer-container'>
-            <div className='tile-container'>
+            <div className={tile}>
               <div className='row'>
                 <div className='col'>
                   <div className='text-small text-medium-grey'>available to swap</div>
@@ -137,7 +147,7 @@ const Modify = (props) => {
             </div>
           </div>
           <div className='col-md-8 tile-outer-container'>
-            <div className='tile-container'>
+            <div className={tile}>
               <div className='row'>
                 <div className='col'>
                   <div className='text-medium-grey text-small'>
