@@ -127,6 +127,8 @@ const Modify = (props) => {
   }
 
   let tile = tablet? 'tile-container' : `${styles.tileContainer}`
+  let addTile = tablet? 'tile-container' : `${styles.addTile}`
+  let addAsset = tablet? 'add a new asset' : 'add asset'
 
   return (
     <LayoutController {...props.layoutProps}>
@@ -147,14 +149,16 @@ const Modify = (props) => {
             </div>
           </div>
           <div className='col-md-8 tile-outer-container'>
-            <div className={tile}>
+            <div className={addTile}>
               <div className='row'>
                 <div className='col'>
-                  <div className='text-medium-grey text-small'>
-                    add a new asset from the unallocated value
-                  </div>
+                  {tablet &&
+                    <div className='text-medium-grey text-small'>
+                      add a new asset from the unallocated value
+                    </div>
+                  }
                   <div onClick={props.handleAssetListShow} className='text-gradient text-medium cursor-pointer'>
-                    <i className='fa fa-plus text-gradient' aria-hidden='true' /> add a new asset
+                    <i className='fa fa-plus text-gradient' aria-hidden='true' /> {addAsset}
                   </div>
                 </div>
               </div>
