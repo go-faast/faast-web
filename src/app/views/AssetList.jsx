@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Field, reduxForm } from 'redux-form'
 import { chunkify, shortener } from 'Utilities/helpers'
 import styles from 'Styles/AssetList.scss'
+import config from 'Config'
 
 const SearchInput = (props) => (
   <input type='text' autoFocus autoComplete='off' className={styles.inputText} placeholder='search or select your asset' {...props.input} onChange={props.handleChange} value={props.value} />
@@ -10,22 +11,22 @@ const SearchInput = (props) => (
 
 const AssetList = (props) => {
   const renderAssets = () => {
-    const type = props.type
-    const columns = props.columns || 6
+    const { list, isAvailableTest, columns, ignoreUnavailable, showBalance, handleSelect } = props
     const bsColSize = Math.floor(12 / columns)
-    return chunkify(props.list, columns).map((a, i) => {
+    return chunkify(list, columns).map((assetList, i) => {
       return (
         <div key={i} className={`row ${styles.assetListContainerRow}`}>
-          {a.map((b, j) => {
+          {assetList.map((asset, j) => {
+            const isUnavailable = !(ignoreUnavailable || isAvailableTest(asset))
             return (
-              <div key={j} className={`col-4 col-lg-${bsColSize} ${styles.assetListItem}`} onClick={() => props.handleSelect(b)}>
-                <div className={styles.assetListItemIcon} style={{ backgroundImage: `url(https://faa.st/img/coins/coin_${b.symbol}.png)` }} />
-                <div>{b.name}</div>
-                {!props.ignoreUnavailable && !b[type] &&
+              <div key={j} className={`col-4 col-lg-${bsColSize} ${styles.assetListItem} ${isUnavailable ? styles.itemDisabled : ''}`} onClick={() => handleSelect(asset)}>
+                <div className={styles.assetListItemIcon} style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${asset.symbol}.png)` }} />
+                <div>{asset.name}</div>
+                {isUnavailable &&
                   <div style={{ fontSize: 9 }}>(coming soon)</div>
                 }
-                {props.showBalance &&
-                  <div>{!!b.balance && (<span>({shortener(b.balance.converted, 12)} {b.symbol})</span>)}</div>
+                {showBalance &&
+                  <div>{!!asset.balance && (<span>({shortener(asset.balance.converted, 12)} {asset.symbol})</span>)}</div>
                 }
               </div>
             )
@@ -54,7 +55,6 @@ const AssetList = (props) => {
 }
 
 AssetList.propTypes = {
-  type: PropTypes.string,
   columns: PropTypes.number,
   input: PropTypes.object,
   handleChange: PropTypes.func,
@@ -62,10 +62,15 @@ AssetList.propTypes = {
   list: PropTypes.array,
   handleSelect: PropTypes.func,
   ignoreUnavailable: PropTypes.bool,
+  isAvailableTest: PropTypes.func,
   showBalance: PropTypes.bool,
   handleSubmit: PropTypes.func,
   searchValue: PropTypes.string,
   handleSearchChange: PropTypes.func
+}
+
+AssetList.defaultProps = {
+  columns: 6,
 }
 
 export default reduxForm({

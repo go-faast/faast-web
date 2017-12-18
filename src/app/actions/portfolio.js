@@ -115,16 +115,14 @@ const swapEstimateTxFee = (swapList, address) => (dispatch) => {
     window.faast.web3.eth.getTransactionCount(address),
     window.faast.web3.eth.getGasPrice()
   ])
-  .then((res) => {
-    let nonce = res[0]
-    const gasPrice = res[1]
-    processArray(swapList, (a) => {
+  .then(([nonce, gasPrice]) => {
+    return processArray(swapList, (a) => {
       const finish = (e, x) => dispatch(swapFinish('swapEstimateTxFee', a, e, x))
 
       if (!a.tx) return finish('no tx')
       if (!a.order) return finish('no order')
 
-      window.faast.web3.eth.estimateGas({
+      return window.faast.web3.eth.estimateGas({
         from: a.tx.from,
         to: a.tx.to,
         data: a.tx.data

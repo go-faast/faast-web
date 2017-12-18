@@ -272,8 +272,7 @@ class ModifyController extends Component {
       assets: assetList,
       handleClose: this._handleAssetListHide,
       selectAsset: this._handleSelectAsset,
-      type: 'ERC20',
-      ignoreUnavailable: true
+      ignoreUnavailable: false
     }
     return (
       <Modify

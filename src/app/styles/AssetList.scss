@@ -72,6 +72,7 @@
 .assetListContainerRow {
   margin: 0;
   font-size: 14px;
+  letter-spacing: normal;
   border-bottom: 1px solid $medium-grey;
   &:last-child {
     border-bottom: none !important;
@@ -84,9 +85,13 @@
   text-align: center;
   padding: 15px;
 
-  &:hover {
+  &:hover:not(.itemDisabled) {
     cursor: pointer;
     color: $white;
+
+    .assetListItemIcon {
+      opacity: 1.0;
+    }
   }
 
   @include respond-to(small-screens) {
@@ -106,19 +111,17 @@
   }
 }
 
+.itemDisabled {
+  -webkit-filter: grayscale(1); /* Old WebKit */
+  filter: grayscale(1);
+}
+
 .assetListItemIcon {
   height: 60px;
   background-position: center center;
   background-size: contain;
   background-repeat: no-repeat;
-  -webkit-filter: grayscale(1); /* Old WebKit */
-  filter: grayscale(1);
   opacity: 0.5;
   width: 60%;
   margin: auto;
-  &:hover {
-    -webkit-filter: grayscale(0); /* Old WebKit */
-    filter: grayscale(0);
-    opacity: 1.0;
-  }
 }

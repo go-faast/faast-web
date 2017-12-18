@@ -5,8 +5,6 @@ import Fuse from 'fuse.js'
 import AssetList from 'Views/AssetList'
 import { sortByProperty } from 'Utilities/helpers'
 
-let fuse
-
 class AssetListController extends Component {
   constructor () {
     super()
@@ -22,22 +20,14 @@ class AssetListController extends Component {
   }
 
   componentWillMount () {
-    this._setList(this.props.type)
+    this._setList()
   }
 
-  componentWillReceiveProps (nextProps) {
-    if (this.props.type !== nextProps.type) {
-      this._setList(nextProps.type)
-    }
-  }
-
-  _setList (type) {
-    const filteredList = this.props.assets.filter((a) => {
-      return (!a.onlyShow || a.onlyShow === type)
-    })
-    // sort by `type`=true (i.e. deposit=true)
-    const list = sortByProperty(filteredList, type)
-    fuse = new Fuse(list, {
+  _setList () {
+    const { assets } = this.props
+    const sorted = [...assets].sort((a, b) => b.marketCap.cmp(a.marketCap))
+    const list = sortByProperty(sorted, 'portfolio')
+    this.fuse = new Fuse(list, {
       shouldSort: true,
       threshold: 0.6,
       location: 0,
@@ -57,7 +47,7 @@ class AssetListController extends Component {
     if (!newValue) {
       newList = this.state.originalList
     } else {
-      newList = sortByProperty(fuse.search(newValue), this.props.type)
+      newList = this.fuse.search(newValue)
     }
     this.setState({
       value: newValue,
@@ -73,38 +63,46 @@ class AssetListController extends Component {
   }
 
   _handleSelect (asset) {
-    const type = this.props.type
-    if (!this.props.ignoreUnavailable && !asset[type]) {
-      return toastr.warning('COMING SOON', `${asset.name} is not yet available to ${type}`)
+    const { isAvailableTest, ignoreUnavailable, selectAsset } = this.props
+    if (!ignoreUnavailable && !isAvailableTest(asset)) {
+      return toastr.warning('COMING SOON', `${asset.name} is not available yet`)
     }
-    this.props.selectAsset(asset)
+    selectAsset(asset)
   }
 
   render () {
+    const { columns, ignoreUnavailable, isAvailableTest, showBalance, handleClose } = this.props
+    const { list, value } = this.state
+    const { _handleSelect, _handleChange, _handleSubmit } = this
     return (
       <AssetList
-        type={this.props.type}
-        columns={this.props.columns}
-        list={this.state.list}
-        handleSelect={this._handleSelect}
-        ignoreUnavailable={this.props.ignoreUnavailable}
-        showBalance={this.props.showBalance}
-        searchValue={this.state.value}
-        handleSearchChange={this._handleChange}
-        handleClose={this.props.handleClose}
-        onSubmit={this._handleSubmit}
+        columns={columns}
+        list={list}
+        handleSelect={_handleSelect}
+        ignoreUnavailable={ignoreUnavailable}
+        isAvailableTest={isAvailableTest}
+        showBalance={showBalance}
+        searchValue={value}
+        handleSearchChange={_handleChange}
+        handleClose={handleClose}
+        onSubmit={_handleSubmit}
       />
     )
   }
 }
 
 AssetListController.propTypes = {
-  type: PropTypes.string,
   columns: PropTypes.number,
   assets: PropTypes.array,
   ignoreUnavailable: PropTypes.bool,
+  isAvailableTest: PropTypes.func,
   showBalance: PropTypes.bool,
   handleClose: PropTypes.func
+}
+
+AssetListController.defaultProps = {
+  ignoreUnavailable: false,
+  isAvailableTest: (asset) => asset.portfolio
 }
 
 export default AssetListController
