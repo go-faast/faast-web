@@ -1,7 +1,7 @@
 import log from 'Utilities/log'
 import { assertMethods, assertExtended } from 'Utilities/reflect'
 
-export class Wallet {
+export default class Wallet {
 
   constructor(type) {
     assertExtended(this, Wallet)
