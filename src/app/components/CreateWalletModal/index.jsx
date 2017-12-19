@@ -4,13 +4,12 @@ import { connect } from 'react-redux'
 import CreateWalletModalView from './view'
 import toastr from 'Utilities/toastrWrapper'
 import { downloadJson } from 'Utilities/helpers'
-import { sessionStorageSet } from 'Utilities/storage'
 import log from 'Utilities/log'
 import { openWallet } from 'Actions/portfolio'
 import { EthereumWalletKeystore } from 'Services/Wallet'
 
 const initialState = {
-  encryptedWallet: null,
+  createdWallet: null,
   fileName: null,
   view: 'create',
   downloaded: false
@@ -48,9 +47,9 @@ class CreateWalletModal extends Component {
         })
     }
     if (validateCreatePassword(values)) {
-      const encryptedWallet = this._generateNewWallet(values.password)
-      if (encryptedWallet) {
-        this.setState({ encryptedWallet, view: 'confirm' })
+      const createdWallet = this._generateNewWallet(values.password)
+      if (createdWallet) {
+        this.setState({ createdWallet, view: 'confirm' })
       } else {
         toastr.error('Error generating wallet')
       }
@@ -60,9 +59,9 @@ class CreateWalletModal extends Component {
   _handleCreatePasswordWithPrivKey (values) {
     const name = this.props.isNewWallet ? 'wallet' : 'keystore file'
     if (validateCreatePassword(values, name)) {
-      const encryptedWallet = this._generateFromPrivKey(values.privateKey, values.password)
-      if (encryptedWallet) {
-        this.setState({ encryptedWallet, view: 'confirm' })
+      const createdWallet = this._generateFromPrivKey(values.privateKey, values.password)
+      if (createdWallet) {
+        this.setState({ createdWallet, view: 'confirm' })
       } else {
         toastr.error('Please enter a valid private key')
       }
@@ -78,7 +77,7 @@ class CreateWalletModal extends Component {
   }
 
   _handleDownload () {
-    downloadJson(this.state.encryptedWallet, this.state.fileName, true)
+    downloadJson(this.state.createdWallet.keystore, this.state.fileName, true)
     .then(() => {
       this.setState({ download: true })
     })
@@ -92,9 +91,7 @@ class CreateWalletModal extends Component {
       return toastr.error('Please download the wallet keystore file before continuing')
     }
     if (this.props.isNewWallet) {
-      sessionStorageSet('encryptedWallet', JSON.stringify(this.state.encryptedWallet))
-
-      this.props.openWallet('keystore', this.state.encryptedWallet, this.props.mock.mocking)
+      this.props.openWallet(this.state.createdWallet, this.props.mock.mocking)
     } else {
       this.props.handleContinue ? this.props.handleContinue() : this._handleCloseModal()
     }
@@ -115,7 +112,7 @@ class CreateWalletModal extends Component {
   }
 
   _getFileName (password) {
-    return this.state.wallet.getFileName(password)
+    return this.state.createdWallet.getFileName(password)
   }
 
   _handleImportPrivKey () {
@@ -154,8 +151,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  openWallet: (type, wallet, isMocking) => {
-    dispatch(openWallet(type, wallet, isMocking))
+  openWallet: (wallet, isMocking) => {
+    dispatch(openWallet(wallet, isMocking))
   }
 })
 

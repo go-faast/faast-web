@@ -6,6 +6,7 @@ import { parseEncryptedWalletString } from 'Utilities/wallet'
 import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
 import { openWallet } from 'Actions/portfolio'
+import { EthereumWalletKeystore } from 'Services/Wallet'
 
 const Keystore = (props) => {
   const handleDrop = (files) => {
@@ -16,7 +17,7 @@ const Keystore = (props) => {
       const encryptedWallet = parseEncryptedWalletString(event.target.result)
       if (!encryptedWallet) return toastr.error('Not a valid wallet keystore file')
 
-      props.openWallet('keystore', encryptedWallet, props.mock.mocking)
+      props.openWallet(new EthereumWalletKeystore(encryptedWallet), props.mock.mocking)
       log.info('Encrypted wallet set')
     }
 

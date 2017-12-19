@@ -5,6 +5,7 @@ import log from 'Utilities/log'
 import AccessTile from 'Components/AccessTile'
 import { openWallet } from 'Actions/portfolio'
 import web3 from 'Services/Web3'
+import { EthereumWalletWeb3 } from 'Services/Wallet'
 
 const typeToProps = {
   metamask: {
@@ -49,7 +50,7 @@ const Web3Wallet = ({ type, openWallet, mock }) => {
         const address = accounts[0]
         if (!address) return toastr.error(`Unable to retrieve ${name} account. Please ensure your account is unlocked.`, { timeOut: 10000 })
 
-        openWallet('metamask', { address }, mock.mocking)
+        openWallet(new EthereumWalletWeb3(), mock.mocking)
       })
       .catch((err) => {
         log.error(err)
@@ -66,8 +67,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  openWallet: (type, wallet, isMocking) => {
-    dispatch(openWallet(type, wallet, isMocking))
+  openWallet: (wallet, isMocking) => {
+    dispatch(openWallet(wallet, isMocking))
   }
 })
 
