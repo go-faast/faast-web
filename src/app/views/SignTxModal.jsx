@@ -3,6 +3,7 @@ import { reduxForm, Field } from 'redux-form'
 import { Modal, ModalBody } from 'reactstrap'
 import display from 'Utilities/display'
 import config from 'Config'
+import styles from 'Styles/SignTxModal.scss'
 
 const SignTxModal = (props) => {
   const renderView = () => {
@@ -13,6 +14,7 @@ const SignTxModal = (props) => {
             onSubmit={props.handleKeystorePassword}
             description='your wallet password'
             buttonText='I agree'
+            mq={props.mq}
             {...props.signTxProps}
           />
         )
@@ -67,6 +69,10 @@ const SignTxForm = reduxForm({
     buttonStyle.opacity = 0.3
     buttonStyle.cursor = 'not-allowed'
   }
+
+  let mq = props.mq
+  console.log(mq);
+
   let nextToSign = 0
   const swapRow = props.swapList.map((a, i) => {
     const sigStatus = () => {
