@@ -34,7 +34,7 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "bignumber.js": "^4.0.4",
-    "blockstack": "^0.13.5",
+    "blockstack": "^0.14.0",
     "concurrently": "^3.5.0",
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
