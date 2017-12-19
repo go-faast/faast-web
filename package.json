@@ -26,6 +26,7 @@
     "class-names": "^1.0.0",
     "postcss-loader": "^2.0.10",
     "precss": "^2.0.0",
+    "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "serve": "^6.0.6"
   },
   "devDependencies": {
