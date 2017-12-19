@@ -113,6 +113,22 @@ const Balances = (props) => {
     ))
   }
 
+  const renderStatsPhone = () => {
+    return values.map((a, i) => (
+      <div key={i} className={styles.tileContainerPhone}>
+          {!!a.changeIcon &&
+            <div className='col-sm-3'>
+              <div className={a.changeIcon} />
+            </div>
+          }
+          <div className={a.changeIcon ? 'col-sm-9' : 'col'}>
+            <div className={styles.statsTitle}>{a.title}</div>
+            <div className={`text-white ${styles.statsContent}`}>{a.value}</div>
+          </div>
+      </div>
+    ))
+  }
+
   const renderAssets = () => {
     return props.assetRows.map((a, i) => (
       <div key={i}>
@@ -173,7 +189,14 @@ const Balances = (props) => {
         <OrderInProgress status={props.orderStatus} handleViewStatus={props.handleToggleOrderModal} />
       }
       <div className={`row ${styles.statsContainer}`}>
-        {renderStats()}
+        {tablet &&
+          renderStats()
+        }
+        {!tablet &&
+          <div className={`col-md-3 ${styles.tileOuterContainerPhone}`}>
+            {renderStatsPhone()}
+          </div>
+        }
       </div>
 
       { tablet && //different chart and address for tablet and up
@@ -184,7 +207,7 @@ const Balances = (props) => {
             <div style={{ textAlign: 'right' }}>
               <div className={styles.addressTitle}>address</div>
               {(props.viewOnly && props.addressProps.address) ||
-                <AddressController className={styles.link} {...props.addressProps} />
+                <AddressController tablet={tablet} className={styles.link} {...props.addressProps} />
               }
             </div>
             {props.pieChart}
@@ -197,8 +220,7 @@ const Balances = (props) => {
           <div className={`col ${styles.tileOuterContainer}`}>
             <div className={styles.tileContainerAddress}>
               <div style={{ textAlign: 'right' }}>
-                <div className={styles.addressTitle}>address</div>
-                  <AddressController className={styles.link} {...props.addressProps} />
+                <AddressController className={styles.link} {...props.addressProps} />
               </div>
             </div>
             {props.pieChart}
