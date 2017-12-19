@@ -17,61 +17,6 @@ import web3 from 'Services/Web3'
 
 const ENABLED_ASSETS = ['ETH']
 
-const batchRequest = (batch, batchableFn, ...fnArgs) => {
-  if (batch) {
-    return new Promise((resolve, reject) => {
-      batch.add(
-        batchableFn.request(...fnArgs, (err, result) => {
-          if (err) return reject(err)
-
-          resolve(result)
-        })
-      )
-    })
-  }
-  return batchableFn(...fnArgs)
-}
-
-const getETHTokenBalance = (address, symbol, contractAddress, batch = null) => () =>
-  batchRequest(batch, web3.eth.call, {
-    to: contractAddress,
-    data: tokenBalanceData(address)
-  }, 'latest')
-
-const getBalanceActions = {
-  ETH: (address, batch = null) => () => batchRequest(batch, web3.eth.getBalance, address, 'latest'),
-  ETC: () => () => Promise.resolve(0), // TODO
-
-  BTC: () => () => Promise.resolve(0), // TODO: implement balance discovery using trezor/hd-wallet
-  BCH: () => () => Promise.resolve(0), // TODO
-  BTG: () => () => Promise.resolve(0), // TODO
-
-  LTC: () => () => Promise.resolve(0), // TODO
-  ZEC: () => () => Promise.resolve(0), // TODO
-  DASH: () => () => Promise.resolve(0), // TODO
-  MIOTA: () => () => Promise.resolve(0), // TODO
-  XMR: () => () => Promise.resolve(0), // TODO
-  NEO: () => () => Promise.resolve(0), // TODO
-}
-
-export const getBalance = (asset, walletAddress, mock, batch) => (dispatch) => {
-  const { symbol } = asset
-  if (mock && mock[symbol] && mock[symbol].hasOwnProperty('balance')) {
-    return Promise.resolve(toSmallestDenomination(mock[symbol].balance, asset.decimals))
-  }
-  const getBalanceAction = getBalanceActions[symbol]
-  let balance;
-  if (getBalanceAction) {
-    balance = dispatch(getBalanceAction(walletAddress, batch))
-  } else if (asset.ERC20) {
-    balance = dispatch(getETHTokenBalance(walletAddress, symbol, asset.contractAddress, batch))
-  } else {
-    console.log(`Cannot get balance for asset ${symbol}`)
-    balance = Promise.resolve(0)
-  }
-  return balance.then(toBigNumber)
-}
-
 export const getFiatPrice = (symbol, mock) => () => {
   if (mock && mock[symbol] && mock[symbol].hasOwnProperty('price')) {
     return Promise.resolve({ price_usd: toBigNumber(mock[symbol].price) })
@@ -140,7 +85,7 @@ const preparePortfolio = (assets, mock) => () => {
   })
 }
 
-export const getBalances = (assets, portfolio, walletAddress, mock) => (dispatch) => {
+export const getBalances = (assets, portfolio, mock) => (dispatch) => {
   let portfolioList = portfolio.list
   if (!portfolioList || !portfolioList.length) {
     dispatch(loadingPortfolio(true))
@@ -148,16 +93,9 @@ export const getBalances = (assets, portfolio, walletAddress, mock) => (dispatch
   }
   return dispatch(getFiatPrices(portfolioList, mock))
     .then((p) => {
-      const batch = new web3.BatchRequest()
-      const promises = Promise.all(p.map((a) =>
-        dispatch(getBalance(a, walletAddress, mock, batch))
-          .then((b) => Object.assign({}, a, { balance: toMainDenomination(b, a.decimals) }))
-          .catch((err) => {
-            console.error(`Error retrieving balance for ${a.symbol}: `, err)
-            return Object.assign({}, a, { balance: toBigNumber(0) })
-          })))
-      batch.execute()
-      return promises
+      return window.faast.wallet.getBalances()
+        .then((symbolToBalance) => p.map((a) =>
+          Object.assign({}, a, { balance: symbolToBalance[a.symbol] || toBigNumber(0) })))
     })
     .then((p) => {
       // let pendingFiat = toBigNumber(0)

@@ -11,8 +11,8 @@ import toastr from 'Utilities/toastrWrapper'
 import { filterUrl } from 'Utilities/helpers'
 import blockstack from 'Utilities/blockstack'
 import { getAssets, getSwundle } from 'Actions/request'
-import { openWallet } from 'Actions/portfolio'
 import { setSettings } from 'Actions/redux'
+import { MultiWallet } from 'Services/Wallet'
 
 class Entry extends Component {
   constructor () {
@@ -58,6 +58,7 @@ class Entry extends Component {
     })
     .then(() => {
       return new Promise((resolve) => {
+        window.faast.wallet = new MultiWallet()
         if (this.props.wallet.type === 'blockstack') {
           blockstack.getSettings()
           .then((settings) => {
@@ -130,9 +131,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   getAssets: () => {
     return dispatch(getAssets())
-  },
-  openWallet: (type, wallet, isMocking, noSessionStorage) => {
-    dispatch(openWallet(type, wallet, isMocking, noSessionStorage))
   },
   setSettings: (settings) => {
     dispatch(setSettings(settings))

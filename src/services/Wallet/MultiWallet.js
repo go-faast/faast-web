@@ -5,6 +5,8 @@ import Wallet from './Wallet'
 
 const selectFirst = (wallets) => Promise.resolve(wallets[0])
 
+const resolveId = (walletOrId) => typeof walletOrId !== 'string' ? walletOrId.getId() : walletOrId
+
 export class MultiWallet extends Wallet {
 
   constructor() {
@@ -12,13 +14,52 @@ export class MultiWallet extends Wallet {
     this.wallets = []
   }
 
-  _getWalletsForAsset = (assetOrSymbol) => {
-    return this.wallets.filter((wallet) => wallet.isAssetSupported(assetOrSymbol))
+  getId = () => this.wallets.map((w) => w.getId()).join(',')
+
+  /**
+    * @param {(Object|String)} walletOrId - Wallet instance or wallet ID
+    * @return {Number} Wallet index, or -1 if not found
+    */
+  _getWalletIndex = (walletOrId) => {
+    const id = resolveId(walletOrId)
+    return this.wallets.findIndex((w) => w.getId() === id)
   };
 
-  isAssetSupported = (assetOrSymbol) => {
-    return this.wallets.some((wallet) => wallet.isAssetSupported(assetOrSymbol))
+  /**
+    * @param {(Object|String)} walletOrId - Wallet instance or wallet ID
+    * @return {Object} Wallet instance, or undefined if not found
+    */
+  getWallet = (walletOrId) => this.wallets[this._getWalletIndex(walletOrId)];
+
+  hasWallet = (walletOrId) => !!this.getWallet(walletOrId);
+
+  /**
+    * @param {Object} wallet - Wallet instance
+    * @return {Boolean} True if wallet was added, false if already added
+    */
+  addWallet = (wallet) => {
+    if (this.hasWallet(wallet)) {
+      return false
+    }
+    this.wallets.push(wallet)
+    return true
   };
+
+  /**
+    * @param {(Object|String)} walletOrId - Wallet instance or wallet ID
+    * @return {Object} The removed wallet, or undefined if nothing removed
+    */
+  removeWallet = (walletOrId) => {
+    const walletIndex = this._getWalletIndex(walletOrId)
+    if (walletIndex >= 0) {
+      return this.wallets.splice(walletIndex, 1)[0]
+    }
+    return undefined
+  };
+
+  _getWalletsForAsset = (assetOrSymbol) => this.wallets.filter((wallet) => wallet.isAssetSupported(assetOrSymbol));
+
+  isAssetSupported = (assetOrSymbol) => this.wallets.some((wallet) => wallet.isAssetSupported(assetOrSymbol));
 
   transfer = (toAddress, amount, assetOrSymbol, selectWalletCallback = selectFirst) => {
     const walletsForAsset = this.getWalletsForAsset(assetOrSymbol)

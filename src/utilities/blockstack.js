@@ -5,10 +5,10 @@ import {
   handlePendingSignIn,
   redirectToSignIn,
   getFile,
-  putFile
+  putFile,
+  loadUserData
 } from 'blockstack'
 import log from 'Utilities/log'
-
 
 const saveSettings = (settings = {}) => {
   putFile('settings.json', JSON.stringify(settings), true)
@@ -34,5 +34,6 @@ export default {
   getSettings,
   isSignInPending,
   handlePendingSignIn,
-  redirectToSignIn
+  redirectToSignIn,
+  loadUserData
 }

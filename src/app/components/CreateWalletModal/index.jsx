@@ -2,19 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import CreateWalletModalView from './view'
-import {
-  generateWallet,
-  generateWalletFromPrivateKey,
-  encryptWallet,
-  decryptWallet,
-  getFileName,
-  getPrivateKeyString
-} from 'Utilities/wallet'
 import toastr from 'Utilities/toastrWrapper'
 import { downloadJson } from 'Utilities/helpers'
 import { sessionStorageSet } from 'Utilities/storage'
 import log from 'Utilities/log'
 import { openWallet } from 'Actions/portfolio'
+import { EthereumWalletKeystore } from 'Services/Wallet'
 
 const initialState = {
   encryptedWallet: null,
@@ -49,10 +42,10 @@ class CreateWalletModal extends Component {
 
   _handleCreatePassword (values) {
     if (!this.props.isNewWallet && this.props.wallet.type === 'blockstack') {
-      return getPrivateKeyString(this.props.wallet.data)
-      .then((privateKey) => {
-        this._handleCreatePasswordWithPrivKey(Object.assign({}, values, { privateKey }))
-      })
+      return this.props.wallet.getPrivateKeyString(values.password)
+        .then((privateKey) => {
+          this._handleCreatePasswordWithPrivKey(Object.assign({}, values, { privateKey }))
+        })
     }
     if (validateCreatePassword(values)) {
       const encryptedWallet = this._generateNewWallet(values.password)
@@ -114,25 +107,15 @@ class CreateWalletModal extends Component {
 
   _generateFromPrivKey (privateKey, password) {
     if (!privateKey) return null
-
-    return generateWalletFromPrivateKey(privateKey, password)
+    return EthereumWalletKeystore.fromPrivateKey(privateKey).encrypt(password)
   }
 
   _generateNewWallet (password) {
-    return encryptWallet(generateWallet(), password)
+    return EthereumWalletKeystore.generate().encrypt(password)
   }
 
   _getFileName (password) {
-    return new Promise((resolve, reject) => {
-      decryptWallet(this.state.encryptedWallet, password)
-      .then((wallet) => {
-        return resolve(getFileName(wallet))
-      })
-      .catch((e) => {
-        toastr.error('Incorrect password')
-        reject(e)
-      })
-    })
+    return this.state.wallet.getFileName(password)
   }
 
   _handleImportPrivKey () {

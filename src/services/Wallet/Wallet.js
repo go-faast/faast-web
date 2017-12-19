@@ -5,7 +5,7 @@ export class Wallet {
 
   constructor(type) {
     assertExtended(this, Wallet)
-    assertMethods(this, Wallet, 'transfer', 'getBalance', 'getAllBalances', 'isAssetSupported')
+    assertMethods(this, Wallet, 'getId', 'transfer', 'getBalance', 'getAllBalances', 'isAssetSupported')
     this.type = type
     this._allAssets = {}
   }

@@ -341,10 +341,10 @@ export const restorePolling = (swap, isMocking) => (dispatch) => {
   })
 }
 
-export const openWallet = (type, wallet, isMocking, noSessionStorage) => (dispatch) => {
-  const address = toChecksumAddress(wallet.address)
-  if (address) {
-    const state = restoreFromAddress(address)
+export const openWallet = (wallet, isMocking) => (dispatch) => {
+  const walletId = (wallet.getAddress && wallet.getAddress()) || wallet.getId()
+  if (walletId) {
+    const state = restoreFromAddress(walletId)
 
     if (state && state.swap && state.swap.length) {
       const status = statusAllSwaps(state.swap)
@@ -355,16 +355,10 @@ export const openWallet = (type, wallet, isMocking, noSessionStorage) => (dispat
         dispatch(restorePolling(swap, isMocking))
       }
     } else {
-      dispatch(getSwundle(address, isMocking))
+      dispatch(getSwundle(walletId, isMocking))
     }
-    if (!noSessionStorage) {
-      sessionStorageSet('wallet', JSON.stringify({
-        type,
-        address,
-        data: wallet
-      }))
-    }
-    dispatch(setWallet(type, address, wallet))
+    window.faast.wallet.addWallet(wallet)
+    // dispatch(setWallet(type, address, wallet))
   }
 }
 

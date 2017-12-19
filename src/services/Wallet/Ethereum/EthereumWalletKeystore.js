@@ -8,21 +8,21 @@ import { toChecksumAddress } from 'Utilities/convert'
 
 import EthereumWalletSigner from './EthereumWalletSigner'
 
-const SERIAL_TYPE = 'keystore'
-
 export default class EthereumWalletKeystore extends EthereumWalletSigner {
 
-  constructor(keystore, passwordCallback = null) {
+  constructor(keystore) {
     super('EthereumWalletKeystore')
-    this._passwordCallback = passwordCallback
     this.keystore = keystore
     if (keystore instanceof EthereumjsWallet) {
       this.isEncrypted = false
     } else {
-      keystore = (typeof keystore === 'string') ? JSON.parse(keystore) : keystore
+      keystore = parseJson(keystore)
+      if (!keystore) {
+        throw new Error('Invalid keystore')
+      }
       let version = keystore.version || keystore.Version
       if (typeof version === 'undefined') {
-        throw new Error('Invalid keystore')
+        throw new Error('Keystore version information missing')
       }
       if (version !== 3) {
         throw new Error(`Unsupported keystore version: ${keystore.version}`)
@@ -34,71 +34,57 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
     }
   }
 
-  static generate = (passwordCallback) => {
-    return new EthereumWalletKeystore(EthereumjsWallet.generate(), passwordCallback)
+  static generate = () => {
+    return new EthereumWalletKeystore(EthereumjsWallet.generate())
   };
 
-  static fromPrivateKey = (privateKey, passwordCallback) => {
+  static fromPrivateKey = (privateKey) => {
     const pk = Buffer.from(stripHexPrefix(privateKey.trim()), 'hex')
-    return new EthereumWalletKeystore(EthereumjsWallet.fromPrivateKey(pk), passwordCallback)
+    return new EthereumWalletKeystore(EthereumjsWallet.fromPrivateKey(pk))
   };
 
-  static fromJson = (jsonKeystore, passwordCallback) => {
-    return new EthereumWalletKeystore(jsonKeystore, passwordCallback)
+  static fromJson = (jsonKeystore) => {
+    return new EthereumWalletKeystore(jsonKeystore)
   };
 
-  _getPassword = () => {
-    if (!this._passwordCallback) {
-      return Promise.reject(new Error('Password callback not defined'))
-    }
-    return this._passwordCallback(this).then((password) => {
-      if (typeof password !== 'string') {
-        throw new Error('Password must be a string')
-      }
-    })
-  };
-
-  _getEncryptedKeystore = () => {
-    if (!this.isEncrypted) {
-      return this.getPassword()
-        .then((password) => this.keystore.toV3(password, config.encrOpts))
-    }
-    return Promise.resolve(this.keystore)
-  };
-
-  _getDecryptedKeystore = () => {
+  encrypt = (password = '') => {
     if (this.isEncrypted) {
-      return this.getPassword()
-        .then((password) => EthereumjsWallet.fromV3(this.keystore, password, true))
+      return this
     }
-    return Promise.resolve(this.keystore)
+    return new EthereumWalletKeystore(this.keystore.toV3(password, config.encrOpts))
   };
 
-  encrypt = () => this._getEncryptedKeystore()
-    .then((encrypted) => {
-      this.keystore = encrypted
-      this.isEncrypted = true
-    });
-
-  decrypt = () => this._getDecryptedKeystore()
-    .then((decrypted) => {
-      this.keystore = decrypted
-      this.isEncrypted = false
-    });
+  decrypt = (password = '') => {
+    if (!this.isEncrypted) {
+      return this
+    }
+    return new EthereumWalletKeystore(EthereumjsWallet.fromV3(this.keystore, password, true))
+  };
 
   signTx = (txParams) => {
+    if (this.isEncrypted) {
+      return Promise.reject(new Error('Wallet is encrypted'))
+    }
     return Promise.resolve(txParams)
       .then(this._validateTx)
-      .then(() => this._getDecryptedKeystore())
-      .then((decryptedKeystore) => {
+      .then(() => {
         const tx = new EthereumjsTx(txParams)
-        tx.sign(decryptedKeystore.getPrivateKey())
+        tx.sign(this.keystore.getPrivateKey())
         return tx.serialize().toString('hex')
       })
   };
 
   getAddress = () => {
     return toChecksumAddress(this.keystore.address || this.keystore.Address || this.wallet.getAddress())
+  };
+
+  getFileName = (password) => {
+    return this.decrypt(password).keystore.getV3Filename()
+  };
+
+  getPrivateKeyString = (password, mock) => {
+    if (mock) return 'mock_pk_123'
+    return this.wallet.decrypt(password).keystore.getPrivateKeyString()
   };
 
 }

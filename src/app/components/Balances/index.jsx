@@ -83,9 +83,9 @@ class Balances extends Component {
     }
   }
 
-  _getBalances (address, resetPortfolio) {
+  _getBalances (resetPortfolio) {
     const portfolio = resetPortfolio ? {} : this.props.portfolio
-    this.props.getBalances(this.props.assets, portfolio, address, this.props.mock, this.props.swap)
+    this.props.getBalances(this.props.assets, portfolio, this.props.mock, this.props.swap)
     .then(() => {
       this._setChartSelect('ETH')
       this._setList()
@@ -204,8 +204,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getBalances: (assets, portfolio, walletAddress, mock, swap) => {
-    return dispatch(getBalances(assets, portfolio, walletAddress, mock, swap))
+  getBalances: (assets, portfolio, mock, swap) => {
+    return dispatch(getBalances(assets, portfolio, mock, swap))
   },
   routerPush: (path) => {
     dispatch(push(path))

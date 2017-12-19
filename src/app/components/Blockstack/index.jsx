@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { restoreWallet } from 'Utilities/wallet'
 import toastr from 'Utilities/toastrWrapper'
 import { filterUrl } from 'Utilities/helpers'
 import blockstack from 'Utilities/blockstack'
-import { setWallet } from 'Actions/redux'
+import { openWallet } from 'Actions/portfolio'
 import BlockstackView from './view'
+import { EthereumWalletKeystore } from 'Services/Wallet'
 
 class Blockstack extends Component {
   constructor () {
@@ -17,9 +17,10 @@ class Blockstack extends Component {
     if (!blockstack.isUserSignedIn()) {
       blockstack.redirectToSignIn(filterUrl())
     } else {
-      const wallet = restoreWallet()
+      const userPrivateKey = blockstack.loadUserData().appPrivateKey
+      const wallet = EthereumWalletKeystore.fromPrivateKey(userPrivateKey)
       if (wallet) {
-        this.props.setWallet(wallet.type, wallet.address, wallet.data)
+        this.props.openWallet(wallet)
       } else {
         toastr.error('Unable to open BlockstackView wallet')
       }
@@ -36,8 +37,8 @@ class Blockstack extends Component {
 const mapStateToProps = () => ({})
 
 const mapDispatchToProps = (dispatch) => ({
-  setWallet: (type, address, data) => {
-    dispatch(setWallet(type, address, data))
+  openWallet: (wallet) => {
+    dispatch(openWallet(wallet))
   }
 })
 
