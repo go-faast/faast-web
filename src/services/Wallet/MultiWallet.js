@@ -7,14 +7,14 @@ const selectFirst = (wallets) => Promise.resolve(wallets[0])
 
 const resolveId = (walletOrId) => typeof walletOrId !== 'string' ? walletOrId.getId() : walletOrId
 
-export class MultiWallet extends Wallet {
+export default class MultiWallet extends Wallet {
 
   constructor() {
     super('MultiWallet')
     this.wallets = []
   }
 
-  getId = () => this.wallets.map((w) => w.getId()).join(',')
+  getId = () => this.wallets.map((w) => w.getId()).join(',');
 
   /**
     * @param {(Object|String)} walletOrId - Wallet instance or wallet ID
@@ -91,3 +91,4 @@ export class MultiWallet extends Wallet {
     return result
   };
 }
+window.MultiWallet = MultiWallet

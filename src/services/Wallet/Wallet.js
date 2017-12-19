@@ -1,11 +1,11 @@
 import log from 'Utilities/log'
-import { assertMethods, assertExtended } from 'Utilities/reflect'
+import { abtractMethod, assertExtended } from 'Utilities/reflect'
 
+@abtractMethod('getId', 'transfer', 'getBalance', 'getAllBalances', 'isAssetSupported')
 export default class Wallet {
 
   constructor(type) {
     assertExtended(this, Wallet)
-    assertMethods(this, Wallet, 'getId', 'transfer', 'getBalance', 'getAllBalances', 'isAssetSupported')
     this.type = type
     this._allAssets = {}
   }
