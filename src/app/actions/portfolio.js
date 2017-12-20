@@ -27,6 +27,7 @@ import {
   getTransaction
 } from 'Utilities/wallet'
 import web3 from 'Services/Web3'
+import { MultiWallet } from 'Services/Wallet'
 
 const swapFinish = (type, swap, error, addition) => {
   return (dispatch) => {
@@ -368,6 +369,7 @@ export const closeWallet = () => (dispatch) => {
   blockstack.signUserOut()
   sessionStorageClear()
   dispatch(resetAll())
+  window.faast.wallet = new MultiWallet()
   log.info('wallet closed')
 }
 
