@@ -1,11 +1,11 @@
 
 import web3 from 'Services/Web3'
-import { abtractMethod, assertExtended } from 'Utilities/reflect'
+import { abstractMethod, assertExtended } from 'Utilities/reflect'
 import { addHexPrefix } from 'Utilities/helpers'
 
 import EthereumWallet from './EthereumWallet'
 
-@abtractMethod('getAddress', 'signTx')
+@abstractMethod('getAddress', 'signTx')
 export default class EthereumWalletSigner extends EthereumWallet {
 
   constructor(type) {

@@ -4,7 +4,7 @@ import config from 'Config'
 import web3 from 'Services/Web3'
 import log from 'Utilities/log'
 import { toBigNumber, toSmallestDenomination, toMainDenomination, toHex } from 'Utilities/convert'
-import { abtractMethod, assertExtended } from 'Utilities/reflect'
+import { abstractMethod, assertExtended } from 'Utilities/reflect'
 
 import Wallet from '../Wallet'
 
@@ -41,7 +41,7 @@ const batchRequest = (batch, batchableFn, ...fnArgs) => {
   return batchableFn(...fnArgs)
 }
 
-@abtractMethod('getAddress', 'transfer')
+@abstractMethod('getAddress', 'transfer')
 export default class EthereumWallet extends Wallet {
 
   constructor(type) {

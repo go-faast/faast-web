@@ -1,7 +1,7 @@
 import log from 'Utilities/log'
-import { abtractMethod, assertExtended } from 'Utilities/reflect'
+import { abstractMethod, assertExtended } from 'Utilities/reflect'
 
-@abtractMethod('transfer', 'getBalance', 'getAllBalances', 'isAssetSupported')
+@abstractMethod('transfer', 'getBalance', 'getAllBalances', 'isAssetSupported')
 export default class Wallet {
 
   constructor(type) {
