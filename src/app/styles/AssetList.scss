@@ -10,7 +10,7 @@
   z-index: 300;
 
   @include respond-to(small-screens) {
-    max-width: 300px;
+    max-width: 360px;
     // left: -1px;
   }
   @include respond-to(wide-screens) {
@@ -40,7 +40,7 @@
   }
 
   @include respond-to(small-screens) {
-    width: 230px;
+    width: 260px;
   }
   @include respond-to(wide-screens) {
     width: 585px;
@@ -63,6 +63,9 @@
 
 .closeButton {
   @extend .flex-grow-1;
+  @media #{$small-and-down} {
+     margin-left: 20px;
+  }
 }
 
 .assetListContainer {
