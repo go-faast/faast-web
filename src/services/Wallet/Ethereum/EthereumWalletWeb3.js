@@ -25,7 +25,12 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
   };
 
   getAddress = () => {
-    return toChecksumAddress(web3.eth.defaultAccount || web3.eth.accounts[0])
+    const { defaultAccount } = web3.eth
+    if (defaultAccount) {
+      return Promise.resolve(toChecksumAddress(defaultAccount))
+    }
+    return web3.eth.getAccounts()
+      .then(([account]) => toChecksumAddress(account))
   };
 
 }
