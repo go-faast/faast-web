@@ -3,7 +3,7 @@ import AccessTile from 'Components/AccessTile'
 
 const MetaMaskView = (props) => {
   return (
-    <AccessTile name='Metamask' {...props} />
+    <AccessTile name='MetaMask' icon='metamask-logo.png' {...props} />
   )
 }
 

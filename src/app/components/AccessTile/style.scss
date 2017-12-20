@@ -3,23 +3,29 @@
 .tileContainer {
   background-color: $ultra-dark-grey;
   @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  padding: 20px;
-  box-shadow: 5px 10px 15px #090909;
+  padding: 8px;
+  box-shadow: 4px 8px 12px #090909;
   @extend .cursor-pointer;
   @extend .text-center;
   height: 150px;
-  padding: 20px;
-  letter-spacing: 1px;
   margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 .header {
   @extend .text-small;
   @extend .text-medium-grey;
-  @extend .margin-top-30;
 }
 
 .name {
   @extend .text-medium;
   @extend .text-gradient;
+}
+
+.icon {
+  height: 50px;
+  margin: 8px;
 }

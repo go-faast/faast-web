@@ -1,13 +1,14 @@
 import React from 'react'
 import styles from './style'
 
-const AccessTileView = (props) => {
+const AccessTileView = ({ name, icon, handleClick }) => {
   return (
-    <div onClick={props.handleClick} className={styles.tileContainer}>
+    <div onClick={handleClick} className={styles.tileContainer}>
       <div className={`text-uppercase ${styles.header}`}>Access With</div>
       <div className={styles.name}>
-        {props.name}
+        {name}
       </div>
+      <img src={`/img/${icon}`} className={styles.icon}/>
     </div>
   )
 }

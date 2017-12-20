@@ -6,19 +6,22 @@ import HWAddressSelect from 'Components/HWAddressSelect'
 import display from 'Utilities/display'
 import styles from './style'
 
-const HardwareWalletView = (props) => {
-  let name
-  switch (props.type) {
-    case 'ledger':
-      name = 'Ledger Wallet'
-      break
-    case 'trezor':
-      name = 'TREZOR'
-      break
+const typeToProps = {
+  ledger: {
+    name: 'Ledger Wallet',
+    icon: 'ledger-logo.png'
+  },
+  trezor: {
+    name: 'TREZOR',
+    icon: 'trezor-logo.png'
   }
+}
+
+const HardwareWalletView = (props) => {
+  const { name, icon } = typeToProps[props.type]
   return (
     <div>
-      <AccessTile name={name} handleClick={props.handleClick} />
+      <AccessTile name={name} icon={icon} handleClick={props.handleClick} />
       <HardwareWalletModal name={name} type={props.type} {...props.modalProps} />
     </div>
   )
