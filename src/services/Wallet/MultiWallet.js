@@ -14,6 +14,8 @@ export default class MultiWallet extends Wallet {
     this.wallets = []
   }
 
+  getId = () => this.wallets.map((wallet) => wallet.getId()).join(',');
+
   setAllAssets = (allAssets) => {
     this._allAssets = allAssets
     this.wallets.forEach((wallet) => wallet.setAllAssets(allAssets))

@@ -16,7 +16,7 @@ export default class EthereumWalletTrezor extends EthereumWalletSigner {
     this._isMocking = isMocking
   }
 
-  getAddress = () => Promise.resolve(this.address)
+  getAddress = () => this.address;
   
   closeTrezorWindow = () => {
     if (window.faast.hw && window.faast.hw.trezor && window.faast.hw.trezor.close) window.faast.hw.trezor.close()

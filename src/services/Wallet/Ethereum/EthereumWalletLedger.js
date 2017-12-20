@@ -16,7 +16,7 @@ export default class EthereumWalletLedger extends EthereumWalletSigner {
     this._isMocking = isMocking
   }
 
-  getAddress = () => Promise.resolve(this.address)
+  getAddress = () => this.address;
 
   signTx = (txParams) => {
     this._validateTx(txParams)

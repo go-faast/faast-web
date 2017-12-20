@@ -47,7 +47,7 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
     return new EthereumWalletKeystore(jsonKeystore)
   };
 
-  getId = () => `${this.type}-${this.keystore.address}`;
+  getAddress = () => toChecksumAddress(this.keystore.address || this.keystore.Address || this.keystore.getAddress());
 
   encrypt = (password = '') => {
     if (this.isEncrypted) {
@@ -74,10 +74,6 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
         tx.sign(this.keystore.getPrivateKey())
         return tx.serialize().toString('hex')
       })
-  };
-
-  getAddress = () => {
-    return Promise.resolve(toChecksumAddress(this.keystore.address || this.keystore.Address || this.keystore.getAddress()))
   };
 
   getFileName = (password) => {
