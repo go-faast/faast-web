@@ -14,6 +14,11 @@ export default class MultiWallet extends Wallet {
     this.wallets = []
   }
 
+  setAllAssets = (allAssets) => {
+    this._allAssets = allAssets
+    this.wallets.forEach((wallet) => wallet.setAllAssets(allAssets))
+  };
+
   /**
     * @param {(Object|String)} walletOrId - Wallet instance or wallet ID
     * @return {Number} Wallet index, or -1 if not found
@@ -60,7 +65,7 @@ export default class MultiWallet extends Wallet {
   isAssetSupported = (assetOrSymbol) => this.wallets.some((wallet) => wallet.isAssetSupported(assetOrSymbol));
 
   transfer = (toAddress, amount, assetOrSymbol, selectWalletCallback = selectFirst) => {
-    const walletsForAsset = this.getWalletsForAsset(assetOrSymbol)
+    const walletsForAsset = this._getWalletsForAsset(assetOrSymbol)
     if (walletsForAsset.length === 0) {
       const symbol = assetOrSymbol.symbol || assetOrSymbol
       return Promise.reject(new Error(`Failed to find wallet supporting ${symbol}`))
@@ -72,7 +77,7 @@ export default class MultiWallet extends Wallet {
   };
 
   getBalance = (assetOrSymbol) => {
-    const balancePromises = this.getWalletsForAsset(assetOrSymbol)
+    const balancePromises = this._getWalletsForAsset(assetOrSymbol)
       .map((wallet) => wallet.getBalance(assetOrSymbol))
     return Promise.all(balancePromises).then((balances) => 
       balances.reduce((a, b) => a.plus(b), toBigNumber(0)))

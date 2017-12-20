@@ -13,6 +13,9 @@ export default class Wallet {
   getId = () => this.type;
 
   setAllAssets = (allAssets) => {
+    if (Array.isArray(allAssets)) {
+      allAssets = allAssets.reduce((mapped, asset) => ({ ...mapped, [asset.symbol]: asset }), {})
+    }
     this._allAssets = allAssets
   };
 
@@ -23,7 +26,7 @@ export default class Wallet {
       // Support passing in an asset object as argument
       symbol = symbol.symbol
     }
-    return this.allAssets[symbol]
+    return this._allAssets[symbol]
   };
 
   assertAssetSupported = (asset) => {

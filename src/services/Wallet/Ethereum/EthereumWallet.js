@@ -54,36 +54,42 @@ export default class EthereumWallet extends Wallet {
     return asset && (asset.symbol === 'ETH' || asset.ERC20)
   };
 
-  getBalance = (assetOrSymbol, batch = null) => {
-    return Promise.all([
-      this.assertAssetSupported(assetOrSymbol),
-      this.getAddress(),
-    ]).then((asset, address) => {
-      let request
-      if (asset.symbol === 'ETH') {
-        request = batchRequest(batch, web3.eth.getBalance, address, 'latest')
-      } else {
-        // Handle ERC20
-        request = batchRequest(batch, web3.eth.call, {
-          to: asset.contractAddress,
-          data: tokenBalanceData(address)
-        }, 'latest')
-      }
-      return request.then((balance) => toMainDenomination(balance, asset.decimals))
-    })
+  _sendBalanceRequest = (assetOrSymbol, fromAddress, batch = null) => {
+    const asset = this.getAsset(assetOrSymbol)
+    console.log(asset)
+    let request
+    if (!this.isAssetSupported(asset)) {
+      request = Promise.resolve(toBigNumber(0))
+    } else if (asset.symbol === 'ETH') {
+      request = batchRequest(batch, web3.eth.getBalance, fromAddress, 'latest')
+    } else {
+      // Handle ERC20
+      request = batchRequest(batch, web3.eth.call, {
+        to: asset.contractAddress,
+        data: tokenBalanceData(fromAddress)
+      }, 'latest')
+    }
+    return request.then((balance) => toMainDenomination(balance, asset.decimals))
   };
 
+  getBalance = (assetOrSymbol) => {
+    const asset = this.getAsset(assetOrSymbol)
+    return this.getAddress().then((address) => this._sendBalanceRequest(asset, address))
+  }
+
   getAllBalances = () => {
-    const batch = new web3.BatchRequest()
-    const balancePromises = this.getAllAssets().map((asset) => 
-      this.getBalance(asset, batch).then((balance) => [asset.symbol, balance]))
-    const result = Promise.all(balancePromises)
-      .then((balances) => balances.reduce((result, [symbol, balance]) => ({
+    return this.getAddress()
+      .then((address) => {
+        const batch = new web3.BatchRequest()
+        const balanceRequests = Object.values(this.getAllAssets())
+          .map((asset) => this._sendBalanceRequest(asset, address, batch)
+            .then((balance) => ({ asset, balance })))
+        batch.execute()
+        return Promise.all(balanceRequests)
+      }).then((balances) => balances.reduce((result, { asset, balance }) => ({
         ...result,
-        [symbol]: balance
+        [asset.symbol]: balance
       }), {}))
-    batch.execute()
-    return result
   };
 
   _createTransferTx = (toAddress, amount, asset) => {
