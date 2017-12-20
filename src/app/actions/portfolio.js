@@ -342,7 +342,7 @@ export const restorePolling = (swap, isMocking) => (dispatch) => {
 }
 
 export const openWallet = (wallet, isMocking) => (dispatch) => {
-  const walletId = (wallet.getAddress && wallet.getAddress()) || wallet.getId()
+  const walletId = wallet.getId()
   if (walletId) {
     const state = restoreFromAddress(walletId)
 
