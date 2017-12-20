@@ -38,8 +38,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  openWallet: (type, wallet, isMocking) => {
-    dispatch(openWallet(type, wallet, isMocking))
+  openWallet: (wallet, isMocking) => {
+    dispatch(openWallet(wallet, isMocking))
   }
 })
 

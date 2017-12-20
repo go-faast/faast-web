@@ -14,8 +14,6 @@ export default class MultiWallet extends Wallet {
     this.wallets = []
   }
 
-  getId = () => this.wallets.map((w) => w.getId()).join(',');
-
   /**
     * @param {(Object|String)} walletOrId - Wallet instance or wallet ID
     * @return {Number} Wallet index, or -1 if not found

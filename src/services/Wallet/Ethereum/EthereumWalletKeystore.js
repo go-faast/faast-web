@@ -47,6 +47,8 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
     return new EthereumWalletKeystore(jsonKeystore)
   };
 
+  getId = () => `${this.type}-${this.keystore.address}`;
+
   encrypt = (password = '') => {
     if (this.isEncrypted) {
       return this

@@ -1,7 +1,7 @@
 import log from 'Utilities/log'
 import { abtractMethod, assertExtended } from 'Utilities/reflect'
 
-@abtractMethod('getId', 'transfer', 'getBalance', 'getAllBalances', 'isAssetSupported')
+@abtractMethod('transfer', 'getBalance', 'getAllBalances', 'isAssetSupported')
 export default class Wallet {
 
   constructor(type) {
@@ -9,6 +9,8 @@ export default class Wallet {
     this.type = type
     this._allAssets = {}
   }
+
+  getId = () => this.type;
 
   setAllAssets = (allAssets) => {
     this._allAssets = allAssets

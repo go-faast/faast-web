@@ -55,18 +55,22 @@ export default class EthereumWallet extends Wallet {
   };
 
   getBalance = (assetOrSymbol, batch = null) => {
-    const asset = this.assertAssetSupported(assetOrSymbol)
-    let request
-    if (asset.symbol === 'ETH') {
-      request = batchRequest(batch, web3.eth.getBalance, this.getAddress(), 'latest')
-    } else {
-      // Handle ERC20
-      request = batchRequest(batch, web3.eth.call, {
-        to: asset.contractAddress,
-        data: tokenBalanceData(this.getAddress())
-      }, 'latest')
-    }
-    return request.then((balance) => toMainDenomination(balance, asset.decimals))
+    return Promise.all([
+      this.assertAssetSupported(assetOrSymbol),
+      this.getAddress(),
+    ]).then((asset, address) => {
+      let request
+      if (asset.symbol === 'ETH') {
+        request = batchRequest(batch, web3.eth.getBalance, address, 'latest')
+      } else {
+        // Handle ERC20
+        request = batchRequest(batch, web3.eth.call, {
+          to: asset.contractAddress,
+          data: tokenBalanceData(address)
+        }, 'latest')
+      }
+      return request.then((balance) => toMainDenomination(balance, asset.decimals))
+    })
   };
 
   getAllBalances = () => {
@@ -84,7 +88,6 @@ export default class EthereumWallet extends Wallet {
 
   _createTransferTx = (toAddress, amount, asset) => {
     let tx = {
-      from: this.getAddress(),
       chainId: 1,
       value: toBigNumber(0),
       data: ''
@@ -98,11 +101,13 @@ export default class EthereumWallet extends Wallet {
       tx.data = tokenSendData(toAddress, amount, asset.decimals)
     }
     return Promise.all([
+      this.getAddress(),
       web3.eth.getTransactionCount(tx.from),
       web3.eth.getGasPrice(),
       web3.eth.estimateGas(tx)
-    ]).then(([nonce, gasPrice, gasLimit]) => ({
+    ]).then(([fromAddress, nonce, gasPrice, gasLimit]) => ({
       ...tx,
+      from: fromAddress,
       nonce: toHex(nonce),
       gasPrice: toHex(gasPrice),
       gasLimit: toHex(gasLimit)
