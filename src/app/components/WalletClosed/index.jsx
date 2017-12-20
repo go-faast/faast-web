@@ -5,7 +5,7 @@ import { Route, Redirect } from 'react-router-dom'
 
 const WalletClosed = ({ wallet, path, component: Component }) => (
   <Route path={path} render={props => (
-    wallet.address ? (
+    (wallet.address || wallet.opened > 0) ? (
       <Redirect to='/balances' />
     ) : (
       <Component {...props} />

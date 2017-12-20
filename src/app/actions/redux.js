@@ -7,6 +7,11 @@ export const setWallet = (type, address, data) => ({
   payload: { type, address, data }
 })
 
+export const walletOpened = (wallet) => ({
+  type: 'WALLET_OPENED',
+  payload: { wallet }
+})
+
 export const setAssets = (assets) => ({
   type: 'SET_ASSETS',
   payload: assets

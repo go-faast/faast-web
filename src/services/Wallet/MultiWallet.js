@@ -79,14 +79,12 @@ export default class MultiWallet extends Wallet {
   };
 
   getAllBalances = () => {
-    const result = {}
-    this.wallets.map((wallet) => wallet.getAllBalances())
-      .forEach((balances) => {
-        Object.entries(balances).forEach(([symbol, balance]) => {
-          result[symbol] = (result[symbol] || toBigNumber(0)).plus(balance)
-        })
-      })
-    return result
+    return Promise.all(this.wallets.map((wallet) => wallet.getAllBalances()))
+      .then((walletBalances) => walletBalances.reduce((balanceEntries, b) => balanceEntries.concat(Object.entries(b)), []))
+      .then((balances) => balances.reduce((result, [symbol, balance]) => ({
+        ...result,
+        [symbol]: (result[symbol] || toBigNumber(0)).plus(balance)
+      }), {}))
   };
 }
 window.MultiWallet = MultiWallet

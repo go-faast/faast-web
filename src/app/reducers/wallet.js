@@ -1,4 +1,6 @@
-const initialState = {}
+const initialState = {
+  opened: 0
+}
 
 export default (state = initialState, action) => {
   switch (action.type) {
@@ -6,9 +8,15 @@ export default (state = initialState, action) => {
     return initialState
   case 'SET_WALLET':
     return {
+      ...state,
       type: action.payload.type,
       address: action.payload.address,
       data: action.payload.data
+    }
+  case 'WALLET_OPENED':
+    return {
+      ...state,
+      opened: state.opened + 1
     }
   default:
     return state

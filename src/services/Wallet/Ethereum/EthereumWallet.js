@@ -81,7 +81,7 @@ export default class EthereumWallet extends Wallet {
       .then((balances) => balances.reduce((result, [symbol, balance]) => ({
         ...result,
         [symbol]: balance
-      })))
+      }), {}))
     batch.execute()
     return result
   };

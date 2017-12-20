@@ -94,7 +94,7 @@ export const getBalances = (assets, portfolio, mock) => (dispatch) => {
   return dispatch(getFiatPrices(portfolioList, mock))
     .then((p) => {
       window.faast.wallet.setAllAssets(assets)
-      return window.faast.wallet.getBalances()
+      return window.faast.wallet.getAllBalances()
         .then((symbolToBalance) => p.map((a) =>
           Object.assign({}, a, { balance: symbolToBalance[a.symbol] || toBigNumber(0) })))
     })

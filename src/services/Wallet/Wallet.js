@@ -7,7 +7,7 @@ export default class Wallet {
   constructor(type) {
     assertExtended(this, Wallet)
     this.type = type
-    this._allAssets = {}
+    this._allAssets = []
   }
 
   getId = () => this.type;

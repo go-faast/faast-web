@@ -1,5 +1,5 @@
 
-import { insertSwapData, updateSwapTx, setSwap, setWallet, resetAll } from 'Actions/redux'
+import { insertSwapData, updateSwapTx, setSwap, setWallet, walletOpened, resetAll } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
 import { processArray } from 'Utilities/helpers'
@@ -358,6 +358,7 @@ export const openWallet = (wallet, isMocking) => (dispatch) => {
       dispatch(getSwundle(walletId, isMocking))
     }
     window.faast.wallet.addWallet(wallet)
+    dispatch(walletOpened(wallet))
     // dispatch(setWallet(type, address, wallet))
   }
 }

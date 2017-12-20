@@ -77,16 +77,16 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
   };
 
   getAddress = () => {
-    return Promise.resolve(toChecksumAddress(this.keystore.address || this.keystore.Address || this.wallet.getAddress()))
+    return Promise.resolve(toChecksumAddress(this.keystore.address || this.keystore.Address || this.keystore.getAddress()))
   };
 
   getFileName = (password) => {
-    return this.decrypt(password).keystore.getV3Filename()
+    return Promise.resolve(this.decrypt(password).keystore.getV3Filename())
   };
 
   getPrivateKeyString = (password, mock) => {
-    if (mock) return 'mock_pk_123'
-    return this.wallet.decrypt(password).keystore.getPrivateKeyString()
+    if (mock) return Promise.resolve('mock_pk_123')
+    return Promise.resolve(this.wallet.decrypt(password).keystore.getPrivateKeyString())
   };
 
 }
