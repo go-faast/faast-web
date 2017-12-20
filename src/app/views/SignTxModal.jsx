@@ -71,7 +71,7 @@ const SignTxForm = reduxForm({
   }
 
   let mq = props.mq
-  console.log(mq);
+  let tablet = mq.sm
 
   let nextToSign = 0
   const swapRow = props.swapList.map((a, i) => {
@@ -92,61 +92,115 @@ const SignTxForm = reduxForm({
         )
       }
     }
+
     return (
-      <div key={i} className='margin-top-10'>
+      <div key={i} className={tablet? 'margin-top-10' : `margin-top-10 ${styles.reviewContainerPhone}`}>
         <div className='row color-bg-3'>
-          <div className='col-md-4 padding-10'>
-            <div className='coin-container pull-left'>
-              <div className='coin-icon margin-top-5' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${a.from.symbol}.png)` }} />
-              <div className='coin-info text-left'>
-                <div className='text-white text-small'>{display.units(a.swap.unit, a.from.symbol, a.from.price)}</div>
-                <div className='text-medium-grey text-small'>{a.from.name}</div>
+
+          {tablet &&
+            <div className='col-md-4 padding-10'>
+              <div className='coin-container pull-left'>
+                <div className='coin-icon margin-top-5' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${a.from.symbol}.png)` }} />
+                <div className='coin-info text-left'>
+                  <div className='text-white text-small'>{display.units(a.swap.unit, a.from.symbol, a.from.price)}</div>
+                  <div className='text-medium-grey text-small'>{a.from.name}</div>
+                </div>
               </div>
             </div>
-          </div>
-          <div className='col-md-4 padding-10'>
-            <div className='right-icon margin-top-5' />
+          }
+
+          {!tablet &&
+            <div className='col-md-4 padding-10'>
+              <div className='coin-container pull-left'>
+                <div className='coin-icon margin-top-5' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${a.from.symbol}.png)` }} />
+                  <div className={tablet? 'coin-info text-right': 'coin-info text-left'}>
+                    <div className='text-medium-grey text-small margin-top-10'>{a.from.name}</div>
+                  </div>
+                </div>
+                <div className='pull-right margin-top-10'>
+                <div className='coin-info text-left'>
+                  <div className='text-white text-small'>{display.units(a.swap.unit, a.from.symbol, a.from.price)}</div>
+                </div>
+              </div>
+            </div>
+          }
+
+          <div className={tablet? 'col-md-4 padding-10': 'col-md-4'}>
+            <div className={tablet? 'right-icon margin-top-5' :`${styles.transferIcon} margin-top-5`} />
             {sigStatus()}
           </div>
-          <div className='col-md-4 padding-10'>
-            <div className='coin-container pull-right'>
-              <div className='coin-icon margin-top-5' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${a.to.symbol}.png)` }} />
-              <div className='coin-info text-right'>
-                <div className='text-white text-small'>{display.units(a.receiveAmount, a.to.symbol, a.to.price)}</div>
-                <div className='text-medium-grey text-small'>{a.to.name}</div>
+
+          {tablet &&
+            <div className='col-md-4 padding-10'>
+              <div className='coin-container pull-right'>
+                <div className='coin-icon margin-top-5' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${a.to.symbol}.png)` }} />
+                <div className='coin-info text-right'>
+                  <div className='text-white text-small'>{display.units(a.receiveAmount, a.to.symbol, a.to.price)}</div>
+                  <div className='text-medium-grey text-small'>{a.to.name}</div>
+                </div>
               </div>
             </div>
-          </div>
+          }
+
+          {!tablet &&
+            <div className='col-md-4 padding-10'>
+              <div className={tablet? 'coin-container pull-right' : 'coin-container pull-left'} >
+                <div className='coin-icon margin-top-5' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${a.to.symbol}.png)` }} />
+                <div className={tablet? 'coin-info text-right': 'coin-info text-left'}>
+                  <div className='text-medium-grey text-small margin-top-10'>{a.to.name}</div>
+                </div>
+              </div>
+              <div className='pull-right margin-top-10'>
+                <div className={tablet? 'coin-info text-right': 'coin-info text-left'}>
+                  <div className='text-white text-small'>{display.units(a.receiveAmount, a.to.symbol, a.to.price)}</div>
+                </div>
+              </div>
+            </div>
+          }
         </div>
         <div className='row color-bg-1 text-x-small padding-5 text-medium-grey'>
           <div className='col-md-4 text-left'>
-            <div className='text-medium-grey pull-left margin-right-10'>swap fee </div>
+            <div className='text-medium-grey pull-left '>swap fee </div>
             {(a.swap.hasOwnProperty('fee') &&
-              <div className='pull-left'>{a.swap.fee} {a.to.symbol}</div>) ||
+              <div className='pull-right'>{a.swap.fee} {a.to.symbol}</div>) ||
               <div>{(!!a.error && <span className='pull-left text-danger'> - </span>) ||
                 <div className='faast-loading loading-small pull-left margin-top-10' />
               }</div>
             }
           </div>
-          <div className='col-md-4 text-center'>
-            {(!!a.error && <span className='text-danger'>{a.error}</span>) ||
-              <div>
-                {(a.swap.hasOwnProperty('rate') &&
-                  <span>1 {a.from.symbol} = {a.swap.rate} {a.to.symbol}</span>) ||
-                  <div className='faast-loading loading-small margin-auto margin-top-10' />
-                }
-              </div>
-            }
-          </div>
-          <div className='col-md-4 text-right'>
+          {tablet &&
+            <div className='col-md-4 text-left'>
+              {(!!a.error && <span className='text-danger'>{a.error}</span>) ||
+                <div>
+                  {(a.swap.hasOwnProperty('rate') &&
+                    <span>1 {a.from.symbol} = {a.swap.rate} {a.to.symbol}</span>) ||
+                    <div className='faast-loading loading-small margin-auto margin-top-10' />
+                  }
+                </div>
+              }
+            </div>
+          }
+          <div className='col-md-4 text-left'>
             {(a.txFee &&
               <div className='pull-right'>{display.units(a.txFee, 'ETH')}</div>) ||
               <div>{(!!a.error && <span className='pull-right text-danger'> - </span>) ||
                 <div className='faast-loading loading-small pull-right margin-top-10' />
               }</div>
             }
-            <div className='text-medium-grey pull-right margin-right-10'>txn fee</div>
+            <div className='text-medium-grey pull-left margin-right-10'>txn fee</div>
           </div>
+          {!tablet &&
+            <div className='col-md-4 text-center'>
+              {(!!a.error && <span className='text-danger'>{a.error}</span>) ||
+                <div>
+                  {(a.swap.hasOwnProperty('rate') &&
+                    <span>1 {a.from.symbol} = {a.swap.rate} {a.to.symbol}</span>) ||
+                    <div className='faast-loading loading-small margin-auto margin-top-10' />
+                  }
+                </div>
+              }
+            </div>
+          }
         </div>
       </div>
     )
