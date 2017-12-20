@@ -10,7 +10,7 @@ import { EthereumWalletWeb3 } from 'Services/Wallet'
 const MetaMask = (props) => {
   const handleClick = () => {
     if (web3.providerType !== 'user') {
-      return toastr.error('Please enable the MetaMask extension')
+      return toastr.error('Please enable the MetaMask extension or use a Web3 compatible browser such as Mist or Parity.')
     }
 
     if (!web3.version || !web3.eth.net.getId) {
@@ -22,20 +22,12 @@ const MetaMask = (props) => {
         return toastr.error('Error getting network ID')
       }
       if (id !== 1) {
-        return toastr.error('Please adjust your MetaMask to use the "Main Ethereum Network"', { timeOut: 10000 })
+        return toastr.error(`Please adjust ${web3.providerName} to use the "Main Ethereum Network"`, { timeOut: 10000 })
       }
 
-      web3.eth.getAccounts()
-      .then((accounts) => {
-        const address = accounts[0]
-        if (!address) return toastr.error('Unable to retrieve MetaMask account. Please ensure your account is unlocked.', { timeOut: 10000 })
-
-        props.openWallet(new EthereumWalletWeb3(), props.mock.mocking)
-      })
-      .catch((err) => {
-        log.error(err)
-        toastr.error('Error retrieving MetaMask account')
-      })
+      EthereumWalletWeb3.fromDefaultAccount()
+        .then((wallet) => props.openWallet(wallet, props.mock.mocking))
+        .catch((err) => toastr.error(err.message || 'Unknown error occured creating Web3 wallet', { timeOut: 10000 }))
     })
   }
 

@@ -56,40 +56,38 @@ export default class EthereumWallet extends Wallet {
     return asset && (asset.symbol === 'ETH' || asset.ERC20)
   };
 
-  _sendBalanceRequest = (assetOrSymbol, fromAddress, batch = null) => {
+  _sendBalanceRequest = (assetOrSymbol, batch = null) => {
     const asset = this.getAsset(assetOrSymbol)
+    const address = this.getAddress()
     let request
     if (!this.isAssetSupported(asset)) {
       request = Promise.resolve(toBigNumber(0))
     } else if (asset.symbol === 'ETH') {
-      request = batchRequest(batch, web3.eth.getBalance, fromAddress, 'latest')
+      request = batchRequest(batch, web3.eth.getBalance, address, 'latest')
     } else {
       // Handle ERC20
       request = batchRequest(batch, web3.eth.call, {
         to: asset.contractAddress,
-        data: tokenBalanceData(fromAddress)
+        data: tokenBalanceData(address)
       }, 'latest')
     }
     return request.then((balance) => toMainDenomination(balance, asset.decimals))
   };
 
-  getBalance = (assetOrSymbol) => {
-    const asset = this.getAsset(assetOrSymbol)
-    return this.getAddress().then((address) => this._sendBalanceRequest(asset, address))
-  }
+  getBalance = (assetOrSymbol) => this._sendBalanceRequest(assetOrSymbol);
 
   getAllBalances = () => {
-    return this.getAddress()
-      .then((address) => {
+    return Promise.resolve()
+      .then(() => {
         const batch = new web3.BatchRequest()
-        const balanceRequests = Object.values(this.getAllAssets())
-          .map((asset) => this._sendBalanceRequest(asset, address, batch)
-            .then((balance) => ({ asset, balance })))
+        const assetBalances = Object.values(this.getAllAssets()).map((asset) =>
+          this._sendBalanceRequest(asset, batch)
+            .then((balance) => ({ ...asset, balance })))
         batch.execute()
-        return Promise.all(balanceRequests)
-      }).then((balances) => balances.reduce((result, { asset, balance }) => ({
+        return Promise.all(assetBalances)
+      }).then((assets) => assets.reduce((result, { symbol, balance }) => ({
         ...result,
-        [asset.symbol]: balance
+        [symbol]: balance
       }), {}))
   };
 

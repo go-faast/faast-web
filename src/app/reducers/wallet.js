@@ -16,6 +16,7 @@ export default (state = initialState, action) => {
   case 'WALLET_OPENED':
     return {
       ...state,
+      address: action.payload.address,
       opened: state.opened + 1
     }
   default:

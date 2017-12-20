@@ -20,6 +20,7 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
   constructor(address) {
     super('EthereumWalletWeb3')
     this.address = address
+    this.providerName = web3.providerName
   }
 
   getAddress = () => this.address;
@@ -43,9 +44,22 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
 
   static fromDefaultAccount = () => {
     const { defaultAccount, getAccounts } = web3.eth
-    const addressPromise = defaultAccount
-      ? Promise.resolve(toChecksumAddress(defaultAccount))
-      : getAccounts().then(([account]) => toChecksumAddress(account))
+    let addressPromise
+    if (defaultAccount) {
+      addressPromise = Promise.resolve(toChecksumAddress(defaultAccount))
+    } else {
+      addressPromise = getAccounts()
+        .catch((err) => {
+          log.error(err)
+          throw new Error(`Error retrieving ${web3.providerName} account`)
+        })
+        .then(([address]) => {
+          if (!address) {
+            throw new Error(`Unable to retrieve ${web3.providerName} account. Please ensure your account is unlocked.`)
+          }
+          return address
+        })
+    }
     return addressPromise.then((address) => new EthereumWalletWeb3(address))
   };
 
