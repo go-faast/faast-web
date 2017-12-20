@@ -56,7 +56,6 @@ export default class EthereumWallet extends Wallet {
 
   _sendBalanceRequest = (assetOrSymbol, fromAddress, batch = null) => {
     const asset = this.getAsset(assetOrSymbol)
-    console.log(asset)
     let request
     if (!this.isAssetSupported(asset)) {
       request = Promise.resolve(toBigNumber(0))
