@@ -19,7 +19,7 @@
  padding-left: 0px;
  margin-right: 0px;
  margin-bottom: 50px;
- width:20%;
+ width:100%;
 }
 
 .tileContainer {
@@ -33,6 +33,13 @@
      margin-left: 100px;
      margin-top: 10px;
  }
+}
+
+.tileChart {
+  background-color: $ultra-dark-grey;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 20px;
+  box-shadow: 5px 10px 15px #090909;
 }
 
 .tileContainerAddress{

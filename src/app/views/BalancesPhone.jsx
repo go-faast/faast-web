@@ -56,7 +56,7 @@ const renderAssetsPhone = (props) => {
       </div>
       <Collapse isOpen={a.chartOpen}>
         <div className={styles.areaChartContainer}>
-          <div className={styles.tileContainer}>
+          <div className={styles.tileChart}>
             <div className='row'>
               <div className='col-md-8'>
                 <div className={styles.assetTitle}>
