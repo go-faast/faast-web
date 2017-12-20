@@ -5,7 +5,6 @@ import EthereumJsUtil from 'ethereumjs-util'
 import HardwareWalletView from './view'
 import toastr from 'Utilities/toastrWrapper'
 import { timer } from 'Utilities/helpers'
-import { sessionStorageSet } from 'Utilities/storage'
 import { toMainDenomination } from 'Utilities/convert'
 import log from 'Utilities/log'
 import { closeTrezorWindow } from 'Utilities/wallet'
@@ -13,6 +12,7 @@ import config from 'Config'
 import { openWallet } from 'Actions/portfolio'
 import { mockAddress } from 'Actions/mock'
 import web3 from 'Services/Web3'
+import { EthereumWalletLedger, EthereumWalletTrezor } from 'Services/Wallet'
 
 const CONNECT_SECONDS = 6
 const ADDRESS_GROUP_SIZE = 5
@@ -253,14 +253,20 @@ class HardwareWallet extends Component {
   }
 
   _handleChooseAddress (selected = 0) {
-    const ix = this.state.addressIxGroup * ADDRESS_GROUP_SIZE + selected
-    const hardwareWallet = {
-      type: this.props.type,
-      address: this.state.addresses[ix].address,
-      derivationPath: `${this.state.derivationPath}/${ix}`
+    const { addresses, derivationPath, addressIxGroup } = this.state
+    const ix = addressIxGroup * ADDRESS_GROUP_SIZE + selected
+    const { address } = addresses[ix]
+    const addressPath = `${derivationPath}/${ix}`
+    const { type } = this.props
+    let wallet
+    if (type === 'ledger') {
+      wallet = new EthereumWalletLedger(addressPath, address)
+    } else if (type === 'trezor') {
+      wallet = new EthereumWalletTrezor(addressPath, address)
+    } else {
+      throw new Error(`Unknown hardware wallet type ${type}`)
     }
-    sessionStorageSet('hardwareWallet', JSON.stringify(hardwareWallet))
-    this.props.openWallet('hardware', hardwareWallet, this.props.mock.mocking)
+    this.props.openWallet(wallet, this.props.mock.mocking)
     log.info('Hardware wallet set')
   }
 
