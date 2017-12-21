@@ -18,15 +18,10 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 15px;
 }
 
 .fileDesc {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
   color: $medium-grey;
   text-align: center;
-  padding: 30px 10px 10px 10px;
 }
