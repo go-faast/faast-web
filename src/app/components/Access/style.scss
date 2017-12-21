@@ -1,20 +1,20 @@
 @import "~Styles/variables";
 
-.startContainer {
-  @extend .margin-top-50;
-}
-
 .tileContainer {
   background-color: $ultra-dark-grey;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   @include gradient-background-variable($tileBgColor1, $tileBgColor2);
   padding: 20px;
   box-shadow: 5px 10px 15px #090909;
   @extend .cursor-pointer;
   @extend .text-center;
   height: 150px;
-  padding: 20px;
   letter-spacing: 1px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
+  margin-top: 15px;
 }
 
 .bottomContainer {
@@ -57,7 +57,6 @@
 }
 
 .addNew {
-  @extend .margin-top-30;
   background-image: url('https://faa.st/img/add.png');
   background-size: 32px 32px;
   background-repeat: no-repeat;
@@ -65,6 +64,25 @@
   height: 40px;
   width: 100%;
 
+}
+
+.title {
+  margin-top: 50px;
+  color: $light-grey;
+  text-align: center;
+}
+
+.walletRowHeading {
+  color: $medium-grey;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 5px;
+}
+
+.walletRowSubheading {
+  color: $primary-color;
+  text-align: center;
+  margin-bottom: 5px;
 }
 
 // .dropdownContainer {

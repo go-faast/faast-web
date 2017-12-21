@@ -1,7 +1,6 @@
 @import "~Styles/variables";
 
 .addNew {
-  @extend .margin-top-30;
   background-image: url('https://faa.st/img/add.png');
   background-size: 32px 32px;
   background-repeat: no-repeat;
@@ -17,15 +16,20 @@
 
 .tileContainer {
   background-color: $ultra-dark-grey;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   @include gradient-background-variable($tileBgColor1, $tileBgColor2);
   padding: 20px;
   box-shadow: 5px 10px 15px #090909;
   @extend .cursor-pointer;
   @extend .text-center;
   height: 150px;
-  padding: 20px;
+  padding: 8px;
   letter-spacing: 1px;
-  margin-bottom: 10px;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .tileBorder {
