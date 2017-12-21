@@ -1,0 +1,13 @@
+@import "~Styles/variables";
+
+.submitButton {
+  @extend .gradient-background;
+  border-radius: 0px;
+}
+
+.inputBtn {
+  align-items: stretch;
+  border-top: 1px solid #222222;
+  border-bottom: 1px solid #222222;
+  color: #202020;
+}

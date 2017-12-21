@@ -1,0 +1,130 @@
+@import "~Styles/variables";
+
+.container {
+  height: 600px;
+  border: 1px solid $primary-color;
+  position: absolute;
+  background-color: $dark-grey;
+  padding: 10px;
+  overflow: auto;
+  z-index: 300;
+
+  @include respond-to(small-screens) {
+    max-width: 360px;
+    // left: -1px;
+  }
+  @include respond-to(wide-screens) {
+    width: 650px;
+    // left: -649px;
+  }
+}
+
+.searchContainer {
+
+}
+
+.inputText {
+  @extend .pull-left;
+  border: none;
+  border-bottom: 1px solid $primary-color;
+  background-color: $dark-grey;
+  padding: 10px 30px 10px 10px;
+  color: $primary-color;
+  background-image: url('https://faa.st/img/search_icon.png');
+  background-repeat: no-repeat;
+  background-position: center right;
+  background-size: 30px 30px;
+
+  &:focus {
+    outline: none;
+  }
+
+  @include respond-to(small-screens) {
+    width: 260px;
+  }
+  @include respond-to(wide-screens) {
+    width: 585px;
+  }
+}
+
+.clearfix {
+  @extend .clearfix;
+}
+
+.closeButtonContainer {
+  @extend .pull-right;
+  @extend .flex-row-center;
+  width: 40px;
+  height: 40px;
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.closeButton {
+  @extend .flex-grow-1;
+  @media #{$small-and-down} {
+     margin-left: 20px;
+  }
+}
+
+.assetListContainer {
+  @extend .margin-top-20;
+}
+
+.assetListContainerRow {
+  margin: 0;
+  font-size: 14px;
+  letter-spacing: normal;
+  border-bottom: 1px solid $medium-grey;
+  &:last-child {
+    border-bottom: none !important;
+  }
+}
+
+.assetListItem {
+  border-right: 1px solid $medium-grey;
+  color: $medium-grey;
+  text-align: center;
+  padding: 15px;
+
+  &:hover:not(.itemDisabled) {
+    cursor: pointer;
+    color: $white;
+
+    .assetListItemIcon {
+      opacity: 1.0;
+    }
+  }
+
+  @include respond-to(small-screens) {
+    &:nth-child(3) {
+      border-right: none !important;
+    }
+
+    &:nth-child(6) {
+      border-right: none !important;
+    }
+  }
+
+  @include respond-to(wide-screens) {
+    &:last-child {
+      border-right: none !important;
+    }
+  }
+}
+
+.itemDisabled {
+  -webkit-filter: grayscale(1); /* Old WebKit */
+  filter: grayscale(1);
+}
+
+.assetListItemIcon {
+  height: 60px;
+  background-position: center center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+  width: 60%;
+  margin: auto;
+}

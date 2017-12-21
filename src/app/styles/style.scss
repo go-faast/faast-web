@@ -5,9 +5,31 @@ body {
   font-family: 'Kanit', sans-serif;
   font-weight: 200;
   color: white;
+  background-color: $pageBgColor1;
+  min-height: 100vh;
+  position: relative;
+  letter-spacing: 1px;
 
-  #root {
-    padding-top: 100px;
+  h1, h2, h3, h4, h5, h6 {
+    color: $secondary-color;
+    font-weight: inherit;
+  }
+
+  p {
+    color: $medium-grey;
+    font-weight: inherit;
+    &:last-child {
+      margin-bottom: 0;
+    }
+    
+    a {
+      color: $medium-grey;
+      text-decoration: underline;
+      &:hover {
+        color: $medium-grey;
+        text-decoration: $medium-grey;
+      }
+    }
   }
 
   .beta-tag {

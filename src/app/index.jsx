@@ -1,7 +1,7 @@
 /* eslint-disable new-cap */
 
 import React from 'react'
-import { createStore, applyMiddleware } from 'redux'
+import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import logger from 'redux-logger'
 import { Provider } from 'react-redux'
@@ -10,7 +10,7 @@ import createHistory from 'history/createHashHistory'
 import { ConnectedRouter, routerMiddleware } from 'react-router-redux'
 import { Route } from 'react-router-dom'
 import ReduxToastr from 'react-redux-toastr'
-import EntryController from 'Controllers/EntryController'
+import Entry from 'Components/Entry'
 import reducers from './reducers'
 import { restoreFromAddress, saveToAddress } from 'Utilities/storage'
 import { restoreWallet } from 'Utilities/wallet'
@@ -38,8 +38,13 @@ const middleware = [
   routerMiddleware(history)
 ]
 if (!window.faast) window.faast = {}
-if (window.faast.dev) middleware.push(logger)
-const store = createStore(reducers, persistedState(), applyMiddleware(...middleware))
+if (window.faast.dev && !window.__REDUX_DEVTOOLS_EXTENSION__) middleware.push(logger)
+window.faast.intervals = {
+  orderStatus: [],
+  txReceipt: []
+}
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+const store = createStore(reducers, persistedState(), composeEnhancers(applyMiddleware(...middleware)))
 
 store.subscribe(throttle(() => {
   const state = store.getState()
@@ -56,7 +61,7 @@ const Portfolio = () => {
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <div id='portfolio-page'>
-          <Route component={EntryController} />
+          <Route component={Entry} />
           <ReduxToastr
             timeOut={4000}
             newestOnTop={false}

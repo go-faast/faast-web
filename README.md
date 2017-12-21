@@ -67,7 +67,7 @@ Instructions to come...
 faast is a fully client side application. faast is never in control of user funds, and private keys never leave the browser, they are only used to sign transactions. This is similar to myetherwallet.com
 
 faast never stores, transmits or otherwise knows of private keys. If you are interesting in auditing this, it is best to start from the where the private key is decrypted from the wallet file. This can be done by:
-1. Go do src/app/controllers/SignTxModalController.jsx
+1. Go do src/app/components/SignTxModal/index.jsx
 2. Follow the use of object "pk" (privatekey) which is returned from getPrivateKeyString()
 3. Make sure that neither "pk" nor "values.password" is sent or transmitted anywhere (hint: it isn't)
 

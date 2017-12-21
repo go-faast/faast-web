@@ -7,10 +7,13 @@ import {
   toPercentage
 } from 'Utilities/convert'
 import { fixPercentageRounding, filterErrors, filterObj } from 'Utilities/helpers'
-import { fetchGet, fetchPost } from 'Utilities/fetch'
+import { fetchGet, fetchPost, fetchDelete } from 'Utilities/fetch'
+import { clearSwap } from 'Utilities/storage'
 import log from 'Utilities/log'
 import { loadingPortfolio, setPortfolio, setAssets, updateSwapOrder } from 'Actions/redux'
+import { restoreSwundle } from 'Actions/portfolio'
 import config from 'Config'
+import web3 from 'Services/Web3'
 
 const ENABLED_ASSETS = ['ETH']
 
@@ -30,13 +33,13 @@ const batchRequest = (batch, batchableFn, ...fnArgs) => {
 }
 
 const getETHTokenBalance = (address, symbol, contractAddress, batch = null) => () =>
-  batchRequest(batch, window.faast.web3.eth.call, {
+  batchRequest(batch, web3.eth.call, {
     to: contractAddress,
     data: tokenBalanceData(address)
   }, 'latest')
 
 const getBalanceActions = {
-  ETH: (address, batch = null) => () => batchRequest(batch, window.faast.web3.eth.getBalance, address, 'latest'),
+  ETH: (address, batch = null) => () => batchRequest(batch, web3.eth.getBalance, address, 'latest'),
   ETC: () => () => Promise.resolve(0), // TODO
 
   BTC: () => () => Promise.resolve(0), // TODO: implement balance discovery using trezor/hd-wallet
@@ -145,8 +148,8 @@ export const getBalances = (assets, portfolio, walletAddress, mock) => (dispatch
   }
   return dispatch(getFiatPrices(portfolioList, mock))
     .then((p) => {
-      const batch = new window.faast.web3.BatchRequest()
-      const promises = Promise.all(p.map((a) => 
+      const batch = new web3.BatchRequest()
+      const promises = Promise.all(p.map((a) =>
         dispatch(getBalance(a, walletAddress, mock, batch))
           .then((b) => Object.assign({}, a, { balance: toMainDenomination(b, a.decimals) }))
           .catch((err) => {
@@ -157,7 +160,24 @@ export const getBalances = (assets, portfolio, walletAddress, mock) => (dispatch
       return promises
     })
     .then((p) => {
-      let totalFiat = toBigNumber(0)
+      // let pendingFiat = toBigNumber(0)
+      // if (swap) {
+      //   pendingFiat = swap.reduce((sCurr, send) => {
+      //     const rFiat = send.list.reduce((rCurr, receive) => {
+      //       const status = getSwapStatus(receive)
+      //       if (status.details === 'waiting for transaction receipt' || status.details === 'processing swap') {
+      //         const toAsset = p.find(a => a.symbol === receive.symbol)
+      //         const receiveEst = estimateReceiveAmount(receive, toAsset)
+      //         return toPrecision(receiveEst.times(toAsset.price), 2).add(rCurr)
+      //       } else {
+      //         return rCurr
+      //       }
+      //     }, toBigNumber(0))
+      //     return rFiat.add(sCurr)
+      //   }, toBigNumber(0))
+      // }
+
+      let totalFiat = toBigNumber(0);
       let totalFiat24hAgo = toBigNumber(0)
       let newPortfolio = p.map(a => {
         if (a.symbol === 'ETH' || a.balance.greaterThan(0)) {
@@ -185,6 +205,7 @@ export const getBalances = (assets, portfolio, walletAddress, mock) => (dispatch
         total: totalFiat,
         total24hAgo: totalFiat24hAgo,
         totalChange: totalChange,
+        // pending: pendingFiat,
         list: newPortfolio
       }))
       dispatch(loadingPortfolio(false))
@@ -249,4 +270,28 @@ export const getOrderStatus = (depositSymbol, receiveSymbol, address, timestamp)
       const errMsg = filterErrors(err)
       throw new Error(errMsg)
     })
+}
+
+export const getSwundle = (address, isMocking) => (dispatch) => {
+  let url = `${config.apiUrl}/swundle/${address}`
+  fetchGet(url)
+  .then((data) => {
+    if (data.result && data.result.swap) {
+      dispatch(restoreSwundle(data.result.swap, address, isMocking))
+    }
+  })
+  .catch(log.error)
+}
+
+export const postSwundle = (address, swap) => () => {
+  const url = `${config.apiUrl}/swundle/${address}`
+  fetchPost(url, { swap })
+  .catch(log.error)
+}
+
+export const removeSwundle = (address) => () => {
+  clearSwap(address)
+  const url = `${config.apiUrl}/swundle/${address}`
+  fetchDelete(url)
+  .catch(log.error)
 }

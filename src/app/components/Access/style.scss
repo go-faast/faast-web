@@ -1,0 +1,115 @@
+@import "~Styles/variables";
+
+.tileContainer {
+  background-color: $ultra-dark-grey;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 20px;
+  box-shadow: 5px 10px 15px #090909;
+  @extend .cursor-pointer;
+  @extend .text-center;
+  height: 150px;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  @media #{$small-and-down} {
+      width: 60%;
+      margin-left: 80px;
+  }
+}
+
+.bottomContainer {
+  @extend .margin-top-75;
+}
+
+.openSourceContainer {
+  @include flex(row, center, center);
+  @media #{$small-and-down} {
+    margin-left: 20px;
+  }
+}
+
+.openSourceLink {
+  @extend .text-medium-grey;
+  &:hover {
+    text-decoration: none;
+    @extend .gradient-text;
+  }
+}
+
+.openSource {
+  @include flex(row, center, center);
+  border: 1px solid $medium-grey;
+  border-radius: 15px;
+  padding: 10px;
+}
+
+.openSourceText {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.importHeader {
+  @extend .text-small;
+  @extend .text-medium-grey;
+  @extend .margin-top-30;
+}
+
+.walletDesc {
+  @extend .text-medium;
+  @extend .text-gradient;
+}
+
+.addNew {
+  background-image: url('https://faa.st/img/add.png');
+  background-size: 32px 32px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  height: 40px;
+  width: 100%;
+
+}
+
+.title {
+  margin-top: 50px;
+  color: $light-grey;
+  text-align: center;
+}
+
+.walletRowHeading {
+  color: $medium-grey;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 5px;
+}
+
+.walletRowSubheading {
+  color: $primary-color;
+  text-align: center;
+  margin-bottom: 5px;
+}
+
+// .dropdownContainer {
+//   padding-top: 60px;
+// }
+//
+// .dropdownToggle {
+//   background-color: #0DD390 !important;
+//   color: black !important;
+//   border: none !important;
+// }
+//
+// .dropdownMenu {
+//   width: 100%;
+// }
+//
+// .dropdownItem {
+//   color: black !important;
+// }
+//
+// .contentContainer {
+//   padding-top: 40px;
+// }

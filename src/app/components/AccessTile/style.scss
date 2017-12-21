@@ -1,0 +1,38 @@
+@import "~Styles/variables";
+
+.tileContainer {
+  background-color: $ultra-dark-grey;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 8px;
+  box-shadow: 4px 8px 12px #090909;
+  @extend .cursor-pointer;
+  @extend .text-center;
+  height: 150px;
+  margin-top: 15px;
+  letter-spacing: 1px;
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  @media #{$small-and-down} {
+      width: 60%;
+      margin-left: 80px;
+      margin-top: 20px;
+  }
+}
+
+.header {
+  @extend .text-small;
+  @extend .text-medium-grey;
+}
+
+.name {
+  @extend .text-medium;
+  @extend .text-gradient;
+}
+
+.icon {
+  height: 50px;
+  margin: 8px;
+}

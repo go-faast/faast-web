@@ -10,6 +10,7 @@ import blockstack from 'Utilities/blockstack'
 import toastr from 'Utilities/toastrWrapper'
 import { mockHardwareWalletSign } from 'Actions/mock'
 import config from 'Config'
+import web3 from 'Services/Web3'
 
 export const generateWallet = () => {
   return EthereumjsWallet.generate()
@@ -65,7 +66,7 @@ export const tokenBalanceData = (walletAddress) => {
 export const tokenTxData = (address, amount, decimals) => {
   amount = toBigNumber(amount)
 
-  if (!window.faast.web3.utils.isAddress(address)) return { error: 'invalid address' }
+  if (!web3.utils.isAddress(address)) return { error: 'invalid address' }
   if (amount.lessThan(0)) return { error: 'invalid amount' }
   if (typeof decimals !== 'number') return { error: 'invalid decimals' }
 
@@ -166,7 +167,7 @@ export const signWithTrezor = (derivationPath, txParams) => {
           resolve({
             r: addHexPrefix(response.r),
             s: addHexPrefix(response.s),
-            v: window.faast.web3.utils.numberToHex(response.v)
+            v: web3.utils.numberToHex(response.v)
           })
         } else {
           if (response.error === 'Action cancelled by user') {
@@ -249,27 +250,23 @@ export const signTxWithHardwareWallet = (type, derivationPath, txParams, isMocki
 }
 
 export const sendSignedTransaction = (signedTx) => {
-  return window.faast.web3.eth.sendSignedTransaction(addHexPrefix(signedTx))
+  return web3.eth.sendSignedTransaction(addHexPrefix(signedTx))
 }
 
 export const sendTransaction = (txObject) => {
-  return window.faast.web3.eth.sendTransaction(txObject)
+  return web3.eth.sendTransaction(txObject)
 }
 
 export const closeTrezorWindow = () => {
   if (window.faast.hw && window.faast.hw.trezor && window.faast.hw.trezor.close) window.faast.hw.trezor.close()
 }
 
-export const getTransactionReceipt = (txHash) => {
-  return window.faast.web3.eth.getTransactionReceipt(txHash)
+export const getTransaction = (txHash) => {
+  return web3.eth.getTransaction(txHash)
 }
 
-export const setWeb3 = (providerType) => {
-  if (providerType === 'metamask' && typeof window.web3 !== 'undefined') {
-    window.faast.web3 = new window.Web3(window.web3.currentProvider)
-  } else {
-    window.faast.web3 = new window.Web3(new window.Web3.providers.HttpProvider(config.web3Provider))
-  }
+export const getTransactionReceipt = (txHash) => {
+  return web3.eth.getTransactionReceipt(txHash)
 }
 
 export const restoreWallet = () => {
@@ -281,5 +278,5 @@ export const restoreWallet = () => {
 }
 
 export const isValidAddress = (address) => {
-  return window.faast.web3.utils.isAddress(address)
+  return web3.utils.isAddress(address)
 }

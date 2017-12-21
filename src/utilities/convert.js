@@ -1,5 +1,6 @@
 import BigNumber from 'bignumber.js'
 import EthereumjsUtil from 'ethereumjs-util'
+import web3 from 'Services/Web3'
 
 if (!window.faast.dev) {
   BigNumber.config({ ERRORS: false })
@@ -11,7 +12,14 @@ const TEN = new BigNumber(10)
 
 export const toBigNumber = (value = 0) => {
   if (value === '0x') value = 0
-  if (!(value instanceof BigNumber)) return new BigNumber(String(value))
+  if (!(value instanceof BigNumber)) {
+    try {
+      const bn = new BigNumber(String(value))
+      return bn
+    } catch (e) {
+      return new BigNumber(0)
+    }
+  }
   return value
 }
 
@@ -55,8 +63,8 @@ export const toTxFee = (gasLimit, gasPrice) => {
 
 export const toHex = (value) => {
   value = toBigNumber(value)
-  if (window.faast && window.faast.web3 && window.faast.web3.utils) {
-    return window.faast.web3.utils.numberToHex(value)
+  if (web3.utils) {
+    return web3.utils.numberToHex(value)
   }
   return '0x0'
 }

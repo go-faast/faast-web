@@ -1,0 +1,69 @@
+@import "~Styles/variables";
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.changeDerivationPath {
+  text-decoration: underline;
+  color: #0DD390;
+  cursor: pointer;
+  font-size: 0.8em;
+}
+
+.form {
+   min-height: 260px;
+}
+
+.table {
+  margin-top: 10px;
+  margin-bottom: 30px;
+  padding: 5px;
+  font-size: 0.8em;
+  text-align: left;
+}
+
+.checkInput {
+  margin-top: inherit;
+  margin-left: inherit;
+}
+
+.footer {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9em;
+  margin-top: 5px;
+}
+
+.nextIxGroup {
+  padding-left: 10px;
+}
+
+.confirm {
+  height: 30px;
+  padding-top: 20px;
+}
+
+.select {
+  @extend .cursor-pointer;
+}
+
+.wallet-list-container {
+  .list-item {
+    background-color: red;
+    padding: 10px;
+    height: 100px;
+  }
+}
+
+.address {
+  font-size: $text-x-small;
+}
