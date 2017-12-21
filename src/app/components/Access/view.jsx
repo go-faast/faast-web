@@ -7,46 +7,35 @@ import HardwareWallet from 'Components/HardwareWallet'
 import Blockstack from 'Components/Blockstack'
 import styles from './style'
 
+const TileRow = ({ children }) => (<div className='row justify-content-center'>{children}</div>)
+const TileCol = ({ children }) => (<div className='col-9 col-sm-6 col-md-4 col-lg-3'>{children}</div>)
+
 const AccessView = (props) => {
   return (
     <Layout {...props.layoutProps}>
       <h3 className={styles.title}>Select your wallet</h3>
       <h4 className={styles.walletRowHeading}>Hardware Wallets</h4>
       <h6 className={styles.walletRowSubheading}>Recommended</h6>
-      <div className={`row justify-content-center ${styles.startContainer}`}>
-        <div className='col-md-3'>
-          <HardwareWallet type='trezor' />
-        </div>
-        <div className='col-md-3'>
-          <HardwareWallet type='ledger' />
-        </div>
-      </div>
+      <TileRow>
+        <TileCol><HardwareWallet type='trezor' /></TileCol>
+        <TileCol><HardwareWallet type='ledger' /></TileCol>
+      </TileRow>
       <h4 className={styles.walletRowHeading}>Software Wallets</h4>
-      <div className='row justify-content-center'>
-        <div className='col-md-3'>
-          <Web3Wallet type='metamask' />
-        </div>
-        <div className='col-md-3'>
-          <Web3Wallet type='mist' />
-        </div>
-        <div className='col-md-3'>
-          <Web3Wallet type='parity' />
-        </div>
-        <div className='col-md-3'>
-          <Blockstack />
-        </div>
-      </div>
+      <TileRow>
+        <TileCol><Web3Wallet type='metamask' /></TileCol>
+        <TileCol><Web3Wallet type='mist' /></TileCol>
+        <TileCol><Web3Wallet type='parity' /></TileCol>
+        <TileCol><Blockstack /></TileCol>
+      </TileRow>
       <h4 className={styles.walletRowHeading}>Manual</h4>
-      <div className='row justify-content-center'>
-        <div className='col-md-3'>
+      <TileRow>
+        <TileCol>
           <div id='keystore-container' className={styles.tileContainer}>
             <Keystore />
           </div>
-        </div>
-        <div className='col-md-3'>
-          <CreateWallet />
-        </div>
-      </div>
+        </TileCol>
+        <TileCol><CreateWallet /></TileCol>
+      </TileRow>
       <div className={`row ${styles.bottomContainer}`}>
         <div className='col'>
           <div className={styles.openSourceContainer}>
