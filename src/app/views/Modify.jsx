@@ -9,6 +9,7 @@ import SignTxModalController from 'Controllers/SignTxModalController'
 import display from 'Utilities/display'
 import styles from 'Styles/Modify.scss'
 import config from 'Config'
+import {renderAssetRowsPhone} from './ModifyPhone'
 
 const Modify = (props) => {
   const inputs = {
@@ -59,13 +60,11 @@ const Modify = (props) => {
             <div className='col-md-6'>
               <div className='status-data-container'>
                 <div className='row'>
-                  {tablet&&
                     <div className='col-md-3'>
                       <div className='status-table-label'>Status</div>
                       <div className='status-table-value'>Before</div>
                       <div className='status-table-value'>After</div>
                     </div>
-                  }
                   <div className='col-md-3'>
                     <div className='status-table-label'>Value ($)</div>
                     <div className='status-table-value'>{display.fiat(asset.fiat.original)}</div>
@@ -167,7 +166,12 @@ const Modify = (props) => {
       <div className='row margin-bottom-20 margin-top-10'>
         <div className='col padding-0'>
           <div className='modify-asset-list-container'>
-            {renderAssetRows()}
+            {tablet &&
+              renderAssetRows()
+            }
+            {!tablet &&
+              renderAssetRowsPhone(props, inputs)
+            }
             <div onClick={props.handleAssetListShow} className='tile-container tile-border cursor-pointer margin-top-10'>
               <div className='margin-top-30 add-new' />
               <div className='text-center text-gradient'>add asset</div>

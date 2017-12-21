@@ -1,0 +1,100 @@
+@import "variables";
+
+.header {
+  padding-top: 40px;
+  background-color: $pageBgColor2;
+}
+
+.tileContainer {
+  background-color: $ultra-dark-grey;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 10px;
+  box-shadow: 5px 10px 15px #090909;
+  width: 50%;
+  margin-top: -30px;
+}
+
+.addTile {
+  background-color: $ultra-dark-grey;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 15px;
+  box-shadow: 5px 10px 15px #090909;
+  margin-left: 220px;
+  margin-top: -60px;
+  text-align: center;
+
+}
+
+.editable {
+  color: $primary-color;
+  @extend .cursor-pointer;
+}
+
+.editableEditing {
+  text-decoration: none;
+  background-color: inherit;
+  width: calc(100% - 30px);
+  color: $secondary-color;
+  outline: 0;
+  border: 1px solid $secondary-color;
+  @extend .gradient-border;
+  position: relative;
+  padding: 2px;
+
+  /* Spin Buttons modified */
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    background: $secondary-color url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAAKUlEQVQYlWNgwAT/sYhhKPiPT+F/LJgEsHv37v+EMGkmkuImoh2NoQAANlcun/q4OoYAAAAASUVORK5CYII=) no-repeat center center;
+    width: 1em;
+    opacity: 1; /* shows Spin Buttons per default (Chrome >= 39) */
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    @extend .cursor-pointer;
+  }
+}
+
+.beforeAfter {
+  display: inline;
+  padding-top: 10px;
+  font-size: 16px;
+}
+
+.difference{
+  @extend .gradient-text;
+  @extend .text-small;
+  @extend .text-shadow;
+  padding-bottom: 10px;
+  padding-top: 10px;
+}
+
+.before {
+  float: left;
+  margin-left: 20px;
+}
+
+.after {
+  float: right;
+  margin-right: -220px;
+}
+
+.arrow {
+  float: left;
+  padding-left: 30px;
+  margin-top: 0px;
+}
+
+.changesHeader {
+  display: flex;
+}
+
+.dayChange{
+  margin-left: 10px;
+}
+
+.currentPrice{
+  margin-left: 100px;
+  float: right;
+}
