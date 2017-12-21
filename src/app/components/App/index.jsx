@@ -10,10 +10,20 @@ import withMockHandling from 'Hoc/withMockHandling'
 import { restorePolling } from 'Actions/portfolio'
 import { setSwap } from 'Actions/redux'
 import { postSwundle } from 'Actions/request'
+import {setMediaQueries} from '../../actions/redux'
+
+const widths = new Map()
+widths.set('smPh', '(max-width: 320px)')
+widths.set('mdPh', '(max-width: 375px)')
+widths.set('lgPh', '(max-width: 425px)')
+widths.set('sm', '(min-width: 768px)')
+widths.set('md', '(min-width: 992px)')
+widths.set('lg', '(min-width: 1200px)')
 
 class App extends Component {
   constructor () {
     super()
+    this._mediaQueryChange = this._mediaQueryChange.bind(this)
   }
 
   componentWillMount () {
@@ -23,16 +33,18 @@ class App extends Component {
   }
 
   componentDidUpdate (prevProps, prevState) {
-    // if (prevState.mq.lg && !this.state.mq.lg) {
-    //   toastr.confirm(null, {
-    //     disableCancel: true,
-    //     component: () => (
-    //       <div style={{ padding: 10, color: 'black' }}>
-    //         The portfolio is only optimized for large screens at this time. Support for smaller screens is in progress
-    //       </div>
-    //     )
-    //   })
-    // }
+    const largePhone = this.props.mq.lgPh && !this.props.mq.mdPh && !this.props.mq.smPh
+
+    if (prevProps.mq.lg && !largePhone) {
+      toastr.confirm(null, {
+        disableCancel: true,
+        component: () => (
+          <div style={{ padding: 10, color: 'black' }}>
+            The portfolio is only optimized for large screens at this time. Support for smaller screens is in progress
+          </div>
+        )
+      })
+    }
     if (this.props.wallet.type === 'blockstack' && !isEqual(prevProps.settings, this.props.settings)) {
       blockstack.saveSettings(this.props.settings)
     }
@@ -45,8 +57,15 @@ class App extends Component {
     }
   }
 
-  _mediaQueryChange (mediaQuery, type) {
-    this.setState({ mq: Object.assign({}, this.state.mq, { [type]: mediaQuery.matches }) })
+  componentDidMount () {
+    widths.forEach((value, key) => {
+      this._mediaQueryChange(window.matchMedia(value), key)
+      window.matchMedia(value).addListener((e) => { this._mediaQueryChange(e, key) })
+    })
+  }
+
+  _mediaQueryChange (mq, type) {
+    this.props.setMediaQueries({ [type]: mq.matches })
   }
 
   render () {
@@ -65,7 +84,8 @@ const mapStateToProps = (state) => ({
   wallet: state.wallet,
   swap: state.swap,
   settings: state.settings,
-  mock: state.mock
+  mock: state.mock,
+  mq: state.mediaQueries
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -77,6 +97,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   postSwundle: (address, swap) => {
     dispatch(postSwundle(address, swap))
+  },
+  setMediaQueries: (mq) => {
+    dispatch(setMediaQueries(mq))
   }
 })
 

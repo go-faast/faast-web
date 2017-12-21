@@ -194,7 +194,7 @@ const SignTxForm = reduxForm({
               {(!!a.error && <span className='text-danger'>{a.error}</span>) ||
                 <div>
                   {(a.swap.hasOwnProperty('rate') &&
-                    <span>1 {a.from.symbol} = {a.swap.rate} {a.to.symbol}</span>) ||
+                    <span>1 {a.from.symbol} = {display.units(a.swap.rate)} {a.to.symbol}</span>) ||
                     <div className='faast-loading loading-small margin-auto margin-top-10' />
                   }
                 </div>

@@ -16,9 +16,11 @@
   margin-bottom: 15px;
   margin-top: 15px;
   @media #{$small-and-down} {
-      width: 60%;
-      margin-left: 80px;
-  }
+    width: 150px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0;
+ }
 }
 
 .bottomContainer {
@@ -27,9 +29,6 @@
 
 .openSourceContainer {
   @include flex(row, center, center);
-  @media #{$small-and-down} {
-    margin-left: 20px;
-  }
 }
 
 .openSourceLink {

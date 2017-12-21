@@ -16,10 +16,11 @@
   justify-content: center;
   align-items: center;
   @media #{$small-and-down} {
-      width: 60%;
-      margin-left: 80px;
-      margin-top: 20px;
-  }
+    width: 150px;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 0;
+ }
 }
 
 .header {

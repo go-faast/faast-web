@@ -69,10 +69,10 @@ const OrderInProgress = (props) => {
 const BalancesView = (props) => {
   let mq = props.mq
 
-  let largePhone = mq.lgPh && !mq.mdPh && !mq.smPh
-  let mediumPhone = mq.mdPh && mq.lgPh && !mq.smPh
-  let smallPhone = mq.smPh && mq.mdPh && mq.lgPh
-  let tablet = mq.sm
+  const largePhone = mq.lgPh && !mq.mdPh && !mq.smPh
+  const mediumPhone = mq.mdPh && mq.lgPh && !mq.smPh
+  const smallPhone = mq.smPh && mq.mdPh && mq.lgPh
+  const tablet = mq.sm
 
   const values = [
     {
