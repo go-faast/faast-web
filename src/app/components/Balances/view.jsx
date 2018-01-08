@@ -72,7 +72,7 @@ const BalancesView = (props) => {
     mq, totalChange, totalDecrease, total24hAgo, total, assetRows, viewOnly, orderStatus, addressProps, pieChart,
     toggleChart, layoutProps, showOrderModal, handleToggleOrderModal
   } = props
-  const tablet = mediaBreakpointUp('sm')
+  const tablet = mediaBreakpointUp(mq, 'sm')
   const values = [
     {
       title: '24h change',
