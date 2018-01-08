@@ -56,7 +56,10 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
     return new EthereumWalletKeystore(this.keystore.toV3(password, config.encrOpts))
   };
 
-  decrypt = (password = '') => {
+  decrypt = (password) => {
+    if (typeof password === 'undefined' || password === null) {
+      password = window.prompt(`Enter password for Ethereum account ${this.address}`)
+    }
     if (!this.isEncrypted) {
       return this
     }
@@ -65,7 +68,7 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
 
   signTx = (txParams) => {
     if (this.isEncrypted) {
-      return Promise.reject(new Error('Wallet is encrypted'))
+      return this.decrypt().signTx(txParams)
     }
     return Promise.resolve(txParams)
       .then(this._validateTx)
