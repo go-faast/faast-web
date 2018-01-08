@@ -1,38 +1,38 @@
 @import "~Styles/variables";
 
 .statsContainer {
- @extend .margin-top-40;
+  @extend .margin-top-40;
 }
 
 .tileOuterContainer {
- padding-right: 10px;
- padding-left: 0px;
- @include media-breakpoint-down(xs) {
-   &:last-child {
-     padding-right: 10px;
-   }
- }
+  padding-right: 10px;
+  padding-left: 0px;
+  @include media-breakpoint-down(xs) {
+    &:last-child {
+      padding-right: 10px;
+    }
+  }
 }
 
 .areaChartContainer {
- padding-right: 10px;
- padding-left: 0px;
- margin-right: 0px;
- margin-bottom: 50px;
- width:100%;
+  padding-right: 10px;
+  padding-left: 0px;
+  margin-right: 0px;
+  margin-bottom: 50px;
+  width:100%;
 }
 
 .tileContainer {
- background-color: $ultra-dark-grey;
- @include gradient-background-variable($tileBgColor1, $tileBgColor2);
- padding: 20px;
- box-shadow: 5px 10px 15px #090909;
- @include media-breakpoint-down(xs) {
-  width: 50%;
-  display: flex;
-  margin-left: 100px;
-  margin-top: 10px;
- }
+  background-color: $ultra-dark-grey;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 20px;
+  box-shadow: 5px 10px 15px #090909;
+  @include media-breakpoint-down(xs) {
+    width: 50%;
+    display: flex;
+    margin-left: 100px;
+    margin-top: 10px;
+  }
 }
 
 .tileChart {
@@ -43,125 +43,125 @@
 }
 
 .tileContainerAddress{
- background-color: $ultra-dark-grey;
- @include gradient-background-variable($tileBgColor1, $tileBgColor2);
- padding: 20px;
- box-shadow: 5px 10px 15px #090909;
- @include media-breakpoint-down(xs) {
-     width: 100%;
-     display: flex;
-     margin-left: 5px;
- }
+  background-color: $ultra-dark-grey;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 20px;
+  box-shadow: 5px 10px 15px #090909;
+  @include media-breakpoint-down(xs) {
+    width: 100%;
+    display: flex;
+    margin-left: 5px;
+  }
 }
 
 .chart{
- background-color: $ultra-dark-grey;
- @include gradient-background-variable($tileBgColor1, $tileBgColor2);
- padding: 20px;
- box-shadow: 5px 10px 15px #090909;
+  background-color: $ultra-dark-grey;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 20px;
+  box-shadow: 5px 10px 15px #090909;
 }
 
 .upIcon {
- background-image: url(https://faa.st/img/up-icon.svg);
+  background-image: url(https://faa.st/img/up-icon.svg);
 }
 
 .downIcon {
- background-image: url(https://faa.st/img/down-icon.svg);
+  background-image: url(https://faa.st/img/down-icon.svg);
 }
 
 .changeIcon {
- background-position: center center;
- background-repeat: no-repeat;
- height: 30px;
- width: 30px;
- margin-top: 10px;
- margin-right: 5px;
+  background-position: center center;
+  background-repeat: no-repeat;
+  height: 30px;
+  width: 30px;
+  margin-top: 10px;
+  margin-right: 5px;
 }
 
 .changeUpIcon {
- @extend .changeIcon;
- @extend .upIcon;
+  @extend .changeIcon;
+  @extend .upIcon;
 }
 
 .changeDownIcon {
- @extend .changeIcon;
- @extend .downIcon;
+  @extend .changeIcon;
+  @extend .downIcon;
 }
 
 .statsTitle, .addressTitle {
- @extend .text-small;
- @extend .text-medium-grey;
+  @extend .text-small;
+  @extend .text-medium-grey;
 }
 
 .statsContent {
- @extend .text-medium;
+  @extend .text-medium;
 }
 
 .chartContainer {
- @extend .padding-top-20;
- @extend .margin-bottom-20;
+  @extend .padding-top-20;
+  @extend .margin-bottom-20;
 }
 
 .chartInnerContainer {
- // @extend .padding-0;
- @extend .tileContainer;
+  // @extend .padding-0;
+  @extend .tileContainer;
 }
 
 .chart {
- height: 400px;
+  height: 400px;
 }
 
 .assetTitle {
- // @extend .gradient-text;
- font-size: $text-medium;
+  // @extend .gradient-text;
+  font-size: $text-medium;
 }
 
 .assetPrice {
- @extend .clearfix;
+  @extend .clearfix;
 }
 
 .link {
- @extend .text-gradient;
- @extend .cursor-pointer;
+  @extend .text-gradient;
+  @extend .cursor-pointer;
 }
 
 .tableHeader {
- @extend .text-center;
- @include gradient-background-variable($tileBgColor1, $tileBgColor2);
- @extend .box-shadow;
- padding: 20px 5px;
- letter-spacing: 1px;
+  @extend .text-center;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  @extend .box-shadow;
+  padding: 20px 5px;
+  letter-spacing: 1px;
 }
 
 .gradientSeparator {
-height: 1px;
-padding: 0;
-@extend .gradient-background;
-opacity: 0.4;
+  height: 1px;
+  padding: 0;
+  @extend .gradient-background;
+  opacity: 0.4;
 }
 
 .columnTitle {
- font-weight: 300;
- @extend .gradient-text;
- @extend .text-small;
- @extend .text-shadow;
+  font-weight: 300;
+  @extend .gradient-text;
+  @extend .text-small;
+  @extend .text-shadow;
 }
 
 .tableRow {
- @extend .text-center;
- letter-spacing: 1px;
- @include gradient-background-variable($tileBgColor1, $tileBgColor2);
- @extend .box-shadow;
- padding: 20px 5px;
- @extend .text-center;
- &:hover {
-   cursor: pointer;
-   background: $dark-grey;
- }
+  @extend .text-center;
+  letter-spacing: 1px;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  @extend .box-shadow;
+  padding: 20px 5px;
+  @extend .text-center;
+  &:hover {
+    cursor: pointer;
+    background: $dark-grey;
+  }
 }
 
 .tableCell {
- @extend .text-small;
+  @extend .text-small;
 }
 
 .unitTitles{
@@ -183,57 +183,57 @@ opacity: 0.4;
 }
 
 .tableCoinIcon {
- background-size: 24px;
- background-position: center;
- background-repeat: no-repeat;
- height: 24px;
- width: 24px;
- margin-right: 10px;
- @extend .pull-left;
- display: inline;
+  background-size: 24px;
+  background-position: center;
+  background-repeat: no-repeat;
+  height: 24px;
+  width: 24px;
+  margin-right: 10px;
+  @extend .pull-left;
+  display: inline;
 }
 
 .tableCoinName {
- white-space: nowrap;
- overflow: hidden;
- display: inline;
- left: 50%;
- margin: 0 auto;
- text-align: center;
- margin-top: 0px;
- position: absolute;
- font-weight: 300;
- @extend .gradient-text;
- @extend .text-small;
- @extend .text-shadow;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline;
+  left: 50%;
+  margin: 0 auto;
+  text-align: center;
+  margin-top: 0px;
+  position: absolute;
+  font-weight: 300;
+  @extend .gradient-text;
+  @extend .text-small;
+  @extend .text-shadow;
 }
 
 .tableChangeValue {
- @extend .pull-right;
+  @extend .pull-right;
 }
 
 .tableChangeIcon {
- height: 18px;
- width: 18px;
- margin: 0px 5px 0px 0px;
- @extend .pull-right;
+  height: 18px;
+  width: 18px;
+  margin: 0px 5px 0px 0px;
+  @extend .pull-right;
 }
 
 .tableChangeUpIcon {
- @extend .tableChangeIcon;
- @extend .upIcon;
+  @extend .tableChangeIcon;
+  @extend .upIcon;
 }
 
 .tableChangeDownIcon {
- @extend .tableChangeIcon;
- @extend .downIcon;
+  @extend .tableChangeIcon;
+  @extend .downIcon;
 }
 
 .viewMode {
- @extend .gradient-text;
- border-width: 1px;
- border-style: solid;
- border-radius: 10px;
- border-color: $medium-grey;
- padding: 5px;
+  @extend .gradient-text;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: 10px;
+  border-color: $medium-grey;
+  padding: 5px;
 }

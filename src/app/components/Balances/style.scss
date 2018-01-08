@@ -44,10 +44,10 @@
   padding: 20px;
   box-shadow: 5px 10px 15px #090909;
   @include media-breakpoint-down(xs) {
-      width: 50%;
-      display: flex;
-      margin-left: 100px;
-      margin-top: 10px;
+    width: 50%;
+    display: flex;
+    margin-left: 100px;
+    margin-top: 10px;
   }
 }
 
