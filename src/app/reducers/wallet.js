@@ -14,9 +14,11 @@ export default (state = initialState, { type, payload }) => {
       data: payload.data
     }
   case 'WALLET_OPENED':
-    const { address } = payload.wallet
+    const { wallet } = payload
+    const address = wallet.address || wallet.getAddress()
     return {
       ...state,
+      type: wallet.type,
       address: typeof state.address !== 'undefined'
         ? (Array.isArray(state.address) ? [...state.address, address] : [state.address, address])
         : address,
