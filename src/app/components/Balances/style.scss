@@ -7,7 +7,7 @@
 .tileOuterContainer {
   padding-right: 10px;
   padding-left: 0px;
-  @media #{$small-and-down} {
+  @include media-breakpoint-down(xs) {
     &:last-child {
       padding-right: 10px;
     }
@@ -25,7 +25,7 @@
   flex-direction: row;
   flex-wrap: wrap;
   align-content: center;
-  @media #{$small-and-down} {
+  @include media-breakpoint-down(xs) {
     &:last-child {
       padding-right: 10px;
     }
@@ -43,7 +43,7 @@
   @include gradient-background-variable($tileBgColor1, $tileBgColor2);
   padding: 20px;
   box-shadow: 5px 10px 15px #090909;
-  @media #{$small-and-down} {
+  @include media-breakpoint-down(xs) {
       width: 50%;
       display: flex;
       margin-left: 100px;
@@ -68,10 +68,10 @@
   padding: 20px;
   box-shadow: 5px 10px 15px #090909;
   text-align: center;
-  @media #{$small-and-down} {
-      width: 50%;
-      margin-left: 100px;
-      padding: 10px;
+  @include media-breakpoint-down(xs) {
+    width: 50%;
+    margin-left: 100px;
+    padding: 10px;
   }
 }
 
@@ -102,7 +102,7 @@
 .changeUpIcon {
   @extend .changeIcon;
   @extend .upIcon;
-  @media #{$small-and-down} {
+  @include media-breakpoint-down(xs) {
     margin-top: 0px;
   }
 }
@@ -110,7 +110,7 @@
 .changeDownIcon {
   @extend .changeIcon;
   @extend .downIcon;
-  @media #{$small-and-down} {
+  @include media-breakpoint-down(xs) {
     margin-top: 0px;
   }
 }
@@ -150,7 +150,7 @@
 .link {
   @extend .text-gradient;
   @extend .cursor-pointer;
-  @media #{$small-and-down} {
+  @include media-breakpoint-down(xs) {
     text-align: center;
     margin: auto;
     padding-right: 30px;
@@ -245,55 +245,3 @@
   border-color: $medium-grey;
   padding: 5px;
 }
-
-// .container {
-//   height: calc(100% - 30px);
-// }
-//
-// .address {
-//   height: 50px;
-// }
-//
-// .swapBar {
-//   height: 40px;
-//   border-top: 1px solid white;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-//   padding-left: 10px;
-//   padding-right: 10px
-// }
-//
-// .inProgress {
-//   text-align: left;
-// }
-//
-// .details {
-//   color: $primary-color;
-//   cursor: pointer;
-//   text-decoration: underline;
-// }
-//
-// .slider {
-//   display: flex;
-//   justify-content: space-between;
-// }
-//
-// .cancel {
-//   @extend .select;
-// }
-//
-// .done {
-//   @extend .select;
-//   color: $primary-color;
-// }
-//
-//
-// .options {
-//   text-align: left;
-// }
-//
-// .option {
-//   @extend .select;
-//   color: $primary-color;
-// }

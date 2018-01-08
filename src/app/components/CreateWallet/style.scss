@@ -30,10 +30,10 @@
   letter-spacing: 1px;
   margin-top: 15px;
   margin-bottom: 15px;
-  @media #{$small-and-down} {
-      width: 60%;
-      margin-left: 80px;
-      margin-top: 20px;
+  @include media-breakpoint-down(xs) {
+    width: 60%;
+    margin-left: 80px;
+    margin-top: 20px;
   }
 }
 

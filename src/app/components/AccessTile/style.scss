@@ -9,18 +9,11 @@
   @extend .text-center;
   height: 150px;
   margin-top: 15px;
-  letter-spacing: 1px;
   margin-bottom: 15px;
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  @media #{$small-and-down} {
-    width: 150px;
-    margin-left: 0px;
-    margin-right: 0px;
-    padding: 0;
- }
 }
 
 .header {

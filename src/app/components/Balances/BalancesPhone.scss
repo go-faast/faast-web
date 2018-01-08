@@ -7,7 +7,7 @@
 .tileOuterContainer {
  padding-right: 10px;
  padding-left: 0px;
- @media #{$small-and-down} {
+ @include media-breakpoint-down(xs) {
    &:last-child {
      padding-right: 10px;
    }
@@ -27,11 +27,11 @@
  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
  padding: 20px;
  box-shadow: 5px 10px 15px #090909;
- @media #{$small-and-down} {
-     width: 50%;
-     display: flex;
-     margin-left: 100px;
-     margin-top: 10px;
+ @include media-breakpoint-down(xs) {
+  width: 50%;
+  display: flex;
+  margin-left: 100px;
+  margin-top: 10px;
  }
 }
 
@@ -47,7 +47,7 @@
  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
  padding: 20px;
  box-shadow: 5px 10px 15px #090909;
- @media #{$small-and-down} {
+ @include media-breakpoint-down(xs) {
      width: 100%;
      display: flex;
      margin-left: 5px;

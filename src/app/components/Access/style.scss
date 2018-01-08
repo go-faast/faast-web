@@ -15,12 +15,6 @@
   letter-spacing: 1px;
   margin-bottom: 15px;
   margin-top: 15px;
-  @media #{$small-and-down} {
-    width: 150px;
-    margin-left: 0px;
-    margin-right: 0px;
-    padding: 0;
- }
 }
 
 .bottomContainer {

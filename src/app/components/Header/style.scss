@@ -11,7 +11,7 @@
 .headerTitle {
   color: $primary-color;
   font-size: $text-large;
-  @media #{$small-and-down} {
+  @include media-breakpoint-down(xs) {
     text-align: center;
   }
 }
@@ -19,7 +19,7 @@
 .headerDesc {
   color: $medium-grey;
   font-size: $text-medium;
-  @media #{$small-and-down} {
+  @include media-breakpoint-down(xs) {
     font-size: $text-small;
     text-align: center;
     margin-top: 5px;
@@ -44,7 +44,7 @@
   position: relative;
   margin-left: 20px;
   margin-top: 0px;
-  @media #{$small-and-down} {
+  @include media-breakpoint-down(xs) {
       width: 50%;
       float: left;
       text-align: center;
@@ -68,7 +68,7 @@
 }
 
 .searchInput {
-  @media #{$small-and-down} {
+  @include media-breakpoint-down(xs) {
     margin-top: 40px;
   }
   font-size: $text-small;
@@ -90,7 +90,7 @@
 }
 
 button{
-  @media #{$small-and-down} {
+  @include media-breakpoint-down(xs) {
     margin-top: 40px;
   }
 }
