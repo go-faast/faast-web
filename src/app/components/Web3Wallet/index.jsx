@@ -45,17 +45,8 @@ const Web3Wallet = ({ type, openWallet, mock }) => {
         return toastr.error(`Please adjust ${name} to use the "Main Ethereum Network"`, { timeOut: 10000 })
       }
 
-      web3.eth.getAccounts()
-      .then((accounts) => {
-        const address = accounts[0]
-        if (!address) return toastr.error(`Unable to retrieve ${name} account. Please ensure your account is unlocked.`, { timeOut: 10000 })
-
-        openWallet(new EthereumWalletWeb3(), mock.mocking)
-      })
-      .catch((err) => {
-        log.error(err)
-        toastr.error(`Error retrieving ${name} account`)
-      })
+      EthereumWalletWeb3.fromDefaultAccount()
+        .then((wallet) => openWallet(wallet, mock.mocking))
     })
   }
 

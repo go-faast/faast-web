@@ -19,6 +19,9 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
 
   constructor(address) {
     super('EthereumWalletWeb3')
+    if (!address) {
+      throw new Error('Wallet address must be provided')
+    }
     this.address = address
     this.providerName = web3.providerName
   }

@@ -358,10 +358,9 @@ export const openWallet = (wallet, isMocking) => (dispatch) => {
     } else {
       dispatch(getSwundle(walletId, isMocking))
     }
-    window.faast.wallet.addWallet(wallet)
-    dispatch(walletOpened(wallet))
-    // dispatch(setWallet(type, address, wallet))
   }
+  window.faast.wallet.addWallet(wallet)
+  dispatch(walletOpened(wallet))
 }
 
 export const closeWallet = () => (dispatch) => {
