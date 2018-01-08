@@ -1,14 +1,14 @@
 import React from 'react'
 import { reduxForm, Field } from 'redux-form'
-import { Modal, ModalBody } from 'reactstrap'
+import { Modal, ModalBody, Row, Col } from 'reactstrap'
 import display from 'Utilities/display'
 import CoinIcon from 'Components/CoinIcon'
-import { Row, Col } from 'reactstrap'
+import web3 from 'Services/Web3'
 
 const SignTxModal = (props) => {
   const renderView = () => {
     switch (props.view) {
-      case 'keystore':
+      case 'EthereumWalletKeystore':
         return (
           <SignTxForm
             onSubmit={props.handleKeystorePassword}
@@ -17,7 +17,8 @@ const SignTxModal = (props) => {
             {...props.signTxProps}
           />
         )
-      case 'hardware':
+      case 'EthereumWalletTrezor':
+      case 'EthereumWalletLedger':
         return (
           <SignTxForm
             onSubmit={props.handleSignHardwareWallet}
@@ -26,11 +27,11 @@ const SignTxModal = (props) => {
             {...props.signTxProps}
           />
         )
-      case 'metamask':
+      case 'EthereumWalletWeb3':
         return (
           <SignTxForm
             onSubmit={props.handleMetaMask}
-            description='MetaMask'
+            description={web3.providerName}
             buttonText='Sign'
             {...props.signTxProps}
           />
