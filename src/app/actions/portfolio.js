@@ -202,6 +202,20 @@ export const initiateSwaps = (swap, portfolio, address) => (dispatch) => {
     .then((a) => dispatch(swapSufficientEther(a, portfolio)))
 }
 
+export const sendSwapDeposits = (swap, isMocking) => (dispatch) => {
+  return processArray(swap, (send) => {
+    return processArray(send.list, (receive) => {
+      if (isMocking) {
+        return dispatch(mockTransaction(send, receive))
+      }
+      const { symbol: depositAsset } = send
+      const { unit: depositAmount, order: { deposit: depositAddress } } = receive
+      console.log(depositAddress, depositAmount, depositAsset)
+      return dispatch(txPromiEvent(window.faast.wallet.transfer(depositAddress, depositAmount, depositAsset)), send, receive, true)
+    })
+  })
+}
+
 export const signTransactions = (swap, wallet, pk, isMocking) => (dispatch) => {
   return processArray(swap, (send) => {
     return processArray(send.list, (receive) => {
