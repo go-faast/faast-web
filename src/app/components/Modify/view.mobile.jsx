@@ -3,10 +3,10 @@ import accounting from 'accounting'
 import { RIENumber } from 'riek'
 import Slider from '../Slider/index'
 import display from 'Utilities/display'
-import styles from './ModifyPhone.scss'
+import styles from './style.mobile.scss'
 import config from 'Config'
 
-const renderAssetRowsPhone = (props) => {
+const renderAssetRowsMobile = (props) => {
   const inputs = {
     fiat: {},
     weight: {}
@@ -110,5 +110,5 @@ const renderAssetRowsPhone = (props) => {
 }
 
 module.exports = {
-  renderAssetRowsPhone
+  renderAssetRowsMobile
 }

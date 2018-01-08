@@ -2,11 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Collapse } from 'reactstrap'
 import display from 'Utilities/display'
-import styles from './BalancesPhone.scss'
+import styles from './style.mobile.scss'
 import config from 'Config'
 import PriceChart from 'Components/PriceChart'
 
-const renderAssetsPhone = (props) => {
+const renderAssetsMobile = (props) => {
   return props.assetRows.map((a, i) => (
     <div key={i}>
       <div onClick={() => props.toggleChart(a.symbol)} className={`row ${styles.tableRow}`}>
@@ -72,5 +72,5 @@ const renderAssetsPhone = (props) => {
 }
 
 module.exports = {
-  renderAssetsPhone
+  renderAssetsMobile
 }

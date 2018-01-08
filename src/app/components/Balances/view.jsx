@@ -10,8 +10,7 @@ import Welcome from 'Components/Welcome'
 import display from 'Utilities/display'
 import styles from './style'
 import config from 'Config'
-import {renderAssetsPhone} from './BalancesPhone'
-import { mediaBreakpointUp } from 'Utilities/breakpoints'
+import { renderAssetsMobile } from './view.mobile'
 
 const OrderInProgress = (props) => {
   const statusIcon = () => {
@@ -69,10 +68,10 @@ const OrderInProgress = (props) => {
 
 const BalancesView = (props) => {
   const {
-    mq, totalChange, totalDecrease, total24hAgo, total, assetRows, viewOnly, orderStatus, addressProps, pieChart,
+    mq: { isMobile }, totalChange, totalDecrease, total24hAgo, total, assetRows, viewOnly, orderStatus, addressProps, pieChart,
     toggleChart, layoutProps, showOrderModal, handleToggleOrderModal
   } = props
-  const tablet = mediaBreakpointUp(mq, 'sm')
+
   const values = [
     {
       title: '24h change',
@@ -188,17 +187,17 @@ const BalancesView = (props) => {
         <OrderInProgress status={orderStatus} handleViewStatus={handleToggleOrderModal} />
       }
       <div className={`row ${styles.statsContainer}`}>
-        {tablet &&
+        {!isMobile &&
           renderStats()
         }
-        {!tablet &&
+        {isMobile &&
           <div className={`col-md-3 ${styles.tileOuterContainerPhone}`}>
             {renderStatsPhone()}
           </div>
         }
       </div>
 
-      { tablet && //different chart and address for tablet and up
+      { !isMobile && //different chart and address for tablet and up
         <div className={`row ${styles.chartContainer}`}>
 
         <div className={`col ${styles.tileOuterContainer}`}>
@@ -206,7 +205,7 @@ const BalancesView = (props) => {
             <div style={{ textAlign: 'right' }}>
               <div className={styles.addressTitle}>address</div>
               {(viewOnly && addressProps.address) ||
-                <Address tablet={tablet} className={styles.link} {...addressProps} />
+                <Address tablet={!isMobile} className={styles.link} {...addressProps} />
               }
             </div>
             {pieChart}
@@ -214,7 +213,7 @@ const BalancesView = (props) => {
         </div>
       </div>
       }
-      { !tablet &&
+      { isMobile &&
         <div className={`row ${styles.chartContainer}`}>
           <div className={`col ${styles.tileOuterContainer}`}>
             <div className={styles.tileContainerAddress}>
@@ -226,7 +225,7 @@ const BalancesView = (props) => {
           </div>
         </div>
       }
-      { tablet &&
+      { !isMobile &&
         <div className={`row ${styles.tableHeader}`}>
           <div className={`col-md-2 text-left ${styles.columnTitle}`}>Asset name</div>
           <div className={`col-md-2 ${styles.columnTitle}`}>Units</div>
@@ -237,11 +236,11 @@ const BalancesView = (props) => {
         </div>
       }
       <div className={`row ${styles.gradientSeparator}`} />
-      {tablet &&
+      {!isMobile &&
         renderAssets()
       }
-      {!tablet &&
-        renderAssetsPhone(props)
+      {isMobile &&
+        renderAssetsMobile(props)
       }
     </Layout>
   )
