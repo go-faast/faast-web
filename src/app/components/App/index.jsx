@@ -11,14 +11,7 @@ import { restorePolling } from 'Actions/portfolio'
 import { setSwap } from 'Actions/redux'
 import { postSwundle } from 'Actions/request'
 import {setMediaQueries} from '../../actions/redux'
-
-const widths = new Map()
-widths.set('smPh', '(max-width: 320px)')
-widths.set('mdPh', '(max-width: 375px)')
-widths.set('lgPh', '(max-width: 425px)')
-widths.set('sm', '(min-width: 768px)')
-widths.set('md', '(min-width: 992px)')
-widths.set('lg', '(min-width: 1200px)')
+import { breakpointWidths, mediaBreakpointUp } from 'Utilities/breakpoints'
 
 class App extends Component {
   constructor () {
@@ -32,10 +25,9 @@ class App extends Component {
     }
   }
 
-  componentDidUpdate (prevProps, prevState) {
-    const largePhone = this.props.mq.lgPh && !this.props.mq.mdPh && !this.props.mq.smPh
+  componentDidUpdate (prevProps) {
 
-    if (prevProps.mq.lg && !largePhone) {
+    if (mediaBreakpointUp(prevProps.mq, 'lg') && !mediaBreakpointUp(this.props.mq, 'lg')) {
       toastr.confirm(null, {
         disableCancel: true,
         component: () => (
@@ -58,9 +50,10 @@ class App extends Component {
   }
 
   componentDidMount () {
-    widths.forEach((value, key) => {
-      this._mediaQueryChange(window.matchMedia(value), key)
-      window.matchMedia(value).addListener((e) => { this._mediaQueryChange(e, key) })
+    breakpointWidths.forEach((width, breakpoint) => {
+      const query = `(min-width: ${width})`
+      this._mediaQueryChange(window.matchMedia(query), breakpoint)
+      window.matchMedia(query).addListener((e) => { this._mediaQueryChange(e, breakpoint) })
     })
   }
 
