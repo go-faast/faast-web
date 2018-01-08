@@ -7,7 +7,7 @@ import { toTxFee } from 'Utilities/convert'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 import { getSwapStatus, estimateReceiveAmount } from 'Utilities/swap'
-import { signTransactions, sendSignedTransactions, sendTransactions } from 'Actions/portfolio'
+import { sendSwapDeposits, signTransactions, sendSignedTransactions, sendTransactions } from 'Actions/portfolio'
 
 class SignTxModal extends Component {
   constructor (props) {
@@ -33,32 +33,14 @@ class SignTxModal extends Component {
       return toastr.error('Enter your wallet password to sign the transactions')
     }
 
-    const wallet = this.props.wallet
-    const isMocking = this.props.mock.mocking
-
-    return new Promise((resolve, reject) => {
-      getPrivateKeyString(wallet.data, values.password, isMocking)
-      .catch((e) => {
-        toastr.error('Unable to decrypt wallet. Wrong password?')
-        throw e
+    const { swap, mock } = this.props
+    const isMocking = mock.mocking
+    console.log(swap)
+    return dispatch(sendSwapDeposits(swap, isMocking))
+      .then(() => {
+        dispatch(push('/balances'))
       })
-      .then((pk) => {
-        return dispatch(signTransactions(this.props.swap, wallet, pk, isMocking))
-        .catch((e) => {
-          toastr.error('Unable to sign transactions')
-          throw e
-        })
-      })
-      .then((result) => {
-        dispatch(sendSignedTransactions(this.props.swap, isMocking))
-        resolve()
-      })
-      .catch(reject)
-    })
-    .then(() => {
-      dispatch(push('/balances'))
-    })
-    .catch(log.error)
+      .catch(log.error)
   }
 
   _handleSignHardwareWallet (values, dispatch) {
