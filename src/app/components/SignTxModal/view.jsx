@@ -14,6 +14,7 @@ const SignTxModal = (props) => {
             onSubmit={props.handleKeystorePassword}
             description='your wallet password'
             buttonText='I agree'
+            passwordPrompt={true}
             {...props.signTxProps}
           />
         )
@@ -174,7 +175,7 @@ const SignTxForm = reduxForm({
         <div className='review-list'>
           {swapRow}
         </div>
-        {props.type === 'keystore' &&
+        {props.passwordPrompt &&
           <div className='form-group d-flex justify-content-center'>
             <Field
               name='password'

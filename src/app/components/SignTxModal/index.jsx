@@ -29,14 +29,14 @@ class SignTxModal extends Component {
   }
 
   _handleKeystorePassword (values, dispatch) {
-    if (this.state.view === 'keystore' && !values.password) {
+    if (this.state.view === 'EthereumWalletKeystore' && !values.password) {
       return toastr.error('Enter your wallet password to sign the transactions')
     }
 
     const { swap, mock } = this.props
     const isMocking = mock.mocking
     console.log(swap)
-    return dispatch(sendSwapDeposits(swap, isMocking))
+    return dispatch(sendSwapDeposits(swap, { password: values.password }, isMocking))
       .then(() => {
         dispatch(push('/balances'))
       })

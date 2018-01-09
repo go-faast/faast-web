@@ -231,7 +231,7 @@ const createTransferEventListeners = (dispatch, send, receive, markSigned) => {
   }
 }
 
-export const sendSwapDeposits = (swap, isMocking) => (dispatch) => {
+export const sendSwapDeposits = (swap, options, isMocking) => (dispatch) => {
   return processArray(swap, (send) => {
     return processArray(send.list, (receive) => {
       if (isMocking) {
@@ -239,9 +239,9 @@ export const sendSwapDeposits = (swap, isMocking) => (dispatch) => {
       }
       const { symbol: depositAsset } = send
       const { unit: depositAmount, order: { deposit: depositAddress } } = receive
-      
+
       const eventListeners = createTransferEventListeners(dispatch, send, receive, true)
-      return window.faast.wallet.transfer(depositAddress, depositAmount, depositAsset, eventListeners)
+      return window.faast.wallet.transfer(depositAddress, depositAmount, depositAsset, { ...eventListeners, ...options })
         .then(() => dispatch(pollOrderStatus(send, receive)))
     })
   })
