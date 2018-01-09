@@ -36,7 +36,7 @@ export default class EthereumWalletSigner extends EthereumWallet {
   };
 
   _validateTx = (txParams) => {
-    if (!this.isValidTx(txParams)) {
+    if (!this._isValidTx(txParams)) {
       throw new Error('invalid tx', txParams)
     }
   };
