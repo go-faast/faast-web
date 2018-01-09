@@ -18,7 +18,7 @@ const tokenSendData = (address, amount, decimals) => {
   const dataAddress = pad(address.toLowerCase().replace('0x', ''), 64, '0')
   const power = toBigNumber(10).toPower(decimals)
   const dataAmount = pad(amount.times(power).toString(16), 64, '0')
-  return { data: config.tokenFunctionSignatures.transfer + dataAddress + dataAmount }
+  return config.tokenFunctionSignatures.transfer + dataAddress + dataAmount
 };
 
 const tokenBalanceData = (walletAddress) => {
@@ -95,8 +95,6 @@ export default class EthereumWallet extends Wallet {
     let tx = {
       chainId: 1,
       from: this.getAddress(),
-      value: toBigNumber(0),
-      data: ''
     }
     if (asset.symbol === 'ETH') {
       tx.to = toAddress
@@ -106,6 +104,7 @@ export default class EthereumWallet extends Wallet {
       tx.to = asset.contractAddress,
       tx.data = tokenSendData(toAddress, amount, asset.decimals)
     }
+    console.log(tx)
     return Promise.all([
       web3.eth.getTransactionCount(tx.from),
       web3.eth.getGasPrice(),

@@ -202,6 +202,35 @@ export const initiateSwaps = (swap, portfolio, address) => (dispatch) => {
     .then((a) => dispatch(swapSufficientEther(a, portfolio)))
 }
 
+const createTransferEventListeners = (dispatch, send, receive, markSigned) => {
+  let txId
+  return {
+    onTxHash: (txHash) => {
+      log.info(`tx hash obtained - ${txHash}`)
+      txId = txHash
+      dispatch(insertSwapData(send.symbol, receive.symbol, { txHash }))
+      if (markSigned) dispatch(updateSwapTx(send.symbol, receive.symbol, { signed: true }))
+    },
+    onReceipt: (receipt) => {
+      log.info('tx receipt obtained')
+      dispatch(updateSwapTx(send.symbol, receive.symbol, { receipt }))
+    },
+    onConfirmation: (conf) => {
+      log.info(`tx confirmation obtained - ${conf}`)
+      dispatch(updateSwapTx(send.symbol, receive.symbol, { confirmations: conf }))
+    },
+    onError: (error) => {
+      log.error(error)
+      // Don't mark the following as a tx error, start polling for receipt instead
+      if (error.message.includes('Transaction was not mined within')) {
+        return dispatch(pollTransactionReceipt(send, receive, txId))
+      }
+      const declined = error.message.includes('User denied transaction signature')
+      dispatch(insertSwapData(send.symbol, receive.symbol, { error, declined }))
+    }
+  }
+}
+
 export const sendSwapDeposits = (swap, isMocking) => (dispatch) => {
   return processArray(swap, (send) => {
     return processArray(send.list, (receive) => {
@@ -211,7 +240,10 @@ export const sendSwapDeposits = (swap, isMocking) => (dispatch) => {
       const { symbol: depositAsset } = send
       const { unit: depositAmount, order: { deposit: depositAddress } } = receive
       console.log(depositAddress, depositAmount, depositAsset)
-      return dispatch(txPromiEvent(window.faast.wallet.transfer(depositAddress, depositAmount, depositAsset)), send, receive, true)
+      const eventListeners = createTransferEventListeners(dispatch, send, receive, true)
+      return window.faast.wallet.transfer(depositAddress, depositAmount, depositAsset, eventListeners)
+        .then(() => dispatch(pollOrderStatus(send, receive)))
+        .catch(log.error)
     })
   })
 }
@@ -264,36 +296,14 @@ export const sendSignedTransactions = (swap, mock) => (dispatch) => {
 }
 
 const txPromiEvent = (p, send, receive, markSigned) => (dispatch) => {
-  let tx
-  p
-  .once('transactionHash', (txHash) => {
-    log.info(`tx hash obtained - ${txHash}`)
-    tx = txHash
-    dispatch(insertSwapData(send.symbol, receive.symbol, { txHash }))
-    if (markSigned) dispatch(updateSwapTx(send.symbol, receive.symbol, { signed: true }))
-  })
-  .once('receipt', (receipt) => {
-    log.info('tx receipt obtained')
-    dispatch(updateSwapTx(send.symbol, receive.symbol, { receipt }))
-  })
-  .on('confirmation', (conf) => {
-    log.info(`tx confirmation obtained - ${conf}`)
-    dispatch(updateSwapTx(send.symbol, receive.symbol, { confirmations: conf }))
-  })
-  .on('error', (error) => {
-    log.error(error)
-    // Don't mark the following as a tx error, start polling for receipt instead
-    if (error.message.includes('Transaction was not mined within')) {
-      return dispatch(pollTransactionReceipt(send, receive, tx))
-    }
-    const declined = error.message.includes('User denied transaction signature')
-    dispatch(insertSwapData(send.symbol, receive.symbol, { error, declined }))
-  })
-  .then(() => {
-    // once receipt is obtained
-    dispatch(pollOrderStatus(send, receive))
-  })
-  .catch(log.error)
+  const { onTxHash, onReceipt, onConfirmation, onError } = createTransferEventListeners(dispatch, send, receive, markSigned)
+  return p
+    .once('transactionHash', onTxHash)
+    .once('receipt', onReceipt)
+    .on('confirmation', onConfirmation)
+    .on('error', onError)
+    .then(() => dispatch(pollOrderStatus(send, receive))) // once receipt is obtained
+    .catch(log.error)
 }
 
 export const pollOrderStatus = (send, receive) => (dispatch) => {

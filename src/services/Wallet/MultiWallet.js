@@ -66,16 +66,20 @@ export default class MultiWallet extends Wallet {
 
   isAssetSupported = (assetOrSymbol) => this.wallets.some((wallet) => wallet.isAssetSupported(assetOrSymbol));
 
-  transfer = (toAddress, amount, assetOrSymbol, selectWalletCallback = selectFirst) => {
+  transfer = (toAddress, amount, assetOrSymbol, options) => {
+    options = {
+      selectWalletCallback: selectFirst,
+      ...(options || {})
+    }
     const walletsForAsset = this._getWalletsForAsset(assetOrSymbol)
     if (walletsForAsset.length === 0) {
       const symbol = assetOrSymbol.symbol || assetOrSymbol
       return Promise.reject(new Error(`Failed to find wallet supporting ${symbol}`))
     }
     if (walletsForAsset.length === 1) {
-      selectWalletCallback = selectFirst
+      options.selectWalletCallback = selectFirst
     }
-    return selectWalletCallback(walletsForAsset).then((wallet) => wallet.transfer(toAddress, amount, assetOrSymbol))
+    return options.selectWalletCallback(walletsForAsset).then((wallet) => wallet.transfer(toAddress, amount, assetOrSymbol, options))
   };
 
   getBalance = (assetOrSymbol) => {

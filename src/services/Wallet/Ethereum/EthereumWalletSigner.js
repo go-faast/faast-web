@@ -13,13 +13,18 @@ export default class EthereumWalletSigner extends EthereumWallet {
     assertExtended(this, EthereumWalletSigner)
   }
 
-  transfer = (toAddress, amount, assetOrSymbol) => {
+  transfer = (toAddress, amount, assetOrSymbol, { onTxHash, onReceipt, onConfirmation, onError }) => {
     return Promise.resolve(assetOrSymbol)
       .then(this.assertAssetSupported)
+      .then(this.getAsset)
       .then((asset) => this._createTransferTx(toAddress, amount, asset)
         .then(this.signTx)
         .then(addHexPrefix)
-        .then(web3.eth.sendSignedTransaction))
+        .then((signedTx) => web3.eth.sendSignedTransaction(signedTx)
+          .once('transactionHash', onTxHash)
+          .once('receipt', onReceipt)
+          .on('confirmation', onConfirmation)
+          .on('error', onError)))
   };
 
   _isValidTx = (txParams) => {
