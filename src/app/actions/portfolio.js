@@ -239,11 +239,10 @@ export const sendSwapDeposits = (swap, isMocking) => (dispatch) => {
       }
       const { symbol: depositAsset } = send
       const { unit: depositAmount, order: { deposit: depositAddress } } = receive
-      console.log(depositAddress, depositAmount, depositAsset)
+      
       const eventListeners = createTransferEventListeners(dispatch, send, receive, true)
       return window.faast.wallet.transfer(depositAddress, depositAmount, depositAsset, eventListeners)
         .then(() => dispatch(pollOrderStatus(send, receive)))
-        .catch(log.error)
     })
   })
 }

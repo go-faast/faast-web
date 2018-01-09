@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import SignTxModalView from './view'
-import { getPrivateKeyString, closeTrezorWindow } from 'Utilities/wallet'
+import { closeTrezorWindow } from 'Utilities/wallet'
 import { toTxFee } from 'Utilities/convert'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
@@ -40,7 +40,10 @@ class SignTxModal extends Component {
       .then(() => {
         dispatch(push('/balances'))
       })
-      .catch(log.error)
+      .catch((e) => {
+        toastr.error(e.message || e)
+        log.error(e)
+      })
   }
 
   _handleSignHardwareWallet (values, dispatch) {
