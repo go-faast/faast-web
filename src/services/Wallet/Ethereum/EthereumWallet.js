@@ -94,6 +94,7 @@ export default class EthereumWallet extends Wallet {
   _createTransferTx = (toAddress, amount, asset) => {
     let tx = {
       chainId: 1,
+      from: this.getAddress(),
       value: toBigNumber(0),
       data: ''
     }
@@ -106,13 +107,11 @@ export default class EthereumWallet extends Wallet {
       tx.data = tokenSendData(toAddress, amount, asset.decimals)
     }
     return Promise.all([
-      this.getAddress(),
       web3.eth.getTransactionCount(tx.from),
       web3.eth.getGasPrice(),
       web3.eth.estimateGas(tx)
-    ]).then(([fromAddress, nonce, gasPrice, gasLimit]) => ({
+    ]).then(([nonce, gasPrice, gasLimit]) => ({
       ...tx,
-      from: fromAddress,
       nonce: toHex(nonce),
       gasPrice: toHex(gasPrice),
       gasLimit: toHex(gasLimit)
