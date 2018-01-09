@@ -95,6 +95,8 @@ export default class EthereumWallet extends Wallet {
     let tx = {
       chainId: 1,
       from: this.getAddress(),
+      value: toBigNumber(0),
+      data: ''
     }
     if (asset.symbol === 'ETH') {
       tx.to = toAddress

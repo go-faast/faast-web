@@ -63,15 +63,18 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
     if (typeof password === 'undefined' || password === null) {
       password = window.prompt(`Enter password for Ethereum account ${this.address}`)
     }
+    if (typeof password !== 'string') {
+      throw new Error('Password is required')
+    }
     return new EthereumWalletKeystore(EthereumjsWallet.fromV3(this.keystore, password, true))
   };
 
-  signTx = (txParams) => {
+  signTx = (txParams, { password }) => {
     return Promise.resolve(txParams)
       .then(this._validateTx)
       .then(() => {
         if (this.isEncrypted) {
-          return this.decrypt().signTx(txParams)
+          return this.decrypt(password).signTx(txParams)
         }
         const tx = new EthereumjsTx(txParams)
         tx.sign(this.keystore.getPrivateKey())
