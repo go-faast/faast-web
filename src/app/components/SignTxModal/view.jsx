@@ -11,7 +11,6 @@ const SignTxModal = (props) => {
       case 'EthereumWalletKeystore':
         return (
           <SignTxForm
-            onSubmit={props.handleKeystorePassword}
             description='your wallet password'
             buttonText='I agree'
             passwordPrompt={true}
@@ -22,7 +21,6 @@ const SignTxModal = (props) => {
       case 'EthereumWalletLedger':
         return (
           <SignTxForm
-            onSubmit={props.handleSignHardwareWallet}
             description='your hardware wallet'
             buttonText='Sign'
             {...props.signTxProps}
@@ -31,7 +29,6 @@ const SignTxModal = (props) => {
       case 'EthereumWalletWeb3':
         return (
           <SignTxForm
-            onSubmit={props.handleMetaMask}
             description={web3.providerName}
             buttonText='Sign'
             {...props.signTxProps}
@@ -40,7 +37,6 @@ const SignTxModal = (props) => {
       case 'blockstack':
         return (
           <SignTxForm
-            onSubmit={props.handleKeystorePassword}
             description='your Blockstack wallet'
             buttonText='I agree'
             {...props.signTxProps}

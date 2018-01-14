@@ -8,7 +8,6 @@ import { sessionStorageSet, sessionStorageClear, restoreFromAddress } from 'Util
 import log from 'Utilities/log'
 import blockstack from 'Utilities/blockstack'
 import {
-  toSmallestDenomination,
   toBigNumber,
   toHex,
   toTxFee,
@@ -17,7 +16,6 @@ import {
   toUnit
 } from 'Utilities/convert'
 import {
-  tokenTxData,
   signTxWithPrivateKey,
   signTxWithHardwareWallet,
   sendSignedTransaction,
@@ -76,80 +74,26 @@ const swapMarketInfo = (swapList) => (dispatch) => {
 }
 
 const swapPostExchange = (swapList, portfolio, address) => (dispatch) => {
-  return processArray(swapList, (a) => {
-    const finish = (e, x) => dispatch(swapFinish('swapPostExchange', a, e, x))
+  return processArray(swapList, (swap) => {
+    const finish = (e, x) => dispatch(swapFinish('swapPostExchange', swap, e, x))
 
-    return dispatch(postExchange({ withdrawal: address, pair: a.pair, returnAddress: address }))
-      .then((res) => {
-        const sendAsset = portfolio.list.find((b) => b.symbol === res.depositType.toUpperCase())
-        const value = sendAsset.symbol === 'ETH' ? toSmallestDenomination(a.amount, sendAsset.decimals) : toBigNumber(0)
-        let data
-        if (sendAsset.symbol === 'ETH') {
-          data = ''
-        } else {
-          const tokenData = tokenTxData(res.deposit, a.amount, sendAsset.decimals)
-          if (tokenData.error) {
-            log.error(tokenData.error)
-            return finish('problem generating tx')
-          }
-          data = tokenData.data
-        }
-        const tx = {
-          from: address,
-          to: sendAsset.symbol === 'ETH' ? res.deposit : sendAsset.contractAddress,
-          value: toHex(value),
-          data,
-          chainId: 1
-        }
-        dispatch(insertSwapData(res.depositType.toUpperCase(), res.withdrawalType.toUpperCase(), {
-          order: res,
-          tx
-        }))
-        return finish(null, { order: res, tx })
+    return dispatch(postExchange({ withdrawal: address, pair: swap.pair, returnAddress: address }))
+      .then((order) => {
+        const fromAsset = order.depositType.toUpperCase()
+        const toAsset = order.withdrawalType.toUpperCase()
+        return window.faast.wallet.createTransaction(order.deposit, swap.amount, fromAsset)
+          .then((tx) => {
+            dispatch(insertSwapData(fromAsset, toAsset, {
+              order,
+              tx
+            }))
+            return finish(null, { order, tx })
+          })
       })
       .catch((e) => {
         log.error(e)
         return finish('problem generating tx')
       })
-  })
-}
-
-const swapEstimateTxFee = (swapList, address) => (dispatch) => {
-  return Promise.all([
-    web3.eth.getTransactionCount(address),
-    web3.eth.getGasPrice()
-  ])
-  .then(([nonce, gasPrice]) => {
-    return processArray(swapList, (a) => {
-      const finish = (e, x) => dispatch(swapFinish('swapEstimateTxFee', a, e, x))
-
-      if (!a.tx) return finish('no tx')
-      if (!a.order) return finish('no order')
-
-      return web3.eth.estimateGas({
-        from: a.tx.from,
-        to: a.tx.to,
-        data: a.tx.data
-      })
-      .then((gasLimit) => {
-        const txAdd = {
-          nonce: toHex(nonce),
-          gasPrice: toHex(gasPrice),
-          gasLimit: toHex(gasLimit)
-        }
-        nonce = nonce + 1
-        dispatch(updateSwapTx(a.order.depositType.toUpperCase(), a.order.withdrawalType.toUpperCase(), txAdd))
-        return finish(null, { tx: Object.assign({}, a.tx, txAdd) })
-      })
-      .catch((e) => {
-        log.error(e)
-        return finish('problem estimating gas')
-      })
-    })
-  })
-  .catch((e) => {
-    log.error(e)
-    return swapList
   })
 }
 
@@ -175,7 +119,7 @@ const swapSufficientEther = (swapList, portfolio) => (dispatch) => {
     const finish = (e, x) => dispatch(swapFinish('swapSufficientEther', a, e, x))
 
     if (a.from === 'ETH') etherBalance = etherBalance.minus(a.amount)
-    etherBalance = etherBalance.minus(toTxFee(a.tx.gasLimit, a.tx.gasPrice))
+    etherBalance = etherBalance.minus(a.tx.feeAmount)
     if (etherBalance.isNegative()) {
       return finish('not enough ether for tx fee')
     }
@@ -198,7 +142,6 @@ export const initiateSwaps = (swap, portfolio, address) => (dispatch) => {
   return dispatch(swapMarketInfo(swapList))
     .then((a) => dispatch(swapPostExchange(a, portfolio, address)))
     .then((a) => dispatch(swapSufficientDeposit(a, portfolio)))
-    .then((a) => dispatch(swapEstimateTxFee(a, address)))
     .then((a) => dispatch(swapSufficientEther(a, portfolio)))
 }
 
@@ -238,71 +181,13 @@ export const sendSwapDeposits = (swap, options, isMocking) => (dispatch) => {
         return dispatch(mockTransaction(send, receive))
       }
       const { symbol: depositAsset } = send
-      const { unit: depositAmount, order: { deposit: depositAddress } } = receive
+      const { unit: depositAmount, order: { deposit: depositAddress }, tx } = receive
 
       const eventListeners = createTransferEventListeners(dispatch, send, receive, true)
-      return window.faast.wallet.transfer(depositAddress, depositAmount, depositAsset, { ...eventListeners, ...options })
+      return window.faast.wallet.sendTransaction(tx, { ...eventListeners, ...options })
         .then(() => dispatch(pollOrderStatus(send, receive)))
     })
   })
-}
-
-export const signTransactions = (swap, wallet, pk, isMocking) => (dispatch) => {
-  return processArray(swap, (send) => {
-    return processArray(send.list, (receive) => {
-      let signTxPromise;
-      if (pk) {
-        signTxPromise = signTxWithPrivateKey(receive.tx, pk, isMocking)
-      } else if (wallet.type === 'hardware') {
-        signTxPromise = signTxWithHardwareWallet(wallet.data.type, wallet.data.derivationPath, receive.tx, isMocking)
-      }
-      return signTxPromise.then((signedTx) => {
-        dispatch(updateSwapTx(send.symbol, receive.symbol, { signed: signedTx }))
-
-        return signedTx
-      })
-    })
-  })
-}
-
-// used for metamask
-export const sendTransactions = (swap, isMocking) => (dispatch) => {
-  return processArray(swap, (send) => {
-    return processArray(send.list, (receive) => {
-      if (isMocking) {
-        return dispatch(mockTransaction(send, receive))
-      }
-
-      return dispatch(txPromiEvent(sendTransaction(txWeb3(receive.tx)), send, receive, true))
-    })
-  })
-}
-
-export const sendSignedTransactions = (swap, mock) => (dispatch) => {
-  swap.forEach((send) => {
-    send.list.forEach((receive) => {
-      if (mock) {
-        dispatch(mockTransaction(send, receive))
-      } else {
-        if (receive.tx.signed) {
-          dispatch(txPromiEvent(sendSignedTransaction(receive.tx.signed), send, receive))
-        } else {
-          dispatch(insertSwapData(send.symbol, receive.symbol, { error: new Error('transaction not signed') }))
-        }
-      }
-    })
-  })
-}
-
-const txPromiEvent = (p, send, receive, markSigned) => (dispatch) => {
-  const { onTxHash, onReceipt, onConfirmation, onError } = createTransferEventListeners(dispatch, send, receive, markSigned)
-  return p
-    .once('transactionHash', onTxHash)
-    .once('receipt', onReceipt)
-    .on('confirmation', onConfirmation)
-    .on('error', onError)
-    .then(() => dispatch(pollOrderStatus(send, receive))) // once receipt is obtained
-    .catch(log.error)
 }
 
 export const pollOrderStatus = (send, receive) => (dispatch) => {

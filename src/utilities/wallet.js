@@ -274,7 +274,7 @@ export const setWeb3 = (providerType) => {
 
 export const restoreWallet = () => {
   if (blockstack.isUserSignedIn()) {
-    return blockstack.restoreWallet()
+    return blockstack.createWallet()
   } else {
     return restoreWalletFromStorage()
   }

@@ -1,7 +1,7 @@
 import log from 'Utilities/log'
 import { abstractMethod, assertExtended } from 'Utilities/reflect'
 
-@abstractMethod('getId', 'transfer', 'getBalance', 'getAllBalances', 'isAssetSupported')
+@abstractMethod('getId', 'createTransaction', 'sendTransaction', 'getBalance', 'getAllBalances', 'isAssetSupported')
 export default class Wallet {
 
   constructor(type) {
@@ -26,7 +26,11 @@ export default class Wallet {
       // Support passing in an asset object as argument
       symbol = symbol.symbol
     }
-    return this._allAssets[symbol]
+    if (typeof symbol === 'string') {
+      return this._allAssets[symbol]
+    } else {
+      throw new Error(`Unrecognized value ${symbol} provided to getAsset`)
+    }
   };
 
   assertAssetSupported = (asset) => {
@@ -34,6 +38,14 @@ export default class Wallet {
       throw new Error(`Asset ${asset.symbol || asset} not supported by ${this.type}`)
     }
     return asset
+  };
+
+  transfer = (toAddress, amount, assetOrSymbol, options) => {
+    return Promise.resolve(assetOrSymbol)
+      .then(this.assertAssetSupported)
+      .then(this.getAsset)
+      .then((asset) => this.createTransaction(toAddress, amount, asset, options))
+      .then((tx) => this.sendTransaction(tx, options))
   };
 
 }

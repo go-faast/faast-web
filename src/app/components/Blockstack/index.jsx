@@ -17,8 +17,7 @@ class Blockstack extends Component {
     if (!blockstack.isUserSignedIn()) {
       blockstack.redirectToSignIn(filterUrl())
     } else {
-      const userPrivateKey = blockstack.loadUserData().appPrivateKey
-      const wallet = EthereumWalletKeystore.fromPrivateKey(userPrivateKey)
+      const wallet = blockstack.createWallet()
       if (wallet) {
         this.props.openWallet(wallet)
       } else {

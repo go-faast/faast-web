@@ -3,11 +3,10 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import SignTxModalView from './view'
 import { closeTrezorWindow } from 'Utilities/wallet'
-import { toTxFee } from 'Utilities/convert'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 import { getSwapStatus, estimateReceiveAmount } from 'Utilities/swap'
-import { sendSwapDeposits, signTransactions, sendSignedTransactions, sendTransactions } from 'Actions/portfolio'
+import { sendSwapDeposits } from 'Actions/portfolio'
 
 class SignTxModal extends Component {
   constructor (props) {
@@ -17,9 +16,7 @@ class SignTxModal extends Component {
       isSigning: false
     }
     this._handleCloseModal = this._handleCloseModal.bind(this)
-    this._handleKeystorePassword = this._handleKeystorePassword.bind(this)
-    this._handleSignHardwareWallet = this._handleSignHardwareWallet.bind(this)
-    this._handleMetaMask = this._handleMetaMask.bind(this)
+    this._handleSubmit = this._handleSubmit.bind(this)
   }
 
   _handleCloseModal () {
@@ -28,67 +25,26 @@ class SignTxModal extends Component {
     this.props.toggleModal()
   }
 
-  _handleKeystorePassword (values, dispatch) {
+  _handleSubmit (values, dispatch) {
     if (this.state.view === 'EthereumWalletKeystore' && !values.password) {
       return toastr.error('Enter your wallet password to sign the transactions')
     }
+    this.setState({ isSigning: true })
 
-    const { swap, mock } = this.props
-    const isMocking = mock.mocking
+    const { swap, mock: { mocking: isMocking } } = this.props
     console.log(swap)
     return dispatch(sendSwapDeposits(swap, { password: values.password }, isMocking))
       .then(() => {
+        if (!this.props.showModal) throw new Error('modal closed')
+        closeTrezorWindow()
+        this.setState({ isSigning: false })
         dispatch(push('/balances'))
       })
       .catch((e) => {
         toastr.error(e.message || e)
         log.error(e)
+        this._handleCloseModal()
       })
-  }
-
-  _handleSignHardwareWallet (values, dispatch) {
-    const wallet = this.props.wallet
-    const isMocking = this.props.mock.mocking
-
-    this.setState({ isSigning: true })
-
-    return new Promise((resolve, reject) => {
-      dispatch(signTransactions(this.props.swap, wallet, null, isMocking))
-      .then((result) => {
-        if (!this.props.showModal) throw new Error('modal closed')
-        closeTrezorWindow()
-        dispatch(sendSignedTransactions(this.props.swap, isMocking))
-        resolve()
-      })
-      .catch(reject)
-    })
-    .then(() => {
-      if (!this.props.showModal) throw new Error('modal closed')
-      dispatch(push('/balances'))
-    })
-    .catch((e) => {
-      log.error(e)
-      this._handleCloseModal()
-    })
-  }
-
-  _handleMetaMask (values, dispatch) {
-    const isMocking = this.props.mock.mocking
-
-    this.setState({ isSigning: true })
-
-    return dispatch(sendTransactions(this.props.swap, isMocking))
-    .then((result) => {
-      dispatch(push('/balances'))
-    })
-    .catch((e) => {
-      log.error(e)
-      this._handleCloseModal()
-    })
-  }
-
-  _handleBlockstack (values, dispatch) {
-
   }
 
   render () {
@@ -101,9 +57,9 @@ class SignTxModal extends Component {
       }, [])
       return !hasError && statuses.every(s => s === 'waiting for transaction to be signed')
     }
-    const estimateTxFee = (a) => {
-      if (a.tx && a.tx.hasOwnProperty('gasLimit') && a.tx.hasOwnProperty('gasPrice')) {
-        return toTxFee(a.tx.gasLimit, a.tx.gasPrice)
+    const estimateTxFee = ({ tx }) => {
+      if (tx) {
+        return tx.feeAmount
       }
     }
     const getStatus = (a) => {
@@ -172,12 +128,10 @@ class SignTxModal extends Component {
       <SignTxModalView
         showModal={this.props.showModal}
         view={this.state.view}
-        handleKeystorePassword={this._handleKeystorePassword}
-        handleSignHardwareWallet={this._handleSignHardwareWallet}
-        handleMetaMask={this._handleMetaMask}
         mq={this.props.mq}
         signTxProps={{
           readyToSign: readyToSign(),
+          onSubmit: this._handleSubmit,
           handleCancel: this._handleCloseModal,
           isSigning: this.state.isSigning,
           swapList: swapList,

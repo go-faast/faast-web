@@ -3,7 +3,7 @@ import pad from 'pad-left'
 import config from 'Config'
 import web3 from 'Services/Web3'
 import log from 'Utilities/log'
-import { toBigNumber, toSmallestDenomination, toMainDenomination, toHex } from 'Utilities/convert'
+import { toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee } from 'Utilities/convert'
 import { abstractMethod, assertExtended } from 'Utilities/reflect'
 
 import Wallet from '../Wallet'
@@ -41,7 +41,7 @@ const batchRequest = (batch, batchableFn, ...fnArgs) => {
   return batchableFn(...fnArgs)
 }
 
-@abstractMethod('getAddress', 'transfer')
+@abstractMethod('getAddress', 'sendTransaction')
 export default class EthereumWallet extends Wallet {
 
   constructor(type) {
@@ -91,32 +91,56 @@ export default class EthereumWallet extends Wallet {
       }), {}))
   };
 
-  _createTransferTx = (toAddress, amount, asset) => {
-    let tx = {
-      chainId: 1,
-      from: this.getAddress(),
-      value: toBigNumber(0),
-      data: ''
-    }
-    if (asset.symbol === 'ETH') {
-      tx.to = toAddress
-      tx.value = toSmallestDenomination(amount, asset.decimals)
-    } else {
-      // Handle ERC20
-      tx.to = asset.contractAddress,
-      tx.data = tokenSendData(toAddress, amount, asset.decimals)
-    }
-    console.log(tx)
-    return Promise.all([
-      web3.eth.getTransactionCount(tx.from),
-      web3.eth.getGasPrice(),
-      web3.eth.estimateGas(tx)
-    ]).then(([nonce, gasPrice, gasLimit]) => ({
-      ...tx,
-      nonce: toHex(nonce),
-      gasPrice: toHex(gasPrice),
-      gasLimit: toHex(gasLimit)
-    })).catch(log.error)
+  _assignNonce = (txData) => {
+    return web3.eth.getTransactionCount(txData.from)
+      .then((nonce) => ({
+        nonce: toHex(nonce),
+        ...txData
+      }))
+  };
+
+  createTransaction = (toAddress, amount, assetOrSymbol) => {
+    return Promise.resolve(assetOrSymbol)
+      .then(this.getAsset)
+      .then((asset) => {
+        let tx = {
+          chainId: 1,
+          from: this.getAddress(),
+          value: toBigNumber(0),
+          data: ''
+        }
+        if (asset.symbol === 'ETH') {
+          tx.to = toAddress
+          tx.value = toSmallestDenomination(amount, asset.decimals)
+        } else if (asset.ERC20) {
+          // Handle ERC20
+          tx.to = asset.contractAddress,
+          tx.data = tokenSendData(toAddress, amount, asset.decimals)
+        } else {
+          throw new Error(`Unsupported asset ${asset.symbol || asset} provided to EthereumWallet`)
+        }
+        tx.value = toHex(tx.value)
+        console.log(tx)
+        return Promise.all([
+          web3.eth.getGasPrice(),
+          web3.eth.estimateGas(tx)
+        ]).then(([gasPrice, gasLimit]) => ({
+          toAddress,
+          amount,
+          asset,
+          feeAmount: toTxFee(gasLimit, gasPrice),
+          feeAsset: 'ETH',
+          txData: {
+            ...tx,
+            gasPrice: toHex(gasPrice),
+            gasLimit: toHex(gasLimit)
+          }
+        }))
+        .then((tx) => ({
+          ...tx,
+          ...tx.txData // TODO: Added for back compat. Remove after refactoring
+        }))
+      })
   };
 
 }

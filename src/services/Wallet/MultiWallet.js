@@ -66,7 +66,7 @@ export default class MultiWallet extends Wallet {
 
   isAssetSupported = (assetOrSymbol) => this.wallets.some((wallet) => wallet.isAssetSupported(assetOrSymbol));
 
-  transfer = (toAddress, amount, assetOrSymbol, options) => {
+  _chooseWallet = (assetOrSymbol, options) => {
     options = {
       selectWalletCallback: selectFirst,
       ...(options || {})
@@ -79,7 +79,20 @@ export default class MultiWallet extends Wallet {
     if (walletsForAsset.length === 1) {
       options.selectWalletCallback = selectFirst
     }
-    return options.selectWalletCallback(walletsForAsset).then((wallet) => wallet.transfer(toAddress, amount, assetOrSymbol, options))
+    return options.selectWalletCallback(walletsForAsset)
+  };
+
+  transfer = (toAddress, amount, assetOrSymbol, options) => {
+    return this._chooseWallet(assetOrSymbol, options).then((wallet) => wallet.transfer(toAddress, amount, assetOrSymbol, options))
+  };
+
+  createTransaction = (toAddress, amount, assetOrSymbol, options) => {
+    return this._chooseWallet(assetOrSymbol, options).then((wallet) => wallet.createTransaction(toAddress, amount, assetOrSymbol, options))
+  };
+
+  sendTransaction = (tx, options) => {
+    // TODO: Choose wallet based on tx.toAddress
+    return this._chooseWallet(tx.asset, options).then((wallet) => wallet.sendTransaction(tx, options))
   };
 
   getBalance = (assetOrSymbol) => {
