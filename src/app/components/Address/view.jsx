@@ -9,7 +9,7 @@ const AddressView = (props) => {
       <span onClick={props.handleClick} className={props.className}>{props.address}</span>
       {(props.view === 'downloadKeystore' &&
         <CreateWalletModal {...props.modalProps} />) ||
-        <AddressModal {...props.modalProps} />
+        (<AddressModal address={props.address} {...props.modalProps} />)
       }
     </div>
   ) : null

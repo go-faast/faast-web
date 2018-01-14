@@ -21,7 +21,9 @@ const saveSettings = (settings = {}) => {
 
 const createWallet = () => {
   const userPrivateKey = loadUserData().appPrivateKey
-  return EthereumWalletKeystore.fromPrivateKey(userPrivateKey)
+  const wallet = EthereumWalletKeystore.fromPrivateKey(userPrivateKey)
+  wallet.isBlockstack = true
+  return wallet
 }
 
 const getSettings = () => {

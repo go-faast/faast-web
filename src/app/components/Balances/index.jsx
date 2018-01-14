@@ -12,16 +12,18 @@ import { getSwapStatus } from 'Utilities/swap'
 import { getBalances, removeSwundle } from 'Actions/request'
 import { clearAllIntervals } from 'Actions/portfolio'
 import { toggleOrderModal, resetSwap, resetPortfolio } from 'Actions/redux'
+import { EthereumWalletWeb3 } from 'Services/Wallet'
 
 let balancesInterval
 
 class Balances extends Component {
   constructor (props) {
     super(props)
+    const wallet = props.viewOnlyAddress ? new EthereumWalletWeb3(props.viewOnlyAddress) : window.faast.wallet
     this.state = {
       list: [],
       chartSelect: {},
-      address: props.viewOnlyAddress || props.wallet.address
+      wallet
     }
     this._getBalances = this._getBalances.bind(this)
     this._toggleChart = this._toggleChart.bind(this)
@@ -32,21 +34,25 @@ class Balances extends Component {
   }
 
   componentWillMount () {
-    const refreshBalances = () => {
-      this._getBalances(this.state.address)
-    }
+    const { wallet } = this.state
+    const refreshBalances = () => this._getBalances(wallet)
     balancesInterval = window.setInterval(refreshBalances, 30000)
     this._setList()
     refreshBalances()
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.viewOnlyAddress && nextProps.viewOnlyAddress !== this.state.address) {
-      this.setState({ list: [], address: nextProps.viewOnlyAddress })
-      window.clearInterval(balancesInterval)
-      this.props.resetPortfolio()
-      balancesInterval = window.setInterval(() => this._getBalances(nextProps.viewOnlyAddress), 30000)
-      this._getBalances(nextProps.viewOnlyAddress, true)
+    if (nextProps.viewOnlyAddress) {
+      if (nextProps.viewOnlyAddress !== this.props.viewOnlyAddress) {
+        const newWallet = new EthereumWalletWeb3(nextProps.viewOnlyAddress)
+        this.setState({ list: [], wallet: newWallet })
+        window.clearInterval(balancesInterval)
+        this.props.resetPortfolio()
+        balancesInterval = window.setInterval(() => this._getBalances(newWallet), 30000)
+        this._getBalances(newWallet, true)
+      }
+    } else {
+      this.setState({ list: [], wallet: window.faast.wallet })
     }
   }
 
@@ -56,7 +62,7 @@ class Balances extends Component {
       const orderStatus = this._orderStatus()
       if (orderStatus === 'error' || orderStatus === 'complete') {
         this.props.resetSwap()
-        this.props.removeSwundle(this.props.wallet.address)
+        this.props.removeSwundle(this.state.wallet.getId())
       }
     }
   }
@@ -83,14 +89,15 @@ class Balances extends Component {
     }
   }
 
-  _getBalances (resetPortfolio) {
+  _getBalances (wallet, resetPortfolio) {
+    const { assets, mock, swap, getBalances } = this.props
     const portfolio = resetPortfolio ? {} : this.props.portfolio
-    this.props.getBalances(this.props.assets, portfolio, this.props.mock, this.props.swap)
-    .then(() => {
-      this._setChartSelect('ETH')
-      this._setList()
-    })
-    .catch(log.error)
+    getBalances(assets, portfolio, wallet, mock, swap)
+      .then(() => {
+        this._setChartSelect('ETH')
+        this._setList()
+      })
+      .catch(log.error)
   }
 
   _toggleChart (symbol) {
@@ -157,8 +164,8 @@ class Balances extends Component {
       handleModify: () => this.props.routerPush('/modify'),
     }
     const addressProps = {
-      address: this.state.address,
-      showDownloadKeystore: !this.props.viewOnlyAddress && this.props.wallet.type === 'blockstack'
+      address: this.state.wallet.getId(),
+      showDownloadKeystore: !this.props.viewOnlyAddress && this.state.wallet.isBlockstack
     }
     const totalDecrease = portfolio.totalChange && portfolio.totalChange.isNegative()
     return (
@@ -204,8 +211,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getBalances: (assets, portfolio, mock, swap) => {
-    return dispatch(getBalances(assets, portfolio, mock, swap))
+  getBalances: (assets, portfolio, wallet, mock, swap) => {
+    return dispatch(getBalances(assets, portfolio, wallet, mock, swap))
   },
   routerPush: (path) => {
     dispatch(push(path))

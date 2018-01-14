@@ -5,7 +5,7 @@ import AddressModalView from './view'
 
 const AddressModal = (props) => (
   <AddressModalView
-    address={props.wallet.address}
+    address={props.address || props.wallet.address}
     showDownloadKeystore={props.wallet.type === 'blockstack'}
     {...props}
   />
