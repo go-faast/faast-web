@@ -260,9 +260,9 @@ class HardwareWallet extends Component {
     const { type } = this.props
     let wallet
     if (type === 'ledger') {
-      wallet = new EthereumWalletLedger(addressPath, address)
+      wallet = new EthereumWalletLedger(address, addressPath)
     } else if (type === 'trezor') {
-      wallet = new EthereumWalletTrezor(addressPath, address)
+      wallet = new EthereumWalletTrezor(address, addressPath)
     } else {
       throw new Error(`Unknown hardware wallet type ${type}`)
     }

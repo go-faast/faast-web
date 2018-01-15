@@ -9,10 +9,10 @@ import EthereumWalletSigner from './EthereumWalletSigner'
 
 export default class EthereumWalletTrezor extends EthereumWalletSigner {
 
-  constructor(derivationPath, address, isMocking) {
+  constructor(address, derivationPath, isMocking) {
     super('EthereumWalletTrezor')
-    this.derivationPath = derivationPath // Expects full path to `address`
     this.address = address
+    this.derivationPath = derivationPath // Expects full path to `address`
     this._isMocking = isMocking
   }
 
