@@ -24,7 +24,7 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
         throw new Error('Keystore version information missing')
       }
       if (version !== 3) {
-        throw new Error(`Unsupported keystore version: ${keystore.version}`)
+        throw new Error(`Keystore version ${keystore.version} unsupported`)
       }
       if (!(keystore.crypto || keystore.Crypto)) {
         throw new Error('Keystore crypto information missing')
