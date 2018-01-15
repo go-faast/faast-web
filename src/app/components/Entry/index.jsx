@@ -11,8 +11,7 @@ import toastr from 'Utilities/toastrWrapper'
 import { filterUrl } from 'Utilities/helpers'
 import blockstack from 'Utilities/blockstack'
 import { getAssets, getSwundle } from 'Actions/request'
-import { setSettings } from 'Actions/redux'
-import { MultiWallet } from 'Services/Wallet'
+import { setSettings, setWallet } from 'Actions/redux'
 
 class Entry extends Component {
   constructor () {
@@ -26,6 +25,8 @@ class Entry extends Component {
     const query = queryString.parse(window.location.search)
 
     if (query.log_level) window.faast.log_level = query.log_level
+
+    const { setSettings, setWallet, getSwundle, getAssets } = this.props
 
     idb.setup(['logging'])
     .then(() => {
@@ -58,11 +59,10 @@ class Entry extends Component {
     })
     .then(() => {
       return new Promise((resolve) => {
-        window.faast.wallet = new MultiWallet()
-        if (this.props.wallet.type === 'blockstack') {
+        if (window.faast.wallet.type === 'blockstack') {
           blockstack.getSettings()
           .then((settings) => {
-            this.props.setSettings(settings)
+            setSettings(settings)
             resolve()
           })
           .catch((err) => {
@@ -75,6 +75,7 @@ class Entry extends Component {
       })
     })
     .then(() => {
+      setWallet(window.faast.wallet)
       window.faast.hw = {}
       if (window.TrezorConnect) {
         window.faast.hw.trezor = window.TrezorConnect
@@ -86,11 +87,12 @@ class Entry extends Component {
         })
         .fail(log.error)
       }
-      if (this.props.wallet.address && !this.props.swap.length) {
-        this.props.getSwundle(this.props.wallet.address, this.props.mock.mocking)
+      const walletId = window.faast.wallet.getId()
+      if (walletId && !this.props.swap.length) {
+        getSwundle(walletId, this.props.mock.mocking)
       }
 
-      return this.props.getAssets()
+      return getAssets()
     })
     .then(() => {
       this.setState({ ready: true })
@@ -116,19 +118,18 @@ class Entry extends Component {
 }
 
 Entry.propTypes = {
-  wallet: PropTypes.object.isRequired,
   portfolio: PropTypes.object.isRequired,
   getAssets: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
   portfolio: state.portfolio,
-  wallet: state.wallet,
   swap: state.swap,
   mock: state.mock
 })
 
 const mapDispatchToProps = (dispatch) => ({
+  setWallet: (wallet) => dispatch(setWallet(wallet)),
   getAssets: () => {
     return dispatch(getAssets())
   },

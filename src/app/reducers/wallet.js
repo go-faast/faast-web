@@ -3,18 +3,18 @@ const initialState = {
 }
 
 export default (state = initialState, { type, payload }) => {
+  const { wallet } = (payload || {})
   switch (type) {
   case 'RESET_ALL':
     return initialState
   case 'SET_WALLET':
     return {
       ...state,
-      type: payload.type,
-      address: payload.address,
-      data: payload.data
+      type: wallet.type,
+      address: wallet.getId(),
+      opened: wallet.type === 'MultiWallet' ? wallet.wallets.length : 1
     }
   case 'WALLET_OPENED':
-    const { wallet } = payload
     const address = wallet.address || wallet.getAddress()
     return {
       ...state,

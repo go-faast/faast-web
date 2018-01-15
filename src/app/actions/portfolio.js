@@ -4,27 +4,20 @@ import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
-import { sessionStorageSet, sessionStorageClear, restoreFromAddress } from 'Utilities/storage'
+import { sessionStorageClear, restoreFromAddress } from 'Utilities/storage'
 import log from 'Utilities/log'
 import blockstack from 'Utilities/blockstack'
 import {
   toBigNumber,
   toHex,
-  toTxFee,
   toPrecision,
-  toChecksumAddress,
   toUnit
 } from 'Utilities/convert'
 import {
-  signTxWithPrivateKey,
-  signTxWithHardwareWallet,
-  sendSignedTransaction,
-  sendTransaction,
   getTransactionReceipt,
-  txWeb3,
-  getTransaction
+  getTransaction,
+  saveWallet
 } from 'Utilities/wallet'
-import web3 from 'Services/Web3'
 import { MultiWallet } from 'Services/Wallet'
 
 const swapFinish = (type, swap, error, addition) => {
@@ -180,11 +173,8 @@ export const sendSwapDeposits = (swap, options, isMocking) => (dispatch) => {
       if (isMocking) {
         return dispatch(mockTransaction(send, receive))
       }
-      const { symbol: depositAsset } = send
-      const { unit: depositAmount, order: { deposit: depositAddress }, tx } = receive
-
       const eventListeners = createTransferEventListeners(dispatch, send, receive, true)
-      return window.faast.wallet.sendTransaction(tx, { ...eventListeners, ...options })
+      return window.faast.wallet.sendTransaction(receive.tx, { ...eventListeners, ...options })
         .then(() => dispatch(pollOrderStatus(send, receive)))
     })
   })
@@ -268,6 +258,7 @@ export const openWallet = (wallet, isMocking) => (dispatch) => {
     }
   }
   window.faast.wallet.addWallet(wallet)
+  saveWallet(window.faast.wallet)
   dispatch(walletOpened(wallet))
 }
 

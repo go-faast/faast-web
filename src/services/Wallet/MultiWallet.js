@@ -9,9 +9,9 @@ const resolveId = (walletOrId) => typeof walletOrId !== 'string' ? walletOrId.ge
 
 export default class MultiWallet extends Wallet {
 
-  constructor() {
+  constructor(wallets) {
     super('MultiWallet')
-    this.wallets = []
+    this.wallets = wallets || []
   }
 
   getId = () => this.wallets.map((wallet) => wallet.getId()).join(',');

@@ -17,13 +17,13 @@ const checkAccountAvailable = (address) => Promise.resolve(address)
 
 export default class EthereumWalletWeb3 extends EthereumWallet {
 
-  constructor(address) {
+  constructor(address, providerName) {
     super('EthereumWalletWeb3')
     if (!address) {
       throw new Error('Wallet address must be provided')
     }
     this.address = address
-    this.providerName = web3.providerName
+    this.providerName = providerName || web3.providerName
   }
 
   getAddress = () => this.address;

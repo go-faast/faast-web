@@ -20,13 +20,12 @@ import 'Styles/style.scss?nsm'
 
 const persistedState = () => {
   const wallet = restoreWallet()
-  const addressState = restoreFromAddress(wallet && wallet.address) || {}
+  const addressState = restoreFromAddress(wallet && wallet.getId()) || {}
   const status = statusAllSwaps(addressState.swap)
   const swap = (status === 'unavailable' || status === 'unsigned' || status === 'unsent') ? undefined : addressState.swap
   const settings = addressState.settings
 
   return {
-    wallet,
     swap,
     settings
   }
