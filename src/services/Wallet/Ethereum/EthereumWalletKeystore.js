@@ -12,7 +12,6 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
 
   constructor(keystore) {
     super('EthereumWalletKeystore')
-    this.keystore = keystore
     if (keystore instanceof EthereumjsWallet) {
       this.isEncrypted = false
     } else {
@@ -32,6 +31,7 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
       }
       this.isEncrypted = true
     }
+    this.keystore = keystore
   }
 
   static generate = () => {
@@ -47,7 +47,7 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
     return new EthereumWalletKeystore(jsonKeystore)
   };
 
-  getAddress = () => toChecksumAddress(this.keystore.address || this.keystore.Address || this.keystore.getAddressString())
+  getAddress = () => toChecksumAddress(this.keystore.address || this.keystore.Address || this.keystore.getAddressString());
 
   encrypt = (password = '') => {
     if (this.isEncrypted) {

@@ -191,7 +191,7 @@ export const promisifySync = (syncFn) => (...args) => new Promise((resolve, reje
 
 export const parseJson = (jsonStr) => {
   try {
-    return typeof serialized === 'string' ? JSON.parse(jsonStr) : jsonStr
+    return typeof jsonStr === 'string' ? JSON.parse(jsonStr) : jsonStr
   } catch (_) {
     return null
   }

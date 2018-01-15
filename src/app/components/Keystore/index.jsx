@@ -2,7 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import KeystoreView from './view'
-import { parseEncryptedWalletString } from 'Utilities/wallet'
 import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
 import { openWallet } from 'Actions/portfolio'
@@ -14,10 +13,10 @@ const Keystore = (props) => {
     const reader = new window.FileReader()
 
     reader.onload = (event) => {
-      const encryptedWallet = parseEncryptedWalletString(event.target.result)
-      if (!encryptedWallet) return toastr.error('Not a valid wallet keystore file')
+      const encryptedWalletString = event.target.result
+      if (!encryptedWalletString) return toastr.error('Not a valid wallet keystore file')
 
-      props.openWallet(new EthereumWalletKeystore(encryptedWallet), props.mock.mocking)
+      props.openWallet(new EthereumWalletKeystore(encryptedWalletString), props.mock.mocking)
       log.info('Encrypted wallet set')
     }
 
