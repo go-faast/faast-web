@@ -70,6 +70,11 @@ export const setMock = (mock) => ({
   payload: mock
 })
 
+export const setSwapData = (data) => ({
+  type: 'SET_SWAP_DATA',
+  payload: data
+})
+
 export const insertSwapData = (depositSymbol, receiveSymbol, data) => ({
   type: 'INSERT_SWAP_DATA',
   payload: { depositSymbol, receiveSymbol, data }

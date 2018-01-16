@@ -12,25 +12,10 @@ import { Route } from 'react-router-dom'
 import ReduxToastr from 'react-redux-toastr'
 import Entry from 'Components/Entry'
 import reducers from './reducers'
-import { restoreFromAddress, saveToAddress } from 'Utilities/storage'
-import { restoreWallet } from 'Utilities/wallet'
-import { statusAllSwaps } from 'Utilities/swap'
+import { restoreState } from 'Actions/init'
+import { saveToAddress } from 'Utilities/storage'
 import 'react-redux-toastr/src/styles/index.scss?nsm'
 import 'Styles/style.scss?nsm'
-
-const persistedState = () => {
-  const wallet = restoreWallet()
-  const addressState = restoreFromAddress(wallet && wallet.getId()) || {}
-  const status = statusAllSwaps(addressState.swap)
-  const swap = (status === 'unavailable' || status === 'unsigned' || status === 'unsent') ? undefined : addressState.swap
-  const settings = addressState.settings
-
-  return {
-    wallet,
-    swap,
-    settings
-  }
-}
 
 const history = createHistory()
 const middleware = [
@@ -44,7 +29,9 @@ window.faast.intervals = {
   txReceipt: []
 }
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-const store = createStore(reducers, persistedState(), composeEnhancers(applyMiddleware(...middleware)))
+const store = createStore(reducers, composeEnhancers(applyMiddleware(...middleware)))
+
+store.dispatch(restoreState())
 
 store.subscribe(throttle(() => {
   const state = store.getState()

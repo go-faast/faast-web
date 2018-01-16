@@ -20,7 +20,7 @@ export default (state = initialState, { type, payload }) => {
     return {
       ...state,
       type: wallet.type,
-      address: typeof state.address !== 'undefined'
+      address: state.address
         ? (Array.isArray(state.address) ? [...state.address, address] : [state.address, address])
         : address,
       opened: state.opened + 1,

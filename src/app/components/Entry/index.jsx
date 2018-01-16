@@ -11,7 +11,7 @@ import toastr from 'Utilities/toastrWrapper'
 import { filterUrl } from 'Utilities/helpers'
 import blockstack from 'Utilities/blockstack'
 import { getAssets, getSwundle } from 'Actions/request'
-import { setSettings, setWallet } from 'Actions/redux'
+import { setSettings } from 'Actions/redux'
 
 class Entry extends Component {
   constructor () {
@@ -26,7 +26,7 @@ class Entry extends Component {
 
     if (query.log_level) window.faast.log_level = query.log_level
 
-    const { setSettings, setWallet, getSwundle, getAssets } = this.props
+    const { setSettings, getSwundle, getAssets, wallet, swap, mock: { mocking: isMocking } } = this.props
 
     idb.setup(['logging'])
     .then(() => {
@@ -41,41 +41,21 @@ class Entry extends Component {
       return idb.removeOld('logging')
     })
     .then(() => {
-      return new Promise((resolve) => {
-        if (blockstack.isSignInPending()) {
-          log.info('blockstack signin pending')
-          blockstack.handlePendingSignIn()
-          .then(() => {
-            window.location.replace(filterUrl())
-          })
-          .catch((err) => {
-            log.error(err)
-            resolve()
-          })
-        } else {
-          resolve()
-        }
-      })
+      if (blockstack.isSignInPending()) {
+        log.info('blockstack signin pending')
+        return blockstack.handlePendingSignIn()
+          .then(() => window.location.replace(filterUrl()))
+          .catch((err) => log.error(err))
+      }
     })
     .then(() => {
-      return new Promise((resolve) => {
-        if (window.faast.wallet.isBlockstack) {
-          blockstack.getSettings()
-          .then((settings) => {
-            setSettings(settings)
-            resolve()
-          })
-          .catch((err) => {
-            log.error(err)
-            resolve()
-          })
-        } else {
-          resolve()
-        }
-      })
+      if (wallet.isBlockstack) {
+        return blockstack.getSettings()
+          .then(setSettings)
+          .catch((err) => log.error(err))
+      }
     })
     .then(() => {
-      setWallet(window.faast.wallet)
       window.faast.hw = {}
       if (window.TrezorConnect) {
         window.faast.hw.trezor = window.TrezorConnect
@@ -87,9 +67,8 @@ class Entry extends Component {
         })
         .fail(log.error)
       }
-      const walletId = window.faast.wallet.getId()
-      if (walletId && !this.props.swap.length) {
-        getSwundle(walletId, this.props.mock.mocking)
+      if (wallet.address && !swap.length) {
+        getSwundle(wallet.address, isMocking)
       }
 
       return getAssets()
@@ -123,13 +102,13 @@ Entry.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
+  wallet: state.wallet,
   portfolio: state.portfolio,
   swap: state.swap,
   mock: state.mock
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  setWallet: (wallet) => dispatch(setWallet(wallet)),
   getAssets: () => {
     return dispatch(getAssets())
   },
