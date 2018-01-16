@@ -5,10 +5,12 @@ import { push } from 'react-router-redux'
 import PieChart from 'Components/PieChart'
 import PriceChart from 'Components/PriceChart'
 import BalancesView from './view'
+import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 import { updateObjectInArray } from 'Utilities/helpers'
 import { getSwapStatus } from 'Utilities/swap'
 import { getBalances, removeSwundle } from 'Actions/request'
+import { clearAllIntervals } from 'Actions/portfolio'
 import { toggleOrderModal, resetSwap, resetPortfolio } from 'Actions/redux'
 
 let balancesInterval

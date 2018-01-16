@@ -60,7 +60,15 @@ const OrderInProgress = (props) => {
               {statusContent()}
             </div>
           </div>
-          <div className='col-md-3' />
+          <div className='col-md-3'>
+            {props.status === 'working' &&
+              <div className='row align-items-end' style={{ height: '100%' }}>
+                <div className='col text-right text-x-small text-medium-grey'>
+                  <span className='cursor-pointer' onClick={props.handleForgetOrder}>forget</span>
+                </div>
+              </div>
+            }
+          </div>
         </div>
       </div>
     </div>
