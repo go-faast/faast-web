@@ -1,4 +1,3 @@
-import { toChecksumAddress } from 'Utilities/convert'
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
 export const storageAvailable = (type) => {
@@ -24,46 +23,62 @@ export const storageAvailable = (type) => {
   }
 }
 
-export const sessionStorageSet = (key, value) => {
-  sessionStorageClear()
-  if (storageAvailable('sessionStorage')) {
-    window.sessionStorage.setItem(key, value)
-  }
-}
-
-export const sessionStorageGet = (key) => {
-  if (storageAvailable('sessionStorage')) {
-    return window.sessionStorage.getItem(key)
+const storageGet = (storageType, key) => {
+  if (storageAvailable(storageType)) {
+    return window[storageType].getItem(key)
   } else {
     return null
   }
 }
 
-export const sessionStorageClear = () => {
-  if (storageAvailable('sessionStorage')) {
-    window.sessionStorage.clear()
+const storageSet = (storageType, key, value) => {
+  if (storageAvailable(storageType)) {
+    window[storageType].setItem(key, value)
   }
 }
 
-export const localStorageSet = (key, value) => {
-  if (storageAvailable('localStorage')) {
-    window.localStorage.setItem(key, value)
+const storageRemove = (storageType, key) => {
+  if (storageAvailable(storageType)) {
+    window[storageType].removeItem(key)
   }
 }
 
-export const localStorageGet = (key) => {
-  if (storageAvailable('localStorage')) {
-    return window.localStorage.getItem(key)
-  } else {
-    return null
+const storageClear = (storageType) => {
+  if (storageAvailable(storageType)) {
+    window[storageType].clear()
   }
 }
 
-export const localStorageRemove = (key) => {
-  if (storageAvailable('localStorage')) {
-    window.localStorage.removeItem(key)
+/** Iterate all storage items. `cb` takes (key, value) as args */
+const storageForEach = (storageType, cb) => {
+  if (storageAvailable(storageType)) {
+    const storage = window[storageType]
+    for (let i = 0; i < storage.length; i++) {
+      const key = storage.key(i)
+      cb(key, storage.getItem(key))
+    }
   }
 }
+
+export const sessionStorageGet = (key) => storageGet('sessionStorage', key)
+
+export const sessionStorageSet = (key, value) => storageSet('sessionStorage', key, value)
+
+export const sessionStorageRemove = (key) => storageRemove('sessionStorage', key)
+
+export const sessionStorageClear = () => storageClear('sessionStorage')
+
+export const sessionStorageForEach = (cb) => storageForEach('sessionStorage', cb)
+
+export const localStorageGet = (key) => storageGet('localStorage', key)
+
+export const localStorageSet = (key, value) => storageSet('localStorage', key, value)
+
+export const localStorageRemove = (key) => storageRemove('localStorage', key)
+
+export const localStorageClear = () => storageClear('localStorage')
+
+export const localStorageForEach = (cb) => storageForEach('localStorage', cb)
 
 export const restoreFromAddress = (address) => {
   if (!address) return undefined
