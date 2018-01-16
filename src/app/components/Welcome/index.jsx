@@ -18,14 +18,14 @@ class Welcome extends Component {
   }
 
   _handleContinue () {
-    if (this.props.wallet.type === 'blockstack') {
+    if (this.props.wallet.isBlockstack) {
       this.props.setSettings({ walletBackedUp: true })
     }
   }
 
   render () {
     const modalProps = {
-      showModal: this.props.wallet.type === 'blockstack' && !this.props.settings.walletBackedUp,
+      showModal: this.props.wallet.isBlockstack && !this.props.settings.walletBackedUp,
       toggleModal: this._toggleModal,
       handleBackup: () => this.setState({ view: 'downloadKeystore' }),
       handleContinue: this._handleContinue

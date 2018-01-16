@@ -26,6 +26,7 @@ const persistedState = () => {
   const settings = addressState.settings
 
   return {
+    wallet,
     swap,
     settings
   }

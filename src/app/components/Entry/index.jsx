@@ -59,7 +59,7 @@ class Entry extends Component {
     })
     .then(() => {
       return new Promise((resolve) => {
-        if (window.faast.wallet.type === 'blockstack') {
+        if (window.faast.wallet.isBlockstack) {
           blockstack.getSettings()
           .then((settings) => {
             setSettings(settings)

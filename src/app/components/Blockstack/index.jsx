@@ -5,7 +5,6 @@ import { filterUrl } from 'Utilities/helpers'
 import blockstack from 'Utilities/blockstack'
 import { openWallet } from 'Actions/portfolio'
 import BlockstackView from './view'
-import { EthereumWalletKeystore } from 'Services/Wallet'
 
 class Blockstack extends Component {
   constructor () {
@@ -21,7 +20,7 @@ class Blockstack extends Component {
       if (wallet) {
         this.props.openWallet(wallet)
       } else {
-        toastr.error('Unable to open BlockstackView wallet')
+        toastr.error('Unable to open Blockstack wallet')
       }
     }
   }

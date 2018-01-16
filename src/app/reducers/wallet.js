@@ -12,7 +12,8 @@ export default (state = initialState, { type, payload }) => {
       ...state,
       type: wallet.type,
       address: wallet.getId(),
-      opened: wallet.type === 'MultiWallet' ? wallet.wallets.length : 1
+      opened: wallet.type === 'MultiWallet' ? wallet.wallets.length : 1,
+      isBlockstack: wallet.isBlockstack
     }
   case 'WALLET_OPENED':
     const address = wallet.address || wallet.getAddress()
@@ -22,7 +23,8 @@ export default (state = initialState, { type, payload }) => {
       address: typeof state.address !== 'undefined'
         ? (Array.isArray(state.address) ? [...state.address, address] : [state.address, address])
         : address,
-      opened: state.opened + 1
+      opened: state.opened + 1,
+      isBlockstack: wallet.isBlockstack
     }
   default:
     return state

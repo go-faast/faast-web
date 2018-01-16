@@ -15,7 +15,9 @@ const walletStorageKey = 'wallet'
 
 export const restoreWallet = () => {
   if (blockstack.isUserSignedIn()) {
-    return blockstack.createWallet()
+    const wallet = blockstack.createWallet()
+    window.faast.wallet = wallet
+    return wallet
   }
   const query = queryString.parse(window.location.search)
   let wallet
@@ -34,6 +36,7 @@ export const restoreWallet = () => {
     wallet = new MultiWallet([wallet])
   }
   window.faast.wallet = wallet
+  console.log('wallet set', wallet)
   return wallet
 }
 

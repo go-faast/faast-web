@@ -11,8 +11,9 @@ import { sendSwapDeposits } from 'Actions/portfolio'
 class SignTxModal extends Component {
   constructor (props) {
     super(props)
+    const { view, wallet } = props
     this.state = {
-      view: props.view || props.wallet.type,
+      view: view || (wallet.isBlockstack ? 'blockstack' : wallet.type),
       isSigning: false
     }
     this._handleCloseModal = this._handleCloseModal.bind(this)

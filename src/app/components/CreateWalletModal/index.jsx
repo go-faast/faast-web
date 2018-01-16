@@ -40,7 +40,7 @@ class CreateWalletModal extends Component {
   }
 
   _handleCreatePassword (values) {
-    if (!this.props.isNewWallet && this.props.wallet.type === 'blockstack') {
+    if (!this.props.isNewWallet && this.props.wallet.isBlockstack) {
       return this.props.wallet.getPrivateKeyString(values.password)
         .then((privateKey) => {
           this._handleCreatePasswordWithPrivKey(Object.assign({}, values, { privateKey }))

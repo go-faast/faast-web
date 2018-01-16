@@ -88,7 +88,7 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
 
   getPrivateKeyString = (password, mock) => {
     if (mock) return Promise.resolve('mock_pk_123')
-    return Promise.resolve(this.wallet.decrypt(password).keystore.getPrivateKeyString())
+    return Promise.resolve(this.decrypt(password).keystore.getPrivateKeyString())
   };
 
 }

@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import isEqual from 'lodash/isEqual'
-import toastr from 'Utilities/toastrWrapper'
 import blockstack from 'Utilities/blockstack'
 import { statusAllSwaps } from 'Utilities/swap'
 import AppView from './view'
@@ -10,7 +9,7 @@ import withMockHandling from 'Hoc/withMockHandling'
 import { restorePolling } from 'Actions/portfolio'
 import { setSwap, setBreakpoints } from 'Actions/redux'
 import { postSwundle } from 'Actions/request'
-import { breakpointWidths, mediaBreakpointUp } from 'Utilities/breakpoints'
+import { breakpointWidths } from 'Utilities/breakpoints'
 
 class App extends Component {
   constructor () {
@@ -25,8 +24,7 @@ class App extends Component {
   }
 
   componentDidUpdate (prevProps) {
-
-    if (this.props.wallet.type === 'blockstack' && !isEqual(prevProps.settings, this.props.settings)) {
+    if (this.props.wallet.isBlockstack && !isEqual(prevProps.settings, this.props.settings)) {
       blockstack.saveSettings(this.props.settings)
     }
     const statusPrevSwap = statusAllSwaps(prevProps.swap)
