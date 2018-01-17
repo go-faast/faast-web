@@ -10,10 +10,7 @@ export default (state = initialState, { type, payload }) => {
   case 'SET_WALLET':
     return {
       ...state,
-      type: wallet.type,
-      address: wallet.getId(),
-      opened: wallet.type === 'MultiWallet' ? wallet.wallets.length : 1,
-      isBlockstack: wallet.isBlockstack
+      ...wallet
     }
   case 'WALLET_OPENED':
     const address = wallet.address || wallet.getAddress()

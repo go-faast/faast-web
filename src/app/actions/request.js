@@ -1,8 +1,5 @@
-import { tokenBalanceData } from 'Utilities/wallet'
 import {
   toBigNumber,
-  toSmallestDenomination,
-  toMainDenomination,
   toUnit,
   toPercentage
 } from 'Utilities/convert'
@@ -13,7 +10,7 @@ import log from 'Utilities/log'
 import { loadingPortfolio, setPortfolio, setAssets, updateSwapOrder } from 'Actions/redux'
 import { restoreSwundle } from 'Actions/portfolio'
 import config from 'Config'
-import web3 from 'Services/Web3'
+import walletService from 'Services/Wallet'
 
 const ENABLED_ASSETS = ['ETH']
 
@@ -85,7 +82,7 @@ const preparePortfolio = (assets, mock) => () => {
   })
 }
 
-export const getBalances = (assets, portfolio, wallet, mock) => (dispatch) => {
+export const getBalances = (assets, portfolio, walletId, mock) => (dispatch) => {
   let portfolioList = portfolio.list
   if (!portfolioList || !portfolioList.length) {
     dispatch(loadingPortfolio(true))
@@ -93,6 +90,11 @@ export const getBalances = (assets, portfolio, wallet, mock) => (dispatch) => {
   }
   return dispatch(getFiatPrices(portfolioList, mock))
     .then((p) => {
+      const wallet = walletService.get(walletId)
+      if (!wallet) {
+        log.error('no wallet with id', walletId)
+        throw new Error('failed to load balances')
+      }
       wallet.setAllAssets(assets)
       return wallet.getAllBalances()
         .then((symbolToBalance) => p.map((a) =>

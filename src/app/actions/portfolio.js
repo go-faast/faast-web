@@ -4,7 +4,7 @@ import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
-import { sessionStorageClear, restoreFromAddress } from 'Utilities/storage'
+import { restoreFromAddress } from 'Utilities/storage'
 import log from 'Utilities/log'
 import blockstack from 'Utilities/blockstack'
 import {
@@ -15,10 +15,36 @@ import {
 } from 'Utilities/convert'
 import {
   getTransactionReceipt,
-  getTransaction,
-  saveWallet
+  getTransaction
 } from 'Utilities/wallet'
 import { MultiWallet } from 'Services/Wallet'
+import walletService from 'Services/Wallet'
+
+export const getCurrentWallet = () => (dispatch, getState) => {
+  const walletId = ((getState ? getState() : {}).wallet || {}).id
+  let wallet
+  if (walletId) {
+    wallet = walletService.get(walletId)
+  } else {
+    Object.values(walletService.getAll())[0]
+  }
+  return wallet
+}
+
+export const setCurrentWallet = (walletId) => (dispatch) => {
+  const wallet = walletService.get(walletId)
+  if (!wallet) {
+    log.error('failed to set current wallet to', walletId)
+    return
+  }
+  dispatch(setWallet({
+    id: wallet.getId(),
+    type: wallet.type,
+    address: wallet.getAddress && wallet.getAddress(),
+    opened: wallet.type === 'MultiWallet' ? wallet.wallets.length : 1,
+    isBlockstack: wallet.isBlockstack
+  }))
+}
 
 const swapFinish = (type, swap, error, addition) => {
   return (dispatch) => {
@@ -74,7 +100,7 @@ const swapPostExchange = (swapList, portfolio, address) => (dispatch) => {
       .then((order) => {
         const fromAsset = order.depositType.toUpperCase()
         const toAsset = order.withdrawalType.toUpperCase()
-        return window.faast.wallet.createTransaction(order.deposit, swap.amount, fromAsset)
+        return dispatch(getCurrentWallet()).createTransaction(order.deposit, swap.amount, fromAsset)
           .then((tx) => {
             dispatch(insertSwapData(fromAsset, toAsset, {
               order,
@@ -174,7 +200,7 @@ export const sendSwapDeposits = (swap, options, isMocking) => (dispatch) => {
         return dispatch(mockTransaction(send, receive))
       }
       const eventListeners = createTransferEventListeners(dispatch, send, receive, true)
-      return window.faast.wallet.sendTransaction(receive.tx, { ...eventListeners, ...options })
+      return dispatch(getCurrentWallet()).sendTransaction(receive.tx, { ...eventListeners, ...options })
         .then(() => dispatch(pollOrderStatus(send, receive)))
     })
   })
@@ -241,6 +267,12 @@ export const restorePolling = (swap, isMocking) => (dispatch) => {
 }
 
 export const openWallet = (wallet, isMocking) => (dispatch) => {
+  let currentWallet = dispatch(getCurrentWallet())
+  if (!currentWallet) {
+    currentWallet = new MultiWallet()
+    walletService.save(currentWallet)
+    dispatch(setCurrentWallet(currentWallet))
+  }
   const walletId = wallet.getId()
   if (walletId) {
     const state = restoreFromAddress(walletId)
@@ -257,17 +289,20 @@ export const openWallet = (wallet, isMocking) => (dispatch) => {
       dispatch(getSwundle(walletId, isMocking))
     }
   }
-  window.faast.wallet.addWallet(wallet)
-  saveWallet(window.faast.wallet)
+  currentWallet.addWallet(wallet)
+  walletService.save(currentWallet)
   dispatch(walletOpened(wallet))
 }
 
-export const closeWallet = () => (dispatch) => {
+export const closeWallet = (wallet) => (dispatch) => {
   clearAllIntervals()
   blockstack.signUserOut()
-  sessionStorageClear()
   dispatch(resetAll())
-  window.faast.wallet = new MultiWallet()
+  if (wallet) {
+    walletService.remove(wallet)
+  } else {
+    walletService.removeAll()
+  }
   log.info('wallet closed')
 }
 

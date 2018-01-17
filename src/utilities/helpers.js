@@ -196,3 +196,5 @@ export const parseJson = (jsonStr) => {
     return null
   }
 }
+
+export const makeEnum = (fields) => Object.freeze(fields.reduce((o, f) => ({ ...o, [f]: Symbol(f) })))

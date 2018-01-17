@@ -19,7 +19,7 @@ let balancesInterval
 class Balances extends Component {
   constructor (props) {
     super(props)
-    const wallet = props.viewOnlyAddress ? new EthereumWalletWeb3(props.viewOnlyAddress) : window.faast.wallet
+    const wallet = props.viewOnlyAddress ? new EthereumWalletWeb3(props.viewOnlyAddress) : props.wallet
     this.state = {
       list: [],
       chartSelect: {},
@@ -52,7 +52,7 @@ class Balances extends Component {
         this._getBalances(newWallet, true)
       }
     } else {
-      this.setState({ list: [], wallet: window.faast.wallet })
+      this.setState({ list: [], wallet: this.props.wallet })
     }
   }
 
@@ -62,7 +62,7 @@ class Balances extends Component {
       const orderStatus = this._orderStatus()
       if (orderStatus === 'error' || orderStatus === 'complete') {
         this.props.resetSwap()
-        this.props.removeSwundle(this.state.wallet.getId())
+        this.props.removeSwundle(this.state.wallet.id || this.state.wallet.getId())
       }
     }
   }
@@ -92,7 +92,7 @@ class Balances extends Component {
   _getBalances (wallet, resetPortfolio) {
     const { assets, mock, swap, getBalances } = this.props
     const portfolio = resetPortfolio ? {} : this.props.portfolio
-    getBalances(assets, portfolio, wallet, mock, swap)
+    getBalances(assets, portfolio, wallet.id || wallet, mock, swap)
       .then(() => {
         this._setChartSelect('ETH')
         this._setList()
@@ -155,7 +155,7 @@ class Balances extends Component {
     const orderStatus = this._orderStatus()
 
     const portfolio = this.props.portfolio
-
+    const { wallet } = this.state
     const layoutProps = {
       showAction: true,
       showAddressSearch: true,
@@ -164,7 +164,7 @@ class Balances extends Component {
       handleModify: () => this.props.routerPush('/modify'),
     }
     const addressProps = {
-      address: this.state.wallet.getId(),
+      address: wallet.getAddress && wallet.getAddress(),
       showDownloadKeystore: !this.props.viewOnlyAddress && this.state.wallet.isBlockstack
     }
     const totalDecrease = portfolio.totalChange && portfolio.totalChange.isNegative()
