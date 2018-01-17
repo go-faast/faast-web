@@ -1,4 +1,4 @@
-import log from 'Utilities/log'
+import uuid from 'uuid/v4'
 import { toBigNumber } from 'Utilities/convert'
 
 import Wallet from './Wallet'
@@ -11,10 +11,14 @@ export default class MultiWallet extends Wallet {
 
   constructor(wallets) {
     super('MultiWallet')
+    this._id = uuid()
     this.wallets = wallets || []
   }
 
-  getId = () => this.wallets.map((wallet) => wallet.getId()).join(',');
+  getId = () => this._id;
+  
+  // TODO: remove after refactoring
+  getAddress = () => this.wallets.map((wallet) => wallet.getAddress && wallet.getAddress()).join(',')
 
   setAllAssets = (allAssets) => {
     this._allAssets = allAssets
