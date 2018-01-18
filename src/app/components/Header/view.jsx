@@ -7,6 +7,7 @@ import { InputGroup, InputGroupButton } from 'reactstrap'
 import styles from './style'
 import config from 'Config'
 import { Row, Col } from 'reactstrap'
+import Button from 'Components/Button'
 
 let AddressSearchForm = (props) => (
   <form onSubmit={props.handleSubmit} className={styles.searchForm}>
@@ -23,7 +24,7 @@ let AddressSearchForm = (props) => (
           placeholder='view by address'
         />
         <InputGroupButton>
-          <button type='submit' className='button-container button-outline cursor-pointer' style={{ width: 'inherit' }}>go</button>
+          <Button outline type='submit'>go</Button>
         </InputGroupButton>
       </InputGroup>
     </div>
@@ -35,37 +36,35 @@ AddressSearchForm = reduxForm({
 })(AddressSearchForm)
 
 const HeaderView = (props) => {
-  const { view } = props
+  const { view, disableAction } = props
   const renderActions = () => (
     <Row className='medium-gutters justify-content-end'>
       {view === 'balances' && ([
         <Col key='close' xs='auto'>
-          <div onClick={props.handleCloseWallet} className='button-container button-small button-outline cursor-pointer'>close</div>
+          <Button outline onClick={props.handleCloseWallet}>close</Button>
         </Col>,
         <Col key='modify' xs='auto'>
-          <div disabled={props.disableAction} onClick={props.handleModify} className={props.disableAction ? `${styles.actions} ${styles.disabled}` : styles.actions}>
-            modify your portfolio
-          </div>
+          <Button onClick={props.handleModify} disabled={disableAction}>modify your portfolio</Button>
         </Col>
       ])}
       {view === 'view' && (
         <Col xs='12'>
           {props.isWalletAccessed
             ? (<Link to='/balances'>
-                <div className='button-container button-small cursor-pointer'>back to wallet</div>
+                <Button>back to wallet</Button>
               </Link>)
             : (<Link to='/'>
-                <div className='button-container button-small cursor-pointer'>access wallet</div>
+                <Button>access wallet</Button>
               </Link>)
           }
         </Col>
       )}
       {view === 'modify' && (
         <Col key='cancel' xs='auto'>
-          <div onClick={props.handleCancel} className='button-container button-small button-outline cursor-pointer'>cancel</div>
+          <Button outline onClick={props.handleCancel}>cancel</Button>
         </Col>,
         <Col key='save' xs='auto'>
-          <div onClick={props.handleSave} className='button-container button-small cursor-pointer'>save</div>
+          <Button onClick={props.handleSave}>save</Button>
         </Col>
       )}
     </Row>)

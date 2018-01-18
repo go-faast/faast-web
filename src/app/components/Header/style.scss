@@ -26,23 +26,6 @@
   }
 }
 
-.actions {
-  @extend .gradient-background;
-  color: $secondary-color-text;
-  @extend .text-small;
-  padding: 10px 20px;
-  @extend .text-center;
-  @extend .box-shadow;
-  font-weight: 300;
-  line-height: 30px;
-  @extend .cursor-pointer;
-}
-
-.disabled {
-  @extend .cursor-disabled;
-  opacity: 0.6;
-}
-
 .searchForm {
   width: 100%;
 }
