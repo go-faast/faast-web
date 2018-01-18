@@ -5,13 +5,13 @@ var UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 var WEBPACK_PORT = process.env.WEBPACK_PORT
 
-var cssLoaders = ({ sourceMap = true } = {}) => [{
+var cssLoaders = ({ sourceMap = true, modules = true } = {}) => [{
   loader: 'style-loader'
 }, {
   loader: 'css-loader', // translates CSS into CommonJS modules
   options: {
     sourceMap,
-    modules: true,
+    modules,
     importLoaders: 2,
     localIdentName: '[name]__[local]__[hash:base64:5]'
   }
@@ -55,7 +55,7 @@ var config = {
       oneOf: [
         {
           resourceQuery: /nsm/,
-          use: cssLoaders({ sourceMap: false })
+          use: cssLoaders({ modules: false })
         },
         {
           use: cssLoaders(),
