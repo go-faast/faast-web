@@ -32,6 +32,26 @@ body {
     }
   }
 
+  .row {
+    $gutter-sizes: (
+      no: 0px,
+      small: 4px,
+      medium: 8px,
+      large: 12px,
+      x-large: 16px
+    );
+    @each $name, $value in $gutter-sizes {
+      &.#{$name}-gutters {
+        margin-left: -$value;
+        margin-right: -$value;
+        > .col,
+        > [class*="col-"] {
+          padding: $value;
+        }
+      }
+    }
+  }
+
   .beta-tag {
     font-family: 'Kaushan Script', cursive;
     @extend .text-small;
@@ -1207,7 +1227,6 @@ body {
         font-weight: 300;
         @extend .gradient-text;
         @extend .text-small;
-        @extend .text-shadow;
       }
     }
 

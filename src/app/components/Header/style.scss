@@ -28,34 +28,14 @@
 
 .actions {
   @extend .gradient-background;
-  height: 50px;
   color: $secondary-color-text;
   @extend .text-small;
   padding: 10px 20px;
-  width: 250px;
   @extend .text-center;
-  float: right;
   @extend .box-shadow;
   font-weight: 300;
-  letter-spacing: 1px;
   line-height: 30px;
   @extend .cursor-pointer;
-  @extend .margin-top-15;
-  position: relative;
-  margin-left: 20px;
-  margin-top: 0px;
-  @include media-breakpoint-down(xs) {
-    width: 50%;
-    float: left;
-    text-align: center;
-    padding-left: 10px;
-    padding-right: 10px;
-    margin-left: 30px;
-    margin-right: 10px;
-    left: 0;
-    margin-top: 0px;
-    position: absolute;
-  }
 }
 
 .disabled {

@@ -9,7 +9,7 @@ import SignTxModal from 'Components/SignTxModal'
 import display from 'Utilities/display'
 import styles from './style'
 import config from 'Config'
-import {renderAssetRowsPhone} from './ModifyPhone'
+import { renderAssetRowsMobile } from './view.mobile'
 
 const ModifyView = (props) => {
   const inputs = {
@@ -17,8 +17,7 @@ const ModifyView = (props) => {
     weight: {}
   }
 
-  let mq = props.mq
-  let tablet = mq.sm
+  const { mq: { isMobile } } = props
 
   const renderAssetRows = () => {
     return props.list.map((asset, i) => {
@@ -123,9 +122,9 @@ const ModifyView = (props) => {
     })
   }
 
-  let tile = tablet? 'tile-container' : `${styles.tileContainer}`
-  let addTile = tablet? 'tile-container' : `${styles.addTile}`
-  let addAsset = tablet? 'add a new asset' : 'add asset'
+  let tile = !isMobile ? 'tile-container' : `${styles.tileContainer}`
+  let addTile = !isMobile ? 'tile-container' : `${styles.addTile}`
+  let addAsset = !isMobile ? 'add a new asset' : 'add asset'
 
   return (
     <Layout {...props.layoutProps}>
@@ -149,7 +148,7 @@ const ModifyView = (props) => {
             <div className={addTile}>
               <div className='row'>
                 <div className='col'>
-                  {tablet &&
+                  {!isMobile &&
                     <div className='text-medium-grey text-small'>
                       add a new asset from the unallocated value
                     </div>
@@ -166,11 +165,11 @@ const ModifyView = (props) => {
       <div className='row margin-bottom-20 margin-top-10'>
         <div className='col padding-0'>
           <div className='modify-asset-list-container'>
-            {tablet &&
+            {!isMobile &&
               renderAssetRows()
             }
-            {!tablet &&
-              renderAssetRowsPhone(props, inputs)
+            {isMobile &&
+              renderAssetRowsMobile(props, inputs)
             }
             <div onClick={props.handleAssetListShow} className='tile-container tile-border cursor-pointer margin-top-10'>
               <div className='margin-top-30 add-new' />

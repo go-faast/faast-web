@@ -92,9 +92,9 @@ export const hideOrderModal = () => ({
   type: 'HIDE_ORDER_MODAL'
 })
 
-export const setMediaQueries = (mq) => ({
-  type: 'SET_MEDIA_QUERIES',
-  payload: mq
+export const setBreakpoints = (bp) => ({
+  type: 'SET_BREAKPOINTS',
+  payload: bp
 })
 
 export const setSettings = (settings) => ({

@@ -29,13 +29,17 @@ class Expandable extends Component {
     const value = this.state.expanded ? this.props.expanded : this.props.shrunk
     return (
       <span>
-        <span id={this.props.id} onClick={this._expand}>{value}{!!this.props.extra && <span>&nbsp;{this.props.extra}</span>}</span>
+        <span id={this.props.id} onClick={this._expand}>{value}{!!this.props.extra && this.props.showExtra && <span>&nbsp;{this.props.extra}</span>}</span>
         <Tooltip isOpen={this.state.tooltipOpen} toggle={this._toggleTooltip} target={this.props.id}>
           {this.props.expanded}
         </Tooltip>
       </span>
     )
   }
+}
+
+Expandable.defaultProps = {
+  showExtra: true
 }
 
 export default Expandable

@@ -10,8 +10,11 @@ import Welcome from 'Components/Welcome'
 import display from 'Utilities/display'
 import styles from './style'
 import config from 'Config'
-import {renderAssetsPhone} from './BalancesPhone'
-import { mediaBreakpointUp } from 'Utilities/breakpoints'
+import { breakpointNext } from 'Utilities/breakpoints'
+import { Row, Col } from 'reactstrap'
+
+const { collapseTablePoint } = styles
+const expandTablePoint = breakpointNext(collapseTablePoint)
 
 const OrderInProgress = (props) => {
   const statusIcon = () => {
@@ -45,7 +48,7 @@ const OrderInProgress = (props) => {
     }
   }
   return (
-    <div className='row padding-0 margin-top-30'>
+    <div className='row padding-0 margin-top-15'>
       <div className='col tile-container'>
         <div onClick={props.handleViewStatus} className='tile-new' style={{ zIndex: 10 }}>view status</div>
         <div className='row'>
@@ -75,12 +78,20 @@ const OrderInProgress = (props) => {
   )
 }
 
+const TableCell = ({ hideCollapse, className, children, ...extraProps }) => (
+  <Col
+    {...({ xs: '3', [expandTablePoint]: '2', ...extraProps })}
+    className={`${hideCollapse ? `d-none d-${expandTablePoint}-block` : ''} ${className ? className : ''}`}>
+    {children}
+  </Col>
+)
+
 const BalancesView = (props) => {
   const {
-    mq, totalChange, totalDecrease, total24hAgo, total, assetRows, viewOnly, orderStatus, addressProps, pieChart,
+    totalChange, totalDecrease, total24hAgo, total, assetRows, viewOnly, orderStatus, addressProps, pieChart,
     toggleChart, layoutProps, showOrderModal, handleToggleOrderModal
   } = props
-  const tablet = mediaBreakpointUp(mq, 'sm')
+
   const values = [
     {
       title: '24h change',
@@ -100,87 +111,77 @@ const BalancesView = (props) => {
       value: assetRows.length
     }
   ]
-  const renderStats = () => {
-    return values.map(({ title, value, changeIcon }, i) => (
-      <div key={i} className={`col-md-3 ${styles.tileOuterContainer}`}>
-        <div className={styles.tileContainer}>
-          <div className='row'>
-            {!!changeIcon &&
-              <div className='col-sm-3'>
-                <div className={changeIcon} />
-              </div>
-            }
-            <div className={changeIcon ? 'col-sm-9' : 'col'}>
-              <div className={styles.statsTitle}>{title}</div>
-              <div className={`text-white ${styles.statsContent}`}>{value}</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    ))
-  }
-
-  const renderStatsPhone = () => {
-    return values.map(({ title, value, changeIcon }, i) => (
-      <div key={i} className={styles.tileContainerPhone}>
-          {!!changeIcon &&
-            <div className='col-sm-3'>
-              <div className={changeIcon} />
-            </div>
-          }
-          <div className={changeIcon ? 'col-sm-9' : 'col'}>
-            <div className={styles.statsTitle}>{title}</div>
-            <div className={`text-white ${styles.statsContent}`}>{value}</div>
-          </div>
-      </div>
-    ))
-  }
 
   const renderAssets = () => {
-    return assetRows.map(({ symbol, name, units, price, weight, value, change, priceDecrease, chartOpen, infoUrl }, i) => (
-      <div key={i}>
-        <div onClick={() => toggleChart(symbol)} className={`row ${styles.tableRow}`}>
-          <div className={`col-md-2 text-white ${styles.tableCell}`}>
-            <div className={styles.tableCoinIcon} style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${symbol}.png)` }} />
-            <div className={styles.tableCoinName}>{name}</div>
-          </div>
-          <div className={`col-md-2 text-white ${styles.tableCell}`}>
-            {display.units(units, symbol, price)}
-          </div>
-          <div className={`col-md-2 text-white ${styles.tableCell}`}>{display.percentage(weight)}</div>
-          <div className={`col-md-2 text-white ${styles.tableCell}`}>{display.fiat(value)}</div>
-          <div className={`col-md-2 text-white ${styles.tableCell}`}>{display.fiat(price)}</div>
-          <div className={`col-md-2 text-white ${styles.tableCell}`}>
-            <div className={styles.tableChangeValue}>{display.percentage(change, true)}</div>
-            <div className={priceDecrease ? styles.tableChangeDownIcon : styles.tableChangeUpIcon} />
-          </div>
-        </div>
-        <Collapse isOpen={chartOpen}>
-          <div className={styles.areaChartContainer}>
-            <div className={styles.tileContainer}>
-              <div className='row'>
-                <div className='col-md-8'>
-                  <div className={styles.assetTitle}>
-                    <strong>{name}</strong> ({symbol})
-                    <span><i className='fa fa-external-link text-gradient margin-left-10' /> <a className={styles.link} href={infoUrl} target='_blank' rel='noopener'>info</a></span>
+    return assetRows.map((a, i) => {
+      const { symbol, name, value, units, price, weight, change, priceDecrease, chartOpen, infoUrl } = a
+      const displayUnits = display.units(units, symbol, price, false)
+      const displayUnitsWithSymbol = display.units(units, symbol, price, true)
+      const displayWeight = display.percentage(weight)
+      const displayChange = display.percentage(change, true)
+      const fiatValue = display.fiat(value)
+      const fiatPrice = display.fiat(price)
+      return (
+        <div key={i} onClick={() => toggleChart(symbol)} className={styles.tableRow}>
+          <Row className='small-gutters'>
+            <TableCell className={styles.tableCell}>
+              <Row className='no-gutters'>
+                <Col {...({ xs: '12', [expandTablePoint]: 'auto' })}>
+                  <div className={styles.tableCoinIcon} style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${symbol}.png)` }} />
+                </Col>
+                <Col {...({ xs: '12', [expandTablePoint]: 'auto' })} tag='p' className={`text-center text-${expandTablePoint}-left ${styles.tableCoinName}`}>{name}</Col>
+              </Row>
+            </TableCell>
+            <TableCell className={styles.tableCell}>
+              <p>
+                <span className={`d-none d-${expandTablePoint}-inline-block`}>{displayUnitsWithSymbol}</span>
+                <span className={`d-${expandTablePoint}-none`}>{displayUnits}</span>
+              </p>
+              <p className={`d-${expandTablePoint}-none`}>{symbol}</p>
+            </TableCell>
+            <TableCell className={styles.tableCell}>
+              <p>{fiatValue}</p>
+              <p className={`d-${expandTablePoint}-none`}>{displayWeight}</p>
+            </TableCell>
+            <TableCell className={styles.tableCell} hideCollapse>
+              {displayWeight}
+            </TableCell>
+            <TableCell className={styles.tableCell}>
+              <p>{fiatPrice}</p>
+              <p className={`d-${expandTablePoint}-none ${priceDecrease ? styles.priceDecrease : styles.priceIncrease}`}>{displayChange}</p>
+            </TableCell>
+            <TableCell className={styles.tableCell} hideCollapse>
+              <p className='float-right'>{displayChange}</p>
+              <div className={priceDecrease ? styles.tableChangeDownIcon : styles.tableChangeUpIcon} />
+            </TableCell>
+          </Row>
+          <Collapse isOpen={chartOpen}>
+            <div className={styles.areaChartContainer}>
+              <div className={styles.tileContainer}>
+                <div className='row'>
+                  <div className='col-8'>
+                    <div className={styles.assetTitle}>
+                      <strong>{name}</strong> ({symbol})
+                      <span><i className='fa fa-external-link text-gradient margin-left-10' /> <a className={styles.link} href={infoUrl} target='_blank' rel='noopener'>info</a></span>
+                    </div>
+                  </div>
+                  <div className='col-4 text-right'>
+                    {/* <span className='link'>send</span> | <span className='link'>receive</span> */}
                   </div>
                 </div>
-                <div className='col-md-4 text-right'>
-                  {/* <span className='link'>send</span> | <span className='link'>receive</span> */}
-                </div>
+                <PriceChart symbol={symbol} chartOpen={chartOpen} />
               </div>
-              <PriceChart symbol={symbol} chartOpen={chartOpen} />
             </div>
-          </div>
-        </Collapse>
-      </div>
-    ))
+          </Collapse>
+        </div>
+      )
+    })
   }
 
   return (
     <Layout {...layoutProps}>
       {viewOnly &&
-        <div className='col-md-12 margin-top-40'>
+        <div className='col-12 margin-top-40'>
           <div className={`text-center ${styles.viewMode}`}>
             You are in VIEW MODE. If this is your address, you will need to access the wallet before you can trade assets.
           </div>
@@ -195,62 +196,52 @@ const BalancesView = (props) => {
       {!viewOnly && !!orderStatus &&
         <OrderInProgress status={orderStatus} handleViewStatus={handleToggleOrderModal} />
       }
-      <div className={`row ${styles.statsContainer}`}>
-        {tablet &&
-          renderStats()
-        }
-        {!tablet &&
-          <div className={`col-md-3 ${styles.tileOuterContainerPhone}`}>
-            {renderStatsPhone()}
+      <div className={`row small-gutters ${styles.statsContainer}`}>
+        {values.map(({ title, value, changeIcon }, i) => (
+          <div key={i} className='col-6 col-md-3'>
+            <div className={styles.tileContainer}>
+              <div className='row'>
+                {!!changeIcon &&
+                  <div className='col-3'>
+                    <div className={changeIcon} />
+                  </div>
+                }
+                <div className={changeIcon ? 'col-9' : 'col'}>
+                  <div className={styles.statsTitle}>{title}</div>
+                  <div className={`text-white ${styles.statsContent}`}>{value}</div>
+                </div>
+              </div>
+            </div>
           </div>
-        }
+        ))}
       </div>
 
-      { tablet && //different chart and address for tablet and up
-        <div className={`row ${styles.chartContainer}`}>
-
-        <div className={`col ${styles.tileOuterContainer}`}>
+      <div className={`row ${styles.chartContainer}`}>
+        <div className='col'>
           <div className={styles.tileContainer}>
             <div style={{ textAlign: 'right' }}>
               <div className={styles.addressTitle}>address</div>
               {(viewOnly && addressProps.address) ||
-                <Address tablet={tablet} className={styles.link} {...addressProps} />
+                <Address className={`${styles.link} ${styles.addressLink}`} {...addressProps} />
               }
             </div>
             {pieChart}
           </div>
         </div>
       </div>
-      }
-      { !tablet &&
-        <div className={`row ${styles.chartContainer}`}>
-          <div className={`col ${styles.tileOuterContainer}`}>
-            <div className={styles.tileContainerAddress}>
-              <div style={{ textAlign: 'right' }}>
-                <Address className={styles.link} {...addressProps} />
-              </div>
-            </div>
-            {pieChart}
-          </div>
-        </div>
-      }
-      { tablet &&
-        <div className={`row ${styles.tableHeader}`}>
-          <div className={`col-md-2 text-left ${styles.columnTitle}`}>Asset name</div>
-          <div className={`col-md-2 ${styles.columnTitle}`}>Units</div>
-          <div className={`col-md-2 ${styles.columnTitle}`}>Portfolio weight</div>
-          <div className={`col-md-2 ${styles.columnTitle}`}>Portfolio value (USD)</div>
-          <div className={`col-md-2 ${styles.columnTitle}`}>Price (USD)</div>
-          <div className={`col-md-2 text-right ${styles.columnTitle}`}>24h change</div>
-        </div>
-      }
-      <div className={`row ${styles.gradientSeparator}`} />
-      {tablet &&
-        renderAssets()
-      }
-      {!tablet &&
-        renderAssetsPhone(props)
-      }
+
+      <div className={styles.tableHeader}>
+        <Row className='small-gutters'>
+          <TableCell className={`${styles.columnTitle} text-center text-${expandTablePoint}-left`}>Asset</TableCell>
+          <TableCell className={styles.columnTitle}>Units</TableCell>
+          <TableCell className={styles.columnTitle}>Holdings</TableCell>
+          <TableCell className={styles.columnTitle} hideCollapse>Portfolio Weight</TableCell>
+          <TableCell className={styles.columnTitle}>Price</TableCell>
+          <TableCell className={`${styles.columnTitle} text-right`} hideCollapse>24h change</TableCell>
+        </Row>
+      </div>
+      <div className={styles.gradientSeparator} />
+      {renderAssets()}
     </Layout>
   )
 }

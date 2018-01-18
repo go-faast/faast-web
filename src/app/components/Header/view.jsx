@@ -4,9 +4,9 @@ import Sticky from 'react-stickynode'
 import { Link } from 'react-router-dom'
 import { reduxForm, Field } from 'redux-form'
 import { InputGroup, InputGroupButton } from 'reactstrap'
-import { addKeys } from 'Utilities/reactFuncs'
 import styles from './style'
 import config from 'Config'
+import { Row, Col } from 'reactstrap'
 
 let AddressSearchForm = (props) => (
   <form onSubmit={props.handleSubmit} className={styles.searchForm}>
@@ -35,50 +35,53 @@ AddressSearchForm = reduxForm({
 })(AddressSearchForm)
 
 const HeaderView = (props) => {
-  const renderActions = () => {
-    switch (props.view) {
-      case 'balances':
-        const balanceStyles = props.disableAction ? `${styles.actions} ${styles.disabled}` : styles.actions
-        return (<div>
-          <div disabled={props.disableAction} onClick={props.handleModify} className={balanceStyles}>
+  const { view } = props
+  const renderActions = () => (
+    <Row className='medium-gutters justify-content-end'>
+      {view === 'balances' && ([
+        <Col key='close' xs='auto'>
+          <div onClick={props.handleCloseWallet} className='button-container button-small button-outline cursor-pointer'>close</div>
+        </Col>,
+        <Col key='modify' xs='auto'>
+          <div disabled={props.disableAction} onClick={props.handleModify} className={props.disableAction ? `${styles.actions} ${styles.disabled}` : styles.actions}>
             modify your portfolio
           </div>
-          <div onClick={props.handleCloseWallet} className='button-container button-small button-outline cursor-pointer margin-top--50 pull-right'>close</div>
-        </div>)
-      case 'view':
-        return addKeys([
-          <div>
-            {(props.isWalletAccessed &&
-              <Link to='/balances'>
-                <div className='button-container button-small cursor-pointer margin-top-15 pull-right'>back to wallet</div>
-              </Link>) ||
-              <Link to='/'>
-                <div className='button-container button-small cursor-pointer margin-top-15 pull-right'>access wallet</div>
-              </Link>
-            }
-          </div>
-        ])
-      case 'modify':
-        return (<div>
-          <div onClick={props.handleSave} className='button-container button-small cursor-pointer margin-top-15 pull-right'>save</div>
-          <div onClick={props.handleCancel} className='button-container button-small button-outline cursor-pointer margin-top-15 pull-right margin-right-20'>
-            cancel
-          </div>
-        </div>)
-    }
-  }
-  const containerClass = props.showAction ? `row ${styles.container}` : `row ${styles.container} ${styles.noAction}`
+        </Col>
+      ])}
+      {view === 'view' && (
+        <Col xs='12'>
+          {props.isWalletAccessed
+            ? (<Link to='/balances'>
+                <div className='button-container button-small cursor-pointer'>back to wallet</div>
+              </Link>)
+            : (<Link to='/'>
+                <div className='button-container button-small cursor-pointer'>access wallet</div>
+              </Link>)
+          }
+        </Col>
+      )}
+      {view === 'modify' && (
+        <Col key='cancel' xs='auto'>
+          <div onClick={props.handleCancel} className='button-container button-small button-outline cursor-pointer'>cancel</div>
+        </Col>,
+        <Col key='save' xs='auto'>
+          <div onClick={props.handleSave} className='button-container button-small cursor-pointer'>save</div>
+        </Col>
+      )}
+    </Row>)
   return (
     <Sticky enabled={!!props.stickyHeader} innerZ={config.sticky.zIndex}>
-      <div id='header' className={containerClass}>
-        <div className='col-md-6'>
-          <div className={styles.headerTitle}>faast Portfolio <sup className='text-medium-grey beta-tag'>beta</sup></div>
-          <div className={styles.headerDesc}>manage your crypto assets collection with faast portfolio</div>
-        </div>
-        <div className='col-md-6 padding-right-0' style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}>
-          {props.showAddressSearch && <AddressSearchForm onSubmit={props.handleAddressSearch} />}
-          {props.showAction && renderActions()}
-        </div>
+      <div id='header'>
+        <Row className={`medium-gutters ${styles.container} ${props.showAction ? '' : styles.noAction}`}>
+          <Col xs='12' md='6'>
+            <div className={styles.headerTitle}>faast Portfolio <sup className='text-medium-grey beta-tag'>beta</sup></div>
+            <div className={styles.headerDesc}>manage your crypto assets collection with faast portfolio</div>
+          </Col>
+          <Col xs='12' md='6'>
+            {props.showAddressSearch && <AddressSearchForm onSubmit={props.handleAddressSearch} />}
+            {props.showAction && renderActions()}
+          </Col>
+        </Row>
       </div>
     </Sticky>
   )

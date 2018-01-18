@@ -1,36 +1,19 @@
 @import "~Styles/variables";
 
+$collapse-table: md;
+
+:export {
+  collapseTablePoint: $collapse-table;
+}
+
 .statsContainer {
   @extend .margin-top-40;
-}
-
-.tileOuterContainer {
-  padding-right: 10px;
-  padding-left: 0px;
-  @include media-breakpoint-down(xs) {
-    &:last-child {
-      padding-right: 10px;
-    }
+  @include media-breakpoint-down(sm) {
+    margin-top: 0;
   }
 }
 
-.tileOuterContainerPhone{
-  margin-left: 10px;
-  margin-bottom: 10px;
-  padding-right: 10px;
-  padding-left: 0px;
-  display: flex;
-  justify-content: space-around;
-  flex-flow: row;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-content: center;
-  @include media-breakpoint-down(xs) {
-    &:last-child {
-      padding-right: 10px;
-    }
-  }
-}
+.tileOuterContainer {}
 
 .areaChartContainer {
   padding-right: 10px;
@@ -43,39 +26,17 @@
   @include gradient-background-variable($tileBgColor1, $tileBgColor2);
   padding: 20px;
   box-shadow: 5px 10px 15px #090909;
-  @include media-breakpoint-down(xs) {
-    width: 50%;
-    display: flex;
-    margin-left: 100px;
-    margin-top: 10px;
-  }
 }
 
-.tileContainerPhone{
-  background-color: $ultra-dark-grey;
-  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  padding: 20px;
-  box-shadow: 5px 10px 10px #090909;
-  width: 180px;
-  height: 120px;
-  padding-left: 0px;
-  margin-bottom: 5px;
-}
-
-.tileContainerAddress{
+.tileContainerAddress {
   background-color: $ultra-dark-grey;
   @include gradient-background-variable($tileBgColor1, $tileBgColor2);
   padding: 20px;
   box-shadow: 5px 10px 15px #090909;
   text-align: center;
-  @include media-breakpoint-down(xs) {
-    width: 50%;
-    margin-left: 100px;
-    padding: 10px;
-  }
 }
 
-.chart{
+.chart {
   background-color: $ultra-dark-grey;
   @include gradient-background-variable($tileBgColor1, $tileBgColor2);
   padding: 20px;
@@ -102,16 +63,16 @@
 .changeUpIcon {
   @extend .changeIcon;
   @extend .upIcon;
-  @include media-breakpoint-down(xs) {
-    margin-top: 0px;
-  }
 }
 
 .changeDownIcon {
   @extend .changeIcon;
   @extend .downIcon;
+}
+
+.addressLink {
   @include media-breakpoint-down(xs) {
-    margin-top: 0px;
+    font-size: $text-x-small;
   }
 }
 
@@ -125,8 +86,8 @@
 }
 
 .chartContainer {
-  @extend .padding-top-20;
-  @extend .margin-bottom-20;
+  padding-top: 15px;
+  margin-bottom: 15px;
 }
 
 .chartInnerContainer {
@@ -150,19 +111,19 @@
 .link {
   @extend .text-gradient;
   @extend .cursor-pointer;
-  @include media-breakpoint-down(xs) {
-    text-align: center;
-    margin: auto;
-    padding-right: 30px;
-  }
+}
+
+.tableHeaderRow {
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  @extend .box-shadow;
+  padding: 20px 16px;
 }
 
 .tableHeader {
-  @extend .text-center;
-  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  @extend .box-shadow;
-  padding: 20px 5px;
-  letter-spacing: 1px;
+  @extend .tableHeaderRow;
+  @include media-breakpoint-down($collapse-table) {
+    padding: 16px 8px;
+  }
 }
 
 .gradientSeparator {
@@ -176,16 +137,18 @@
   font-weight: 300;
   @extend .gradient-text;
   @extend .text-small;
-  @extend .text-shadow;
+  text-align: right;
+  align-self: center;
+  @include media-breakpoint-down($collapse-table) {
+    font-size: $text-x-small;
+  }
 }
 
 .tableRow {
-  @extend .text-center;
-  letter-spacing: 1px;
-  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  @extend .box-shadow;
-  padding: 20px 5px;
-  @extend .text-center;
+  @extend .tableHeaderRow;
+  @include media-breakpoint-down($collapse-table) {
+    padding: 8px;
+  }
   &:hover {
     cursor: pointer;
     background: $dark-grey;
@@ -193,8 +156,23 @@
 }
 
 .tableCell {
-  @extend .text-small;
-  position: relative;
+  text-align: right;
+  align-self: center;
+  &, p {
+    color: #dedede;
+  }
+  p {
+    margin: 0;
+    padding: 0;
+    + p {
+      font-size: 0.8em;
+      margin-top: 4px;
+      color: #ddd;
+    }
+  }
+  @include media-breakpoint-down($collapse-table) {
+    font-size: $text-small;
+  }
 }
 
 .tableCoinIcon {
@@ -204,20 +182,18 @@
   height: 24px;
   width: 24px;
   margin-right: 10px;
-  @extend .pull-left;
+  @include media-breakpoint-down($collapse-table) {
+    margin: auto;
+  }
 }
 
 .tableCoinName {
-  @extend .pull-left;
-  text-align: left;
   white-space: nowrap;
-  width: calc(100% - 36px);
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.tableChangeValue {
-  @extend .pull-right;
+  @include media-breakpoint-down($collapse-table) {
+    font-size: 0.8em;
+  }
 }
 
 .tableChangeIcon {
@@ -235,6 +211,14 @@
 .tableChangeDownIcon {
   @extend .tableChangeIcon;
   @extend .downIcon;
+}
+
+.priceIncrease {
+  color: #0DD390 !important;
+}
+
+.priceDecrease {
+  color: #BC1515 !important;
 }
 
 .viewMode {

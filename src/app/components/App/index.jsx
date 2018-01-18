@@ -8,9 +8,8 @@ import { statusAllSwaps } from 'Utilities/swap'
 import AppView from './view'
 import withMockHandling from 'Hoc/withMockHandling'
 import { restorePolling } from 'Actions/portfolio'
-import { setSwap } from 'Actions/redux'
+import { setSwap, setBreakpoints } from 'Actions/redux'
 import { postSwundle } from 'Actions/request'
-import {setMediaQueries} from '../../actions/redux'
 import { breakpointWidths, mediaBreakpointUp } from 'Utilities/breakpoints'
 
 class App extends Component {
@@ -27,7 +26,7 @@ class App extends Component {
 
   componentDidUpdate (prevProps) {
 
-    if (mediaBreakpointUp(prevProps.mq, 'lg') && !mediaBreakpointUp(this.props.mq, 'lg')) {
+    if (mediaBreakpointUp(prevProps.mq.breakpoints, 'lg') && !mediaBreakpointUp(this.props.mq.breakpoints, 'lg')) {
       toastr.confirm(null, {
         disableCancel: true,
         component: () => (
@@ -58,7 +57,7 @@ class App extends Component {
   }
 
   _mediaQueryChange (mq, type) {
-    this.props.setMediaQueries({ [type]: mq.matches })
+    this.props.setBreakpoints({ [type]: mq.matches })
   }
 
   render () {
@@ -91,8 +90,8 @@ const mapDispatchToProps = (dispatch) => ({
   postSwundle: (address, swap) => {
     dispatch(postSwundle(address, swap))
   },
-  setMediaQueries: (mq) => {
-    dispatch(setMediaQueries(mq))
+  setBreakpoints: (mq) => {
+    dispatch(setBreakpoints(mq))
   }
 })
 
