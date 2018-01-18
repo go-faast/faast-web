@@ -5,15 +5,25 @@ import { insertSwapData, updateSwapTx, updateSwapOrder } from 'Actions/redux'
 
 let addresses = []
 
+let transactionTimeout
+let receiptTimeout
+let orderStatusInterval
+
+export const clearMockIntervals = () => {
+  window.clearTimeout(transactionTimeout)
+  window.clearTimeout(receiptTimeout)
+  window.clearInterval(orderStatusInterval)
+}
+
 export const mockTransaction = (send, receive) => (dispatch) => {
-  window.setTimeout(() => {
+  transactionTimeout = window.setTimeout(() => {
     dispatch(insertSwapData(send.symbol, receive.symbol, { txHash: '0x123456' }))
     dispatch(mockPollTransactionReceipt(send, receive))
   }, 2000)
 }
 
 export const mockPollTransactionReceipt = (send, receive) => (dispatch) => {
-  window.setTimeout(() => {
+  receiptTimeout = window.setTimeout(() => {
     const receipt = { mock: true }
     log.info('mock tx receipt obtained')
     dispatch(updateSwapTx(send.symbol, receive.symbol, { receipt }))
@@ -22,7 +32,6 @@ export const mockPollTransactionReceipt = (send, receive) => (dispatch) => {
 }
 
 export const mockPollOrderStatus = (send, receive) => (dispatch) => {
-  let orderStatusInterval
   let status
   orderStatusInterval = window.setInterval(() => {
     status = mockOrderStatus(status)

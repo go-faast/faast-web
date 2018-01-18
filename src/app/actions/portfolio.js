@@ -1,7 +1,7 @@
 
 import { insertSwapData, updateSwapTx, setSwap, setWallet, resetAll } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
-import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus } from 'Actions/mock'
+import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
 import { sessionStorageSet, sessionStorageClear, restoreFromAddress } from 'Utilities/storage'
@@ -435,7 +435,8 @@ const validateSwundle = (swundle) => {
   })
 }
 
-const clearAllIntervals = () => {
+export const clearAllIntervals = () => {
+  clearMockIntervals()
   Object.keys(window.faast.intervals).forEach((key) => {
     window.faast.intervals[key].forEach(a => window.clearInterval(a))
   })

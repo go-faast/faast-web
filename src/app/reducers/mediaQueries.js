@@ -11,7 +11,7 @@ export default (state = initialState, { type, payload }) => {
     const newBreakpoints = Object.assign({}, state.breakpoints, payload)
     return Object.assign({}, state, {
       breakpoints: newBreakpoints,
-      isMobile: mediaBreakpointDown(newBreakpoints, 'xs')
+      isMobile: mediaBreakpointDown(newBreakpoints, 'md')
     })
   default:
     return state

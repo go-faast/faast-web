@@ -19,7 +19,7 @@ export const breakpointWidths = sortedBreakpoints
 
 // The following functions aim to have behaviour consistent with styles/mixins/breakpoints
 
-const getBreakpointIndex = (breakpoint) => sortedBreakpoints.find(({ name }) => name === breakpoint)
+const getBreakpointIndex = (breakpoint) => sortedBreakpoints.findIndex(({ name }) => name === breakpoint)
 
 export const breakpointNext = (breakpoint) => {
   const idx = getBreakpointIndex(breakpoint)
@@ -52,15 +52,15 @@ export const mediaBreakpointUp = (mqState, breakpoint) => {
 
 // Returns true if at most breakpoint max width, inclusive
 export const mediaBreakpointDown = (mqState, breakpoint) => {
-  return mqState[breakpoint] && !mqState[breakpointNext(breakpoint)]
+  return !mqState[breakpointNext(breakpoint)]
 }
 
 // Returns true if in between two breakpoint widths, inclusive
 export const mediaBreakpointBetween = (mqState, lower, upper) => {
-  return !mqState[breakpointPrev(lower)] && !mqState[breakpointNext(upper)]
+  return mqState[lower] && !mqState[breakpointNext(upper)]
 }
 
 // Returns true if within a breakpoint min and max widths
 export const mediaBreakpointOnly = (mqState, breakpoint) => {
-  return !mqState[breakpointPrev(breakpoint)] && mqState[breakpoint] && !mqState[breakpointNext(breakpoint)]
+  return mqState[breakpoint] && !mqState[breakpointNext(breakpoint)]
 }

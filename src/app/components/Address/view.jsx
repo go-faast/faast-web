@@ -4,10 +4,9 @@ import AddressModal from 'Components/AddressModal'
 import CreateWalletModal from 'Components/CreateWalletModal'
 
 const AddressView = (props) => {
-  let address = props.tablet? props.address : 'reveal address'
   return (
     <div>
-      <span onClick={props.handleClick} className={props.className}>{address}</span>
+      <span onClick={props.handleClick} className={props.className}>{props.address}</span>
       {(props.view === 'downloadKeystore' &&
         <CreateWalletModal {...props.modalProps} />) ||
         <AddressModal {...props.modalProps} />

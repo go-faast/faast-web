@@ -12,10 +12,11 @@
 
 $grid-breakpoints: (
   xxs: 0,
-  xs: 425px,
-  sm: 768px,
-  md: 992px,
-  lg: 1200px
+  xs: 400px,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
 );
 
 @each $breakpoint in map-keys($grid-breakpoints) {
