@@ -59,19 +59,19 @@ const HeaderView = (props) => {
           }
         </Col>
       )}
-      {view === 'modify' && (
+      {view === 'modify' && ([
         <Col key='cancel' xs='auto'>
           <Button outline onClick={props.handleCancel}>cancel</Button>
         </Col>,
         <Col key='save' xs='auto'>
           <Button onClick={props.handleSave}>save</Button>
         </Col>
-      )}
+      ])}
     </Row>)
   return (
     <Sticky enabled={!!props.stickyHeader} innerZ={config.sticky.zIndex}>
-      <div id='header'>
-        <Row className={`medium-gutters ${styles.container} ${props.showAction ? '' : styles.noAction}`}>
+      <div id='header' className={styles.header}>
+        <Row className='medium-gutters'>
           <Col xs='12' md='6'>
             <div className={styles.headerTitle}>faast Portfolio <sup className='text-medium-grey beta-tag'>beta</sup></div>
             <div className={styles.headerDesc}>manage your crypto assets collection with faast portfolio</div>
