@@ -38,13 +38,13 @@ AddressSearchForm = reduxForm({
 const HeaderView = (props) => {
   const { view, disableAction } = props
   const renderActions = () => (
-    <Row className='medium-gutters justify-content-end'>
+    <Row className='medium-gutters justify-content-between justify-content-md-end'>
       {view === 'balances' && ([
         <Col key='close' xs='auto'>
           <Button outline onClick={props.handleCloseWallet}>close</Button>
         </Col>,
         <Col key='modify' xs='auto'>
-          <Button onClick={props.handleModify} disabled={disableAction}>modify your portfolio</Button>
+          <Button onClick={props.handleModify} disabled={disableAction}>modify</Button>
         </Col>
       ])}
       {view === 'view' && (
