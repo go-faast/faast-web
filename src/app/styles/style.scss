@@ -53,14 +53,15 @@ body {
   }
 
   .button-container {
-    @extend .gradient-background;
     @extend .text-small;
     @extend .text-center;
     @extend .box-shadow;
     color: $secondary-color-text;
     font-weight: 300;
     line-height: 1.5em;
-    border: 0;
+    border: 1px solid;
+    @extend .gradient-border;
+    @extend .gradient-background;
     padding: 15px 30px;
 
     &.button-small {
@@ -69,8 +70,6 @@ body {
     &.button-outline {
       background: $dark-grey;
       color: $secondary-color;
-      border: 1px solid;
-      @extend .gradient-border;
     }
   }
 
