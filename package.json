@@ -23,6 +23,7 @@
   },
   "dependencies": {
     "autoprefixer": "^7.2.4",
+    "class-names": "^1.0.0",
     "postcss-loader": "^2.0.10",
     "precss": "^2.0.0",
     "serve": "^6.0.6"
