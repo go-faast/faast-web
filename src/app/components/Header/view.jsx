@@ -78,9 +78,9 @@ const HeaderView = (props) => {
           </Col>
           <Col xs='12' md='6'>
             {props.showAddressSearch && <AddressSearchForm onSubmit={props.handleAddressSearch} />}
-            {props.showAction && renderActions()}
           </Col>
         </Row>
+        {props.showAction && renderActions()}
       </div>
     </Sticky>
   )
