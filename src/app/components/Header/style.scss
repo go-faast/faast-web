@@ -31,9 +31,6 @@
 }
 
 .searchInput {
-  @include media-breakpoint-down(xs) {
-    margin-top: 40px;
-  }
   font-size: $text-small;
 
   background-color: #121212;
@@ -49,11 +46,5 @@
   &:active, &:focus {
     outline: none;
     color: $secondary-color;
-  }
-}
-
-button{
-  @include media-breakpoint-down(xs) {
-    margin-top: 40px;
   }
 }
