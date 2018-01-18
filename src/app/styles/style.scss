@@ -911,8 +911,8 @@ body {
       @extend .gradient-background;
       color: $dark-grey;
       padding: 10px 20px;
-      top: 10px;
-      right: 0;
+      top: 8px;
+      right: 8px;
       position: absolute;
       @extend .text-small;
       letter-spacing: 1px;
@@ -1180,14 +1180,6 @@ body {
           height: 40px;
           width: 100%;
         }
-      }
-    }
-
-    .tile-outer-container {
-      padding-right: 10px;
-      padding-left: 0px;
-      &:last-child {
-        padding-right: 0px;
       }
     }
 

@@ -1,30 +1,5 @@
 @import "~Styles/variables";
 
-.header {
-  padding-top: 40px;
-  background-color: $pageBgColor2;
-}
-
-.tileContainer {
-  background-color: $ultra-dark-grey;
-  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  padding: 10px;
-  box-shadow: 5px 10px 15px #090909;
-  width: 50%;
-  margin-top: -30px;
-}
-
-.addTile {
-  background-color: $ultra-dark-grey;
-  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  padding: 15px;
-  box-shadow: 5px 10px 15px #090909;
-  margin-left: 220px;
-  margin-top: -60px;
-  text-align: center;
-
-}
-
 .editable {
   color: $primary-color;
   @extend .cursor-pointer;
