@@ -3,7 +3,8 @@ import highCharts from './highCharts'
 import tokenFunctionSignatures from './tokenFunctionSignatures'
 
 export default {
-  web3Provider: 'https://web3.faa.st:443/eth',
+  web3Provider: 'https://web3.faa.st/eth',
+  bitcoreInsightApi: 'https://bitcore.faa.st/insight-api',
   siteUrl: typeof SITE_URL !== 'undefined' ? SITE_URL : 'https://faa.st',
   apiUrl: typeof API_URL !== 'undefined' ? API_URL : 'https://api.faa.st/api/v1/public',
   hdDerivationPath: {
