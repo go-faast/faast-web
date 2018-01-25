@@ -43,13 +43,19 @@ var config = {
   output: {
     path: path.join(__dirname, 'dist'),
     filename: 'portfolio.bundle.js',
-    publicPath: 'http://localhost:' + WEBPACK_PORT
+    publicPath: `http://localhost:${WEBPACK_PORT}/`
   },
   module: {
     rules: [{
       test: /\.jsx?$/,
-      exclude: /node_modules/,
-      loader: 'babel-loader'
+      rules: [{
+        resourceQuery: /worker/,
+        loader: 'worker-loader',
+        options: { inline: true }
+      }, {
+        exclude: /node_modules/,
+        loader: 'babel-loader'
+      }]
     }, {
       test: /(\.css|\.scss)$/,
       oneOf: [
@@ -61,6 +67,12 @@ var config = {
           use: cssLoaders(),
         }
       ]
+    }, {
+      resourceQuery: /file/,
+      loader: 'file-loader',
+      options: {
+        outputPath: 'file/',
+      }
     }]
   },
   resolve: {
@@ -99,7 +111,8 @@ if (process.env.NODE_ENV === 'production') {
   config.devServer = {
     compress: true,
     historyApiFallback: true,
-    inline: true
+    inline: true,
+    headers: { 'Access-Control-Allow-Origin': '*' }
   }
   config.plugins = [
     new OpenBrowserPlugin({ url: 'http://localhost:5000/?dev=true' }),
