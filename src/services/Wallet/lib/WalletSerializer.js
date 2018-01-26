@@ -2,6 +2,7 @@ import log from 'Utilities/log'
 import Wallet from './Wallet'
 import MultiWallet from './MultiWallet'
 import { EthereumWalletWeb3, EthereumWalletTrezor, EthereumWalletLedger, EthereumWalletKeystore } from './Ethereum'
+import { BitcoinWalletTrezor } from './Bitcoin'
 
 export const parse = (wallet) => {
   if (typeof wallet === 'string') {
@@ -26,6 +27,7 @@ export const parse = (wallet) => {
         case 'EthereumWalletWeb3': return new EthereumWalletWeb3(wallet.address, wallet.providerName)
         case 'EthereumWalletTrezor': return new EthereumWalletTrezor(wallet.address, wallet.derivationPath)
         case 'EthereumWalletLedger': return new EthereumWalletLedger(wallet.address, wallet.derivationPath)
+        case 'BitcoinWalletTrezor': return new BitcoinWalletTrezor(wallet.xpub, wallet.derivationPath)
         default: log.error(`Cannot parse wallet: invalid type '${walletType}'`, wallet)
       }
     })
