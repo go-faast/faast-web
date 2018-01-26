@@ -12,7 +12,7 @@ import config from 'Config'
 import { openWallet } from 'Actions/portfolio'
 import { mockAddress } from 'Actions/mock'
 import web3 from 'Services/Web3'
-import { EthereumWalletLedger, EthereumWalletTrezor } from 'Services/Wallet'
+import { EthereumWalletLedger, EthereumWalletTrezor, BitcoinWalletTrezor } from 'Services/Wallet'
 
 const CONNECT_SECONDS = 6
 const ADDRESS_GROUP_SIZE = 5
@@ -159,7 +159,8 @@ class HardwareWallet extends Component {
       toastr.error(`Error from Trezor - ${e.message}`)
       this._handleCloseModal()
     }
-    try {
+    window.faast.hw.trezor.closeAfterSuccess(false)
+    return new Promise((resolve, reject) => {
       window.faast.hw.trezor.getXPubKey(derivationPath, (result) => {
         if (result.success) {
           log.info('Trezor xPubKey success')
@@ -169,13 +170,13 @@ class HardwareWallet extends Component {
           this.setState({ hdKey, commStatus: 'connected' })
           this._getAddresses(null, 0, hdKey)
           closeTrezorWindow()
+          resolve()
         } else {
-          trezorError(new Error(result.error))
+          reject(new Error(result.error))
         }
       })
-    } catch (e) {
-      trezorError(e)
-    }
+    })
+    .catch(trezorError)
   }
 
   _getAddresses (derPath, ixGroup, hdKey) {
@@ -266,7 +267,10 @@ class HardwareWallet extends Component {
     } else {
       throw new Error(`Unknown hardware wallet type ${type}`)
     }
-    this.props.openWallet(wallet, this.props.mock.mocking)
+    BitcoinWalletTrezor.fromPath()
+      .then((bitcoinWallet) => this.props.openWallet(bitcoinWallet, this.props.mock.mocking))
+      .then(() => this.props.openWallet(wallet, this.props.mock.mocking))
+      .then(() => closeTrezorWindow())
     log.info('Hardware wallet set')
   }
 
