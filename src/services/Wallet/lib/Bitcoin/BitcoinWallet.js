@@ -6,7 +6,7 @@ import Bitcore from 'Services/Bitcore'
 
 import Wallet from '../Wallet'
 
-@abstractMethod('getAddress', 'createTransaction', 'sendTransaction')
+@abstractMethod('createTransaction', 'sendTransaction')
 export default class BitcoinWallet extends Wallet {
 
   constructor(type, xpub) {
@@ -19,6 +19,8 @@ export default class BitcoinWallet extends Wallet {
       decimals: 8
     }])
   }
+
+  getAddress = () => this.xpub;
 
   getId = () => this.xpub;
 
