@@ -1,5 +1,5 @@
 import { networks } from 'bitcoinjs-lib-zcash'
-import b58 from 'bs58check'
+import { ypubToXpub } from 'Utilities/bitcoin'
 
 import { WorkerDiscovery, BitcoreBlockchain } from 'hd-wallet'
 
@@ -24,16 +24,6 @@ const discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubWa
 const assetToNetwork = {
   BTC: networks.bitcoin,
   LTC: networks.litecoin
-}
-
-/** Takes ypub and turns into xpub
-  * Source: https://github.com/bitcoinjs/bitcoinjs-lib/issues/966
-  */
-function ypubToXpub(ypub) {
-  let data = b58.decode(ypub)
-  data = data.slice(4)
-  data = Buffer.concat([Buffer.from('0488b21e','hex'), data])
-  return b58.encode(data)
 }
 
 function discover(asset, xpub, onUpdate) {
