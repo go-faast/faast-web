@@ -1,8 +1,8 @@
 import b58 from 'bs58check'
 
 const magicNumber = {
-  xpub: '0x0488b21e',
-  ypub: '0x049d7cb2'
+  xpub: '0488b21e',
+  ypub: '049d7cb2'
 }
 
 /** Takes ypub and turns into xpub
