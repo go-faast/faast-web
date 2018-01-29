@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import HDKey from 'hdkey'
-import EthereumJsUtil from 'ethereumjs-util'
 import HardwareWalletView from './view'
 import toastr from 'Utilities/toastrWrapper'
 import { timer } from 'Utilities/helpers'
@@ -25,10 +23,9 @@ const initialState = {
   addressIxGroup: 0,
   addresses: [],
   commStatus: '',
-  confVersion: '',
   seconds: CONNECT_SECONDS,
-  hdKey: null,
-  addressIxSelected: null
+  addressIxSelected: null,
+  getAddress: () => Promise.resolve(),
 }
 
 class HardwareWallet extends Component {
@@ -96,6 +93,15 @@ class HardwareWallet extends Component {
       seconds: CONNECT_SECONDS,
       addressIxGroup: 0
     })
+
+    const { derivationPath } = this.state
+    if (this.props.mock.mocking && Array.isArray(this.props.mock.hw) && this.props.mock.hw.includes(type)) {
+      return window.setTimeout(() => {
+        this.setState({ commStatus: 'connected', getAddress: (i) => Promise.resolve(this.props.mockAddress(derivationPath, i)) })
+        this._getAddresses()
+      }, 3000)
+    }
+
     if (type === 'ledger') this._connectLedger()
     if (type === 'trezor') this._connectTrezor()
   }
@@ -114,98 +120,53 @@ class HardwareWallet extends Component {
       hwConnectTimer = timer(CONNECT_SECONDS, setSeconds, ledgerConnect)
     }
 
+    const ledgerError = (e) => {
+      log.error(e)
+      hwConnectTimerTimeout = window.setTimeout(resetTimer, 1000)
+    }
+
     const ledgerConnect = () => {
+      const { derivationPath } = this.state
       this.setState({ commStatus: 'connecting' })
 
-      if (this.props.mock.mocking && Array.isArray(this.props.mock.hw) && this.props.mock.hw.includes('ledger')) {
-        return window.setTimeout(() => {
-          this.setState({ commStatus: 'connected', confVersion: '2.2' })
+      return EthereumWalletLedger.connect(derivationPath)
+        .then(({ getAddress }) => {
+          this.setState({ commStatus: 'connected', getAddress })
           this._getAddresses()
-        }, 3000)
-      }
-
-      window.faast.hw.ledger.getAppConfiguration_async()
-      .then((data) => {
-        log.info(`Ledger connected, version ${data.version}`)
-        this.setState({ commStatus: 'connected', confVersion: data.version })
-        this._getAddresses()
-      })
-      .fail(() => {
-        hwConnectTimerTimeout = window.setTimeout(() => {
-          resetTimer()
-        }, 1000)
-      })
+        })
+        .catch(ledgerError)
     }
     ledgerConnect()
   }
 
-  _connectTrezor (path) {
+  _connectTrezor () {
     if (!window.faast.hw.trezor) {
       return toastr.error('Error: Trezor Connect unavailable')
     }
 
-    const derivationPath = path || this.state.derivationPath
+    const { derivationPath } = this.state
     this.setState({ commStatus: 'connecting' })
-
-    if (this.props.mock.mocking && Array.isArray(this.props.mock.hw) && this.props.mock.hw.includes('trezor')) {
-      return window.setTimeout(() => {
-        this.setState({ commStatus: 'connected' })
-        this._getAddresses(null, 0)
-      }, 3000)
-    }
 
     const trezorError = (e) => {
       log.error(e)
       toastr.error(`Error from Trezor - ${e.message}`)
       this._handleCloseModal()
     }
-    window.faast.hw.trezor.closeAfterSuccess(false)
-    return new Promise((resolve, reject) => {
-      window.faast.hw.trezor.getXPubKey(derivationPath, (result) => {
-        if (result.success) {
-          log.info('Trezor xPubKey success')
-          const hdKey = new HDKey()
-          hdKey.publicKey = Buffer.from(result.publicKey, 'hex')
-          hdKey.chainCode = Buffer.from(result.chainCode, 'hex')
-          this.setState({ hdKey, commStatus: 'connected' })
-          this._getAddresses(null, 0, hdKey)
-          closeTrezorWindow()
-          resolve()
-        } else {
-          reject(new Error(result.error))
-        }
+    return EthereumWalletTrezor.connect(derivationPath)
+      .then(({ getAddress }) => {
+        this.setState({ commStatus: 'connected', getAddress })
+        this._getAddresses()
       })
-    })
-    .catch(trezorError)
+      .catch(trezorError)
   }
 
-  _getAddresses (derPath, ixGroup, hdKey) {
-    if (derPath == null) derPath = this.state.derivationPath
-    if (ixGroup == null) ixGroup = this.state.addressIxGroup
-    if (hdKey == null) hdKey = this.state.hdKey
-    const mock = this.props.mock
+  _getAddresses () {
+    const ixGroup = this.state.addressIxGroup
+    const getAddress = this.state.getAddress
     const startIndex = ixGroup * (ADDRESS_GROUP_SIZE)
     const endIndex = startIndex + (ADDRESS_GROUP_SIZE - 1)
     for (let i = startIndex; i <= endIndex; i++) {
-      new Promise((resolve, reject) => {
-        if (mock.mocking && mock.hw && mock.hw.length) {
-          return resolve(this.props.mockAddress(derPath, i))
-        }
-        if (this.props.type === 'ledger') {
-          window.faast.hw.ledger.getAddress_async(`${derPath}/${i}`)
-          .then((result) => {
-            resolve(result.address)
-          })
-          .fail((err) => {
-            reject(err)
-          })
-        } else if (this.props.type === 'trezor' && hdKey) {
-          const derivedKey = hdKey.derive(`m/${i}`)
-          resolve('0x' + EthereumJsUtil.publicToAddress(derivedKey.publicKey, true).toString('hex'))
-        } else {
-          reject(new Error(`unable to get address from ${this.props.type}`))
-        }
-      })
+      getAddress(i)
       .then((address) => {
         const addresses = this.state.addresses
         addresses[i] = { address }
@@ -231,7 +192,7 @@ class HardwareWallet extends Component {
     const newIxGroup = this.state.addressIxGroup + incr
     if (newIxGroup >= 0) {
       this.setState({ addressIxGroup: newIxGroup, addressIxSelected: null })
-      this._getAddresses(null, newIxGroup)
+      this._getAddresses()
     }
   }
 
@@ -246,11 +207,7 @@ class HardwareWallet extends Component {
       addressIxSelected: null,
       derivationPath: path
     })
-    if (this.props.type === 'ledger') {
-      this._getAddresses(path, 0)
-    } else if (this.props.type === 'trezor') {
-      this._connectTrezor(path)
-    }
+    this._connect()
   }
 
   _handleChooseAddress (selected = 0) {
@@ -262,15 +219,16 @@ class HardwareWallet extends Component {
     let wallet
     if (type === 'ledger') {
       wallet = new EthereumWalletLedger(address, addressPath)
+      this.props.openWallet(wallet, this.props.mock.mocking)
     } else if (type === 'trezor') {
       wallet = new EthereumWalletTrezor(address, addressPath)
+      BitcoinWalletTrezor.fromPath()
+        .then((bitcoinWallet) => this.props.openWallet(bitcoinWallet, this.props.mock.mocking))
+        .then(() => this.props.openWallet(wallet, this.props.mock.mocking))
+        .then(() => closeTrezorWindow())
     } else {
       throw new Error(`Unknown hardware wallet type ${type}`)
     }
-    BitcoinWalletTrezor.fromPath()
-      .then((bitcoinWallet) => this.props.openWallet(bitcoinWallet, this.props.mock.mocking))
-      .then(() => this.props.openWallet(wallet, this.props.mock.mocking))
-      .then(() => closeTrezorWindow())
     log.info('Hardware wallet set')
   }
 

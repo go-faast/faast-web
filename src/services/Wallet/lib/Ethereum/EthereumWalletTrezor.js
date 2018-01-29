@@ -1,4 +1,6 @@
 import EthereumjsTx from 'ethereumjs-tx'
+import EthereumJsUtil from 'ethereumjs-util'
+import HDKey from 'hdkey'
 
 import log from 'Utilities/log'
 import { stripHexPrefix, addHexPrefix } from 'Utilities/helpers'
@@ -14,6 +16,28 @@ export default class EthereumWalletTrezor extends EthereumWalletSigner {
     this.address = address
     this.derivationPath = derivationPath // Expects full path to `address`
     this._isMocking = isMocking
+  }
+
+  static connect = (derivationPath = 'm/44\'/60\'/0\'/0') => {
+    return new Promise((resolve, reject) => {
+      window.faast.hw.trezor.getXPubKey(derivationPath, (result) => {
+        if (!result.success) {
+          return reject(new Error(result.error))
+        }
+        log.info('Trezor xPubKey success')
+        const hdKey = new HDKey()
+        hdKey.publicKey = Buffer.from(result.publicKey, 'hex')
+        hdKey.chainCode = Buffer.from(result.chainCode, 'hex')
+        resolve({
+          derivationPath,
+          getAddress: (index) => {
+            const derivedKey = hdKey.derive(`m/${index}`)
+            const address = EthereumJsUtil.publicToAddress(derivedKey.publicKey, true).toString('hex')
+            return Promise.resolve(`0x${address}`)
+          }
+        })
+      })
+    })
   }
 
   getAddress = () => this.address;

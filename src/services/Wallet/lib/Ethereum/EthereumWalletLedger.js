@@ -7,6 +7,10 @@ import { mockHardwareWalletSign } from 'Actions/mock'
 
 import EthereumWalletSigner from './EthereumWalletSigner'
 
+const createAddressGetter = (derivationPath) => (index) =>
+  window.faast.hw.ledger.getAddress_async(`${derivationPath}/${index}`)
+    .then(({ address }) => address)
+
 export default class EthereumWalletLedger extends EthereumWalletSigner {
 
   constructor(address, derivationPath, isMocking) {
@@ -14,6 +18,17 @@ export default class EthereumWalletLedger extends EthereumWalletSigner {
     this.address = address
     this.derivationPath = derivationPath // Expects full path to `address`
     this._isMocking = isMocking
+  }
+
+  static connect = (derivationPath = 'm/44\'/60\'/0\'') => {
+    return window.faast.hw.ledger.getAppConfiguration_async()
+      .then((data) => {
+        log.info(`Ledger connected, version ${data.version}`)
+        return {
+          derivationPath,
+          getAddress: createAddressGetter(derivationPath)
+        }
+      })
   }
 
   getAddress = () => this.address;

@@ -16,15 +16,15 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
       window.faast.hw.trezor.getXPubKey(derivationPath, (result) => {
         if (result.success) {
           log.info('Trezor xPubKey success')
-          let { xpub, serializedPath } = result.xpubkey
+          let { xpubkey, serializedPath } = result
           if (!serializedPath.startsWith('m/') && /^\d/.test(serializedPath)) {
             serializedPath = `m/${serializedPath}`
           }
           if (serializedPath.startsWith('m/49\'')) {
-            xpub = xpubToYpub(xpub)
+            xpubkey = xpubToYpub(xpubkey)
             log.info('Converted segwit xpub to ypub')
           }
-          return resolve(new BitcoinWalletTrezor(xpub, derivationPath))
+          return resolve(new BitcoinWalletTrezor(xpubkey, serializedPath))
         } else {
           reject(new Error(result.error))
         }
