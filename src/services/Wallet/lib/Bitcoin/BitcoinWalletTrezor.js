@@ -10,15 +10,19 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
     this.derivationPath = derivationPath
   }
 
-  static fromPath = (derivationPath = 'm/49\'/0\'/0\'') => {
+  static fromPath = (derivationPath = null) => {
     return new Promise((resolve, reject) => {
+      window.faast.hw.trezor.setCurrency('BTC')
       window.faast.hw.trezor.getXPubKey(derivationPath, (result) => {
         if (result.success) {
-          log.info('Trezor xPubKey success', result)
-          let xpub = result.xpubkey
-          if (derivationPath.startsWith('m/49\'')) {
+          log.info('Trezor xPubKey success')
+          let { xpub, serializedPath } = result.xpubkey
+          if (!serializedPath.startsWith('m/') && /^\d/.test(serializedPath)) {
+            serializedPath = `m/${serializedPath}`
+          }
+          if (serializedPath.startsWith('m/49\'')) {
             xpub = xpubToYpub(xpub)
-            log.info('Converted segwit xpub to ypub', xpub)
+            log.info('Converted segwit xpub to ypub')
           }
           return resolve(new BitcoinWalletTrezor(xpub, derivationPath))
         } else {
