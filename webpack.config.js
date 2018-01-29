@@ -42,8 +42,7 @@ var config = {
   entry: path.join(__dirname, 'src', 'index.jsx'),
   output: {
     path: path.join(__dirname, 'dist'),
-    filename: 'portfolio.bundle.js',
-    publicPath: `http://localhost:${WEBPACK_PORT}/`
+    filename: 'portfolio.bundle.js'
   },
   module: {
     rules: [{
@@ -114,6 +113,7 @@ if (process.env.NODE_ENV === 'production') {
     inline: true,
     headers: { 'Access-Control-Allow-Origin': '*' }
   }
+  config.output.publicPath = `http://localhost:${WEBPACK_PORT}/`
   config.plugins = [
     new OpenBrowserPlugin({ url: 'http://localhost:5000/?dev=true' }),
     new webpack.DefinePlugin({
