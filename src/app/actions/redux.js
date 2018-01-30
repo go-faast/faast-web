@@ -1,108 +1,50 @@
-export const resetAll = () => ({
-  type: 'RESET_ALL'
-})
+import { createAction } from 'redux-act'
 
-export const setCurrentWallet = (walletOrId) => ({
-  type: 'SET_CURRENT_WALLET',
-  payload: { id: walletOrId && ((walletOrId.getId && walletOrId.getId()) || walletOrId) }
-})
+export const resetAll = createAction('RESET_ALL')
 
-export const setAssets = (assets) => ({
-  type: 'SET_ASSETS',
-  payload: assets
-})
+export const setCurrentWallet = createAction('SET_CURRENT_WALLET', (walletOrId) => ({
+  id: walletOrId && ((walletOrId.getId && walletOrId.getId()) || walletOrId)
+}))
 
-export const resetPortfolio = () => ({
-  type: 'RESET_PORTFOLIO'
-})
+export const setAssets = createAction('SET_ASSETS')
 
-export const loadingPortfolio = (bool) => ({
-  type: 'LOADING_PORTFOLIO',
-  payload: bool
-})
+export const resetPortfolio = createAction('RESET_PORTFOLIO')
 
-export const setPortfolio = (data) => ({
-  type: 'SET_PORTFOLIO',
-  payload: data
-})
+export const loadingPortfolio = createAction('LOADING_PORTFOLIO')
 
-export const setPortfolioItem = (symbol, item) => ({
-  type: 'SET_PORTFOLIO_ITEM',
-  payload: { symbol, item }
-})
+export const setPortfolio = createAction('SET_PORTFOLIO')
 
-export const setSwap = (list) => ({
-  type: 'SET_SWAP',
-  payload: list
-})
+export const setPortfolioItem = createAction('SET_PORTFOLIO_ITEM', (symbol, item) => ({ symbol, item }))
 
-export const addSwapDeposit = (symbol) => ({
-  type: 'ADD_SWAP_DEPOSIT',
-  payload: symbol
-})
+export const setSwap = createAction('SET_SWAP')
 
-export const removeSwapDeposit = (symbol) => ({
-  type: 'REMOVE_SWAP_DEPOSIT',
-  payload: symbol
-})
+export const addSwapDeposit = createAction('ADD_SWAP_DEPOSIT')
 
-export const addSwapReceive = (depositSymbol, receiveSymbol) => ({
-  type: 'ADD_SWAP_RECEIVE',
-  payload: { depositSymbol, receiveSymbol }
-})
+export const removeSwapDeposit = createAction('REMOVE_SWAP_DEPOSIT')
 
-export const removeSwapReceive = (depositSymbol, receiveSymbol) => ({
-  type: 'REMOVE_SWAP_RECEIVE',
-  payload: { depositSymbol, receiveSymbol }
-})
+export const addSwapReceive = createAction('ADD_SWAP_RECEIVE', (depositSymbol, receiveSymbol) => ({ depositSymbol, receiveSymbol }))
 
-export const resetSwap = () => ({
-  type: 'RESET_SWAP'
-})
+export const removeSwapReceive = createAction('REMOVE_SWAP_RECEIVE', (depositSymbol, receiveSymbol) => ({ depositSymbol, receiveSymbol }))
 
-export const setMock = (mock) => ({
-  type: 'SET_MOCK',
-  payload: mock
-})
+export const resetSwap = createAction('RESET_SWAP')
 
-export const setSwapData = (data) => ({
-  type: 'SET_SWAP_DATA',
-  payload: data
-})
+export const setMock = createAction('SET_MOCK')
 
-export const insertSwapData = (depositSymbol, receiveSymbol, data) => ({
-  type: 'INSERT_SWAP_DATA',
-  payload: { depositSymbol, receiveSymbol, data }
-})
+export const setSwapData = createAction('SET_SWAP_DATA')
 
-export const updateSwapTx = (depositSymbol, receiveSymbol, data) => ({
-  type: 'UPDATE_SWAP_TX',
-  payload: { depositSymbol, receiveSymbol, data }
-})
+export const insertSwapData = createAction('INSERT_SWAP_DATA', (depositSymbol, receiveSymbol, data) => ({ depositSymbol, receiveSymbol, data }))
 
-export const updateSwapOrder = (depositSymbol, receiveSymbol, data) => ({
-  type: 'UPDATE_SWAP_ORDER',
-  payload: { depositSymbol, receiveSymbol, data }
-})
+export const updateSwapTx = createAction('UPDATE_SWAP_TX', (depositSymbol, receiveSymbol, data) => ({ depositSymbol, receiveSymbol, data }))
 
-export const toggleOrderModal = () => ({
-  type: 'TOGGLE_ORDER_MODAL'
-})
+export const updateSwapOrder = createAction('UPDATE_SWAP_ORDER', (depositSymbol, receiveSymbol, data) => ({ depositSymbol, receiveSymbol, data }))
 
-export const showOrderModal = () => ({
-  type: 'SHOW_ORDER_MODAL'
-})
+export const toggleOrderModal = createAction('TOGGLE_ORDER_MODAL')
 
-export const hideOrderModal = () => ({
-  type: 'HIDE_ORDER_MODAL'
-})
+export const showOrderModal = createAction('SHOW_ORDER_MODAL')
 
-export const setBreakpoints = (bp) => ({
-  type: 'SET_BREAKPOINTS',
-  payload: bp
-})
+export const hideOrderModal = createAction('HIDE_ORDER_MODAL')
 
-export const setSettings = (settings) => ({
-  type: 'SET_SETTINGS',
-  payload: settings
-})
+export const setSettings = createAction('SET_SETTINGS')
+
+export const setBreakpoints = createAction('SET_BREAKPOINTS')
+
