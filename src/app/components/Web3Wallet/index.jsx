@@ -47,6 +47,10 @@ const Web3Wallet = ({ type, openWallet, mock }) => {
 
       EthereumWalletWeb3.fromDefaultAccount()
         .then((wallet) => openWallet(wallet, mock.mocking))
+        .catch((e) => {
+          log.error(e)
+          toastr.error(e.message)
+        })
     })
   }
 
