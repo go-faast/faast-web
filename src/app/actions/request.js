@@ -86,7 +86,7 @@ const preparePortfolio = (assets, mock) => () => {
 export const getBalances = (assets, portfolio, walletId, mock) => (dispatch) => {
   let portfolioList = portfolio.list
   if (!portfolioList || !portfolioList.length) {
-    dispatch(setPortfolioLoading(true))
+    dispatch(setPortfolioLoading(portfolio.id, true))
     portfolioList = dispatch(preparePortfolio(assets, mock))
   }
   return dispatch(getFiatPrices(portfolioList, mock))
@@ -137,17 +137,18 @@ export const getBalances = (assets, portfolio, walletId, mock) => (dispatch) => 
       newPortfolio = fixPercentageRounding(newPortfolio, totalFiat)
       const totalChange = totalFiat.minus(totalFiat24hAgo).div(totalFiat24hAgo).times(100)
       dispatch(setPortfolio({
+        id: portfolio.id,
         total: totalFiat,
         total24hAgo: totalFiat24hAgo,
         totalChange: totalChange,
         // pending: pendingFiat,
         list: newPortfolio
       }))
-      dispatch(setPortfolioLoading(false))
+      dispatch(setPortfolioLoading(portfolio.id, false))
     })
     .catch((err) => {
       log.error(err)
-      dispatch(setPortfolioLoading(false))
+      dispatch(setPortfolioLoading(portfolio.id, false))
       throw err
     })
 }

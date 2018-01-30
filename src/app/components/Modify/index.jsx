@@ -231,7 +231,7 @@ class Modify extends Component {
   _handleSelectAsset (asset) {
     const portfolio = this.props.portfolio
     const selectedAsset = portfolio.list.find(a => asset.symbol === a.symbol)
-    this.props.setPortfolioItem(asset.symbol, {
+    this.props.setPortfolioItem(portfolio.id, asset.symbol, {
       shown: true
     })
     this.setState({

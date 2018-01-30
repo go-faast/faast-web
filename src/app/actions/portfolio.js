@@ -28,11 +28,15 @@ export const portfolioRemoved = createAction('PORTFOLIO_REMOVED')
 export const allPortfoliosRemoved = createAction('ALL_PORTFOLIOS_REMOVED')
 export const portfolioWalletAdded = createAction('PORTFOLIO_WALLET_ADDED', (portfolioId, walletId) => ({ portfolioId, walletId }))
 
-export const resetPortfolio = createAction('RESET_PORTFOLIO')
 export const setCurrentPortfolio = createAction('SET_CURRENT_PORTFOLIO', (portfolioId) => ({ id: portfolioId }))
-export const setPortfolioLoading = createAction('SET_PORTFOLIO_LOADING')
 export const setPortfolio = createAction('SET_PORTFOLIO')
-export const setPortfolioItem = createAction('SET_PORTFOLIO_ITEM', (symbol, item) => ({ symbol, item }))
+export const setPortfolioItem = createAction('SET_PORTFOLIO_ITEM', (portfolioId, symbol, item) => ({ portfolioId, symbol, item }))
+export const setPortfolioLoading = (portfolioId, isLoading) => setPortfolio({ id: portfolioId, loading: isLoading })
+
+export const resetPortfolio = () => (dispatch, getState) => {
+  const currentPortfolio = getCurrentPortfolio(getState())
+  dispatch(portfolioRemoved(currentPortfolio))
+}
 
 export const createPortfolio = () => (dispatch) => {
   const portfolio = {
