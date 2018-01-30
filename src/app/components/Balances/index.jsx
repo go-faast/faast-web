@@ -171,7 +171,7 @@ class Balances extends Component {
     const totalDecrease = portfolio.totalChange && portfolio.totalChange.isNegative()
     return (
       <BalancesView
-        pieChart={<PieChart chartSelect={this.state.chartSelect} handleChartSelect={this._setChartSelect} />}
+        pieChart={<PieChart portfolio={portfolio} chartSelect={this.state.chartSelect} handleChartSelect={this._setChartSelect} />}
         priceChart={<PriceChart chartSelect={this.state.chartSelect} />}
         layoutProps={layoutProps}
         mq={this.props.mq}
