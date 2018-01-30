@@ -15,7 +15,8 @@ import reducers from './reducers'
 import { saveToAddress } from 'Utilities/storage'
 import 'react-redux-toastr/src/styles/index.scss?nsm'
 import 'Styles/style.scss?nsm'
-import { getCurrentWallet } from 'Selectors'
+import { getCurrentWallet, isAppReady } from 'Selectors'
+import { saveAllPortfolios } from 'Actions/portfolio'
 
 const history = createHistory()
 const middleware = [
@@ -33,13 +34,17 @@ const store = createStore(reducers, composeEnhancers(applyMiddleware(...middlewa
 
 store.subscribe(throttle(() => {
   const state = store.getState()
-  const wallet = getCurrentWallet(state)
-  if (wallet) {
-    saveToAddress(wallet.id, {
-      swap: state.swap,
-      settings: state.settings
-    })
-  }  
+  const appReady = isAppReady(state)
+  if (appReady) {
+    const wallet = getCurrentWallet(state)
+    if (wallet) {
+      saveToAddress(wallet.id, {
+        swap: state.swap,
+        settings: state.settings
+      })
+    }
+    store.dispatch(saveAllPortfolios())
+  }
 }, 1000))
 
 const Portfolio = () => {

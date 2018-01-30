@@ -11,21 +11,23 @@ import { getCurrentWallet } from 'Selectors'
 import { getAssets } from './request'
 import { setSwapData, setSettings } from './redux'
 import { restoreAllWallets } from './wallet'
+import { restoreAllPortfolios } from './portfolio'
 
 export const appReady = createAction('APP_READY')
 export const appError = createAction('APP_ERROR')
 
-export const restoreState = (dispatch, getState) => 
-  dispatch(restoreAllWallets())
-    .then(() => {
-      const wallet = getCurrentWallet(getState())
-      const addressState = restoreFromAddress(wallet && wallet.address) || {}
-      const status = statusAllSwaps(addressState.swap)
-      const swap = (status === 'unavailable' || status === 'unsigned' || status === 'unsent') ? undefined : addressState.swap
-      dispatch(setSwapData(swap))
-      const settings = addressState.settings
-      dispatch(setSettings(settings))
-    })
+export const restoreState = (dispatch, getState) => Promise.resolve()
+  .then(() => dispatch(restoreAllWallets()))
+  .then(() => dispatch(restoreAllPortfolios()))
+  .then(() => {
+    const wallet = getCurrentWallet(getState())
+    const addressState = restoreFromAddress(wallet && wallet.address) || {}
+    const status = statusAllSwaps(addressState.swap)
+    const swap = (status === 'unavailable' || status === 'unsigned' || status === 'unsent') ? undefined : addressState.swap
+    dispatch(setSwapData(swap))
+    const settings = addressState.settings
+    dispatch(setSettings(settings))
+  })
 
 export const setupLogger = () => Promise.resolve()
   .then(() => {

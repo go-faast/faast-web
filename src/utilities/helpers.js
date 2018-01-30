@@ -197,6 +197,14 @@ export const parseJson = (jsonStr) => {
   }
 }
 
+export const stringifyJson = (obj) => {
+  try {
+    return typeof obj !== 'string' ? JSON.stringify(obj) : obj
+  } catch (_) {
+    return ''
+  }
+}
+
 export const makeEnum = (fields) => Object.freeze(fields.reduce((o, f) => ({ ...o, [f]: Symbol(f) })))
 
 export const mapValues = (obj, valueMapper) => Object.entries(obj).reduce((result, [key, val]) => {

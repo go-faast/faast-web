@@ -1,4 +1,6 @@
 
+import { parseJson, stringifyJson } from 'Utilities/helpers'
+
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
 export const storageAvailable = (type) => {
   try {
@@ -31,11 +33,15 @@ const storageGet = (storageType, key) => {
   }
 }
 
+const storageGetJson = (storageType, key) => parseJson(storageGet(storageType, key))
+
 const storageSet = (storageType, key, value) => {
   if (storageAvailable(storageType)) {
     window[storageType].setItem(key, value)
   }
 }
+
+const storageSetJson = (storageType, key, obj) => storageSet(storageType, key, stringifyJson(obj))
 
 const storageRemove = (storageType, key) => {
   if (storageAvailable(storageType)) {
@@ -62,7 +68,11 @@ const storageForEach = (storageType, cb) => {
 
 export const sessionStorageGet = (key) => storageGet('sessionStorage', key)
 
+export const sessionStorageGetJson = (key) => storageGetJson('sessionStorage', key)
+
 export const sessionStorageSet = (key, value) => storageSet('sessionStorage', key, value)
+
+export const sessionStorageSetJson = (key, obj) => storageSetJson('sessionStorage', key, obj)
 
 export const sessionStorageRemove = (key) => storageRemove('sessionStorage', key)
 
@@ -72,7 +82,11 @@ export const sessionStorageForEach = (cb) => storageForEach('sessionStorage', cb
 
 export const localStorageGet = (key) => storageGet('localStorage', key)
 
+export const localStorageGetJson = (key) => storageGetJson('localStorage', key)
+
 export const localStorageSet = (key, value) => storageSet('localStorage', key, value)
+
+export const localStorageSetJson = (key, obj) => storageSetJson('localStorage', key, obj)
 
 export const localStorageRemove = (key) => storageRemove('localStorage', key)
 

@@ -5,7 +5,7 @@ import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clear
 import { addWallet, removeAllWallets } from 'Actions/wallet'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
-import { restoreFromAddress } from 'Utilities/storage'
+import { restoreFromAddress, sessionStorageSetJson, sessionStorageGetJson } from 'Utilities/storage'
 import log from 'Utilities/log'
 import blockstack from 'Utilities/blockstack'
 import {
@@ -19,7 +19,7 @@ import {
   getTransaction
 } from 'Utilities/wallet'
 import walletService from 'Services/Wallet'
-import { getCurrentWallet as selectCurrentWallet, getCurrentPortfolio } from 'Selectors'
+import { getCurrentWallet as selectCurrentWallet, getCurrentPortfolio, getAllPortfolios } from 'Selectors'
 import { createAction } from 'redux-act'
 import uuid from 'uuid/v4'
 
@@ -44,6 +44,21 @@ export const createPortfolio = () => (dispatch) => {
   }
   dispatch(portfolioAdded(portfolio))
   return portfolio
+}
+
+const portfoliosStorageKey = 'faast-portfolios'
+
+export const saveAllPortfolios = () => (dispatch, getState) => {
+  const portfolios = Object.values(getAllPortfolios(getState()))
+  const pruned = portfolios.map(({ id, wallets }) => ({ id, wallets }))
+  sessionStorageSetJson(portfoliosStorageKey, pruned)
+}
+
+export const restoreAllPortfolios = () => (dispatch) => {
+  const restored = sessionStorageGetJson(portfoliosStorageKey)
+  if (restored) {
+    restored.forEach((portfolio) => dispatch(portfolioAdded(portfolio)))
+  }
 }
 
 export const getCurrentWallet = () => (dispatch, getState) => {

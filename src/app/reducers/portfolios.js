@@ -1,5 +1,5 @@
 import { createReducer } from 'redux-act'
-import merge from 'lodash.merge'
+import mergeWith from 'lodash.mergewith'
 import union from 'lodash.union'
 import { updateObjectInArray, mapValues } from 'Utilities/helpers'
 import { resetAll } from 'Actions/redux'
@@ -36,25 +36,34 @@ const mergeAssetIntoList = (originalList, symbol, item) => {
   return originalList
 }
 
+const merge = (state, ...newStates) => mergeWith({}, state, ...newStates, (oldVal, newVal, key) => {
+  if (Array.isArray(oldVal)) {
+    if (Array.isArray(newVal) && key === 'wallets') {
+      return union(oldVal, newVal)
+    }
+    return newVal
+  }
+})
+
 export default createReducer({
   [resetAll]: () => initialState,
   [allPortfoliosRemoved]: () => initialState,
   [portfolioRemoved]: (state, { id }) => ({ ...state, [id]: undefined }),
-  [portfolioAdded]: (state, portfolio) => merge({}, state, {
+  [portfolioAdded]: (state, portfolio) => merge(state, {
     [portfolio.id]: {
       ...initialPortfolioState,
       ...portfolio
     }
   }),
-  [portfolioWalletAdded]: (state, { portfolioId, walletId }) => merge({}, state, {
+  [portfolioWalletAdded]: (state, { portfolioId, walletId }) => merge(state, {
     [portfolioId]: {
-      wallets: union(state[portfolioId].wallets, [walletId])
+      wallets: [walletId]
     }
   }),
-  [setPortfolio]: (state, portfolio) => merge({}, state, {
+  [setPortfolio]: (state, portfolio) => merge(state, {
     [portfolio.id]: portfolio
   }),
-  [setPortfolioItem]: (state, { portfolioId, symbol, item }) => merge({}, state, {
+  [setPortfolioItem]: (state, { portfolioId, symbol, item }) => merge(state, {
     [portfolioId]: {
       list: mergeAssetIntoList(state.list, symbol, item)
     }
