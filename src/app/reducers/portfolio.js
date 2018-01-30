@@ -32,6 +32,8 @@ export default (state = initialState, action) => {
     })
   case 'LOADING_PORTFOLIO':
     return Object.assign({}, state, { loading: action.payload })
+  case 'SET_WALLET':
+    return ({ ...state, wallet: action.payload.id })
   default:
     return state
   }

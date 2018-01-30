@@ -9,8 +9,8 @@ import { clearSwap } from 'Utilities/storage'
 import log from 'Utilities/log'
 import { loadingPortfolio, setPortfolio, setAssets, updateSwapOrder } from 'Actions/redux'
 import { restoreSwundle } from 'Actions/portfolio'
+import { updateWalletBalances } from 'Redux/wallet/actions'
 import config from 'Config'
-import walletService from 'Services/Wallet'
 
 const ENABLED_ASSETS = ['ETH']
 
@@ -89,17 +89,10 @@ export const getBalances = (assets, portfolio, walletId, mock) => (dispatch) => 
     portfolioList = dispatch(preparePortfolio(assets, mock))
   }
   return dispatch(getFiatPrices(portfolioList, mock))
-    .then((p) => {
-      const wallet = walletService.get(walletId)
-      if (!wallet) {
-        log.error('no wallet with id', walletId)
-        throw new Error('failed to load balances')
-      }
-      wallet.setAllAssets(assets)
-      return wallet.getAllBalances()
-        .then((symbolToBalance) => p.map((a) =>
-          Object.assign({}, a, { balance: symbolToBalance[a.symbol] || toBigNumber(0) })))
-    })
+    .then((p) => dispatch(updateWalletBalances(walletId, assets))
+      .then((symbolToBalance) => p.map((a) => Object.assign({}, a, {
+        balance: symbolToBalance[a.symbol] || toBigNumber(0)
+      }))))
     .then((p) => {
       // let pendingFiat = toBigNumber(0)
       // if (swap) {

@@ -1,7 +1,8 @@
 
-import { insertSwapData, updateSwapTx, setSwap, setWallet, walletOpened, resetAll } from 'Actions/redux'
+import { insertSwapData, updateSwapTx, setSwap, setWallet } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
+import { addWallet, removeAllWallets } from 'Redux/wallet/actions'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
 import { restoreFromAddress } from 'Utilities/storage'
@@ -31,18 +32,9 @@ export const getCurrentWallet = () => (dispatch, getState) => {
   return wallet
 }
 
-export const setCurrentWallet = (walletId) => (dispatch) => {
-  const wallet = walletService.get(walletId)
-  if (!wallet) {
-    log.error('failed to set current wallet to', walletId)
-    return
-  }
+export const setCurrentWallet = (wallet) => (dispatch) => {
   dispatch(setWallet({
-    id: wallet.getId(),
-    type: wallet.type,
-    address: wallet.getAddress && wallet.getAddress(),
-    opened: wallet.type === 'MultiWallet' ? wallet.wallets.length : 1,
-    isBlockstack: wallet.isBlockstack
+    id: wallet.getId()
   }))
 }
 
@@ -270,7 +262,7 @@ export const openWallet = (wallet, isMocking) => (dispatch) => {
   let currentWallet = dispatch(getCurrentWallet())
   if (!currentWallet) {
     currentWallet = new MultiWallet()
-    walletService.save(currentWallet)
+    dispatch(addWallet(currentWallet))
     dispatch(setCurrentWallet(currentWallet))
   }
   const walletId = wallet.getId()
@@ -290,14 +282,13 @@ export const openWallet = (wallet, isMocking) => (dispatch) => {
     }
   }
   currentWallet.addWallet(wallet)
-  walletService.save(currentWallet)
-  dispatch(walletOpened(wallet))
+  dispatch(addWallet(wallet))
 }
 
 export const closeWallet = (wallet) => (dispatch) => {
   clearAllIntervals()
   blockstack.signUserOut()
-  dispatch(resetAll())
+  dispatch(removeAllWallets())
   if (wallet) {
     walletService.remove(wallet)
   } else {
