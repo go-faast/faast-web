@@ -30,7 +30,7 @@ export const removeAllWallets = () => (dispatch) => Promise.resolve()
   .then(() => dispatch(allWalletsRemoved()))
 
 export const restoreAllWallets = () => (dispatch) => Promise.resolve()
-  .then(() => walletService.restoreAllWallets())
+  .then(() => walletService.restoreAll())
   .then((restoredWallets) => restoredWallets.forEach((w) => dispatch(walletAdded(w))))
 
 export const updateWalletBalances = (walletId, assets) => (dispatch) => Promise.resolve()

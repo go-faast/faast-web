@@ -10,8 +10,10 @@ import orderModal from './orderModal'
 import settings from './settings'
 import mediaQueries from './mediaQueries'
 import wallets from './wallets'
+import app from './app'
 
 export default combineReducers({
+  app,
   wallets,
   assets,
   portfolio,

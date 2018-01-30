@@ -4,7 +4,7 @@ import queryString from 'query-string'
 import log from 'Utilities/log'
 import blockstack from 'Utilities/blockstack'
 import { sessionStorageGet, sessionStorageSet, sessionStorageRemove, sessionStorageForEach } from 'Utilities/storage'
-import { Wallet, WalletSerializer, MultiWallet } from './lib'
+import { Wallet, WalletSerializer } from './lib'
 
 
 const legacyStorageKey = 'wallet'
@@ -62,13 +62,7 @@ export function WalletService() {
     getStoredWalletKeys().forEach(sessionStorageRemove)
   }
 
-  const parse = (walletString, coerceMulti = true) => {
-    let wallet = WalletSerializer.parse(walletString)
-    if (coerceMulti && wallet instanceof Wallet && !(wallet instanceof MultiWallet)) {
-      wallet = new MultiWallet([wallet])
-    }
-    return wallet
-  }
+  const parse = WalletSerializer.parse
 
   /** Load the wallet from session at the provided storage key */
   const load = (storageKey) => {

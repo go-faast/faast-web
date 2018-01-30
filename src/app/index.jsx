@@ -12,7 +12,6 @@ import { Route } from 'react-router-dom'
 import ReduxToastr from 'react-redux-toastr'
 import Entry from 'Components/Entry'
 import reducers from './reducers'
-import { restoreState } from 'Actions/init'
 import { saveToAddress } from 'Utilities/storage'
 import 'react-redux-toastr/src/styles/index.scss?nsm'
 import 'Styles/style.scss?nsm'
@@ -31,8 +30,6 @@ window.faast.intervals = {
 }
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const store = createStore(reducers, composeEnhancers(applyMiddleware(...middleware)))
-
-store.dispatch(restoreState())
 
 store.subscribe(throttle(() => {
   const state = store.getState()
