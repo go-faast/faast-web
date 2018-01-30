@@ -7,6 +7,7 @@ import { toggleOrderModal } from 'Actions/redux'
 import { closeWallet } from 'Actions/portfolio'
 import { isValidAddress } from 'Utilities/wallet'
 import toastr from 'Utilities/toastrWrapper'
+import { getCurrentWallet } from 'Selectors'
 
 const Header = (props) => {
   const handleModify = (e) => {
@@ -43,7 +44,7 @@ Header.propTypes = {
 
 const mapStateToProps = (state) => ({
   swap: state.swap,
-  wallet: state.wallet
+  wallet: getCurrentWallet(state)
 })
 
 const mapDispatchToProps = (dispatch) => ({

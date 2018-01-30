@@ -35,8 +35,8 @@ store.dispatch(restoreState())
 
 store.subscribe(throttle(() => {
   const state = store.getState()
-  if (state.wallet) {
-    saveToAddress(state.wallet.address, {
+  if (state.portfolio) {
+    saveToAddress(state.portfolio.wallet, {
       swap: state.swap,
       settings: state.settings
     })

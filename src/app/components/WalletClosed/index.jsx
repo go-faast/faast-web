@@ -2,10 +2,11 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Route, Redirect } from 'react-router-dom'
+import { getCurrentWallet } from 'Selectors'
 
 const WalletClosed = ({ wallet, path, component: Component }) => (
   <Route path={path} render={props => (
-    (wallet.address || wallet.opened > 0) ? (
+    (wallet && wallet.id) ? (
       <Redirect to='/balances' />
     ) : (
       <Component {...props} />
@@ -20,7 +21,7 @@ WalletClosed.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-  wallet: state.wallet
+  wallet: getCurrentWallet(state)
 })
 
 export default connect(mapStateToProps)(WalletClosed)

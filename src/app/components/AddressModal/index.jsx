@@ -1,6 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { getCurrentWallet } from 'Selectors'
+
 import AddressModalView from './view'
 
 const AddressModal = (props) => (
@@ -16,7 +18,7 @@ AddressModal.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-  wallet: state.wallet
+  wallet: getCurrentWallet(state)
 })
 
 export default connect(mapStateToProps)(AddressModal)

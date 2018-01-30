@@ -6,6 +6,7 @@ import toastr from 'Utilities/toastrWrapper'
 import { downloadJson } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import { openWallet } from 'Actions/portfolio'
+import { getCurrentWallet } from 'Selectors'
 import { EthereumWalletKeystore } from 'Services/Wallet'
 
 const initialState = {
@@ -147,7 +148,7 @@ CreateWalletModal.propTypes = {
 
 const mapStateToProps = (state) => ({
   mock: state.mock,
-  wallet: state.wallet
+  wallet: getCurrentWallet(state)
 })
 
 const mapDispatchToProps = (dispatch) => ({

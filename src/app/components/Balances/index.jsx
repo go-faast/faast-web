@@ -12,6 +12,7 @@ import { getSwapStatus } from 'Utilities/swap'
 import { getBalances, removeSwundle } from 'Actions/request'
 import { clearAllIntervals } from 'Actions/portfolio'
 import { toggleOrderModal, resetSwap, resetPortfolio } from 'Actions/redux'
+import { getCurrentWallet } from 'Selectors'
 import { EthereumWalletWeb3 } from 'Services/Wallet'
 
 let balancesInterval
@@ -164,7 +165,7 @@ class Balances extends Component {
       handleModify: () => this.props.routerPush('/modify'),
     }
     const addressProps = {
-      address: wallet.getAddress && wallet.getAddress(),
+      address: wallet.address || (wallet.getAddress && wallet.getAddress()),
       showDownloadKeystore: !this.props.viewOnlyAddress && this.state.wallet.isBlockstack
     }
     const totalDecrease = portfolio.totalChange && portfolio.totalChange.isNegative()
@@ -201,7 +202,7 @@ Balances.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-  wallet: state.wallet,
+  wallet: getCurrentWallet(state),
   assets: state.assets,
   portfolio: state.portfolio,
   mock: state.mock,

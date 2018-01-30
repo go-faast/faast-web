@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import WelcomeView from './view'
 import { setSettings } from 'Actions/redux'
+import { getCurrentWallet } from 'Selectors'
 
 class Welcome extends Component {
   constructor (props) {
@@ -40,7 +41,7 @@ class Welcome extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  wallet: state.wallet,
+  wallet: getCurrentWallet(state),
   settings: state.settings
 })
 

@@ -10,6 +10,7 @@ import { restorePolling } from 'Actions/portfolio'
 import { setSwap, setBreakpoints } from 'Actions/redux'
 import { postSwundle } from 'Actions/request'
 import { breakpointWidths } from 'Utilities/breakpoints'
+import { getCurrentWallet } from 'Selectors'
 
 class App extends Component {
   constructor () {
@@ -61,7 +62,7 @@ App.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-  wallet: state.wallet,
+  wallet: getCurrentWallet(state),
   swap: state.swap,
   settings: state.settings,
   mock: state.mock,

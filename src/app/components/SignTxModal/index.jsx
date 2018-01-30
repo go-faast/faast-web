@@ -7,6 +7,7 @@ import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 import { getSwapStatus, estimateReceiveAmount } from 'Utilities/swap'
 import { sendSwapDeposits } from 'Actions/portfolio'
+import { getCurrentWallet } from 'Selectors'
 
 class SignTxModal extends Component {
   constructor (props) {
@@ -129,7 +130,6 @@ class SignTxModal extends Component {
       <SignTxModalView
         showModal={this.props.showModal}
         view={this.state.view}
-        mq={this.props.mq}
         signTxProps={{
           readyToSign: readyToSign(),
           onSubmit: this._handleSubmit,
@@ -150,9 +150,8 @@ class SignTxModal extends Component {
 const mapStateToProps = (state) => ({
   portfolio: state.portfolio,
   swap: state.swap,
-  wallet: state.wallet,
-  mock: state.mock,
-  mq: state.mediaQueries
+  wallet: getCurrentWallet(state),
+  mock: state.mock
 })
 
 export default connect(mapStateToProps)(SignTxModal)
