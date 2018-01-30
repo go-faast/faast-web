@@ -198,3 +198,8 @@ export const parseJson = (jsonStr) => {
 }
 
 export const makeEnum = (fields) => Object.freeze(fields.reduce((o, f) => ({ ...o, [f]: Symbol(f) })))
+
+export const mapValues = (obj, valueMapper) => Object.entries(obj).reduce((result, [key, val]) => {
+  result[key] = valueMapper(val)
+  return result
+}, {})
