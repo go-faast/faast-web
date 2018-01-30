@@ -56,10 +56,7 @@ class Entry extends Component {
       }
     })
     .then(() => {
-      window.faast.hw = {}
-      if (window.TrezorConnect) {
-        window.faast.hw.trezor = window.TrezorConnect
-      }
+      window.faast.hw = window.faast.hw || {}
       if (window.ledger) {
         window.ledger.comm_u2f.create_async()
         .then((comm) => {

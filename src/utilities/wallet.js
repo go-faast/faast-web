@@ -1,8 +1,7 @@
 import web3 from 'Services/Web3'
+import Trezor from 'Services/Trezor'
 
-export const closeTrezorWindow = () => {
-  if (window.faast.hw && window.faast.hw.trezor && window.faast.hw.trezor.close) window.faast.hw.trezor.close()
-}
+export const closeTrezorWindow = () => Trezor && Trezor.close && Trezor.close()
 
 export const getTransactionReceipt = (txHash) => {
   return web3.eth.getTransactionReceipt(txHash)

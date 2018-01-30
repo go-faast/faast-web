@@ -11,6 +11,7 @@ import { openWallet } from 'Actions/portfolio'
 import { mockAddress } from 'Actions/mock'
 import web3 from 'Services/Web3'
 import { EthereumWalletLedger, EthereumWalletTrezor, BitcoinWalletTrezor } from 'Services/Wallet'
+import Trezor from 'Services/Trezor'
 
 const CONNECT_SECONDS = 6
 const ADDRESS_GROUP_SIZE = 5
@@ -140,7 +141,7 @@ class HardwareWallet extends Component {
   }
 
   _connectTrezor () {
-    if (!window.faast.hw.trezor) {
+    if (!Trezor) {
       return toastr.error('Error: Trezor Connect unavailable')
     }
 

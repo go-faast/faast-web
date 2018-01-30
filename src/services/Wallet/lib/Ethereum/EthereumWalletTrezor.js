@@ -6,6 +6,7 @@ import log from 'Utilities/log'
 import { stripHexPrefix, addHexPrefix } from 'Utilities/helpers'
 import { toHex } from 'Utilities/convert'
 import { mockHardwareWalletSign } from 'Actions/mock'
+import Trezor from 'Services/Trezor'
 
 import EthereumWalletSigner from './EthereumWalletSigner'
 
@@ -18,65 +19,53 @@ export default class EthereumWalletTrezor extends EthereumWalletSigner {
     this._isMocking = isMocking
   }
 
-  static connect = (derivationPath = 'm/44\'/60\'/0\'/0') => {
-    return new Promise((resolve, reject) => {
-      window.faast.hw.trezor.getXPubKey(derivationPath, (result) => {
-        if (!result.success) {
-          return reject(new Error(result.error))
-        }
+  static connect = (derivationPath = 'm/44\'/60\'/0\'/0') =>
+    Trezor.getXPubKey(derivationPath)
+      .then((result) => {
         log.info('Trezor xPubKey success')
         const hdKey = new HDKey()
         hdKey.publicKey = Buffer.from(result.publicKey, 'hex')
         hdKey.chainCode = Buffer.from(result.chainCode, 'hex')
-        resolve({
+        return {
           derivationPath,
           getAddress: (index) => {
             const derivedKey = hdKey.derive(`m/${index}`)
             const address = EthereumJsUtil.publicToAddress(derivedKey.publicKey, true).toString('hex')
             return Promise.resolve(`0x${address}`)
           }
-        })
-      })
-    })
-  }
+        }
+      });
 
   getAddress = () => this.address;
-  
-  closeTrezorWindow = () => {
-    if (window.faast.hw && window.faast.hw.trezor && window.faast.hw.trezor.close) window.faast.hw.trezor.close()
-  };
 
   signTx = (txParams) => {
     this._validateTx(txParams)
     if (this._isMocking) return mockHardwareWalletSign('trezor')
-    return new Promise((resolve, reject) => {
-      window.faast.hw.trezor.closeAfterSuccess(false)
-      window.faast.hw.trezor.signEthereumTx(
-        this.derivationPath,
-        stripHexPrefix(txParams.nonce),
-        stripHexPrefix(txParams.gasPrice),
-        stripHexPrefix(txParams.gasLimit),
-        stripHexPrefix(txParams.to),
-        stripHexPrefix(txParams.value),
-        stripHexPrefix(txParams.data) || null,
-        txParams.chainId,
-        (response) => {
-          if (response.success) {
-            log.info('trezor signed tx')
-            resolve(new EthereumjsTx(Object.assign({}, txParams, {
-              r: addHexPrefix(response.r),
-              s: addHexPrefix(response.s),
-              v: toHex(response.v)
-            })).serialize().toString('hex'))
-          } else {
-            if (response.error === 'Action cancelled by user') {
-              reject(new Error('Transaction was denied'))
-            } else {
-              reject(new Error(`Error from Trezor - ${response.error}`))
-            }
-          }
-        }
-      )
+    Trezor.closeAfterSuccess(false)
+    const { nonce, gasPrice, gasLimit, to, value, data, chainId } = txParams
+    return Trezor.signEthereumTx(
+      this.derivationPath,
+      stripHexPrefix(nonce),
+      stripHexPrefix(gasPrice),
+      stripHexPrefix(gasLimit),
+      stripHexPrefix(to),
+      stripHexPrefix(value),
+      stripHexPrefix(data) || null,
+      chainId
+    ).then(({ r, s, v }) => {
+      log.info('trezor signed tx')
+      return new EthereumjsTx({
+        ...txParams,
+        r: addHexPrefix(r),
+        s: addHexPrefix(s),
+        v: toHex(v)
+      }).serialize().toString('hex')
+    }).catch((e) => {
+      if (e.message === 'Action cancelled by user') {
+        throw new Error('Transaction was denied')
+      } else {
+        throw new Error(`Error from Trezor - ${e.message}`)
+      }
     })
   };
 }
