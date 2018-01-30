@@ -155,16 +155,17 @@ export function WalletService() {
   }
 
   const restoreAll = () => {
-    const wallets = [
+    const restoredWallets = [
       restoreSessionStorage(),
       restoreLegacy(),
       restoreQueryString(),
       restoreBlockstack()
     ]
-    wallets.reduce((flattened, wallet) => [...flattened, ...(Array.isArray(wallet) ? wallet : [wallet])], [])
+    restoredWallets.reduce((flattened, wallet) => [...flattened, ...(Array.isArray(wallet) ? wallet : [wallet])], [])
       .filter((wallet) => wallet instanceof Wallet)
       .forEach(put)
     log.debug('wallets restored', Object.keys(activeWallets))
+    return Object.values(activeWallets)
   }
 
   return {

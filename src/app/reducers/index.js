@@ -9,8 +9,10 @@ import mock from './mock'
 import orderModal from './orderModal'
 import settings from './settings'
 import mediaQueries from './mediaQueries'
+import wallets from 'Redux/wallets/reducer'
 
 export default combineReducers({
+  wallets,
   wallet,
   assets,
   portfolio,

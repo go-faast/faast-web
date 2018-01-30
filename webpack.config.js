@@ -84,7 +84,8 @@ var config = {
       Components: 'App/components',
       Styles: 'App/styles',
       Actions: 'App/actions',
-      Hoc: 'App/hoc'
+      Hoc: 'App/hoc',
+      Redux: 'App/redux',
     },
     extensions: ['.js', '.jsx', '.json', '.scss', '.css']
   }
