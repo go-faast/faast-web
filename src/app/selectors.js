@@ -1,0 +1,1 @@
+export const getCurrentWallet = ({ portfolio, wallets }) => wallets[portfolio.wallet] || {}

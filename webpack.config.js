@@ -86,6 +86,7 @@ var config = {
       Actions: 'App/actions',
       Hoc: 'App/hoc',
       Redux: 'App/redux',
+      Selectors: 'App/selectors'
     },
     extensions: ['.js', '.jsx', '.json', '.scss', '.css']
   }
