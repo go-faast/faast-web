@@ -2,7 +2,7 @@
 import { insertSwapData, updateSwapTx, setSwap } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
-import { addWallet, removeWallet } from 'Actions/wallet'
+import { addWallet, removeAllWallets } from 'Actions/wallet'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
 import { restoreFromAddress } from 'Utilities/storage'
@@ -302,16 +302,12 @@ export const openWallet = (wallet, isMocking) => (dispatch, getState) => {
   dispatch(portfolioWalletAdded(currentPortfolio.id, walletId))
 }
 
-export const closeWallet = (wallet) => (dispatch) => {
+export const closeWallet = () => (dispatch) => {
   clearAllIntervals()
   blockstack.signUserOut()
-  dispatch(removeWallet((wallet.getId && wallet.getId()) || wallet.id || wallet))
-  if (wallet) {
-    walletService.remove(wallet)
-  } else {
-    walletService.removeAll()
-  }
-  log.info('wallet closed')
+  dispatch(removeAllWallets())
+  walletService.removeAll()
+  log.info('all wallets closed')
 }
 
 export const restoreSwundle = (swundle) => (dispatch) => {
