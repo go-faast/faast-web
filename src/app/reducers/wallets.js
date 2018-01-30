@@ -1,7 +1,7 @@
 import { createReducer } from 'redux-act'
 import merge from 'lodash.merge'
 
-import { walletAdded, walletRemoved, allWalletsRemoved, walletBalancesUpdated } from './actions'
+import { walletAdded, walletRemoved, allWalletsRemoved, walletBalancesUpdated } from 'Actions/wallet'
 
 const initialState = {}
 

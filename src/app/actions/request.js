@@ -9,7 +9,7 @@ import { clearSwap } from 'Utilities/storage'
 import log from 'Utilities/log'
 import { loadingPortfolio, setPortfolio, setAssets, updateSwapOrder } from 'Actions/redux'
 import { restoreSwundle } from 'Actions/portfolio'
-import { updateWalletBalances } from 'Redux/wallets/actions'
+import { updateWalletBalances } from 'Actions/wallet'
 import config from 'Config'
 
 const ENABLED_ASSETS = ['ETH']

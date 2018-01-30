@@ -7,11 +7,6 @@ export const setCurrentWallet = (walletOrId) => ({
   payload: { id: walletOrId && ((walletOrId.getId && walletOrId.getId()) || walletOrId) }
 })
 
-export const walletOpened = (wallet) => ({
-  type: 'WALLET_OPENED',
-  payload: { wallet }
-})
-
 export const setAssets = (assets) => ({
   type: 'SET_ASSETS',
   payload: assets
