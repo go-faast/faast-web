@@ -5,7 +5,7 @@ import {
 } from 'Actions/portfolio'
 
 const initialState = {
-  current: null
+  current: 'default'
 }
 
 export default createReducer({

@@ -8,10 +8,16 @@ import {
   setPortfolio, setPortfolioItem
 } from 'Actions/portfolio'
 
-const initialState = {}
 const initialPortfolioState = {
   wallets: [],
   list: []
+}
+
+const initialState = {
+  default: {
+    id: 'default',
+    ...initialPortfolioState
+  }
 }
 
 const getAssetIndex = (list, symbol) => {
