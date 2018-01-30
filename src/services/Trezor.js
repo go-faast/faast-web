@@ -5,7 +5,7 @@ function PromisifiedTrezorConnect(trezorConnectInstance) {
       return reject(result)
     }
     if (typeof result === 'object' && result.success === false) {
-      return reject(result.error)
+      return reject(new Error(result.error))
     }
     return resolve(result)
   }
