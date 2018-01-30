@@ -5,7 +5,7 @@ import Balances from 'Components/Balances'
 import { isValidAddress } from 'Utilities/wallet'
 import { toChecksumAddress } from 'Utilities/convert'
 import toastr from 'Utilities/toastrWrapper'
-import { setWallet, resetPortfolio } from 'Actions/redux'
+import { resetPortfolio } from 'Actions/portfolio'
 
 class View extends Component {
   constructor () {
@@ -50,9 +50,6 @@ const mapStateToProps = () => ({})
 const mapDispatchToProps = (dispatch) => ({
   historyReplace: (path) => {
     dispatch(replace(path))
-  },
-  setWallet: (type, address, data) => {
-    dispatch(setWallet(type, address, data))
   },
   resetPortfolio: () => {
     dispatch(resetPortfolio())

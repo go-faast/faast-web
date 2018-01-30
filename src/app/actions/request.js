@@ -7,7 +7,8 @@ import { fixPercentageRounding, filterErrors, filterObj } from 'Utilities/helper
 import { fetchGet, fetchPost, fetchDelete } from 'Utilities/fetch'
 import { clearSwap } from 'Utilities/storage'
 import log from 'Utilities/log'
-import { loadingPortfolio, setPortfolio, setAssets, updateSwapOrder } from 'Actions/redux'
+import { setAssets, updateSwapOrder } from 'Actions/redux'
+import { setPortfolioLoading, setPortfolio } from 'Actions/portfolio'
 import { restoreSwundle } from 'Actions/portfolio'
 import { updateWalletBalances } from 'Actions/wallet'
 import config from 'Config'
@@ -85,7 +86,7 @@ const preparePortfolio = (assets, mock) => () => {
 export const getBalances = (assets, portfolio, walletId, mock) => (dispatch) => {
   let portfolioList = portfolio.list
   if (!portfolioList || !portfolioList.length) {
-    dispatch(loadingPortfolio(true))
+    dispatch(setPortfolioLoading(true))
     portfolioList = dispatch(preparePortfolio(assets, mock))
   }
   return dispatch(getFiatPrices(portfolioList, mock))
@@ -142,11 +143,11 @@ export const getBalances = (assets, portfolio, walletId, mock) => (dispatch) => 
         // pending: pendingFiat,
         list: newPortfolio
       }))
-      dispatch(loadingPortfolio(false))
+      dispatch(setPortfolioLoading(false))
     })
     .catch((err) => {
       log.error(err)
-      dispatch(loadingPortfolio(false))
+      dispatch(setPortfolioLoading(false))
       throw err
     })
 }

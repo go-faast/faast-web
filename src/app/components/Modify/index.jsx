@@ -7,8 +7,8 @@ import { toUnit, toPercentage } from 'Utilities/convert'
 import { updateObjectInArray } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
-import { setSwap, resetSwap, setPortfolioItem, toggleOrderModal, showOrderModal } from 'Actions/redux'
-import { initiateSwaps } from 'Actions/portfolio'
+import { setSwap, resetSwap, toggleOrderModal, showOrderModal } from 'Actions/redux'
+import { setPortfolioItem, initiateSwaps } from 'Actions/portfolio'
 import { getCurrentWallet } from 'Selectors'
 
 const ZERO = new BigNumber(0)

@@ -2,19 +2,7 @@ import { createAction } from 'redux-act'
 
 export const resetAll = createAction('RESET_ALL')
 
-export const setCurrentWallet = createAction('SET_CURRENT_WALLET', (walletOrId) => ({
-  id: walletOrId && ((walletOrId.getId && walletOrId.getId()) || walletOrId)
-}))
-
 export const setAssets = createAction('SET_ASSETS')
-
-export const resetPortfolio = createAction('RESET_PORTFOLIO')
-
-export const loadingPortfolio = createAction('LOADING_PORTFOLIO')
-
-export const setPortfolio = createAction('SET_PORTFOLIO')
-
-export const setPortfolioItem = createAction('SET_PORTFOLIO_ITEM', (symbol, item) => ({ symbol, item }))
 
 export const setSwap = createAction('SET_SWAP')
 
