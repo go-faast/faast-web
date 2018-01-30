@@ -1,5 +1,5 @@
 
-import { insertSwapData, updateSwapTx, setSwap, setWallet } from 'Actions/redux'
+import { insertSwapData, updateSwapTx, setSwap, setCurrentWallet } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
 import { addWallet, removeAllWallets } from 'Redux/wallet/actions'
@@ -20,9 +20,10 @@ import {
 } from 'Utilities/wallet'
 import { MultiWallet } from 'Services/Wallet'
 import walletService from 'Services/Wallet'
+import { getCurrentWallet as selectCurrentWallet } from 'Selectors'
 
 export const getCurrentWallet = () => (dispatch, getState) => {
-  const walletId = ((getState ? getState() : {}).wallet || {}).id
+  const walletId = selectCurrentWallet(getState()).id
   let wallet
   if (walletId) {
     wallet = walletService.get(walletId)
@@ -30,12 +31,6 @@ export const getCurrentWallet = () => (dispatch, getState) => {
     Object.values(walletService.getAll())[0]
   }
   return wallet
-}
-
-export const setCurrentWallet = (wallet) => (dispatch) => {
-  dispatch(setWallet({
-    id: wallet.getId()
-  }))
 }
 
 const swapFinish = (type, swap, error, addition) => {

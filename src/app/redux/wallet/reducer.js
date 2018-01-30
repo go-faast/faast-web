@@ -6,8 +6,8 @@ import { walletAdded, walletRemoved, allWalletsRemoved, walletBalancesUpdated } 
 const initialState = {}
 
 export default createReducer({
-  [walletAdded]: (state, wallet) => merge(state, { [wallet.id]: wallet }),
+  [walletAdded]: (state, wallet) => merge({}, state, { [wallet.id]: wallet }),
   [walletRemoved]: (state, { id }) => ({ ...state, [id]: undefined }),
   [allWalletsRemoved]: () => initialState,
-  [walletBalancesUpdated]: (state, { id, balances }) => merge(state, { [id]: { balances } })
+  [walletBalancesUpdated]: (state, { id, balances }) => merge({}, state, { [id]: { balances } })
 }, initialState)

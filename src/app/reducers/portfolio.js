@@ -19,21 +19,19 @@ const setPortfolioItem = (originalList, symbol, item) => {
   return originalList
 }
 
-export default (state = initialState, action) => {
-  switch (action.type) {
+export default (state = initialState, { type, payload }) => {
+  switch (type) {
   case 'RESET_ALL':
   case 'RESET_PORTFOLIO':
     return initialState
   case 'SET_PORTFOLIO':
-    return action.payload
+    return { ...state, ...payload }
   case 'SET_PORTFOLIO_ITEM':
-    return Object.assign({}, state, {
-      list: setPortfolioItem(state.list, action.payload.symbol, action.payload.item)
-    })
+    return { ...state, list: setPortfolioItem(state.list, payload.symbol, payload.item) }
   case 'LOADING_PORTFOLIO':
-    return Object.assign({}, state, { loading: action.payload })
-  case 'SET_WALLET':
-    return ({ ...state, wallet: action.payload.id })
+    return { ...state, loading: payload }
+  case 'SET_CURRENT_WALLET':
+    return { ...state, wallet: payload.id }
   default:
     return state
   }

@@ -2,9 +2,9 @@ export const resetAll = () => ({
   type: 'RESET_ALL'
 })
 
-export const setWallet = (wallet) => ({
-  type: 'SET_WALLET',
-  payload: { wallet }
+export const setCurrentWallet = (walletOrId) => ({
+  type: 'SET_CURRENT_WALLET',
+  payload: { id: walletOrId && ((walletOrId.getId && walletOrId.getId()) || walletOrId) }
 })
 
 export const walletOpened = (wallet) => ({
