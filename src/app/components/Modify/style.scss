@@ -1,5 +1,11 @@
 @import "~Styles/variables";
 
+$collapse-table: md;
+
+:export {
+  collapseTablePoint: $collapse-table;
+}
+
 .header {
   background-color: $pageBgColor2;
 }
@@ -18,11 +24,35 @@
   }
 }
 
+.tableCell {
+  text-align: right;
+  align-self: center;
+  &, p {
+    color: #dedede;
+  }
+  p {
+    margin: 0;
+    padding: 0;
+    + p {
+      font-size: 0.8em;
+      margin-top: 4px;
+      color: #ddd;
+    }
+  }
+  @include media-breakpoint-down($collapse-table) {
+    font-size: $text-small;
+  }
+}
+
 .modifyAssetList {
   @include media-breakpoint-down(md) {
     margin-left: -8px;
     margin-right: -8px;
   }
+}
+
+.greyStatus {
+  @extend .text-medium-grey;
 }
 
 .editable {

@@ -9,7 +9,8 @@ import SignTxModal from 'Components/SignTxModal'
 import display from 'Utilities/display'
 import styles from './style'
 import config from 'Config'
-import { renderAssetRowsMobile } from './view.mobile'
+import { breakpointNext } from 'Utilities/breakpoints'
+import { Row, Col } from 'reactstrap'
 
 const ModifyView = (props) => {
   const inputs = {
@@ -17,109 +18,118 @@ const ModifyView = (props) => {
     weight: {}
   }
 
+  const { collapseTablePoint } = styles
+  const expandTablePoint = breakpointNext(collapseTablePoint)
+
+  const TableCell = ({ className, children, ...extraProps }) => (
+    <Col
+      {...({ xs: '6', [expandTablePoint]: '12', ...extraProps })}
+      className={`d-none d-${expandTablePoint}-block`}>
+      {children}
+    </Col>
+  )
+
   const { mq: { isMobile } } = props
 
   const renderAssetRows = () => {
-    return props.list.map((asset, i) => {
-      const changeIconDirection = asset.priceDecrease ? 'down-icon' : 'up-icon'
+    return props.list.map((a, i) => {
+      const changeIconDirection = a.priceDecrease ? 'down-icon' : 'up-icon'
+      const { symbol, name, change24, price} = a
+      const originalFiat = display.fiat(a.fiat.original)
+      const fiatPrice = display.fiat(price)
+      const percentChange24 = display.percentage(change24, true)
+
       return (
         <div key={i} className='col-12'>
           <div className='tile-container padding-left-20'>
-            <div onClick={() => props.handleRemove(i)} className='tile-new'>remove</div>
-            <div className='row'>
-              <div className='col-md-4'>
-                <div className='row'>
-                  <div className='col'>
-                    <div className='coin-icon pull-left' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${asset.symbol}.png)` }} />
-                    <div className='pull-left text-medium'>{asset.name}</div>
-                  </div>
-                </div>
-                <div className='row margin-top-20'>
-                  <div className='col-6'>
-                    <div className='row'>
-                      <div className='col-sm-3'>
-                        <div className={`change-icon ${changeIconDirection}`} />
-                      </div>
-                      <div className='col-sm-9'>
-                        <div className='text-small text-medium-grey'>24h change</div>
-                        <div className='text-medium text-white'>{display.percentage(asset.change24, true)}</div>
-                      </div>
-                    </div>
-                  </div>
-                  <div className='col-6'>
-                    <div className='row'>
-                      <div className='col'>
-                        <div className='text-small text-medium-grey'>current price (USD)</div>
-                        <div className='text-medium text-white'>{display.fiat(asset.price)}</div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className='col-md-1' />
-              <div className='col-md-6'>
+            <Row className='gutters'>
+              <Col {...({ xs: '6', [expandTablePoint]: '12' })}>
+                <div onClick={() => props.handleRemove(i)} className='tile-new'>remove</div>
+              </Col>
+              <Col>
+                <div className='coin-icon pull-left' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${symbol}.png)` }} />
+                <div className='pull-left text-medium'>{name}</div>
+              </Col>
+              <Col {...({ xs: '3', [expandTablePoint]: '2' })}>
+                <div className={styles.greyStatus}>Status</div>
+              </Col>
+              <Col {...({ xs: '3', [expandTablePoint]: '1' })}>
+                <div className={styles.greyStatus}>Value ($)</div>
+              </Col>
+              <Col {...({ xs: '3', [expandTablePoint]: '1' })}>
+                <div className={styles.greyStatus}>Weight (%)</div>
+              </Col>
+              <Col {...({ xs: '3', [expandTablePoint]: '2' })}>
+                <div className={styles.greyStatus}>Units</div>
+              </Col>
+            </Row>
+            <Row className="gutters">
+              <Col {...({ xs: '3', [expandTablePoint]: 'auto' })}>
+                <div className={`change-icon ${changeIconDirection}`} />
+              </Col>
+              <Col {...({ xs: '3', [expandTablePoint]: 'auto' })}>
+                <div className='text-small text-medium-grey'>24h change</div>
+                <div className='text-medium text-white'>{percentChange24}</div>
+              </Col>
+              <Col {...({ xs: '3', [expandTablePoint]: '3' })}>
+                <div className='text-small text-medium-grey'>current price (USD)</div>
+                <div className='text-medium text-white'>{fiatPrice}</div>
+              </Col>
+
+            <Col {...({ xs: '3', [expandTablePoint]: '2' })}>
+              <div className='status-table-value'>Before</div>
+              <div className='status-table-value'>After</div>
+            </Col>
+            <Col {...({ xs: '3', [expandTablePoint]: '2' })}>
+              <div className='status-table-value'>{originalFiat}</div>
                 <div className='status-data-container'>
-                  <div className='row'>
-                      <div className='col-md-3'>
-                        <div className='status-table-label'>Status</div>
-                        <div className='status-table-value'>Before</div>
-                        <div className='status-table-value'>After</div>
-                      </div>
-                    <div className='col-md-3'>
-                      <div className='status-table-label'>Value ($)</div>
-                      <div className='status-table-value'>{display.fiat(asset.fiat.original)}</div>
-                      <div className='status-table-value'>
-                        <RIENumber
-                          value={accounting.toFixed(asset.fiat.adjusted, 2)}
-                          format={display.fiat}
-                          change={props.handleFiatChange}
-                          propName={asset.symbol}
-                          className={styles.editable}
-                          classEditing={styles.editableEditing}
-                          ref={(input) => { inputs.fiat[asset.symbol] = input }}
-                        />
-                        <i onClick={() => inputs.fiat[asset.symbol].startEditing()} className='fa fa-pencil margin-left-5 text-gradient cursor-pointer' aria-hidden='true' />
-                      </div>
-                    </div>
-                    <div className='col-md-3 active'>
-                      <div className='status-table-label'>Weight (%)</div>
-                      <div className='status-table-value'>{display.percentage(asset.weight.original)}</div>
-                      <div className='status-table-value'>
-                        <RIENumber
-                          value={accounting.toFixed(asset.weight.adjusted, 2)}
-                          format={display.percentage}
-                          change={props.handleWeightChange}
-                          propName={asset.symbol}
-                          className={styles.editable}
-                          classEditing={styles.editableEditing}
-                          ref={(input) => { inputs.weight[asset.symbol] = input }}
-                        />
-                        <i onClick={() => inputs.weight[asset.symbol].startEditing()} className='fa fa-pencil margin-left-5 text-gradient cursor-pointer' aria-hidden='true' />
-                      </div>
-                    </div>
-                    <div className='col-md-3'>
-                      <div className='status-table-label'>Units</div>
-                      <div className='status-table-value'>
-                        {display.units(asset.units.original, asset.symbol, asset.price)}
-                      </div>
-                      <div className='status-table-value'>
-                        {display.units(asset.units.adjusted, asset.symbol, asset.price)}
-                      </div>
-                    </div>
+                  <div className='status-table-value'>
+                    <RIENumber
+                      value={accounting.toFixed(a.fiat.adjusted, 2)}
+                      format={display.fiat}
+                      change={props.handleFiatChange}
+                      propName={a.symbol}
+                      className={styles.editable}
+                      classEditing={styles.editableEditing}
+                      ref={(input) => { inputs.fiat[a.symbol] = input }}
+                    />
+                    <i onClick={() => inputs.fiat[a.symbol].startEditing()} className='fa fa-pencil margin-left-5 text-gradient cursor-pointer' aria-hidden='true' />
                   </div>
                 </div>
+            </Col>
+            <Col {...({ xs: '3', [expandTablePoint]: '2' })}>
+              <div className='status-table-value'>{originalFiat}</div>
+                <div className='status-data-container'>
+                  <div className='status-table-value'>
+                    <RIENumber
+                      value={accounting.toFixed(a.weight.adjusted, 2)}
+                      format={display.percentage}
+                      change={props.handleWeightChange}
+                      propName={a.symbol}
+                      className={styles.editable}
+                      classEditing={styles.editableEditing}
+                      ref={(input) => { inputs.weight[a.symbol] = input }}
+                    />
+                  <i onClick={() => inputs.weight[a.symbol].startEditing()} className='fa fa-pencil margin-left-5 text-gradient cursor-pointer' aria-hidden='true' />
+                  </div>
+                </div>
+            </Col>
+            <Col {...({ xs: '3', [expandTablePoint]: '1' })}>
+              <div className='status-table-value'>
+                {display.units(a.units.original, symbol, price)}
               </div>
-            </div>
-            <div className='row margin-top-20 padding-top-20 padding-bottom-20'>
-              <div className='col'>
-                <Slider
-                  asset={asset}
-                  {...props.sliderProps}
-                />
-              </div>
+            </Col>
+          </Row>
+          <div className='row margin-top-20 padding-top-20 padding-bottom-20'>
+            <div className='col'>
+              <Slider
+                asset={a}
+                {...props.sliderProps}
+              />
             </div>
           </div>
         </div>
+      </div>
       )
     })
   }
@@ -157,12 +167,7 @@ const ModifyView = (props) => {
       </Sticky>
       <div className={styles.modifyAssetList}>
         <div className='row medium-gutters'>
-          {!isMobile &&
-            renderAssetRows()
-          }
-          {isMobile &&
-            renderAssetRowsMobile(props, inputs)
-          }
+          {renderAssetRows()}
           <div className='col-12'>
             <div onClick={props.handleAssetListShow} className='tile-container tile-border cursor-pointer'>
               <div className='margin-top-30 add-new' />

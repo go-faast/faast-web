@@ -26,16 +26,6 @@ class App extends Component {
 
   componentDidUpdate (prevProps) {
 
-    if (mediaBreakpointUp(prevProps.mq.breakpoints, 'lg') && !mediaBreakpointUp(this.props.mq.breakpoints, 'lg')) {
-      toastr.confirm(null, {
-        disableCancel: true,
-        component: () => (
-          <div style={{ padding: 10, color: 'black' }}>
-            The portfolio is only optimized for large screens at this time. Support for smaller screens is in progress
-          </div>
-        )
-      })
-    }
     if (this.props.wallet.type === 'blockstack' && !isEqual(prevProps.settings, this.props.settings)) {
       blockstack.saveSettings(this.props.settings)
     }

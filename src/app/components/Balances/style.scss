@@ -69,6 +69,7 @@ $collapse-table: md;
   @include media-breakpoint-down(xs) {
     font-size: $text-x-small;
   }
+  overflow-wrap: break-word;
 }
 
 .statsTitle, .addressTitle {
