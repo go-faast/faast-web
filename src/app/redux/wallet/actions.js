@@ -1,5 +1,6 @@
 import { createAction } from 'redux-act'
 
+import log from 'Utilities/log'
 import walletService from 'Services/Wallet'
 
 export const walletAdded = createAction('WALLET_ADDED', (wallet) => ({
@@ -31,3 +32,18 @@ export const removeAllWallets = () => (dispatch) => Promise.resolve()
 export const restoreAllWallets = () => (dispatch) => Promise.resolve()
   .then(() => walletService.restoreAllWallets())
   .then((restoredWallets) => restoredWallets.forEach((w) => dispatch(walletAdded(w))))
+
+export const updateWalletBalances = (walletId, assets) => (dispatch) => Promise.resolve()
+  .then(() => {
+    const wallet = walletService.get(walletId)
+    if (!wallet) {
+      log.error('no wallet with id', walletId)
+      throw new Error('failed to load balances')
+    }
+    wallet.setAllAssets(assets)
+    return wallet.getAllBalances()
+  })
+  .then((symbolToBalance) => {
+    dispatch(walletBalancesUpdated(walletId, symbolToBalance))
+    return symbolToBalance
+  })
