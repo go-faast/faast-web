@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import ReactHighcharts from 'react-highcharts'
 import config from 'Config'
+import { getCurrentPortfolio } from 'portfolio'
 
 let prevAssetIx
 
@@ -75,7 +76,7 @@ PieChart.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-  portfolio: state.portfolio
+  portfolio: getCurrentPortfolio(state)
 })
 
 export default connect(mapStateToProps)(PieChart)

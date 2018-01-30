@@ -12,7 +12,7 @@ import { filterUrl } from 'Utilities/helpers'
 import blockstack from 'Utilities/blockstack'
 import { getAssets, getSwundle } from 'Actions/request'
 import { setSettings } from 'Actions/redux'
-import { getCurrentWallet } from 'Selectors'
+import { getCurrentPortfolio, getCurrentWallet } from 'Selectors'
 
 class Entry extends Component {
   constructor () {
@@ -101,7 +101,7 @@ Entry.propTypes = {
 
 const mapStateToProps = (state) => ({
   wallet: getCurrentWallet(state),
-  portfolio: state.portfolio,
+  portfolio: getCurrentPortfolio(state),
   swap: state.swap,
   mock: state.mock
 })

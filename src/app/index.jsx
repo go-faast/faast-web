@@ -16,6 +16,7 @@ import { restoreState } from 'Actions/init'
 import { saveToAddress } from 'Utilities/storage'
 import 'react-redux-toastr/src/styles/index.scss?nsm'
 import 'Styles/style.scss?nsm'
+import { getCurrentWallet } from 'Selectors'
 
 const history = createHistory()
 const middleware = [
@@ -35,8 +36,9 @@ store.dispatch(restoreState())
 
 store.subscribe(throttle(() => {
   const state = store.getState()
-  if (state.portfolio) {
-    saveToAddress(state.portfolio.wallet, {
+  const wallet = getCurrentWallet(state)
+  if (wallet) {
+    saveToAddress(wallet.id, {
       swap: state.swap,
       settings: state.settings
     })

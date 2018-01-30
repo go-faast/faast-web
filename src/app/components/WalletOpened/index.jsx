@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Route, Redirect } from 'react-router-dom'
-import { getCurrentWallet } from 'Selectors'
+import { getCurrentPortfolio, getCurrentWallet } from 'Selectors'
 
 const WalletOpened = ({ wallet, portfolio, path, component: Component }) => (
   <Route path={path} render={props => {
@@ -33,7 +33,7 @@ WalletOpened.propTypes = {
 
 const mapStateToProps = (state) => ({
   wallet: getCurrentWallet(state),
-  portfolio: state.portfolio
+  portfolio: getCurrentPortfolio(state)
 })
 
 export default connect(mapStateToProps)(WalletOpened)

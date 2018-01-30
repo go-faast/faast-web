@@ -9,7 +9,7 @@ import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
 import { setSwap, resetSwap, toggleOrderModal, showOrderModal } from 'Actions/redux'
 import { setPortfolioItem, initiateSwaps } from 'Actions/portfolio'
-import { getCurrentWallet } from 'Selectors'
+import { getCurrentPortfolio, getCurrentWallet } from 'Selectors'
 
 const ZERO = new BigNumber(0)
 
@@ -301,7 +301,7 @@ class Modify extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  portfolio: state.portfolio,
+  portfolio: getCurrentPortfolio(state),
   wallet: getCurrentWallet(state),
   orderModal: state.orderModal,
   mq: state.mediaQueries

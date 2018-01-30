@@ -12,7 +12,7 @@ import { getSwapStatus } from 'Utilities/swap'
 import { getBalances, removeSwundle } from 'Actions/request'
 import { toggleOrderModal, resetSwap } from 'Actions/redux'
 import { resetPortfolio, clearAllIntervals } from 'Actions/portfolio'
-import { getCurrentWallet } from 'Selectors'
+import { getCurrentPortfolio, getCurrentWallet } from 'Selectors'
 import { EthereumWalletWeb3 } from 'Services/Wallet'
 
 let balancesInterval
@@ -204,7 +204,7 @@ Balances.propTypes = {
 const mapStateToProps = (state) => ({
   wallet: getCurrentWallet(state),
   assets: state.assets,
-  portfolio: state.portfolio,
+  portfolio: getCurrentPortfolio(state),
   mock: state.mock,
   orderModal: state.orderModal,
   swap: state.swap,

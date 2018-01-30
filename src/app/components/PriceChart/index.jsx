@@ -6,6 +6,7 @@ import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
 import { getPriceChart } from 'Actions/request'
 import config from 'Config'
+import { getCurrentPortfolio } from 'Selectors'
 
 const priceChartConfig = Object.assign({}, config.highCharts.priceChart, {
   series: [{
@@ -51,7 +52,7 @@ PriceChart.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-  portfolio: state.portfolio
+  portfolio: getCurrentPortfolio(state)
 })
 
 const mapDispatchToProps = (dispatch) => ({
