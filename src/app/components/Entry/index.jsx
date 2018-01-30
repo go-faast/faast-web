@@ -10,9 +10,8 @@ import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
 import { filterUrl } from 'Utilities/helpers'
 import blockstack from 'Utilities/blockstack'
-import { getAssets, getSwundle } from 'Actions/request'
+import { getAssets } from 'Actions/request'
 import { setSettings } from 'Actions/redux'
-import { getCurrentPortfolio, getCurrentWallet } from 'Selectors'
 
 class Entry extends Component {
   constructor () {
@@ -27,7 +26,7 @@ class Entry extends Component {
 
     if (query.log_level) window.faast.log_level = query.log_level
 
-    const { setSettings, getSwundle, getAssets, wallet, swap, mock: { mocking: isMocking } } = this.props
+    const { setSettings, getAssets } = this.props
 
     idb.setup(['logging'])
     .then(() => {
@@ -50,7 +49,7 @@ class Entry extends Component {
       }
     })
     .then(() => {
-      if (wallet.isBlockstack) {
+      if (blockstack.isUserSignedIn()) {
         return blockstack.getSettings()
           .then(setSettings)
           .catch((err) => log.error(err))
@@ -64,9 +63,6 @@ class Entry extends Component {
           window.faast.hw.ledger = new window.ledger.eth(comm)
         })
         .fail(log.error)
-      }
-      if (wallet.address && !swap.length) {
-        getSwundle(wallet.address, isMocking)
       }
 
       return getAssets()
@@ -85,7 +81,7 @@ class Entry extends Component {
     return (
       <EntryView
         ready={this.state.ready}
-        loading={!this.state.ready || this.props.portfolio.loading}
+        loading={!this.state.ready}
         loadingProps={{
           hasError: this.state.hasError
         }}
@@ -95,13 +91,10 @@ class Entry extends Component {
 }
 
 Entry.propTypes = {
-  portfolio: PropTypes.object.isRequired,
   getAssets: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
-  wallet: getCurrentWallet(state),
-  portfolio: getCurrentPortfolio(state),
   swap: state.swap,
   mock: state.mock
 })
@@ -112,9 +105,6 @@ const mapDispatchToProps = (dispatch) => ({
   },
   setSettings: (settings) => {
     dispatch(setSettings(settings))
-  },
-  getSwundle: (address, isMocking) => {
-    dispatch(getSwundle(address, isMocking))
   }
 })
 
