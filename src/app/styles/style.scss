@@ -41,13 +41,27 @@ body {
       x-large: 16px
     );
     @each $name, $value in $gutter-sizes {
-      &.#{$name}-gutters {
+      &.#{$name}-gutters-x {
         margin-left: -$value;
         margin-right: -$value;
         > .col,
         > [class*="col-"] {
-          padding: $value;
+          padding-left: $value;
+          padding-right: $value;
         }
+      }
+      &.#{$name}-gutters-y {
+        margin-top: -$value;
+        margin-bottom: -$value;
+        > .col,
+        > [class*="col-"] {
+          padding-top: $value;
+          padding-bottom: $value;
+        }
+      }
+      &.#{$name}-gutters {
+        @extend .#{$name}-gutters-x;
+        @extend .#{$name}-gutters-y;
       }
     }
   }
@@ -1255,7 +1269,6 @@ body {
       }
       .status-table-value {
         @extend .text-light-grey;
-        margin-top: 10px;
       }
       &.active {
         .status-table-label {
