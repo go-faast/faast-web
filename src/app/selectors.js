@@ -5,4 +5,4 @@ export const getAllPortfolios = ({ portfolios }) => portfolios
 export const getCurrentPortfolio = ({ portfolio, portfolios }) => portfolios[portfolio.current]
 
 export const getAllWallets = ({ wallets }) => wallets
-export const getCurrentWallet = (state) => state.wallets[((getCurrentPortfolio(state) || {}).wallets || [])[0]] || {}
+export const getCurrentWallet = (state) => state.wallets[(getCurrentPortfolio(state) || {}).id] || {}

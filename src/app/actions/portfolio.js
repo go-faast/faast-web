@@ -22,6 +22,7 @@ import walletService from 'Services/Wallet'
 import { getCurrentWallet as selectCurrentWallet, getCurrentPortfolio, getAllPortfolios } from 'Selectors'
 import { createAction } from 'redux-act'
 import uuid from 'uuid/v4'
+import { MultiWallet } from 'Services/Wallet'
 
 export const portfolioAdded = createAction('PORTFOLIO_ADDED')
 export const portfolioRemoved = createAction('PORTFOLIO_REMOVED')
@@ -39,11 +40,17 @@ export const resetPortfolio = () => (dispatch, getState) => {
 }
 
 export const createPortfolio = () => (dispatch) => {
-  const portfolio = {
-    id: uuid()
-  }
+  const id = uuid()
+  const portfolio = { id }
+  dispatch(addWallet(new MultiWallet(id)))
   dispatch(portfolioAdded(portfolio))
   return portfolio
+}
+
+export const addWalletToPortfolio = (portfolio, wallet) => (dispatch) => {
+  const portfolioWallet = walletService.get(portfolio.id)
+  portfolioWallet.addWallet(wallet)
+  dispatch(portfolioWalletAdded(portfolio.id, wallet.getId()))
 }
 
 const portfoliosStorageKey = 'faast-portfolios'
@@ -56,9 +63,10 @@ export const saveAllPortfolios = () => (dispatch, getState) => {
 
 export const restoreAllPortfolios = () => (dispatch) => {
   const restored = sessionStorageGetJson(portfoliosStorageKey)
-  if (restored) {
-    restored.forEach((portfolio) => dispatch(portfolioAdded(portfolio)))
+  if (!(restored && Array.isArray(restored))) {
+    return dispatch(createPortfolio())
   }
+  restored.forEach((portfolio) => dispatch(portfolioAdded(portfolio)))
 }
 
 export const getCurrentWallet = () => (dispatch, getState) => {
@@ -314,7 +322,7 @@ export const openWallet = (wallet, isMocking) => (dispatch, getState) => {
     }
   }
   dispatch(addWallet(wallet))
-  dispatch(portfolioWalletAdded(currentPortfolio.id, walletId))
+  dispatch(addWalletToPortfolio(currentPortfolio, wallet))
 }
 
 export const closeWallet = () => (dispatch) => {

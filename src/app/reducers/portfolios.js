@@ -14,12 +14,7 @@ const initialPortfolioState = {
   list: []
 }
 
-const initialState = {
-  default: {
-    id: 'default',
-    ...initialPortfolioState
-  }
-}
+const initialState = {}
 
 const getAssetIndex = (list, symbol) => {
   return list.findIndex((a) => a.symbol === symbol)
