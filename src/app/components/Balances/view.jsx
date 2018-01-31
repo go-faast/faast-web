@@ -123,7 +123,7 @@ const BalancesView = (props) => {
       const fiatPrice = display.fiat(price)
       return (
         <div key={i} onClick={() => toggleChart(symbol)} className={styles.tableRow}>
-          <Row className='small-gutters'>
+          <Row className='small-gutters-x'>
             <TableCell className={styles.tableCell}>
               <Row className='no-gutters'>
                 <Col {...({ xs: '12', [expandTablePoint]: 'auto' })}>
@@ -231,7 +231,7 @@ const BalancesView = (props) => {
       </div>
 
       <div className={styles.tableHeader}>
-        <Row className='small-gutters'>
+        <Row className='small-gutters-x'>
           <TableCell className={`${styles.columnTitle} text-center text-${expandTablePoint}-left`}>Asset</TableCell>
           <TableCell className={styles.columnTitle}>Units</TableCell>
           <TableCell className={styles.columnTitle}>Holdings</TableCell>
