@@ -196,24 +196,26 @@ const BalancesView = (props) => {
       {!viewOnly && !!orderStatus &&
         <OrderInProgress status={orderStatus} handleViewStatus={handleToggleOrderModal} />
       }
-      <div className={`row small-gutters ${styles.statsContainer}`}>
-        {values.map(({ title, value, changeIcon }, i) => (
-          <div key={i} className='col-6 col-md-3'>
-            <div className={styles.tileContainer}>
-              <div className='row'>
-                {!!changeIcon &&
-                  <div className='col-3'>
-                    <div className={changeIcon} />
+      <div className={styles.statsContainer}>
+        <div className='row small-gutters'>
+          {values.map(({ title, value, changeIcon }, i) => (
+            <div key={i} className='col-6 col-md-3'>
+              <div className={styles.tileContainer}>
+                <div className='row'>
+                  {!!changeIcon &&
+                    <div className='col-3'>
+                      <div className={changeIcon} />
+                    </div>
+                  }
+                  <div className={changeIcon ? 'col-9' : 'col'}>
+                    <div className={styles.statsTitle}>{title}</div>
+                    <div className={`text-white ${styles.statsContent}`}>{value}</div>
                   </div>
-                }
-                <div className={changeIcon ? 'col-9' : 'col'}>
-                  <div className={styles.statsTitle}>{title}</div>
-                  <div className={`text-white ${styles.statsContent}`}>{value}</div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       <div className={`row ${styles.chartContainer}`}>

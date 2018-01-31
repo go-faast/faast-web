@@ -2,13 +2,14 @@
 
 .header {
   background-color: $pageBgColor2;
+  padding-top: 8px;
+  padding-bottom: 8px;
   // The following ensures the background color covers the page container padding
   // preventing transparent edges from showing on mobile when stickied
   margin-left: -15px;
   margin-right: -15px;
   padding-left: 15px;
   padding-right: 15px;
-  margin-bottom: 12px;
 }
 
 .headerTitle {

@@ -38,7 +38,7 @@ AddressSearchForm = reduxForm({
 const HeaderView = (props) => {
   const { view, disableAction } = props
   const renderActions = () => (
-    <Row className='medium-gutters justify-content-between justify-content-md-end'>
+    <Row className='medium-gutters-x justify-content-between justify-content-md-end'>
       {view === 'balances' && ([
         <Col key='close' xs='auto'>
           <Button outline onClick={props.handleCloseWallet}>close</Button>
