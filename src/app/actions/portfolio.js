@@ -2,7 +2,7 @@
 import { insertSwapData, updateSwapTx, setSwap } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
-import { addWallet, removeAllWallets } from 'Actions/wallet'
+import { addWallet, removeWallet, removeAllWallets } from 'Actions/wallet'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
 import { restoreFromAddress } from 'Utilities/storage'
@@ -66,14 +66,18 @@ export const restoreAllPortfolios = (wallets) => (dispatch) => Promise.resolve()
       }
     }), Promise.resolve()))
 
-export const removePortfolio = (portfolio) => (dispatch) => dispatch(portfolioRemoved(portfolio.id))
+export const removePortfolio = ({ id, wallets }) => (dispatch) => {
+  if (id === defaultPortfolioId) {
+    // Don't remove default portfolio, only it's wallets
+    return Promise.all(wallets.map((walletId) => dispatch(removeWallet(walletId))))
+  }
+  return dispatch(portfolioRemoved(id))
+}
 
 export const resetPortfolio = () => (dispatch, getState) => {
   const currentPortfolio = getCurrentPortfolio(getState())
-  dispatch(portfolioRemoved(currentPortfolio))
+  return dispatch(removePortfolio(currentPortfolio))
 }
-
-export const removeAllPortfolios = () => (dispatch) => dispatch(allPortfoliosRemoved())
 
 export const getCurrentWallet = () => (dispatch, getState) => walletService.get(selectCurrentWallet(getState()).id)
 
@@ -323,9 +327,8 @@ export const openWallet = (wallet, isMocking) => (dispatch, getState) =>
 export const closeWallet = () => (dispatch) => {
   clearAllIntervals()
   blockstack.signUserOut()
-  return dispatch(removeAllWallets())
-    .then(() => dispatch(removeAllPortfolios()))
-    .then(() => log.info('all wallets closed'))
+  return dispatch(resetPortfolio())
+    .then(() => log.info('portfolio closed'))
 }
 
 export const restoreSwundle = (swundle) => (dispatch) => {
