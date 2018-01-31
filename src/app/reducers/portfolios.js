@@ -41,7 +41,7 @@ export default createReducer({
   }),
   [portfolioWalletAdded]: (state, { portfolioId, walletId }) => merge(state, {
     [portfolioId]: {
-      wallets: [walletId]
+      wallets: { $union: [walletId] }
     }
   }),
   [setPortfolio]: (state, portfolio) => merge(state, {
