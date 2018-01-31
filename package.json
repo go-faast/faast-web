@@ -32,6 +32,7 @@
     "lodash.merge": "^4.6.0",
     "lodash.mergewith": "^4.6.0",
     "lodash.union": "^4.6.0",
+    "lodash.without": "^4.4.0",
     "redux-act": "^1.6.0",
     "serve": "^6.0.6",
     "uuid": "^3.2.1",
