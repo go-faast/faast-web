@@ -22,7 +22,7 @@ export const parse = (wallet) => {
         case 'trezor': return new EthereumWalletTrezor(wallet.address, wallet.data.derivationPath)
         case 'ledger': return new EthereumWalletLedger(wallet.address, wallet.data.derivationPath)
         // New formats
-        case 'MultiWallet': return new MultiWallet(wallet.wallets)
+        case 'MultiWallet': return new MultiWallet(wallet.id, wallet.wallets)
         case 'EthereumWalletKeystore': return new EthereumWalletKeystore(wallet.keystore)
         case 'EthereumWalletWeb3': return new EthereumWalletWeb3(wallet.address, wallet.providerName)
         case 'EthereumWalletTrezor': return new EthereumWalletTrezor(wallet.address, wallet.derivationPath)
