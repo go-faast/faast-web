@@ -3,7 +3,7 @@ import { updateObjectInArray, mapValues, merge } from 'Utilities/helpers'
 import { resetAll } from 'Actions/redux'
 import {
   portfolioAdded, portfolioRemoved, allPortfoliosRemoved, portfolioWalletAdded,
-  setPortfolio, setPortfolioItem
+  portfolioWalletRemoved, setPortfolio, setPortfolioItem
 } from 'Actions/portfolio'
 import { walletRemoved, allWalletsRemoved } from 'Actions/wallet'
 
@@ -42,6 +42,11 @@ export default createReducer({
   [portfolioWalletAdded]: (state, { portfolioId, walletId }) => merge(state, {
     [portfolioId]: {
       wallets: { $union: [walletId] }
+    }
+  }),
+  [portfolioWalletRemoved]: (state, { portfolioId, walletId }) => merge(state, {
+    [portfolioId]: {
+      wallets: { $without: [walletId] }
     }
   }),
   [setPortfolio]: (state, portfolio) => merge(state, {

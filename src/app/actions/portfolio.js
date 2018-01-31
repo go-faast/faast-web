@@ -28,6 +28,7 @@ export const portfolioAdded = createAction('PORTFOLIO_ADDED')
 export const portfolioRemoved = createAction('PORTFOLIO_REMOVED')
 export const allPortfoliosRemoved = createAction('ALL_PORTFOLIOS_REMOVED')
 export const portfolioWalletAdded = createAction('PORTFOLIO_WALLET_ADDED', (portfolioId, walletId) => ({ portfolioId, walletId }))
+export const portfolioWalletRemoved = createAction('PORTFOLIO_WALLET_REMOVED', (portfolioId, walletId) => ({ portfolioId, walletId }))
 
 export const setCurrentPortfolio = createAction('SET_CURRENT_PORTFOLIO', (portfolioId) => ({ id: portfolioId }))
 export const setPortfolio = createAction('SET_PORTFOLIO')
@@ -51,6 +52,13 @@ export const addWalletToPortfolio = (portfolioId, walletId) => (dispatch) =>
     walletService.get(walletId),
   ]).then(([portfolioWallet, wallet]) => portfolioWallet.addWallet(wallet))
     .then(() => dispatch(portfolioWalletAdded(portfolioId, walletId)))
+
+export const removeWalletFromPortfolio = (portfolioId, walletId) => (dispatch) =>
+  Promise.all([
+    walletService.get(portfolioId),
+    walletService.get(walletId),
+  ]).then(([portfolioWallet, wallet]) => portfolioWallet.removeWallet(wallet))
+    .then(() => dispatch(portfolioWalletRemoved(portfolioId, walletId)))
 
 export const restoreAllPortfolios = (wallets) => (dispatch) => Promise.resolve()
   .then(() => dispatch(createPortfolio(defaultPortfolioId, false)))
