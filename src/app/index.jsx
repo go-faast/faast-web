@@ -16,7 +16,6 @@ import { saveToAddress } from 'Utilities/storage'
 import 'react-redux-toastr/src/styles/index.scss?nsm'
 import 'Styles/style.scss?nsm'
 import { getCurrentWallet, isAppReady } from 'Selectors'
-import { saveAllPortfolios } from 'Actions/portfolio'
 
 const history = createHistory()
 const middleware = [
@@ -43,7 +42,6 @@ store.subscribe(throttle(() => {
         settings: state.settings
       })
     }
-    store.dispatch(saveAllPortfolios())
   }
 }, 1000))
 

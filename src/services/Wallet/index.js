@@ -40,7 +40,11 @@ export function WalletService() {
     if (walletOrId instanceof Wallet) {
       return walletOrId
     }
-    return activeWallets[walletOrId]
+    const wallet = activeWallets[walletOrId]
+    if (!wallet) {
+      log.debug('could not get wallet', walletOrId)
+    }
+    return wallet
   }
 
   /** Remove the provided Wallet or Wallet with specified ID and delete from session */
@@ -80,7 +84,7 @@ export function WalletService() {
 
   /** Save the provided wallet to session storage */
   const persist = (wallet) => {
-    if (wallet && !wallet.dontPersist) {
+    if (wallet && wallet.isPersistAllowed()) {
       const id = wallet.getId()
       sessionStorageSet(storageKey(id), WalletSerializer.stringify(wallet))
       log.debug('wallet saved to session', id)
@@ -120,9 +124,7 @@ export function WalletService() {
 
   const restoreBlockstack = () => {
     if (blockstack.isUserSignedIn()) {
-      const wallet = blockstack.createWallet()
-      wallet.dontPersist = true
-      return wallet
+      return blockstack.createWallet()
     }
   }
 

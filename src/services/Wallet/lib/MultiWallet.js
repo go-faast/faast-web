@@ -9,6 +9,8 @@ const resolveId = (walletOrId) => typeof walletOrId !== 'string' ? walletOrId.ge
 
 export default class MultiWallet extends Wallet {
 
+  static type = 'MultiWallet';
+
   constructor(id, wallets) {
     super('MultiWallet')
     if (Array.isArray(id)) {

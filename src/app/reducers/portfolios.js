@@ -1,7 +1,5 @@
 import { createReducer } from 'redux-act'
-import mergeWith from 'lodash.mergewith'
-import union from 'lodash.union'
-import { updateObjectInArray, mapValues } from 'Utilities/helpers'
+import { updateObjectInArray, mapValues, merge } from 'Utilities/helpers'
 import { resetAll } from 'Actions/redux'
 import {
   portfolioAdded, portfolioRemoved, allPortfoliosRemoved, portfolioWalletAdded,
@@ -30,15 +28,6 @@ const mergeAssetIntoList = (originalList, symbol, item) => {
   }
   return originalList
 }
-
-const merge = (state, ...newStates) => mergeWith({}, state, ...newStates, (oldVal, newVal, key) => {
-  if (Array.isArray(oldVal)) {
-    if (Array.isArray(newVal) && key === 'wallets') {
-      return union(oldVal, newVal)
-    }
-    return newVal
-  }
-})
 
 export default createReducer({
   [resetAll]: () => initialState,

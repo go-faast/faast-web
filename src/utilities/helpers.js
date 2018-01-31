@@ -1,5 +1,8 @@
 import pad from 'pad-left'
 import queryString from 'query-string'
+import mergeWith from 'lodash.mergewith'
+import union from 'lodash.union'
+import without from 'lodash.without'
 
 export const uppercase = (str) => {
   if (typeof str !== 'string') return str
@@ -211,3 +214,25 @@ export const mapValues = (obj, valueMapper) => Object.entries(obj).reduce((resul
   result[key] = valueMapper(val)
   return result
 }, {})
+
+const arrayMergeOps = {
+  $set: (oldVal, newVal) => newVal,
+  $union: (oldVal, newVal) => union(oldVal, newVal),
+  $without: (oldVal, newVal) => without(oldVal, ...newVal),
+  $append: (oldVal, newVal) => [...oldVal, ...newVal],
+  $prepend: (oldVal, newVal) => [...newVal, ...oldVal],
+}
+
+export const merge = (state, ...newStates) => mergeWith({}, state, ...newStates, (oldVal, newVal) => {
+  if (Array.isArray(oldVal) && typeof newVal === 'object') {
+    const ops = Object.keys(newVal)
+    const [op] = ops
+    if (ops.length === 1 && op.startsWith('$')) {
+      const opFn = arrayMergeOps[op]
+      if (!opFn) {
+        throw new Error(`Invalid array merge op ${op}`)
+      }
+      return opFn(oldVal, newVal[op])
+    }
+  }
+})

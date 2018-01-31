@@ -18,7 +18,7 @@ export const appError = createAction('APP_ERROR')
 
 export const restoreState = (dispatch, getState) => Promise.resolve()
   .then(() => dispatch(restoreAllWallets()))
-  .then(() => dispatch(restoreAllPortfolios()))
+  .then((wallets) => dispatch(restoreAllPortfolios(wallets)))
   .then(() => {
     const wallet = getCurrentWallet(getState())
     const addressState = restoreFromAddress(wallet && wallet.address) || {}

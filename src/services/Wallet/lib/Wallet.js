@@ -7,8 +7,13 @@ export default class Wallet {
   constructor(type) {
     assertExtended(this, Wallet)
     this.type = type
+    this._persistAllowed = true
     this._allAssets = []
   }
+
+  setPersistAllowed = (persistAllowed) => this._persistAllowed = persistAllowed
+
+  isPersistAllowed = () => this._persistAllowed
 
   getId = () => this.type;
 

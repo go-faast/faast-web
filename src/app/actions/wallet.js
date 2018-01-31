@@ -20,6 +20,7 @@ export const walletBalancesUpdated = createAction('WALLET_BALANCES_UPDATED', (wa
 export const addWallet = (wallet) => (dispatch) => Promise.resolve()
   .then(() => walletService.save(wallet))
   .then(() => dispatch(walletAdded(wallet)))
+  .then(({ payload }) => payload)
 
 export const removeWallet = (walletId) => (dispatch) => Promise.resolve()
   .then(() => walletService.remove(walletId))
@@ -31,7 +32,7 @@ export const removeAllWallets = () => (dispatch) => Promise.resolve()
 
 export const restoreAllWallets = () => (dispatch) => Promise.resolve()
   .then(() => walletService.restoreAll())
-  .then((restoredWallets) => restoredWallets.forEach((w) => dispatch(walletAdded(w))))
+  .then((restoredWallets) => restoredWallets.map((w) => dispatch(walletAdded(w)).payload))
 
 export const updateWalletBalances = (walletId, assets) => (dispatch) => Promise.resolve()
   .then(() => {

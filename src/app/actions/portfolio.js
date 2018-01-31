@@ -5,7 +5,7 @@ import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clear
 import { addWallet, removeAllWallets } from 'Actions/wallet'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
-import { restoreFromAddress, sessionStorageSetJson, sessionStorageGetJson } from 'Utilities/storage'
+import { restoreFromAddress } from 'Utilities/storage'
 import log from 'Utilities/log'
 import blockstack from 'Utilities/blockstack'
 import {
@@ -19,7 +19,7 @@ import {
   getTransaction
 } from 'Utilities/wallet'
 import walletService from 'Services/Wallet'
-import { getCurrentWallet as selectCurrentWallet, getCurrentPortfolio, getAllPortfolios } from 'Selectors'
+import { getCurrentWallet as selectCurrentWallet, getCurrentPortfolio } from 'Selectors'
 import { createAction } from 'redux-act'
 import uuid from 'uuid/v4'
 import { MultiWallet } from 'Services/Wallet'
@@ -34,51 +34,48 @@ export const setPortfolio = createAction('SET_PORTFOLIO')
 export const setPortfolioItem = createAction('SET_PORTFOLIO_ITEM', (portfolioId, symbol, item) => ({ portfolioId, symbol, item }))
 export const setPortfolioLoading = (portfolioId, isLoading) => setPortfolio({ id: portfolioId, loading: isLoading })
 
+const defaultPortfolioId = 'default'
+
+export const createPortfolio = (id, persist = true) => (dispatch) => Promise.resolve()
+  .then(() => {
+    id = id || uuid()
+    const wallet = new MultiWallet(id)
+    wallet.setPersistAllowed(persist)
+    return dispatch(addWallet(wallet))
+  })
+  .then(() => dispatch(portfolioAdded({ id })).payload)
+
+export const addWalletToPortfolio = (portfolioId, walletId) => (dispatch) =>
+  Promise.all([
+    walletService.get(portfolioId),
+    walletService.get(walletId),
+  ]).then(([portfolioWallet, wallet]) => portfolioWallet.addWallet(wallet))
+    .then(() => dispatch(portfolioWalletAdded(portfolioId, walletId)))
+
+export const restoreAllPortfolios = (wallets) => (dispatch) => Promise.resolve()
+  .then(() => dispatch(createPortfolio(defaultPortfolioId, false)))
+  .then(() => wallets.reduce((prev, { id, type }) => prev
+    .then(() => {
+      if (type === MultiWallet.type) {
+        dispatch(portfolioAdded({ id }))
+        return walletService.get(id)
+          .then(({ wallets: subwallets }) => subwallets.map((subwallet) =>
+            dispatch(portfolioWalletAdded(id, subwallet.getId()))))
+      } else {
+        return dispatch(addWalletToPortfolio(defaultPortfolioId, id))
+      }
+    }), Promise.resolve()))
+
+export const removePortfolio = (portfolio) => (dispatch) => dispatch(portfolioRemoved(portfolio.id))
+
 export const resetPortfolio = () => (dispatch, getState) => {
   const currentPortfolio = getCurrentPortfolio(getState())
   dispatch(portfolioRemoved(currentPortfolio))
 }
 
-export const createPortfolio = () => (dispatch) => {
-  const id = uuid()
-  const portfolio = { id }
-  dispatch(addWallet(new MultiWallet(id)))
-  dispatch(portfolioAdded(portfolio))
-  return portfolio
-}
+export const removeAllPortfolios = () => (dispatch) => dispatch(allPortfoliosRemoved())
 
-export const addWalletToPortfolio = (portfolio, wallet) => (dispatch) => {
-  const portfolioWallet = walletService.get(portfolio.id)
-  portfolioWallet.addWallet(wallet)
-  dispatch(portfolioWalletAdded(portfolio.id, wallet.getId()))
-}
-
-const portfoliosStorageKey = 'faast-portfolios'
-
-export const saveAllPortfolios = () => (dispatch, getState) => {
-  const portfolios = Object.values(getAllPortfolios(getState()))
-  const pruned = portfolios.map(({ id, wallets }) => ({ id, wallets }))
-  sessionStorageSetJson(portfoliosStorageKey, pruned)
-}
-
-export const restoreAllPortfolios = () => (dispatch) => {
-  const restored = sessionStorageGetJson(portfoliosStorageKey)
-  if (!(restored && Array.isArray(restored))) {
-    return dispatch(createPortfolio())
-  }
-  restored.forEach((portfolio) => dispatch(portfolioAdded(portfolio)))
-}
-
-export const getCurrentWallet = () => (dispatch, getState) => {
-  const walletId = selectCurrentWallet(getState()).id
-  let wallet
-  if (walletId) {
-    wallet = walletService.get(walletId)
-  } else {
-    Object.values(walletService.getAll())[0]
-  }
-  return wallet
-}
+export const getCurrentWallet = () => (dispatch, getState) => walletService.get(selectCurrentWallet(getState()).id)
 
 const swapFinish = (type, swap, error, addition) => {
   return (dispatch) => {
@@ -300,37 +297,35 @@ export const restorePolling = (swap, isMocking) => (dispatch) => {
   })
 }
 
-export const openWallet = (wallet, isMocking) => (dispatch, getState) => {
-  let currentPortfolio = getCurrentPortfolio(getState())
-  if (!currentPortfolio) {
-    currentPortfolio = dispatch(createPortfolio())
-  }
-  const walletId = wallet.getId()
-  if (walletId) {
-    const state = restoreFromAddress(walletId)
+export const openWallet = (wallet, isMocking) => (dispatch, getState) =>
+  Promise.resolve(getCurrentPortfolio(getState()) || dispatch(createPortfolio()))
+    .then((currentPortfolio) => {
+      const walletId = wallet.getId()
+      if (walletId) {
+        const state = restoreFromAddress(walletId)
 
-    if (state && state.swap && state.swap.length) {
-      const status = statusAllSwaps(state.swap)
-      const swap = (status === 'unavailable' || status === 'unsigned' || status === 'unsent') ? undefined : state.swap
+        if (state && state.swap && state.swap.length) {
+          const status = statusAllSwaps(state.swap)
+          const swap = (status === 'unavailable' || status === 'unsigned' || status === 'unsent') ? undefined : state.swap
 
-      if (swap) {
-        dispatch(setSwap(swap))
-        dispatch(restorePolling(swap, isMocking))
+          if (swap) {
+            dispatch(setSwap(swap))
+            dispatch(restorePolling(swap, isMocking))
+          }
+        } else {
+          dispatch(getSwundle(walletId, isMocking))
+        }
       }
-    } else {
-      dispatch(getSwundle(walletId, isMocking))
-    }
-  }
-  dispatch(addWallet(wallet))
-  dispatch(addWalletToPortfolio(currentPortfolio, wallet))
-}
+      return dispatch(addWallet(wallet))
+        .then(() => dispatch(addWalletToPortfolio(currentPortfolio.id, walletId)))
+    })
 
 export const closeWallet = () => (dispatch) => {
   clearAllIntervals()
   blockstack.signUserOut()
-  dispatch(removeAllWallets())
-  walletService.removeAll()
-  log.info('all wallets closed')
+  return dispatch(removeAllWallets())
+    .then(() => dispatch(removeAllPortfolios()))
+    .then(() => log.info('all wallets closed'))
 }
 
 export const restoreSwundle = (swundle) => (dispatch) => {
