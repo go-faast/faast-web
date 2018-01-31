@@ -9,8 +9,11 @@ const EntryView = (props) => {
   return (
     <div className={styles.container}>
       <div className={`container-fluid ${styles.content}`}>
-        {props.ready && <Route component={App} />}
-        {props.loading && <Loading {...props.loadingProps} />}
+        {props.ready ? (
+          <Route component={App} />
+        ) : (
+          <Loading {...props.loadingProps} />
+        )}
       </div>
     </div>
   )
