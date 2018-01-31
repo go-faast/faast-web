@@ -54,7 +54,7 @@ export default createReducer({
   }),
   [walletRemoved]: (state, { id }) => mapValues(state, (portfolio) => ({
     ...portfolio,
-    wallets: portfolio.wallets.filter((walletId) => walletId === id),
+    wallets: portfolio.wallets.filter((walletId) => walletId !== id),
   })),
   [allWalletsRemoved]: (state) => mapValues(state, (portfolio) => ({
     ...portfolio,
