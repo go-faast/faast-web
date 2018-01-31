@@ -9,7 +9,7 @@ export const walletAdded = createAction('WALLET_ADDED', (wallet) => ({
   address: wallet.getAddress ? wallet.getAddress() : null,
   isBlockstack: wallet.isBlockstack,
 }))
-export const walletRemoved = createAction('WALLET_REMOVED', (wallet) => ({ id: wallet.getId() }))
+export const walletRemoved = createAction('WALLET_REMOVED')
 export const allWalletsRemoved = createAction('ALL_WALLETS_REMOVED')
 
 export const walletBalancesUpdated = createAction('WALLET_BALANCES_UPDATED', (walletId, balancesByAsset) => ({
@@ -18,7 +18,7 @@ export const walletBalancesUpdated = createAction('WALLET_BALANCES_UPDATED', (wa
 }))
 
 export const addWallet = (wallet) => (dispatch) => Promise.resolve()
-  .then(() => walletService.save(wallet))
+  .then(() => walletService.add(wallet))
   .then(() => dispatch(walletAdded(wallet)))
   .then(({ payload }) => payload)
 

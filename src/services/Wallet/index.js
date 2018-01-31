@@ -4,7 +4,7 @@ import queryString from 'query-string'
 import log from 'Utilities/log'
 import blockstack from 'Utilities/blockstack'
 import { sessionStorageGet, sessionStorageSet, sessionStorageRemove, sessionStorageForEach } from 'Utilities/storage'
-import { Wallet, WalletSerializer } from './lib'
+import { Wallet, WalletSerializer, MultiWallet } from './lib'
 
 
 const legacyStorageKey = 'wallet'
@@ -32,16 +32,29 @@ export function WalletService() {
     return keys
   }
 
+  const put = (wallet) => {
+    if (wallet) {
+      activeWallets[wallet.getId()] = wallet
+    }
+    return wallet
+  }
+
   /** Get all wallets as an object mapped by ID */
   const getAll = () => ({ ...activeWallets })
 
-  /** Get a Wallet by ID. Returns arg if already a Wallet */
+  /** Get a Wallet by ID. Returns if already a Wallet */
   const get = (walletOrId) => {
     if (walletOrId instanceof Wallet) {
       return walletOrId
     }
-    const wallet = activeWallets[walletOrId]
-    if (!wallet) {
+    let wallet = activeWallets[walletOrId]
+    if (wallet) {
+      return wallet
+    }
+    wallet = loadFromStorage(walletOrId)
+    if (wallet) {
+      put(wallet)
+    } else {
       log.debug('could not get wallet', walletOrId)
     }
     return wallet
@@ -54,9 +67,17 @@ export function WalletService() {
       id = walletOrId.getId()
     }
     const removedWallet = activeWallets[id]
-    delete activeWallets[id]
-    sessionStorageRemove(storageKey(id))
-    log.debug('removed wallet', id)
+    if (removedWallet) {
+      log.debug('removing wallet', id)
+      delete activeWallets[id]
+      deleteFromStorage(removedWallet)
+      Object.values(activeWallets).forEach((activeWallet) => {
+        if (activeWallet instanceof MultiWallet && activeWallet.removeWallet(removedWallet)) {
+          log.debug(`removed wallet ${id} from MultiWallet ${activeWallet.getId()}`)
+          saveToStorage(activeWallet)
+        }
+      })
+    }
     return removedWallet
   }
 
@@ -66,15 +87,13 @@ export function WalletService() {
     getStoredWalletKeys().forEach(sessionStorageRemove)
   }
 
-  const parse = WalletSerializer.parse
-
   /** Load the wallet from session at the provided storage key */
-  const load = (storageKey) => {
+  const loadFromStorage = (storageKey) => {
     const walletString = sessionStorageGet(storageKey)
     if (walletString) {
-      const wallet = parse(walletString)
+      const wallet = WalletSerializer.parse(walletString)
       if (wallet) {
-        log.debug('loaded wallet', wallet.getId())
+        log.debug('wallet loaded from session', wallet.getId())
       } else {
         log.debug('failed to load wallet from session key', storageKey)
       }
@@ -83,7 +102,7 @@ export function WalletService() {
   }
 
   /** Save the provided wallet to session storage */
-  const persist = (wallet) => {
+  const saveToStorage = (wallet) => {
     if (wallet && wallet.isPersistAllowed()) {
       const id = wallet.getId()
       sessionStorageSet(storageKey(id), WalletSerializer.stringify(wallet))
@@ -92,22 +111,27 @@ export function WalletService() {
     return wallet
   }
 
-  const put = (wallet) => {
+  const deleteFromStorage = (wallet) => {
     if (wallet) {
-      activeWallets[wallet.getId()] = wallet
+      const id = wallet.getId()
+      const key = storageKey(id)
+      if (sessionStorageGet(key)) {
+        sessionStorageRemove(key)
+        log.debug('wallet deleted from session', id)
+      }
     }
     return wallet
   }
 
   /** Restore all wallets stored in session */
-  const restoreSessionStorage = () => getStoredWalletKeys().map(load)
+  const restoreSessionStorage = () => getStoredWalletKeys().map(loadFromStorage)
 
   /** Convert legacy wallet to new storage format, store in the new format and return the wallet */
   const restoreLegacy = () => {
-    const legacyWallet = load(legacyStorageKey)
+    const legacyWallet = loadFromStorage(legacyStorageKey)
     if (legacyWallet) {
       log.debug('converted legacy wallet', legacyWallet.getId())
-      persist(legacyWallet)
+      saveToStorage(legacyWallet)
     }
     sessionStorageRemove(legacyStorageKey)
     return legacyWallet
@@ -118,7 +142,7 @@ export function WalletService() {
     const query = queryString.parse(window.location.search)
     if (query.wallet) {
       const encryptedWalletString = Buffer.from(query.wallet, 'base64').toString()
-      return persist(parse(encryptedWalletString))
+      return saveToStorage(WalletSerializer.parse(encryptedWalletString))
     }
   }
 
@@ -128,26 +152,22 @@ export function WalletService() {
     }
   }
 
-  const save = (wallet) => {
+  const add = (wallet) => {
     if (wallet instanceof Wallet) {
       const id = wallet.getId()
       if (wallet.isEncrypted === false || (wallet.wallets && wallet.wallets.some((w) => w.isEncrypted === false))) {
         // Need to explicitly compare with false because isEncrypted === undefined -> encryption not applicable
-        throw new Error(`Cannot save unencrypted wallet ${id}`)
+        throw new Error(`Cannot add unencrypted wallet ${id}`)
       }
       if (!activeWallets.hasOwnProperty(id)) {
         log.debug('adding new wallet', id)
       }
       put(wallet)
-      persist(wallet)
+      saveToStorage(wallet)
     } else {
       log.error('not a wallet', wallet)
     }
     return wallet
-  }
-
-  const saveAll = () => {
-    Object.values(activeWallets).forEach(save)
   }
 
   const restoreAll = () => {
@@ -166,12 +186,11 @@ export function WalletService() {
 
   return {
     _activeWallets: activeWallets,
-    getAll,
     get,
+    getAll,
     remove,
     removeAll,
-    save,
-    saveAll,
+    add,
     restoreAll
   }
 }
