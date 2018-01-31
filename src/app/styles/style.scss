@@ -1097,15 +1097,6 @@ body {
     }
   }
 
-  .coin-icon {
-    background-size: 24px;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 24px;
-    width: 24px;
-    margin-right: 10px;
-  }
-
   @media (min-width: 992px) {
 
     .welcome-text {
@@ -1335,7 +1326,6 @@ body {
     background-repeat: no-repeat;
     background-position: center center;
     background-size: contain;
-    float: left;
   }
 
   .coin-info {
