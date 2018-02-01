@@ -44,15 +44,15 @@ body {
     background-position: center center;
     background-repeat: no-repeat;
     &.loading-small {
-      height: 10px;
+      height: 2px;
       width: 80px;
     }
     &.loading-medium {
-      height: 20px;
+      height: 4px;
       width: 160px;
     }
     &.loading-large {
-      height: 40px;
+      height: 8px;
       width: 320px;
     }
   }
