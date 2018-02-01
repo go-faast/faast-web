@@ -2,7 +2,7 @@ import React from 'react'
 import { reduxForm, Field } from 'redux-form'
 import { Modal, ModalBody } from 'reactstrap'
 import display from 'Utilities/display'
-import config from 'Config'
+import CoinIcon from 'Components/CoinIcon'
 import { Row, Col } from 'reactstrap'
 
 const SignTxModal = (props) => {
@@ -60,6 +60,42 @@ const SignTxModal = (props) => {
   )
 }
 
+const SwapStatusRow = ({ status: { swap, from, to, receiveAmount }, children }) => (
+  <div className='color-bg-3 text-small text-medium-grey p-2 p-md-3'>
+    <Row className='no-gutters align-items-center'>
+      <Col>
+        <Row className='small-gutters align-items-center text-center text-sm-left'>
+          <Col xs='12' sm='auto'><CoinIcon coin={from.symbol}/></Col>
+          <Col xs='12' sm>
+            <Row className='no-gutters'>
+              <Col xs='12' className='order-sm-2'>{from.name}</Col>
+              <Col xs='12' className='text-white'>{display.units(swap.unit, from.symbol, from.price)}</Col>
+            </Row>
+          </Col>
+        </Row>
+      </Col>
+      <Col xs='auto' className='text-center'>
+        {children}
+      </Col>
+      <Col>
+        <Row className='small-gutters align-items-center text-center text-sm-right'>
+          <Col xs='12' sm='auto' className='order-sm-2'><CoinIcon coin={to.symbol}/></Col>
+          <Col xs='12' sm>
+            <Row className='no-gutters'>
+              <Col xs='12' className='order-sm-2'>{to.name}</Col>
+              <Col xs='12' className='text-white'>
+                {typeof receiveAmount !== 'undefined' && receiveAmount !== null
+                  ? display.units(receiveAmount, to.symbol, to.price)
+                  : ' '}
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </Col>
+    </Row>
+  </div>
+)
+
 const SignTxForm = reduxForm({
   form: 'signTxForm'
 })((props) => {
@@ -74,83 +110,62 @@ const SignTxForm = reduxForm({
       if (a.swap && a.swap.tx && a.swap.tx.signed) {
         nextToSign += 1
         return (
-          <div className='text-gradient text-small'>signed</div>
+          <div className='text-gradient'>signed</div>
         )
       } else if (a.swap && a.swap.error) {
         nextToSign += 1
         return (
-          <div className='text-red text-small'>declined</div>
+          <div className='text-red'>declined</div>
         )
       } else if (props.isSigning && i === nextToSign) {
         return (
-          <div className='text-orange text-small blink'>awaiting signature</div>
+          <div className='text-orange blink'>awaiting signature</div>
         )
       }
     }
     return (
       <div key={i} className='margin-top-10'>
-        <Row className='color-bg-3'>
-          <div className='col-md-4 padding-10'>
-            <div className='coin-container pull-left'>
-              <div className='coin-icon margin-top-5' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${a.from.symbol}.png)` }} />
-              <div className='coin-info text-left'>
-                <div className='text-white text-small'>{display.units(a.swap.unit, a.from.symbol, a.from.price)}</div>
-                <div className='text-medium-grey text-small'>{a.from.name}</div>
-              </div>
-            </div>
-          </div>
-          <div className='col-md-4 padding-10'>
-            <div className='right-icon margin-top-5' />
-            {sigStatus()}
-          </div>
-          <div className='col-md-4 padding-10'>
-            <div className='coin-container pull-right'>
-              <div className='coin-icon margin-top-5' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${a.to.symbol}.png)` }} />
-              <div className='coin-info text-right'>
-                <div className='text-white text-small'>{display.units(a.receiveAmount, a.to.symbol, a.to.price)}</div>
-                <div className='text-medium-grey text-small'>{a.to.name}</div>
-              </div>
-            </div>
-          </div>
-        </Row>
-        <div className='row color-bg-1 text-x-small padding-5 text-medium-grey'>
-          <div className='col-md-4 text-left'>
-            <div className='text-medium-grey pull-left margin-right-10'>swap fee </div>
-            {(a.swap.hasOwnProperty('fee') &&
-              <div className='pull-left'>{a.swap.fee} {a.to.symbol}</div>) ||
-              <div>{(!!a.error && <span className='pull-left text-danger'> - </span>) ||
-                <div className='faast-loading loading-small pull-left margin-top-10' />
-              }</div>
-            }
-          </div>
-          <div className='col-md-4 text-center'>
-            {(!!a.error && <span className='text-danger'>{a.error}</span>) ||
-              <div>
-                {(a.swap.hasOwnProperty('rate') &&
-                  <span>1 {a.from.symbol} = {a.swap.rate} {a.to.symbol}</span>) ||
-                  <div className='faast-loading loading-small margin-auto margin-top-10' />
-                }
-              </div>
-            }
-          </div>
-          <div className='col-md-4 text-right'>
-            {(a.txFee &&
-              <div className='pull-right'>{display.units(a.txFee, 'ETH')}</div>) ||
-              <div>{(!!a.error && <span className='pull-right text-danger'> - </span>) ||
-                <div className='faast-loading loading-small pull-right margin-top-10' />
-              }</div>
-            }
-            <div className='text-medium-grey pull-right margin-right-10'>txn fee</div>
-          </div>
+        <SwapStatusRow status={a}>
+          <div className='right-icon' />
+          {sigStatus()}
+        </SwapStatusRow>
+        <div className='color-bg-1 text-x-small text-medium-grey p-2'>
+          <Row className='small-gutters'>
+            <Col xs='6' sm>
+              <span className='margin-right-10'>swap fee</span>
+              {a.swap.hasOwnProperty('fee')
+                ? (<span>{`${a.swap.fee} ${a.to.symbol}`}</span>)
+                : (a.error
+                    ? (<span className='text-danger'> - </span>)
+                    : (<span className='faast-loading loading-small' />))
+              }
+            </Col>
+            <Col xs='12' sm='auto' className='text-center order-3 order-sm-2'>{a.error
+              ? (<span className='text-danger'>{a.error}</span>)
+              : (a.swap.hasOwnProperty('rate')
+                  ? (<span>1 {a.from.symbol} = {a.swap.rate} {a.to.symbol}</span>)
+                  : (<span className='faast-loading loading-small' />))
+              }
+            </Col>
+            <Col xs='6' sm className='text-right order-2 order-sm-3'>
+              <span className='margin-right-10'>txn fee</span>
+              {a.hasOwnProperty('txFee')
+                ? (<span>{display.units(a.txFee, 'ETH')}</span>)
+                : (a.error
+                    ? (<span className='text-danger'> - </span>)
+                    : (<span className='faast-loading loading-small' />))
+              }
+            </Col>
+          </Row>
         </div>
       </div>
     )
   })
   return (
     <form onSubmit={props.handleSubmit}>
-      <ModalBody className='text-center'>
-        <div className='modal-title'>review and sign</div>
-        <div className='modal-text'>
+      <ModalBody>
+        <div className='modal-title text-center'>review and sign</div>
+        <div className='modal-text text-center'>
           The following transactions will take place to save the changes you made to your wallet. Please review and sign them with {props.description}.
           <br />
           The receive amount is an estimate based on the current rate and swap fee. Actual amount may vary.
@@ -168,10 +183,10 @@ const SignTxForm = reduxForm({
             />
           </div>
         }
-        <div className='form-group'>
+        <div className='form-group text-center'>
           <div style={buttonStyle} className='button-primary cursor-pointer' onClick={props.readyToSign && !props.isSigning && props.handleSubmit}>{props.buttonText}</div>
         </div>
-        <div className='form-group'>
+        <div className='form-group text-center'>
           <div className='cancel cursor-pointer' onClick={props.handleCancel}>cancel</div>
         </div>
       </ModalBody>
@@ -182,30 +197,10 @@ const SignTxForm = reduxForm({
 const OrderStatus = (props) => {
   const statusRow = props.swapList.map((a, i) => (
     <div key={i} className='margin-top-5'>
-      <div className='row color-bg-3'>
-        <div className='col-md-4 padding-10'>
-          <div className='coin-container pull-left'>
-            <div className='coin-icon margin-top-5' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${a.from.symbol}.png)` }} />
-            <div className='coin-info text-left'>
-              <div className='text-white text-small'>{display.units(a.swap.unit, a.from.symbol, a.from.price)}</div>
-              <div className='text-medium-grey text-small'>{a.from.name}</div>
-            </div>
-          </div>
-        </div>
-        <div className='col-md-4 padding-10'>
-          <div className={`status margin-top-5 ${a.status.cl}`}>{a.status.text}</div>
-          <div className='text-medium-grey text-small'>{a.status.details}</div>
-        </div>
-        <div className='col-md-4 padding-10'>
-          <div className='coin-container pull-right'>
-            <div className='coin-icon margin-top-5' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${a.to.symbol}.png)` }} />
-            <div className='coin-info text-right'>
-              <div className='text-white text-small'>&nbsp;</div>
-              <div className='text-medium-grey text-small'>{a.to.name}</div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <SwapStatusRow status={a}>
+        <div className={`status margin-top-5 ${a.status.cl}`}>{a.status.text}</div>
+        <div>{a.status.details}</div>
+      </SwapStatusRow>
     </div>
   ))
   return (

@@ -93,21 +93,26 @@ body {
     @extend .text-white;
   }
 
+  span.faast-loading {
+    display: inline-block;
+    line-height: 0;
+    vertical-align: middle;
+  }
   .faast-loading {
     background-image: url(https://faa.st/img/faast-loading.svg);
     background-size: contain;
     background-position: center center;
     background-repeat: no-repeat;
     &.loading-small {
-      height: 10px;
+      height: 2px;
       width: 80px;
     }
     &.loading-medium {
-      height: 20px;
+      height: 4px;
       width: 160px;
     }
     &.loading-large {
-      height: 40px;
+      height: 8px;
       width: 320px;
     }
   }
@@ -1294,7 +1299,6 @@ body {
 
   /*review, in progress and completed swap styles starts here*/
   .review-list {
-    width: 700px;
     margin: auto;
     margin-top: 20px;
 
