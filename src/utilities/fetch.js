@@ -2,64 +2,31 @@
 
 import log from 'Utilities/log'
 
-export const fetchGet = (path) => {
-  const querySeparator = path.includes('?') ? '&' : '?'
-  const newPath = `${path}${querySeparator}cachebuster=${Date.now().toString()}`
-  log.debug(`requesting GET ${newPath}`)
-  return fetch(newPath, {
-    method: 'get',
+export const fetchJson = (method, path, body) => {
+  if (method !== 'POST') {
+    const querySeparator = path.includes('?') ? '&' : '?'
+    path = `${path}${querySeparator}cachebuster=${Date.now().toString()}`
+  }
+  log.debug(`requesting ${method} ${path}`)
+  const options = {
+    method: method,
     headers: {
       'Accept': 'application/json'
-    }
-  })
-  .then((response) => {
-    try {
-      return response.json()
-    } catch (err) {
-      throw new Error(response.status)
-    }
-  })
-}
-
-export const fetchPost = (path, body) => {
-  const newBody = {}
-  for (const key in body) {
-    if (typeof body[key] === 'string') {
-      newBody[key] = body[key].trim()
-    } else {
-      newBody[key] = body[key]
     }
   }
-  log.debug(`requesting POST ${path}`)
-  return (
-    fetch(path, {
-      method: 'post',
-      headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(newBody)
-    })
-    .then((response) => {
-      try {
-        return response.json()
-      } catch (err) {
-        throw new Error(response.status)
+  if (method !== 'GET' && body) {
+    const newBody = {}
+    for (const key in body) {
+      if (typeof body[key] === 'string') {
+        newBody[key] = body[key].trim()
+      } else {
+        newBody[key] = body[key]
       }
-    })
-  )
-}
-
-export const fetchDelete = (path) => {
-  const querySeparator = path.includes('?') ? '&' : '?'
-  const newPath = `${path}${querySeparator}cachebuster=${Date.now().toString()}`
-  log.debug(`requesting DELETE ${newPath}`)
-  return fetch(newPath, {
-    method: 'delete',
-    headers: {
-      'Accept': 'application/json'
     }
-  })
+    options.body = JSON.stringify(newBody)
+    options.headers['Content-Type'] = 'application/json'
+  }
+  return fetch(path, options)
   .then((response) => {
     try {
       return response.json()
@@ -67,4 +34,16 @@ export const fetchDelete = (path) => {
       throw new Error(response.status)
     }
   })
+  .then((data) => {
+    if (data.error) {
+      throw new Error(data.error)
+    }
+    return data
+  })
 }
+
+export const fetchGet = (path) => fetchJson('GET', path)
+
+export const fetchPost = (path, body) => fetchJson('POST', path, body)
+
+export const fetchDelete = (path, body) => fetchJson('DELETE', path, body)
