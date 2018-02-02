@@ -8,115 +8,131 @@ import AssetList from 'Components/AssetList'
 import SignTxModal from 'Components/SignTxModal'
 import display from 'Utilities/display'
 import styles from './style'
+import headerStyles from 'Components/Header/style'
 import config from 'Config'
+import { Row, Col } from 'reactstrap'
 
 const ModifyView = (props) => {
   const inputs = {
     fiat: {},
     weight: {}
   }
+
+  const { mq: { isMobile } } = props
+
   const renderAssetRows = () => {
-    return props.list.map((asset, i) => {
-      const changeIconDirection = asset.priceDecrease ? 'down-icon' : 'up-icon'
+    return props.list.map((a, i) => {
+      const changeIconDirection = a.priceDecrease ? 'down-icon' : 'up-icon'
+      const { symbol, name, change24, price} = a
+      const fiatPrice = display.fiat(price)
+      const percentChange24 = display.percentage(change24, true)
+      const originalFiat = display.fiat(a.fiat.original)
+      const originalWeight = display.percentage(a.weight.original)
+      const originalUnits = display.units(a.units.original, symbol, price)
+      const adjustedFiat = accounting.toFixed(a.fiat.adjusted, 2)
+      const adjustedWeight = accounting.toFixed(a.weight.adjusted, 2)
+      const adjustedUnits = display.units(a.units.adjusted, symbol, price)
+
       return (
-        <div key={i} className='tile-container padding-left-20 margin-top-10' style={{ position: 'relative' }}>
-          <div onClick={() => props.handleRemove(i)} className='tile-new'>remove</div>
-          <div className='row'>
-            <div className='col-md-4'>
-              <div className='row'>
-                <div className='col'>
-                  <div className='coin-icon pull-left' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${asset.symbol}.png)` }} />
-                  <div className='pull-left text-medium'>{asset.name}</div>
-                </div>
-              </div>
-              <div className='row margin-top-20'>
-                <div className='col-6'>
-                  <div className='row'>
-                    <div className='col-sm-3'>
-                      <div className={`change-icon ${changeIconDirection}`} />
-                    </div>
-                    <div className='col-sm-9'>
-                      <div className='text-small text-medium-grey'>24h change</div>
-                      <div className='text-medium text-white'>{display.percentage(asset.change24, true)}</div>
-                    </div>
-                  </div>
-                </div>
-                <div className='col-6'>
-                  <div className='row'>
-                    <div className='col'>
-                      <div className='text-small text-medium-grey'>current price (USD)</div>
-                      <div className='text-medium text-white'>{display.fiat(asset.price)}</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className='col-md-1' />
-            <div className='col-md-6'>
-              <div className='status-data-container'>
-                <div className='row'>
-                  <div className='col-md-3'>
-                    <div className='status-table-label'>Status</div>
-                    <div className='status-table-value'>Before</div>
-                    <div className='status-table-value'>After</div>
-                  </div>
-                  <div className='col-md-3'>
-                    <div className='status-table-label'>Value ($)</div>
-                    <div className='status-table-value'>{display.fiat(asset.fiat.original)}</div>
-                    <div className='status-table-value'>
-                      <RIENumber
-                        value={accounting.toFixed(asset.fiat.adjusted, 2)}
-                        format={display.fiat}
-                        change={props.handleFiatChange}
-                        propName={asset.symbol}
-                        className={styles.editable}
-                        classEditing={styles.editableEditing}
-                        ref={(input) => { inputs.fiat[asset.symbol] = input }}
-                      />
-                      <i onClick={() => inputs.fiat[asset.symbol].startEditing()} className='fa fa-pencil margin-left-5 text-gradient cursor-pointer' aria-hidden='true' />
-                    </div>
-                  </div>
-                  <div className='col-md-3 active'>
-                    <div className='status-table-label'>Weight (%)</div>
-                    <div className='status-table-value'>{display.percentage(asset.weight.original)}</div>
-                    <div className='status-table-value'>
-                      <RIENumber
-                        value={accounting.toFixed(asset.weight.adjusted, 2)}
-                        format={display.percentage}
-                        change={props.handleWeightChange}
-                        propName={asset.symbol}
-                        className={styles.editable}
-                        classEditing={styles.editableEditing}
-                        ref={(input) => { inputs.weight[asset.symbol] = input }}
-                      />
-                      <i onClick={() => inputs.weight[asset.symbol].startEditing()} className='fa fa-pencil margin-left-5 text-gradient cursor-pointer' aria-hidden='true' />
-                    </div>
-                  </div>
-                  <div className='col-md-3'>
-                    <div className='status-table-label'>Units</div>
-                    <div className='status-table-value'>
-                      {display.units(asset.units.original, asset.symbol, asset.price)}
-                    </div>
-                    <div className='status-table-value'>
-                      {display.units(asset.units.adjusted, asset.symbol, asset.price)}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className='row margin-top-20 padding-top-20 padding-bottom-20'>
-            <div className='col'>
-              <Slider
-                asset={asset}
-                {...props.sliderProps}
-              />
-            </div>
+        <div key={i} className='col-12'>
+          <div className='tile-container'>
+            <div onClick={() => props.handleRemove(i)} className='tile-new' style={{ top: '8px', right: '0' }}>remove</div>
+            <Row className='medium-gutters-x align-items-center'>
+              <Col xs='12' lg='4' xl='5'>
+                <Row className='medium-gutters align-items-center'>
+                  <Col xs='3' md='2' lg='auto' className='text-center text-md-right'>
+                    <div className='coin-icon mx-auto mr-md-0' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${symbol}.png)` }} />
+                  </Col>
+                  <Col xs='auto' className='text-medium'>{name}</Col>
+                </Row>
+                <Row className='medium-gutters-x my-3 align-items-center'>
+                  <Col xs='3' md='2' lg='auto'>
+                    <div className={`change-icon mx-auto mr-md-0 ${changeIconDirection}`} />
+                  </Col>
+                  <Col xs='4' md='3' lg>
+                    <div className='text-small text-medium-grey'>24h change</div>
+                    <div className='text-medium text-white'>{percentChange24}</div>
+                  </Col>
+                  <Col>
+                    <div className='text-small text-medium-grey'>current price</div>
+                    <div className='text-medium text-white'>{fiatPrice}</div>
+                  </Col>
+                </Row>
+              </Col>
+              <Col xs='12' lg='8' xl='7' style={{ lineHeight: 1 }}>
+                <Row className='medium-gutters'>
+                  <Col xs='12' md='2' lg='auto'>
+                    <Row className='medium-gutters flex-md-column'>
+                      <Col xs='3' md='12'>&nbsp;</Col>
+                      <Col xs='4' md='12' className={`${styles.greyStatus} text-md-right`}>Before</Col>
+                      <Col xs='5' md='12' className={`${styles.greyStatus} text-md-right`}>After</Col>
+                    </Row>
+                  </Col>
+                  <Col xs='12' md='3' lg>
+                    <Row className='medium-gutters flex-md-column'>
+                      <Col xs='3' md='12' className={`${styles.greyStatus} text-right text-md-left`}>Value</Col>
+                      <Col xs='4' md='12' className='status-table-value'>{originalFiat}</Col>
+                      <Col xs='5' md='12' className='status-data-container'>
+                        <div className='status-table-value'>
+                          <RIENumber
+                            value={adjustedFiat}
+                            format={display.fiat}
+                            change={props.handleFiatChange}
+                            propName={a.symbol}
+                            className={styles.editable}
+                            classEditing={styles.editableEditing}
+                            ref={(input) => { inputs.fiat[a.symbol] = input }}
+                          />
+                          <i onClick={() => inputs.fiat[a.symbol].startEditing()} className='fa fa-pencil margin-left-5 text-gradient cursor-pointer' aria-hidden='true' />
+                        </div>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col xs='12' md='3' lg>
+                    <Row className="medium-gutters flex-md-column">
+                      <Col xs='3' md='12' className={`${styles.greyStatus} text-right text-md-left`}>Weight</Col>
+                      <Col xs='4' md='12' className='status-table-value'>{originalWeight}</Col>
+                      <Col xs='5' md='12' className='status-data-container'>
+                        <div className='status-table-value'>
+                          <RIENumber
+                            value={adjustedWeight}
+                            format={display.percentage}
+                            change={props.handleWeightChange}
+                            propName={a.symbol}
+                            className={styles.editable}
+                            classEditing={styles.editableEditing}
+                            ref={(input) => { inputs.weight[a.symbol] = input }}
+                          />
+                          <i onClick={() => inputs.weight[a.symbol].startEditing()} className='fa fa-pencil margin-left-5 text-gradient cursor-pointer' aria-hidden='true' />
+                        </div>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col xs='12' md>
+                    <Row className="medium-gutters flex-md-column">
+                      <Col xs='3' md='12' className={`${styles.greyStatus} text-right text-md-left`}>Units</Col>
+                      <Col xs='4' md='12' className='status-table-value'>{originalUnits}</Col>
+                      <Col xs='5' md='12' className='status-table-value'>{adjustedUnits}</Col>
+                    </Row>
+                  </Col>
+                </Row>
+              </Col>
+            </Row>
+            
+          <div className='pt-3'>
+            <Slider
+              asset={a}
+              {...props.sliderProps}
+            />
           </div>
         </div>
+      </div>
       )
     })
   }
+
+  let tile = !isMobile ? 'tile-container' : `${styles.tileContainer}`
+  let addAsset = !isMobile ? 'add a new asset' : 'add asset'
 
   return (
     <Layout {...props.layoutProps}>
@@ -125,38 +141,34 @@ const ModifyView = (props) => {
       }
       <SignTxModal showModal={props.showSignTxModal} toggleModal={props.handleToggleSignTxModal} />
       <Sticky innerZ={config.sticky.zIndex} top='#header'>
-        <div className={`row stats-container ${styles.header}`}>
-          <div className='col-md-4 tile-outer-container'>
-            <div className='tile-container'>
-              <div className='row'>
-                <div className='col'>
-                  <div className='text-small text-medium-grey'>available to swap</div>
-                  <div className='text-medium text-white'>{display.fiat(props.allowance.fiat)} / {display.percentage(props.allowance.weight)}</div>
-                </div>
+        <div className={headerStyles.header}>
+          <div className='row medium-gutters-x'>
+            <div className='col-6 col-md-4 tile-outer-container'>
+              <div className={tile}>
+                <div className='text-small text-medium-grey'>available to swap</div>
+                <div className='text-medium text-white'>{display.fiat(props.allowance.fiat)} / {display.percentage(props.allowance.weight)}</div>
               </div>
             </div>
-          </div>
-          <div className='col-md-8 tile-outer-container'>
-            <div className='tile-container'>
-              <div className='row'>
-                <div className='col'>
+            <div className='col-6 col-md-8 tile-outer-container'>
+              <div className={tile}>
+                {!isMobile &&
                   <div className='text-medium-grey text-small'>
                     add a new asset from the unallocated value
                   </div>
-                  <div onClick={props.handleAssetListShow} className='text-gradient text-medium cursor-pointer'>
-                    <i className='fa fa-plus text-gradient' aria-hidden='true' /> add a new asset
-                  </div>
+                }
+                <div onClick={props.handleAssetListShow} className='text-gradient text-medium cursor-pointer'>
+                  <i className='fa fa-plus text-gradient' aria-hidden='true' /> {addAsset}
                 </div>
               </div>
             </div>
           </div>
         </div>
       </Sticky>
-      <div className='row margin-bottom-20 margin-top-10'>
-        <div className='col padding-0'>
-          <div className='modify-asset-list-container'>
-            {renderAssetRows()}
-            <div onClick={props.handleAssetListShow} className='tile-container tile-border cursor-pointer margin-top-10'>
+      <div className={styles.modifyAssetList}>
+        <div className='row no-gutters-x medium-gutters-y'>
+          {renderAssetRows()}
+          <div className='col-12'>
+            <div onClick={props.handleAssetListShow} className='tile-container tile-border cursor-pointer'>
               <div className='margin-top-30 add-new' />
               <div className='text-center text-gradient'>add asset</div>
             </div>

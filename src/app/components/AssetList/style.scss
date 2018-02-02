@@ -9,19 +9,16 @@
   overflow: auto;
   z-index: 300;
 
-  @include respond-to(small-screens) {
-    max-width: 300px;
-    // left: -1px;
+  @include media-breakpoint-down(md) {
+    max-width: 360px;
   }
-  @include respond-to(wide-screens) {
+  
+  @include media-breakpoint-up(lg) {
     width: 650px;
-    // left: -649px;
   }
 }
 
-.searchContainer {
-
-}
+.searchContainer {}
 
 .inputText {
   @extend .pull-left;
@@ -39,10 +36,11 @@
     outline: none;
   }
 
-  @include respond-to(small-screens) {
-    width: 230px;
+  @include media-breakpoint-down(md) {
+    width: 260px;
   }
-  @include respond-to(wide-screens) {
+
+  @include media-breakpoint-up(lg) {
     width: 585px;
   }
 }
@@ -63,6 +61,9 @@
 
 .closeButton {
   @extend .flex-grow-1;
+  @include media-breakpoint-down(xs) {
+    margin-left: 20px;
+  }
 }
 
 .assetListContainer {
@@ -94,7 +95,7 @@
     }
   }
 
-  @include respond-to(small-screens) {
+  @include media-breakpoint-down(md) {
     &:nth-child(3) {
       border-right: none !important;
     }
@@ -104,7 +105,7 @@
     }
   }
 
-  @include respond-to(wide-screens) {
+  @include media-breakpoint-up(lg) {
     &:last-child {
       border-right: none !important;
     }

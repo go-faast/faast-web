@@ -5,6 +5,28 @@
 @import url('https://fonts.googleapis.com/css?family=Kanit:100,200,300,400,500');
 @import url('https://fonts.googleapis.com/css?family=Kaushan+Script');
 
+// Grid breakpoints
+//
+// Define the minimum dimensions at which your layout will change,
+// adapting to different screen sizes, for use in media queries.
+
+$grid-breakpoints: (
+  xxs: 0,
+  xs: 400px,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px
+);
+
+@each $breakpoint in map-keys($grid-breakpoints) {
+  :export {
+    breakpoint-#{$breakpoint}: map-get($grid-breakpoints, $breakpoint);
+  }
+}
+
+@import 'mixins/breakpoints';
+
 //Text sizes
 $text-x-small: 12px;
 $text-small: 14px;

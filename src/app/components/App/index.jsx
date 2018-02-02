@@ -8,24 +8,14 @@ import { statusAllSwaps } from 'Utilities/swap'
 import AppView from './view'
 import withMockHandling from 'Hoc/withMockHandling'
 import { restorePolling } from 'Actions/portfolio'
-import { setSwap } from 'Actions/redux'
+import { setSwap, setBreakpoints } from 'Actions/redux'
 import { postSwundle } from 'Actions/request'
-
-const widths = new Map()
-widths.set('sm', '(min-width: 768px)')
-widths.set('md', '(min-width: 992px)')
-widths.set('lg', '(min-width: 1200px)')
+import { breakpointWidths, mediaBreakpointUp } from 'Utilities/breakpoints'
 
 class App extends Component {
   constructor () {
     super()
-    this.state = {
-      mq: {
-        sm: true,
-        md: true,
-        lg: true
-      }
-    }
+    this._mediaQueryChange = this._mediaQueryChange.bind(this)
   }
 
   componentWillMount () {
@@ -34,24 +24,8 @@ class App extends Component {
     }
   }
 
-  componentDidMount () {
-    widths.forEach((value, key) => {
-      this._mediaQueryChange(window.matchMedia(value), key)
-      window.matchMedia(value).addListener((e) => { this._mediaQueryChange(e, key) })
-    })
-  }
+  componentDidUpdate (prevProps) {
 
-  componentDidUpdate (prevProps, prevState) {
-    if (prevState.mq.lg && !this.state.mq.lg) {
-      toastr.confirm(null, {
-        disableCancel: true,
-        component: () => (
-          <div style={{ padding: 10, color: 'black' }}>
-            The portfolio is only optimized for large screens at this time. Support for smaller screens is in progress
-          </div>
-        )
-      })
-    }
     if (this.props.wallet.type === 'blockstack' && !isEqual(prevProps.settings, this.props.settings)) {
       blockstack.saveSettings(this.props.settings)
     }
@@ -64,8 +38,16 @@ class App extends Component {
     }
   }
 
-  _mediaQueryChange (mediaQuery, type) {
-    this.setState({ mq: Object.assign({}, this.state.mq, { [type]: mediaQuery.matches }) })
+  componentDidMount () {
+    breakpointWidths.forEach((width, breakpoint) => {
+      const query = `(min-width: ${width})`
+      this._mediaQueryChange(window.matchMedia(query), breakpoint)
+      window.matchMedia(query).addListener((e) => { this._mediaQueryChange(e, breakpoint) })
+    })
+  }
+
+  _mediaQueryChange (mq, type) {
+    this.props.setBreakpoints({ [type]: mq.matches })
   }
 
   render () {
@@ -84,7 +66,8 @@ const mapStateToProps = (state) => ({
   wallet: state.wallet,
   swap: state.swap,
   settings: state.settings,
-  mock: state.mock
+  mock: state.mock,
+  mq: state.mediaQueries
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -96,6 +79,9 @@ const mapDispatchToProps = (dispatch) => ({
   },
   postSwundle: (address, swap) => {
     dispatch(postSwundle(address, swap))
+  },
+  setBreakpoints: (mq) => {
+    dispatch(setBreakpoints(mq))
   }
 })
 

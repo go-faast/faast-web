@@ -53,7 +53,7 @@ store.subscribe(throttle(() => {
       swap: state.swap,
       settings: state.settings
     })
-  }
+  }  
 }, 1000))
 
 const Portfolio = () => {
