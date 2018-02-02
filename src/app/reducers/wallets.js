@@ -1,7 +1,7 @@
 import { createReducer } from 'redux-act'
 import { merge, mapValues } from 'Utilities/helpers'
 import { resetAll } from 'Actions/redux'
-import { walletAdded, walletRemoved, allWalletsRemoved, walletBalancesUpdated } from 'Actions/wallet'
+import { walletUpdated, walletRemoved, allWalletsRemoved, walletBalancesUpdated } from 'Actions/wallet'
 import { portfolioAdded, portfolioWalletAdded, portfolioRemoved, allPortfoliosRemoved } from 'Actions/portfolio'
 
 const initialState = {}
@@ -13,7 +13,7 @@ export default createReducer({
   [resetAll]: () => initialState,
   [allWalletsRemoved]: () => initialState,
   [walletRemoved]: (state, { id }) => ({ ...state, [id]: undefined }),
-  [walletAdded]: (state, wallet) => merge(state, { [wallet.id]: { ...walletInitialState, ...wallet } }),
+  [walletUpdated]: (state, wallet) => merge(state, { [wallet.id]: { ...walletInitialState, ...wallet } }),
   [walletBalancesUpdated]: (state, { id, balances }) => merge(state, { [id]: { balances } }),
 
   [portfolioAdded]: (state, { id: portfolioId, wallets = [] }) => 

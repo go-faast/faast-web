@@ -4,12 +4,13 @@ import log from 'Utilities/log'
 import walletService from 'Services/Wallet'
 import { getAllAssets } from 'Selectors'
 
-export const walletAdded = createAction('WALLET_ADDED', (wallet) => ({
+export const walletUpdated = createAction('WALLET_UPDATED', (wallet) => ({
   id: wallet.getId(),
   type: wallet.type,
   address: wallet.getAddress ? wallet.getAddress() : null,
   isBlockstack: wallet.isBlockstack,
   supportedAssets: wallet.getSupportedAssetSymbols(),
+  subwallets: wallet.type === 'MultiWallet' ? wallet.wallets.map((w) => w.getId()) : [],
 }))
 export const walletRemoved = createAction('WALLET_REMOVED')
 export const allWalletsRemoved = createAction('ALL_WALLETS_REMOVED')
@@ -21,7 +22,7 @@ export const walletBalancesUpdated = createAction('WALLET_BALANCES_UPDATED', (wa
 
 export const addWallet = (wallet) => (dispatch) => Promise.resolve()
   .then(() => walletService.add(wallet))
-  .then(() => dispatch(walletAdded(wallet)).payload)
+  .then(() => dispatch(walletUpdated(wallet)).payload)
 
 export const removeWallet = (walletId) => (dispatch) => Promise.resolve()
   .then(() => walletService.remove(walletId))
@@ -34,7 +35,7 @@ export const removeAllWallets = () => (dispatch) => Promise.resolve()
 export const restoreAllWallets = () => (dispatch, getState) => Promise.resolve()
   .then(() => walletService.setAssetProvider(() => getAllAssets(getState())))
   .then(() => walletService.restoreAll())
-  .then((restoredWallets) => restoredWallets.map((w) => dispatch(walletAdded(w)).payload))
+  .then((restoredWallets) => restoredWallets.map((w) => dispatch(walletUpdated(w)).payload))
 
 export const updateWalletBalances = (walletId) => (dispatch) => Promise.resolve()
   .then(() => {

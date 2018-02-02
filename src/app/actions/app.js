@@ -8,7 +8,7 @@ import { filterUrl } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import { getCurrentWallet } from 'Selectors'
 
-import { getAssets } from './request'
+import { retrieveAssets } from './asset'
 import { setSwapData, setSettings } from './redux'
 import { restoreAllWallets } from './wallet'
 import { restoreAllPortfolios } from './portfolio'
@@ -74,7 +74,7 @@ export const setupLedger = () => Promise.resolve()
 
 export const init = () => (dispatch) => Promise.resolve()
   .then(() => dispatch(setupLogger))
-  .then(() => dispatch(getAssets())) // asset list required to restore wallets
+  .then(() => dispatch(retrieveAssets())) // asset list required to restore wallets
   .then(() => dispatch(restoreState))
   .then(() => dispatch(setupBlockstack))
   .then(() => dispatch(setupLedger))

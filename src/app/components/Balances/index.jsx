@@ -7,53 +7,42 @@ import PriceChart from 'Components/PriceChart'
 import BalancesView from './view'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
-import { updateObjectInArray } from 'Utilities/helpers'
 import { getSwapStatus } from 'Utilities/swap'
 import { getBalances, removeSwundle } from 'Actions/request'
 import { toggleOrderModal, resetSwap } from 'Actions/redux'
 import { resetPortfolio, clearAllIntervals } from 'Actions/portfolio'
 import { getCurrentPortfolio, getCurrentWallet, getAllAssetsArray } from 'Selectors'
-import { EthereumWalletWeb3 } from 'Services/Wallet'
 
 let balancesInterval
 
 class Balances extends Component {
   constructor (props) {
     super(props)
-    const wallet = props.viewOnlyAddress ? new EthereumWalletWeb3(props.viewOnlyAddress) : props.wallet
     this.state = {
-      list: [],
       chartSelect: {},
-      wallet
+      openCharts: {},
     }
     this._getBalances = this._getBalances.bind(this)
     this._toggleChart = this._toggleChart.bind(this)
     this._setChartSelect = this._setChartSelect.bind(this)
-    this._setList = this._setList.bind(this)
     this._orderStatus = this._orderStatus.bind(this)
     this._forgetOrder = this._forgetOrder.bind(this)
   }
 
   componentWillMount () {
-    const { wallet } = this.state
-    const refreshBalances = () => this._getBalances(wallet)
+    const refreshBalances = () => this._getBalances()
     balancesInterval = window.setInterval(refreshBalances, 30000)
-    this._setList()
     refreshBalances()
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.viewOnlyAddress) {
       if (nextProps.viewOnlyAddress !== this.props.viewOnlyAddress) {
-        const newWallet = new EthereumWalletWeb3(nextProps.viewOnlyAddress)
-        this.setState({ list: [], wallet: newWallet })
         window.clearInterval(balancesInterval)
         this.props.resetPortfolio()
-        balancesInterval = window.setInterval(() => this._getBalances(newWallet), 30000)
-        this._getBalances(newWallet, true)
+        balancesInterval = window.setInterval(() => this._getBalances(), 30000)
+        this._getBalances(true)
       }
-    } else {
-      this.setState({ list: [], wallet: this.props.wallet })
     }
   }
 
@@ -63,66 +52,44 @@ class Balances extends Component {
       const orderStatus = this._orderStatus()
       if (orderStatus === 'error' || orderStatus === 'complete') {
         this.props.resetSwap()
-        this.props.removeSwundle(this.state.wallet.id || this.state.wallet.getId())
+        this.props.removeSwundle(this.props.wallet.id)
       }
     }
   }
 
-  _setList () {
-    if (this.props.portfolio.list && this.props.portfolio.list.length) {
-      const list = this.props.portfolio.list.map((a) => {
-        if (a.shown) {
-          return {
-            name: a.name,
-            symbol: a.symbol,
-            units: a.balance,
-            weight: a.percentage,
-            price: a.price,
-            value: a.fiat,
-            change: a.change24,
-            infoUrl: a.infoUrl,
-            priceDecrease: a.change24.isNegative(),
-            chartOpen: false
-          }
-        }
-      }).filter(a => a)
-      this.setState({ list })
-    }
-  }
-
-  _getBalances (wallet, resetPortfolio) {
-    const { assets, mock, swap, getBalances } = this.props
+  _getBalances (resetPortfolio) {
+    const { wallet, assets, getBalances } = this.props
     const portfolio = resetPortfolio ? {} : this.props.portfolio
-    getBalances(assets, portfolio, wallet.id || wallet, mock, swap)
+    getBalances(assets, portfolio, wallet.id)
       .then(() => {
         this._setChartSelect('ETH')
-        this._setList()
       })
       .catch(log.error)
   }
 
   _toggleChart (symbol) {
-    const assetIx = this.state.list.findIndex(a => a.symbol === symbol)
-    if (assetIx >= 0) {
-      this.setState({
-        list: updateObjectInArray(this.state.list, {
-          index: assetIx,
-          item: Object.assign({}, this.state.list[assetIx], { chartOpen: !this.state.list[assetIx].chartOpen })
-        })
-      })
-    }
+    const { openCharts } = this.state
+    this.setState({
+      openCharts: {
+        ...openCharts,
+        [symbol]: !openCharts[symbol]
+      }
+    })
   }
 
   _setChartSelect (symbol) {
     const list = this.props.portfolio.list
     const asset = list.find(a => a.symbol === symbol)
+    if (!asset.change24) {
+      console.log(asset.symbol)
+    }
     this.setState({ chartSelect: {
-      name: asset.name,
-      symbol: asset.symbol,
-      infoUrl: asset.infoUrl,
-      change: asset.change24,
-      priceDecrease: asset.change24.isNegative(),
-      price: asset.price
+      name: asset.name || 'LOADING',
+      symbol: asset.symbol || 'XXX',
+      infoUrl: asset.infoUrl || 'https://faa.st',
+      change: asset.change24 || -1,
+      priceDecrease: asset.change24 && asset.change24.isNegative(),
+      price: asset.price || -1
     } })
   }
 
@@ -155,8 +122,7 @@ class Balances extends Component {
   render () {
     const orderStatus = this._orderStatus()
 
-    const portfolio = this.props.portfolio
-    const { wallet } = this.state
+    const { wallet, portfolio, viewOnlyAddress } = this.props
     const layoutProps = {
       showAction: true,
       showAddressSearch: true,
@@ -165,8 +131,8 @@ class Balances extends Component {
       handleModify: () => this.props.routerPush('/modify'),
     }
     const addressProps = {
-      address: wallet.address || (wallet.getAddress && wallet.getAddress()),
-      showDownloadKeystore: !this.props.viewOnlyAddress && this.state.wallet.isBlockstack
+      address: wallet.address,
+      showDownloadKeystore: !viewOnlyAddress && wallet.isBlockstack
     }
     const totalDecrease = portfolio.totalChange && portfolio.totalChange.isNegative()
     return (
@@ -179,14 +145,15 @@ class Balances extends Component {
         total24hAgo={portfolio.total24hAgo}
         totalChange={portfolio.totalChange}
         totalDecrease={totalDecrease}
-        assetRows={this.state.list}
+        assetRows={portfolio.list.filter((holding) => holding.shown)}
         toggleChart={this._toggleChart}
         showOrderModal={this.props.orderModal.show}
         handleToggleOrderModal={this.props.toggleOrderModal}
         handleForgetOrder={this._forgetOrder}
         orderStatus={orderStatus}
         addressProps={addressProps}
-        viewOnly={!!this.props.viewOnlyAddress}
+        viewOnly={!!viewOnlyAddress}
+        openCharts={this.state.openCharts}
       />
     )
   }

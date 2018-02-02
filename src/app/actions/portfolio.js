@@ -2,7 +2,7 @@
 import { insertSwapData, updateSwapTx, setSwap } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
-import { addWallet, removeWallet } from 'Actions/wallet'
+import { addWallet, removeWallet, walletUpdated } from 'Actions/wallet'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
 import { restoreFromAddress } from 'Utilities/storage'
@@ -50,8 +50,11 @@ export const addWalletToPortfolio = (portfolioId, walletId) => (dispatch) =>
   Promise.all([
     walletService.get(portfolioId),
     walletService.get(walletId),
-  ]).then(([portfolioWallet, wallet]) => portfolioWallet.addWallet(wallet))
-    .then(() => dispatch(portfolioWalletAdded(portfolioId, walletId)))
+  ]).then(([portfolioWallet, wallet]) => {
+    portfolioWallet.addWallet(wallet)
+    dispatch(walletUpdated(portfolioWallet))
+    dispatch(portfolioWalletAdded(portfolioId, walletId))
+  })
 
 export const removeWalletFromPortfolio = (portfolioId, walletId) => (dispatch) =>
   Promise.all([

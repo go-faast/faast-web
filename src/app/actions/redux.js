@@ -2,8 +2,6 @@ import { createAction } from 'redux-act'
 
 export const resetAll = createAction('RESET_ALL')
 
-export const setAssets = createAction('SET_ASSETS')
-
 export const setSwap = createAction('SET_SWAP')
 
 export const addSwapDeposit = createAction('ADD_SWAP_DEPOSIT')

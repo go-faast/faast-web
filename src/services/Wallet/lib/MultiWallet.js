@@ -74,7 +74,7 @@ export default class MultiWallet extends Wallet {
 
   _getWalletsForAsset = (assetOrSymbol) => this.wallets.filter((wallet) => wallet.isAssetSupported(assetOrSymbol));
 
-  getSupportedAssets = () => this.wallets.reduce((assets, wallet) => assets.concat(wallet.getSupportedAssets()), []);
+  isAssetSupported = (assetOrSymbol) => this.wallets.some((wallet) => wallet.isAssetSupported(assetOrSymbol));
 
   _chooseWallet = (assetOrSymbol, options) => {
     options = {
