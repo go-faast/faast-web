@@ -5,13 +5,7 @@ import Bitcore from 'Services/Bitcore'
 
 import Wallet from '../Wallet'
 
-const supportedAssets = [{
-  symbol: 'BTC',
-  name: 'Bitcoin',
-  decimals: 8
-}]
-
-const supportedSymbols = supportedAssets.map(({ symbol }) => symbol)
+const supportedAssets = ['BTC']
 
 @abstractMethod('createTransaction', 'sendTransaction')
 export default class BitcoinWallet extends Wallet {
@@ -20,14 +14,13 @@ export default class BitcoinWallet extends Wallet {
     super(type)
     assertExtended(this, BitcoinWallet)
     this.xpub = xpub
-    this.setAllAssets(supportedAssets)
   }
 
   getAddress = () => this.xpub;
 
   getId = () => this.xpub;
 
-  isAssetSupported = (assetOrSymbol) => supportedSymbols.includes(this.getSymbol(assetOrSymbol));
+  isAssetSupported = (assetOrSymbol) => supportedAssets.includes(this.getSymbol(assetOrSymbol));
 
   getBalance = (assetOrSymbol) => Promise.resolve(assetOrSymbol)
     .then(this.getAsset)

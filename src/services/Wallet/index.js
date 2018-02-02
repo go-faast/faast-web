@@ -21,6 +21,12 @@ export default defaultWalletService
 export function WalletService() {
   
   const activeWallets = {}
+  let walletAssetProvider = () => {}
+
+  const setAssetProvider = (assetProvider) => {
+    walletAssetProvider = assetProvider
+    Object.values(activeWallets).forEach((wallet) => wallet.setAssetProvider(assetProvider))
+  }
 
   const getStoredWalletKeys = () => {
     const keys = []
@@ -34,6 +40,7 @@ export function WalletService() {
 
   const put = (wallet) => {
     if (wallet) {
+      wallet.setAssetProvider(walletAssetProvider)
       activeWallets[wallet.getId()] = wallet
     }
     return wallet
@@ -186,6 +193,7 @@ export function WalletService() {
 
   return {
     _activeWallets: activeWallets,
+    setAssetProvider,
     get,
     getAll,
     remove,

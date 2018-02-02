@@ -1,10 +1,11 @@
+import { createReducer } from 'redux-act'
+import { setAssets } from 'Actions/redux'
+import { createMergeByField } from 'Utilities/helpers'
+
 const initialState = {}
 
-export default (state = initialState, action) => {
-  switch (action.type) {
-  case 'SET_ASSETS':
-    return action.payload
-  default:
-    return state
-  }
-}
+const mergeBySymbol = createMergeByField('symbol')
+
+export default createReducer({
+  [setAssets]: (state, assetsArray) => mergeBySymbol(state, ...assetsArray)
+}, initialState)

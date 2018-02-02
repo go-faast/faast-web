@@ -1,6 +1,9 @@
 export const isAppReady = ({ app }) => app.ready
 export const getAppError = ({ app }) => app.error
 
+export const getAllAssets = ({ assets }) => assets
+export const getAllAssetsArray = (state) => Object.values(getAllAssets(state))
+
 export const getAllPortfolios = ({ portfolios }) => portfolios
 export const getCurrentPortfolio = ({ portfolio, portfolios }) => portfolios[portfolio.current]
 

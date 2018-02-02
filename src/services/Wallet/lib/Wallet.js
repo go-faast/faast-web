@@ -8,7 +8,7 @@ export default class Wallet {
     assertExtended(this, Wallet)
     this.type = type
     this._persistAllowed = true
-    this._allAssets = {}
+    this._assetProvider = () => {}
   }
 
   setPersistAllowed = (persistAllowed) => this._persistAllowed = persistAllowed;
@@ -17,16 +17,28 @@ export default class Wallet {
 
   getId = () => this.type;
 
-  setAllAssets = (allAssets) => {
-    if (Array.isArray(allAssets)) {
-      allAssets = allAssets.reduce((mapped, asset) => ({ ...mapped, [asset.symbol]: asset }), {})
+  setAssetProvider = (assetProvider) => {
+    if (typeof assetProvider !== 'function') {
+      throw new Error(`Expected assetProvider to be a function, got ${typeof assetProvider}`)
     }
-    this._allAssets = allAssets
+    this._assetProvider = assetProvider
   };
 
-  getAllAssets = () => Object.values(this._allAssets);
+  getAllAssets = () => {
+    const assets = this._assetProvider()
+    if (typeof assets === 'object') {
+      return Object.values(assets)
+    }
+    return assets
+  };
 
-  getAllAssetsBySymbol = () => this._allAssets;
+  getAllAssetsBySymbol = () => {
+    const assets = this._assetProvider()
+    if (Array.isArray(assets)) {
+      return assets.reduce((mapped, asset) => ({ ...mapped, [asset.symbol]: asset }), {})
+    }
+    return assets
+  };
 
   getSymbol = (assetOrSymbol) => {
     if (typeof assetOrSymbol === 'object' && assetOrSymbol !== null) {
@@ -35,7 +47,7 @@ export default class Wallet {
     return assetOrSymbol
   };
 
-  getAsset = (assetOrSymbol) => this._allAssets[this.getSymbol(assetOrSymbol)];
+  getAsset = (assetOrSymbol) => this.getAllAssetsBySymbol()[this.getSymbol(assetOrSymbol)];
 
   getSupportedAssets = () => this.getAllAssets().filter(this.isAssetSupported);
 

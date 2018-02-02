@@ -74,10 +74,10 @@ export const setupLedger = () => Promise.resolve()
 
 export const init = () => (dispatch) => Promise.resolve()
   .then(() => dispatch(setupLogger))
+  .then(() => dispatch(getAssets())) // asset list required to restore wallets
   .then(() => dispatch(restoreState))
   .then(() => dispatch(setupBlockstack))
   .then(() => dispatch(setupLedger))
-  .then(() => dispatch(getAssets()))
   .then(() => dispatch(appReady()))
   .catch((e) => {
     log.error(e)

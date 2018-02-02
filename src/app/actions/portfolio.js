@@ -2,7 +2,7 @@
 import { insertSwapData, updateSwapTx, setSwap } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
-import { addWallet, removeWallet, removeAllWallets } from 'Actions/wallet'
+import { addWallet, removeWallet } from 'Actions/wallet'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
 import { restoreFromAddress } from 'Utilities/storage'

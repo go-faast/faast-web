@@ -236,3 +236,7 @@ export const merge = (state, ...newStates) => mergeWith({}, state, ...newStates,
     }
   }
 })
+
+export const createMergeByField = (field) => (state, ...newStates) => merge(state, ...newStates.map((newState) => ({ [newState[field]]: newState })))
+
+export const mergeById = createMergeByField('id')

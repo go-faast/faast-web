@@ -23,11 +23,11 @@ export default class MultiWallet extends Wallet {
   getId = () => this.id;
   
   // TODO: remove after refactoring
-  getAddress = () => this.wallets.map((wallet) => wallet.getAddress && wallet.getAddress()).join(',')
+  getAddress = () => this.wallets.map((wallet) => wallet.getAddress && wallet.getAddress()).join(',');
 
-  setAllAssets = (allAssets) => {
-    this._allAssets = allAssets
-    this.wallets.forEach((wallet) => wallet.setAllAssets(allAssets))
+  setAssetProvider = (assetProvider) => {
+    this._assetProvider = assetProvider
+    this.wallets.forEach((wallet) => wallet.setAssetProvider(assetProvider))
   };
 
   /**
@@ -56,6 +56,7 @@ export default class MultiWallet extends Wallet {
       return false
     }
     this.wallets.push(wallet)
+    wallet.setAssetProvider(this._assetProvider)
     return true
   };
 

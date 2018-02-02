@@ -90,7 +90,7 @@ export const getBalances = (assets, portfolio, walletId, mock) => (dispatch) => 
     portfolioList = dispatch(preparePortfolio(assets, mock))
   }
   return dispatch(getFiatPrices(portfolioList, mock))
-    .then((p) => dispatch(updateWalletBalances(walletId, assets))
+    .then((p) => dispatch(updateWalletBalances(walletId))
       .then((symbolToBalance) => p.map((a) => Object.assign({}, a, {
         balance: symbolToBalance[a.symbol] || toBigNumber(0)
       }))))

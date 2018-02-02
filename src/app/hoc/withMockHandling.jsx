@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import queryString from 'query-string'
 import { setMock } from 'Actions/redux'
 import { uppercase, lowercase } from 'Utilities/helpers'
+import { getAllAssetsArray } from 'Selectors'
 
 const withMockHandling = (Wrapped) => {
   class Mock extends Component {
@@ -42,7 +43,7 @@ const withMockHandling = (Wrapped) => {
   }
 
   const mapStateToProps = (state) => ({
-    assets: state.assets
+    assets: getAllAssetsArray(state),
   })
 
   const mapDispatchToProps = (dispatch) => ({
