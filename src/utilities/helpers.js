@@ -32,10 +32,10 @@ export const filterErrors = (err) => {
   }
 }
 
-export const shortener = (str, chars = 1, ellipsis = true) => {
+export const shortener = (str, chars = 1) => {
   if (typeof str !== 'string') return str
   if (str.length <= chars) return str
-  return str.slice(0, chars) + (ellipsis ? '...' : '')
+  return str.slice(0, chars) + '...'
 }
 
 export const timer = (seconds = 1, cb, done) => {

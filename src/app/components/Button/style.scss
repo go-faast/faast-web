@@ -1,9 +1,0 @@
-@import "~Styles/variables";
-
-// TODO: Move button-container css out of global stylesheet and 
-// into here after refactoring entire application to use this component
-
-.disabled {
-  @extend .cursor-disabled;
-  opacity: 0.6;
-}

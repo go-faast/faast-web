@@ -32,72 +32,12 @@ body {
     }
   }
 
-  .row {
-    $gutter-sizes: (
-      no: 0px,
-      small: 4px,
-      medium: 8px,
-      large: 12px,
-      x-large: 16px
-    );
-    @each $name, $value in $gutter-sizes {
-      &.#{$name}-gutters-x {
-        margin-left: -$value;
-        margin-right: -$value;
-        > .col,
-        > [class*="col-"] {
-          padding-left: $value;
-          padding-right: $value;
-        }
-      }
-      &.#{$name}-gutters-y {
-        margin-top: -$value;
-        margin-bottom: -$value;
-        > .col,
-        > [class*="col-"] {
-          padding-top: $value;
-          padding-bottom: $value;
-        }
-      }
-      &.#{$name}-gutters {
-        @extend .#{$name}-gutters-x;
-        @extend .#{$name}-gutters-y;
-      }
-    }
-  }
-
-  .button-container {
-    @extend .text-small;
-    @extend .text-center;
-    @extend .box-shadow;
-    color: $secondary-color-text;
-    font-weight: 300;
-    line-height: 1.5em;
-    border: 1px solid;
-    @extend .gradient-border;
-    @extend .gradient-background;
-    padding: 15px 30px;
-
-    &.button-small {
-      padding: 10px 20px;
-    }
-    &.button-outline {
-      background: $dark-grey;
-      color: $secondary-color;
-    }
-  }
-
   .beta-tag {
     font-family: 'Kaushan Script', cursive;
     @extend .text-small;
     @extend .text-white;
   }
 
-  span.faast-loading {
-    display: inline-block;
-    line-height: 0;
-    vertical-align: middle;
-  }
   .faast-loading {
     background-image: url(https://faa.st/img/faast-loading.svg);
     background-size: contain;
@@ -930,8 +870,8 @@ body {
       @extend .gradient-background;
       color: $dark-grey;
       padding: 10px 20px;
-      top: 8px;
-      right: 8px;
+      top: 10px;
+      right: 0;
       position: absolute;
       @extend .text-small;
       letter-spacing: 1px;
@@ -1102,6 +1042,15 @@ body {
     }
   }
 
+  .coin-icon {
+    background-size: 24px;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 24px;
+    width: 24px;
+    margin-right: 10px;
+  }
+
   @media (min-width: 992px) {
 
     .welcome-text {
@@ -1193,11 +1142,46 @@ body {
       }
     }
 
+    .button-container {
+      @extend .gradient-background;
+      height: 50px;
+      color: $secondary-color-text;
+      @extend .text-small;
+      padding: 10px 20px;
+      width: 250px;
+      @extend .text-center;
+      float: right;
+      @extend .box-shadow;
+      font-weight: 300;
+      letter-spacing: 1px;
+      line-height: 30px;
+
+      &.button-small {
+        width: 150px;
+      }
+      &.button-outline {
+        background: $dark-grey;
+        color: $secondary-color;
+        border: 1px solid;
+        @extend .gradient-border;
+      }
+    }
+
+    .tile-outer-container {
+      padding-right: 10px;
+      padding-left: 0px;
+      &:last-child {
+        padding-right: 0px;
+      }
+    }
+
     .change-icon {
       background-position: center center;
       background-repeat: no-repeat;
       height: 30px;
       width: 30px;
+      margin-top: 10px;
+      margin-right: 5px;
     }
     .up-icon {
       background-image: url(https://faa.st/img/up-icon.svg);
@@ -1223,6 +1207,7 @@ body {
         font-weight: 300;
         @extend .gradient-text;
         @extend .text-small;
+        @extend .text-shadow;
       }
     }
 
@@ -1263,6 +1248,7 @@ body {
       }
       .status-table-value {
         @extend .text-light-grey;
+        margin-top: 10px;
       }
       &.active {
         .status-table-label {
@@ -1299,6 +1285,7 @@ body {
 
   /*review, in progress and completed swap styles starts here*/
   .review-list {
+    width: 700px;
     margin: auto;
     margin-top: 20px;
 
@@ -1328,6 +1315,7 @@ body {
     background-repeat: no-repeat;
     background-position: center center;
     background-size: contain;
+    float: left;
   }
 
   .coin-info {

@@ -1,13 +1,15 @@
 @import "~Styles/variables";
 
-$collapse-table: md;
-
-:export {
-  collapseTablePoint: $collapse-table;
+.statsContainer {
+  @extend .margin-top-40;
 }
 
-.statsContainer {
-  margin-top: 8px;
+.tileOuterContainer {
+  padding-right: 10px;
+  padding-left: 0px;
+  &:last-child {
+    padding-right: 0px;
+  }
 }
 
 .areaChartContainer {
@@ -17,21 +19,6 @@ $collapse-table: md;
 }
 
 .tileContainer {
-  background-color: $ultra-dark-grey;
-  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  padding: 20px;
-  box-shadow: 5px 10px 15px #090909;
-}
-
-.tileContainerAddress {
-  background-color: $ultra-dark-grey;
-  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  padding: 20px;
-  box-shadow: 5px 10px 15px #090909;
-  text-align: center;
-}
-
-.chart {
   background-color: $ultra-dark-grey;
   @include gradient-background-variable($tileBgColor1, $tileBgColor2);
   padding: 20px;
@@ -65,13 +52,6 @@ $collapse-table: md;
   @extend .downIcon;
 }
 
-.addressLink {
-  @include media-breakpoint-down(xs) {
-    font-size: $text-x-small;
-  }
-  overflow-wrap: break-word;
-}
-
 .statsTitle, .addressTitle {
   @extend .text-small;
   @extend .text-medium-grey;
@@ -82,8 +62,8 @@ $collapse-table: md;
 }
 
 .chartContainer {
-  margin-top: 16px;
-  margin-bottom: 16px;
+  @extend .padding-top-20;
+  @extend .margin-bottom-20;
 }
 
 .chartInnerContainer {
@@ -109,17 +89,12 @@ $collapse-table: md;
   @extend .cursor-pointer;
 }
 
-.tableHeaderRow {
+.tableHeader {
+  @extend .text-center;
   @include gradient-background-variable($tileBgColor1, $tileBgColor2);
   @extend .box-shadow;
-  padding: 20px 16px;
-}
-
-.tableHeader {
-  @extend .tableHeaderRow;
-  @include media-breakpoint-down($collapse-table) {
-    padding: 16px 8px;
-  }
+  padding: 20px 5px;
+  letter-spacing: 1px;
 }
 
 .gradientSeparator {
@@ -133,18 +108,16 @@ $collapse-table: md;
   font-weight: 300;
   @extend .gradient-text;
   @extend .text-small;
-  text-align: right;
-  align-self: center;
-  @include media-breakpoint-down($collapse-table) {
-    font-size: $text-x-small;
-  }
+  @extend .text-shadow;
 }
 
 .tableRow {
-  @extend .tableHeaderRow;
-  @include media-breakpoint-down($collapse-table) {
-    padding: 8px;
-  }
+  @extend .text-center;
+  letter-spacing: 1px;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  @extend .box-shadow;
+  padding: 20px 5px;
+  @extend .text-center;
   &:hover {
     cursor: pointer;
     background: $dark-grey;
@@ -152,23 +125,7 @@ $collapse-table: md;
 }
 
 .tableCell {
-  text-align: right;
-  align-self: center;
-  &, p {
-    color: #dedede;
-  }
-  p {
-    margin: 0;
-    padding: 0;
-    + p {
-      font-size: 0.8em;
-      margin-top: 4px;
-      color: #ddd;
-    }
-  }
-  @include media-breakpoint-down($collapse-table) {
-    font-size: $text-small;
-  }
+  @extend .text-small;
 }
 
 .tableCoinIcon {
@@ -178,18 +135,20 @@ $collapse-table: md;
   height: 24px;
   width: 24px;
   margin-right: 10px;
-  @include media-breakpoint-down($collapse-table) {
-    margin: auto;
-  }
+  @extend .pull-left;
 }
 
 .tableCoinName {
+  @extend .pull-left;
+  text-align: left;
   white-space: nowrap;
+  width: calc(100% - 36px);
   overflow: hidden;
   text-overflow: ellipsis;
-  @include media-breakpoint-down($collapse-table) {
-    font-size: 0.8em;
-  }
+}
+
+.tableChangeValue {
+  @extend .pull-right;
 }
 
 .tableChangeIcon {
@@ -209,14 +168,6 @@ $collapse-table: md;
   @extend .downIcon;
 }
 
-.priceIncrease {
-  color: #0DD390 !important;
-}
-
-.priceDecrease {
-  color: #BC1515 !important;
-}
-
 .viewMode {
   @extend .gradient-text;
   border-width: 1px;
@@ -225,3 +176,55 @@ $collapse-table: md;
   border-color: $medium-grey;
   padding: 5px;
 }
+
+// .container {
+//   height: calc(100% - 30px);
+// }
+//
+// .address {
+//   height: 50px;
+// }
+//
+// .swapBar {
+//   height: 40px;
+//   border-top: 1px solid white;
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   padding-left: 10px;
+//   padding-right: 10px
+// }
+//
+// .inProgress {
+//   text-align: left;
+// }
+//
+// .details {
+//   color: $primary-color;
+//   cursor: pointer;
+//   text-decoration: underline;
+// }
+//
+// .slider {
+//   display: flex;
+//   justify-content: space-between;
+// }
+//
+// .cancel {
+//   @extend .select;
+// }
+//
+// .done {
+//   @extend .select;
+//   color: $primary-color;
+// }
+//
+//
+// .options {
+//   text-align: left;
+// }
+//
+// .option {
+//   @extend .select;
+//   color: $primary-color;
+// }

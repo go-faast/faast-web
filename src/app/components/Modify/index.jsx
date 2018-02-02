@@ -281,7 +281,6 @@ class Modify extends Component {
     return (
       <ModifyView
         layoutProps={layoutProps}
-        mq={this.props.mq}
         assetListProps={assetListProps}
         showAssetList={this.state.showAssetList}
         handleAssetListShow={this._handleAssetListShow}
@@ -302,8 +301,7 @@ class Modify extends Component {
 const mapStateToProps = (state) => ({
   portfolio: state.portfolio,
   wallet: state.wallet,
-  orderModal: state.orderModal,
-  mq: state.mediaQueries
+  orderModal: state.orderModal
 })
 
 const mapDispatchToProps = (dispatch) => ({

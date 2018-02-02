@@ -5,39 +5,6 @@ var UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 var WEBPACK_PORT = process.env.WEBPACK_PORT
 
-var cssLoaders = ({ sourceMap = true, modules = true } = {}) => [{
-  loader: 'style-loader'
-}, {
-  loader: 'css-loader', // translates CSS into CommonJS modules
-  options: {
-    sourceMap,
-    modules,
-    importLoaders: 2,
-    localIdentName: '[name]__[local]__[hash:base64:5]'
-  }
-}, {
-  loader: 'postcss-loader', // Run post css actions
-  options: {
-    sourceMap,
-    plugins: function () { // post css plugins, can be exported to postcss.config.js
-      return [
-        require('precss'),
-        require('autoprefixer')
-      ];
-    }
-  }
-}, {
-  loader: 'sass-loader', // compiles SASS to CSS
-  options: { 
-    includePaths: [
-      path.resolve(__dirname, 'node_modules'),
-    ],
-    sourceMap,
-    // Inject env as sass variable
-    data: `$env: ${process.env.NODE_ENV};`
-  }
-}]
-
 var config = {
   entry: path.join(__dirname, 'src', 'index.jsx'),
   output: {
@@ -55,10 +22,10 @@ var config = {
       oneOf: [
         {
           resourceQuery: /nsm/,
-          use: cssLoaders({ modules: false })
+          use: ['style-loader', 'css-loader', 'sass-loader']
         },
         {
-          use: cssLoaders(),
+          loader: 'style-loader!css-loader?sourceMap&modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]!sass-loader?sourceMap'
         }
       ]
     }]

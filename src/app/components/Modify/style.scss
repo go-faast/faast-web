@@ -1,29 +1,8 @@
 @import "~Styles/variables";
 
-.tileContainer {
-  background-color: $ultra-dark-grey;
-  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  padding: 16px;
-  box-shadow: 5px 10px 15px #090909;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  @include media-breakpoint-down(md) {
-    text-align: center;
-  }
-}
-
-.modifyAssetList {
-  margin-top: 8px;
-  @include media-breakpoint-down(xs) {
-    margin-left: -15px;
-    margin-right: -15px;
-  }
-}
-
-.greyStatus {
-  @extend .text-medium-grey;
+.header {
+  padding-top: 40px;
+  background-color: $pageBgColor2;
 }
 
 .editable {

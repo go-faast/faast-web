@@ -190,7 +190,6 @@ class SignTxModal extends Component {
         handleKeystorePassword={this._handleKeystorePassword}
         handleSignHardwareWallet={this._handleSignHardwareWallet}
         handleMetaMask={this._handleMetaMask}
-        mq={this.props.mq}
         signTxProps={{
           readyToSign: readyToSign(),
           handleCancel: this._handleCloseModal,
@@ -211,8 +210,7 @@ const mapStateToProps = (state) => ({
   portfolio: state.portfolio,
   swap: state.swap,
   wallet: state.wallet,
-  mock: state.mock,
-  mq: state.mediaQueries
+  mock: state.mock
 })
 
 export default connect(mapStateToProps)(SignTxModal)
