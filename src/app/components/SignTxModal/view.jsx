@@ -174,7 +174,7 @@ const SignTxForm = reduxForm({
           {swapRow}
         </div>
         {props.type === 'keystore' &&
-          <div className='form-group'>
+          <div className='form-group d-flex justify-content-center'>
             <Field
               name='password'
               component='input'
