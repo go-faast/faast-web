@@ -31,6 +31,7 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
 
   createTransaction = (toAddress, amount, assetOrSymbol) =>
     Promise.resolve(assetOrSymbol)
+      .then(this.assertAssetSupported)
       .then(this.getAsset)
       .then((asset) =>
         Trezor.composeAndSignTx({

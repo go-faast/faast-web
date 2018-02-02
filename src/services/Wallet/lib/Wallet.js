@@ -1,19 +1,19 @@
 import log from 'Utilities/log'
 import { abstractMethod, assertExtended } from 'Utilities/reflect'
 
-@abstractMethod('getId', 'createTransaction', 'sendTransaction', 'getBalance', 'getAllBalances', 'isAssetSupported')
+@abstractMethod('getId', 'createTransaction', 'sendTransaction', 'getBalance', 'isAssetSupported')
 export default class Wallet {
 
   constructor(type) {
     assertExtended(this, Wallet)
     this.type = type
     this._persistAllowed = true
-    this._allAssets = []
+    this._allAssets = {}
   }
 
-  setPersistAllowed = (persistAllowed) => this._persistAllowed = persistAllowed
+  setPersistAllowed = (persistAllowed) => this._persistAllowed = persistAllowed;
 
-  isPersistAllowed = () => this._persistAllowed
+  isPersistAllowed = () => this._persistAllowed;
 
   getId = () => this.type;
 
@@ -24,33 +24,48 @@ export default class Wallet {
     this._allAssets = allAssets
   };
 
-  getAllAssets = () => this._allAssets;
+  getAllAssets = () => Object.values(this._allAssets);
 
-  getAsset = (symbol) => {
-    if (typeof symbol === 'object') {
-      // Support passing in an asset object as argument
-      symbol = symbol.symbol
+  getAllAssetsBySymbol = () => this._allAssets;
+
+  getSymbol = (assetOrSymbol) => {
+    if (typeof assetOrSymbol === 'object' && assetOrSymbol !== null) {
+      return assetOrSymbol.symbol
     }
-    if (typeof symbol === 'string') {
-      return this._allAssets[symbol]
-    } else {
-      throw new Error(`Unrecognized value ${symbol} provided to getAsset`)
-    }
+    return assetOrSymbol
   };
 
-  assertAssetSupported = (asset) => {
-    if (!this.isAssetSupported(asset)) {
-      throw new Error(`Asset ${asset.symbol || asset} not supported by ${this.type}`)
+  getAsset = (assetOrSymbol) => this._allAssets[this.getSymbol(assetOrSymbol)];
+
+  getSupportedAssets = () => this.getAllAssets().filter(this.isAssetSupported);
+
+  getSupportedAssetSymbols = () => this.getSupportedAssets().map(({ symbol }) => symbol);
+
+  getSupportedAssetsBySymbol = () => this.getSupportedAssets().reduce((bySymbol, asset) => ({ ...bySymbol, [asset.symbol]: asset }));
+
+  assertAssetSupported = (assetOrSymbol) => {
+    if (!this.isAssetSupported(assetOrSymbol)) {
+      throw new Error(`Asset ${this.getSymbol(assetOrSymbol)} not supported by ${this.type}`)
     }
-    return asset
+    return assetOrSymbol
   };
 
   transfer = (toAddress, amount, assetOrSymbol, options) => {
     return Promise.resolve(assetOrSymbol)
       .then(this.assertAssetSupported)
-      .then(this.getAsset)
-      .then((asset) => this.createTransaction(toAddress, amount, asset, options))
+      .then(() => this.createTransaction(toAddress, amount, assetOrSymbol, options))
       .then((tx) => this.sendTransaction(tx, options))
+  };
+
+  getAllBalances = () => {
+    return Promise.resolve(this.getSupportedAssets())
+      .then((assets) => Promise.all(assets
+        .map(({ symbol }) => this.getBalance(symbol)
+          .then((balance) => ({ symbol, balance })))))
+      .then((balances) => balances.reduce((result, { symbol, balance }) => ({
+        ...result,
+        [symbol]: balance
+      }), {}))
   };
 
 }

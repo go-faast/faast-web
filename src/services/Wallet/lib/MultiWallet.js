@@ -73,7 +73,7 @@ export default class MultiWallet extends Wallet {
 
   _getWalletsForAsset = (assetOrSymbol) => this.wallets.filter((wallet) => wallet.isAssetSupported(assetOrSymbol));
 
-  isAssetSupported = (assetOrSymbol) => this.wallets.some((wallet) => wallet.isAssetSupported(assetOrSymbol));
+  getSupportedAssets = () => this.wallets.reduce((assets, wallet) => assets.concat(wallet.getSupportedAssets()), []);
 
   _chooseWallet = (assetOrSymbol, options) => {
     options = {
@@ -82,8 +82,7 @@ export default class MultiWallet extends Wallet {
     }
     const walletsForAsset = this._getWalletsForAsset(assetOrSymbol)
     if (walletsForAsset.length === 0) {
-      const symbol = assetOrSymbol.symbol || assetOrSymbol
-      return Promise.reject(new Error(`Failed to find wallet supporting ${symbol}`))
+      return Promise.reject(new Error(`Failed to find wallet supporting ${this.getSymbol(assetOrSymbol)}`))
     }
     if (walletsForAsset.length === 1) {
       options.selectWalletCallback = selectFirst
@@ -100,7 +99,7 @@ export default class MultiWallet extends Wallet {
   };
 
   sendTransaction = (tx, options) => {
-    // TODO: Choose wallet based on tx.toAddress
+    // TODO: Choose wallet based on tx.fromAddress
     return this._chooseWallet(tx.asset, options).then((wallet) => wallet.sendTransaction(tx, options))
   };
 

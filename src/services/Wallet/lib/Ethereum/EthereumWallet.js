@@ -56,16 +56,16 @@ export default class EthereumWallet extends Wallet {
     return asset && (asset.symbol === 'ETH' || asset.ERC20)
   };
 
-  _sendBalanceRequest = (assetOrSymbol, batch = null) => {
+  getBalance = (assetOrSymbol, batch = null) => {
+    if (!this.isAssetSupported(assetOrSymbol)) {
+      return Promise.resolve(toBigNumber(0))
+    }
     const asset = this.getAsset(assetOrSymbol)
     const address = this.getAddress()
     let request
-    if (!this.isAssetSupported(asset)) {
-      request = Promise.resolve(toBigNumber(0))
-    } else if (asset.symbol === 'ETH') {
+    if (asset.symbol === 'ETH') {
       request = batchRequest(batch, web3.eth.getBalance, address, 'latest')
-    } else {
-      // Handle ERC20
+    } else { // Handle ERC20
       request = batchRequest(batch, web3.eth.call, {
         to: asset.contractAddress,
         data: tokenBalanceData(address)
@@ -74,22 +74,18 @@ export default class EthereumWallet extends Wallet {
     return request.then((balance) => toMainDenomination(balance, asset.decimals))
   };
 
-  getBalance = (assetOrSymbol) => this._sendBalanceRequest(assetOrSymbol);
-
-  getAllBalances = () => {
-    return Promise.resolve()
-      .then(() => {
-        const batch = new web3.BatchRequest()
-        const assetBalances = Object.values(this.getAllAssets()).map((asset) =>
-          this._sendBalanceRequest(asset, batch)
-            .then((balance) => ({ ...asset, balance })))
-        batch.execute()
-        return Promise.all(assetBalances)
-      }).then((assets) => assets.reduce((result, { symbol, balance }) => ({
-        ...result,
-        [symbol]: balance
-      }), {}))
-  };
+  getAllBalances = () => Promise.resolve(this.getSupportedAssets())
+    .then((assets) => {
+      const batch = new web3.BatchRequest()
+      const balanceRequests = assets.map(({ symbol }) =>
+        this.getBalance(symbol, batch)
+          .then((balance) => ({ symbol, balance })))
+      batch.execute()
+      return Promise.all(balanceRequests)
+    }).then((balances) => balances.reduce((result, { symbol, balance }) => ({
+      ...result,
+      [symbol]: balance
+    }), {}));
 
   _assignNonce = (txData) => {
     return web3.eth.getTransactionCount(txData.from)
@@ -101,6 +97,7 @@ export default class EthereumWallet extends Wallet {
 
   createTransaction = (toAddress, amount, assetOrSymbol) => {
     return Promise.resolve(assetOrSymbol)
+      .then(this.assetAssetSupported)
       .then(this.getAsset)
       .then((asset) => {
         let tx = {

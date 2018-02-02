@@ -8,6 +8,7 @@ export const walletAdded = createAction('WALLET_ADDED', (wallet) => ({
   type: wallet.type,
   address: wallet.getAddress ? wallet.getAddress() : null,
   isBlockstack: wallet.isBlockstack,
+  supportedAssets: wallet.getSupportedAssetSymbols(),
 }))
 export const walletRemoved = createAction('WALLET_REMOVED')
 export const allWalletsRemoved = createAction('ALL_WALLETS_REMOVED')
