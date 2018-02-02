@@ -10,13 +10,14 @@ const fiat = (value) => {
   return accounting.formatMoney(value)
 }
 
-const units = (value, symbol, price) => {
+const units = (value, symbol, price, showSymbol = true) => {
   value = toBigNumber(value)
   let shortened = value.toString()
-  if (price) shortened = shortenUnit(value, price, 8)
+  if (price) shortened = shortenUnit(value, price, 4)
   return expandable({
     id: `unit-${symbol}-${Math.random()}`,
     extra: symbol,
+    showExtra: showSymbol,
     expanded: value.toString(),
     shrunk: shortened
   })
@@ -29,7 +30,7 @@ const shortenUnit = (value, price, decMin = 1) => {
   let decLimit = pennyValue.slice(pennyValue.indexOf('.') + 1).split(/([1-9])/)[0].length + 1
   decLimit = decLimit < decMin ? decMin : decLimit
   const limit = valueStr.indexOf('.') + 1 + decLimit
-  return shortener(valueStr, limit)
+  return shortener(valueStr, limit, false)
 }
 
 const percentage = (value, showPositive) => {

@@ -154,7 +154,7 @@ class Balances extends Component {
       showAddressSearch: true,
       view: this.props.viewOnlyAddress ? 'view' : 'balances',
       disableAction: !portfolio || !portfolio.list || !portfolio.list.length || orderStatus === 'working',
-      handleModify: () => this.props.routerPush('/modify')
+      handleModify: () => this.props.routerPush('/modify'),
     }
     const addressProps = {
       address: this.state.address,
@@ -166,6 +166,7 @@ class Balances extends Component {
         pieChart={<PieChart chartSelect={this.state.chartSelect} handleChartSelect={this._setChartSelect} />}
         priceChart={<PriceChart chartSelect={this.state.chartSelect} />}
         layoutProps={layoutProps}
+        mq={this.props.mq}
         total={portfolio.total}
         total24hAgo={portfolio.total24hAgo}
         totalChange={portfolio.totalChange}
@@ -198,7 +199,8 @@ const mapStateToProps = (state) => ({
   portfolio: state.portfolio,
   mock: state.mock,
   orderModal: state.orderModal,
-  swap: state.swap
+  swap: state.swap,
+  mq: state.mediaQueries
 })
 
 const mapDispatchToProps = (dispatch) => ({

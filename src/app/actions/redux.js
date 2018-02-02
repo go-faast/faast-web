@@ -92,6 +92,11 @@ export const hideOrderModal = () => ({
   type: 'HIDE_ORDER_MODAL'
 })
 
+export const setBreakpoints = (bp) => ({
+  type: 'SET_BREAKPOINTS',
+  payload: bp
+})
+
 export const setSettings = (settings) => ({
   type: 'SET_SETTINGS',
   payload: settings

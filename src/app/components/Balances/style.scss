@@ -1,15 +1,13 @@
 @import "~Styles/variables";
 
-.statsContainer {
-  @extend .margin-top-40;
+$collapse-table: md;
+
+:export {
+  collapseTablePoint: $collapse-table;
 }
 
-.tileOuterContainer {
-  padding-right: 10px;
-  padding-left: 0px;
-  &:last-child {
-    padding-right: 0px;
-  }
+.statsContainer {
+  margin-top: 8px;
 }
 
 .areaChartContainer {
@@ -19,6 +17,21 @@
 }
 
 .tileContainer {
+  background-color: $ultra-dark-grey;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 20px;
+  box-shadow: 5px 10px 15px #090909;
+}
+
+.tileContainerAddress {
+  background-color: $ultra-dark-grey;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 20px;
+  box-shadow: 5px 10px 15px #090909;
+  text-align: center;
+}
+
+.chart {
   background-color: $ultra-dark-grey;
   @include gradient-background-variable($tileBgColor1, $tileBgColor2);
   padding: 20px;
@@ -52,6 +65,13 @@
   @extend .downIcon;
 }
 
+.addressLink {
+  @include media-breakpoint-down(xs) {
+    font-size: $text-x-small;
+  }
+  overflow-wrap: break-word;
+}
+
 .statsTitle, .addressTitle {
   @extend .text-small;
   @extend .text-medium-grey;
@@ -62,8 +82,8 @@
 }
 
 .chartContainer {
-  @extend .padding-top-20;
-  @extend .margin-bottom-20;
+  margin-top: 16px;
+  margin-bottom: 16px;
 }
 
 .chartInnerContainer {
@@ -89,12 +109,17 @@
   @extend .cursor-pointer;
 }
 
-.tableHeader {
-  @extend .text-center;
+.tableHeaderRow {
   @include gradient-background-variable($tileBgColor1, $tileBgColor2);
   @extend .box-shadow;
-  padding: 20px 5px;
-  letter-spacing: 1px;
+  padding: 20px 16px;
+}
+
+.tableHeader {
+  @extend .tableHeaderRow;
+  @include media-breakpoint-down($collapse-table) {
+    padding: 16px 8px;
+  }
 }
 
 .gradientSeparator {
@@ -108,16 +133,18 @@
   font-weight: 300;
   @extend .gradient-text;
   @extend .text-small;
-  @extend .text-shadow;
+  text-align: right;
+  align-self: center;
+  @include media-breakpoint-down($collapse-table) {
+    font-size: $text-x-small;
+  }
 }
 
 .tableRow {
-  @extend .text-center;
-  letter-spacing: 1px;
-  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  @extend .box-shadow;
-  padding: 20px 5px;
-  @extend .text-center;
+  @extend .tableHeaderRow;
+  @include media-breakpoint-down($collapse-table) {
+    padding: 8px;
+  }
   &:hover {
     cursor: pointer;
     background: $dark-grey;
@@ -125,7 +152,23 @@
 }
 
 .tableCell {
-  @extend .text-small;
+  text-align: right;
+  align-self: center;
+  &, p {
+    color: #dedede;
+  }
+  p {
+    margin: 0;
+    padding: 0;
+    + p {
+      font-size: 0.8em;
+      margin-top: 4px;
+      color: #ddd;
+    }
+  }
+  @include media-breakpoint-down($collapse-table) {
+    font-size: $text-small;
+  }
 }
 
 .tableCoinIcon {
@@ -135,20 +178,18 @@
   height: 24px;
   width: 24px;
   margin-right: 10px;
-  @extend .pull-left;
+  @include media-breakpoint-down($collapse-table) {
+    margin: auto;
+  }
 }
 
 .tableCoinName {
-  @extend .pull-left;
-  text-align: left;
   white-space: nowrap;
-  width: calc(100% - 36px);
   overflow: hidden;
   text-overflow: ellipsis;
-}
-
-.tableChangeValue {
-  @extend .pull-right;
+  @include media-breakpoint-down($collapse-table) {
+    font-size: 0.8em;
+  }
 }
 
 .tableChangeIcon {
@@ -168,6 +209,14 @@
   @extend .downIcon;
 }
 
+.priceIncrease {
+  color: #0DD390 !important;
+}
+
+.priceDecrease {
+  color: #BC1515 !important;
+}
+
 .viewMode {
   @extend .gradient-text;
   border-width: 1px;
@@ -176,55 +225,3 @@
   border-color: $medium-grey;
   padding: 5px;
 }
-
-// .container {
-//   height: calc(100% - 30px);
-// }
-//
-// .address {
-//   height: 50px;
-// }
-//
-// .swapBar {
-//   height: 40px;
-//   border-top: 1px solid white;
-//   display: flex;
-//   flex-direction: column;
-//   justify-content: center;
-//   padding-left: 10px;
-//   padding-right: 10px
-// }
-//
-// .inProgress {
-//   text-align: left;
-// }
-//
-// .details {
-//   color: $primary-color;
-//   cursor: pointer;
-//   text-decoration: underline;
-// }
-//
-// .slider {
-//   display: flex;
-//   justify-content: space-between;
-// }
-//
-// .cancel {
-//   @extend .select;
-// }
-//
-// .done {
-//   @extend .select;
-//   color: $primary-color;
-// }
-//
-//
-// .options {
-//   text-align: left;
-// }
-//
-// .option {
-//   @extend .select;
-//   color: $primary-color;
-// }

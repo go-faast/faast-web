@@ -8,6 +8,7 @@ import swap from './swap'
 import mock from './mock'
 import orderModal from './orderModal'
 import settings from './settings'
+import mediaQueries from './mediaQueries'
 
 export default combineReducers({
   wallet,
@@ -18,5 +19,6 @@ export default combineReducers({
   orderModal,
   settings,
   form: formReducer,
-  toastr: toastrReducer
+  toastr: toastrReducer,
+  mediaQueries
 })
