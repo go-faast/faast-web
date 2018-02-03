@@ -16,7 +16,9 @@ export default class BitcoinWallet extends Wallet {
     this.xpub = xpub
   }
 
-  getAddress = () => this.xpub;
+  isSingleAddress = () => false;
+
+  getFreshAddress = () => this.xpub; // TODO
 
   getId = () => this.xpub;
 

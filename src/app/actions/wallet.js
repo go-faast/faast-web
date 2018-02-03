@@ -7,7 +7,7 @@ import { getAllAssets } from 'Selectors'
 export const walletUpdated = createAction('WALLET_UPDATED', (wallet) => ({
   id: wallet.getId(),
   type: wallet.type,
-  address: wallet.getAddress ? wallet.getAddress() : null,
+  address: wallet.isSingleAddress() ? wallet.getFreshAddress() : '',
   isBlockstack: wallet.isBlockstack,
   supportedAssets: wallet.getSupportedAssetSymbols(),
   subwallets: wallet.type === 'MultiWallet' ? wallet.wallets.map((w) => w.getId()) : [],

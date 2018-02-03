@@ -3,7 +3,7 @@ import { toBigNumber } from 'Utilities/convert'
 
 import Wallet from './Wallet'
 
-const selectFirst = (wallets) => Promise.resolve(wallets[0])
+const selectFirst = (wallets) => wallets[0]
 
 const resolveId = (walletOrId) => typeof walletOrId !== 'string' ? walletOrId.getId() : walletOrId
 
@@ -21,9 +21,8 @@ export default class MultiWallet extends Wallet {
   }
 
   getId = () => this.id;
-  
-  // TODO: remove after refactoring
-  getAddress = () => this.wallets.map((wallet) => wallet.getAddress && wallet.getAddress()).join(',');
+
+  isSingleAddress = () => false;
 
   setAssetProvider = (assetProvider) => {
     this._assetProvider = assetProvider
@@ -76,32 +75,45 @@ export default class MultiWallet extends Wallet {
 
   isAssetSupported = (assetOrSymbol) => this.wallets.some((wallet) => wallet.isAssetSupported(assetOrSymbol));
 
-  _chooseWallet = (assetOrSymbol, options) => {
+  _chooseWallet = (assetOrSymbol, options, applyToWallet) => {
     options = {
       selectWalletCallback: selectFirst,
       ...(options || {})
     }
     const walletsForAsset = this._getWalletsForAsset(assetOrSymbol)
     if (walletsForAsset.length === 0) {
-      return Promise.reject(new Error(`Failed to find wallet supporting ${this.getSymbol(assetOrSymbol)}`))
+      throw new Error(`Failed to find wallet supporting ${this.getSymbol(assetOrSymbol)}`)
     }
+    let selectedWallet
     if (walletsForAsset.length === 1) {
-      options.selectWalletCallback = selectFirst
+      selectedWallet = walletsForAsset[0]
+    } else {
+      selectedWallet = options.selectWalletCallback(walletsForAsset)
     }
-    return options.selectWalletCallback(walletsForAsset)
+    if (selectedWallet && typeof selectedWallet.then === 'function') {
+      return selectedWallet.then(applyToWallet)
+    }
+    return applyToWallet(selectedWallet)
+  };
+  
+  getFreshAddress = (assetOrSymbol, options) => {
+    if (!assetOrSymbol) {
+      return null
+    }
+    return this._chooseWallet(assetOrSymbol, options, (wallet) => wallet.getFreshAddress())
   };
 
   transfer = (toAddress, amount, assetOrSymbol, options) => {
-    return this._chooseWallet(assetOrSymbol, options).then((wallet) => wallet.transfer(toAddress, amount, assetOrSymbol, options))
+    return this._chooseWallet(assetOrSymbol, options, (wallet) => wallet.transfer(toAddress, amount, assetOrSymbol, options))
   };
 
   createTransaction = (toAddress, amount, assetOrSymbol, options) => {
-    return this._chooseWallet(assetOrSymbol, options).then((wallet) => wallet.createTransaction(toAddress, amount, assetOrSymbol, options))
+    return this._chooseWallet(assetOrSymbol, options, (wallet) => wallet.createTransaction(toAddress, amount, assetOrSymbol, options))
   };
 
   sendTransaction = (tx, options) => {
     // TODO: Choose wallet based on tx.fromAddress
-    return this._chooseWallet(tx.asset, options).then((wallet) => wallet.sendTransaction(tx, options))
+    return this._chooseWallet(tx.asset, options, (wallet) => wallet.sendTransaction(tx, options))
   };
 
   getBalance = (assetOrSymbol) => {

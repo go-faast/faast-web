@@ -51,6 +51,10 @@ export default class EthereumWallet extends Wallet {
 
   getId = () => this.getAddress();
 
+  isSingleAddress = () => true;
+
+  getFreshAddress = () => this.getAddress();
+
   isAssetSupported = (assetOrSymbol) => {
     const asset = this.getAsset(assetOrSymbol)
     return asset && (asset.symbol === 'ETH' || asset.ERC20)
