@@ -114,12 +114,12 @@ const BalancesView = (props) => {
 
   const renderAssets = () => {
     return assetRows.map((a, i) => {
-      const { symbol, name, value, balance, price, percentage, change24, priceDecrease, infoUrl } = a
+      const { symbol, name, fiat, balance, price, percentage, change24, priceDecrease, infoUrl } = a
       const displayUnits = display.units(balance, symbol, price, false)
       const displayUnitsWithSymbol = display.units(balance, symbol, price, true)
       const displayWeight = display.percentage(percentage)
       const displayChange = display.percentage(change24, true)
-      const fiatValue = display.fiat(value)
+      const fiatValue = display.fiat(fiat)
       const fiatPrice = display.fiat(price)
       const chartOpen = openCharts[symbol]
       return (
