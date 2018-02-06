@@ -180,7 +180,7 @@ const swapSufficientDeposit = (swapList, portfolio) => (dispatch) => {
   return processArray(swapList, (a) => {
     const finish = (e, x) => dispatch(swapFinish('swapSufficientDeposit', a, e, x))
 
-    const to = portfolio.list.find(b => b.symbol === a.to)
+    const to = portfolio.assetHoldings.find(b => b.symbol === a.to)
     const expected = toPrecision(toUnit(a.amount, a.rate, to.decimals).minus(a.fee), to.decimals)
     if (expected.lessThanOrEqualTo(0)) {
       return finish('insufficient deposit for expected return')
@@ -191,7 +191,7 @@ const swapSufficientDeposit = (swapList, portfolio) => (dispatch) => {
 
 // Checks to see if there will be enough Ether if the full gas amount is paid
 const swapSufficientEther = (swapList, portfolio) => (dispatch) => {
-  let etherBalance = portfolio.list.find(a => a.symbol === 'ETH').balance
+  let etherBalance = portfolio.assetHoldings.find(a => a.symbol === 'ETH').balance
   return processArray(swapList, (a) => {
     const finish = (e, x) => dispatch(swapFinish('swapSufficientEther', a, e, x))
 

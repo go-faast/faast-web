@@ -11,33 +11,40 @@ export const getAllAssetsArray = (state) => Object.values(getAllAssets(state))
 
 export const getAllPortfolios = ({ portfolios }) => portfolios
 export const getCurrentPortfolioId = ({ portfolio }) => portfolio.current
-export const getPortfolio = reselect(getAllPortfolios, (_, { id }) => id, (portfolios, id) => portfolios[id])
+
+export const createPortfolioSelector = (portfolioIdSelector) => reselect(getAllPortfolios, portfolioIdSelector, (portfolios, id) => portfolios[id])
+export const getPortfolio = createPortfolioSelector((_, { portfolioId }) => portfolioId)
+export const getCurrentPortfolio = createPortfolioSelector(getCurrentPortfolioId)
+
 export const getWalletIdsInPortfolio = reselect(getPortfolio, (portfolio) => portfolio && portfolio.wallets || [])
 
 export const getAllWallets = ({ wallets }) => wallets
-export const getWallet = (walletId) => (state) => getAllWallets(state)[walletId]
-export const getCurrentWallet = (state) => getWallet((getCurrentPortfolio(state) || {}).id)(state) || {}
-export const getPortfolioIdsForWallet = (walletId) => (state) =>
-  Object.values(getAllPortfolios(state))
+
+export const createWalletSelector = (walletIdSelector) => reselect(getAllWallets, walletIdSelector, (wallets, id) => wallets[id])
+export const getWallet = createWalletSelector((_, { walletId }) => walletId)
+export const getCurrentWallet = createWalletSelector(getCurrentPortfolioId)
+
+export const getPortfolioIdsForWallet = reselect(
+  getAllPortfolios,
+  getWallet,
+  (portfolios, { id: walletId }) => portfolios
     .filter(({ wallets }) => wallets.includes(walletId))
     .map(({ id }) => id)
+)
 
-export const getCurrentPortfolio = reselect(
-  getCurrentPortfolioId,
-  getAllPortfolios,
-  getAllWallets,
+export const createWalletHoldingsSelector = (walletSelector) => reselect(
+  walletSelector,
   getAllAssets,
-  (portfolioId, portfolios, wallets, assets) => {
+  (wallet, assets) => {
     let totalFiat = toBigNumber(0);
     let totalFiat24hAgo = toBigNumber(0)
-    const wallet = wallets[portfolioId]
-    const portfolio = portfolios[portfolioId]
-    let holdings = wallet.supportedAssets
+    const balances = wallet.balances || {}
+    let assetHoldings = wallet.supportedAssets
       .map((symbol) => assets[symbol])
       .filter((asset) => typeof asset === 'object' && asset !== null)
       .map((asset) => {
         const { symbol, ERC20, price = toBigNumber(0), change24 = toBigNumber(0) } = asset
-        const balance = (wallet.balances || {})[symbol] || toBigNumber(0)
+        const balance = balances[symbol] || toBigNumber(0)
         const shown = balance.greaterThan(0) || !ERC20
         const fiat = toUnit(balance, price, 2)
         const price24hAgo = price.div(change24.plus(100).div(100))
@@ -58,14 +65,22 @@ export const getCurrentPortfolio = reselect(
       }))
       .sort((a, b) => a.fiat.minus(b.fiat).toNumber())
       .reverse()
-    holdings = fixPercentageRounding(holdings, totalFiat)
+    assetHoldings = fixPercentageRounding(assetHoldings, totalFiat)
     const totalChange = totalFiat.minus(totalFiat24hAgo).div(totalFiat24hAgo).times(100)
     return {
-      ...portfolio,
-      id: wallet.id,
-      total: totalFiat,
-      total24hAgo: totalFiat24hAgo,
+      totalFiat,
+      totalFiat24hAgo,
       totalChange,
-      list: holdings,
+      assetHoldings,
     }
   })
+
+export const getWalletWithHoldings = createWalletHoldingsSelector(getWallet)
+
+export const getCurrentPortfolioWithHoldings = reselect(
+  getCurrentPortfolio,
+  createWalletHoldingsSelector(getCurrentWallet),
+  (portfolio, holdings) => ({
+    ...portfolio,
+    ...holdings,
+  }))

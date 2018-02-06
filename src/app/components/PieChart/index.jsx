@@ -12,10 +12,10 @@ class PieChart extends Component {
   }
 
   componentDidUpdate (prevProps) {
-    if (prevProps.chartSelect.symbol !== this.props.chartSelect.symbol) {
+    if (prevProps.selectedSymbol !== this.props.selectedSymbol) {
       window.setTimeout(() => {
-        const list = this.props.portfolio.list
-        const assetIx = list.findIndex(a => a.symbol === this.props.chartSelect.symbol)
+        const list = this.props.portfolio.assetHoldings
+        const assetIx = list.findIndex(a => a.symbol === this.props.selectedSymbol)
         const pieChart = this.refs.pieChart.getChart()
         if (typeof prevAssetIx !== 'undefined' && pieChart.series[0].data[prevAssetIx]) {
           pieChart.series[0].data[prevAssetIx].slice(false)
@@ -29,7 +29,7 @@ class PieChart extends Component {
   }
 
   _setPieChartSeries () {
-    const list = this.props.portfolio.list.filter(a => a.shown)
+    const list = this.props.portfolio.assetHoldings.filter(a => a.shown)
     let seriesData
     if (list.length === 1) {
       seriesData = [{
@@ -69,7 +69,7 @@ class PieChart extends Component {
 
 PieChart.propTypes = {
   portfolio: PropTypes.object.isRequired,
-  chartSelect: PropTypes.object.isRequired,
+  selectedSymbol: PropTypes.string.isRequired,
   handleChartSelect: PropTypes.func.isRequired
 }
 

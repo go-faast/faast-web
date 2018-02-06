@@ -7,7 +7,7 @@ import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 import { getSwapStatus, estimateReceiveAmount } from 'Utilities/swap'
 import { sendSwapDeposits } from 'Actions/portfolio'
-import { getCurrentPortfolio, getCurrentWallet } from 'Selectors'
+import { getAllAssets, getCurrentWallet } from 'Selectors'
 
 class SignTxModal extends Component {
   constructor (props) {
@@ -108,24 +108,25 @@ class SignTxModal extends Component {
         return 'unknown error'
       }
     }
-    const portfolio = this.props.portfolio
-    const swapList = this.props.swap.reduce((a, b) => {
-      if (!portfolio.list.length) return []
-      return a.concat(b.list.map((c) => {
-        const from = portfolio.list.find(d => d.symbol === b.symbol)
-        const to = portfolio.list.find(d => d.symbol === c.symbol)
+    const assets = this.props.assets
+    const swapList = this.props.swap.reduce((allSwaps, sending) => 
+      allSwaps.concat(sending.list.map((receiving) => {
+        const { symbol: fromSymbol } = sending
+        const { symbol: toSymbol } = receiving
+        const fromAsset = assets[fromSymbol]
+        const toAsset = assets[toSymbol]
         return {
-          from,
-          to,
-          pair: `${b.symbol}_${c.symbol}`,
-          swap: c,
-          txFee: estimateTxFee(c),
-          receiveAmount: estimateReceiveAmount(c, to),
-          status: getStatus(c),
-          error: getError(c)
+          from: fromAsset,
+          to: toAsset,
+          pair: `${fromSymbol}_${toSymbol}`,
+          swap: receiving,
+          txFee: estimateTxFee(receiving),
+          receiveAmount: estimateReceiveAmount(receiving, toAsset),
+          status: getStatus(receiving),
+          error: getError(receiving)
         }
-      }))
-    }, [])
+      })),
+    [])
     return (
       <SignTxModalView
         showModal={this.props.showModal}
@@ -148,7 +149,7 @@ class SignTxModal extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  portfolio: getCurrentPortfolio(state),
+  assets: getAllAssets(state),
   swap: state.swap,
   wallet: getCurrentWallet(state),
   mock: state.mock

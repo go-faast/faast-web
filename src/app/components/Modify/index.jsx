@@ -9,7 +9,7 @@ import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
 import { setSwap, resetSwap, toggleOrderModal, showOrderModal } from 'Actions/redux'
 import { setPortfolioItem, initiateSwaps } from 'Actions/portfolio'
-import { getCurrentPortfolio, getCurrentWallet } from 'Selectors'
+import { getCurrentPortfolioWithHoldings, getCurrentWallet } from 'Selectors'
 
 const ZERO = new BigNumber(0)
 
@@ -36,7 +36,7 @@ class Modify extends Component {
   }
 
   componentWillMount () {
-    const list = this.props.portfolio.list.map((a, i) => {
+    const list = this.props.portfolio.assetHoldings.map((a) => {
       if (a.shown) return this._assetItem(a)
     }).filter(a => a)
     this.setState({ list })
@@ -92,22 +92,22 @@ class Modify extends Component {
           weight = asset.weight.original
           units = asset.units.original
         } else {
-          weight = toPercentage(fiat, portfolio.total)
+          weight = toPercentage(fiat, portfolio.totalFiat)
           units = toUnit(fiat, asset.price, asset.decimals, true)
         }
         allowanceFiat = this.state.allowance.fiat.plus(available).round(2)
-        allowanceWeight = toPercentage(allowanceFiat, portfolio.total)
+        allowanceWeight = toPercentage(allowanceFiat, portfolio.totalFiat)
         break
       case 'weight':
         /* out of commission due to rounding issues. Determining fiat amount instead now */
 
         // weight = ZERO.plus(value)
-        // fiat = weight.div(100).times(portfolio.total)
+        // fiat = weight.div(100).times(portfolio.totalFiat)
         // units = asset.units.adjusted
         // allowanceWeight = this.state.allowance.weight.plus(available)
-        // allowanceFiat = allowanceWeight.div(100).times(portfolio.total)
+        // allowanceFiat = allowanceWeight.div(100).times(portfolio.totalFiat)
         // allowanceFiat = this.state.allowance.fiat.plus(available)
-        // allowanceWeight = percentage(allowanceFiat, portfolio.total)
+        // allowanceWeight = percentage(allowanceFiat, portfolio.totalFiat)
     }
     this.setState({
       list: updateObjectInArray(list, {
@@ -138,7 +138,7 @@ class Modify extends Component {
     const symbol = Object.keys(change)[0]
     if (parseFloat(change[symbol]) >= 0) {
       const weight = ZERO.plus(change[symbol])
-      const fiat = weight.div(100).times(this.props.portfolio.total).round(2)
+      const fiat = weight.div(100).times(this.props.portfolio.totalFiat).round(2)
 
       this._handleSlider(symbol, fiat)
     } else {
@@ -198,7 +198,7 @@ class Modify extends Component {
         const sum = s.list.reduce((a, c) => {
           return a.plus(c.unit)
         }, new BigNumber(0))
-        const asset = portfolio.list.find((a) => a.symbol === s.symbol)
+        const asset = portfolio.assetHoldings.find((a) => a.symbol === s.symbol)
         const difference = asset.balance.minus(sum)
         const last = s.list[s.list.length - 1]
         const newAmount = last.unit.plus(difference)
@@ -230,7 +230,7 @@ class Modify extends Component {
 
   _handleSelectAsset (asset) {
     const portfolio = this.props.portfolio
-    const selectedAsset = portfolio.list.find(a => asset.symbol === a.symbol)
+    const selectedAsset = portfolio.assetHoldings.find(a => asset.symbol === a.symbol)
     this.props.setPortfolioItem(portfolio.id, asset.symbol, {
       shown: true
     })
@@ -260,9 +260,9 @@ class Modify extends Component {
 
   render () {
     const portfolio = this.props.portfolio
-    const assetList = portfolio.list.filter((a) => !a.shown)
+    const assetList = portfolio.assetHoldings.filter((a) => !a.shown)
     const sliderProps = {
-      max: portfolio.total ? portfolio.total.toNumber() : 0,
+      max: portfolio.totalFiat ? portfolio.totalFiat.toNumber() : 0,
       // allowance: this.state.allowance.fiat,
       onValueChange: this._handleSlider
     }
@@ -301,7 +301,7 @@ class Modify extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  portfolio: getCurrentPortfolio(state),
+  portfolio: getCurrentPortfolioWithHoldings(state),
   wallet: getCurrentWallet(state),
   orderModal: state.orderModal,
   mq: state.mediaQueries

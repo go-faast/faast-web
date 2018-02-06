@@ -11,7 +11,7 @@ import { getSwapStatus } from 'Utilities/swap'
 import { getBalances, removeSwundle } from 'Actions/request'
 import { toggleOrderModal, resetSwap } from 'Actions/redux'
 import { clearAllIntervals } from 'Actions/portfolio'
-import { getCurrentPortfolio, getCurrentWallet } from 'Selectors'
+import { getCurrentPortfolioWithHoldings, getCurrentWallet } from 'Selectors'
 
 let balancesInterval
 
@@ -19,7 +19,7 @@ class Balances extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      chartSelect: {},
+      pieChartSelection: '',
       openCharts: {},
     }
     this._getBalances = this._getBalances.bind(this)
@@ -67,19 +67,7 @@ class Balances extends Component {
   }
 
   _setChartSelect (symbol) {
-    const list = this.props.portfolio.list
-    const asset = list.find(a => a.symbol === symbol)
-    if (!asset.change24) {
-      console.log(asset.symbol)
-    }
-    this.setState({ chartSelect: {
-      name: asset.name || 'LOADING',
-      symbol: asset.symbol || 'XXX',
-      infoUrl: asset.infoUrl || 'https://faa.st',
-      change: asset.change24 || -1,
-      priceDecrease: asset.change24 && asset.change24.isNegative(),
-      price: asset.price || -1
-    } })
+    this.setState({ pieChartSelection: symbol })
   }
 
   _orderStatus () {
@@ -117,25 +105,25 @@ class Balances extends Component {
       showAction: true,
       showAddressSearch: true,
       view: isViewOnly ? 'view' : 'balances',
-      disableAction: !portfolio || !portfolio.list || !portfolio.list.length || orderStatus === 'working',
+      disableAction: !portfolio || !portfolio.assetHoldings || !portfolio.assetHoldings.length || orderStatus === 'working',
       handleModify: () => this.props.routerPush('/modify'),
     }
     const addressProps = {
       address: wallet.address,
       showDownloadKeystore: !isViewOnly && wallet.isBlockstack
     }
-    const totalDecrease = portfolio.totalChange && portfolio.totalChange.isNegative()
+    const totalDecrease = portfolio.totalChange.isNegative()
     return (
       <BalancesView
-        pieChart={<PieChart portfolio={portfolio} chartSelect={this.state.chartSelect} handleChartSelect={this._setChartSelect} />}
-        priceChart={<PriceChart chartSelect={this.state.chartSelect} />}
+        pieChart={<PieChart portfolio={portfolio} selectedSymbol={this.state.pieChartSelection} handleChartSelect={this._setChartSelect} />}
+        priceChart={<PriceChart />}
         layoutProps={layoutProps}
         mq={this.props.mq}
-        total={portfolio.total}
-        total24hAgo={portfolio.total24hAgo}
+        total={portfolio.totalFiat}
+        total24hAgo={portfolio.totalFiat24hAgo}
         totalChange={portfolio.totalChange}
         totalDecrease={totalDecrease}
-        assetRows={portfolio.list.filter((holding) => holding.shown)}
+        assetRows={portfolio.assetHoldings.filter((holding) => holding.shown)}
         toggleChart={this._toggleChart}
         showOrderModal={this.props.orderModal.show}
         handleToggleOrderModal={this.props.toggleOrderModal}
@@ -159,7 +147,7 @@ Balances.propTypes = {
 
 const mapStateToProps = (state) => ({
   wallet: getCurrentWallet(state),
-  portfolio: getCurrentPortfolio(state),
+  portfolio: getCurrentPortfolioWithHoldings(state),
   mock: state.mock,
   orderModal: state.orderModal,
   swap: state.swap,
