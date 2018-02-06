@@ -60,7 +60,6 @@ export const getCurrentPortfolio = reselect(
       .reverse()
     holdings = fixPercentageRounding(holdings, totalFiat)
     const totalChange = totalFiat.minus(totalFiat24hAgo).div(totalFiat24hAgo).times(100)
-    console.log(holdings)
     return {
       ...portfolio,
       id: wallet.id,
