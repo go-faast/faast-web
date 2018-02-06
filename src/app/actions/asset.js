@@ -3,7 +3,7 @@ import { fetchGet } from 'Utilities/fetch'
 import log from 'Utilities/log'
 import config from 'Config'
 
-export const assetsUpdated = createAction('ASSETS_UPDATED')
+export const assetsAdded = createAction('ASSETS_UPDATED')
 export const assetPriceUpdated = createAction('ASSET_PRICE_UPDATED')
 export const assetPricesUpdated = createAction('ASSET_PRICES_UPDATED')
 
@@ -16,7 +16,7 @@ export const assetPricesError = createAction('ASSET_PRICES_ERROR', (e) => e.mess
 
 export const retrieveAssets = () => (dispatch) => {
   return fetchGet(`${config.siteUrl}/app/assets`)
-    .then((assets) => dispatch(assetsUpdated(assets)))
+    .then((assets) => dispatch(assetsAdded(assets)))
     .catch((err) => {
       log.error(err)
       throw err
