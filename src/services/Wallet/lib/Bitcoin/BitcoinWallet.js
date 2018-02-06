@@ -31,7 +31,7 @@ export default class BitcoinWallet extends Wallet {
         log.warn('unsupported', asset)
         return Promise.resolve(toBigNumber(0))
       }
-      return Bitcore.discover(asset.symbol, this.xpub, log.debug)
+      return Bitcore.discover(asset.symbol, this.xpub)
         .then((result) => {
           log.debug('bitcore result', result)
           return result.balance
