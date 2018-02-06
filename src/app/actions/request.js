@@ -15,6 +15,7 @@ export const getPriceChart = (symbol) => () => {
 }
 
 export const getBalances = (assets, portfolio, walletId) => (dispatch) => {
+  dispatch(setPortfolioLoading(portfolio.id, true))
   return Promise.all([
     dispatch(retrieveAssetPrices()),
     dispatch(updateWalletBalances(walletId)),
