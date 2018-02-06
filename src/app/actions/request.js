@@ -14,15 +14,15 @@ export const getPriceChart = (symbol) => () => {
   return fetchGet(`${config.siteUrl}/app/portfolio-chart/${symbol}`)
 }
 
-export const getBalances = (assets, portfolio, walletId) => (dispatch) => {
-  dispatch(setPortfolioLoading(portfolio.id, true))
+export const getBalances = (walletId) => (dispatch) => {
+  dispatch(setPortfolioLoading(walletId, true))
   return Promise.all([
     dispatch(retrieveAssetPrices()),
     dispatch(updateWalletBalances(walletId)),
-  ]).then(() => dispatch(setPortfolioLoading(portfolio.id, false)))
+  ]).then(() => dispatch(setPortfolioLoading(walletId, false)))
     .catch((err) => {
       log.error(err)
-      dispatch(setPortfolioLoading(portfolio.id, false))
+      dispatch(setPortfolioLoading(walletId, false))
       throw err
     })
 }

@@ -10,8 +10,8 @@ import log from 'Utilities/log'
 import { getSwapStatus } from 'Utilities/swap'
 import { getBalances, removeSwundle } from 'Actions/request'
 import { toggleOrderModal, resetSwap } from 'Actions/redux'
-import { resetPortfolio, clearAllIntervals } from 'Actions/portfolio'
-import { getCurrentPortfolio, getCurrentWallet, getAllAssetsArray } from 'Selectors'
+import { clearAllIntervals } from 'Actions/portfolio'
+import { getCurrentPortfolio, getCurrentWallet } from 'Selectors'
 
 let balancesInterval
 
@@ -36,13 +36,8 @@ class Balances extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.viewOnlyAddress) {
-      if (nextProps.viewOnlyAddress !== this.props.viewOnlyAddress) {
-        window.clearInterval(balancesInterval)
-        this.props.resetPortfolio()
-        balancesInterval = window.setInterval(() => this._getBalances(), 30000)
-        this._getBalances(true)
-      }
+    if (nextProps.viewOnlyAddress && nextProps.viewOnlyAddress !== this.props.viewOnlyAddress) {
+      this._getBalances()
     }
   }
 
@@ -57,14 +52,8 @@ class Balances extends Component {
     }
   }
 
-  _getBalances (resetPortfolio) {
-    const { wallet, assets, getBalances } = this.props
-    const portfolio = resetPortfolio ? {} : this.props.portfolio
-    getBalances(assets, portfolio, wallet.id)
-      .then(() => {
-        this._setChartSelect('ETH')
-      })
-      .catch(log.error)
+  _getBalances () {
+    this.props.getBalances(this.props.wallet.id)
   }
 
   _toggleChart (symbol) {
@@ -161,7 +150,6 @@ class Balances extends Component {
 
 Balances.propTypes = {
   wallet: PropTypes.object.isRequired,
-  assets: PropTypes.array.isRequired,
   portfolio: PropTypes.object.isRequired,
   mock: PropTypes.object.isRequired,
   getBalances: PropTypes.func.isRequired,
@@ -170,7 +158,6 @@ Balances.propTypes = {
 
 const mapStateToProps = (state) => ({
   wallet: getCurrentWallet(state),
-  assets: getAllAssetsArray(state),
   portfolio: getCurrentPortfolio(state),
   mock: state.mock,
   orderModal: state.orderModal,
@@ -178,25 +165,12 @@ const mapStateToProps = (state) => ({
   mq: state.mediaQueries
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  getBalances: (assets, portfolio, wallet, mock, swap) => {
-    return dispatch(getBalances(assets, portfolio, wallet, mock, swap))
-  },
-  routerPush: (path) => {
-    dispatch(push(path))
-  },
-  toggleOrderModal: () => {
-    dispatch(toggleOrderModal())
-  },
-  resetSwap: () => {
-    dispatch(resetSwap())
-  },
-  resetPortfolio: () => {
-    dispatch(resetPortfolio())
-  },
-  removeSwundle: (address) => {
-    dispatch(removeSwundle(address))
-  }
-})
+const mapDispatchToProps = {
+  getBalances,
+  routerPush: push,
+  toggleOrderModal,
+  resetSwap,
+  removeSwundle
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Balances)
