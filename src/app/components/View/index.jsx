@@ -1,26 +1,26 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { replace } from 'react-router-redux'
 import { connect } from 'react-redux'
 import Balances from 'Components/Balances'
 import { isValidAddress } from 'Utilities/wallet'
 import { toChecksumAddress } from 'Utilities/convert'
 import toastr from 'Utilities/toastrWrapper'
-import { resetPortfolio } from 'Actions/portfolio'
+import { createViewOnlyPortfolio, removePortfolio, setCurrentPortfolio } from 'Actions/portfolio'
 
 class View extends Component {
   constructor () {
     super()
-    this.state = { address: '' }
+    this.state = { portfolioId: '' }
     this._setAddress = this._setAddress.bind(this)
   }
 
   componentWillMount () {
     this._setAddress(this.props.match.params.address)
-    this.props.resetPortfolio()
   }
 
   componentWillUnmount () {
-    this.props.resetPortfolio()
+    this.props.removePortfolio(this.state.portfolioId)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -34,26 +34,32 @@ class View extends Component {
       toastr.error('Not a valid address')
       this.props.historyReplace('/')
     } else {
-      this.setState({ address: toChecksumAddress(address) })
+      this.props.createViewOnlyPortfolio(toChecksumAddress(address))
+        .then(({ id }) => {
+          this.props.setCurrentPortfolio(id)
+          this.setState({ portfolioId: id })
+        })
     }
   }
 
   render () {
-    if (!this.state.address) return null
+    if (!this.state.portfolioId) return null
 
-    return <Balances viewOnlyAddress={this.state.address} />
+    return <Balances />
   }
+}
+
+View.propTypes = {
+  match: PropTypes.object.isRequired,
 }
 
 const mapStateToProps = () => ({})
 
-const mapDispatchToProps = (dispatch) => ({
-  historyReplace: (path) => {
-    dispatch(replace(path))
-  },
-  resetPortfolio: () => {
-    dispatch(resetPortfolio())
-  }
-})
+const mapDispatchToProps = {
+  historyReplace: replace,
+  createViewOnlyPortfolio,
+  removePortfolio,
+  setCurrentPortfolio,
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(View)

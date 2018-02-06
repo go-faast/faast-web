@@ -182,7 +182,7 @@ const BalancesView = (props) => {
   return (
     <Layout {...layoutProps}>
       {viewOnly &&
-        <div className='col-12 margin-top-40'>
+        <div className='col-12 my-3'>
           <div className={`text-center ${styles.viewMode}`}>
             You are in VIEW MODE. If this is your address, you will need to access the wallet before you can trade assets.
           </div>

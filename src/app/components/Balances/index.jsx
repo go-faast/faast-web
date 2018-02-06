@@ -36,14 +36,14 @@ class Balances extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.viewOnlyAddress && nextProps.viewOnlyAddress !== this.props.viewOnlyAddress) {
+    if (nextProps.portfolio.id && nextProps.portfolio.id !== this.props.portfolio.id) {
       this._getBalances()
     }
   }
 
   componentWillUnmount () {
     window.clearInterval(balancesInterval)
-    if (!this.props.viewOnlyAddress) {
+    if (!this.props.portfolio.viewOnly) {
       const orderStatus = this._orderStatus()
       if (orderStatus === 'error' || orderStatus === 'complete') {
         this.props.resetSwap()
@@ -111,17 +111,18 @@ class Balances extends Component {
   render () {
     const orderStatus = this._orderStatus()
 
-    const { wallet, portfolio, viewOnlyAddress } = this.props
+    const { wallet, portfolio } = this.props
+    const isViewOnly = portfolio.viewOnly
     const layoutProps = {
       showAction: true,
       showAddressSearch: true,
-      view: this.props.viewOnlyAddress ? 'view' : 'balances',
+      view: isViewOnly ? 'view' : 'balances',
       disableAction: !portfolio || !portfolio.list || !portfolio.list.length || orderStatus === 'working',
       handleModify: () => this.props.routerPush('/modify'),
     }
     const addressProps = {
       address: wallet.address,
-      showDownloadKeystore: !viewOnlyAddress && wallet.isBlockstack
+      showDownloadKeystore: !isViewOnly && wallet.isBlockstack
     }
     const totalDecrease = portfolio.totalChange && portfolio.totalChange.isNegative()
     return (
@@ -141,7 +142,7 @@ class Balances extends Component {
         handleForgetOrder={this._forgetOrder}
         orderStatus={orderStatus}
         addressProps={addressProps}
-        viewOnly={!!viewOnlyAddress}
+        viewOnly={isViewOnly}
         openCharts={this.state.openCharts}
       />
     )

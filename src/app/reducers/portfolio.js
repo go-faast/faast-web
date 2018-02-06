@@ -5,12 +5,12 @@ import {
 } from 'Actions/portfolio'
 
 const initialState = {
-  current: null
+  current: 'default'
 }
 
 export default createReducer({
   [resetAll]: () => initialState,
   [setCurrentPortfolio]: (state, { id }) => ({ ...state, current: id }),
   [portfolioAdded]: (state, { id }) => ({ ...state, current: state.current || id }),
-  [portfolioRemoved]: (state, { id }) => (state.current === id ? ({ ...state, current: null }) : state),
+  [portfolioRemoved]: (state, { id }) => (state.current === id ? ({ ...state, current: 'default' }) : state),
 }, initialState)

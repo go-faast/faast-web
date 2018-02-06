@@ -19,13 +19,13 @@ import {
   getTransaction
 } from 'Utilities/wallet'
 import walletService from 'Services/Wallet'
-import { getCurrentWallet as selectCurrentWallet, getCurrentPortfolio } from 'Selectors'
+import { getCurrentWallet as selectCurrentWallet, getCurrentPortfolio, getWalletIdsInPortfolio, getCurrentPortfolioId } from 'Selectors'
 import { createAction } from 'redux-act'
 import uuid from 'uuid/v4'
-import { MultiWallet } from 'Services/Wallet'
+import { MultiWallet, EthereumWalletWeb3 } from 'Services/Wallet'
 
 export const portfolioAdded = createAction('PORTFOLIO_ADDED')
-export const portfolioRemoved = createAction('PORTFOLIO_REMOVED')
+export const portfolioRemoved = createAction('PORTFOLIO_REMOVED', (portfolioId) => ({ id: portfolioId }))
 export const allPortfoliosRemoved = createAction('ALL_PORTFOLIOS_REMOVED')
 export const portfolioWalletAdded = createAction('PORTFOLIO_WALLET_ADDED', (portfolioId, walletId) => ({ portfolioId, walletId }))
 export const portfolioWalletRemoved = createAction('PORTFOLIO_WALLET_REMOVED', (portfolioId, walletId) => ({ portfolioId, walletId }))
@@ -45,6 +45,16 @@ export const createPortfolio = (id, persist = true) => (dispatch) => Promise.res
     return dispatch(addWallet(wallet))
   })
   .then(() => dispatch(portfolioAdded({ id })).payload)
+
+export const createViewOnlyPortfolio = (address) => (dispatch) => Promise.resolve()
+  .then(() => {
+    if (!address) {
+      throw new Error('invalid view only address')
+    }
+    const wallet = new EthereumWalletWeb3(address)
+    wallet.setPersistAllowed(false)
+    return dispatch(addWallet(wallet))
+  }).then(({ id }) => dispatch(portfolioAdded({ id, viewOnly: true })).payload)
 
 export const addWalletToPortfolio = (portfolioId, walletId) => (dispatch) =>
   Promise.all([
@@ -77,17 +87,19 @@ export const restoreAllPortfolios = (wallets) => (dispatch) => Promise.resolve()
       }
     }), Promise.resolve()))
 
-export const removePortfolio = ({ id, wallets }) => (dispatch) => {
-  if (id === defaultPortfolioId) {
-    // Don't remove default portfolio, only it's wallets
-    return Promise.all(wallets.map((walletId) => dispatch(removeWallet(walletId))))
-  }
-  return dispatch(portfolioRemoved(id))
-}
+export const removePortfolio = (id) => (dispatch, getState) => Promise.resolve()
+  .then(() => {
+    if (id === defaultPortfolioId) {
+      // Don't remove default portfolio, only it's wallets
+      const walletIds = getWalletIdsInPortfolio(getState(), { id })
+      return Promise.all(walletIds.map((walletId) => dispatch(removeWallet(walletId))))
+    }
+    return dispatch(portfolioRemoved(id)).payload
+  })
 
-export const resetPortfolio = () => (dispatch, getState) => {
-  const currentPortfolio = getCurrentPortfolio(getState())
-  return dispatch(removePortfolio(currentPortfolio))
+export const removeCurrentPortfolio = () => (dispatch, getState) => {
+  const currentPortfolioId = getCurrentPortfolioId(getState())
+  return dispatch(removePortfolio(currentPortfolioId))
 }
 
 export const getCurrentWallet = () => (dispatch, getState) => walletService.get(selectCurrentWallet(getState()).id)
@@ -338,7 +350,7 @@ export const openWallet = (wallet, isMocking) => (dispatch, getState) =>
 export const closeWallet = () => (dispatch) => {
   clearAllIntervals()
   blockstack.signUserOut()
-  return dispatch(resetPortfolio())
+  return dispatch(removeCurrentPortfolio())
     .then(() => log.info('portfolio closed'))
 }
 

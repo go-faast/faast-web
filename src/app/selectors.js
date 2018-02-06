@@ -11,6 +11,8 @@ export const getAllAssetsArray = (state) => Object.values(getAllAssets(state))
 
 export const getAllPortfolios = ({ portfolios }) => portfolios
 export const getCurrentPortfolioId = ({ portfolio }) => portfolio.current
+export const getPortfolio = reselect(getAllPortfolios, (_, { id }) => id, (portfolios, id) => portfolios[id])
+export const getWalletIdsInPortfolio = reselect(getPortfolio, (portfolio) => portfolio && portfolio.wallets || [])
 
 export const getAllWallets = ({ wallets }) => wallets
 export const getWallet = (walletId) => (state) => getAllWallets(state)[walletId]

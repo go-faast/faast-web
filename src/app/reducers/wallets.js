@@ -20,8 +20,8 @@ export default createReducer({
     merge(state, ...wallets.map((walletId) => ({ [walletId]: { portfolioIds: { $union: [portfolioId] } } }))),
   [portfolioWalletAdded]: (state, { portfolioId, walletId }) =>
     merge(state, { [walletId]: { portfolioIds: { $union: [portfolioId] } } }),
-  [portfolioRemoved]: (state, { id: portfolioId, wallets }) =>
-    merge(state, ...wallets.map((walletId) => ({ [walletId]: { portfolioIds: { $without: [portfolioId] } } }))),
+  [portfolioRemoved]: (state, { id: portfolioId }) =>
+    merge(state, Object.keys(state).map((walletId) => ({ [walletId]: { portfolioIds: { $without: [portfolioId] } } }))),
   [allPortfoliosRemoved]: (state) => mapValues(state, (wallet) => ({
     ...wallet,
     portfolioIds: []
