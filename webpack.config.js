@@ -44,6 +44,9 @@ var config = {
     path: path.join(__dirname, 'dist'),
     filename: 'portfolio.bundle.js'
   },
+  node: {
+    fs: 'empty',
+  },
   module: {
     rules: [{
       test: /\.jsx?$/,
