@@ -29,20 +29,10 @@ export const getBalances = (walletId) => (dispatch) => {
 
 export const getMarketInfo = (pair) => () => {
   return fetchGet(`${config.apiUrl}/marketinfo/${pair}`)
-    .then((data) => {
-      if (data.error) throw new Error(data.error)
-
-      return data
-    })
 }
 
 export const postExchange = (info) => () => {
   return fetchPost(`${config.apiUrl}/shift`, info)
-    .then((data) => {
-      if (data.error || !data.orderId) throw new Error(data.error)
-
-      return data
-    })
     .catch((err) => {
       log.error(err)
       const errMsg = filterErrors(err)
@@ -72,24 +62,24 @@ export const getOrderStatus = (depositSymbol, receiveSymbol, address, timestamp)
 
 export const getSwundle = (address, isMocking) => (dispatch) => {
   let url = `${config.apiUrl}/swundle/${address}`
-  fetchGet(url)
-  .then((data) => {
-    if (data.result && data.result.swap) {
-      dispatch(restoreSwundle(data.result.swap, address, isMocking))
-    }
-  })
-  .catch(log.error)
+  return fetchGet(url)
+    .then((data) => {
+      if (data.result && data.result.swap) {
+        dispatch(restoreSwundle(data.result.swap, address, isMocking))
+      }
+    })
+    .catch(log.error)
 }
 
 export const postSwundle = (address, swap) => () => {
   const url = `${config.apiUrl}/swundle/${address}`
-  fetchPost(url, { swap })
-  .catch(log.error)
+  return fetchPost(url, { swap })
+    .catch(log.error)
 }
 
 export const removeSwundle = (address) => () => {
   clearSwap(address)
   const url = `${config.apiUrl}/swundle/${address}`
-  fetchDelete(url)
-  .catch(log.error)
+  return fetchDelete(url)
+    .catch(log.error)
 }
