@@ -48,7 +48,7 @@ const HeaderView = (props) => {
         </Col>
       ])}
       {view === 'view' && (
-        <Col xs='12'>
+        <Col xs='auto'>
           {props.isWalletAccessed
             ? (<Link to='/balances'>
                 <Button>back to wallet</Button>
