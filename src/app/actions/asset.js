@@ -19,7 +19,7 @@ export const retrieveAssets = () => (dispatch) => {
     .then((assets) => dispatch(assetsAdded(assets)))
     .catch((err) => {
       log.error(err)
-      throw err
+      throw new Error('Failed to load asset list')
     })
 }
 

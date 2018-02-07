@@ -7,5 +7,5 @@ export default createReducer({
   [appError]: (state, error) => ({ ...state, error: error.message || error }),
 }, {
   ready: false,
-  error: false,
+  error: '',
 })

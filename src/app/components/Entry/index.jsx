@@ -3,25 +3,39 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import EntryView from './view'
-import toastr from 'Utilities/toastrWrapper'
+import { Route } from 'react-router-dom'
 import { init } from 'Actions/app'
 import { isAppReady, getAppError } from 'Selectors'
+import App from 'Components/App'
+import LoadingFullscreen from 'Components/LoadingFullscreen'
+
+import styles from './style'
 
 class Entry extends Component {
 
   componentWillMount () {
-    this.props.initApp().catch((e) => toastr.error(e, { timeOut: 0, removeOnHover: false }))
+    this.props.initApp()
   }
 
   render () {
-    return (<EntryView {...this.props} />)
+    const { ready, error } = this.props
+    return (
+      <div className={styles.container}>
+        <div className={`container-fluid ${styles.content}`}>
+          {ready ? (
+            <Route component={App} />
+          ) : (
+            <LoadingFullscreen error={error} />
+          )}
+        </div>
+      </div>
+    )
   }
 }
 
 Entry.propTypes = {
   ready: PropTypes.bool.isRequired,
-  error: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]).isRequired,
+  error: PropTypes.string.isRequired,
 }
 
 const mapStateToProps = (state) => ({

@@ -27,6 +27,10 @@ export const restoreState = (dispatch, getState) => Promise.resolve()
     dispatch(setSettings(settings))
     return dispatch(updateHoldings(wallet.id))
   })
+  .catch((e) => {
+    log.error(e)
+    throw new Error('Failed to restore app state')
+  })
 
 export const setupLogger = () => Promise.resolve()
   .then(() => {
@@ -41,6 +45,9 @@ export const setupLogger = () => Promise.resolve()
         }
       })
       .then(() => idb.removeOld('logging'))
+  })
+  .catch((e) => {
+    log.error(e)
   })
 
 export const setupBlockstack = (dispatch) => Promise.resolve()
@@ -67,9 +74,9 @@ export const setupLedger = () => Promise.resolve()
         .then((comm) => {
           window.faast.hw.ledger = new window.ledger.eth(comm)
         })
-        .catch(log.error)
     }
   })
+  .catch(log.error)
 
 export const init = () => (dispatch) => Promise.resolve()
   .then(() => dispatch(setupLogger))
@@ -82,5 +89,4 @@ export const init = () => (dispatch) => Promise.resolve()
     log.error(e)
     const message = e.message || 'Unknown error'
     dispatch(appError(message))
-    throw message
   })
