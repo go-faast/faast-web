@@ -1,18 +1,24 @@
 import { createAction } from 'redux-act'
 
 import log from 'Utilities/log'
-import walletService from 'Services/Wallet'
-import { getAllAssets } from 'Selectors'
+import walletService, { Wallet, MultiWallet } from 'Services/Wallet'
+import { getAllAssets, getParentWallets } from 'Selectors'
 
-export const walletUpdated = createAction('WALLET_UPDATED', (wallet) => ({
+const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   id: wallet.getId(),
   type: wallet.type,
   address: wallet.isSingleAddress() ? wallet.getFreshAddress() : '',
   isBlockstack: wallet.isBlockstack,
+  isReadOnly: wallet.isReadOnly,
   supportedAssets: wallet.getSupportedAssetSymbols(),
-  subwallets: wallet.type === 'MultiWallet' ? wallet.wallets.map((w) => w.getId()) : [],
-}))
-export const walletRemoved = createAction('WALLET_REMOVED')
+  nestedWalletIds: wallet.type === 'MultiWallet' ? wallet.wallets.map((w) => w.getId()) : [],
+}) : wallet
+
+export const walletAdded = createAction('WALLET_ADDED', convertWalletInstance)
+export const walletUpdated = createAction('WALLET_UPDATED', convertWalletInstance)
+export const walletRemoved = createAction('WALLET_REMOVED', convertWalletInstance)
+
+export const allWalletsUpdated = createAction('ALL_WALLETS_UPDATED', (...walletInstances) => walletInstances.map(convertWalletInstance))
 export const allWalletsRemoved = createAction('ALL_WALLETS_REMOVED')
 
 export const walletBalancesUpdating = createAction('WALLET_BALANCES_UPDATING', (walletId) => ({ id: walletId }))
@@ -25,13 +31,21 @@ export const walletBalancesError = createAction('WALLET_BALANCES_ERROR', (wallet
   error: error.message || error,
 }))
 
-export const addWallet = (wallet) => (dispatch) => Promise.resolve()
-  .then(() => walletService.add(wallet))
-  .then(() => dispatch(walletUpdated(wallet)).payload)
+export const addWallet = (walletInstance) => (dispatch) => Promise.resolve()
+  .then(() => walletService.add(walletInstance))
+  .then(() => dispatch(walletAdded(walletInstance)).payload)
 
-export const removeWallet = (walletId) => (dispatch) => Promise.resolve()
-  .then(() => walletService.remove(walletId))
-  .then(() => dispatch(walletRemoved({ id: walletId })))
+export const updateWallet = (id) => (dispatch) => Promise.resolve()
+  .then(() => walletService.get(id))
+  .then((walletInstance) => dispatch(walletUpdated(walletInstance)).payload)
+
+export const removeWallet = (id) => (dispatch, getState) => Promise.resolve()
+  .then(() => walletService.remove(id))
+  .then((walletInstance) => {
+    dispatch(walletRemoved(walletInstance || { id }))
+    const parentWallets = getParentWallets(getState(), { id })
+    return Promise.all(parentWallets.map((parentWallet) => dispatch(updateWallet(parentWallet.id))))
+  })
 
 export const removeAllWallets = () => (dispatch) => Promise.resolve()
   .then(() => walletService.removeAll())
@@ -40,7 +54,7 @@ export const removeAllWallets = () => (dispatch) => Promise.resolve()
 export const restoreAllWallets = () => (dispatch, getState) => Promise.resolve()
   .then(() => walletService.setAssetProvider(() => getAllAssets(getState())))
   .then(() => walletService.restoreAll())
-  .then((restoredWallets) => restoredWallets.map((w) => dispatch(walletUpdated(w)).payload))
+  .then((walletInstances) => walletInstances.map((w) => dispatch(walletAdded(w)).payload))
 
 export const updateWalletBalances = (walletId) => (dispatch) => Promise.resolve()
   .then(() => {
@@ -60,3 +74,21 @@ export const updateWalletBalances = (walletId) => (dispatch) => Promise.resolve(
     dispatch(walletBalancesError(walletId, e))
     return {}
   })
+
+const doForNestedWallets = (cb) => (multiWalletId, ...nestedWalletIds) => (dispatch) =>
+  Promise.all([
+    walletService.get(multiWalletId),
+    ...nestedWalletIds.map((nestedWalletId) => walletService.get(nestedWalletId)),
+  ]).then(([multiWallet, ...nestedWallets]) => {
+    if (multiWallet.type !== MultiWallet.type) {
+      throw new Error(`Wallet ${multiWalletId} is not a ${MultiWallet.type}`)
+    }
+    return Promise.all(nestedWallets.map((nestedWallet) => Promise.resolve(cb(multiWallet, nestedWallet))))
+      .then(() => dispatch(walletUpdated(multiWallet)))
+      .then(() => updateWalletBalances(multiWalletId))
+  })
+
+export const addNestedWallets = doForNestedWallets((multiWallet, nestedWallet) => multiWallet.addWallet(nestedWallet))
+export const addNestedWallet = addNestedWallets
+export const removeNestedWallets = doForNestedWallets((multiWallet, nestedWallet) => multiWallet.removeWallet(nestedWallet))
+export const removeNestedWallet = removeNestedWallets

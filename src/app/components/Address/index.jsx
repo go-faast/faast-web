@@ -25,7 +25,7 @@ class Address extends Component {
     const modalProps = {
       showModal: this.state.showModal,
       toggleModal: this._toggleModal,
-      handleDownloadKeystore: () => this.setState({ view: 'downloadKeystore' })
+      handleDownload: () => this.setState({ view: 'downloadKeystore' })
     }
     return (
       <AddressView

@@ -7,7 +7,7 @@ import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 import { getSwapStatus, estimateReceiveAmount } from 'Utilities/swap'
 import { sendSwapDeposits } from 'Actions/portfolio'
-import { getAllAssets, getCurrentWallet } from 'Selectors'
+import { getAllAssets, getCurrentPortfolio } from 'Selectors'
 
 class SignTxModal extends Component {
   constructor (props) {
@@ -151,7 +151,7 @@ class SignTxModal extends Component {
 const mapStateToProps = (state) => ({
   assets: getAllAssets(state),
   swap: state.swap,
-  wallet: getCurrentWallet(state),
+  wallet: getCurrentPortfolio(state),
   mock: state.mock
 })
 

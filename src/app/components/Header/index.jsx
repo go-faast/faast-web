@@ -4,10 +4,10 @@ import { push } from 'react-router-redux'
 import PropTypes from 'prop-types'
 import HeaderView from './view'
 import { toggleOrderModal } from 'Actions/redux'
-import { closeWallet } from 'Actions/portfolio'
+import { closeCurrentPortfolio } from 'Actions/portfolio'
 import { isValidAddress } from 'Utilities/wallet'
 import toastr from 'Utilities/toastrWrapper'
-import { getCurrentWallet } from 'Selectors'
+import { isCurrentPortfolioEmpty } from 'Selectors'
 
 const Header = (props) => {
   const handleModify = (e) => {
@@ -16,7 +16,7 @@ const Header = (props) => {
     }
   }
 
-  const handleAddressSearch = (values, dispatch) => {
+  const handleAddressSearch = (values) => {
     const address = typeof values.address === 'string' ? values.address.trim() : ''
     if (!isValidAddress(address)) {
       toastr.error('Not a valid address')
@@ -30,33 +30,27 @@ const Header = (props) => {
       {...props}
       handleModify={handleModify}
       handleAddressSearch={handleAddressSearch}
-      handleCloseWallet={props.closeWallet}
-      isWalletAccessed={!!props.wallet.address}
+      handleCloseWallet={props.closeCurrentPortfolio}
+      isWalletAccessed={!props.isPortfolioEmpty}
     />
   )
 }
 
 Header.propTypes = {
   disableAction: PropTypes.bool,
-  closeWallet: PropTypes.func.isRequired,
+  closeCurrentPortfolio: PropTypes.func.isRequired,
   toggleOrderModal: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
   swap: state.swap,
-  wallet: getCurrentWallet(state)
+  isPortfolioEmpty: isCurrentPortfolioEmpty(state),
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  closeWallet: () => {
-    dispatch(closeWallet())
-  },
-  toggleOrderModal: () => {
-    dispatch(toggleOrderModal())
-  },
-  historyPush: (path) => {
-    dispatch(push(path))
-  }
-})
+const mapDispatchToProps = {
+  closeCurrentPortfolio,
+  toggleOrderModal,
+  historyPush: push,
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Header)

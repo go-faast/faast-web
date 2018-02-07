@@ -6,12 +6,12 @@ import Balances from 'Components/Balances'
 import { isValidAddress } from 'Utilities/wallet'
 import { toChecksumAddress } from 'Utilities/convert'
 import toastr from 'Utilities/toastrWrapper'
-import { createViewOnlyPortfolio, removePortfolio, setCurrentPortfolio } from 'Actions/portfolio'
+import { createViewOnlyPortfolio, setCurrentPortfolio, removePortfolio } from 'Actions/portfolio'
 
 class View extends Component {
   constructor () {
     super()
-    this.state = { portfolioId: '' }
+    this.state = { walletId: '' }
     this._setAddress = this._setAddress.bind(this)
   }
 
@@ -20,7 +20,7 @@ class View extends Component {
   }
 
   componentWillUnmount () {
-    this.props.removePortfolio(this.state.portfolioId)
+    this.props.removePortfolio(this.state.walletId)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -37,13 +37,13 @@ class View extends Component {
       this.props.createViewOnlyPortfolio(toChecksumAddress(address))
         .then(({ id }) => {
           this.props.setCurrentPortfolio(id)
-          this.setState({ portfolioId: id })
+          this.setState({ walletId: id })
         })
     }
   }
 
   render () {
-    if (!this.state.portfolioId) return null
+    if (!this.state.walletId) return null
 
     return <Balances />
   }

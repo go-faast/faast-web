@@ -9,7 +9,7 @@ import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
 import { setSwap, resetSwap, toggleOrderModal, showOrderModal } from 'Actions/redux'
 import { setPortfolioItem, initiateSwaps } from 'Actions/portfolio'
-import { getCurrentPortfolioWithHoldings, getCurrentWallet } from 'Selectors'
+import { getCurrentPortfolioWithHoldings } from 'Selectors'
 
 const ZERO = new BigNumber(0)
 
@@ -36,7 +36,7 @@ class Modify extends Component {
   }
 
   componentWillMount () {
-    const list = this.props.portfolio.assetHoldings.map((a) => {
+    const list = this.props.wallet.assetHoldings.map((a) => {
       if (a.shown) return this._assetItem(a)
     }).filter(a => a)
     this.setState({ list })
@@ -70,7 +70,7 @@ class Modify extends Component {
   }
 
   _handleSlider (symbol, value, type = 'fiat') {
-    const portfolio = this.props.portfolio
+    const { wallet } = this.props
     const list = this.state.list
     const assetIx = list.findIndex(a => a.symbol === symbol)
     const asset = list[assetIx]
@@ -92,22 +92,22 @@ class Modify extends Component {
           weight = asset.weight.original
           units = asset.units.original
         } else {
-          weight = toPercentage(fiat, portfolio.totalFiat)
+          weight = toPercentage(fiat, wallet.totalFiat)
           units = toUnit(fiat, asset.price, asset.decimals, true)
         }
         allowanceFiat = this.state.allowance.fiat.plus(available).round(2)
-        allowanceWeight = toPercentage(allowanceFiat, portfolio.totalFiat)
+        allowanceWeight = toPercentage(allowanceFiat, wallet.totalFiat)
         break
       case 'weight':
         /* out of commission due to rounding issues. Determining fiat amount instead now */
 
         // weight = ZERO.plus(value)
-        // fiat = weight.div(100).times(portfolio.totalFiat)
+        // fiat = weight.div(100).times(wallet.totalFiat)
         // units = asset.units.adjusted
         // allowanceWeight = this.state.allowance.weight.plus(available)
-        // allowanceFiat = allowanceWeight.div(100).times(portfolio.totalFiat)
+        // allowanceFiat = allowanceWeight.div(100).times(wallet.totalFiat)
         // allowanceFiat = this.state.allowance.fiat.plus(available)
-        // allowanceWeight = percentage(allowanceFiat, portfolio.totalFiat)
+        // allowanceWeight = percentage(allowanceFiat, wallet.totalFiat)
     }
     this.setState({
       list: updateObjectInArray(list, {
@@ -148,7 +148,7 @@ class Modify extends Component {
 
   _handleSave () {
     log.info('modify save')
-    const portfolio = this.props.portfolio
+    const { wallet } = this.props
     // const slider = this.state.slider
     if (this.state.allowance.fiat.greaterThan(0)) return toastr.error('Amounts remain to move')
     const filtered = this.state.list.map((a) => {
@@ -198,7 +198,7 @@ class Modify extends Component {
         const sum = s.list.reduce((a, c) => {
           return a.plus(c.unit)
         }, new BigNumber(0))
-        const asset = portfolio.assetHoldings.find((a) => a.symbol === s.symbol)
+        const asset = wallet.assetHoldings.find((a) => a.symbol === s.symbol)
         const difference = asset.balance.minus(sum)
         const last = s.list[s.list.length - 1]
         const newAmount = last.unit.plus(difference)
@@ -215,7 +215,7 @@ class Modify extends Component {
     if (emptyingETH) return toastr.error('Swapping the entire balance of your Ether is not possible as some ETH is required for transaction fees', { timeOut: 10000 })
     this.props.setSwap(repairedList)
     this.props.showOrderModal()
-    this.props.initiateSwaps(repairedList, portfolio, this.props.wallet.address)
+    this.props.initiateSwaps(repairedList, wallet)
     // this.props.routerPush('/swap')
     // this.props.changeSwapStatus('edit')
   }
@@ -229,9 +229,9 @@ class Modify extends Component {
   }
 
   _handleSelectAsset (asset) {
-    const portfolio = this.props.portfolio
-    const selectedAsset = portfolio.assetHoldings.find(a => asset.symbol === a.symbol)
-    this.props.setPortfolioItem(portfolio.id, asset.symbol, {
+    const { wallet: { id, assetHoldings } } = this.props
+    const selectedAsset = assetHoldings.find(a => asset.symbol === a.symbol)
+    this.props.setPortfolioItem(id, asset.symbol, {
       shown: true
     })
     this.setState({
@@ -259,10 +259,10 @@ class Modify extends Component {
   }
 
   render () {
-    const portfolio = this.props.portfolio
-    const assetList = portfolio.assetHoldings.filter((a) => !a.shown)
+    const { wallet } = this.props
+    const assetList = wallet.assetHoldings.filter((a) => !a.shown)
     const sliderProps = {
-      max: portfolio.totalFiat ? portfolio.totalFiat.toNumber() : 0,
+      max: wallet.totalFiat.toNumber(),
       // allowance: this.state.allowance.fiat,
       onValueChange: this._handleSlider
     }
@@ -301,8 +301,7 @@ class Modify extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  portfolio: getCurrentPortfolioWithHoldings(state),
-  wallet: getCurrentWallet(state),
+  wallet: getCurrentPortfolioWithHoldings(state),
   orderModal: state.orderModal,
   mq: state.mediaQueries
 })

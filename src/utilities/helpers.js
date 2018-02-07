@@ -3,6 +3,7 @@ import queryString from 'query-string'
 import mergeWith from 'lodash.mergewith'
 import union from 'lodash.union'
 import without from 'lodash.without'
+import omit from 'lodash.omit'
 
 export const uppercase = (str) => {
   if (typeof str !== 'string') return str
@@ -215,28 +216,58 @@ export const mapValues = (obj, valueMapper) => Object.entries(obj).reduce((resul
   return result
 }, {})
 
-const arrayMergeOps = {
-  $set: (oldVal, newVal) => newVal,
-  $union: (oldVal, newVal) => union(oldVal, newVal),
-  $without: (oldVal, newVal) => without(oldVal, ...newVal),
-  $append: (oldVal, newVal) => [...oldVal, ...newVal],
-  $prepend: (oldVal, newVal) => [...newVal, ...oldVal],
+
+const mergeOps = {
+  object: {
+    $omit: (oldVal, newVal) => omit(oldVal, newVal)
+  },
+  array: {
+    $set: (oldVal, newVal) => newVal,
+    $union: (oldVal, newVal) => union(oldVal, newVal),
+    $without: (oldVal, newVal) => without(oldVal, ...newVal),
+    $append: (oldVal, newVal) => [...oldVal, ...newVal],
+    $prepend: (oldVal, newVal) => [...newVal, ...oldVal],
+  }
 }
 
-export const merge = (state, ...newStates) => mergeWith({}, state, ...newStates, (oldVal, newVal) => {
-  if (Array.isArray(oldVal) && typeof newVal === 'object') {
+const isObj = (o) => typeof o === 'object' && o !== null
+
+const getType = (x) => {
+  if (x === null) {
+    return 'null'
+  } else if (Array.isArray(x)) {
+    return 'array'
+  } else {
+    return typeof x
+  }
+}
+
+const applyMergeOps = (oldVal, newVal) => {
+  if (isObj(newVal)) {
     const ops = Object.keys(newVal)
     const [op] = ops
-    if (ops.length === 1 && op.startsWith('$')) {
-      const opFn = arrayMergeOps[op]
+    const oldValType = getType(oldVal)
+    const opFns = mergeOps[oldValType]
+    if (ops.length === 1 && op.startsWith('$') && opFns) {
+      const opFn = opFns[op]
       if (!opFn) {
-        throw new Error(`Invalid array merge op ${op}`)
+        throw new Error(`Invalid ${oldValType} merge op ${op}`)
       }
       return opFn(oldVal, newVal[op])
     }
+  } else if (Array.isArray(newVal)) {
+    return newVal
   }
-})
+}
 
-export const createMergeByField = (field) => (state, ...newStates) => merge(state, ...newStates.map((newState) => ({ [newState[field]]: newState })))
+export const merge = (state, ...newStates) => newStates.reduce((result, newState) => {
+  const updatedState = applyMergeOps(result, newState)
+  if (updatedState) {
+    return updatedState
+  }
+  return mergeWith({}, result, newState, applyMergeOps)
+}, { ...state })
+
+export const createMergeByField = (field) => (state, ...items) => merge(state, ...items.map((item) => ({ [item[field]]: item })))
 
 export const mergeById = createMergeByField('id')

@@ -11,7 +11,7 @@ import { getSwapStatus } from 'Utilities/swap'
 import { removeSwundle } from 'Actions/request'
 import { toggleOrderModal, resetSwap } from 'Actions/redux'
 import { clearAllIntervals, updateHoldings } from 'Actions/portfolio'
-import { getCurrentPortfolioWithHoldings, getCurrentWallet } from 'Selectors'
+import { getCurrentWalletWithHoldings } from 'Selectors'
 
 let balancesInterval
 
@@ -35,14 +35,14 @@ class Balances extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.portfolio.id && nextProps.portfolio.id !== this.props.portfolio.id) {
+    if (nextProps.wallet.id && nextProps.wallet.id !== this.props.wallet.id) {
       this._updateHoldings()
     }
   }
 
   componentWillUnmount () {
     window.clearInterval(balancesInterval)
-    if (!this.props.portfolio.viewOnly) {
+    if (!this.props.wallet.isReadOnly) {
       const orderStatus = this._orderStatus()
       if (orderStatus === 'error' || orderStatus === 'complete') {
         this.props.resetSwap()
@@ -52,7 +52,7 @@ class Balances extends Component {
   }
 
   _updateHoldings () {
-    this.props.updateHoldings(this.props.portfolio.id)
+    this.props.updateHoldings(this.props.wallet.id)
   }
 
   _toggleChart (symbol) {
@@ -98,31 +98,31 @@ class Balances extends Component {
   render () {
     const orderStatus = this._orderStatus()
 
-    const { wallet, portfolio } = this.props
-    const isViewOnly = portfolio.viewOnly
+    const { wallet } = this.props
+    const isViewOnly = wallet.isReadOnly
     const layoutProps = {
       showAction: true,
       showAddressSearch: true,
       view: isViewOnly ? 'view' : 'balances',
-      disableAction: !portfolio || !portfolio.assetHoldings || !portfolio.assetHoldings.length || orderStatus === 'working',
+      disableAction: !wallet || !wallet.assetHoldings || !wallet.assetHoldings.length || orderStatus === 'working',
       handleModify: () => this.props.routerPush('/modify'),
     }
     const addressProps = {
       address: wallet.address,
       showDownloadKeystore: !isViewOnly && wallet.isBlockstack
     }
-    const totalDecrease = portfolio.totalChange.isNegative()
+    const totalDecrease = wallet.totalChange.isNegative()
     return (
       <BalancesView
-        pieChart={<PieChart portfolio={portfolio} selectedSymbol={this.state.pieChartSelection} handleChartSelect={this._setChartSelect} />}
+        pieChart={<PieChart portfolio={wallet} selectedSymbol={this.state.pieChartSelection} handleChartSelect={this._setChartSelect} />}
         priceChart={<PriceChart />}
         layoutProps={layoutProps}
         mq={this.props.mq}
-        total={portfolio.totalFiat}
-        total24hAgo={portfolio.totalFiat24hAgo}
-        totalChange={portfolio.totalChange}
+        total={wallet.totalFiat}
+        total24hAgo={wallet.totalFiat24hAgo}
+        totalChange={wallet.totalChange}
         totalDecrease={totalDecrease}
-        assetRows={portfolio.assetHoldings.filter((holding) => holding.shown)}
+        assetRows={wallet.assetHoldings.filter((holding) => holding.shown)}
         toggleChart={this._toggleChart}
         showOrderModal={this.props.orderModal.show}
         handleToggleOrderModal={this.props.toggleOrderModal}
@@ -138,15 +138,13 @@ class Balances extends Component {
 
 Balances.propTypes = {
   wallet: PropTypes.object.isRequired,
-  portfolio: PropTypes.object.isRequired,
   mock: PropTypes.object.isRequired,
   updateHoldings: PropTypes.func.isRequired,
   routerPush: PropTypes.func.isRequired
 }
 
 const mapStateToProps = (state) => ({
-  wallet: getCurrentWallet(state),
-  portfolio: getCurrentPortfolioWithHoldings(state),
+  wallet: getCurrentWalletWithHoldings(state),
   mock: state.mock,
   orderModal: state.orderModal,
   swap: state.swap,
