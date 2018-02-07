@@ -15,9 +15,14 @@ export const walletUpdated = createAction('WALLET_UPDATED', (wallet) => ({
 export const walletRemoved = createAction('WALLET_REMOVED')
 export const allWalletsRemoved = createAction('ALL_WALLETS_REMOVED')
 
+export const walletBalancesUpdating = createAction('WALLET_BALANCES_UPDATING', (walletId) => ({ id: walletId }))
 export const walletBalancesUpdated = createAction('WALLET_BALANCES_UPDATED', (walletId, balancesByAsset) => ({
   id: walletId,
   balances: balancesByAsset
+}))
+export const walletBalancesError = createAction('WALLET_BALANCES_ERROR', (walletId, error) => ({
+  id: walletId,
+  error: error.message || error,
 }))
 
 export const addWallet = (wallet) => (dispatch) => Promise.resolve()
@@ -44,9 +49,14 @@ export const updateWalletBalances = (walletId) => (dispatch) => Promise.resolve(
       log.error('no wallet with id', walletId)
       throw new Error('failed to load balances')
     }
+    dispatch(walletBalancesUpdating(walletId))
     return wallet.getAllBalances()
   })
   .then((symbolToBalance) => {
     dispatch(walletBalancesUpdated(walletId, symbolToBalance))
     return symbolToBalance
+  })
+  .catch((e) => {
+    dispatch(walletBalancesError(walletId, e))
+    return {}
   })

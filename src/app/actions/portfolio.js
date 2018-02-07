@@ -2,7 +2,8 @@
 import { insertSwapData, updateSwapTx, setSwap } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
-import { addWallet, removeWallet, walletUpdated } from 'Actions/wallet'
+import { addWallet, removeWallet, walletUpdated, updateWalletBalances } from 'Actions/wallet'
+import { retrieveAssetPrices } from 'Actions/asset'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
 import { restoreFromAddress } from 'Utilities/storage'
@@ -19,10 +20,11 @@ import {
   getTransaction
 } from 'Utilities/wallet'
 import walletService from 'Services/Wallet'
-import { getCurrentWallet as selectCurrentWallet, getCurrentPortfolio, getWalletIdsInPortfolio, getCurrentPortfolioId } from 'Selectors'
+import { getCurrentWallet as selectCurrentWallet, getCurrentPortfolio, getWallet, getCurrentPortfolioId } from 'Selectors'
 import { createAction } from 'redux-act'
 import uuid from 'uuid/v4'
 import { MultiWallet, EthereumWalletWeb3 } from 'Services/Wallet'
+import {  } from 'Actions/wallet'
 
 export const portfolioAdded = createAction('PORTFOLIO_ADDED')
 export const portfolioRemoved = createAction('PORTFOLIO_REMOVED', (portfolioId) => ({ id: portfolioId }))
@@ -31,9 +33,7 @@ export const portfolioWalletAdded = createAction('PORTFOLIO_WALLET_ADDED', (port
 export const portfolioWalletRemoved = createAction('PORTFOLIO_WALLET_REMOVED', (portfolioId, walletId) => ({ portfolioId, walletId }))
 
 export const setCurrentPortfolio = createAction('SET_CURRENT_PORTFOLIO', (portfolioId) => ({ id: portfolioId }))
-export const setPortfolio = createAction('SET_PORTFOLIO')
 export const setPortfolioItem = createAction('SET_PORTFOLIO_ITEM', (portfolioId, symbol, item) => ({ portfolioId, symbol, item }))
-export const setPortfolioLoading = (portfolioId, isLoading) => setPortfolio({ id: portfolioId, loading: isLoading })
 
 const defaultPortfolioId = 'default'
 
@@ -91,11 +91,18 @@ export const removePortfolio = (id) => (dispatch, getState) => Promise.resolve()
   .then(() => {
     if (id === defaultPortfolioId) {
       // Don't remove default portfolio, only it's wallets
-      const walletIds = getWalletIdsInPortfolio(getState(), { id })
-      return Promise.all(walletIds.map((walletId) => dispatch(removeWallet(walletId))))
+      const wallet = getWallet(getState(), { walletId: id })
+      return Promise.all(wallet.subwallets.map((walletId) => dispatch(removeWallet(walletId))))
     }
     return dispatch(portfolioRemoved(id)).payload
   })
+
+export const updateHoldings = (portfolioId) => (dispatch) => {
+  return Promise.all([
+    dispatch(retrieveAssetPrices()),
+    dispatch(updateWalletBalances(portfolioId)),
+  ])
+}
 
 export const removeCurrentPortfolio = () => (dispatch, getState) => {
   const currentPortfolioId = getCurrentPortfolioId(getState())

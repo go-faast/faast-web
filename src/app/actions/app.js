@@ -11,7 +11,7 @@ import { getCurrentWallet } from 'Selectors'
 import { retrieveAssets } from './asset'
 import { setSwapData, setSettings } from './redux'
 import { restoreAllWallets } from './wallet'
-import { restoreAllPortfolios } from './portfolio'
+import { restoreAllPortfolios, updateHoldings } from './portfolio'
 
 export const appReady = createAction('APP_READY')
 export const appError = createAction('APP_ERROR')
@@ -27,6 +27,7 @@ export const restoreState = (dispatch, getState) => Promise.resolve()
     dispatch(setSwapData(swap))
     const settings = addressState.settings
     dispatch(setSettings(settings))
+    return dispatch(updateHoldings(wallet.id))
   })
 
 export const setupLogger = () => Promise.resolve()

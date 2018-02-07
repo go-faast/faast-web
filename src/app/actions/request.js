@@ -4,27 +4,11 @@ import { fetchGet, fetchPost, fetchDelete } from 'Utilities/fetch'
 import { clearSwap } from 'Utilities/storage'
 import log from 'Utilities/log'
 import { updateSwapOrder } from 'Actions/redux'
-import { setPortfolioLoading } from 'Actions/portfolio'
 import { restoreSwundle } from 'Actions/portfolio'
-import { updateWalletBalances } from 'Actions/wallet'
-import { retrieveAssetPrices } from 'Actions/asset'
 import config from 'Config'
 
 export const getPriceChart = (symbol) => () => {
   return fetchGet(`${config.siteUrl}/app/portfolio-chart/${symbol}`)
-}
-
-export const getBalances = (walletId) => (dispatch) => {
-  dispatch(setPortfolioLoading(walletId, true))
-  return Promise.all([
-    dispatch(retrieveAssetPrices()),
-    dispatch(updateWalletBalances(walletId)),
-  ]).then(() => dispatch(setPortfolioLoading(walletId, false)))
-    .catch((err) => {
-      log.error(err)
-      dispatch(setPortfolioLoading(walletId, false))
-      throw err
-    })
 }
 
 export const getMarketInfo = (pair) => () => {

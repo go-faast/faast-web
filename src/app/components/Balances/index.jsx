@@ -8,9 +8,9 @@ import BalancesView from './view'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 import { getSwapStatus } from 'Utilities/swap'
-import { getBalances, removeSwundle } from 'Actions/request'
+import { removeSwundle } from 'Actions/request'
 import { toggleOrderModal, resetSwap } from 'Actions/redux'
-import { clearAllIntervals } from 'Actions/portfolio'
+import { clearAllIntervals, updateHoldings } from 'Actions/portfolio'
 import { getCurrentPortfolioWithHoldings, getCurrentWallet } from 'Selectors'
 
 let balancesInterval
@@ -22,7 +22,7 @@ class Balances extends Component {
       pieChartSelection: '',
       openCharts: {},
     }
-    this._getBalances = this._getBalances.bind(this)
+    this._updateHoldings = this._updateHoldings.bind(this)
     this._toggleChart = this._toggleChart.bind(this)
     this._setChartSelect = this._setChartSelect.bind(this)
     this._orderStatus = this._orderStatus.bind(this)
@@ -30,14 +30,13 @@ class Balances extends Component {
   }
 
   componentWillMount () {
-    const refreshBalances = () => this._getBalances()
-    balancesInterval = window.setInterval(refreshBalances, 30000)
-    refreshBalances()
+    balancesInterval = window.setInterval(this._updateHoldings, 30000)
+    this._updateHoldings()
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.portfolio.id && nextProps.portfolio.id !== this.props.portfolio.id) {
-      this._getBalances()
+      this._updateHoldings()
     }
   }
 
@@ -52,8 +51,8 @@ class Balances extends Component {
     }
   }
 
-  _getBalances () {
-    this.props.getBalances(this.props.wallet.id)
+  _updateHoldings () {
+    this.props.updateHoldings(this.props.portfolio.id)
   }
 
   _toggleChart (symbol) {
@@ -141,7 +140,7 @@ Balances.propTypes = {
   wallet: PropTypes.object.isRequired,
   portfolio: PropTypes.object.isRequired,
   mock: PropTypes.object.isRequired,
-  getBalances: PropTypes.func.isRequired,
+  updateHoldings: PropTypes.func.isRequired,
   routerPush: PropTypes.func.isRequired
 }
 
@@ -155,7 +154,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-  getBalances,
+  updateHoldings,
   routerPush: push,
   toggleOrderModal,
   resetSwap,
