@@ -83,7 +83,6 @@ export const createWalletHoldingsSelector = (walletSelector) => reselect(
       totalChange,
       assetHoldings,
     }
-    console.log(result)
     return result
   })
 
