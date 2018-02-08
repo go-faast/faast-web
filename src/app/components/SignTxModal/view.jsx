@@ -48,6 +48,14 @@ const SignTxModal = (props) => {
             {...props.orderStatusProps}
           />
         )
+      default:
+        return (
+          <SignTxForm
+            description={props.view}
+            buttonText='Sign and submit'
+            {...props.signTxProps}
+          />
+        )
     }
   }
   return (
