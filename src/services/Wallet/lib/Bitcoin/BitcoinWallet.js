@@ -42,7 +42,7 @@ export default class BitcoinWallet extends Wallet {
       return result
     });
 
-  getFreshAddress = (assetOrSymbol, { index = 0 }) => Promise.resolve(assetOrSymbol)
+  getFreshAddress = (assetOrSymbol, { index = 0 } = {}) => Promise.resolve(assetOrSymbol)
     .then(this.assertAssetSupported)
     .then((asset) => this._getDiscoveryResult(asset.symbol))
     .then(({ unusedAddresses }) => unusedAddresses[index]);

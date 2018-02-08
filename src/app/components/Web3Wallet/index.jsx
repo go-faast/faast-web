@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 import AccessTile from 'Components/AccessTile'
@@ -22,7 +23,7 @@ const typeToProps = {
   }
 }
 
-const Web3Wallet = ({ type, openWallet, mock }) => {
+const Web3Wallet = ({ type, openWallet, mock, routerPush }) => {
   const { name, icon } = (typeToProps[type] || {})
   if (typeof name === 'undefined') {
     log.error(`Unknown Web3Wallet type ${type}`)
@@ -47,6 +48,7 @@ const Web3Wallet = ({ type, openWallet, mock }) => {
 
       EthereumWalletWeb3.fromDefaultAccount()
         .then((wallet) => openWallet(wallet, mock.mocking))
+        .then(() => routerPush('/balances'))
         .catch((e) => {
           log.error(e)
           toastr.error(e.message)
@@ -61,10 +63,9 @@ const mapStateToProps = (state) => ({
   mock: state.mock
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  openWallet: (wallet, isMocking) => {
-    dispatch(openWallet(wallet, isMocking))
-  }
-})
+const mapDispatchToProps = {
+  openWallet,
+  routerPush: push,
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Web3Wallet)

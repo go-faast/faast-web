@@ -62,7 +62,7 @@ export default class EthereumWallet extends Wallet {
     return asset && (asset.symbol === 'ETH' || asset.ERC20)
   };
 
-  getBalance = (assetOrSymbol, { web3Batch = null }) => {
+  getBalance = (assetOrSymbol, { web3Batch = null } = {}) => {
     const asset = this.getSupportedAsset(assetOrSymbol)
     if (!asset) {
       return Promise.resolve(toBigNumber(0))
@@ -80,7 +80,7 @@ export default class EthereumWallet extends Wallet {
     return request.then((balance) => toMainDenomination(balance, asset.decimals))
   };
 
-  getAllBalances = ({ web3Batch = null }) => Promise.resolve(this.getSupportedAssets())
+  getAllBalances = ({ web3Batch = null } = {}) => Promise.resolve(this.getSupportedAssets())
     .then((assets) => {
       const batch = web3Batch || new web3.BatchRequest()
       const balanceRequests = assets.map(({ symbol }) =>

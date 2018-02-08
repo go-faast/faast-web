@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import HardwareWalletView from './view'
 import toastr from 'Utilities/toastrWrapper'
 import { timer } from 'Utilities/helpers'
@@ -216,17 +217,19 @@ class HardwareWallet extends Component {
     const ix = addressIxGroup * ADDRESS_GROUP_SIZE + selected
     const { address } = addresses[ix]
     const addressPath = `${derivationPath}/${ix}`
-    const { type } = this.props
+    const { type, openWallet, routerPush, mock: { mocking: isMocking } } = this.props
     let wallet
     if (type === 'ledger') {
       wallet = new EthereumWalletLedger(address, addressPath)
-      this.props.openWallet(wallet, this.props.mock.mocking)
+      openWallet(wallet, isMocking)
+      routerPush('/balances')
     } else if (type === 'trezor') {
       wallet = new EthereumWalletTrezor(address, addressPath)
       BitcoinWalletTrezor.fromPath()
-        .then((bitcoinWallet) => this.props.openWallet(bitcoinWallet, this.props.mock.mocking))
-        .then(() => this.props.openWallet(wallet, this.props.mock.mocking))
+        .then((bitcoinWallet) => openWallet(bitcoinWallet, isMocking))
+        .then(() => openWallet(wallet, isMocking))
         .then(() => closeTrezorWindow())
+        .then(() => routerPush('/balances'))
     } else {
       throw new Error(`Unknown hardware wallet type ${type}`)
     }
@@ -277,13 +280,10 @@ const mapStateToProps = (state) => ({
   mock: state.mock
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  openWallet: (type, wallet, isMocking) => {
-    dispatch(openWallet(type, wallet, isMocking))
-  },
-  mockAddress: (path, ix) => {
-    return dispatch(mockAddress(path, ix))
-  }
-})
+const mapDispatchToProps = {
+  openWallet,
+  mockAddress,
+  routerPush: push,
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(HardwareWallet)

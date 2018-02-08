@@ -30,7 +30,7 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
 
   _checkAvailable = () => checkAccountAvailable(this.address);
 
-  sendTransaction = ({ txData: tx }, options) => {
+  sendTransaction = ({ txData: tx }, options = {}) => {
     const { onTxHash, onReceipt, onConfirmation, onError } = options
     return Promise.resolve(tx)
       .then(this._assignNonce)

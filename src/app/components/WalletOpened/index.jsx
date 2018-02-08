@@ -32,7 +32,7 @@ class WalletOpened extends React.PureComponent {
           ? (!walletHoldingsLoaded
             ? (<Loading center error={walletHoldingsError}/>)
             : (<Component {...props} />))
-          : (<Redirect to='/' />)
+          : (<Redirect to='/portfolio/connect' />)
       )} />
     )
   }

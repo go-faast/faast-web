@@ -1,13 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import KeystoreView from './view'
 import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
 import { openWallet } from 'Actions/portfolio'
 import { EthereumWalletKeystore } from 'Services/Wallet'
 
-const Keystore = (props) => {
+const Keystore = ({ openWallet, routerPush, mock: { mocking: isMocking } }) => {
   const handleDrop = (files) => {
     const file = files[0]
     const reader = new window.FileReader()
@@ -16,8 +17,9 @@ const Keystore = (props) => {
       const encryptedWalletString = event.target.result
       if (!encryptedWalletString) return toastr.error('Not a valid wallet keystore file')
 
-      props.openWallet(new EthereumWalletKeystore(encryptedWalletString), props.mock.mocking)
+      openWallet(new EthereumWalletKeystore(encryptedWalletString), isMocking)
       log.info('Encrypted wallet set')
+      routerPush('/balances')
     }
 
     reader.readAsText(file)
@@ -36,10 +38,9 @@ const mapStateToProps = (state) => ({
   mock: state.mock
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  openWallet: (wallet, isMocking) => {
-    dispatch(openWallet(wallet, isMocking))
-  }
-})
+const mapDispatchToProps = {
+  openWallet,
+  routerPush: push,
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Keystore)

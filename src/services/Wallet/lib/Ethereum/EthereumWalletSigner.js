@@ -13,7 +13,7 @@ export default class EthereumWalletSigner extends EthereumWallet {
     assertExtended(this, EthereumWalletSigner)
   }
 
-  sendTransaction = ({ txData: tx }, options) => {
+  sendTransaction = ({ txData: tx }, options = {}) => {
     const { onTxHash, onReceipt, onConfirmation, onError } = options
     return Promise.resolve(tx)
       .then(this._assignNonce)

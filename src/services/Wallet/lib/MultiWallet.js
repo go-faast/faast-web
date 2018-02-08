@@ -96,34 +96,34 @@ export default class MultiWallet extends Wallet {
     return applyToWallet(selectedWallet)
   };
   
-  getFreshAddress = (assetOrSymbol, options) => {
+  getFreshAddress = (assetOrSymbol, options = {}) => {
     if (!assetOrSymbol) {
       return null
     }
     return this._chooseWallet(assetOrSymbol, options, (wallet) => wallet.getFreshAddress(assetOrSymbol, options))
   };
 
-  transfer = (toAddress, amount, assetOrSymbol, options) => {
+  transfer = (toAddress, amount, assetOrSymbol, options = {}) => {
     return this._chooseWallet(assetOrSymbol, options, (wallet) => wallet.transfer(toAddress, amount, assetOrSymbol, options))
   };
 
-  createTransaction = (toAddress, amount, assetOrSymbol, options) => {
+  createTransaction = (toAddress, amount, assetOrSymbol, options = {}) => {
     return this._chooseWallet(assetOrSymbol, options, (wallet) => wallet.createTransaction(toAddress, amount, assetOrSymbol, options))
   };
 
-  sendTransaction = (tx, options) => {
+  sendTransaction = (tx, options = {}) => {
     // TODO: Choose wallet based on tx.fromAddress
     return this._chooseWallet(tx.asset, options, (wallet) => wallet.sendTransaction(tx, options))
   };
 
-  getBalance = (assetOrSymbol, options) => {
+  getBalance = (assetOrSymbol, options = {}) => {
     const balancePromises = this._getWalletsForAsset(assetOrSymbol)
       .map((wallet) => wallet.getBalance(assetOrSymbol, options))
     return Promise.all(balancePromises).then((balances) => 
       balances.reduce((a, b) => a.plus(b), toBigNumber(0)))
   };
 
-  getAllBalances = (options) => {
+  getAllBalances = (options = {}) => {
     return Promise.all(this.wallets.map((wallet) => wallet.getAllBalances(options)))
       .then((walletBalances) => walletBalances.reduce((balanceEntries, b) => balanceEntries.concat(Object.entries(b)), []))
       .then((balances) => balances.reduce((result, [symbol, balance]) => ({

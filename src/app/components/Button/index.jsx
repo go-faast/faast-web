@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import classNames from 'class-names'
 import style from './style'
 
-const Button = ({ small, outline, disabled, className, children, ...extraProps }) => (
-  <button className={classNames(
+const Button = ({ tag: Tag, small, outline, disabled, className, children, ...extraProps }) => (
+  <Tag className={classNames(
     className,
     'button-container', {
       'button-small': small,
@@ -14,20 +14,22 @@ const Button = ({ small, outline, disabled, className, children, ...extraProps }
     })}
     {...extraProps}>
     {children}
-  </button>)
+  </Tag>)
 
 Button.propTypes = {
   outline: PropTypes.bool,
   disabled: PropTypes.bool,
   className: PropTypes.string,
-  children: PropTypes.any
+  children: PropTypes.any,
+  tag: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 }
 
 Button.defaultProps = {
   outline: false,
   disabled: false,
   className: '',
-  children: ''
+  children: '',
+  tag: 'button',
 }
 
 export default Button
