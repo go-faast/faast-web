@@ -170,11 +170,14 @@ const swapPostExchange = (swapList, wallet) => (dispatch) => {
   return processArray(swapList, (swap) => {
     const finish = (e, x) => dispatch(swapFinish('swapPostExchange', swap, e, x))
     const walletInstance = walletService.get(wallet.id)
-    return dispatch(postExchange({
+    return Promise.all([
+      walletInstance.getFreshAddress(swap.to),
+      walletInstance.getFreshAddress(swap.from),
+    ]).then(([withdrawalAddress, returnAddress]) => dispatch(postExchange({
       pair: swap.pair,
-      withdrawal: walletInstance.getFreshAddress(swap.to),
-      returnAddress: walletInstance.getFreshAddress(swap.fom)
-    })).then((order) => {
+      withdrawal: withdrawalAddress,
+      returnAddress,
+    }))).then((order) => {
       const fromAsset = order.depositType.toUpperCase()
       const toAsset = order.withdrawalType.toUpperCase()
       return walletInstance.createTransaction(order.deposit, swap.amount, fromAsset)

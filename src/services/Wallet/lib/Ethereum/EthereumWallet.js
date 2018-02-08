@@ -53,24 +53,26 @@ export default class EthereumWallet extends Wallet {
 
   isSingleAddress = () => true;
 
-  getFreshAddress = () => this.getAddress();
+  getFreshAddress = (assetOrSymbol) => Promise.resolve(assetOrSymbol)
+    .then(this.assertAssetSupported)
+    .then(() => this.getAddress());
 
   isAssetSupported = (assetOrSymbol) => {
     const asset = this.getAsset(assetOrSymbol)
     return asset && (asset.symbol === 'ETH' || asset.ERC20)
   };
 
-  getBalance = (assetOrSymbol, batch = null) => {
-    if (!this.isAssetSupported(assetOrSymbol)) {
+  getBalance = (assetOrSymbol, { web3Batch = null }) => {
+    const asset = this.getSupportedAsset(assetOrSymbol)
+    if (!asset) {
       return Promise.resolve(toBigNumber(0))
     }
-    const asset = this.getAsset(assetOrSymbol)
     const address = this.getAddress()
     let request
     if (asset.symbol === 'ETH') {
-      request = batchRequest(batch, web3.eth.getBalance, address, 'latest')
+      request = batchRequest(web3Batch, web3.eth.getBalance, address, 'latest')
     } else { // Handle ERC20
-      request = batchRequest(batch, web3.eth.call, {
+      request = batchRequest(web3Batch, web3.eth.call, {
         to: asset.contractAddress,
         data: tokenBalanceData(address)
       }, 'latest')
@@ -78,13 +80,16 @@ export default class EthereumWallet extends Wallet {
     return request.then((balance) => toMainDenomination(balance, asset.decimals))
   };
 
-  getAllBalances = () => Promise.resolve(this.getSupportedAssets())
+  getAllBalances = ({ web3Batch = null }) => Promise.resolve(this.getSupportedAssets())
     .then((assets) => {
-      const batch = new web3.BatchRequest()
+      const batch = web3Batch || new web3.BatchRequest()
       const balanceRequests = assets.map(({ symbol }) =>
-        this.getBalance(symbol, batch)
+        this.getBalance(symbol, { web3Batch: batch })
           .then((balance) => ({ symbol, balance })))
-      batch.execute()
+      if (!web3Batch) {
+        // Don't execute batch if passed in as option
+        batch.execute()
+      }
       return Promise.all(balanceRequests)
     }).then((balances) => balances.reduce((result, { symbol, balance }) => ({
       ...result,
@@ -101,8 +106,7 @@ export default class EthereumWallet extends Wallet {
 
   createTransaction = (toAddress, amount, assetOrSymbol) => {
     return Promise.resolve(assetOrSymbol)
-      .then(this.assetAssetSupported)
-      .then(this.getAsset)
+      .then(this.assertAssetSupported)
       .then((asset) => {
         let tx = {
           chainId: 1,

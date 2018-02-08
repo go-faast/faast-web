@@ -55,11 +55,17 @@ export default class Wallet {
 
   getSupportedAssetsBySymbol = () => this.getSupportedAssets().reduce((bySymbol, asset) => ({ ...bySymbol, [asset.symbol]: asset }));
 
+  getSupportedAsset = (assetOrSymbol) => {
+    const asset = this.getAsset(assetOrSymbol)
+    return (asset && this.isAssetSupported(asset)) ? asset : null
+  };
+
   assertAssetSupported = (assetOrSymbol) => {
-    if (!this.isAssetSupported(assetOrSymbol)) {
+    const asset = this.getSupportedAsset(assetOrSymbol)
+    if (!asset) {
       throw new Error(`Asset ${this.getSymbol(assetOrSymbol)} not supported by ${this.type}`)
     }
-    return assetOrSymbol
+    return asset
   };
 
   transfer = (toAddress, amount, assetOrSymbol, options) => {
@@ -69,10 +75,10 @@ export default class Wallet {
       .then((tx) => this.sendTransaction(tx, options))
   };
 
-  getAllBalances = () => {
+  getAllBalances = (options) => {
     return Promise.resolve(this.getSupportedAssets())
       .then((assets) => Promise.all(assets
-        .map(({ symbol }) => this.getBalance(symbol)
+        .map(({ symbol }) => this.getBalance(symbol, options)
           .then((balance) => ({ symbol, balance })))))
       .then((balances) => balances.reduce((result, { symbol, balance }) => ({
         ...result,
