@@ -6,8 +6,14 @@ import { fixPercentageRounding } from 'Utilities/helpers'
 export const isAppReady = ({ app }) => app.ready
 export const getAppError = ({ app }) => app.error
 
-export const getAllAssets = ({ assets }) => assets
-export const getAllAssetsArray = (state) => Object.values(getAllAssets(state))
+const getAssetState = ({ assets }) => assets
+
+export const areAssetsLoaded = reselect(getAssetState, ({ loaded }) => loaded)
+export const getAssetsLoadingError = reselect(getAssetState, ({ loadingError }) => loadingError)
+export const areAssetPricesLoaded = reselect(getAssetState, ({ loaded, pricesLoaded }) => loaded && pricesLoaded)
+export const getAssetPricesError = reselect(getAssetState, ({ loadingError, pricesError }) => loadingError || pricesError)
+export const getAllAssets = reselect(getAssetState, ({ data }) => data)
+export const getAllAssetsArray = reselect(getAllAssets, Object.values)
 
 export const getCurrentPortfolioId = ({ portfolio: { currentId } }) => currentId
 export const getCurrentWalletId = ({ portfolio: { currentId, currentWalletId } }) => currentWalletId || currentId
@@ -17,6 +23,16 @@ export const createWalletSelector = (walletIdSelector) => reselect(getAllWallets
 export const getWallet = createWalletSelector((_, { id }) => id)
 export const getCurrentPortfolio = createWalletSelector(getCurrentPortfolioId)
 export const getCurrentWallet = createWalletSelector(getCurrentWalletId)
+
+export const areCurrentWalletHoldingsLoaded = reselect(
+  getCurrentWallet,
+  areAssetPricesLoaded,
+  (wallet, assetPricesLoaded) => wallet.balancesLoaded && assetPricesLoaded)
+
+export const getCurrentWalletHoldingsError = reselect(
+  getCurrentWallet,
+  getAssetPricesError,
+  (wallet, assetPricesError) => wallet.balancesError || assetPricesError)
 
 export const getParentWallets = reselect(
   (_, { id }) => id,

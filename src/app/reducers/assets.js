@@ -1,15 +1,20 @@
 import { createReducer } from 'redux-act'
 import {
-  assetsAdded,
+  assetsAdded, assetsLoadingError,
   assetPriceUpdated, assetPricesUpdated,
   assetPriceError, assetPricesError,
 } from 'Actions/asset'
-import { createMergeByField, mapValues } from 'Utilities/helpers'
 import { toBigNumber } from 'Utilities/convert'
 
 const ZERO = toBigNumber(0)
 
-const initialState = {}
+const initialState = {
+  loaded: false,
+  loadingError: '',
+  pricesLoaded: false,
+  pricesError: '',
+  data: {},
+}
 const assetInitialState = {
   symbol: '',
   name: '',
@@ -26,9 +31,8 @@ const assetInitialState = {
   marketCap: ZERO,
   availableSupply: ZERO,
   lastUpdatedPrice: null,
+  priceError: '',
 }
-
-const mergeBySymbol = createMergeByField('symbol')
 
 const priceDataToAsset = (priceData) => {
   const change24 = toBigNumber(priceData.percent_change_24h || 0)
@@ -46,17 +50,41 @@ const priceDataToAsset = (priceData) => {
   }
 }
 
+const updateAsset = (state, asset) => ({
+  ...state,
+  [asset.symbol]: {
+    ...(state[asset.symbol] || assetInitialState),
+    ...asset,
+  }
+})
+
 export default createReducer({
-  [assetsAdded]: (state, assets) => mergeBySymbol(state, ...assets.map((asset) => ({
-    ...assetInitialState,
-    ...asset,
-    swapEnabled: asset.deposit && asset.receive
-  }))),
-  [assetPriceUpdated]: (state, priceData) => mergeBySymbol(state, priceDataToAsset(priceData)),
-  [assetPricesUpdated]: (state, priceDataArray) => mergeBySymbol(state, ...priceDataArray.map((priceData) => priceDataToAsset(priceData))),
-  [assetPriceError]: (state, { symbol, error }) => mergeBySymbol(state, { symbol, priceError: error }),
-  [assetPricesError]: (state, error) => mapValues(state, (asset) => ({
-    ...asset,
-    priceError: error,
-  }))
+  [assetsAdded]: (state, assetArray) => ({
+    ...state,
+    data: assetArray.reduce((allAssets, asset) => updateAsset(allAssets, {
+      ...asset,
+      swapEnabled: asset.deposit && asset.receive
+    }), state.data),
+    loaded: true,
+    loadingError: initialState.loadingError,
+  }),
+  [assetsLoadingError]: (state, loadingError) => ({ ...state, loadingError }),
+  [assetPriceUpdated]: (state, priceData) => ({
+    ...state,
+    data: updateAsset(state.data, {
+      ...priceDataToAsset(priceData),
+      priceError: assetInitialState.priceError,
+    }),
+  }),
+  [assetPriceError]: (state, { symbol, priceError }) => ({
+    ...state,
+    data: updateAsset(state.data, { symbol, priceError }),
+  }),
+  [assetPricesUpdated]: (state, priceDataArray) => ({
+    ...state,
+    data: priceDataArray.reduce((allAssets, priceData) => updateAsset(allAssets, priceDataToAsset(priceData)), state.data),
+    pricesLoaded: true,
+    pricesError: initialState.pricesError,
+  }),
+  [assetPricesError]: (state, pricesError) => ({ ...state, pricesError })
 }, initialState)
