@@ -1,21 +1,23 @@
+import log from 'Utilities/log'
 
 function PromisifiedTrezorConnect(trezorConnectInstance) {
-  const createCallback = (resolve, reject) => (result) => {
+  const createCallback = (fnName, args, resolve, reject) => (result) => {
     if (!result || result instanceof Error) {
       return reject(result)
     }
     if (typeof result === 'object' && result.success === false) {
+      log.debug(`${result.error} - TrezorConnect.${fnName}:`, args)
       return reject(new Error(result.error))
     }
     return resolve(result)
   }
 
-  const promisify = (fn, cbIndex) => (...args) => {
+  const promisify = (fnName, fn, cbIndex) => (...args) => {
     if (typeof args[cbIndex] !== 'function') {
       // Only promisify if callback hasn't already been provided
       return new Promise((resolve, reject) => 
         fn(...args.slice(0, cbIndex),
-          createCallback(resolve, reject),
+          createCallback(fnName, args, resolve, reject),
           ...args.slice(cbIndex)))
     }
     return fn(...args)
@@ -48,7 +50,7 @@ function PromisifiedTrezorConnect(trezorConnectInstance) {
   Object.entries(trezorConnectInstance).forEach(([key, val]) => {
     val = typeof val === 'function' ? val.bind(trezorConnectInstance) : val
     const cbIndex = callbackIndices[key]
-    this[key] = typeof cbIndex === 'undefined' ? val : promisify(val, cbIndex)
+    this[key] = typeof cbIndex === 'undefined' ? val : promisify(key, val, cbIndex)
   })
 }
 

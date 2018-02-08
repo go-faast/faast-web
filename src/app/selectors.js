@@ -19,7 +19,15 @@ export const getCurrentPortfolioId = ({ portfolio: { currentId } }) => currentId
 export const getCurrentWalletId = ({ portfolio: { currentId, currentWalletId } }) => currentWalletId || currentId
 export const getAllWallets = ({ wallets }) => wallets
 
-export const createWalletSelector = (walletIdSelector) => reselect(getAllWallets, walletIdSelector, (wallets, id) => wallets[id])
+export const createWalletSelector = (walletIdSelector) => reselect(getAllWallets, walletIdSelector, (wallets, id) => {
+  const wallet = wallets[id]
+  if (wallet) {
+    return {
+      ...wallet,
+      nestedWallets: wallet.nestedWalletIds.map((nestedWalletId) => wallets[nestedWalletId])
+    }
+  }
+})
 export const getWallet = createWalletSelector((_, { id }) => id)
 export const getCurrentPortfolio = createWalletSelector(getCurrentPortfolioId)
 export const getCurrentWallet = createWalletSelector(getCurrentWalletId)

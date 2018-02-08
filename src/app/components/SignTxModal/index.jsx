@@ -13,8 +13,9 @@ class SignTxModal extends Component {
   constructor (props) {
     super(props)
     const { view, wallet } = props
+    const { isBlockstack, type, nestedWallets } = wallet
     this.state = {
-      view: view || (wallet.isBlockstack ? 'blockstack' : wallet.type),
+      view: view || (isBlockstack ? 'blockstack' : (type === 'MultiWallet' ? nestedWallets[0].type : type)),
       isSigning: false
     }
     this._handleCloseModal = this._handleCloseModal.bind(this)
@@ -34,11 +35,9 @@ class SignTxModal extends Component {
     this.setState({ isSigning: true })
 
     const { swap, mock: { mocking: isMocking } } = this.props
-    console.log(swap)
     return dispatch(sendSwapDeposits(swap, { password: values.password }, isMocking))
       .then(() => {
         if (!this.props.showModal) throw new Error('modal closed')
-        closeTrezorWindow()
         this.setState({ isSigning: false })
         dispatch(push('/balances'))
       })
@@ -57,12 +56,18 @@ class SignTxModal extends Component {
       const statuses = this.props.swap.reduce((a, b) => {
         return a.concat(b.list.map(getSwapStatus).map(c => c.details))
       }, [])
+      console.log('hasError', hasError)
+      console.log('statuses', statuses)
       return !hasError && statuses.every(s => s === 'waiting for transaction to be signed')
     }
     const estimateTxFee = ({ tx }) => {
       if (tx) {
-        return tx.feeAmount
+        if (typeof tx.feeAmount === 'number') {
+          return tx.feeAmount
+        }
+        return `TBD ${tx.feeAsset}`
       }
+      return 'TBD'
     }
     const getStatus = (a) => {
       const status = getSwapStatus(a)
@@ -102,8 +107,8 @@ class SignTxModal extends Component {
         if (eKeys.includes('swapSufficientDeposit')) {
           return 'estimated amount to receive is below 0'
         }
-        if (eKeys.includes('swapSufficientEther')) {
-          return 'insufficient ETH for txn fee'
+        if (eKeys.includes('swapSufficientFees')) {
+          return 'insufficient balance for txn fee'
         }
         return 'unknown error'
       }
@@ -115,6 +120,8 @@ class SignTxModal extends Component {
         const { symbol: toSymbol } = receiving
         const fromAsset = assets[fromSymbol]
         const toAsset = assets[toSymbol]
+        console.log('sending', sending)
+        console.log('receiving', receiving)
         return {
           from: fromAsset,
           to: toAsset,
@@ -127,12 +134,13 @@ class SignTxModal extends Component {
         }
       })),
     [])
+    const readyToSignResult = readyToSign()
     return (
       <SignTxModalView
         showModal={this.props.showModal}
         view={this.state.view}
         signTxProps={{
-          readyToSign: readyToSign(),
+          readyToSign: readyToSignResult,
           onSubmit: this._handleSubmit,
           handleCancel: this._handleCloseModal,
           isSigning: this.state.isSigning,

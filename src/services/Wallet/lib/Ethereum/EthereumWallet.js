@@ -129,6 +129,7 @@ export default class EthereumWallet extends Wallet {
           toAddress,
           amount,
           asset,
+          signed: false,
           feeAmount: toTxFee(gasLimit, gasPrice),
           feeAsset: 'ETH',
           txData: {

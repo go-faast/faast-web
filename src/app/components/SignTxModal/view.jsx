@@ -141,14 +141,14 @@ const SignTxForm = reduxForm({
             <Col xs='12' sm='auto' className='text-center order-3 order-sm-2'>{a.error
               ? (<span className='text-danger'>{a.error}</span>)
               : (a.swap.hasOwnProperty('rate')
-                  ? (<span>1 {a.from.symbol} = {a.swap.rate} {a.to.symbol}</span>)
+                  ? (<span>{`1 ${a.from.symbol} = ${a.swap.rate} ${a.to.symbol}`}</span>)
                   : (<span className='faast-loading loading-small' />))
               }
             </Col>
             <Col xs='6' sm className='text-right order-2 order-sm-3'>
               <span className='margin-right-10'>txn fee</span>
               {a.hasOwnProperty('txFee')
-                ? (<span>{display.units(a.txFee, 'ETH')}</span>)
+                ? (<span>{typeof a.txFee === 'string' ? a.txFee : display.units(a.txFee, a.from.symbol)}</span>)
                 : (a.error
                     ? (<span className='text-danger'> - </span>)
                     : (<span className='faast-loading loading-small' />))

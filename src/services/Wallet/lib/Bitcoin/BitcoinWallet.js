@@ -14,6 +14,7 @@ export default class BitcoinWallet extends Wallet {
     super(type)
     assertExtended(this, BitcoinWallet)
     this.xpub = xpub
+    this._latestDiscovery = {}
   }
 
   isSingleAddress = () => false;
@@ -25,6 +26,7 @@ export default class BitcoinWallet extends Wallet {
   isAssetSupported = (assetOrSymbol) => supportedAssets.includes(this.getSymbol(assetOrSymbol));
 
   getBalance = (assetOrSymbol) => Promise.resolve(assetOrSymbol)
+    .then(this.assertAssetSupported)
     .then(this.getAsset)
     .then((asset) => {
       if (!asset) {

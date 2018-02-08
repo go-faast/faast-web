@@ -166,37 +166,39 @@ const swapMarketInfo = (swapList) => (dispatch) => {
   })
 }
 
-const swapPostExchange = (swapList, portfolio, address) => (dispatch) => {
+const swapPostExchange = (swapList, wallet) => (dispatch) => {
   return processArray(swapList, (swap) => {
     const finish = (e, x) => dispatch(swapFinish('swapPostExchange', swap, e, x))
-
-    return dispatch(postExchange({ withdrawal: address, pair: swap.pair, returnAddress: address }))
-      .then((order) => {
-        const fromAsset = order.depositType.toUpperCase()
-        const toAsset = order.withdrawalType.toUpperCase()
-        return dispatch(getCurrentPortfolioInstance()).createTransaction(order.deposit, swap.amount, fromAsset)
-          .then((tx) => {
-            dispatch(insertSwapData(fromAsset, toAsset, {
-              order,
-              tx
-            }))
-            return finish(null, { order, tx })
-          })
-      })
-      .catch((e) => {
-        log.error(e)
-        return finish('problem generating tx')
-      })
+    const walletInstance = walletService.get(wallet.id)
+    return dispatch(postExchange({
+      pair: swap.pair,
+      withdrawal: walletInstance.getFreshAddress(swap.to),
+      returnAddress: walletInstance.getFreshAddress(swap.fom)
+    })).then((order) => {
+      const fromAsset = order.depositType.toUpperCase()
+      const toAsset = order.withdrawalType.toUpperCase()
+      return walletInstance.createTransaction(order.deposit, swap.amount, fromAsset)
+        .then((tx) => {
+          dispatch(insertSwapData(fromAsset, toAsset, {
+            order,
+            tx
+          }))
+          return finish(null, { order, tx })
+        })
+    }).catch((e) => {
+      log.error(e)
+      return finish('problem generating tx')
+    })
   })
 }
 
 // Checks to see if the deposit is high enough for the rate and swap fee
 // so the expected amount ends up larger than zero
-const swapSufficientDeposit = (swapList, portfolio) => (dispatch) => {
+const swapSufficientDeposit = (swapList, wallet) => (dispatch) => {
   return processArray(swapList, (a) => {
     const finish = (e, x) => dispatch(swapFinish('swapSufficientDeposit', a, e, x))
-
-    const to = portfolio.assetHoldings.find(b => b.symbol === a.to)
+    console.log('a', a)
+    const to = wallet.assetHoldings.find(b => b.symbol === a.to)
     const expected = toPrecision(toUnit(a.amount, a.rate, to.decimals).minus(a.fee), to.decimals)
     if (expected.lessThanOrEqualTo(0)) {
       return finish('insufficient deposit for expected return')
@@ -206,21 +208,24 @@ const swapSufficientDeposit = (swapList, portfolio) => (dispatch) => {
 }
 
 // Checks to see if there will be enough Ether if the full gas amount is paid
-const swapSufficientEther = (swapList, portfolio) => (dispatch) => {
-  let etherBalance = portfolio.assetHoldings.find(a => a.symbol === 'ETH').balance
+const swapSufficientFees = (swapList, wallet) => (dispatch) => {
+  let adjustedBalances = { ...wallet.balances }
   return processArray(swapList, (a) => {
-    const finish = (e, x) => dispatch(swapFinish('swapSufficientEther', a, e, x))
-
-    if (a.from === 'ETH') etherBalance = etherBalance.minus(a.amount)
-    etherBalance = etherBalance.minus(a.tx.feeAmount)
-    if (etherBalance.isNegative()) {
-      return finish('not enough ether for tx fee')
+    const finish = (e, x) => dispatch(swapFinish('swapSufficientFees', a, e, x))
+    const { from, amount, tx } = a
+    const { feeAmount, feeAsset } = tx
+    adjustedBalances[from] = adjustedBalances[from].minus(amount)
+    if (feeAmount) {
+      adjustedBalances[feeAsset] = adjustedBalances[feeAsset].minus(feeAmount)
+    }
+    if (adjustedBalances[feeAsset].isNegative()) {
+      return finish(`not enough ${feeAsset} for tx fee`)
     }
     return finish()
   })
 }
 
-export const initiateSwaps = (swap, portfolio, address) => (dispatch) => {
+export const initiateSwaps = (swap, wallet) => (dispatch) => {
   log.info('swap submit initiated')
   const swapList = swap.reduce((a, b) => {
     return a.concat(b.list.map((c) => {
@@ -233,9 +238,9 @@ export const initiateSwaps = (swap, portfolio, address) => (dispatch) => {
     }))
   }, [])
   return dispatch(swapMarketInfo(swapList))
-    .then((a) => dispatch(swapPostExchange(a, portfolio, address)))
-    .then((a) => dispatch(swapSufficientDeposit(a, portfolio)))
-    .then((a) => dispatch(swapSufficientEther(a, portfolio)))
+    .then((a) => dispatch(swapPostExchange(a, wallet)))
+    .then((a) => dispatch(swapSufficientDeposit(a, wallet)))
+    .then((a) => dispatch(swapSufficientFees(a, wallet)))
 }
 
 const createTransferEventListeners = (dispatch, send, receive, markSigned) => {

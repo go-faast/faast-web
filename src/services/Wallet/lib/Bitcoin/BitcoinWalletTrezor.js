@@ -33,25 +33,30 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
     Promise.resolve(assetOrSymbol)
       .then(this.assertAssetSupported)
       .then(this.getAsset)
-      .then((asset) =>
-        Trezor.composeAndSignTx({
+      .then((asset) => ({
+        toAddress,
+        amount,
+        asset,
+        signed: false,
+        feeAmount: null,
+        feeAsset: 'BTC',
+        txData: [{
           address: toAddress,
-          amount: toSmallestDenomination(amount, asset.decimals)
-        }).then((result) => {
-          log.info('Transaction composed and signed:', result)
-          return {
-            toAddress,
-            amount,
-            asset,
-            feeAmount: 0,
-            feeAsset: 'BTC',
-            txData: result.serialized_tx
-          }
-        }));
+          amount: toSmallestDenomination(amount, asset.decimals).toNumber(),
+        }]
+      }));
 
-  sendTransaction = ({ txData }) => Trezor.pushTransaction(txData)
-    .then((result) => {
-      log.info('Transaction pushed:', result)
-      return result.txid
-    });
+  sendTransaction = ({ txData, ...rest }) => {
+    log.info('sendTransaction', txData, rest)
+    return Trezor.composeAndSignTx(txData)
+      .then((result) => {
+        log.info('Transaction composed and signed:', result)
+        return result.serialized_tx
+      })
+      .then(Trezor.pushTransaction)
+      .then((result) => {
+        log.info('Transaction pushed:', result)
+        return result.txid
+      })
+  };
 }

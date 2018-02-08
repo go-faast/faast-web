@@ -37,13 +37,7 @@ export const getSwapStatus = (swap) => {
       details: 'generating transaction'
     }
   }
-  if (swap.tx.gasPrice == null) {
-    return {
-      status: 'working',
-      details: 'fetching gas details'
-    }
-  }
-  if (swap.tx.signed == null) {
+  if (swap.tx.signed === false) {
     return {
       status: 'working',
       details: 'waiting for transaction to be signed'
