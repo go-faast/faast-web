@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import CreateWalletModalView from './view'
 import toastr from 'Utilities/toastrWrapper'
 import { downloadJson } from 'Utilities/helpers'
@@ -91,10 +92,12 @@ class CreateWalletModal extends Component {
     if (!this.state.download) {
       return toastr.error('Please download the wallet keystore file before continuing')
     }
-    if (this.props.isNewWallet) {
-      this.props.openWallet(this.state.createdWallet, this.props.mock.mocking)
+    const { isNewWallet, openWallet, routerPush, handleContinue, mock: { mocking } } = this.props
+    if (isNewWallet) {
+      openWallet(this.state.createdWallet, mocking)
+        .then(() => routerPush('/balances'))
     } else {
-      this.props.handleContinue ? this.props.handleContinue() : this._handleCloseModal()
+      handleContinue ? handleContinue() : this._handleCloseModal()
     }
   }
 
@@ -151,10 +154,9 @@ const mapStateToProps = (state) => ({
   wallet: getCurrentWallet(state)
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  openWallet: (wallet, isMocking) => {
-    dispatch(openWallet(wallet, isMocking))
-  }
-})
+const mapDispatchToProps = {
+  openWallet,
+  routerPush: push,
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(CreateWalletModal)

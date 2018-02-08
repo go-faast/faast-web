@@ -21,7 +21,7 @@ class Blockstack extends Component {
       const wallet = blockstack.createWallet()
       if (wallet) {
         openWallet(wallet)
-        routerPush('/balances')
+          .then(() => routerPush('/balances'))
       } else {
         toastr.error('Unable to open Blockstack wallet')
       }

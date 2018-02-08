@@ -18,8 +18,10 @@ const Keystore = ({ openWallet, routerPush, mock: { mocking: isMocking } }) => {
       if (!encryptedWalletString) return toastr.error('Not a valid wallet keystore file')
 
       openWallet(new EthereumWalletKeystore(encryptedWalletString), isMocking)
-      log.info('Encrypted wallet set')
-      routerPush('/balances')
+        .then(() => {
+          log.info('Encrypted wallet set')
+          routerPush('/balances')
+        })
     }
 
     reader.readAsText(file)

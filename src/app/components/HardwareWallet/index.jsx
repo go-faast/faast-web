@@ -222,7 +222,7 @@ class HardwareWallet extends Component {
     if (type === 'ledger') {
       wallet = new EthereumWalletLedger(address, addressPath)
       openWallet(wallet, isMocking)
-      routerPush('/balances')
+        .then(() => routerPush('/balances'))
     } else if (type === 'trezor') {
       wallet = new EthereumWalletTrezor(address, addressPath)
       BitcoinWalletTrezor.fromPath()
