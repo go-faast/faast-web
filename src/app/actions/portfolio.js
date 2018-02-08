@@ -115,7 +115,7 @@ export const updateHoldings = (walletId) => (dispatch) => {
   return Promise.all([
     dispatch(retrieveAssetPrices()),
     dispatch(updateWalletBalances(walletId)),
-  ])
+  ]).catch(log.error)
 }
 
 const getCurrentPortfolioInstance = () => (dispatch, getState) => walletService.get(getCurrentPortfolioId(getState()))

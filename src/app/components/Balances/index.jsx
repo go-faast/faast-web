@@ -11,7 +11,7 @@ import { getSwapStatus } from 'Utilities/swap'
 import { removeSwundle } from 'Actions/request'
 import { toggleOrderModal, resetSwap } from 'Actions/redux'
 import { clearAllIntervals, updateHoldings } from 'Actions/portfolio'
-import { getCurrentWalletWithHoldings } from 'Selectors'
+import { getCurrentWalletWithHoldings, areCurrentWalletHoldingsLoaded, getCurrentWalletHoldingsError } from 'Selectors'
 
 let balancesInterval
 
@@ -98,7 +98,7 @@ class Balances extends Component {
   render () {
     const orderStatus = this._orderStatus()
 
-    const { wallet } = this.props
+    const { wallet, walletHoldingsLoaded, walletHoldingsError } = this.props
     const isViewOnly = wallet.isReadOnly
     const layoutProps = {
       showAction: true,
@@ -131,6 +131,8 @@ class Balances extends Component {
         addressProps={addressProps}
         viewOnly={isViewOnly}
         openCharts={this.state.openCharts}
+        loading={!walletHoldingsLoaded}
+        loadingError={walletHoldingsError}
       />
     )
   }
@@ -144,6 +146,8 @@ Balances.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
+  walletHoldingsLoaded: areCurrentWalletHoldingsLoaded(state),
+  walletHoldingsError: getCurrentWalletHoldingsError(state),
   wallet: getCurrentWalletWithHoldings(state),
   mock: state.mock,
   orderModal: state.orderModal,
