@@ -44,6 +44,7 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
         .once('receipt', onReceipt)
         .on('confirmation', onConfirmation)
         .on('error', onError))
+        .catch(onError)
   };
 
   static fromDefaultAccount = () => {

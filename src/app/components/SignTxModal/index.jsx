@@ -62,12 +62,11 @@ class SignTxModal extends Component {
     }
     const estimateTxFee = ({ tx }) => {
       if (tx) {
-        if (typeof tx.feeAmount === 'number') {
+        if (tx.feeAmount !== null) {
           return tx.feeAmount
         }
         return `TBD ${tx.feeAsset}`
       }
-      return 'TBD'
     }
     const getStatus = (a) => {
       const status = getSwapStatus(a)

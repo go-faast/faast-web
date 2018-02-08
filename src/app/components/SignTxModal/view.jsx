@@ -147,7 +147,7 @@ const SignTxForm = reduxForm({
             </Col>
             <Col xs='6' sm className='text-right order-2 order-sm-3'>
               <span className='margin-right-10'>txn fee</span>
-              {a.hasOwnProperty('txFee')
+              {typeof a.txFee !== 'undefined'
                 ? (<span>{typeof a.txFee === 'string' ? a.txFee : display.units(a.txFee, a.from.symbol)}</span>)
                 : (a.error
                     ? (<span className='text-danger'> - </span>)
