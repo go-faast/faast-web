@@ -48,22 +48,22 @@ const OrderInProgress = (props) => {
     }
   }
   return (
-    <div className='row padding-0 margin-top-15'>
-      <div className='col tile-container'>
+    <Row className='no-gutters-x my-3'>
+      <Col className='tile-container'>
         <div onClick={props.handleViewStatus} className='tile-new' style={{ zIndex: 10 }}>view status</div>
-        <div className='row'>
-          <div className='col-md-3'>
+        <Row>
+          <Col xs='12' md='3'>
             {statusIcon()}
-          </div>
-          <div className='col-md-6'>
+          </Col>
+          <Col xs='12' md='6'>
             <div className='text-medium text-gradient'>
               {statusTitle()}
             </div>
             <div className='text-small text-medium-grey'>
               {statusContent()}
             </div>
-          </div>
-          <div className='col-md-3'>
+          </Col>
+          <Col xs='12' md='3'>
             {props.status === 'working' &&
               <div className='row align-items-end' style={{ height: '100%' }}>
                 <div className='col text-right text-x-small text-medium-grey'>
@@ -71,10 +71,10 @@ const OrderInProgress = (props) => {
                 </div>
               </div>
             }
-          </div>
-        </div>
-      </div>
-    </div>
+          </Col>
+        </Row>
+      </Col>
+    </Row>
   )
 }
 
