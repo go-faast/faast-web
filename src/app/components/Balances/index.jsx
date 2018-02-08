@@ -11,7 +11,7 @@ import { getSwapStatus } from 'Utilities/swap'
 import { removeSwundle } from 'Actions/request'
 import { toggleOrderModal, resetSwap } from 'Actions/redux'
 import { clearAllIntervals, updateHoldings } from 'Actions/portfolio'
-import { getCurrentWalletWithHoldings, areCurrentWalletHoldingsLoaded, getCurrentWalletHoldingsError } from 'Selectors'
+import { getCurrentWalletWithHoldings } from 'Selectors'
 
 let balancesInterval
 
@@ -22,7 +22,6 @@ class Balances extends Component {
       pieChartSelection: '',
       openCharts: {},
     }
-    this._updateHoldings = this._updateHoldings.bind(this)
     this._toggleChart = this._toggleChart.bind(this)
     this._setChartSelect = this._setChartSelect.bind(this)
     this._orderStatus = this._orderStatus.bind(this)
@@ -30,14 +29,8 @@ class Balances extends Component {
   }
 
   componentWillMount () {
-    balancesInterval = window.setInterval(this._updateHoldings, 30000)
-    this._updateHoldings()
-  }
-
-  componentWillReceiveProps (nextProps) {
-    if (nextProps.wallet.id && nextProps.wallet.id !== this.props.wallet.id) {
-      this._updateHoldings()
-    }
+    const { updateHoldings, wallet } = this.props
+    balancesInterval = window.setInterval(() => updateHoldings(wallet.id), 30000)
   }
 
   componentWillUnmount () {
@@ -49,10 +42,6 @@ class Balances extends Component {
         this.props.removeSwundle(this.props.wallet.id)
       }
     }
-  }
-
-  _updateHoldings () {
-    this.props.updateHoldings(this.props.wallet.id)
   }
 
   _toggleChart (symbol) {
@@ -98,7 +87,7 @@ class Balances extends Component {
   render () {
     const orderStatus = this._orderStatus()
 
-    const { wallet, walletHoldingsLoaded, walletHoldingsError } = this.props
+    const { wallet } = this.props
     const isViewOnly = wallet.isReadOnly
     const layoutProps = {
       showAction: true,
@@ -131,8 +120,6 @@ class Balances extends Component {
         addressProps={addressProps}
         viewOnly={isViewOnly}
         openCharts={this.state.openCharts}
-        loading={!walletHoldingsLoaded}
-        loadingError={walletHoldingsError}
       />
     )
   }
@@ -146,8 +133,6 @@ Balances.propTypes = {
 }
 
 const mapStateToProps = (state) => ({
-  walletHoldingsLoaded: areCurrentWalletHoldingsLoaded(state),
-  walletHoldingsError: getCurrentWalletHoldingsError(state),
   wallet: getCurrentWalletWithHoldings(state),
   mock: state.mock,
   orderModal: state.orderModal,

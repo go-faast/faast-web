@@ -24,16 +24,6 @@ export const getWallet = createWalletSelector((_, { id }) => id)
 export const getCurrentPortfolio = createWalletSelector(getCurrentPortfolioId)
 export const getCurrentWallet = createWalletSelector(getCurrentWalletId)
 
-export const areCurrentWalletHoldingsLoaded = reselect(
-  getCurrentWallet,
-  areAssetPricesLoaded,
-  (wallet, assetPricesLoaded) => wallet.balancesLoaded && assetPricesLoaded)
-
-export const getCurrentWalletHoldingsError = reselect(
-  getCurrentWallet,
-  getAssetPricesError,
-  (wallet, assetPricesError) => wallet.balancesError || assetPricesError)
-
 export const getParentWallets = reselect(
   (_, { id }) => id,
   getAllWallets,
@@ -89,5 +79,20 @@ export const createWalletHoldingsSelector = (walletSelector) => reselect(
     return result
   })
 
+export const createWalletHoldingsLoadedSelector = (walletSelector) => reselect(
+  walletSelector,
+  areAssetPricesLoaded,
+  (wallet, assetPricesLoaded) => wallet.balancesLoaded && assetPricesLoaded)
+
+export const createWalletHoldingsErrorSelector = (walletSelector) => reselect(
+  walletSelector,
+  getAssetPricesError,
+  (wallet, assetPricesError) => wallet.balancesError || assetPricesError)
+
 export const getCurrentPortfolioWithHoldings = createWalletHoldingsSelector(getCurrentPortfolio)
+export const areCurrentPortfolioHoldingsLoaded = createWalletHoldingsLoadedSelector(getCurrentPortfolio)
+export const getCurrentPortfolioHoldingsError = createWalletHoldingsErrorSelector(getCurrentPortfolio)
+
 export const getCurrentWalletWithHoldings = createWalletHoldingsSelector(getCurrentWallet)
+export const areCurrentWalletHoldingsLoaded = createWalletHoldingsLoadedSelector(getCurrentWallet)
+export const getCurrentWalletHoldingsError = createWalletHoldingsErrorSelector(getCurrentWallet)

@@ -7,7 +7,6 @@ import Address from 'Components/Address'
 import PriceChart from 'Components/PriceChart'
 import SignTxModal from 'Components/SignTxModal'
 import Welcome from 'Components/Welcome'
-import Loading from 'Components/Loading'
 import display from 'Utilities/display'
 import styles from './style'
 import config from 'Config'
@@ -90,16 +89,8 @@ const TableCell = ({ hideCollapse, className, children, ...extraProps }) => (
 const BalancesView = (props) => {
   const {
     totalChange, totalDecrease, total24hAgo, total, assetRows, viewOnly, orderStatus, addressProps, pieChart,
-    toggleChart, layoutProps, showOrderModal, handleToggleOrderModal, openCharts, loading, loadingError,
+    toggleChart, layoutProps, showOrderModal, handleToggleOrderModal, openCharts,
   } = props
-
-  if (loading) {
-    return (
-      <Layout {...layoutProps}>
-        <Loading center error={loadingError}/>
-      </Layout>
-    )
-  }
 
   const values = [
     {
