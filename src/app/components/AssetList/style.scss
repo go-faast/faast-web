@@ -1,20 +1,22 @@
 @import "~Styles/variables";
 
+$assetPickerBg: $dark-grey;
+
 .container {
   height: 600px;
+  width: 600px;
   border: 1px solid $primary-color;
   position: absolute;
-  background-color: $dark-grey;
+  background-color: $assetPickerBg;
   padding: 10px;
   overflow: auto;
   z-index: 300;
 
-  @include media-breakpoint-down(md) {
-    max-width: 360px;
-  }
-  
-  @include media-breakpoint-up(lg) {
-    width: 650px;
+  @include media-breakpoint-down(sm) {
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
   }
 }
 
@@ -26,6 +28,7 @@
   border-bottom: 1px solid $primary-color;
   background-color: $dark-grey;
   padding: 10px 30px 10px 10px;
+  width: 100%;
   color: $primary-color;
   background-image: url('https://faa.st/img/search_icon.png');
   background-repeat: no-repeat;
@@ -34,14 +37,6 @@
 
   &:focus {
     outline: none;
-  }
-
-  @include media-breakpoint-down(md) {
-    width: 260px;
-  }
-
-  @include media-breakpoint-up(lg) {
-    width: 585px;
   }
 }
 
@@ -52,18 +47,20 @@
 .closeButtonContainer {
   @extend .pull-right;
   @extend .flex-row-center;
-  width: 40px;
-  height: 40px;
+  width: 55px;
+  height: 100%;
+  padding-left: 10px;
+  text-align: center;
+  color: $medium-grey;
+  font-size: 20px;
   &:hover {
     cursor: pointer;
+    color: $white;
   }
 }
 
 .closeButton {
   @extend .flex-grow-1;
-  @include media-breakpoint-down(xs) {
-    margin-left: 20px;
-  }
 }
 
 .assetListContainer {
@@ -71,43 +68,39 @@
 }
 
 .assetListContainerRow {
-  margin: 0;
   font-size: 14px;
   letter-spacing: normal;
-  border-bottom: 1px solid $medium-grey;
-  &:last-child {
-    border-bottom: none !important;
-  }
+}
+
+.assetListItemInner {
+  height: 100%;
+  width: 100%;
+  padding-top: 16px;
+  padding-bottom: 16px;
+  padding-left: 8px;
+  padding-right: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .assetListItem {
-  border-right: 1px solid $medium-grey;
   color: $medium-grey;
   text-align: center;
-  padding: 15px;
+  background-clip: content-box;
+  background-color: #303030;
+  &.itemDisabled {
+    background-color: #282828;
+  }
 
   &:hover:not(.itemDisabled) {
     cursor: pointer;
     color: $white;
+    background-color: #404040;
 
     .assetListItemIcon {
       opacity: 1.0;
-    }
-  }
-
-  @include media-breakpoint-down(md) {
-    &:nth-child(3) {
-      border-right: none !important;
-    }
-
-    &:nth-child(6) {
-      border-right: none !important;
-    }
-  }
-
-  @include media-breakpoint-up(lg) {
-    &:last-child {
-      border-right: none !important;
     }
   }
 }
@@ -118,11 +111,7 @@
 }
 
 .assetListItemIcon {
-  height: 60px;
-  background-position: center center;
-  background-size: contain;
-  background-repeat: no-repeat;
-  opacity: 0.5;
-  width: 60%;
-  margin: auto;
+  opacity: 0.75;
+  width: 50%;
+  margin-bottom: 16px;
 }

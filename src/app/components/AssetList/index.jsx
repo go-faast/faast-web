@@ -114,6 +114,7 @@ AssetList.propTypes = {
 AssetList.defaultProps = {
   supportedAssetSymbols: [],
   hiddenAssetSymbols: [],
+  columns: 4,
 }
 
 export default connect(createStructuredSelector({

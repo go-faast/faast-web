@@ -1,28 +1,41 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Field, reduxForm } from 'redux-form'
-import { chunkify, shortener } from 'Utilities/helpers'
+import classNames from 'class-names'
+import { Row, Col } from 'reactstrap'
+
+import { shortener } from 'Utilities/helpers'
 import styles from './style'
 import config from 'Config'
 
 const SearchInput = (props) => (
-  <input type='text' autoFocus autoComplete='off' className={styles.inputText} placeholder='search or select your asset' {...props.input} onChange={props.handleChange} value={props.value} />
+  <input
+    type='text'
+    autoFocus
+    autoComplete='off'
+    className={styles.inputText}
+    placeholder='search or select your asset'
+    {...props.input}
+    onChange={props.handleChange}
+    value={props.value}
+  />
 )
 
 const AssetListView = (props) => {
   const renderAssets = () => {
     const { list, columns, showBalance, handleSelect } = props
-    const bsColSize = Math.floor(12 / columns)
-    return chunkify(list, columns).map((assetList, i) => {
-      return (
-        <div key={i} className={`row ${styles.assetListContainerRow}`}>
-          {assetList.map((asset, j) => {
-            const { symbol, name, balance, swapEnabled, hasWalletSupport } = asset
-            const isDisabled = !(swapEnabled && hasWalletSupport)
-            const disabledMessage = !swapEnabled ? 'coming soon' : (!hasWalletSupport ? 'unsupported wallet' : 'unavailable')
-            return (
-              <div key={j} className={`col-4 col-lg-${bsColSize} ${styles.assetListItem} ${isDisabled ? styles.itemDisabled : ''}`} onClick={() => handleSelect(asset)}>
-                <div className={styles.assetListItemIcon} style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${symbol}.png)` }} />
+    const bsColSize = `${Math.floor(12 / columns)}`
+    return (
+      <Row className={classNames('tiny-gutters', styles.assetListContainerRow)}>
+        {list.map((asset, i) => {
+          const { symbol, name, balance, swapEnabled, hasWalletSupport } = asset
+          const isDisabled = !(swapEnabled && hasWalletSupport)
+          const disabledMessage = !swapEnabled ? 'coming soon' : (!hasWalletSupport ? 'unsupported wallet' : 'unavailable')
+          return (
+            <Col xs='4' lg={bsColSize} key={i} onClick={() => handleSelect(asset)}
+              className={classNames(styles.assetListItem, { [styles.itemDisabled]: isDisabled })}>
+              <div className={styles.assetListItemInner}>
+                <img src={`${config.siteUrl}/img/coins/coin_${symbol}.png`} className={styles.assetListItemIcon} />
                 <div>{name}</div>
                 {isDisabled && (
                   <div style={{ fontSize: 9 }}>{`(${disabledMessage})`}</div>
@@ -31,22 +44,28 @@ const AssetListView = (props) => {
                   <div>{!!balance && (<span>({shortener(balance.converted, 12)} {symbol})</span>)}</div>
                 }
               </div>
-            )
-          })}
-        </div>
-      )
-    })
+            </Col>
+          )
+        })}
+      </Row>
+    )
   }
 
   return (
     <div className={styles.container} id='select-asset-container'>
       <div className={styles.searchContainer}>
         <form onSubmit={props.handleSubmit}>
-          <Field name='searchAsset' component={SearchInput} value={props.searchValue} handleChange={props.handleSearchChange} />
+          <Row className='no-gutters'>
+            <Col>
+              <Field name='searchAsset' component={SearchInput} value={props.searchValue} handleChange={props.handleSearchChange} />
+            </Col>
+            <Col xs='auto'>
+              <div className={styles.closeButtonContainer} onClick={props.handleClose}>
+                <div className={styles.closeButton}>✕</div>
+              </div>
+            </Col>
+          </Row>
         </form>
-        <div className={styles.closeButtonContainer} onClick={props.handleClose}>
-          <div className={styles.closeButton}>X</div>
-        </div>
       </div>
       <div className={styles.clearfix} />
       <div className={styles.assetListContainer}>
@@ -67,10 +86,6 @@ AssetListView.propTypes = {
   handleSubmit: PropTypes.func,
   searchValue: PropTypes.string,
   handleSearchChange: PropTypes.func
-}
-
-AssetListView.defaultProps = {
-  columns: 6,
 }
 
 export default reduxForm({
