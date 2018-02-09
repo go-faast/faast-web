@@ -44,7 +44,7 @@ const HeaderView = (props) => {
           <Button outline onClick={props.handleCloseWallet}>close</Button>
         </Col>,
         <Col key='connect' xs='auto'>
-          <Link to='/portfolio/connect'>
+          <Link to='/connect'>
             <Button>connect</Button>
           </Link>
         </Col>,
