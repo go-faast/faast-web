@@ -122,14 +122,20 @@ export const downloadJson = (obj, fileName, noExtension) => {
   })
 }
 
-export const sortByProperty = (arr, prop) => {
-  const propYes = arr.filter((val) => {
-    return val[prop]
+export const sortByProperty = (arr, prop, ...moreProps) => {
+  let pass = []
+  const fail = []
+  arr.forEach((val) => {
+    if (val[prop]) {
+      pass.push(val)
+    } else {
+      fail.push(val)
+    }
   })
-  const propNo = arr.filter((val) => {
-    return !val[prop]
-  })
-  return propYes.concat(propNo)
+  if (moreProps.length > 0) {
+    pass = sortByProperty(pass, ...moreProps)
+  }
+  return pass.concat(fail)
 }
 
 export const chunkify = (arr, size) => {

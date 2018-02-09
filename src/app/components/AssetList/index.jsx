@@ -1,9 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 import { toastr } from 'react-redux-toastr'
 import Fuse from 'fuse.js'
 import AssetListView from './view'
 import { sortByProperty } from 'Utilities/helpers'
+import { getAllAssetsArray } from 'Selectors'
 
 class AssetList extends Component {
   constructor () {
@@ -24,9 +27,15 @@ class AssetList extends Component {
   }
 
   _setList () {
-    const { assets } = this.props
-    const sorted = [...assets].sort((a, b) => b.marketCap.cmp(a.marketCap))
-    const list = sortByProperty(sorted, 'portfolio')
+    const { assets, supportedAssetSymbols, hiddenAssetSymbols } = this.props
+    let list = [...assets]
+      .filter((a) => !hiddenAssetSymbols.includes(a.symbol))
+      .map((a) => ({
+        ...a,
+        hasWalletSupport: supportedAssetSymbols.includes(a.symbol)
+      }))
+      .sort((a, b) => b.marketCap.cmp(a.marketCap))
+    list = sortByProperty(list, 'swapEnabled', 'hasWalletSupport')
     this.fuse = new Fuse(list, {
       shouldSort: true,
       threshold: 0.6,
@@ -63,15 +72,18 @@ class AssetList extends Component {
   }
 
   _handleSelect (asset) {
-    const { isAvailableTest, ignoreUnavailable, selectAsset } = this.props
-    if (!ignoreUnavailable && !isAvailableTest(asset)) {
+    const { selectAsset } = this.props
+    if (!asset.swapEnabled) {
       return toastr.warning('COMING SOON', `${asset.name} is not available yet`)
+    }
+    if (!asset.hasWalletSupport) {
+      return toastr.warning('UNSUPPORTED WALLET', `Please connect a wallet that supports ${asset.name}`)
     }
     selectAsset(asset)
   }
 
   render () {
-    const { columns, ignoreUnavailable, isAvailableTest, showBalance, handleClose } = this.props
+    const { columns, supportedAssetSymbols, showBalance, handleClose } = this.props
     const { list, value } = this.state
     const { _handleSelect, _handleChange, _handleSubmit } = this
     return (
@@ -79,30 +91,31 @@ class AssetList extends Component {
         columns={columns}
         list={list}
         handleSelect={_handleSelect}
-        ignoreUnavailable={ignoreUnavailable}
-        isAvailableTest={isAvailableTest}
         showBalance={showBalance}
         searchValue={value}
         handleSearchChange={_handleChange}
         handleClose={handleClose}
         onSubmit={_handleSubmit}
+        supportedAssetSymbols={supportedAssetSymbols}
       />
     )
   }
 }
 
 AssetList.propTypes = {
+  assets: PropTypes.array.isRequired,
+  supportedAssetSymbols: PropTypes.arrayOf(PropTypes.string),
+  hiddenAssetSymbols: PropTypes.arrayOf(PropTypes.string),
   columns: PropTypes.number,
-  assets: PropTypes.array,
-  ignoreUnavailable: PropTypes.bool,
-  isAvailableTest: PropTypes.func,
   showBalance: PropTypes.bool,
   handleClose: PropTypes.func
 }
 
 AssetList.defaultProps = {
-  ignoreUnavailable: false,
-  isAvailableTest: (asset) => asset.portfolio
+  supportedAssetSymbols: [],
+  hiddenAssetSymbols: [],
 }
 
-export default AssetList
+export default connect(createStructuredSelector({
+  assets: getAllAssetsArray,
+}))(AssetList)

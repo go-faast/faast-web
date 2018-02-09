@@ -50,7 +50,7 @@ const priceDataToAsset = (priceData) => {
   }
 }
 
-const updateAsset = (state, asset) => ({
+const upsertAsset = (state, asset) => ({
   ...state,
   [asset.symbol]: {
     ...(state[asset.symbol] || assetInitialState),
@@ -58,10 +58,21 @@ const updateAsset = (state, asset) => ({
   }
 })
 
+const updateAsset = (state, asset) => {
+  const existingAsset = state[asset.symbol]
+  return !existingAsset ? state : {
+    ...state,
+    [asset.symbol]: {
+      ...existingAsset,
+      ...asset,
+    }
+  }
+}
+
 export default createReducer({
   [assetsAdded]: (state, assetArray) => ({
     ...state,
-    data: assetArray.reduce((allAssets, asset) => updateAsset(allAssets, {
+    data: assetArray.reduce((allAssets, asset) => upsertAsset(allAssets, {
       ...asset,
       swapEnabled: asset.deposit && asset.receive
     }), state.data),

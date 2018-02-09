@@ -260,7 +260,6 @@ class Modify extends Component {
 
   render () {
     const { wallet } = this.props
-    const assetList = wallet.assetHoldings.filter((a) => !a.shown)
     const sliderProps = {
       max: wallet.totalFiat.toNumber(),
       // allowance: this.state.allowance.fiat,
@@ -274,7 +273,8 @@ class Modify extends Component {
       stickyHeader: true
     }
     const assetListProps = {
-      assets: assetList,
+      supportedAssetSymbols: wallet.supportedAssets,
+      hiddenAssetSymbols: wallet.assetHoldings.filter(({ shown }) => shown).map(({ symbol }) => symbol),
       handleClose: this._handleAssetListHide,
       selectAsset: this._handleSelectAsset,
       ignoreUnavailable: false

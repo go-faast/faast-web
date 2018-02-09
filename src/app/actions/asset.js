@@ -14,6 +14,17 @@ export const assetPricesError = createAction('ASSET_PRICES_ERROR')
 
 export const retrieveAssets = () => (dispatch) => {
   return fetchGet(`${config.siteUrl}/app/assets`)
+    .then((assets) => assets.filter((asset) => {
+      if (!asset.symbol) {
+        log.warn('omitting asset without symbol', asset)
+        return false
+      }
+      if (!asset.name) {
+        log.warn('omitting asset without name', asset.symbol)
+        return false
+      }
+      return true
+    }))
     .then((assets) => dispatch(assetsAdded(assets)))
     .catch((e) => {
       log.error(e)

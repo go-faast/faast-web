@@ -11,22 +11,24 @@ const SearchInput = (props) => (
 
 const AssetListView = (props) => {
   const renderAssets = () => {
-    const { list, isAvailableTest, columns, ignoreUnavailable, showBalance, handleSelect } = props
+    const { list, columns, showBalance, handleSelect } = props
     const bsColSize = Math.floor(12 / columns)
     return chunkify(list, columns).map((assetList, i) => {
       return (
         <div key={i} className={`row ${styles.assetListContainerRow}`}>
           {assetList.map((asset, j) => {
-            const isUnavailable = !(ignoreUnavailable || isAvailableTest(asset))
+            const { symbol, name, balance, swapEnabled, hasWalletSupport } = asset
+            const isDisabled = !(swapEnabled && hasWalletSupport)
+            const disabledMessage = !swapEnabled ? 'coming soon' : (!hasWalletSupport ? 'unsupported wallet' : 'unavailable')
             return (
-              <div key={j} className={`col-4 col-lg-${bsColSize} ${styles.assetListItem} ${isUnavailable ? styles.itemDisabled : ''}`} onClick={() => handleSelect(asset)}>
-                <div className={styles.assetListItemIcon} style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${asset.symbol}.png)` }} />
-                <div>{asset.name}</div>
-                {isUnavailable &&
-                  <div style={{ fontSize: 9 }}>(coming soon)</div>
-                }
+              <div key={j} className={`col-4 col-lg-${bsColSize} ${styles.assetListItem} ${isDisabled ? styles.itemDisabled : ''}`} onClick={() => handleSelect(asset)}>
+                <div className={styles.assetListItemIcon} style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${symbol}.png)` }} />
+                <div>{name}</div>
+                {isDisabled && (
+                  <div style={{ fontSize: 9 }}>{`(${disabledMessage})`}</div>
+                )}
                 {showBalance &&
-                  <div>{!!asset.balance && (<span>({shortener(asset.balance.converted, 12)} {asset.symbol})</span>)}</div>
+                  <div>{!!balance && (<span>({shortener(balance.converted, 12)} {symbol})</span>)}</div>
                 }
               </div>
             )
@@ -61,8 +63,6 @@ AssetListView.propTypes = {
   value: PropTypes.string,
   list: PropTypes.array,
   handleSelect: PropTypes.func,
-  ignoreUnavailable: PropTypes.bool,
-  isAvailableTest: PropTypes.func,
   showBalance: PropTypes.bool,
   handleSubmit: PropTypes.func,
   searchValue: PropTypes.string,
