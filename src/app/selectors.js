@@ -41,6 +41,8 @@ export const getParentWallets = reselect(
 
 export const isCurrentPortfolioEmpty = reselect(getCurrentPortfolio, ({ type, nestedWalletIds }) => type === 'MultiWallet' && nestedWalletIds.length === 0)
 
+export const canAddWalletsToCurrentPortfolio = reselect(getCurrentPortfolio, ({ type }) => type === 'MultiWallet')
+
 export const createWalletHoldingsSelector = (walletSelector) => reselect(
   walletSelector,
   getAllAssets,

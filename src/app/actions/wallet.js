@@ -42,9 +42,11 @@ export const updateWallet = (id) => (dispatch) => Promise.resolve()
 export const removeWallet = (id) => (dispatch, getState) => Promise.resolve()
   .then(() => walletService.remove(id))
   .then((walletInstance) => {
-    dispatch(walletRemoved(walletInstance || { id }))
-    const parentWallets = getParentWallets(getState(), { id })
+    const wallet = convertWalletInstance(walletInstance) || { id }
+    dispatch(walletRemoved(wallet))
+    const parentWallets = getParentWallets(getState(), wallet)
     return Promise.all(parentWallets.map((parentWallet) => dispatch(updateWallet(parentWallet.id))))
+      .then(() => wallet)
   })
 
 export const removeAllWallets = () => (dispatch) => Promise.resolve()

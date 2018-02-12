@@ -5,6 +5,7 @@ import {
   assetPriceError, assetPricesError,
 } from 'Actions/asset'
 import { toBigNumber } from 'Utilities/convert'
+import { createUpserter, createUpdater } from 'Utilities/helpers'
 
 const ZERO = toBigNumber(0)
 
@@ -50,24 +51,8 @@ const priceDataToAsset = (priceData) => {
   }
 }
 
-const upsertAsset = (state, asset) => ({
-  ...state,
-  [asset.symbol]: {
-    ...(state[asset.symbol] || assetInitialState),
-    ...asset,
-  }
-})
-
-const updateAsset = (state, asset) => {
-  const existingAsset = state[asset.symbol]
-  return !existingAsset ? state : {
-    ...state,
-    [asset.symbol]: {
-      ...existingAsset,
-      ...asset,
-    }
-  }
-}
+const upsertAsset = createUpserter('symbol', assetInitialState)
+const updateAsset = createUpdater('symbol')
 
 export default createReducer({
   [assetsAdded]: (state, assetArray) => ({

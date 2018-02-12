@@ -4,6 +4,7 @@ import {
   walletAdded, walletUpdated, walletRemoved, allWalletsRemoved, 
   walletBalancesUpdating, walletBalancesUpdated, walletBalancesError
 } from 'Actions/wallet'
+import { createUpserter, createUpdater } from 'Utilities/helpers'
 
 const initialState = {}
 const walletInitialState = {
@@ -20,18 +21,13 @@ const walletInitialState = {
   balancesError: '',
 }
 
-const updateWallet = (state, wallet) => ({
-  ...state,
-  [wallet.id]: {
-    ...(state[wallet.id] || walletInitialState),
-    ...wallet,
-  }
-})
+const upsertWallet = createUpserter('id', walletInitialState)
+const updateWallet = createUpdater('id')
 
 export default createReducer({
   [resetAll]: () => initialState,
   [allWalletsRemoved]: () => initialState,
-  [walletAdded]: updateWallet,
+  [walletAdded]: upsertWallet,
   [walletUpdated]: (state, wallet) => updateWallet(state, {
     ...wallet,
     balancesLoaded: false,

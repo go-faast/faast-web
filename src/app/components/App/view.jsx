@@ -10,7 +10,7 @@ import View from 'Components/View'
 const AppView = () => {
   return (
     <Switch>
-      <WalletClosed exact path='/' component={Access} />
+      <WalletClosed exact path='/' />
       <Route path='/connect' component={Access} />
       <WalletOpened path='/balances' component={Balances} />
       <WalletOpened path='/modify' component={Modify} />

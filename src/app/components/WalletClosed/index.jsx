@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 import { Route, Redirect } from 'react-router-dom'
 import { isCurrentPortfolioEmpty } from 'Selectors'
 
-const WalletClosed = ({ isEmpty, path, component: Component }) => (
-  <Route path={path} render={props => (
+const WalletClosed = ({ isEmpty, path }) => (
+  <Route path={path} render={() => (
     (isEmpty) ? (
-      <Component {...props} />
+      <Redirect to='/connect' />
     ) : (
       <Redirect to='/balances' />
     )

@@ -7,7 +7,7 @@ import { toggleOrderModal } from 'Actions/redux'
 import { closeCurrentPortfolio } from 'Actions/portfolio'
 import { isValidAddress } from 'Utilities/wallet'
 import toastr from 'Utilities/toastrWrapper'
-import { isCurrentPortfolioEmpty } from 'Selectors'
+import { isCurrentPortfolioEmpty, canAddWalletsToCurrentPortfolio } from 'Selectors'
 
 const Header = (props) => {
   const handleModify = (e) => {
@@ -32,6 +32,7 @@ const Header = (props) => {
       handleAddressSearch={handleAddressSearch}
       handleCloseWallet={props.closeCurrentPortfolio}
       isWalletAccessed={!props.isPortfolioEmpty}
+      canAddWallets={props.canAddWallets}
     />
   )
 }
@@ -45,6 +46,7 @@ Header.propTypes = {
 const mapStateToProps = (state) => ({
   swap: state.swap,
   isPortfolioEmpty: isCurrentPortfolioEmpty(state),
+  canAddWallets: canAddWalletsToCurrentPortfolio(state),
 })
 
 const mapDispatchToProps = {

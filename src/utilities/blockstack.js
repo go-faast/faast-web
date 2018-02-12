@@ -22,7 +22,7 @@ const saveSettings = (settings = {}) => {
 const createWallet = () => {
   const userPrivateKey = loadUserData().appPrivateKey
   const wallet = EthereumWalletKeystore.fromPrivateKey(userPrivateKey)
-  wallet.setPersist(false)
+  wallet.setPersistAllowed(false)
   wallet.isBlockstack = true
   return wallet
 }

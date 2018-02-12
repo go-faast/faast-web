@@ -22,7 +22,7 @@ import { insertSwapData, updateSwapTx, setSwap } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
 import {
-  addWallet, removeWallet, addNestedWallets, restoreAllWallets, updateWalletBalances
+  addWallet, removeWallet, addNestedWallet, restoreAllWallets, updateWalletBalances
 } from 'Actions/wallet'
 import { retrieveAssetPrices } from 'Actions/asset'
 
@@ -43,17 +43,26 @@ export const openWallet = (walletInstance, isMocking) => (dispatch, getState) =>
     }
     return walletInstance.getId()
   })
-  .then((walletId) => dispatch(addWallet(walletInstance))
-    .then(() => {
-      const currentPortfolio = getCurrentPortfolio(getState())
-      if (currentPortfolio.type === MultiWallet.type) {
-        return dispatch(addNestedWallets(currentPortfolio.id, walletId))
-      } else {
-        dispatch(portfolioAdded(walletId))
-        return dispatch(setCurrentWallet(walletId))
-      }
-    })
-    .then(() => dispatch(restoreSwapsForWallet(walletId, isMocking))))
+  .then(() => dispatch(addWallet(walletInstance)))
+  .then((wallet) => {
+    const { id: walletId, isBlockstack } = wallet
+    return dispatch(addNestedWallet(defaultPortfolioId, walletId))
+      .then(() => {
+        if (isBlockstack) {
+          dispatch(portfolioAdded(walletId))
+          return dispatch(setCurrentPortfolio(walletId))
+        }
+        const currentPortfolio = getCurrentPortfolio(getState())
+        if (currentPortfolio.type === MultiWallet.type) {
+          if (currentPortfolio.id !== defaultPortfolioId) {
+            return dispatch(addNestedWallet(currentPortfolio.id, walletId))
+          }
+        } else {
+          return dispatch(setCurrentPortfolio(defaultPortfolioId))
+        }
+      })
+      .then(() => dispatch(restoreSwapsForWallet(walletId, isMocking)))
+  })
 
 export const removePortfolio = (id) => (dispatch, getState) => Promise.resolve()
   .then(() => {
@@ -106,8 +115,11 @@ export const restoreAllPortfolios = () => (dispatch) => dispatch(restoreAllWalle
     .then(() => Promise.all(plainWallets.map(({ id, type, isBlockstack }) => {
       if (type === MultiWallet.type || isBlockstack) {
         dispatch(portfolioAdded(id))
+        if (isBlockstack) {
+          dispatch(setCurrentPortfolio(id))
+        }
       } else {
-        return dispatch(addNestedWallets(defaultPortfolioId, id))
+        return dispatch(addNestedWallet(defaultPortfolioId, id))
       }
     }))))
 

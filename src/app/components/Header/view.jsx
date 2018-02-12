@@ -36,45 +36,42 @@ AddressSearchForm = reduxForm({
 })(AddressSearchForm)
 
 const HeaderView = (props) => {
-  const { view, disableAction } = props
+  const {
+    view, disableAction, showAction, isWalletAccessed, canAddWallets, stickyHeader, showAddressSearch,
+    handleCloseWallet, handleModify, handleCancel, handleSave, handleAddressSearch
+  } = props
   const renderActions = () => (
     <Row className='medium-gutters-x justify-content-between justify-content-md-end'>
       {view === 'balances' && ([
         <Col key='close' xs='auto'>
-          <Button outline onClick={props.handleCloseWallet}>close</Button>
+          <Button outline onClick={handleCloseWallet}>close</Button>
         </Col>,
         <Col key='connect' xs='auto'>
-          <Link to='/connect'>
-            <Button>connect</Button>
-          </Link>
+          <Button tag={Link} to='/connect' disabled={!canAddWallets}>connect</Button>
         </Col>,
         <Col key='modify' xs='auto'>
-          <Button onClick={props.handleModify} disabled={disableAction}>modify</Button>
+          <Button onClick={handleModify} disabled={disableAction}>modify</Button>
         </Col>
       ])}
       {view === 'view' && (
         <Col xs='auto'>
-          {props.isWalletAccessed
-            ? (<Link to='/balances'>
-                <Button>back to wallet</Button>
-              </Link>)
-            : (<Link to='/'>
-                <Button>access wallet</Button>
-              </Link>)
+          {isWalletAccessed
+            ? (<Button tag={Link} to='/balances'>back to wallet</Button>)
+            : (<Button tag={Link} to='/'>access wallet</Button>)
           }
         </Col>
       )}
       {view === 'modify' && ([
         <Col key='cancel' xs='auto'>
-          <Button outline onClick={props.handleCancel}>cancel</Button>
+          <Button outline onClick={handleCancel}>cancel</Button>
         </Col>,
         <Col key='save' xs='auto'>
-          <Button onClick={props.handleSave}>save</Button>
+          <Button onClick={handleSave}>save</Button>
         </Col>
       ])}
     </Row>)
   return (
-    <Sticky enabled={!!props.stickyHeader} innerZ={config.sticky.zIndex}>
+    <Sticky enabled={!!stickyHeader} innerZ={config.sticky.zIndex}>
       <div id='header' className={styles.header}>
         <Row className='medium-gutters'>
           <Col xs='12' md='6'>
@@ -82,10 +79,10 @@ const HeaderView = (props) => {
             <div className={styles.headerDesc}>manage your crypto assets collection with faast portfolio</div>
           </Col>
           <Col xs='12' md='6'>
-            {props.showAddressSearch && <AddressSearchForm onSubmit={props.handleAddressSearch} />}
+            {showAddressSearch && <AddressSearchForm onSubmit={handleAddressSearch} />}
           </Col>
         </Row>
-        {props.showAction && renderActions()}
+        {showAction && renderActions()}
       </div>
     </Sticky>
   )
@@ -97,7 +94,9 @@ HeaderView.propTypes = {
   disableAction: PropTypes.bool,
   handleModify: PropTypes.func,
   handleSave: PropTypes.func,
-  handleCancel: PropTypes.func
+  handleCancel: PropTypes.func,
+  isWalletAccessed: PropTypes.bool,
+  canAddWallets: PropTypes.bool,
 }
 
 export default HeaderView

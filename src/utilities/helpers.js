@@ -277,3 +277,23 @@ export const merge = (state, ...newStates) => newStates.reduce((result, newState
 export const createMergeByField = (field) => (state, ...items) => merge(state, ...items.map((item) => ({ [item[field]]: item })))
 
 export const mergeById = createMergeByField('id')
+
+export const createUpserter = (indexField, defaultItemState) => (state, item) => ({
+  ...state,
+  [item[indexField]]: {
+    ...(state[item[indexField]] || defaultItemState),
+    ...item,
+  }
+})
+
+export const createUpdater = (indexField) => (state, item) => {
+  const id = item[indexField]
+  const existingItem = state[id]
+  return !existingItem ? state : {
+    ...state,
+    [id]: {
+      ...existingItem,
+      ...item,
+    }
+  }
+}
