@@ -11,17 +11,15 @@ import Loading from 'Components/Loading'
 class WalletOpened extends React.PureComponent {
 
   componentWillMount() {
-    this._updateHoldings()
+    this.props.updateHoldings(this.props.wallet.id)
   }
 
   componentWillReceiveProps (nextProps) {
-    if (nextProps.wallet.id && nextProps.wallet.id !== this.props.wallet.id) {
-      this._updateHoldings()
+    const { id: currentId } = this.props.wallet
+    const { id: nextId } = nextProps.wallet
+    if (nextId && nextId !== currentId) {
+      this.props.updateHoldings(nextId)
     }
-  }
-
-  _updateHoldings () {
-    this.props.updateHoldings(this.props.wallet.id)
   }
 
   render() {

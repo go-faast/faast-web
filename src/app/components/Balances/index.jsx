@@ -26,11 +26,11 @@ class Balances extends Component {
     this._setChartSelect = this._setChartSelect.bind(this)
     this._orderStatus = this._orderStatus.bind(this)
     this._forgetOrder = this._forgetOrder.bind(this)
+    this._updateHoldings = this._updateHoldings.bind(this)
   }
 
   componentWillMount () {
-    const { updateHoldings, wallet } = this.props
-    balancesInterval = window.setInterval(() => updateHoldings(wallet.id), 30000)
+    balancesInterval = window.setInterval(this._updateHoldings, 30000)
   }
 
   componentWillUnmount () {
@@ -42,6 +42,11 @@ class Balances extends Component {
         this.props.removeSwundle(this.props.wallet.id)
       }
     }
+  }
+
+  _updateHoldings () {
+    const { updateHoldings, wallet } = this.props
+    updateHoldings(wallet.id)
   }
 
   _toggleChart (symbol) {
