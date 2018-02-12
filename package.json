@@ -34,6 +34,7 @@
     "lodash.without": "^4.4.0",
     "postcss-loader": "^2.0.10",
     "precss": "^2.0.0",
+    "re-reselect": "^1.0.1",
     "redux-act": "^1.6.0",
     "reselect": "^3.0.1",
     "serve": "^6.0.6",
