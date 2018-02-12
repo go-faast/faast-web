@@ -68,7 +68,7 @@ body {
     }
   }
 
-  .button-container {
+  .btn-faast, .button-container {
     @extend .text-small;
     @extend .text-center;
     @extend .box-shadow;
@@ -78,14 +78,30 @@ body {
     border: 1px solid;
     @extend .gradient-border;
     @extend .gradient-background;
+    border-radius: 0;
     padding: 15px 30px;
 
-    &.button-small {
+    &:hover {
+      @extend .gradient-background-hover;
+    }
+    &:not(:disabled):not(.disabled):active,
+    &:not(:disabled):not(.disabled).active {
+      @extend .gradient-background-active;
+    }
+
+    &.button-small, &.btn-sm {
       padding: 10px 20px;
     }
-    &.button-outline {
+    &.button-outline, &.btn-outline-faast {
       background: $dark-grey;
       color: $secondary-color;
+      &:hover {
+        background: darken($dark-grey, $hover-darken-percent);
+      }
+      &:not(:disabled):not(.disabled):active,
+      &:not(:disabled):not(.disabled).active {
+        background: darken($dark-grey, $active-darken-percent)
+      }
     }
   }
 

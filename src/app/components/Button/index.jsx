@@ -6,11 +6,12 @@ import style from './style'
 const Button = ({ tag: Tag, small, outline, disabled, className, children, ...extraProps }) => (
   <Tag className={classNames(
     className,
-    'button-container', {
-      'button-small': small,
-      'button-outline': outline,
+    'btn btn-faast', {
+      'btn-sm': small,
+      'btn-outline-faast': outline,
       'cursor-pointer': !disabled,
-      [style.disabled]: disabled
+      [style.disabled]: disabled,
+      disabled,
     })}
     {...extraProps}>
     {children}

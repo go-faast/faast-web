@@ -104,10 +104,7 @@ $tileBgColor3: #191919;
 }
 
 .gradient-text {
-  background: -webkit-linear-gradient(left, $primary-color, $secondary-color); /* For Safari 5.1 to 6.0 */
-  background: -o-linear-gradient(right, $primary-color, $secondary-color); /* For Opera 11.1 to 12.0 */
-  background: -moz-linear-gradient(right, $primary-color, $secondary-color); /* For Firefox 3.6 to 15 */
-  background: linear-gradient(to right, $primary-color, $secondary-color); /* Standard syntax */
+  background: linear-gradient(to right, $primary-color, $secondary-color);
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -118,11 +115,20 @@ $tileBgColor3: #191919;
 }
 
 .gradient-background {
-    background: $primary-color; /* For browsers that do not support gradients */
-    background: -webkit-linear-gradient(left, $primary-color, $secondary-color); /* For Safari 5.1 to 6.0 */
-    background: -o-linear-gradient(right, $primary-color, $secondary-color); /* For Opera 11.1 to 12.0 */
-    background: -moz-linear-gradient(right, $primary-color, $secondary-color); /* For Firefox 3.6 to 15 */
-    background: linear-gradient(to right, $primary-color, $secondary-color); /* Standard syntax */
+  background: $primary-color; /* For browsers that do not support gradients */
+  background: linear-gradient(to right, $primary-color, $secondary-color);
+}
+
+$hover-darken-percent: 7.5%;
+.gradient-background-hover {
+  background: darken($primary-color, $hover-darken-percent);
+  background: linear-gradient(to right, darken($primary-color, $hover-darken-percent), darken($secondary-color, $hover-darken-percent));
+}
+
+$active-darken-percent: 10%;
+.gradient-background-active {
+  background: darken($primary-color, $active-darken-percent);
+  background: linear-gradient(to right, darken($primary-color, $active-darken-percent), darken($secondary-color, $active-darken-percent));
 }
 
 .gradient-border {
