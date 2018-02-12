@@ -2,7 +2,7 @@ import { createAction } from 'redux-act'
 
 import log from 'Utilities/log'
 import walletService, { Wallet, MultiWallet } from 'Services/Wallet'
-import { getAllAssets, getParentWallets } from 'Selectors'
+import { getAllAssets, getWalletParents } from 'Selectors'
 
 const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   id: wallet.getId(),
@@ -43,9 +43,9 @@ export const removeWallet = (id) => (dispatch, getState) => Promise.resolve()
   .then(() => walletService.remove(id))
   .then((walletInstance) => {
     const wallet = convertWalletInstance(walletInstance) || { id }
+    const parents = getWalletParents(getState(), id)
     dispatch(walletRemoved(wallet))
-    const parentWallets = getParentWallets(getState(), wallet)
-    return Promise.all(parentWallets.map((parentWallet) => dispatch(updateWallet(parentWallet.id))))
+    return Promise.all(parents.map((parent) => dispatch(updateWallet(parent.id))))
       .then(() => wallet)
   })
 

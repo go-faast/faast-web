@@ -1,53 +1,67 @@
-import { createSelector as reselect } from 'reselect'
+import { createSelector } from 'reselect'
+import createCachedSelector from 're-reselect'
 
 import { toBigNumber, toUnit, toPercentage } from 'Utilities/convert'
 import { fixPercentageRounding } from 'Utilities/helpers'
 
-export const isAppReady = ({ app }) => app.ready
-export const getAppError = ({ app }) => app.error
+/** Creates a new selector by passing the results of argSelectors into originalSelector as arguments */
+const wrapSelectorArgs = (originalSelector, ...argSelectors) => (state) => originalSelector(state, ...argSelectors.map((argSelector) => argSelector(state)))
 
+/** Selector that returns the first non-state argument passed to it */
+const selectItemId = (state, id) => id
+
+/** Creates a cached selector that accepts an item ID as an arg */
+const createItemSelector = (...createSelectorArgs) => createCachedSelector(...createSelectorArgs)(selectItemId)
+
+
+// Root selectors
+const getAppState = ({ app }) => app
 const getAssetState = ({ assets }) => assets
+const getPortfolioState = ({ portfolio }) => portfolio
+const getWalletState = ({ wallets }) => wallets
 
-export const areAssetsLoaded = reselect(getAssetState, ({ loaded }) => loaded)
-export const getAssetsLoadingError = reselect(getAssetState, ({ loadingError }) => loadingError)
-export const areAssetPricesLoaded = reselect(getAssetState, ({ loaded, pricesLoaded }) => loaded && pricesLoaded)
-export const getAssetPricesError = reselect(getAssetState, ({ loadingError, pricesError }) => loadingError || pricesError)
-export const getAllAssets = reselect(getAssetState, ({ data }) => data)
-export const getAllAssetsArray = reselect(getAllAssets, Object.values)
+// App selectors
+export const isAppReady = createSelector(getAppState, ({ ready }) => ready)
+export const getAppError = createSelector(getAppState, ({ error }) => error)
 
-export const getCurrentPortfolioId = ({ portfolio: { currentId } }) => currentId
-export const getCurrentWalletId = ({ portfolio: { currentId, currentWalletId } }) => currentWalletId || currentId
-export const getAllWallets = ({ wallets }) => wallets
+// Asset selectors
+export const areAssetsLoaded = createSelector(getAssetState, ({ loaded }) => loaded)
+export const getAssetsLoadingError = createSelector(getAssetState, ({ loadingError }) => loadingError)
+export const areAssetPricesLoaded = createSelector(getAssetState, ({ loaded, pricesLoaded }) => loaded && pricesLoaded)
+export const getAssetPricesError = createSelector(getAssetState, ({ loadingError, pricesError }) => loadingError || pricesError)
+export const getAllAssets = createSelector(getAssetState, ({ data }) => data)
+export const getAllAssetsArray = createSelector(getAllAssets, Object.values)
 
-export const createWalletSelector = (walletIdSelector) => reselect(getAllWallets, walletIdSelector, (wallets, id) => {
-  const wallet = wallets[id]
-  if (wallet) {
-    return {
-      ...wallet,
-      nestedWallets: wallet.nestedWalletIds.map((nestedWalletId) => wallets[nestedWalletId])
+// Wallet selectors
+export const getAllWallets = getWalletState
+
+export const getWallet = createItemSelector(
+  getAllWallets,
+  selectItemId,
+  (allWallets, id) => {
+    const wallet = allWallets[id]
+    if (wallet) {
+      return {
+        ...wallet,
+        nestedWallets: wallet.nestedWalletIds.map((nestedWalletId) => allWallets[nestedWalletId])
+      }
     }
   }
-})
-export const getWallet = createWalletSelector((_, { id }) => id)
-export const getCurrentPortfolio = createWalletSelector(getCurrentPortfolioId)
-export const getCurrentWallet = createWalletSelector(getCurrentWalletId)
+)
 
-export const getParentWallets = reselect(
-  (_, { id }) => id,
+export const getWalletParents = createItemSelector(
   getAllWallets,
-  (walletId, allWallets) => Object.values(allWallets).reduce(
-    (result, parent) => (parent && parent.type === 'MultiWallet' && parent.nestedWalletIds.includes(walletId)) ? [...result, parent] : result,
-    []))
+  selectItemId,
+  (allWallets, id) => Object.values(allWallets).reduce(
+    (result, parent) => (parent && parent.type === 'MultiWallet' && parent.nestedWalletIds.includes(id)) ? [...result, parent] : result,
+    [])
+)
 
-export const isCurrentPortfolioEmpty = reselect(getCurrentPortfolio, ({ type, nestedWalletIds }) => type === 'MultiWallet' && nestedWalletIds.length === 0)
-
-export const canAddWalletsToCurrentPortfolio = reselect(getCurrentPortfolio, ({ type }) => type === 'MultiWallet')
-
-export const createWalletHoldingsSelector = (walletSelector) => reselect(
-  walletSelector,
+export const getWalletWithHoldings = createItemSelector(
+  getWallet,
   getAllAssets,
   (wallet, assets) => {
-    let totalFiat = toBigNumber(0);
+    let totalFiat = toBigNumber(0)
     let totalFiat24hAgo = toBigNumber(0)
     const balances = wallet.balances || {}
     let assetHoldings = wallet.supportedAssets
@@ -74,8 +88,7 @@ export const createWalletHoldingsSelector = (walletSelector) => reselect(
         ...holding,
         percentage: toPercentage(holding.fiat, totalFiat)
       }))
-      .sort((a, b) => a.fiat.minus(b.fiat).toNumber())
-      .reverse()
+      .sort((a, b) => b.fiat.minus(a.fiat).toNumber())
     assetHoldings = fixPercentageRounding(assetHoldings, totalFiat)
     const totalChange = totalFiat.minus(totalFiat24hAgo).div(totalFiat24hAgo).times(100)
     const result = {
@@ -86,22 +99,36 @@ export const createWalletHoldingsSelector = (walletSelector) => reselect(
       assetHoldings,
     }
     return result
-  })
+  }
+)
 
-export const createWalletHoldingsLoadedSelector = (walletSelector) => reselect(
-  walletSelector,
+export const areWalletHoldingsLoaded = createItemSelector(
+  getWallet,
   areAssetPricesLoaded,
-  (wallet, assetPricesLoaded) => wallet.balancesLoaded && assetPricesLoaded)
+  (wallet, assetPricesLoaded) => wallet.balancesLoaded && assetPricesLoaded
+)
 
-export const createWalletHoldingsErrorSelector = (walletSelector) => reselect(
-  walletSelector,
+export const getWalletHoldingsError = createItemSelector(
+  getWallet,
   getAssetPricesError,
-  (wallet, assetPricesError) => wallet.balancesError || assetPricesError)
+  (wallet, assetPricesError) => wallet.balancesError || assetPricesError
+)
 
-export const getCurrentPortfolioWithHoldings = createWalletHoldingsSelector(getCurrentPortfolio)
-export const areCurrentPortfolioHoldingsLoaded = createWalletHoldingsLoadedSelector(getCurrentPortfolio)
-export const getCurrentPortfolioHoldingsError = createWalletHoldingsErrorSelector(getCurrentPortfolio)
+// Portfolio selectors
+export const getCurrentPortfolioId = createSelector(getPortfolioState, ({ currentId }) => currentId)
+export const getCurrentWalletId = createSelector(getPortfolioState, ({ currentId, currentWalletId }) => currentWalletId || currentId)
+export const getAllPortfolioIds = createSelector(getPortfolioState, ({ portfolioIds }) => portfolioIds)
 
-export const getCurrentWalletWithHoldings = createWalletHoldingsSelector(getCurrentWallet)
-export const areCurrentWalletHoldingsLoaded = createWalletHoldingsLoadedSelector(getCurrentWallet)
-export const getCurrentWalletHoldingsError = createWalletHoldingsErrorSelector(getCurrentWallet)
+export const getCurrentPortfolio = wrapSelectorArgs(getWallet, getCurrentPortfolioId)
+export const getCurrentPortfolioWithHoldings = wrapSelectorArgs(getWalletWithHoldings, getCurrentPortfolioId)
+export const areCurrentPortfolioHoldingsLoaded = wrapSelectorArgs(areWalletHoldingsLoaded, getCurrentPortfolioId)
+export const getCurrentPortfolioHoldingsError = wrapSelectorArgs(getWalletHoldingsError, getCurrentPortfolioId)
+
+export const getCurrentWallet = wrapSelectorArgs(getWallet, getCurrentWalletId)
+export const getCurrentWalletWithHoldings = wrapSelectorArgs(getWalletWithHoldings, getCurrentWalletId)
+export const areCurrentWalletHoldingsLoaded = wrapSelectorArgs(areWalletHoldingsLoaded, getCurrentWalletId)
+export const getCurrentWalletHoldingsError = wrapSelectorArgs(getWalletHoldingsError, getCurrentWalletId)
+
+export const isCurrentPortfolioEmpty = createSelector(getCurrentPortfolio, ({ type, nestedWalletIds }) => type === 'MultiWallet' && nestedWalletIds.length === 0)
+
+export const canAddWalletsToCurrentPortfolio = createSelector(getCurrentPortfolio, ({ type }) => type === 'MultiWallet')

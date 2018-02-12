@@ -68,7 +68,7 @@ export const removePortfolio = (id) => (dispatch, getState) => Promise.resolve()
   .then(() => {
     if (id === defaultPortfolioId) {
       // Don't remove default portfolio, only its nested wallets
-      const wallet = getWallet(getState(), { id })
+      const wallet = getWallet(getState(), id)
       return Promise.all(wallet.nestedWalletIds.map((nestedId) => {
         if (id !== nestedId) { // Avoid accidental infinite recursion
           return dispatch(removePortfolio(nestedId))
