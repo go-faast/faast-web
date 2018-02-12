@@ -49,6 +49,8 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
 
   getAddress = () => toChecksumAddress(this.keystore.address || this.keystore.Address || this.keystore.getAddressString());
 
+  isPersistAllowed = () => !this.isEncrypted && this._persistAllowed;
+
   encrypt = (password = '') => {
     if (this.isEncrypted) {
       return this

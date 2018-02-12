@@ -75,8 +75,8 @@ export function WalletService() {
     }
     const removedWallet = activeWallets[id]
     if (removedWallet) {
-      log.debug('removing wallet', id)
       delete activeWallets[id]
+      log.debug('removed wallet', id)
       deleteFromStorage(removedWallet)
       Object.values(activeWallets).forEach((activeWallet) => {
         if (activeWallet instanceof MultiWallet && activeWallet.removeWallet(removedWallet)) {
@@ -137,7 +137,7 @@ export function WalletService() {
   const restoreLegacy = () => {
     const legacyWallet = loadFromStorage(legacyStorageKey)
     if (legacyWallet) {
-      log.debug('converted legacy wallet', legacyWallet.getId())
+      log.debug('restored legacy wallet', legacyWallet.getId())
       saveToStorage(legacyWallet)
     }
     sessionStorageRemove(legacyStorageKey)
@@ -149,13 +149,20 @@ export function WalletService() {
     const query = queryString.parse(window.location.search)
     if (query.wallet) {
       const encryptedWalletString = Buffer.from(query.wallet, 'base64').toString()
-      return saveToStorage(WalletSerializer.parse(encryptedWalletString))
+      const wallet = WalletSerializer.parse(encryptedWalletString)
+      if (wallet) {
+        log.debug('restored querystring wallet', wallet.getId())
+        saveToStorage(wallet)
+        return wallet
+      }
     }
   }
 
   const restoreBlockstack = () => {
-    if (blockstack.isUserSignedIn()) {
-      return blockstack.createWallet()
+    const wallet = blockstack.restoreWallet()
+    if (wallet) {
+      log.debug('restored blockstack wallet', wallet.getId())
+      return wallet
     }
   }
 

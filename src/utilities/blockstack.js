@@ -11,20 +11,26 @@ import {
 import log from 'Utilities/log'
 import { EthereumWalletKeystore } from 'Services/Wallet'
 
-const saveSettings = (settings = {}) => {
-  putFile('settings.json', JSON.stringify(settings), true)
-  .then(() => {
-    log.info('Settings updated on blockstack:', settings)
-  })
-  .catch(log.error)
-}
-
 const createWallet = () => {
   const userPrivateKey = loadUserData().appPrivateKey
   const wallet = EthereumWalletKeystore.fromPrivateKey(userPrivateKey)
   wallet.setPersistAllowed(false)
   wallet.isBlockstack = true
   return wallet
+}
+
+const restoreWallet = () => {
+  if (isUserSignedIn()) {
+    return createWallet()
+  }
+}
+
+const saveSettings = (settings = {}) => {
+  putFile('settings.json', JSON.stringify(settings), true)
+  .then(() => {
+    log.info('Settings updated on blockstack:', settings)
+  })
+  .catch(log.error)
 }
 
 const getSettings = () => {
@@ -45,5 +51,6 @@ export default {
   handlePendingSignIn,
   redirectToSignIn,
   loadUserData,
-  createWallet
+  createWallet,
+  restoreWallet
 }
