@@ -9,7 +9,7 @@ import display from 'Utilities/display'
 import styles from './style'
 
 const WalletSummary = ({ icon, wallet: { id, label, typeLabel, totalFiat, iconUrl, balancesLoaded } }) => (
-  <Row className='large-gutters-x align-items-center'>
+  <Row className='medium-gutters-x align-items-center'>
     {icon && (
       <Col xs='auto'>
         <div className={styles.walletIcon}><img src={iconUrl} className={styles.walletIconImg}/></div>

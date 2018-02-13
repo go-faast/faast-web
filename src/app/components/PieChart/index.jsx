@@ -47,6 +47,13 @@ class PieChart extends Component {
     return Object.assign({}, config.highCharts.pieChart, {
       plotOptions: Object.assign({}, config.highCharts.pieChart.plotOptions, {
         pie: Object.assign({}, config.highCharts.pieChart.plotOptions.pie, {
+          dataLabels: {
+            enabled: true,
+            format: '<b>{point.name}</b>',
+            style: {
+              color: 'white'
+            }
+          },
           events: {
             click: (e) => {
               const point = e.point || {}

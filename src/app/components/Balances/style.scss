@@ -6,31 +6,10 @@ $collapse-table: md;
   collapseTablePoint: $collapse-table;
 }
 
-.areaChartContainer {
-  padding-right: 10px;
-  padding-left: 0px;
-  margin-bottom: 50px;
-}
-
 .tileContainer {
   background-color: $ultra-dark-grey;
   @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  padding: 20px;
-  box-shadow: 5px 10px 15px #090909;
-}
-
-.tileContainerAddress {
-  background-color: $ultra-dark-grey;
-  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  padding: 20px;
-  box-shadow: 5px 10px 15px #090909;
-  text-align: center;
-}
-
-.chart {
-  background-color: $ultra-dark-grey;
-  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  padding: 20px;
+  padding: 16px;
   box-shadow: 5px 10px 15px #090909;
 }
 
@@ -94,6 +73,7 @@ $collapse-table: md;
 .assetTitle {
   // @extend .gradient-text;
   font-size: $text-medium;
+  margin-top: 8px;
 }
 
 .assetPrice {
@@ -144,7 +124,7 @@ $collapse-table: md;
 }
 
 .tableRowAction {
-  &:hover, &:focus {
+  &:hover {
     cursor: pointer;
     background: $dark-grey;
   }

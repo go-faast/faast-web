@@ -109,7 +109,7 @@ const BalancesView = (props) => {
       value: display.fiat(total)
     },
     {
-      title: 'number of assets',
+      title: 'total assets',
       value: assetRows.length
     }
   ]
@@ -166,22 +166,11 @@ const BalancesView = (props) => {
             </TableCell>
           </Row>
           <Collapse isOpen={chartOpen}>
-            <div className={styles.areaChartContainer}>
-              <div className={styles.tileContainer}>
-                <div className='row'>
-                  <div className='col-8'>
-                    <div className={styles.assetTitle}>
-                      <strong>{name}</strong> ({symbol})
-                      <span><i className='fa fa-external-link text-gradient margin-left-10' /> <a className={styles.link} href={infoUrl} target='_blank' rel='noopener'>info</a></span>
-                    </div>
-                  </div>
-                  <div className='col-4 text-right'>
-                    {/* <span className='link'>send</span> | <span className='link'>receive</span> */}
-                  </div>
-                </div>
-                <PriceChart symbol={symbol} chartOpen={chartOpen} />
-              </div>
+            <div className={styles.assetTitle}>
+              <strong>{name}</strong> ({symbol})
+              <span><i className='fa fa-external-link text-gradient margin-left-10' /> <a className={styles.link} href={infoUrl} target='_blank' rel='noopener'>info</a></span>
             </div>
+            <PriceChart symbol={symbol} chartOpen={chartOpen} />
           </Collapse>
         </div>
       )
@@ -236,10 +225,10 @@ const BalancesView = (props) => {
             </Col>
             {!balancesLoading && assetRows.length > 0 && (
               <Col xs='12'>
-                <div className={styles.tileContainer}>
+                <div className={`${styles.tileContainer} px-0`}>
                   {addressProps.address && (
-                    <div style={{ textAlign: 'right' }}>
-                      <div className={styles.addressTitle}>address</div>
+                    <div className='text-right px-3' style={{ lineHeight: 1 }}>
+                      <div className='text-medium-grey mb-1'>address</div>
                       <Address className={`${styles.link} ${styles.addressLink}`} {...addressProps} />
                     </div>
                   )}
@@ -253,7 +242,7 @@ const BalancesView = (props) => {
                   <TableCell className={`${styles.columnTitle} text-center text-${expandTablePoint}-left`}>Asset</TableCell>
                   <TableCell className={styles.columnTitle}>Units</TableCell>
                   <TableCell className={styles.columnTitle}>Holdings</TableCell>
-                  <TableCell className={styles.columnTitle} hideCollapse>Portfolio Weight</TableCell>
+                  <TableCell className={styles.columnTitle} hideCollapse>Weight</TableCell>
                   <TableCell className={styles.columnTitle}>Price</TableCell>
                   <TableCell className={`${styles.columnTitle} text-right`} hideCollapse>24h change</TableCell>
                 </Row>
