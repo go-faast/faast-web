@@ -114,6 +114,33 @@ body {
     }
   }
 
+  .dropdown-menu {
+    background-color: $dark-grey;
+    .dropdown-item {
+      color: $light-grey;
+      font-weight: 200;
+      h6, .h6 {
+        font-weight: normal;
+      }
+      &:disabled, &.disabled {
+        filter: grayscale(1);
+        color: $medium-grey;
+        cursor: default;
+      }
+      &:not(:disabled):not(.disabled) {
+        &:hover, &:focus {
+          background-color: #303030;
+        }
+        &:active, &.active {
+          background-color: #404040;
+        }
+      }
+    }
+    .dropdown-divider {
+      border-color: $primary-color;
+    }
+  }
+
   .beta-tag {
     font-family: 'Kaushan Script', cursive;
     @extend .text-small;
