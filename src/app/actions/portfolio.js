@@ -44,13 +44,9 @@ export const openWallet = (walletInstance, isMocking) => (dispatch, getState) =>
   })
   .then(() => dispatch(addWallet(walletInstance)))
   .then((wallet) => {
-    const { id: walletId, isBlockstack } = wallet
+    const { id: walletId } = wallet
     return dispatch(addNestedWallet(defaultPortfolioId, walletId))
       .then(() => {
-        if (isBlockstack) {
-          dispatch(portfolioAdded(walletId))
-          return dispatch(setCurrentPortfolio(walletId))
-        }
         const currentPortfolio = getCurrentPortfolio(getState())
         if (currentPortfolio.type === MultiWallet.type) {
           if (currentPortfolio.id !== defaultPortfolioId) {
@@ -124,12 +120,9 @@ const createDefaultPortfolio = () => (dispatch) => Promise.resolve()
 
 export const restoreAllPortfolios = () => (dispatch) => dispatch(restoreAllWallets())
   .then((plainWallets) => dispatch(createDefaultPortfolio())
-    .then(() => Promise.all(plainWallets.map(({ id, type, isBlockstack }) => {
-      if (type === MultiWallet.type || isBlockstack) {
+    .then(() => Promise.all(plainWallets.map(({ id, type }) => {
+      if (type === MultiWallet.type) {
         dispatch(portfolioAdded(id))
-        if (isBlockstack) {
-          dispatch(setCurrentPortfolio(id))
-        }
       } else {
         return dispatch(addNestedWallet(defaultPortfolioId, id))
       }
