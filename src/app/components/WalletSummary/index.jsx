@@ -8,9 +8,11 @@ import { getWalletWithHoldings } from 'Selectors'
 import display from 'Utilities/display'
 import styles from './style'
 
-const PortfolioSummary = ({ wallet: { id, label, typeLabel, totalFiat, iconUrl } }) => (
+const WalletSummary = ({ wallet: { id, label, typeLabel, totalFiat, iconUrl } }) => (
   <Row className='large-gutters-x align-items-center'>
-    <Col xs='auto'><img src={iconUrl} className={styles.walletIcon}/></Col>
+    <Col xs='auto'>
+      <div className={styles.walletIcon}><img src={iconUrl} className={styles.walletIconImg}/></div>
+    </Col>
     <Col>
       <Row className='no-gutters justify-content-between'>
         <Col xs='12'><h6 className={classNames({ 'font-italic': id === 'default' })}>{label}</h6></Col>
@@ -21,7 +23,7 @@ const PortfolioSummary = ({ wallet: { id, label, typeLabel, totalFiat, iconUrl }
   </Row>
 )
 
-PortfolioSummary.propTypes = {
+WalletSummary.propTypes = {
   id: PropTypes.string.isRequired,
 }
 
@@ -29,4 +31,4 @@ const mapStateToProps = createStructuredSelector({
   wallet: (state, { id }) => getWalletWithHoldings(state, id),
 })
 
-export default connect(mapStateToProps)(PortfolioSummary)
+export default connect(mapStateToProps)(WalletSummary)

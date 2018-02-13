@@ -6,10 +6,6 @@ $collapse-table: md;
   collapseTablePoint: $collapse-table;
 }
 
-.statsContainer {
-  margin-top: 8px;
-}
-
 .areaChartContainer {
   padding-right: 10px;
   padding-left: 0px;
@@ -145,7 +141,10 @@ $collapse-table: md;
   @include media-breakpoint-down($collapse-table) {
     padding: 8px;
   }
-  &:hover {
+}
+
+.tableRowAction {
+  &:hover, &:focus {
     cursor: pointer;
     background: $dark-grey;
   }

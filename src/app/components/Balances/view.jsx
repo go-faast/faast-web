@@ -12,6 +12,7 @@ import styles from './style'
 import config from 'Config'
 import { breakpointNext } from 'Utilities/breakpoints'
 import { Row, Col } from 'reactstrap'
+import WalletSelector from 'Components/WalletSelector'
 
 const { collapseTablePoint } = styles
 const expandTablePoint = breakpointNext(collapseTablePoint)
@@ -113,8 +114,15 @@ const BalancesView = (props) => {
   ]
 
   const renderAssets = () => {
-    return assetRows.map((a, i) => {
-      const { symbol, name, fiat, balance, price, percentage, change24, priceDecrease, infoUrl } = a
+    if (assetRows.length === 0) {
+      return (
+        <div className={`text-center ${styles.tableRow}`}>
+          <i>No assets to show</i>
+        </div>
+      )
+    }
+    return assetRows.map((asset) => {
+      const { symbol, name, fiat, balance, price, percentage, change24, priceDecrease, infoUrl } = asset
       const displayUnits = display.units(balance, symbol, price, false)
       const displayUnitsWithSymbol = display.units(balance, symbol, price, true)
       const displayWeight = display.percentage(percentage)
@@ -123,7 +131,7 @@ const BalancesView = (props) => {
       const fiatPrice = display.fiat(price)
       const chartOpen = openCharts[symbol]
       return (
-        <div key={i} onClick={() => toggleChart(symbol)} className={styles.tableRow}>
+        <div key={symbol} onClick={() => toggleChart(symbol)} className={`${styles.tableRow} ${styles.tableRowAction}`}>
           <Row className='small-gutters-x'>
             <TableCell className={styles.tableCell}>
               <Row className='no-gutters'>
@@ -197,54 +205,63 @@ const BalancesView = (props) => {
       {!viewOnly && !!orderStatus &&
         <OrderInProgress status={orderStatus} handleViewStatus={handleToggleOrderModal} />
       }
-      <div className={styles.statsContainer}>
-        <div className='row small-gutters'>
-          {values.map(({ title, value, changeIcon }, i) => (
-            <div key={i} className='col-6 col-md-3'>
-              <div className={styles.tileContainer}>
-                <div className='row'>
-                  {!!changeIcon &&
-                    <div className='col-3'>
-                      <div className={changeIcon} />
+      <Row className='medium-gutters'>
+        <Col xs='12' md='4'>
+          <WalletSelector/>
+        </Col>
+        <Col xs='12' md='8'>
+          <Row className='medium-gutters'>
+            <Col xs='12'>
+              <Row className='small-gutters'>
+                {values.map(({ title, value, changeIcon }, i) => (
+                  <div key={i} className='col-6 col-md-3'>
+                    <div className={styles.tileContainer}>
+                      <div className='row'>
+                        {!!changeIcon &&
+                          <div className='col-3'>
+                            <div className={changeIcon} />
+                          </div>
+                        }
+                        <div className={changeIcon ? 'col-9' : 'col'}>
+                          <div className={styles.statsTitle}>{title}</div>
+                          <div className={`text-white ${styles.statsContent}`}>{value}</div>
+                        </div>
+                      </div>
                     </div>
-                  }
-                  <div className={changeIcon ? 'col-9' : 'col'}>
-                    <div className={styles.statsTitle}>{title}</div>
-                    <div className={`text-white ${styles.statsContent}`}>{value}</div>
                   </div>
+                ))}
+              </Row>
+            </Col>
+            {assetRows.length > 0 && (
+              <Col xs='12'>
+                <div className={styles.tileContainer}>
+                  {addressProps.address && (
+                    <div style={{ textAlign: 'right' }}>
+                      <div className={styles.addressTitle}>address</div>
+                      <Address className={`${styles.link} ${styles.addressLink}`} {...addressProps} />
+                    </div>
+                  )}
+                  {pieChart}
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      <div className={`row ${styles.chartContainer}`}>
-        <div className='col'>
-          <div className={styles.tileContainer}>
-            {addressProps.address && (
-              <div style={{ textAlign: 'right' }}>
-                <div className={styles.addressTitle}>address</div>
-                <Address className={`${styles.link} ${styles.addressLink}`} {...addressProps} />
-              </div>
+              </Col>
             )}
-            {pieChart}
-          </div>
-        </div>
-      </div>
-
-      <div className={styles.tableHeader}>
-        <Row className='small-gutters-x'>
-          <TableCell className={`${styles.columnTitle} text-center text-${expandTablePoint}-left`}>Asset</TableCell>
-          <TableCell className={styles.columnTitle}>Units</TableCell>
-          <TableCell className={styles.columnTitle}>Holdings</TableCell>
-          <TableCell className={styles.columnTitle} hideCollapse>Portfolio Weight</TableCell>
-          <TableCell className={styles.columnTitle}>Price</TableCell>
-          <TableCell className={`${styles.columnTitle} text-right`} hideCollapse>24h change</TableCell>
-        </Row>
-      </div>
-      <div className={styles.gradientSeparator} />
-      {renderAssets()}
+            <Col xs='12'>
+              <div className={styles.tableHeader}>
+                <Row className='small-gutters-x'>
+                  <TableCell className={`${styles.columnTitle} text-center text-${expandTablePoint}-left`}>Asset</TableCell>
+                  <TableCell className={styles.columnTitle}>Units</TableCell>
+                  <TableCell className={styles.columnTitle}>Holdings</TableCell>
+                  <TableCell className={styles.columnTitle} hideCollapse>Portfolio Weight</TableCell>
+                  <TableCell className={styles.columnTitle}>Price</TableCell>
+                  <TableCell className={`${styles.columnTitle} text-right`} hideCollapse>24h change</TableCell>
+                </Row>
+              </div>
+              <div className={styles.gradientSeparator} />
+              {renderAssets()}
+            </Col>
+          </Row>
+        </Col>
+      </Row>
     </Layout>
   )
 }

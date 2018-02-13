@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import { setCurrentPortfolio, createNewPortfolio } from 'Actions/portfolio'
 import { getAllPortfolioIds, getCurrentPortfolioId } from 'Selectors'
-import PortfolioSummary from './PortfolioSummary'
+import WalletSummary from 'Components/WalletSummary'
 
 const SelectPortfolioDropdown = ({ portfolioIds, currentPortfolioId, changePortfolio, createPortfolio }) => (
   <UncontrolledDropdown>
@@ -14,11 +14,11 @@ const SelectPortfolioDropdown = ({ portfolioIds, currentPortfolioId, changePortf
     <DropdownMenu>
       {portfolioIds.map((portfolioId) => (
         <DropdownItem key={portfolioId} active={portfolioId === currentPortfolioId} onClick={() => changePortfolio(portfolioId)}>
-          <PortfolioSummary id={portfolioId}/>
+          <WalletSummary id={portfolioId}/>
         </DropdownItem>
       ))}
       <DropdownItem divider />
-      <DropdownItem onClick={() => createPortfolio(true)}><h6>create new portfolio</h6></DropdownItem>
+      <DropdownItem onClick={() => createPortfolio(true)}><h6 className='my-0'>create new portfolio</h6></DropdownItem>
     </DropdownMenu>
   </UncontrolledDropdown>
 )

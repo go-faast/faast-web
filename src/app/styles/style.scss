@@ -1,5 +1,10 @@
 @import "variables";
 
+html, body {
+  // Set root font size (rem)
+  font-size: 14px;
+}
+
 body {
   margin: 0;
   font-family: 'Kanit', sans-serif;
@@ -8,7 +13,6 @@ body {
   background-color: $pageBgColor1;
   min-height: 100vh;
   position: relative;
-  letter-spacing: 1px;
 
   h1, h2, h3, h4, h5, h6 {
     color: $secondary-color;
@@ -72,6 +76,9 @@ body {
     &:not(:disabled):not(.disabled) {
       cursor: pointer;
     }
+    &:focus {
+      outline: none;
+    }
   }
 
   .btn-faast, .button-container {
@@ -103,7 +110,7 @@ body {
     &.button-outline, &.btn-outline-faast {
       background: $dark-grey;
       color: $secondary-color;
-      &:hover {
+      &:hover, &:focus {
         background: darken($dark-grey, $hover-darken-percent);
       }
       &:not(:disabled):not(.disabled) {
@@ -115,6 +122,7 @@ body {
   }
 
   .dropdown-menu {
+    font-size: 14px;
     background-color: $dark-grey;
     .dropdown-item {
       color: $light-grey;
@@ -138,6 +146,37 @@ body {
     }
     .dropdown-divider {
       border-color: $primary-color;
+    }
+  }
+
+  .list-group {
+    font-size: 14px;
+    .list-group-item {
+      background-color: $dark-grey;
+      color: $light-grey;
+      font-weight: 200;
+      h6, .h6 {
+        font-weight: normal;
+      }
+    }
+    .list-group-item-action {
+      font-style: normal;
+      &:disabled, &.disabled {
+        filter: grayscale(1);
+        color: $medium-grey;
+        cursor: default;
+      }
+      &:not(:disabled):not(.disabled) {
+        &:hover, &:focus {
+          background-color: #303030;
+        }
+        &.active {
+          border: 1px solid rgba(0,0,0,.125);
+          &, &:active {
+            background-color: #404040;
+          }
+        }
+      }
     }
   }
 

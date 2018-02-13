@@ -12,7 +12,7 @@ const AppView = () => {
     <Switch>
       <WalletClosed exact path='/' />
       <Route path='/connect' component={Access} />
-      <WalletOpened path='/balances' component={Balances} />
+      <Route path='/balances' component={Balances} />
       <WalletOpened path='/modify' component={Modify} />
       <Route path='/address/:address' component={View} />
     </Switch>
