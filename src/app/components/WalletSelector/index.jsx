@@ -8,22 +8,22 @@ import { getCurrentPortfolioWalletIds, getCurrentWalletId, getCurrentPortfolioId
 import WalletSummary from 'Components/WalletSummary'
 
 const WalletSelector = ({ currentPortfolioId, walletIds, currentWalletId, changeWallet }) => {
-  const ListItem = ({ id }) => (
+  const ListItem = ({ id, icon }) => (
     <ListGroupItem key={id} active={id === currentWalletId} onClick={() => changeWallet(id)} tag='button' action>
-      <WalletSummary id={id}/>
+      <WalletSummary id={id} icon={icon}/>
     </ListGroupItem>
   )
   return (
     <div>
       <ListGroup>
         <ListItem id={currentPortfolioId}/>
-        <ListGroupItem className='border-top-primary'>
+        <ListGroupItem>
           <h5 className='my-0'>Wallets</h5>
         </ListGroupItem>
         {walletIds.length > 0
-          ? walletIds.map((id) => ListItem({ id }))
+          ? walletIds.map((id) => ListItem({ id, icon: true }))
           : (<ListGroupItem><i>No wallets in this portfolio</i></ListGroupItem>)}
-        <ListGroupItem tag={Link} to='/connect' action><h6 className='my-0'>+ add wallet</h6></ListGroupItem>
+        <ListGroupItem tag={Link} to='/connect' action><h5 className='my-0 font-weight-normal'>+ add wallet</h5></ListGroupItem>
       </ListGroup>
     </div>
   )

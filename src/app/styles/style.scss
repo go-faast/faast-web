@@ -122,14 +122,10 @@ body {
   }
 
   .dropdown-menu {
-    font-size: 14px;
     background-color: $dark-grey;
     .dropdown-item {
       color: $light-grey;
       font-weight: 200;
-      h6, .h6 {
-        font-weight: normal;
-      }
       &:disabled, &.disabled {
         filter: grayscale(1);
         color: $medium-grey;
@@ -145,22 +141,17 @@ body {
       }
     }
     .dropdown-divider {
-      border-color: $primary-color;
+      border-color: $secondary-color;
     }
   }
 
   .list-group {
-    font-size: 14px;
     .list-group-item {
       background-color: $dark-grey;
       color: $light-grey;
       font-weight: 200;
-      h6, .h6 {
-        font-weight: normal;
-      }
     }
     .list-group-item-action {
-      font-style: normal;
       &:disabled, &.disabled {
         filter: grayscale(1);
         color: $medium-grey;

@@ -91,6 +91,10 @@ $tileBgColor3: #191919;
 
 //Common classes
 
+.text-primary {
+  color: $primary-color !important;
+}
+
 .color-bg-1 {
   background-color: $tileBgColor1;
 }
