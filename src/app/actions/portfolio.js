@@ -91,15 +91,20 @@ export const closeCurrentPortfolio = () => (dispatch, getState) => {
     .then(() => log.info('portfolio closed'))
 }
 
-export const createNewPortfolio = (id, persist = true) => (dispatch) => Promise.resolve()
-  .then(() => {
-    id = id || uuid()
-    const wallet = new MultiWallet(id)
-    wallet.setPersistAllowed(persist)
-    return dispatch(addWallet(wallet))
-  }).then(({ id }) => dispatch(portfolioAdded(id)))
+export const addPortfolio = (walletInstance, setCurrent = false) => (dispatch) => Promise.resolve()
+  .then(() => dispatch(addWallet(walletInstance)))
+  .then((wallet) => {
+    dispatch(portfolioAdded(wallet.id))
+    if (setCurrent) {
+      dispatch(setCurrentPortfolio(wallet.id))
+    }
+    return wallet
+  })
 
-export const createViewOnlyPortfolio = (address) => (dispatch) => Promise.resolve()
+export const createNewPortfolio = (setCurrent = false) => (dispatch) => Promise.resolve()
+  .then(() => dispatch(addPortfolio(new MultiWallet(), setCurrent)))
+
+export const createViewOnlyPortfolio = (address, setCurrent = false) => (dispatch) => Promise.resolve()
   .then(() => {
     if (!address) {
       throw new Error('invalid view only address')
@@ -107,11 +112,18 @@ export const createViewOnlyPortfolio = (address) => (dispatch) => Promise.resolv
     const wallet = new EthereumWalletWeb3(address)
     wallet.setPersistAllowed(false)
     wallet.isReadOnly = true
-    return dispatch(addWallet(wallet))
-  }).then(({ id }) => dispatch(portfolioAdded(id)))
+    return dispatch(addPortfolio(wallet, setCurrent))
+  })
+
+const createDefaultPortfolio = () => (dispatch) => Promise.resolve()
+  .then(() => {
+    const wallet = new MultiWallet(defaultPortfolioId)
+    wallet.setPersistAllowed(false)
+    return dispatch(addPortfolio(wallet, false))
+  })
 
 export const restoreAllPortfolios = () => (dispatch) => dispatch(restoreAllWallets())
-  .then((plainWallets) => dispatch(createNewPortfolio(defaultPortfolioId, false))
+  .then((plainWallets) => dispatch(createDefaultPortfolio())
     .then(() => Promise.all(plainWallets.map(({ id, type, isBlockstack }) => {
       if (type === MultiWallet.type || isBlockstack) {
         dispatch(portfolioAdded(id))

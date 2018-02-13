@@ -3,11 +3,12 @@ import PropTypes from 'prop-types'
 import Sticky from 'react-stickynode'
 import { Link } from 'react-router-dom'
 import { reduxForm, Field } from 'redux-form'
-import { InputGroup, InputGroupButton } from 'reactstrap'
+import { InputGroup, InputGroupAddon } from 'reactstrap'
 import styles from './style'
 import config from 'Config'
 import { Row, Col } from 'reactstrap'
 import Button from 'Components/Button'
+import SelectPortfolioDropdown from 'Components/SelectPortfolioDropdown'
 
 let AddressSearchForm = (props) => (
   <form onSubmit={props.handleSubmit} className={styles.searchForm}>
@@ -23,9 +24,9 @@ let AddressSearchForm = (props) => (
           spellCheck={false}
           placeholder='view by address'
         />
-        <InputGroupButton>
+        <InputGroupAddon addonType="append">
           <Button outline type='submit'>go</Button>
-        </InputGroupButton>
+        </InputGroupAddon>
       </InputGroup>
     </div>
   </form>
@@ -37,11 +38,14 @@ AddressSearchForm = reduxForm({
 
 const HeaderView = (props) => {
   const {
-    view, disableAction, showAction, isWalletAccessed, canAddWallets, stickyHeader, showAddressSearch,
+    view, disableAction, showAction, isPortfolioEmpty, canAddWallets, stickyHeader, showAddressSearch,
     handleCloseWallet, handleModify, handleCancel, handleSave, handleAddressSearch
   } = props
   const renderActions = () => (
-    <Row className='medium-gutters-x justify-content-between justify-content-md-end'>
+    <Row className='medium-gutters justify-content-between justify-content-md-end'>
+      <Col xs='12' md>
+        <SelectPortfolioDropdown/>
+      </Col>
       {view === 'balances' && ([
         <Col key='close' xs='auto'>
           <Button outline onClick={handleCloseWallet}>close</Button>
@@ -55,7 +59,7 @@ const HeaderView = (props) => {
       ])}
       {view === 'view' && (
         <Col xs='auto'>
-          {isWalletAccessed
+          {!isPortfolioEmpty
             ? (<Button tag={Link} to='/balances'>back to wallet</Button>)
             : (<Button tag={Link} to='/'>access wallet</Button>)
           }
@@ -67,6 +71,11 @@ const HeaderView = (props) => {
         </Col>,
         <Col key='save' xs='auto'>
           <Button onClick={handleSave}>save</Button>
+        </Col>
+      ])}
+      {view === 'connect' && ([
+        <Col key='balances' xs='auto'>
+          <Button tag={Link} to ='/balances' disabled={isPortfolioEmpty}>balances</Button>
         </Col>
       ])}
     </Row>)
@@ -82,7 +91,7 @@ const HeaderView = (props) => {
             {showAddressSearch && <AddressSearchForm onSubmit={handleAddressSearch} />}
           </Col>
         </Row>
-        {showAction && renderActions()}
+        {renderActions()}
       </div>
     </Sticky>
   )
@@ -95,7 +104,7 @@ HeaderView.propTypes = {
   handleModify: PropTypes.func,
   handleSave: PropTypes.func,
   handleCancel: PropTypes.func,
-  isWalletAccessed: PropTypes.bool,
+  isPortfolioEmpty: PropTypes.bool,
   canAddWallets: PropTypes.bool,
 }
 

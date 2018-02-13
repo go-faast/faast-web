@@ -31,8 +31,6 @@ const Header = (props) => {
       handleModify={handleModify}
       handleAddressSearch={handleAddressSearch}
       handleCloseWallet={props.closeCurrentPortfolio}
-      isWalletAccessed={!props.isPortfolioEmpty}
-      canAddWallets={props.canAddWallets}
     />
   )
 }

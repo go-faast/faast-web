@@ -1,11 +1,6 @@
 import React from 'react'
-import { connect } from 'react-redux'
-import { createStructuredSelector } from 'reselect'
-import { Link } from 'react-router-dom'
 import { Row, Col } from 'reactstrap'
 
-import { isCurrentPortfolioEmpty } from 'Selectors'
-import Button from 'Components/Button'
 import Layout from 'Components/Layout'
 import Keystore from 'Components/Keystore'
 import Web3Wallet from 'Components/Web3Wallet'
@@ -18,17 +13,8 @@ import styles from './style'
 const TileRow = ({ children }) => (<Row className='justify-content-center'>{children}</Row>)
 const TileCol = ({ children }) => (<Col xs='9' sm='6' md='4' lg='3'>{children}</Col>)
 
-const Access = ({ isPortfolioEmpty }) => (
-  <Layout showAddressSearch>
-    {!isPortfolioEmpty && (
-      <Row className='justify-content-end my-2'>
-        <Col xs='auto'>
-          <Link to='/balances'>
-            <Button>balances</Button>
-          </Link>
-        </Col>
-      </Row>
-    )}
+const Access = () => (
+  <Layout showAddressSearch view='connect'>
     <h3 className={styles.title}>Select your wallet</h3>
     <h4 className={styles.walletRowHeading}>Hardware Wallets</h4>
     <h6 className={styles.walletRowSubheading}>Recommended</h6>
@@ -68,6 +54,4 @@ const Access = ({ isPortfolioEmpty }) => (
   </Layout>
 )
 
-export default connect(createStructuredSelector({
-  isPortfolioEmpty: isCurrentPortfolioEmpty,
-}))(Access)
+export default Access

@@ -68,6 +68,12 @@ body {
     }
   }
 
+  .btn {
+    &:not(:disabled):not(.disabled) {
+      cursor: pointer;
+    }
+  }
+
   .btn-faast, .button-container {
     @extend .text-small;
     @extend .text-center;
@@ -84,9 +90,11 @@ body {
     &:hover {
       @extend .gradient-background-hover;
     }
-    &:not(:disabled):not(.disabled):active,
-    &:not(:disabled):not(.disabled).active {
-      @extend .gradient-background-active;
+
+    &:not(:disabled):not(.disabled) {
+      &:active, &.active {
+        @extend .gradient-background-active;
+      }
     }
 
     &.button-small, &.btn-sm {
@@ -98,9 +106,10 @@ body {
       &:hover {
         background: darken($dark-grey, $hover-darken-percent);
       }
-      &:not(:disabled):not(.disabled):active,
-      &:not(:disabled):not(.disabled).active {
-        background: darken($dark-grey, $active-darken-percent)
+      &:not(:disabled):not(.disabled) {
+        &:active, &.active {
+          background: darken($dark-grey, $active-darken-percent)
+        }
       }
     }
   }
