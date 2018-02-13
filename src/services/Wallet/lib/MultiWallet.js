@@ -18,7 +18,7 @@ export default class MultiWallet extends Wallet {
     }
     this.id = typeof id === 'string' ? id : uuid()
     this.wallets = Array.isArray(wallets) ? wallets : []
-    this.setLabel(`Portfolio ${id.slice(0, 8)}`)
+    this.setLabel(`Portfolio ${this.id.slice(0, 8)}`)
   }
 
   getId = () => this.id;
