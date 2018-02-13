@@ -10,12 +10,14 @@ const fiat = (value) => {
   return accounting.formatMoney(value)
 }
 
+const randInt = () => Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
+
 const units = (value, symbol, price, showSymbol = true) => {
   value = toBigNumber(value)
   let shortened = value.toString()
   if (price) shortened = shortenUnit(value, price, 4)
   return expandable({
-    id: `unit-${symbol}-${Math.random()}`,
+    id: `unit-${symbol}-${randInt()}`,
     extra: symbol,
     showExtra: showSymbol,
     expanded: value.toString(),
