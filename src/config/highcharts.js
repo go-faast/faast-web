@@ -71,7 +71,7 @@ export default {
         cursor: 'pointer',
         dataLabels: {
           enabled: true,
-          format: '<b>{point.name}</b>: {point.percentage:.2f} %',
+          format: '<b>{point.name}</b>',
           style: {
             color: 'white'
           },
@@ -199,6 +199,7 @@ export default {
       // }
     },
     yAxis: {
+      min: 0,
       opposite: false,
       gridLineColor: '#707073',
       labels: {
