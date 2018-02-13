@@ -8,7 +8,7 @@ import { getWalletWithHoldings } from 'Selectors'
 import display from 'Utilities/display'
 import styles from './style'
 
-const WalletSummary = ({ icon, wallet: { id, label, typeLabel, totalFiat, iconUrl } }) => (
+const WalletSummary = ({ icon, wallet: { id, label, typeLabel, totalFiat, iconUrl, balancesLoaded } }) => (
   <Row className='large-gutters-x align-items-center'>
     {icon && (
       <Col xs='auto'>
@@ -19,7 +19,11 @@ const WalletSummary = ({ icon, wallet: { id, label, typeLabel, totalFiat, iconUr
       <Row className='no-gutters justify-content-between'>
         <Col xs='12'><h6 className={classNames({ 'font-italic': id === 'default' })}>{label}</h6></Col>
         <Col xs='12' sm='auto' className='text-medium-grey'>{typeLabel}</Col>
-        <Col xs='12' sm='auto'>{display.fiat(totalFiat)}</Col>
+        <Col xs='12' sm='auto'>
+          {balancesLoaded
+            ? display.fiat(totalFiat)
+            : (<span className='faast-loading loading-small'/>)}
+        </Col>
       </Row>
     </Col>
   </Row>
