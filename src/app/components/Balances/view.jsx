@@ -207,16 +207,16 @@ const BalancesView = (props) => {
         <OrderInProgress status={orderStatus} handleViewStatus={handleToggleOrderModal} />
       }
       <Row className='medium-gutters'>
-        <Col xs='12' md='4'>
+        <Col xs='12' md='6' lg='4'>
           <WalletSelector/>
         </Col>
-        <Col xs='12' md='8'>
+        <Col xs='12' md='6' lg='8'>
           {balancesLoading && (<LoadingFullscreen center error={balancesError}/>)}
           <Row className='medium-gutters'>
             <Col xs='12'>
               <Row className='small-gutters'>
                 {values.map(({ title, value, changeIcon }, i) => (
-                  <div key={i} className='col-6 col-md-3'>
+                  <div key={i} className='col-6 col-lg-3'>
                     <div className={styles.tileContainer}>
                       <div className='row'>
                         {!!changeIcon &&
