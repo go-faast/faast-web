@@ -40,7 +40,10 @@ export const addWallet = (walletInstance) => (dispatch) => Promise.resolve()
 
 export const updateWallet = (id) => (dispatch) => Promise.resolve()
   .then(() => walletService.get(id))
-  .then((walletInstance) => dispatch(walletUpdated(walletInstance)).payload)
+  .then((walletInstance) => {
+    walletService.update(walletInstance)
+    return dispatch(walletUpdated(walletInstance)).payload
+  })
 
 export const removeWallet = (id) => (dispatch, getState) => Promise.resolve()
   .then(() => walletService.remove(id))
@@ -68,6 +71,9 @@ export const updateWalletBalances = (walletId) => (dispatch) => Promise.resolve(
       log.error('no wallet with id', walletId)
       throw new Error('failed to load balances')
     }
+    if (wallet.type === MultiWallet.type) {
+      return Promise.all(wallet.wallets.map((nested) => dispatch(updateWalletBalances(nested.getId()))))
+    }
     dispatch(walletBalancesUpdating(walletId))
     return wallet.getAllBalances()
   })
@@ -80,12 +86,6 @@ export const updateWalletBalances = (walletId) => (dispatch) => Promise.resolve(
     return {}
   })
 
-export const updateAllWalletBalances = () => (dispatch) => Promise.resolve()
-  .then(() => {
-    const wallets = walletService.getAll()
-    return Promise.all(wallets.map((wallet) => dispatch(updateWalletBalances(wallet.getId()))))
-  })
-
 const doForNestedWallets = (cb) => (multiWalletId, ...nestedWalletIds) => (dispatch) =>
   Promise.all([
     walletService.get(multiWalletId),
@@ -95,8 +95,7 @@ const doForNestedWallets = (cb) => (multiWalletId, ...nestedWalletIds) => (dispa
       throw new Error(`Wallet ${multiWalletId} is not a ${MultiWallet.type}`)
     }
     return Promise.all(nestedWallets.map((nestedWallet) => Promise.resolve(cb(multiWallet, nestedWallet))))
-      .then(() => dispatch(walletUpdated(multiWallet)))
-      .then(() => updateWalletBalances(multiWalletId))
+      .then(() => dispatch(updateWallet(multiWalletId)))
   })
 
 export const addNestedWallets = doForNestedWallets((multiWallet, nestedWallet) => multiWallet.addWallet(nestedWallet))

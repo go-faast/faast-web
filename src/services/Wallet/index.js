@@ -115,6 +115,10 @@ export function WalletService() {
   const saveToStorage = (wallet) => {
     if (wallet && wallet.isPersistAllowed()) {
       const id = wallet.getId()
+      if (wallet instanceof MultiWallet) {
+        wallet = wallet.shallowClone()
+        wallet.wallets = wallet.wallets.filter((nested) => nested.isPersistAllowed())
+      }
       sessionStorageSet(storageKey(id), WalletSerializer.stringify(wallet))
       log.debug('wallet saved to session', id)
     }
@@ -172,7 +176,7 @@ export function WalletService() {
   const add = (wallet) => {
     if (wallet instanceof Wallet) {
       const id = wallet.getId()
-      if (wallet.isEncrypted === false || (wallet.wallets && wallet.wallets.some((w) => w.isEncrypted === false))) {
+      if (wallet.isEncrypted === false) {
         // Need to explicitly compare with false because isEncrypted === undefined -> encryption not applicable
         throw new Error(`Cannot add unencrypted wallet ${id}`)
       }
@@ -186,6 +190,8 @@ export function WalletService() {
     }
     return wallet
   }
+
+  const update = add
 
   const restoreAll = () => {
     const restoredWallets = [
@@ -210,6 +216,7 @@ export function WalletService() {
     remove,
     removeAll,
     add,
+    update,
     restoreAll
   }
 }

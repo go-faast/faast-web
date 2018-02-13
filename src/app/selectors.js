@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 import createCachedSelector from 're-reselect'
 
 import { toBigNumber, toUnit, toPercentage } from 'Utilities/convert'
-import { fixPercentageRounding } from 'Utilities/helpers'
+import { fixPercentageRounding, reduceByKey } from 'Utilities/helpers'
 
 /** Creates a new selector by passing the results of argSelectors into originalSelector as arguments */
 const wrapSelectorArgs = (originalSelector, ...argSelectors) => (state) => originalSelector(state, ...argSelectors.map((argSelector) => argSelector(state)))
@@ -40,10 +40,22 @@ export const getWallet = createItemSelector(
   selectItemId,
   (allWallets, id) => {
     const wallet = allWallets[id]
+    const nestedWallets = wallet.nestedWalletIds.map((nestedWalletId) => allWallets[nestedWalletId])
+    let { balances, balancesLoaded, balancesUpdating, balancesError } = wallet
+    if (wallet.type === 'MultiWallet') {
+      balances = reduceByKey(nestedWallets.map((w) => w.balances), (x, y) => x.plus(y), toBigNumber(0))
+      balancesLoaded = nestedWallets.every((w) => w.balancesLoaded)
+      balancesUpdating = nestedWallets.some((w) => w.balancesUpdating)
+      balancesError = nestedWallets.map((w) => w.balancesError).find(Boolean) || ''
+    }
     if (wallet) {
       return {
         ...wallet,
-        nestedWallets: wallet.nestedWalletIds.map((nestedWalletId) => allWallets[nestedWalletId])
+        nestedWallets,
+        balances,
+        balancesLoaded,
+        balancesUpdating,
+        balancesError
       }
     }
   }

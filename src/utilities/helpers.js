@@ -297,3 +297,14 @@ export const createUpdater = (indexField) => (state, item) => {
     }
   }
 }
+
+export const reduceByKey = (objects, reduce, defaultValue) => {
+  const result = {}
+  objects.forEach((o) => {
+    Object.entries(o).forEach(([k, v]) => {
+      const current = result[k]
+      result[k] = typeof current !== 'undefined' ? reduce(current, v) : reduce(defaultValue, v)
+    })
+  })
+  return result
+}

@@ -1,11 +1,16 @@
 import uuid from 'uuid/v4'
 import { toBigNumber } from 'Utilities/convert'
+import { reduceByKey } from 'Utilities/helpers'
 
 import Wallet from './Wallet'
 
 const selectFirst = (wallets) => wallets[0]
 
 const resolveId = (walletOrId) => typeof walletOrId !== 'string' ? walletOrId.getId() : walletOrId
+
+const ZERO = toBigNumber(0)
+
+const plus = (x, y) => x.plus(y)
 
 export default class MultiWallet extends Wallet {
 
@@ -18,10 +23,17 @@ export default class MultiWallet extends Wallet {
     }
     this.id = typeof id === 'string' ? id : uuid()
     this.wallets = Array.isArray(wallets) ? wallets : []
-    this.setLabel(`Portfolio ${this.id.slice(0, 8)}`)
+  }
+
+  shallowClone = () => {
+    const clone = new MultiWallet(this.getId(), this.wallets)
+    clone.setLabel(this.label)
+    return clone
   }
 
   getId = () => this.id;
+
+  getLabel = () => this.label || `Portfolio ${this.id.slice(0, 8)}`
 
   getIconUrl = () => 'https://faa.st/img/portfolio.svg';
 
@@ -129,17 +141,12 @@ export default class MultiWallet extends Wallet {
   getBalance = (assetOrSymbol, options = {}) => {
     const balancePromises = this._getWalletsForAsset(assetOrSymbol)
       .map((wallet) => wallet.getBalance(assetOrSymbol, options))
-    return Promise.all(balancePromises).then((balances) => 
-      balances.reduce((a, b) => a.plus(b), toBigNumber(0)))
+    return Promise.all(balancePromises).then((balances) => balances.reduce(plus, ZERO))
   };
 
   getAllBalances = (options = {}) => {
     return Promise.all(this.wallets.map((wallet) => wallet.getAllBalances(options)))
-      .then((walletBalances) => walletBalances.reduce((balanceEntries, b) => balanceEntries.concat(Object.entries(b)), []))
-      .then((balances) => balances.reduce((result, [symbol, balance]) => ({
-        ...result,
-        [symbol]: (result[symbol] || toBigNumber(0)).plus(balance)
-      }), {}))
+      .then((walletBalances) => reduceByKey(walletBalances, plus, ZERO))
   };
 }
 window.MultiWallet = MultiWallet
