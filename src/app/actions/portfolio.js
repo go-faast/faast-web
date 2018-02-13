@@ -1,5 +1,4 @@
 import { createAction } from 'redux-act'
-import uuid from 'uuid/v4'
 
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
@@ -22,7 +21,7 @@ import { insertSwapData, updateSwapTx, setSwap } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
 import {
-  addWallet, removeWallet, addNestedWallet, restoreAllWallets, updateWalletBalances
+  addWallet, removeWallet, addNestedWallet, restoreAllWallets, updateWalletBalances, updateAllWalletBalances,
 } from 'Actions/wallet'
 import { retrieveAssetPrices } from 'Actions/asset'
 
@@ -140,6 +139,13 @@ export const updateHoldings = (walletId) => (dispatch) => {
   return Promise.all([
     dispatch(retrieveAssetPrices()),
     dispatch(updateWalletBalances(walletId)),
+  ]).catch(log.error)
+}
+
+export const updateAllHoldings = () => (dispatch) => {
+  return Promise.all([
+    dispatch(retrieveAssetPrices()),
+    dispatch(updateAllWalletBalances()),
   ]).catch(log.error)
 }
 

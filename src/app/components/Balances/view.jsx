@@ -13,6 +13,7 @@ import config from 'Config'
 import { breakpointNext } from 'Utilities/breakpoints'
 import { Row, Col } from 'reactstrap'
 import WalletSelector from 'Components/WalletSelector'
+import LoadingFullscreen from 'Components/LoadingFullscreen'
 
 const { collapseTablePoint } = styles
 const expandTablePoint = breakpointNext(collapseTablePoint)
@@ -90,7 +91,7 @@ const TableCell = ({ hideCollapse, className, children, ...extraProps }) => (
 const BalancesView = (props) => {
   const {
     totalChange, totalDecrease, total24hAgo, total, assetRows, viewOnly, orderStatus, addressProps, pieChart,
-    toggleChart, layoutProps, showOrderModal, handleToggleOrderModal, openCharts,
+    toggleChart, layoutProps, showOrderModal, handleToggleOrderModal, openCharts, balancesLoading, balancesError,
   } = props
 
   const values = [
@@ -210,6 +211,7 @@ const BalancesView = (props) => {
           <WalletSelector/>
         </Col>
         <Col xs='12' md='8'>
+          {balancesLoading && (<LoadingFullscreen center error={balancesError}/>)}
           <Row className='medium-gutters'>
             <Col xs='12'>
               <Row className='small-gutters'>
@@ -232,7 +234,7 @@ const BalancesView = (props) => {
                 ))}
               </Row>
             </Col>
-            {assetRows.length > 0 && (
+            {!balancesLoading && assetRows.length > 0 && (
               <Col xs='12'>
                 <div className={styles.tileContainer}>
                   {addressProps.address && (

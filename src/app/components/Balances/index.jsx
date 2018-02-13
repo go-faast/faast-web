@@ -125,6 +125,8 @@ class Balances extends Component {
         addressProps={addressProps}
         viewOnly={isViewOnly}
         openCharts={this.state.openCharts}
+        balancesLoading={!wallet.balancesLoaded}
+        balancesError={wallet.balancesError}
       />
     )
   }

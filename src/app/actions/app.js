@@ -10,7 +10,7 @@ import { getCurrentPortfolio } from 'Selectors'
 
 import { retrieveAssets } from './asset'
 import { setSwapData, setSettings } from './redux'
-import { restoreAllPortfolios } from './portfolio'
+import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
 
 export const appReady = createAction('APP_READY')
 export const appError = createAction('APP_ERROR')
@@ -25,6 +25,7 @@ export const restoreState = (dispatch, getState) => Promise.resolve()
     dispatch(setSwapData(swap))
     const settings = addressState.settings
     dispatch(setSettings(settings))
+    dispatch(updateAllHoldings())
   })
   .catch((e) => {
     log.error(e)

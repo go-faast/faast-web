@@ -46,8 +46,11 @@ export function WalletService() {
     return wallet
   }
 
+  /** Get all wallets as array */
+  const getAll = () => Object.values(activeWallets)
+
   /** Get all wallets as an object mapped by ID */
-  const getAll = () => ({ ...activeWallets })
+  const getAllById = () => ({ ...activeWallets })
 
   /** Get a Wallet by ID. Returns if already a Wallet */
   const get = (walletOrId) => {
@@ -203,6 +206,7 @@ export function WalletService() {
     setAssetProvider,
     get,
     getAll,
+    getAllById,
     remove,
     removeAll,
     add,

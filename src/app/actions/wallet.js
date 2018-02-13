@@ -80,6 +80,12 @@ export const updateWalletBalances = (walletId) => (dispatch) => Promise.resolve(
     return {}
   })
 
+export const updateAllWalletBalances = () => (dispatch) => Promise.resolve()
+  .then(() => {
+    const wallets = walletService.getAll()
+    return Promise.all(wallets.map((wallet) => dispatch(updateWalletBalances(wallet.getId()))))
+  })
+
 const doForNestedWallets = (cb) => (multiWalletId, ...nestedWalletIds) => (dispatch) =>
   Promise.all([
     walletService.get(multiWalletId),
