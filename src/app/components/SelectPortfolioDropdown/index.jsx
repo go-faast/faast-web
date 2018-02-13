@@ -18,7 +18,7 @@ const SelectPortfolioDropdown = ({ portfolioIds, currentPortfolioId, changePortf
         </DropdownItem>
       ))}
       <DropdownItem divider />
-      <DropdownItem onClick={() => createPortfolio(true)}>create new</DropdownItem>
+      <DropdownItem onClick={() => createPortfolio(true)}><h5>create new portfolio</h5></DropdownItem>
     </DropdownMenu>
   </UncontrolledDropdown>
 )

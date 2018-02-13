@@ -68,7 +68,7 @@ body {
     }
   }
 
-  .btn {
+  .btn, button {
     &:not(:disabled):not(.disabled) {
       cursor: pointer;
     }

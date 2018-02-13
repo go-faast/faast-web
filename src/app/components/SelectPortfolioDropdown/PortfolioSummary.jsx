@@ -7,8 +7,8 @@ import { getWalletWithHoldings } from 'Selectors'
 import display from 'Utilities/display'
 
 const PortfolioSummary = ({ wallet: { id, type, totalFiat } }) => (
-  <Row className='small-gutters justify-content-between'>
-    <Col xs='12'>{id}</Col>
+  <Row className='no-gutters justify-content-between'>
+    <Col xs='12'><h5>{id}</h5></Col>
     <Col xs='12' sm='auto'>{type}</Col>
     <Col xs='12' sm='auto'>{display.fiat(totalFiat)}</Col>
   </Row>
