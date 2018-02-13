@@ -19,6 +19,8 @@ export default class BitcoinWallet extends Wallet {
 
   getId = () => this.xpub;
 
+  getIconUrl = () => 'https://faa.st/img/coins/coin_BTC.png';
+
   isAssetSupported = (assetOrSymbol) => supportedAssets.includes(this.getSymbol(assetOrSymbol));
 
   isSingleAddress = () => false;

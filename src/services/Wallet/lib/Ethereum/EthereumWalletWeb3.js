@@ -15,6 +15,12 @@ const checkAccountAvailable = (address) => Promise.resolve(address)
       }
     }))
 
+const providerToIconUrl = {
+  MetaMask: 'https://faa.st/img/metamask-logo.png',
+  Mist: 'https://faa.st/img/mist-logo.png',
+  Parity: 'https://faa.st/img/parity-logo.svg', 
+}
+
 export default class EthereumWalletWeb3 extends EthereumWallet {
 
   constructor(address, providerName) {
@@ -25,6 +31,8 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
     this.address = address
     this.providerName = providerName || web3.providerName
   }
+
+  getIconUrl = () => providerToIconUrl[this.providerName] || 'https://faa.st/img/coins/coin_ETH.png';
 
   getAddress = () => this.address;
 

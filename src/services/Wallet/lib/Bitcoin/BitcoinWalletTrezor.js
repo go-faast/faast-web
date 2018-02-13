@@ -12,6 +12,8 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
     this.derivationPath = derivationPath
   }
 
+  getIconUrl = () => 'https://faa.st/img/trezor-logo.png';
+
   static fromPath = (derivationPath = null) => {
     Trezor.setCurrency('BTC')
     return Trezor.getXPubKey(derivationPath)

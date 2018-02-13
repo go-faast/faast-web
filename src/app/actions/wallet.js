@@ -8,6 +8,7 @@ const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   id: wallet.getId(),
   type: wallet.type,
   address: wallet.isSingleAddress() ? wallet.getAddress() : '',
+  iconUrl: wallet.getIconUrl(),
   isBlockstack: wallet.isBlockstack,
   isReadOnly: wallet.isReadOnly,
   supportedAssets: wallet.getSupportedAssetSymbols(),

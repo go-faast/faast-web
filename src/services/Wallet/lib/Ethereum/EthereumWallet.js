@@ -51,6 +51,8 @@ export default class EthereumWallet extends Wallet {
 
   getId = () => this.getAddress();
 
+  getIconUrl = () => 'https://faa.st/img/coins/coin_ETH.png';
+
   isSingleAddress = () => true;
 
   getFreshAddress = (assetOrSymbol) => Promise.resolve(assetOrSymbol)

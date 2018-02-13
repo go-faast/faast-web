@@ -17,6 +17,8 @@ export default class Wallet {
 
   getId = () => this.type;
 
+  getIconUrl = () => 'https://faa.st/img/faast-logo-transparent.png';
+
   setAssetProvider = (assetProvider) => {
     if (typeof assetProvider !== 'function') {
       throw new Error(`Expected assetProvider to be a function, got ${typeof assetProvider}`)

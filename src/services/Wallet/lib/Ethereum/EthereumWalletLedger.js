@@ -20,6 +20,8 @@ export default class EthereumWalletLedger extends EthereumWalletSigner {
     this._isMocking = isMocking
   }
 
+  getIconUrl = () => 'https://faa.st/img/ledger-logo.png';
+
   static connect = (derivationPath = 'm/44\'/60\'/0\'') => {
     return window.faast.hw.ledger.getAppConfiguration_async()
       .then((data) => {

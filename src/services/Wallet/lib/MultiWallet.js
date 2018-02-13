@@ -22,6 +22,8 @@ export default class MultiWallet extends Wallet {
 
   getId = () => this.id;
 
+  getIconUrl = () => 'https://faa.st/img/portfolio.svg';
+
   isSingleAddress = () => false;
 
   setAssetProvider = (assetProvider) => {

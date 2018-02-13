@@ -19,6 +19,8 @@ export default class EthereumWalletTrezor extends EthereumWalletSigner {
     this._isMocking = isMocking
   }
 
+  getIconUrl = () => 'https://faa.st/img/trezor-logo.png';
+
   static connect = (derivationPath = 'm/44\'/60\'/0\'/0') =>
     Trezor.getXPubKey(derivationPath)
       .then((result) => {
