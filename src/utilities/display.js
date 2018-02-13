@@ -6,13 +6,13 @@ import { expandable } from 'Utilities/reactFuncs'
 
 const PENNY = new BigNumber(0.01)
 
-const fiat = (value) => {
+export const fiat = (value) => {
   return accounting.formatMoney(value)
 }
 
 const randInt = () => Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)
 
-const units = (value, symbol, price, showSymbol = true) => {
+export const units = (value, symbol, price, showSymbol = true) => {
   value = toBigNumber(value)
   let shortened = value.toString()
   if (price) shortened = shortenUnit(value, price, 4)
@@ -25,7 +25,7 @@ const units = (value, symbol, price, showSymbol = true) => {
   })
 }
 
-const shortenUnit = (value, price, decMin = 1) => {
+export const shortenUnit = (value, price, decMin = 1) => {
   value = toBigNumber(value)
   const valueStr = value.toString()
   const pennyValue = PENNY.div(price).toString()
@@ -35,15 +35,23 @@ const shortenUnit = (value, price, decMin = 1) => {
   return shortener(valueStr, limit, false)
 }
 
-const percentage = (value, showPositive) => {
+export const percentage = (value, showPositive) => {
   const rounded = accounting.toFixed(value, 2)
 
   if (showPositive && value > 0) return `+${rounded}%`
   return `${rounded}%`
 }
 
+export const ellipsize = (str, maxStartChars, maxEndChars) => {
+  if (str.length <= maxStartChars + maxEndChars) {
+    return str
+  }
+  return `${str.slice(0, maxStartChars)}…${str.slice(-maxEndChars)}`
+}
+
 export default {
   fiat,
   units,
-  percentage
+  percentage,
+  ellipsize
 }

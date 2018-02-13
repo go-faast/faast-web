@@ -6,7 +6,9 @@ import { getAllAssets, getWalletParents } from 'Selectors'
 
 const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   id: wallet.getId(),
+  label: wallet.getLabel(),
   type: wallet.type,
+  typeLabel: wallet.getTypeLabel(),
   address: wallet.isSingleAddress() ? wallet.getAddress() : '',
   iconUrl: wallet.getIconUrl(),
   isBlockstack: wallet.isBlockstack,

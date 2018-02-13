@@ -119,6 +119,7 @@ const createDefaultPortfolio = () => (dispatch) => Promise.resolve()
   .then(() => {
     const wallet = new MultiWallet(defaultPortfolioId)
     wallet.setPersistAllowed(false)
+    wallet.setLabel('All Accounts')
     return dispatch(addPortfolio(wallet, false))
   })
 

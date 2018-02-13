@@ -5,6 +5,7 @@ import web3 from 'Services/Web3'
 import log from 'Utilities/log'
 import { toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee } from 'Utilities/convert'
 import { abstractMethod, assertExtended } from 'Utilities/reflect'
+import { ellipsize } from 'Utilities/display'
 
 import Wallet from '../Wallet'
 
@@ -41,7 +42,7 @@ const batchRequest = (batch, batchableFn, ...fnArgs) => {
   return batchableFn(...fnArgs)
 }
 
-@abstractMethod('getAddress', 'sendTransaction')
+@abstractMethod('getAddress', 'sendTransaction', 'getTypeLabel')
 export default class EthereumWallet extends Wallet {
 
   constructor(type) {
@@ -50,6 +51,8 @@ export default class EthereumWallet extends Wallet {
   }
 
   getId = () => this.getAddress();
+
+  getLabel = () => this.label || `Ethereum account ${ellipsize(this.getAddress(), 6, 4)}`;
 
   getIconUrl = () => 'https://faa.st/img/coins/coin_ETH.png';
 

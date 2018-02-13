@@ -1,23 +1,30 @@
 import log from 'Utilities/log'
 import { abstractMethod, assertExtended } from 'Utilities/reflect'
 
-@abstractMethod('getId', 'createTransaction', 'sendTransaction', 'getBalance', 'isAssetSupported', 'isSingleAddress', 'getFreshAddress')
+@abstractMethod('getId', 'getTypeLabel', 'createTransaction', 'sendTransaction', 'getBalance', 'isAssetSupported', 'isSingleAddress', 'getFreshAddress')
 export default class Wallet {
 
-  constructor(type) {
+  constructor(type, label) {
     assertExtended(this, Wallet)
     this.type = type
+    this.label = label
     this._persistAllowed = true
     this._assetProvider = () => {}
   }
 
-  setPersistAllowed = (persistAllowed) => this._persistAllowed = persistAllowed;
-
-  isPersistAllowed = () => this._persistAllowed;
-
   getId = () => this.type;
 
   getIconUrl = () => 'https://faa.st/img/faast-logo-transparent.png';
+
+  getLabel = () => this.label || this.type;
+
+  setLabel = (label) => {
+    this.label = label;
+  };
+
+  setPersistAllowed = (persistAllowed) => this._persistAllowed = persistAllowed;
+
+  isPersistAllowed = () => this._persistAllowed;
 
   setAssetProvider = (assetProvider) => {
     if (typeof assetProvider !== 'function') {

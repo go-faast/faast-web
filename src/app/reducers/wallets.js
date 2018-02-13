@@ -9,7 +9,10 @@ import { createUpserter, createUpdater } from 'Utilities/helpers'
 const initialState = {}
 const walletInitialState = {
   id: '',
+  label: '',
   type: '',
+  typeLabel: '',
+  iconUrl: '',
   address: '',
   isBlockstack: false,
   isReadOnly: false,

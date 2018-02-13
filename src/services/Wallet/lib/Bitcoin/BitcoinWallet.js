@@ -1,13 +1,14 @@
 import log from 'Utilities/log'
 import { toBigNumber, toMainDenomination } from 'Utilities/convert'
 import { abstractMethod, assertExtended } from 'Utilities/reflect'
+import { ellipsize } from 'Utilities/display'
 import Bitcore from 'Services/Bitcore'
 
 import Wallet from '../Wallet'
 
 const supportedAssets = ['BTC']
 
-@abstractMethod('createTransaction', 'sendTransaction')
+@abstractMethod('createTransaction', 'sendTransaction', 'getTypeLabel')
 export default class BitcoinWallet extends Wallet {
 
   constructor(type, xpub) {
@@ -18,6 +19,8 @@ export default class BitcoinWallet extends Wallet {
   }
 
   getId = () => this.xpub;
+
+  getLabel = () => this.label || `Bitcoin account ${ellipsize(this.xpub, 8, 4)}`;
 
   getIconUrl = () => 'https://faa.st/img/coins/coin_BTC.png';
 

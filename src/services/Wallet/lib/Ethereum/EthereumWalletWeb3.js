@@ -32,6 +32,8 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
     this.providerName = providerName || web3.providerName
   }
 
+  getTypeLabel = () => this.providerName === 'faast' ? 'Web3 Wallet' : this.providerName;
+
   getIconUrl = () => providerToIconUrl[this.providerName] || 'https://faa.st/img/coins/coin_ETH.png';
 
   getAddress = () => this.address;

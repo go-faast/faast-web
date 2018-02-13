@@ -12,6 +12,14 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
     this.derivationPath = derivationPath
   }
 
+  isLegacyAccount = () => this.derivationPath.startsWith('m/44');
+
+  getAccountNumber = () => Number.parseInt(this.derivationPath.match(/(\d+)'$/)[1]) + 1;
+
+  getLabel = () => this.label || `Bitcoin ${this.isLegacyAccount() ? 'legacy ' : ''}account #${this.getAccountNumber()}`;
+
+  getTypeLabel = () => 'TREZOR';
+
   getIconUrl = () => 'https://faa.st/img/trezor-logo.png';
 
   static fromPath = (derivationPath = null) => {

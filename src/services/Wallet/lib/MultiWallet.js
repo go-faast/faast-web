@@ -18,11 +18,19 @@ export default class MultiWallet extends Wallet {
     }
     this.id = typeof id === 'string' ? id : uuid()
     this.wallets = Array.isArray(wallets) ? wallets : []
+    this.setLabel(`Portfolio ${id.slice(0, 8)}`)
   }
 
   getId = () => this.id;
 
   getIconUrl = () => 'https://faa.st/img/portfolio.svg';
+
+  getTypeLabel = () => {
+    const walletCount = this.wallets.length
+    if (walletCount === 0) return 'Empty'
+    if (walletCount === 1) return '1 wallet'
+    return `${walletCount} wallets`
+  };
 
   isSingleAddress = () => false;
 
