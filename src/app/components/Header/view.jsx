@@ -43,10 +43,10 @@ const HeaderView = (props) => {
   } = props
   const renderActions = () => (
     <Row className='medium-gutters justify-content-between justify-content-md-end'>
-      <Col xs='12' md>
-        <SelectPortfolioDropdown/>
-      </Col>
       {view === 'balances' && ([
+        <Col key='select-portfolio' xs='12' md>
+          <SelectPortfolioDropdown/>
+        </Col>,
         <Col key='close' xs='auto'>
           <Button outline onClick={handleCloseWallet}>close</Button>
         </Col>,
@@ -74,6 +74,9 @@ const HeaderView = (props) => {
         </Col>
       ])}
       {view === 'connect' && ([
+        <Col key='close' xs='auto'>
+          <Button outline onClick={handleCloseWallet}>close</Button>
+        </Col>,
         <Col key='balances' xs='auto'>
           <Button tag={Link} to ='/balances' disabled={isPortfolioEmpty}>balances</Button>
         </Col>
@@ -91,7 +94,7 @@ const HeaderView = (props) => {
             {showAddressSearch && <AddressSearchForm onSubmit={handleAddressSearch} />}
           </Col>
         </Row>
-        {renderActions()}
+        {showAction && renderActions()}
       </div>
     </Sticky>
   )
@@ -106,6 +109,10 @@ HeaderView.propTypes = {
   handleCancel: PropTypes.func,
   isPortfolioEmpty: PropTypes.bool,
   canAddWallets: PropTypes.bool,
+}
+
+HeaderView.defaultProps = {
+  showAction: true
 }
 
 export default HeaderView
