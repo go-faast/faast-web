@@ -38,7 +38,7 @@ AddressSearchForm = reduxForm({
 
 const HeaderView = (props) => {
   const {
-    view, disableAction, showAction, isPortfolioEmpty, canAddWallets, stickyHeader, showAddressSearch,
+    view, disableAction, showAction, isPortfolioEmpty, stickyHeader, showAddressSearch,
     handleCloseWallet, handleModify, handleCancel, handleSave, handleAddressSearch
   } = props
   const renderActions = () => (
@@ -49,9 +49,6 @@ const HeaderView = (props) => {
         </Col>,
         <Col key='close' xs='auto'>
           <Button outline onClick={handleCloseWallet}>close</Button>
-        </Col>,
-        <Col key='connect' xs='auto'>
-          <Button tag={Link} to='/connect' disabled={!canAddWallets}>connect</Button>
         </Col>,
         <Col key='modify' xs='auto'>
           <Button onClick={handleModify} disabled={disableAction}>modify</Button>
@@ -78,7 +75,7 @@ const HeaderView = (props) => {
           <Button outline onClick={handleCloseWallet}>close</Button>
         </Col>,
         <Col key='balances' xs='auto'>
-          <Button tag={Link} to ='/balances' disabled={isPortfolioEmpty}>balances</Button>
+          <Button tag={Link} to ='/balances'>balances</Button>
         </Col>
       ])}
     </Row>)
@@ -107,8 +104,7 @@ HeaderView.propTypes = {
   handleModify: PropTypes.func,
   handleSave: PropTypes.func,
   handleCancel: PropTypes.func,
-  isPortfolioEmpty: PropTypes.bool,
-  canAddWallets: PropTypes.bool,
+  isPortfolioEmpty: PropTypes.bool
 }
 
 HeaderView.defaultProps = {
