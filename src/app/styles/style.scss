@@ -122,11 +122,51 @@ body {
   }
 
   $menu-bg-color: $ultra-dark-grey;
+  $menu-border-color: lighten($menu-bg-color, 5%);
   $menu-bg-color-hover: lighten($menu-bg-color, 5%);
+  $menu-border-color-hover: lighten($menu-bg-color-hover, 5%);
+  $menu-active-bg-color: lighten($menu-bg-color-hover, 5%);
+
+  .card {
+    $card-border: 1px solid $menu-border-color;
+    background-color: $menu-bg-color;
+    border: $card-border;
+
+    .card-header {
+      border-color: $menu-border-color;
+      padding: 8px 16px;
+
+      > .row {
+        @each $breakpoint in map-keys($grid-breakpoints) {
+          $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+          $cols-with-border: 1 2 3 4 6 12;
+          @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
+            @each $col in $cols-with-border {
+              $multiple: 12 / $col;
+              > .col#{$infix}-#{$col} {
+                &:nth-child(#{$multiple}n+1) {
+                  border-left: none;
+                }
+                &:not(:nth-child(#{$multiple}n+1)) {
+                  border-left: $card-border;
+                }
+                &:nth-child(-n+#{$multiple}) {
+                  border-top: none;
+                }
+                &:nth-child(n+#{$multiple + 1}) {
+                  border-top: $card-border;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
   .dropdown-menu {
     background-color: $menu-bg-color;
-    border: 1px solid lighten($menu-bg-color, 5%);
+    border: 1px solid $menu-border-color;
     .dropdown-item {
       color: $light-grey;
       font-weight: 200;
@@ -140,7 +180,7 @@ body {
           background-color: $menu-bg-color-hover;
         }
         &:active, &.active {
-          background-color: #404040;
+          background-color: $menu-active-bg-color;
         }
       }
     }
@@ -152,7 +192,7 @@ body {
   .list-group {
     .list-group-item {
       background-color: $menu-bg-color;
-      border: 1px solid lighten($menu-bg-color, 5%);
+      border: 1px solid $menu-border-color;
       color: $light-grey;
       font-weight: 200;
     }
@@ -165,7 +205,7 @@ body {
       &:not(:disabled):not(.disabled) {
         &:hover, &:focus {
           background-color: $menu-bg-color-hover;
-          border: 1px solid lighten($menu-bg-color-hover, 5%);
+          border: 1px solid $menu-border-color-hover;
           z-index: 1;
         }
         &.active, &:active {
