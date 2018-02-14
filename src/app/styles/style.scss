@@ -141,6 +141,14 @@ body {
     }
   }
 
+  .card-header, .list-group-item {
+    > h1,h2,h3,h4,h5,h6 {
+      &:last-child {
+        margin-bottom: 0;
+      }
+    }
+  }
+
   .card {
     $card-border: 1px solid $menu-border-color;
     background-color: $menu-bg-color;
@@ -148,7 +156,7 @@ body {
 
     .card-header {
       border-color: $menu-border-color;
-      padding: 8px 16px;
+      padding: 12px 20px;
 
       > .row {
         @each $breakpoint in map-keys($grid-breakpoints) {
@@ -174,6 +182,18 @@ body {
             }
           }
         }
+      }
+    }
+
+    > .list-group {
+      margin: -1px;
+      &:not(:first-child) .list-group-item:first-child {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+      }
+      &:not(:last-child) .list-group-item:last-child {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
       }
     }
   }
@@ -209,6 +229,10 @@ body {
       border: 1px solid $menu-border-color;
       color: $light-grey;
       font-weight: 200;
+      padding: 12px 20px;
+      &.compact {
+        padding: 8px 16px;
+      }
     }
     .list-group-item-action {
       &:disabled, &.disabled {

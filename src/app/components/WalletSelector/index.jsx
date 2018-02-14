@@ -2,30 +2,29 @@ import React from 'react'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { ListGroup, ListGroupItem } from 'reactstrap'
+import { Card, CardHeader, ListGroup, ListGroupItem } from 'reactstrap'
+import classNames from 'class-names'
 import { setCurrentWallet } from 'Actions/portfolio'
 import { getCurrentPortfolioWalletIds, getCurrentWalletId, getCurrentPortfolioId } from 'Selectors'
 import WalletSummary from 'Components/WalletSummary'
 
 const WalletSelector = ({ currentPortfolioId, walletIds, currentWalletId, changeWallet }) => {
-  const ListItem = ({ id, icon }) => (
-    <ListGroupItem key={id} active={id === currentWalletId} onClick={() => changeWallet(id)} tag='button' action>
-      <WalletSummary id={id} icon={icon}/>
+  const ListItem = ({ id, nested }) => (
+    <ListGroupItem active={id === currentWalletId} onClick={() => changeWallet(id)} tag='button' action className={classNames({ 'compact': nested })}>
+      <WalletSummary id={id} icon={nested} labelTag={nested ? 'span' : 'h6'}/>
     </ListGroupItem>
   )
   return (
-    <div>
+    <Card>
+      <CardHeader><h5>Portfolio</h5></CardHeader>
       <ListGroup>
         <ListItem id={currentPortfolioId}/>
-        <ListGroupItem>
-          <h5 className='my-0'>Wallets</h5>
-        </ListGroupItem>
         {walletIds.length > 0
-          ? walletIds.map((id) => ListItem({ id, icon: true }))
+          ? walletIds.map((id) => (<ListItem key={id} id={id} nested/>))
           : (<ListGroupItem><i>No wallets in this portfolio</i></ListGroupItem>)}
-        <ListGroupItem tag={Link} to='/connect' action><h5 className='my-0 font-weight-normal'>+ add wallet</h5></ListGroupItem>
+        <ListGroupItem tag={Link} to='/connect' action><h6>+ add wallet</h6></ListGroupItem>
       </ListGroup>
-    </div>
+    </Card>
   )
 }
 
