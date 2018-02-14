@@ -127,6 +127,20 @@ body {
   $menu-border-color-hover: lighten($menu-bg-color-hover, 5%);
   $menu-active-bg-color: lighten($menu-bg-color-hover, 5%);
 
+  .table {
+    td, th {
+      background-color: $menu-bg-color;
+      border-color: $menu-border-color;
+    }
+    thead {
+      tr:first-child {
+        td, th {
+          border-top: none;
+        }
+      }
+    }
+  }
+
   .card {
     $card-border: 1px solid $menu-border-color;
     background-color: $menu-bg-color;

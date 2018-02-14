@@ -29,9 +29,17 @@ class PieChart extends Component {
   }
 
   _setPieChartSeries () {
-    const list = this.props.portfolio.assetHoldings.filter(a => a.shown)
+    const { portfolio, handleChartSelect } = this.props
+    const list = portfolio.assetHoldings.filter(a => a.shown)
+    const noBalance = portfolio.totalFiat.toNumber() === 0
     let seriesData
-    if (list.length === 1) {
+    if (noBalance) {
+      seriesData = [{
+        name: '',
+        y: 100,
+        sliced: true
+      }]
+    } else if (list.length === 1) {
       seriesData = [{
         name: list[0].symbol,
         y: 100,
@@ -44,13 +52,14 @@ class PieChart extends Component {
         sliced: i === prevAssetIx
       }))
     }
-    return Object.assign({}, config.highCharts.pieChart, {
-      plotOptions: Object.assign({}, config.highCharts.pieChart.plotOptions, {
-        pie: Object.assign({}, config.highCharts.pieChart.plotOptions.pie, {
+    const { pieChart } = config.highCharts
+    return Object.assign({}, pieChart, {
+      plotOptions: Object.assign({}, pieChart.plotOptions, {
+        pie: Object.assign({}, pieChart.plotOptions.pie, {
           events: {
             click: (e) => {
               const point = e.point || {}
-              this.props.handleChartSelect(point.name)
+              handleChartSelect(point.name)
             }
           }
         })

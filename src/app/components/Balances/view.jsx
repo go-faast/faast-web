@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Collapse } from 'reactstrap'
 import BigNumber from 'bignumber.js'
+import classNames from 'class-names'
 import Layout from 'Components/Layout'
 import Address from 'Components/Address'
 import PriceChart from 'Components/PriceChart'
@@ -11,7 +12,7 @@ import display from 'Utilities/display'
 import styles from './style'
 import config from 'Config'
 import { breakpointNext } from 'Utilities/breakpoints'
-import { Row, Col, Card, CardBody, CardHeader } from 'reactstrap'
+import { Row, Col, Card, CardBody, CardHeader, Table } from 'reactstrap'
 import WalletSelector from 'Components/WalletSelector'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 
@@ -81,24 +82,23 @@ const OrderInProgress = (props) => {
 }
 
 const TableCell = ({ hideCollapse, className, children, ...extraProps }) => (
-  <Col
-    {...({ xs: '3', [expandTablePoint]: '2', ...extraProps })}
-    className={`${hideCollapse ? `d-none d-${expandTablePoint}-block` : ''} ${className ? className : ''}`}>
+  <td {...extraProps} className={`${hideCollapse ? `d-none d-${expandTablePoint}-table-cell` : ''} ${className ? className : ''}`}>
     {children}
-  </Col>
+  </td>
 )
+
+const ChangePercent = ({ children: change }) => <span className={change.isNegative() ? 'text-red' : 'text-green'}>{display.percentage(change, true)}</span>
 
 const BalancesView = (props) => {
   const {
-    totalChange, totalDecrease, total24hAgo, total, assetRows, viewOnly, orderStatus, addressProps, pieChart,
+    totalChange, total24hAgo, total, assetRows, viewOnly, orderStatus, addressProps, pieChart,
     toggleChart, layoutProps, showOrderModal, handleToggleOrderModal, openCharts, balancesLoading, balancesError,
   } = props
 
   const values = [
     {
       title: '24h change',
-      value: display.percentage(totalChange, true),
-      changeIcon: totalDecrease ? styles.changeDownIcon : styles.changeUpIcon
+      value: (<ChangePercent>{totalChange}</ChangePercent>)
     },
     {
       title: '24h ago (USD)',
@@ -123,56 +123,54 @@ const BalancesView = (props) => {
       )
     }
     return assetRows.map((asset) => {
-      const { symbol, name, fiat, balance, price, percentage, change24, priceDecrease, infoUrl } = asset
+      const { symbol, name, fiat, balance, price, percentage, change24, infoUrl } = asset
+      const displayName = name.length > 12 ? symbol : name
       const displayUnits = display.units(balance, symbol, price, false)
       const displayUnitsWithSymbol = display.units(balance, symbol, price, true)
       const displayWeight = display.percentage(percentage)
-      const displayChange = display.percentage(change24, true)
+      const displayChange = (<ChangePercent>{change24}</ChangePercent>)
       const fiatValue = display.fiat(fiat)
       const fiatPrice = display.fiat(price)
       const chartOpen = openCharts[symbol]
       return (
-        <div key={symbol} onClick={() => toggleChart(symbol)} className={`${styles.tableRow} ${styles.tableRowAction}`}>
-          <Row className='small-gutters-x'>
-            <TableCell className={styles.tableCell}>
-              <Row className='no-gutters'>
-                <Col {...({ xs: '12', [expandTablePoint]: 'auto' })}>
-                  <div className={styles.tableCoinIcon} style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${symbol}.png)` }} />
-                </Col>
-                <Col {...({ xs: '12', [expandTablePoint]: 'auto' })} tag='p' className={`text-center text-${expandTablePoint}-left ${styles.tableCoinName}`}>{name}</Col>
-              </Row>
-            </TableCell>
-            <TableCell className={styles.tableCell}>
-              <p>
-                <span className={`d-none d-${expandTablePoint}-inline-block`}>{displayUnitsWithSymbol}</span>
-                <span className={`d-${expandTablePoint}-none`}>{displayUnits}</span>
-              </p>
-              <p className={`d-${expandTablePoint}-none`}>{symbol}</p>
-            </TableCell>
-            <TableCell className={styles.tableCell}>
-              <p>{fiatValue}</p>
-              <p className={`d-${expandTablePoint}-none`}>{displayWeight}</p>
-            </TableCell>
-            <TableCell className={styles.tableCell} hideCollapse>
-              {displayWeight}
-            </TableCell>
-            <TableCell className={styles.tableCell}>
-              <p>{fiatPrice}</p>
-              <p className={`d-${expandTablePoint}-none ${priceDecrease ? styles.priceDecrease : styles.priceIncrease}`}>{displayChange}</p>
-            </TableCell>
-            <TableCell className={styles.tableCell} hideCollapse>
-              <p className='float-right'>{displayChange}</p>
-              <div className={priceDecrease ? styles.tableChangeDownIcon : styles.tableChangeUpIcon} />
-            </TableCell>
-          </Row>
-          <Collapse isOpen={chartOpen}>
-            <div className={styles.assetTitle}>
-              <strong>{name}</strong> ({symbol})
-              <span><i className='fa fa-external-link text-gradient margin-left-10' /> <a className={styles.link} href={infoUrl} target='_blank' rel='noopener'>info</a></span>
-            </div>
-            <PriceChart symbol={symbol} chartOpen={chartOpen} />
-          </Collapse>
-        </div>
+        <tr key={symbol} onClick={() => toggleChart(symbol)} className={`${styles.tableRow} ${styles.tableRowAction}`}>
+          <TableCell className={styles.tableCell}>
+            <Row className='no-gutters'>
+              <Col {...({ xs: '12', [expandTablePoint]: 'auto' })}>
+                <div className={styles.tableCoinIcon} style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${symbol}.png)` }} />
+              </Col>
+              <Col {...({ xs: '12', [expandTablePoint]: 'auto' })} tag='p' className={`text-center text-${expandTablePoint}-left ${styles.tableCoinName}`}>{displayName}</Col>
+            </Row>
+            <Collapse isOpen={chartOpen}>
+              <div className={styles.assetTitle}>
+                <strong>{name}</strong> ({symbol})
+                <span><i className='fa fa-external-link text-gradient margin-left-10' /> <a className={styles.link} href={infoUrl} target='_blank' rel='noopener'>info</a></span>
+              </div>
+              <PriceChart symbol={symbol} chartOpen={chartOpen} />
+            </Collapse>
+          </TableCell>
+          <TableCell className={styles.tableCell}>
+            <p>
+              <span className={`d-none d-${expandTablePoint}-inline-block`}>{displayUnitsWithSymbol}</span>
+              <span className={`d-${expandTablePoint}-none`}>{displayUnits}</span>
+            </p>
+            <p className={`d-${expandTablePoint}-none`}>{symbol}</p>
+          </TableCell>
+          <TableCell className={styles.tableCell}>
+            <p>{fiatValue}</p>
+            <p className={`d-${expandTablePoint}-none`}>{displayWeight}</p>
+          </TableCell>
+          <TableCell className={styles.tableCell} hideCollapse>
+            {displayWeight}
+          </TableCell>
+          <TableCell className={styles.tableCell}>
+            <p>{fiatPrice}</p>
+            <p className={classNames(`d-${expandTablePoint}-none`)}>{displayChange}</p>
+          </TableCell>
+          <TableCell className={styles.tableCell} hideCollapse>
+            <p className='float-right'>{displayChange}</p>
+          </TableCell>
+        </tr>
       )
     })
   }
@@ -206,49 +204,43 @@ const BalancesView = (props) => {
               <Card>
                 <CardHeader>
                   <Row className='medium-gutters-y x-large-gutters-x'>
-                    {values.map(({ title, value, changeIcon }, i) => (
-                      <div key={i} className='col-6 col-lg-3'>
-                        <Row className='small-gutters-x justify-content-center align-items-center text-center'>
-                          {!!changeIcon &&
-                            <Col xs='auto'>
-                              <div className={changeIcon} />
-                            </Col>
-                          }
-                          <Col xs='auto'>
-                            <div className={styles.statsTitle}>{title}</div>
-                            <div className={`text-white ${styles.statsContent}`}>{value}</div>
-                          </Col>
-                        </Row>
-                      </div>
+                    {values.map(({ title, value, valueClass }, i) => (
+                      <Col xs='6' lg='3' key={i} className='text-center'>
+                        <div className='text-medium-grey'>{title}</div>
+                        <div className={classNames('text-medium', valueClass)}>{value}</div>
+                      </Col>
                     ))}
                   </Row>
                 </CardHeader>
-                {!balancesLoading && assetRows.length > 0 && (
-                  <CardBody>
-                    {addressProps.address && (
-                      <div className='text-right px-3' style={{ lineHeight: 1 }}>
-                        <div className='text-medium-grey mb-1'>address</div>
-                        <Address className={`${styles.link} ${styles.addressLink}`} {...addressProps} />
-                      </div>
-                    )}
-                    {pieChart}
-                  </CardBody>
-                )}
+                <CardBody>
+                  {addressProps.address && (
+                    <div className='text-right px-3' style={{ lineHeight: 1 }}>
+                      <div className='text-medium-grey mb-1'>address</div>
+                      <Address className={`${styles.link} ${styles.addressLink}`} {...addressProps} />
+                    </div>
+                  )}
+                  {pieChart}
+                </CardBody>
               </Card>
             </Col>
             <Col xs='12'>
-              <div className={styles.tableHeader}>
-                <Row className='small-gutters-x'>
-                  <TableCell className={`${styles.columnTitle} text-center text-${expandTablePoint}-left`}>Asset</TableCell>
-                  <TableCell className={styles.columnTitle}>Units</TableCell>
-                  <TableCell className={styles.columnTitle}>Holdings</TableCell>
-                  <TableCell className={styles.columnTitle} hideCollapse>Weight</TableCell>
-                  <TableCell className={styles.columnTitle}>Price</TableCell>
-                  <TableCell className={`${styles.columnTitle} text-right`} hideCollapse>24h change</TableCell>
-                </Row>
-              </div>
-              <div className={styles.gradientSeparator} />
-              {renderAssets()}
+              <Card>
+                <Table>
+                  <thead>
+                    <tr>
+                      <TableCell className={`${styles.columnTitle} text-center text-${expandTablePoint}-left`}>Asset</TableCell>
+                      <TableCell className={styles.columnTitle}>Units</TableCell>
+                      <TableCell className={styles.columnTitle}>Holdings</TableCell>
+                      <TableCell className={styles.columnTitle} hideCollapse>Weight</TableCell>
+                      <TableCell className={styles.columnTitle}>Price</TableCell>
+                      <TableCell className={`${styles.columnTitle} text-right`} hideCollapse>24h change</TableCell>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {renderAssets()}
+                  </tbody>
+                </Table>
+              </Card>
             </Col>
           </Row>
         </Col>

@@ -18,8 +18,8 @@ const WalletSummary = ({ icon, wallet: { id, label, typeLabel, totalFiat, iconUr
     <Col>
       <Row className='no-gutters justify-content-between'>
         <Col xs='12'><h6 className={classNames({ 'font-italic': id === 'default' })}>{label}</h6></Col>
-        <Col xs='12' sm='auto' className='text-medium-grey'>{typeLabel}</Col>
-        <Col xs='12' sm='auto'>
+        <Col xs='auto' className='text-medium-grey'>{typeLabel}</Col>
+        <Col xs='auto'>
           {balancesLoaded
             ? display.fiat(totalFiat)
             : (<span className='faast-loading loading-small'/>)}

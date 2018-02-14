@@ -86,8 +86,6 @@ $collapse-table: md;
 }
 
 .tableHeaderRow {
-  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  @extend .box-shadow;
   padding: 20px 16px;
 }
 
@@ -186,14 +184,6 @@ $collapse-table: md;
 .tableChangeDownIcon {
   @extend .tableChangeIcon;
   @extend .downIcon;
-}
-
-.priceIncrease {
-  color: #0DD390 !important;
-}
-
-.priceDecrease {
-  color: #BC1515 !important;
 }
 
 .viewMode {
