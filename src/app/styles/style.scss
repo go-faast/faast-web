@@ -15,8 +15,8 @@ body {
   position: relative;
 
   h1, h2, h3, h4, h5, h6, th {
-    @extend .gradient-text;
-    font-weight: 400;
+    color: $primary-color;
+    font-weight: 300;
   }
 
   p {
@@ -122,10 +122,46 @@ body {
   }
 
   $menu-bg-color: $ultra-dark-grey;
-  $menu-border-color: lighten($menu-bg-color, 5%);
   $menu-bg-color-hover: lighten($menu-bg-color, 5%);
+  $menu-bg-color-active: lighten($menu-bg-color-hover, 5%);
+
+  $menu-border-color: lighten($menu-bg-color, 5%);
   $menu-border-color-hover: lighten($menu-bg-color-hover, 5%);
-  $menu-active-bg-color: lighten($menu-bg-color-hover, 5%);
+  $menu-border-color-active: lighten($menu-bg-color-active, 10%);
+
+  $menu-border: solid 1px $menu-border-color;
+  $menu-border-hover: solid 1px $menu-border-color-hover;
+  $menu-border-active: solid 1px $menu-border-color-active;
+
+  @mixin bordered-grid($border: $menu-border, $pad-y: 12px, $pad-x: 20px) {
+    > .row {
+      margin: (-$pad-y) (-$pad-x);
+      @each $breakpoint in map-keys($grid-breakpoints) {
+        $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+        $cols-with-border: 1 2 3 4 6 12;
+        @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
+          @each $col in $cols-with-border {
+            $multiple: 12 / $col;
+            > .col#{$infix}-#{$col} {
+              padding: $pad-y $pad-x;
+              &:nth-child(#{$multiple}n+1) {
+                border-left: none;
+              }
+              &:not(:nth-child(#{$multiple}n+1)) {
+                border-left: $border;
+              }
+              &:nth-child(-n+#{$multiple}) {
+                border-top: none;
+              }
+              &:nth-child(n+#{$multiple + 1}) {
+                border-top: $border;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 
   .table {
     td, th {
@@ -150,39 +186,15 @@ body {
   }
 
   .card {
-    $card-border: 1px solid $menu-border-color;
+    $card-border: $menu-border;
     background-color: $menu-bg-color;
     border: $card-border;
+    border-radius: 0;
 
     .card-header {
       border-color: $menu-border-color;
       padding: 12px 20px;
-
-      > .row {
-        @each $breakpoint in map-keys($grid-breakpoints) {
-          $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
-          $cols-with-border: 1 2 3 4 6 12;
-          @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
-            @each $col in $cols-with-border {
-              $multiple: 12 / $col;
-              > .col#{$infix}-#{$col} {
-                &:nth-child(#{$multiple}n+1) {
-                  border-left: none;
-                }
-                &:not(:nth-child(#{$multiple}n+1)) {
-                  border-left: $card-border;
-                }
-                &:nth-child(-n+#{$multiple}) {
-                  border-top: none;
-                }
-                &:nth-child(n+#{$multiple + 1}) {
-                  border-top: $card-border;
-                }
-              }
-            }
-          }
-        }
-      }
+      @include bordered-grid($card-border, 12px, 20px);
     }
 
     > .list-group {
@@ -196,27 +208,40 @@ body {
         border-bottom-right-radius: 0;
       }
     }
+
+    > .table {
+      margin-bottom: 0;
+    }
+  }
+
+  %menu-action {
+    background-color: $menu-bg-color;
+    border-color: $menu-border-color;
+    &:disabled, &.disabled {
+      filter: grayscale(1);
+      color: $medium-grey;
+      cursor: default;
+    }
+    &:not(:disabled):not(.disabled) {
+      &:hover {
+        background-color: $menu-bg-color-hover;
+        border-color: $menu-border-color-hover;
+      }
+      &:active, &.active {
+        background-color: $menu-bg-color-active;
+        border-color: $menu-border-color-active;
+      }
+    }
+    
   }
 
   .dropdown-menu {
     background-color: $menu-bg-color;
-    border: 1px solid $menu-border-color;
+    border: $menu-border;
     .dropdown-item {
       color: $light-grey;
       font-weight: 200;
-      &:disabled, &.disabled {
-        filter: grayscale(1);
-        color: $medium-grey;
-        cursor: default;
-      }
-      &:not(:disabled):not(.disabled) {
-        &:hover, &:focus {
-          background-color: $menu-bg-color-hover;
-        }
-        &:active, &.active {
-          background-color: $menu-active-bg-color;
-        }
-      }
+      @extend %menu-action;
     }
     .dropdown-divider {
       border-color: $secondary-color;
@@ -226,32 +251,46 @@ body {
   .list-group {
     .list-group-item {
       background-color: $menu-bg-color;
-      border: 1px solid $menu-border-color;
+      border: $menu-border;
+      border-radius: 0;
       color: $light-grey;
       font-weight: 200;
       padding: 12px 20px;
+      &.grid-actions {
+        @include bordered-grid($menu-border, 12px, 20px);
+        .grid-action {
+          text-align: center;
+          color: $primary-color;
+          text-decoration: none;
+          font-weight: 300;
+          border: none;
+          @extend %menu-action;
+        }
+      }
       &.compact {
         padding: 8px 16px;
+        &.grid-actions {
+          @include bordered-grid($menu-border, 8px, 16px);
+        }
       }
     }
     .list-group-item-action {
-      &:disabled, &.disabled {
-        filter: grayscale(1);
-        color: $medium-grey;
-        cursor: default;
-      }
+      @extend %menu-action;
       &:not(:disabled):not(.disabled) {
-        &:hover, &:focus {
-          background-color: $menu-bg-color-hover;
-          border: 1px solid $menu-border-color-hover;
+        &:hover {
           z-index: 1;
         }
-        &.active, &:active {
-          background-color: $menu-bg-color-hover;
-          border: 1px solid $secondary-color;
+        &:active, &.active {
           z-index: 2;
         }
+        &.active {
+          border: 1px solid $secondary-color;
+        }
       }
+    }
+
+    > .collapse {
+      margin-bottom: -1px;
     }
   }
 

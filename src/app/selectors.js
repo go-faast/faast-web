@@ -131,6 +131,12 @@ export const getCurrentPortfolioId = createSelector(getPortfolioState, ({ curren
 export const getCurrentWalletId = createSelector(getPortfolioState, ({ currentId, currentWalletId }) => currentWalletId || currentId)
 export const getAllPortfolioIds = createSelector(getPortfolioState, ({ portfolioIds }) => portfolioIds)
 
+export const getAllPortfolioWalletIds = createSelector(
+  getAllPortfolioIds,
+  getAllWallets,
+  (portfolioIds, allWallets) => portfolioIds.reduce((result, id) => ({ ...result, [id]: allWallets[id].nestedWalletIds }), {})
+)
+
 export const getCurrentPortfolio = wrapSelectorArgs(getWallet, getCurrentPortfolioId)
 export const getCurrentPortfolioWithHoldings = wrapSelectorArgs(getWalletWithHoldings, getCurrentPortfolioId)
 export const areCurrentPortfolioHoldingsLoaded = wrapSelectorArgs(areWalletHoldingsLoaded, getCurrentPortfolioId)

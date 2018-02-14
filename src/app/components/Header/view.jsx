@@ -44,12 +44,6 @@ const HeaderView = (props) => {
   const renderActions = () => (
     <Row className='medium-gutters justify-content-between justify-content-md-end'>
       {view === 'balances' && ([
-        <Col key='select-portfolio' xs='12' md>
-          <SelectPortfolioDropdown/>
-        </Col>,
-        <Col key='close' xs='auto'>
-          <Button outline onClick={handleCloseWallet}>close</Button>
-        </Col>,
         <Col key='modify' xs='auto'>
           <Button onClick={handleModify} disabled={disableAction}>modify</Button>
         </Col>
@@ -71,11 +65,8 @@ const HeaderView = (props) => {
         </Col>
       ])}
       {view === 'connect' && ([
-        <Col key='close' xs='auto'>
-          <Button outline onClick={handleCloseWallet}>close</Button>
-        </Col>,
         <Col key='balances' xs='auto'>
-          <Button tag={Link} to ='/balances'>balances</Button>
+          <Button tag={Link} to ='/balances'>portfolio</Button>
         </Col>
       ])}
     </Row>)
