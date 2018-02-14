@@ -81,11 +81,14 @@ const OrderInProgress = (props) => {
   )
 }
 
-const TableCell = ({ hideCollapse, className, children, ...extraProps }) => (
-  <td {...extraProps} className={`${hideCollapse ? `d-none d-${expandTablePoint}-table-cell` : ''} ${className ? className : ''}`}>
-    {children}
-  </td>
-)
+const TableCell = ({ heading, hideCollapse, className, children, ...extraProps }) => {
+  const Tag = heading ? 'th' : 'td'
+  return (
+    <Tag {...extraProps} className={classNames(className, { [`d-none d-${expandTablePoint}-table-cell`]: hideCollapse })}>
+      {children}
+    </Tag>
+  )
+}
 
 const ChangePercent = ({ children: change }) => <span className={change.isNegative() ? 'text-red' : 'text-green'}>{display.percentage(change, true)}</span>
 
@@ -228,12 +231,12 @@ const BalancesView = (props) => {
                 <Table>
                   <thead>
                     <tr>
-                      <TableCell className={`${styles.columnTitle} text-center text-${expandTablePoint}-left`}>Asset</TableCell>
-                      <TableCell className={styles.columnTitle}>Units</TableCell>
-                      <TableCell className={styles.columnTitle}>Holdings</TableCell>
-                      <TableCell className={styles.columnTitle} hideCollapse>Weight</TableCell>
-                      <TableCell className={styles.columnTitle}>Price</TableCell>
-                      <TableCell className={`${styles.columnTitle} text-right`} hideCollapse>24h change</TableCell>
+                      <TableCell heading className={`text-center text-${expandTablePoint}-left`}>Asset</TableCell>
+                      <TableCell heading className='text-right'>Units</TableCell>
+                      <TableCell heading className='text-right'>Holdings</TableCell>
+                      <TableCell heading hideCollapse className='text-right'>Weight</TableCell>
+                      <TableCell heading className='text-right'>Price</TableCell>
+                      <TableCell heading hideCollapse className='text-right'>24h change</TableCell>
                     </tr>
                   </thead>
                   <tbody>

@@ -14,9 +14,9 @@ body {
   min-height: 100vh;
   position: relative;
 
-  h1, h2, h3, h4, h5, h6 {
-    color: $secondary-color;
-    font-weight: inherit;
+  h1, h2, h3, h4, h5, h6, th {
+    @extend .gradient-text;
+    font-weight: 400;
   }
 
   p {
