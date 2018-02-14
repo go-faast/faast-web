@@ -11,7 +11,7 @@ import display from 'Utilities/display'
 import styles from './style'
 import config from 'Config'
 import { breakpointNext } from 'Utilities/breakpoints'
-import { Row, Col } from 'reactstrap'
+import { Row, Col, Card, CardBody, CardHeader } from 'reactstrap'
 import WalletSelector from 'Components/WalletSelector'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 
@@ -200,42 +200,42 @@ const BalancesView = (props) => {
           <WalletSelector/>
         </Col>
         <Col xs='12' md='6' lg='8'>
-          {balancesLoading && (<LoadingFullscreen center error={balancesError}/>)}
           <Row className='medium-gutters'>
+            {balancesLoading && (<LoadingFullscreen center error={balancesError}/>)}
             <Col xs='12'>
-              <Row className='small-gutters'>
-                {values.map(({ title, value, changeIcon }, i) => (
-                  <div key={i} className='col-6 col-lg-3'>
-                    <div className={styles.tileContainer}>
-                      <div className='row'>
-                        {!!changeIcon &&
-                          <div className='col-3'>
-                            <div className={changeIcon} />
-                          </div>
-                        }
-                        <div className={changeIcon ? 'col-9' : 'col'}>
-                          <div className={styles.statsTitle}>{title}</div>
-                          <div className={`text-white ${styles.statsContent}`}>{value}</div>
-                        </div>
+              <Card>
+                <CardHeader>
+                  <Row className='medium-gutters-y x-large-gutters-x'>
+                    {values.map(({ title, value, changeIcon }, i) => (
+                      <div key={i} className='col-6 col-lg-3'>
+                        <Row className='small-gutters-x justify-content-center align-items-center text-center'>
+                          {!!changeIcon &&
+                            <Col xs='auto'>
+                              <div className={changeIcon} />
+                            </Col>
+                          }
+                          <Col xs='auto'>
+                            <div className={styles.statsTitle}>{title}</div>
+                            <div className={`text-white ${styles.statsContent}`}>{value}</div>
+                          </Col>
+                        </Row>
                       </div>
-                    </div>
-                  </div>
-                ))}
-              </Row>
+                    ))}
+                  </Row>
+                </CardHeader>
+                {!balancesLoading && assetRows.length > 0 && (
+                  <CardBody>
+                    {addressProps.address && (
+                      <div className='text-right px-3' style={{ lineHeight: 1 }}>
+                        <div className='text-medium-grey mb-1'>address</div>
+                        <Address className={`${styles.link} ${styles.addressLink}`} {...addressProps} />
+                      </div>
+                    )}
+                    {pieChart}
+                  </CardBody>
+                )}
+              </Card>
             </Col>
-            {!balancesLoading && assetRows.length > 0 && (
-              <Col xs='12'>
-                <div className={`${styles.tileContainer} px-0`}>
-                  {addressProps.address && (
-                    <div className='text-right px-3' style={{ lineHeight: 1 }}>
-                      <div className='text-medium-grey mb-1'>address</div>
-                      <Address className={`${styles.link} ${styles.addressLink}`} {...addressProps} />
-                    </div>
-                  )}
-                  {pieChart}
-                </div>
-              </Col>
-            )}
             <Col xs='12'>
               <div className={styles.tableHeader}>
                 <Row className='small-gutters-x'>
