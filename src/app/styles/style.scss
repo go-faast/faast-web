@@ -121,8 +121,12 @@ body {
     }
   }
 
+  $menu-bg-color: $ultra-dark-grey;
+  $menu-bg-color-hover: lighten($menu-bg-color, 5%);
+
   .dropdown-menu {
-    background-color: $dark-grey;
+    background-color: $menu-bg-color;
+    border: 1px solid lighten($menu-bg-color, 5%);
     .dropdown-item {
       color: $light-grey;
       font-weight: 200;
@@ -133,7 +137,7 @@ body {
       }
       &:not(:disabled):not(.disabled) {
         &:hover, &:focus {
-          background-color: #303030;
+          background-color: $menu-bg-color-hover;
         }
         &:active, &.active {
           background-color: #404040;
@@ -147,7 +151,8 @@ body {
 
   .list-group {
     .list-group-item {
-      background-color: $dark-grey;
+      background-color: $menu-bg-color;
+      border: 1px solid lighten($menu-bg-color, 5%);
       color: $light-grey;
       font-weight: 200;
     }
@@ -159,13 +164,14 @@ body {
       }
       &:not(:disabled):not(.disabled) {
         &:hover, &:focus {
-          background-color: #303030;
+          background-color: $menu-bg-color-hover;
+          border: 1px solid lighten($menu-bg-color-hover, 5%);
+          z-index: 1;
         }
-        &.active {
-          border: 1px solid rgba(0,0,0,.125);
-          &, &:active {
-            background-color: #404040;
-          }
+        &.active, &:active {
+          background-color: $menu-bg-color-hover;
+          border: 1px solid $secondary-color;
+          z-index: 2;
         }
       }
     }
