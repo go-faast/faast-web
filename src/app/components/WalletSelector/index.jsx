@@ -67,7 +67,9 @@ class WalletSelector extends React.Component {
                         <i className='fa fa-plus'/> add wallet
                       </Col>
                       <Col xs='4' tag='button' onClick={() => this.togglePortfolio(portfolioId)} className='grid-action'>
-                        {showWallets ? 'hide' : 'show'} wallets
+                       {showWallets
+                        ? (<span><i className='fa fa-caret-up'/> hide wallets</span>)
+                        : (<span><i className='fa fa-caret-down'/> show wallets</span>)}
                       </Col>
                     </Row>
                   </ListGroupItem>
