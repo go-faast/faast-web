@@ -8,16 +8,16 @@ import display from 'Utilities/display'
 import styles from './style'
 
 const WalletSummary = ({ icon, labelTag: LabelTag, wallet: { id, label, typeLabel, totalFiat, iconUrl, balancesLoaded } }) => (
-  <Row className='medium-gutters-x align-items-center'>
-    {icon && (
-      <Col xs='auto'>
-        <div className={styles.walletIcon} style={{ backgroundImage: `url(${iconUrl})` }}></div>
-      </Col>
-    )}
-    <Col>
-      <Row className='no-gutters justify-content-between'>
-        <Col xs='12'><LabelTag>{id === 'default' ? (<i>{label}</i>) : label}</LabelTag></Col>
-        <Col xs='auto' className='text-medium-grey'>{typeLabel}</Col>
+  <Row className='no-gutters'>
+    <Col xs='12'><LabelTag>{id === 'default' ? (<i>{label}</i>) : label}</LabelTag></Col>
+    <Col xs='12'>
+      <Row className='small-gutters-x align-items-center justify-content-between'>
+        {icon && (
+          <Col xs='auto'>
+            <div className={styles.walletIcon} style={{ backgroundImage: `url(${iconUrl})` }}></div>
+          </Col>
+        )}
+        <Col className='text-medium-grey'>{typeLabel}</Col>
         <Col xs='auto'>
           {balancesLoaded
             ? display.fiat(totalFiat)
