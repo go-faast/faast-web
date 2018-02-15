@@ -257,7 +257,8 @@ body {
       font-weight: 200;
       padding: 12px 20px;
       &.grid-actions {
-        @include bordered-grid($menu-border, 12px, 20px);
+        padding: 12px 12px;
+        @include bordered-grid($menu-border, 12px, 12px);
         .grid-action {
           text-align: center;
           color: $primary-color;
@@ -268,9 +269,10 @@ body {
         }
       }
       &.compact {
-        padding: 8px 16px;
+        padding: 8px 20px;
         &.grid-actions {
-          @include bordered-grid($menu-border, 8px, 16px);
+          padding: 8px 8px;
+          @include bordered-grid($menu-border, 8px, 8px);
         }
       }
     }
