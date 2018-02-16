@@ -147,12 +147,14 @@ body {
   }
 
   $menu-bg-color: $ultra-dark-grey;
+  $menu-bg-color-accent: lighten($menu-bg-color, 2%);
   $menu-bg-color-hover: lighten($menu-bg-color, 5%);
-  $menu-bg-color-active: lighten($menu-bg-color-hover, 5%);
+  $menu-bg-color-active: lighten($menu-bg-color, 10%);
 
   $menu-border-color: lighten($menu-bg-color, 5%);
+  $menu-border-color-accent: lighten($menu-bg-color-accent, 5%);
   $menu-border-color-hover: lighten($menu-bg-color-hover, 5%);
-  $menu-border-color-active: lighten($menu-bg-color-active, 10%);
+  $menu-border-color-active: lighten($menu-bg-color-active, 5%);
 
   $menu-border-width: 1px;
   $menu-border: solid $menu-border-width $menu-border-color;
@@ -241,16 +243,74 @@ body {
     }
   }
 
+  $table-bg-color: $menu-bg-color;
+  $table-border-color: $menu-border-color;
+  $table-border: solid $menu-border-width $table-border-color;
+  $table-row-bg-accent: rgba(255, 255, 255, .02);
+  $table-row-bg-hover: rgba(255, 255, 255, .05);
+
   .table {
+    background-color: $table-bg-color;
     td, th {
-      background-color: $menu-bg-color;
-      border-color: $menu-border-color;
+      border-color: $table-border-color;
       padding: 8px;
     }
     thead {
       tr:first-child {
         td, th {
           border-top: none;
+        }
+      }
+    }
+  }
+  .table-striped tbody {
+    td {
+      border: none !important;
+    }
+    tr:nth-of-type(odd) {
+      background-color: $table-row-bg-accent;
+    }
+  }
+  .table-hover tbody tr:hover {
+    background-color: $table-row-bg-hover;
+    cursor: pointer;
+  }
+
+  .table-accordian {
+    border-collapse: collapse;
+    tbody {
+      tr.accordian {
+        td {
+          padding: 0;
+          overflow: hidden;
+          border-top: none;
+          border-bottom: $table-border;
+        }
+        &:last-child {
+          td {
+            border-bottom: none;
+          }
+        }
+      }
+    }
+    &.table-striped tbody {
+      tr {
+        background-color: transparent;
+        &:nth-of-type(4n+1) {
+          &, & + .accordian, & + .accordian:hover {
+            background-color: $table-row-bg-accent;
+          }
+        }
+      }
+    }
+    &.table-hover tbody {
+      tr:hover {
+        &, & + .accordian {
+          background-color: $table-row-bg-hover;
+        }
+        &.accordian {
+          background-color: transparent;
+          cursor: default;
         }
       }
     }

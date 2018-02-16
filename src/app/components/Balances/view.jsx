@@ -81,15 +81,6 @@ const OrderInProgress = (props) => {
   )
 }
 
-const TableCell = ({ heading, hideCollapse, className, children, ...extraProps }) => {
-  const Tag = heading ? 'th' : 'td'
-  return (
-    <Tag {...extraProps} className={classNames(className, { [`d-none d-${expandTablePoint}-table-cell`]: hideCollapse })}>
-      {children}
-    </Tag>
-  )
-}
-
 const ChangePercent = ({ children: change }) => <span className={change.isNegative() ? 'text-red' : 'text-green'}>{display.percentage(change, true)}</span>
 
 const BalancesView = (props) => {
@@ -97,6 +88,10 @@ const BalancesView = (props) => {
     totalChange, total24hAgo, total, assetRows, viewOnly, orderStatus, addressProps, pieChart,
     toggleChart, layoutProps, showOrderModal, handleToggleOrderModal, openCharts, balancesLoading, balancesError,
   } = props
+
+  const collapsedOnly = `d-${expandTablePoint}-none`
+  const expandedOnlyBlock = `d-none d-${expandTablePoint}-block`
+  const expandedOnlyCell = `d-none d-${expandTablePoint}-table-cell`
 
   const stats = [
     {
@@ -124,9 +119,11 @@ const BalancesView = (props) => {
   const renderAssets = () => {
     if (assetRows.length === 0) {
       return (
-        <div className={`text-center ${styles.tableRow}`}>
-          <i>No assets to show</i>
-        </div>
+        <tr className={`text-center ${styles.tableRow}`}>
+          <td colSpan='10'>
+            <i>No assets to show</i>
+          </td>
+        </tr>
       )
     }
     return assetRows.map((asset) => {
@@ -139,46 +136,48 @@ const BalancesView = (props) => {
       const fiatValue = display.fiat(fiat)
       const fiatPrice = display.fiat(price)
       const chartOpen = openCharts[symbol]
-      return (
-        <tr key={symbol} onClick={() => toggleChart(symbol)} className={`${styles.tableRow} ${styles.tableRowAction}`}>
-          <TableCell className={styles.tableCell}>
+      return ([
+        <tr key={symbol} onClick={() => toggleChart(symbol)}>
+          <td>
             <Row className='no-gutters'>
               <Col {...({ xs: '12', [expandTablePoint]: 'auto' })}>
                 <div className={styles.tableCoinIcon} style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${symbol}.png)` }} />
               </Col>
-              <Col {...({ xs: '12', [expandTablePoint]: 'auto' })} tag='p' className={`text-center text-${expandTablePoint}-left ${styles.tableCoinName}`}>{displayName}</Col>
+              <Col {...({ xs: '12', [expandTablePoint]: 'auto' })} tag='p' className={styles.tableCoinName}>{displayName}</Col>
             </Row>
+          </td>
+          <td>
+            <p className={expandedOnlyBlock}>{displayUnitsWithSymbol}</p>
+            <p className={collapsedOnly}>{displayUnits}</p>
+            <p className={collapsedOnly}>{symbol}</p>
+          </td>
+          <td>
+            <p>{fiatValue}</p>
+            <p className={collapsedOnly}>{displayWeight}</p>
+          </td>
+          <td className={expandedOnlyCell}>
+            {displayWeight}
+          </td>
+          <td>
+            <p>{fiatPrice}</p>
+            <p className={collapsedOnly}>{displayChange}</p>
+          </td>
+          <td className={expandedOnlyCell}>
+            {displayChange}
+          </td>
+        </tr>,
+        <tr key={`${symbol}-priceChart`} className='accordian'>
+          <td colSpan='10'>
             <Collapse isOpen={chartOpen}>
-              <div className={styles.assetTitle}>
+              <h5 className='mb-0 mt-2 ml-2'>
                 <strong>{name}</strong> ({symbol})
-                <span><i className='fa fa-external-link text-gradient margin-left-10' /> <a className={styles.link} href={infoUrl} target='_blank' rel='noopener'>info</a></span>
-              </div>
+                <span><i className='fa fa-external-link text-gradient margin-left-10' /> <a href={infoUrl} target='_blank' rel='noopener'>info</a></span>
+              </h5>
               <PriceChart symbol={symbol} chartOpen={chartOpen} />
             </Collapse>
-          </TableCell>
-          <TableCell className={styles.tableCell}>
-            <p>
-              <span className={`d-none d-${expandTablePoint}-inline-block`}>{displayUnitsWithSymbol}</span>
-              <span className={`d-${expandTablePoint}-none`}>{displayUnits}</span>
-            </p>
-            <p className={`d-${expandTablePoint}-none`}>{symbol}</p>
-          </TableCell>
-          <TableCell className={styles.tableCell}>
-            <p>{fiatValue}</p>
-            <p className={`d-${expandTablePoint}-none`}>{displayWeight}</p>
-          </TableCell>
-          <TableCell className={styles.tableCell} hideCollapse>
-            {displayWeight}
-          </TableCell>
-          <TableCell className={styles.tableCell}>
-            <p>{fiatPrice}</p>
-            <p className={classNames(`d-${expandTablePoint}-none`)}>{displayChange}</p>
-          </TableCell>
-          <TableCell className={styles.tableCell} hideCollapse>
-            <p className='float-right'>{displayChange}</p>
-          </TableCell>
+          </td>
         </tr>
-      )
+      ])
     })
   }
 
@@ -225,7 +224,7 @@ const BalancesView = (props) => {
                   {addressProps.address && (
                     <div className='text-right px-3' style={{ lineHeight: 1 }}>
                       <div className='text-medium-grey mb-1'>address</div>
-                      <Address className={`${styles.link} ${styles.addressLink}`} {...addressProps} />
+                      <Address className={styles.addressLink} {...addressProps} />
                     </div>
                   )}
                   {pieChart}
@@ -234,15 +233,15 @@ const BalancesView = (props) => {
             </Col>
             <Col xs='12'>
               <Card>
-                <Table>
+                <Table hover striped className={classNames(styles.balanceTable, 'table-accordian')}>
                   <thead>
                     <tr>
-                      <TableCell heading className={`text-center text-${expandTablePoint}-left`}>Asset</TableCell>
-                      <TableCell heading className='text-right'>Units</TableCell>
-                      <TableCell heading className='text-right'>Holdings</TableCell>
-                      <TableCell heading hideCollapse className='text-right'>Weight</TableCell>
-                      <TableCell heading className='text-right'>Price</TableCell>
-                      <TableCell heading hideCollapse className='text-right'>24h change</TableCell>
+                      <th>Asset</th>
+                      <th>Units</th>
+                      <th>Holdings</th>
+                      <th className={expandedOnlyCell}>Weight</th>
+                      <th>Price</th>
+                      <th className={expandedOnlyCell}>24h change</th>
                     </tr>
                   </thead>
                   <tbody>

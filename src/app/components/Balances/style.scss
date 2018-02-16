@@ -6,13 +6,6 @@ $collapse-table: md;
   collapseTablePoint: $collapse-table;
 }
 
-.tileContainer {
-  background-color: $ultra-dark-grey;
-  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  padding: 16px;
-  box-shadow: 5px 10px 15px #090909;
-}
-
 .upIcon {
   background-image: url(https://faa.st/img/up-icon.svg);
 }
@@ -56,96 +49,44 @@ $collapse-table: md;
   @extend .text-medium;
 }
 
-.chartContainer {
-  margin-top: 16px;
-  margin-bottom: 16px;
-}
-
-.chartInnerContainer {
-  // @extend .padding-0;
-  @extend .tileContainer;
-}
-
 .chart {
   height: 400px;
 }
 
-.assetTitle {
-  // @extend .gradient-text;
-  font-size: $text-medium;
-  margin-top: 8px;
-}
-
-.assetPrice {
-  @extend .clearfix;
-}
-
-.link {
-  @extend .text-gradient;
-  @extend .cursor-pointer;
-}
-
-.tableHeaderRow {
-  padding: 20px 16px;
-}
-
-.tableHeader {
-  @extend .tableHeaderRow;
-  @include media-breakpoint-down($collapse-table) {
-    padding: 16px 8px;
+.balanceTable {
+  td, th {
+    text-align: right;
+    &:first-child {
+      text-align: left;
+      @include media-breakpoint-down($collapse-table) {
+        text-align: center;
+      }
+    }
+  }
+  td {
+    &, p {
+      color: #dedede;
+    }
+    p {
+      margin: 0;
+      padding: 0;
+      + p {
+        font-size: 0.8em;
+        margin-top: 4px;
+        color: #ddd;
+      }
+    }
+    @include media-breakpoint-down($collapse-table) {
+      font-size: $text-small;
+    }
   }
 }
 
 .gradientSeparator {
- height: 1px;
- padding: 0;
- @extend .gradient-background;
- opacity: 0.4;
-}
-
-.columnTitle {
-  font-weight: 300;
-  @extend .gradient-text;
-  @extend .text-small;
-  text-align: right;
-  align-self: center;
-  @include media-breakpoint-down($collapse-table) {
-    font-size: $text-x-small;
-  }
-}
-
-.tableRow {
-  @extend .tableHeaderRow;
-  @include media-breakpoint-down($collapse-table) {
-    padding: 8px;
-  }
-}
-
-.tableRowAction {
-  &:hover {
-    cursor: pointer;
-    background: $dark-grey;
-  }
-}
-
-.tableCell {
-  text-align: right;
-  align-self: center;
-  &, p {
-    color: #dedede;
-  }
-  p {
-    margin: 0;
-    padding: 0;
-    + p {
-      font-size: 0.8em;
-      margin-top: 4px;
-      color: #ddd;
-    }
-  }
-  @include media-breakpoint-down($collapse-table) {
-    font-size: $text-small;
-  }
+  height: 1px;
+  padding: 0;
+  @extend .gradient-background;
+  opacity: 0.4;
 }
 
 .tableCoinIcon {
@@ -167,23 +108,6 @@ $collapse-table: md;
   @include media-breakpoint-down($collapse-table) {
     font-size: 0.8em;
   }
-}
-
-.tableChangeIcon {
-  height: 18px;
-  width: 18px;
-  margin: 0px 5px 0px 0px;
-  @extend .pull-right;
-}
-
-.tableChangeUpIcon {
-  @extend .tableChangeIcon;
-  @extend .upIcon;
-}
-
-.tableChangeDownIcon {
-  @extend .tableChangeIcon;
-  @extend .downIcon;
 }
 
 .viewMode {
