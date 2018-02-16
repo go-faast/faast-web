@@ -186,16 +186,6 @@ body {
     }
   }
 
-  button, a {
-    &.grid-cell {
-      text-align: center;
-      color: $primary-color;
-      text-decoration: none;
-      font-weight: 300;
-      @extend %menu-action;
-    }
-  }
-
   @mixin grid-group($border: $menu-border) {
     $border-width: get-border-width($border);
     padding: 0;
@@ -218,6 +208,15 @@ body {
           width: calc(100% + #{$border-width});
           height: calc(100% + #{$border-width});
           margin: 0;
+        }
+        > button, > a {
+          &.grid-cell {
+            text-align: center;
+            color: $primary-color;
+            text-decoration: none;
+            font-weight: 300;
+            @extend %menu-action;
+          }
         }
       }
 
