@@ -22,22 +22,22 @@ const ModifyView = (props) => {
   const { mq: { isMobile } } = props
 
   const renderAssetRows = () => {
-    return props.list.map((a, i) => {
+    return props.list.map((a) => {
       const changeIconDirection = a.priceDecrease ? 'down-icon' : 'up-icon'
       const { symbol, name, change24, price, units, fiat, weight } = a
       const fiatPrice = display.fiat(price)
       const percentChange24 = display.percentage(change24, true)
       const originalFiat = display.fiat(fiat.original)
       const originalWeight = display.percentage(a.weight.original)
-      const originalUnits = (<Units value={units.original} symbol={symbol}/>)
+      const originalUnits = (<Units value={units.original} symbol={symbol} maxPrecision={6}/>)
       const adjustedFiat = accounting.toFixed(fiat.adjusted, 2)
       const adjustedWeight = accounting.toFixed(weight.adjusted, 2)
-      const adjustedUnits = (<Units value={units.adjusted} symbol={symbol}/>)
+      const adjustedUnits = (<Units value={units.adjusted} symbol={symbol} maxPrecision={6}/>)
 
       return (
-        <div key={i} className='col-12'>
+        <div key={symbol} className='col-12'>
           <div className='tile-container'>
-            <div onClick={() => props.handleRemove(i)} className='tile-new' style={{ top: '8px', right: '0' }}>remove</div>
+            <div onClick={() => props.handleRemove(symbol)} className='tile-new' style={{ top: '8px', right: '0' }}>remove</div>
             <Row className='medium-gutters-x align-items-center'>
               <Col xs='12' lg='4' xl='5'>
                 <Row className='medium-gutters align-items-center'>

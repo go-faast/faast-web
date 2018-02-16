@@ -1,7 +1,6 @@
 import React from 'react'
 import { reduxForm, Field } from 'redux-form'
 import { Modal, ModalBody, Row, Col } from 'reactstrap'
-import display from 'Utilities/display'
 import Units from 'Components/Units'
 import CoinIcon from 'Components/CoinIcon'
 import web3 from 'Services/Web3'
