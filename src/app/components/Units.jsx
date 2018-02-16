@@ -8,10 +8,14 @@ const numberType = PropTypes.oneOfType([PropTypes.number, PropTypes.instanceOf(B
 
 class Units extends React.Component {
   render() {
-    const { symbol, showSymbol, maxPrecision } = this.props
+    const { symbol, showSymbol, precision, maxDigits } = this.props
     const value = toBigNumber(this.props.value)
     let expanded = value.toFormat()
-    let shrunk = value.toDigits(maxPrecision, BigNumber.ROUND_DOWN).toFormat()
+    let shrunk = value.toDigits(precision, BigNumber.ROUND_DOWN).toFormat()
+    const digitCount = shrunk.replace(/\D/g, '').length
+    if (digitCount > maxDigits) {
+      shrunk = value.toExponential(precision)
+    }
     if (symbol) {
       expanded = `${expanded} ${symbol}` // Expanded form should always include symbol
       if (showSymbol) {
@@ -26,13 +30,15 @@ Units.propTypes = {
   value: numberType.isRequired,
   symbol: PropTypes.string,
   showSymbol: PropTypes.bool,
-  maxPrecision: PropTypes.number,
+  precision: PropTypes.number,
+  maxDigits: PropTypes.number,
 }
 
 Units.defaultProps = {
   symbol: '',
   showSymbol: true,
-  maxPrecision: 4,
+  precision: 4,
+  maxDigits: 10,
 }
 
 export default Units

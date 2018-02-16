@@ -29,10 +29,10 @@ const ModifyView = (props) => {
       const percentChange24 = display.percentage(change24, true)
       const originalFiat = display.fiat(fiat.original)
       const originalWeight = display.percentage(a.weight.original)
-      const originalUnits = (<Units value={units.original} symbol={symbol} maxPrecision={6}/>)
+      const originalUnits = (<Units value={units.original} symbol={symbol} precision={6}/>)
       const adjustedFiat = accounting.toFixed(fiat.adjusted, 2)
       const adjustedWeight = accounting.toFixed(weight.adjusted, 2)
-      const adjustedUnits = (<Units value={units.adjusted} symbol={symbol} maxPrecision={6}/>)
+      const adjustedUnits = (<Units value={units.adjusted} symbol={symbol} precision={6}/>)
 
       return (
         <div key={symbol} className='col-12'>
