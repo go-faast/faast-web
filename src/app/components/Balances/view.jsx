@@ -13,7 +13,7 @@ import display from 'Utilities/display'
 import styles from './style'
 import config from 'Config'
 import { breakpointNext } from 'Utilities/breakpoints'
-import { Row, Col, Card, CardBody, CardHeader, Table } from 'reactstrap'
+import { Row, Col, Card, CardBody, CardHeader, Table, Button } from 'reactstrap'
 import WalletSelector from 'Components/WalletSelector'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 
@@ -170,9 +170,11 @@ const BalancesView = (props) => {
         <tr key={`${symbol}-priceChart`} className='accordian'>
           <td colSpan='10'>
             <Collapse isOpen={chartOpen}>
-              <h5 className='mb-0 mt-2 ml-2'>
-                <strong>{name}</strong> ({symbol})
-                <span><i className='fa fa-external-link text-gradient margin-left-10' /> <a href={infoUrl} target='_blank' rel='noopener'>info</a></span>
+              <h5 className='mb-0 mt-2 mx-2'>
+                <a href={infoUrl} target='_blank' rel='noopener noreferrer'>
+                  <strong>{name}</strong> ({symbol}) <i className='fa fa-external-link' />
+                </a>
+                <Button color='link' size='sm' onClick={() => toggleChart(symbol)} className='float-right p-0'>close chart</Button>
               </h5>
               <PriceChart symbol={symbol} chartOpen={chartOpen} />
             </Collapse>

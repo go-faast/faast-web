@@ -14,9 +14,20 @@ body {
   min-height: 100vh;
   position: relative;
 
+  a, .btn-link {
+    color: $primary-color;
+    &:hover, &:focus {
+      color: darken($primary-color, 5%);
+    }
+  }
+
   h1, h2, h3, h4, h5, h6, th {
     color: $primary-color;
     font-weight: 300;
+    .btn-link {
+      padding: 0;
+      border: none;
+    }
   }
 
   p {
@@ -29,7 +40,7 @@ body {
     a {
       color: $medium-grey;
       text-decoration: underline;
-      &:hover {
+      &:hover, &:focus {
         color: $medium-grey;
         text-decoration: $medium-grey;
       }
