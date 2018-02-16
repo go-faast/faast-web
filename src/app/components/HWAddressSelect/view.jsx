@@ -1,5 +1,5 @@
 import React from 'react'
-import display from 'Utilities/display'
+import Units from 'Components/Units'
 import DerivationPathForm from 'Components/DerivationPathForm'
 import styles from './style'
 
@@ -27,7 +27,7 @@ const HWAddressSelectView = (props) => (
               </div>
               <div className='col-sm-4 color-bg-3 padding-10'>
                 {(a.hasOwnProperty('balance') &&
-                  <div>{display.units(a.balance, 'ETH', 1)}</div>) ||
+                  <div><Units value={a.balance} symbol='ETH'/></div>) ||
                   <div className='faast-loading loading-small margin-top-10 pull-right' />
                 }
               </div>

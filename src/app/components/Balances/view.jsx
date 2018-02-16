@@ -8,6 +8,7 @@ import Address from 'Components/Address'
 import PriceChart from 'Components/PriceChart'
 import SignTxModal from 'Components/SignTxModal'
 import Welcome from 'Components/Welcome'
+import Units from 'Components/Units'
 import display from 'Utilities/display'
 import styles from './style'
 import config from 'Config'
@@ -129,8 +130,8 @@ const BalancesView = (props) => {
     return assetRows.map((asset) => {
       const { symbol, name, fiat, balance, price, percentage, change24, infoUrl } = asset
       const displayName = name.length > 12 ? symbol : name
-      const displayUnits = display.units(balance, symbol, price, false)
-      const displayUnitsWithSymbol = display.units(balance, symbol, price, true)
+      const displayUnits = (<Units value={balance} symbol={symbol} showSymbol={false}/>)
+      const displayUnitsWithSymbol = (<Units value={balance} symbol={symbol} showSymbol={true}/>)
       const displayWeight = display.percentage(percentage)
       const displayChange = (<ChangePercent>{change24}</ChangePercent>)
       const fiatValue = display.fiat(fiat)

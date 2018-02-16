@@ -2,6 +2,7 @@ import React from 'react'
 import { reduxForm, Field } from 'redux-form'
 import { Modal, ModalBody, Row, Col } from 'reactstrap'
 import display from 'Utilities/display'
+import Units from 'Components/Units'
 import CoinIcon from 'Components/CoinIcon'
 import web3 from 'Services/Web3'
 
@@ -75,7 +76,7 @@ const SwapStatusRow = ({ status: { swap, from, to, receiveAmount }, children }) 
           <Col xs='12' sm>
             <Row className='no-gutters'>
               <Col xs='12' className='order-sm-2'>{from.name}</Col>
-              <Col xs='12' className='text-white'>{display.units(swap.unit, from.symbol, from.price)}</Col>
+              <Col xs='12' className='text-white'><Units value={swap.unit} symbol={from.symbol}/></Col>
             </Row>
           </Col>
         </Row>
@@ -91,7 +92,7 @@ const SwapStatusRow = ({ status: { swap, from, to, receiveAmount }, children }) 
               <Col xs='12' className='order-sm-2'>{to.name}</Col>
               <Col xs='12' className='text-white'>
                 {typeof receiveAmount !== 'undefined' && receiveAmount !== null
-                  ? display.units(receiveAmount, to.symbol, to.price)
+                  ? <Units value={receiveAmount} symbol={to.symbol}/>
                   : ' '}
               </Col>
             </Row>
@@ -140,7 +141,7 @@ const SignTxForm = reduxForm({
             <Col xs='6' sm>
               <span className='margin-right-10'>swap fee</span>
               {a.swap.hasOwnProperty('fee')
-                ? (<span>{`${a.swap.fee} ${a.to.symbol}`}</span>)
+                ? `${a.swap.fee} ${a.to.symbol}`
                 : (a.error
                     ? (<span className='text-danger'> - </span>)
                     : (<span className='faast-loading loading-small' />))
@@ -149,14 +150,14 @@ const SignTxForm = reduxForm({
             <Col xs='12' sm='auto' className='text-center order-3 order-sm-2'>{a.error
               ? (<span className='text-danger'>{a.error}</span>)
               : (a.swap.hasOwnProperty('rate')
-                  ? (<span>{`1 ${a.from.symbol} = ${a.swap.rate} ${a.to.symbol}`}</span>)
+                  ? `1 ${a.from.symbol} = ${a.swap.rate} ${a.to.symbol}`
                   : (<span className='faast-loading loading-small' />))
               }
             </Col>
             <Col xs='6' sm className='text-right order-2 order-sm-3'>
               <span className='margin-right-10'>txn fee</span>
               {typeof a.txFee !== 'undefined'
-                ? (<span>{typeof a.txFee === 'string' ? a.txFee : display.units(a.txFee, a.from.symbol)}</span>)
+                ? (typeof a.txFee === 'string' ? a.txFee : (<Units value={a.txFee} symbol={a.from.symbol}/>))
                 : (a.error
                     ? (<span className='text-danger'> - </span>)
                     : (<span className='faast-loading loading-small' />))

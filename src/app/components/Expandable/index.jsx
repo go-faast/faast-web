@@ -1,53 +1,37 @@
 import React, { Component } from 'react'
-import { Tooltip } from 'reactstrap'
-import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
+import { UncontrolledTooltip } from 'reactstrap'
 
 class Expandable extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
     this.state = {
-      expanded: false,
-      tooltipOpen: false
+      id: props.id || `expandable-${Math.floor(Math.random() * Number.MAX_SAFE_INTEGER)}`
     }
-    this._expand = this._expand.bind(this)
-    this._shrink = this._shrink.bind(this)
-    this._toggleTooltip = this._toggleTooltip.bind(this)
-  }
-
-  _expand () {
-    this.setState({ expanded: true })
-  }
-
-  _shrink () {
-    this.setState({ expanded: false })
-  }
-
-  _toggleTooltip () {
-    if (!this.state.expanded && this.props.expanded !== this.props.shrunk) this.setState({ tooltipOpen: !this.state.tooltipOpen })
   }
 
   render () {
-    const value = this.state.expanded ? this.props.expanded : this.props.shrunk
-    const { mq: { isMobile } } = this.props
+    const { expanded, shrunk } = this.props
+    const { id } = this.state
     return (
       <span>
-        <span id={this.props.id} onClick={this._expand}>{value}{!!this.props.extra && this.props.showExtra && <span>&nbsp;{this.props.extra}</span>}</span>
-        { !isMobile &&
-          <Tooltip isOpen={this.state.tooltipOpen} toggle={this._toggleTooltip} target={this.props.id}>
-            {this.props.expanded}
-          </Tooltip>
-        }
+        <span id={id}>{shrunk}</span>
+        <UncontrolledTooltip target={id} autohide={false}>
+          {expanded}
+        </UncontrolledTooltip>
       </span>
     )
   }
 }
 
-Expandable.defaultProps = {
-  showExtra: true
+Expandable.propTypes = {
+  id: PropTypes.string,
+  expanded: PropTypes.node.isRequired,
+  shrunk: PropTypes.node.isRequired,
 }
 
-const mapStateToProps = (state) => ({
-  mq: state.mediaQueries
-})
+Expandable.defaultProps = {
+  id: null,
+}
 
-export default connect(mapStateToProps)(Expandable)
+export default Expandable

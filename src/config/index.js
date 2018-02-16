@@ -1,6 +1,16 @@
 /* global SITE_URL, API_URL */
 import highCharts from './highCharts'
 import tokenFunctionSignatures from './tokenFunctionSignatures'
+import BigNumber from 'bignumber.js'
+
+BigNumber.config({ FORMAT: {
+  decimalSeparator: '.',
+  groupSeparator: ',',
+  groupSize: 3,
+  secondaryGroupSize: 0,
+  fractionGroupSeparator: ' ',
+  fractionGroupSize: 0
+}})
 
 export default {
   web3Provider: 'https://web3.faa.st/eth',

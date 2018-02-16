@@ -3,7 +3,7 @@ import { Modal, ModalBody } from 'reactstrap'
 import { reduxForm } from 'redux-form'
 import AccessTile from 'Components/AccessTile'
 import HWAddressSelect from 'Components/HWAddressSelect'
-import display from 'Utilities/display'
+import Units from 'Components/Units'
 import styles from './style'
 
 const typeToProps = {
@@ -113,7 +113,7 @@ let HardwareWalletModal = (props) => {
           <div className='word-break-all'>{a.address}</div>
           <div>
             {(a.hasOwnProperty('balance') &&
-              <div className='margin-top-10 text-small text-white'>{display.units(a.balance, 'ETH', 1)}</div>) ||
+              <div className='margin-top-10 text-small text-white'><Units value={a.balance} symbol='ETH'/></div>) ||
               <div className='faast-loading loading-small margin-top-10 margin-auto' />
             }
           </div>

@@ -6,6 +6,7 @@ import Layout from 'Components/Layout'
 import Slider from 'Components/Slider'
 import AssetList from 'Components/AssetList'
 import SignTxModal from 'Components/SignTxModal'
+import Units from 'Components/Units'
 import display from 'Utilities/display'
 import styles from './style'
 import headerStyles from 'Components/Header/style'
@@ -23,15 +24,15 @@ const ModifyView = (props) => {
   const renderAssetRows = () => {
     return props.list.map((a, i) => {
       const changeIconDirection = a.priceDecrease ? 'down-icon' : 'up-icon'
-      const { symbol, name, change24, price} = a
+      const { symbol, name, change24, price, units, fiat, weight } = a
       const fiatPrice = display.fiat(price)
       const percentChange24 = display.percentage(change24, true)
-      const originalFiat = display.fiat(a.fiat.original)
+      const originalFiat = display.fiat(fiat.original)
       const originalWeight = display.percentage(a.weight.original)
-      const originalUnits = display.units(a.units.original, symbol, price)
-      const adjustedFiat = accounting.toFixed(a.fiat.adjusted, 2)
-      const adjustedWeight = accounting.toFixed(a.weight.adjusted, 2)
-      const adjustedUnits = display.units(a.units.adjusted, symbol, price)
+      const originalUnits = (<Units value={units.original} symbol={symbol}/>)
+      const adjustedFiat = accounting.toFixed(fiat.adjusted, 2)
+      const adjustedWeight = accounting.toFixed(weight.adjusted, 2)
+      const adjustedUnits = (<Units value={units.adjusted} symbol={symbol}/>)
 
       return (
         <div key={i} className='col-12'>
