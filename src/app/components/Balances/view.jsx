@@ -197,20 +197,22 @@ const BalancesView = (props) => {
         <OrderInProgress status={orderStatus} handleViewStatus={handleToggleOrderModal} />
       }
       <Row className='medium-gutters'>
-        <Col xs='12' md='6' lg='4'>
+        <Col xs='12' md='6' lg='5' xl='4'>
           <WalletSelector/>
         </Col>
-        <Col xs='12' md='6' lg='8'>
+        <Col xs='12' md='6' lg='7' xl='8'>
           <Row className='medium-gutters'>
             {balancesLoading && (<LoadingFullscreen center error={balancesError}/>)}
             <Col xs='12'>
               <Card>
-                <CardHeader>
-                  <Row className='medium-gutters-y x-large-gutters-x'>
+                <CardHeader className='grid-group'>
+                  <Row className='medium-gutters'>
                     {values.map(({ title, value, valueClass }, i) => (
                       <Col xs='6' lg='3' key={i} className='text-center'>
-                        <div className='text-medium-grey'>{title}</div>
-                        <div className={classNames('text-medium', valueClass)}>{value}</div>
+                        <div className='grid-cell'>
+                          <div className='text-medium-grey'>{title}</div>
+                          <div className={classNames('text-medium', valueClass)}>{value}</div>
+                        </div>
                       </Col>
                     ))}
                   </Row>

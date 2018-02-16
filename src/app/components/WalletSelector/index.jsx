@@ -58,18 +58,24 @@ class WalletSelector extends React.Component {
               <Col key={portfolioId} xs='12'>
                 <ListGroup>
                   <ListItem id={portfolioId} active={currentWalletId === portfolioId} onClick={() => this.switchWallet(portfolioId)}/>
-                  <ListGroupItem className='grid-actions compact'>
-                    <Row>
-                      <Col xs='4' tag='button' onClick={() => removePortfolio(portfolioId)} className='grid-action text-red'>
-                        <i className='fa fa-trash'/> delete
+                  <ListGroupItem className='grid-group'>
+                    <Row className='medium-gutters'>
+                      <Col xs='4'>
+                        <button className='grid-cell text-red' onClick={() => removePortfolio(portfolioId)}>
+                          <i className='fa fa-trash'/> delete
+                        </button>
                       </Col>
-                      <Col xs='4' tag={Link} to='/connect' className='grid-action'>
-                        <i className='fa fa-plus'/> add wallet
+                      <Col xs='4'>
+                        <Link className='grid-cell' to='/connect'>
+                          <i className='fa fa-plus'/> add wallet
+                        </Link>
                       </Col>
-                      <Col xs='4' tag='button' onClick={() => this.togglePortfolio(portfolioId)} className='grid-action'>
-                       {showWallets
-                        ? (<span><i className='fa fa-caret-up'/> hide wallets</span>)
-                        : (<span><i className='fa fa-caret-down'/> show wallets</span>)}
+                      <Col xs='4'>
+                        <button className='grid-cell' onClick={() => this.togglePortfolio(portfolioId)}>
+                          {showWallets
+                            ? (<span><i className='fa fa-caret-up'/> hide wallets</span>)
+                            : (<span><i className='fa fa-caret-down'/> show wallets</span>)}
+                        </button>
                       </Col>
                     </Row>
                   </ListGroupItem>

@@ -36,44 +36,70 @@ body {
     }
   }
 
+  @mixin disabled {
+    &:disabled, &.disabled {
+      @content;
+    }
+  }
+
+  @mixin not-disabled {
+    &:not(:disabled):not(.disabled) {
+      @content;
+    }
+  }
+
+  @mixin hover {
+    &:hover {
+      @content;
+    }
+  }
+
+  @mixin active {
+    &:active, &.active {
+      @content;
+    }
+  }
+
+  @mixin col {
+    > .col,
+    > [class*="col-"] {
+      @content;
+    }
+  }
+
+  $gutter-sizes: (
+    no: 0px,
+    tiny: 1px,
+    x-small: 2px,
+    small: 4px,
+    medium: 8px,
+    large: 12px,
+    x-large: 16px
+  );
+
   .row {
-    $gutter-sizes: (
-      no: 0px,
-      tiny: 1px,
-      x-small: 2px,
-      small: 4px,
-      medium: 8px,
-      large: 12px,
-      x-large: 16px
-    );
     @each $name, $value in $gutter-sizes {
-      &.#{$name}-gutters-x {
+      &.#{$name}-gutters-x, &.#{$name}-gutters {
         margin-left: -$value;
         margin-right: -$value;
-        > .col,
-        > [class*="col-"] {
+        @include col {
           padding-left: $value;
           padding-right: $value;
         }
       }
-      &.#{$name}-gutters-y {
+      &.#{$name}-gutters-y, &.#{$name}-gutters {
         margin-top: -$value;
         margin-bottom: -$value;
-        > .col,
-        > [class*="col-"] {
+        @include col {
           padding-top: $value;
           padding-bottom: $value;
         }
-      }
-      &.#{$name}-gutters {
-        @extend .#{$name}-gutters-x;
-        @extend .#{$name}-gutters-y;
       }
     }
   }
 
   .btn, button {
-    &:not(:disabled):not(.disabled) {
+    @include not-disabled {
       cursor: pointer;
     }
     &:focus {
@@ -94,12 +120,11 @@ body {
     border-radius: 0;
     padding: 15px 30px;
 
-    &:hover {
-      @extend .gradient-background-hover;
-    }
-
-    &:not(:disabled):not(.disabled) {
-      &:active, &.active {
+    @include not-disabled {
+      @include hover {
+        @extend .gradient-background-hover;
+      }
+      @include active {
         @extend .gradient-background-active;
       }
     }
@@ -110,11 +135,11 @@ body {
     &.button-outline, &.btn-outline-faast {
       background: $dark-grey;
       color: $secondary-color;
-      &:hover, &:focus {
-        background: darken($dark-grey, $hover-darken-percent);
-      }
-      &:not(:disabled):not(.disabled) {
-        &:active, &.active {
+      @include not-disabled {
+        @include hover {
+          background: darken($dark-grey, $hover-darken-percent);
+        }
+        @include active {
           background: darken($dark-grey, $active-darken-percent)
         }
       }
@@ -129,33 +154,87 @@ body {
   $menu-border-color-hover: lighten($menu-bg-color-hover, 5%);
   $menu-border-color-active: lighten($menu-bg-color-active, 10%);
 
-  $menu-border: solid 1px $menu-border-color;
-  $menu-border-hover: solid 1px $menu-border-color-hover;
-  $menu-border-active: solid 1px $menu-border-color-active;
+  $menu-border-width: 1px;
+  $menu-border: solid $menu-border-width $menu-border-color;
+  $menu-border-hover: solid $menu-border-width $menu-border-color-hover;
+  $menu-border-active: solid $menu-border-width $menu-border-color-active;
 
-  @mixin bordered-grid($border: $menu-border, $pad-y: 12px, $pad-x: 20px) {
+  %menu-action {
+    background-color: $menu-bg-color;
+    border-color: $menu-border-color;
+    @include disabled {
+      filter: grayscale(1);
+      color: $medium-grey;
+      cursor: default;
+    }
+    @include not-disabled {
+      @include hover {
+        z-index: 1;
+        background-color: $menu-bg-color-hover;
+        border-color: $menu-border-color-hover;
+      }
+      @include active {
+        background-color: $menu-bg-color-active;
+        border-color: $menu-border-color-active;
+      }
+      &:active {
+        z-index: 2;
+      }
+      &.active {
+        z-index: 3;
+      }
+    }
+  }
+
+  button, a {
+    &.grid-cell {
+      text-align: center;
+      color: $primary-color;
+      text-decoration: none;
+      font-weight: 300;
+      @extend %menu-action;
+    }
+  }
+
+  @mixin grid-group($border: $menu-border) {
+    $border-width: get-border-width($border);
+    padding: 0;
+
     > .row {
-      margin: (-$pad-y) (-$pad-x);
-      @each $breakpoint in map-keys($grid-breakpoints) {
-        $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
-        $cols-with-border: 1 2 3 4 6 12;
-        @include media-breakpoint-up($breakpoint, $grid-breakpoints) {
-          @each $col in $cols-with-border {
-            $multiple: 12 / $col;
-            > .col#{$infix}-#{$col} {
-              padding: $pad-y $pad-x;
-              &:nth-child(#{$multiple}n+1) {
-                border-left: none;
-              }
-              &:not(:nth-child(#{$multiple}n+1)) {
-                border-left: $border;
-              }
-              &:nth-child(-n+#{$multiple}) {
-                border-top: none;
-              }
-              &:nth-child(n+#{$multiple + 1}) {
-                border-top: $border;
-              }
+      margin: (-$border-width) 0 0 (-$border-width);
+
+      @include col {
+        padding: 0;
+        overflow: visible;
+        @include not-disabled {
+          &:hover, &:active, &.active {
+            z-index: 1;
+          }
+        }
+        > .grid-cell {
+          padding: 0;
+          border: $border;
+          display: block;
+          width: calc(100% + #{$border-width});
+          height: calc(100% + #{$border-width});
+          margin: 0;
+        }
+      }
+
+      @each $name, $value in $gutter-sizes {
+        &.#{$name}-gutters-x, &.#{$name}-gutters {
+          @include col {
+            > .grid-cell {
+              padding-left: $value;
+              padding-right: $value;
+            }
+          }
+        }
+        &.#{$name}-gutters-y, &.#{$name}-gutters {
+          @include col {
+            > .grid-cell {
+              padding-top: $value;
+              padding-bottom: $value;
             }
           }
         }
@@ -167,6 +246,7 @@ body {
     td, th {
       background-color: $menu-bg-color;
       border-color: $menu-border-color;
+      padding: 8px;
     }
     thead {
       tr:first-child {
@@ -194,7 +274,9 @@ body {
     .card-header {
       border-color: $menu-border-color;
       padding: 12px 20px;
-      @include bordered-grid($card-border, 12px, 20px);
+      &.grid-group {
+        @include grid-group($card-border);
+      }
     }
 
     > .list-group {
@@ -212,27 +294,6 @@ body {
     > .table {
       margin-bottom: 0;
     }
-  }
-
-  %menu-action {
-    background-color: $menu-bg-color;
-    border-color: $menu-border-color;
-    &:disabled, &.disabled {
-      filter: grayscale(1);
-      color: $medium-grey;
-      cursor: default;
-    }
-    &:not(:disabled):not(.disabled) {
-      &:hover {
-        background-color: $menu-bg-color-hover;
-        border-color: $menu-border-color-hover;
-      }
-      &:active, &.active {
-        background-color: $menu-bg-color-active;
-        border-color: $menu-border-color-active;
-      }
-    }
-    
   }
 
   .dropdown-menu {
@@ -256,35 +317,17 @@ body {
       color: $light-grey;
       font-weight: 200;
       padding: 12px 20px;
-      &.grid-actions {
-        padding: 12px 12px;
-        @include bordered-grid($menu-border, 12px, 12px);
-        .grid-action {
-          text-align: center;
-          color: $primary-color;
-          text-decoration: none;
-          font-weight: 300;
-          border: none;
-          @extend %menu-action;
-        }
-      }
       &.compact {
         padding: 8px 20px;
-        &.grid-actions {
-          padding: 8px 8px;
-          @include bordered-grid($menu-border, 8px, 8px);
-        }
+      }
+
+      &.grid-group {
+        @include grid-group($menu-border);
       }
     }
     .list-group-item-action {
       @extend %menu-action;
-      &:not(:disabled):not(.disabled) {
-        &:hover {
-          z-index: 1;
-        }
-        &:active, &.active {
-          z-index: 2;
-        }
+      @include not-disabled {
         &.active {
           border: 1px solid $secondary-color;
         }

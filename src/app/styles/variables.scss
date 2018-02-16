@@ -88,6 +88,21 @@ $tileBgColor3: #191919;
   }
 }
 
+// Functions for getting parts of a border: https://stackoverflow.com/a/42276096
+// Note! the null return will not be rendered 
+@function get-border-width($input){
+  @each $part in $input { @if type-of($part) == number { @return $part; } }   
+  @return null;
+}
+@function get-border-style($input){
+  @each $part in $input { @if type-of($part) == string { @return $part; } }   
+  @return null;    
+}
+@function get-border-color($input){
+  @each $part in $input { @if type-of($part) == color { @return $part; } }   
+  @return null;    
+}
+
 
 //Common classes
 
