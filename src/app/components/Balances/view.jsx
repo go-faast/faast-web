@@ -98,23 +98,27 @@ const BalancesView = (props) => {
     toggleChart, layoutProps, showOrderModal, handleToggleOrderModal, openCharts, balancesLoading, balancesError,
   } = props
 
-  const values = [
+  const stats = [
     {
-      title: '24h change',
-      value: (<ChangePercent>{totalChange}</ChangePercent>)
-    },
-    {
-      title: '24h ago (USD)',
-      value: display.fiat(total24hAgo)
+      title: 'total assets',
+      value: assetRows.length,
+      colClass: 'order-2 order-lg-1'
     },
     {
       title: 'current (USD)',
-      value: display.fiat(total)
+      value: display.fiat(total),
+      colClass: 'order-1 order-lg-2'
     },
     {
-      title: 'total assets',
-      value: assetRows.length
-    }
+      title: '24h ago (USD)',
+      value: display.fiat(total24hAgo),
+      colClass: 'order-3'
+    },
+    {
+      title: '24h change',
+      value: (<ChangePercent>{totalChange}</ChangePercent>),
+      colClass: 'order-4'
+    },
   ]
 
   const renderAssets = () => {
@@ -207,8 +211,8 @@ const BalancesView = (props) => {
               <Card>
                 <CardHeader className='grid-group'>
                   <Row className='medium-gutters'>
-                    {values.map(({ title, value, valueClass }, i) => (
-                      <Col xs='6' lg='3' key={i} className='text-center'>
+                    {stats.map(({ title, value, valueClass, colClass }, i) => (
+                      <Col xs='6' lg='3' key={i} className={classNames('text-center', colClass)}>
                         <div className='grid-cell'>
                           <div className='text-medium-grey'>{title}</div>
                           <div className={classNames('text-medium', valueClass)}>{value}</div>
