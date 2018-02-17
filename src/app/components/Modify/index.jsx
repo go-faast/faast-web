@@ -4,12 +4,12 @@ import { push } from 'react-router-redux'
 import BigNumber from 'bignumber.js'
 import ModifyView from './view'
 import { toUnit, toPercentage } from 'Utilities/convert'
-import { updateObjectInArray } from 'Utilities/helpers'
+import { updateObjectInArray, splice } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
 import { setSwap, resetSwap, toggleOrderModal, showOrderModal } from 'Actions/redux'
 import { initiateSwaps } from 'Actions/portfolio'
-import { getCurrentPortfolioWithHoldings, getAllAssets } from 'Selectors'
+import { getCurrentPortfolioWithWalletHoldings, getAllAssets } from 'Selectors'
 import { toBigNumber } from 'Utilities/convert'
 
 const ZERO = new BigNumber(0)
@@ -22,7 +22,8 @@ class Modify extends Component {
         fiat: ZERO,
         weight: ZERO
       },
-      showAssetList: false
+      showAssetList: false,
+      holdings: {},
     }
     this._assetItem = this._assetItem.bind(this)
     this._handleSlider = this._handleSlider.bind(this)
@@ -37,15 +38,23 @@ class Modify extends Component {
   }
 
   componentWillMount () {
-    const list = this.props.wallet.assetHoldings.filter(({ shown }) => shown).map(this._assetItem)
-    this.setState({ list })
+    const holdings = this.props.portfolio.nestedWallets
+      .reduce((byWalletId, { id, assetHoldings }) => ({
+        ...byWalletId,
+        [id]: assetHoldings
+          .filter(({ shown }) => shown)
+          .map((asset) => this._assetItem(id, asset))
+      }), {})
+    this.setState({ holdings })
   }
 
-  _assetItem (asset) {
+  _assetItem (walletId, asset) {
+    console.log('assetItem', walletId, asset)
     const weight = asset.percentage || ZERO
     const value = asset.fiat || ZERO
     const units = asset.balance || ZERO
     return {
+      walletId,
       symbol: asset.symbol,
       name: asset.name,
       decimals: asset.decimals,
@@ -65,15 +74,17 @@ class Modify extends Component {
         original: units,
         adjusted: units
       },
-      refInput: this[`refInput_${asset.symbol}`]
+      refInput: this[`refInput_${walletId}_${asset.symbol}`]
     }
   }
 
-  _handleSlider (symbol, value, type = 'fiat') {
-    const { wallet } = this.props
-    const list = this.state.list
-    const assetIx = list.findIndex(a => a.symbol === symbol)
-    const asset = list[assetIx]
+  _handleSlider (walletId, symbol, value, type = 'fiat') {
+    console.log('handleSlider', walletId, symbol, value, type)
+    const { portfolio } = this.props
+    const { holdings } = this.state
+    const walletHoldings = holdings[walletId]
+    const assetIx = walletHoldings.findIndex(a => a.symbol === symbol)
+    const asset = walletHoldings[assetIx]
     value = toBigNumber(value)
 
     if (value.lt(0)) {
@@ -98,33 +109,36 @@ class Modify extends Component {
           weight = asset.weight.original
           units = asset.units.original
         } else {
-          weight = toPercentage(fiat, wallet.totalFiat)
+          weight = toPercentage(fiat, portfolio.totalFiat)
           units = toUnit(fiat, asset.price, asset.decimals, true)
         }
         allowanceFiat = this.state.allowance.fiat.plus(available).round(2)
-        allowanceWeight = toPercentage(allowanceFiat, wallet.totalFiat)
+        allowanceWeight = toPercentage(allowanceFiat, portfolio.totalFiat)
         break
       case 'weight':
         /* out of commission due to rounding issues. Determining fiat amount instead now */
 
         // weight = ZERO.plus(value)
-        // fiat = weight.div(100).times(wallet.totalFiat)
+        // fiat = weight.div(100).times(portfolio.totalFiat)
         // units = asset.units.adjusted
         // allowanceWeight = this.state.allowance.weight.plus(available)
-        // allowanceFiat = allowanceWeight.div(100).times(wallet.totalFiat)
+        // allowanceFiat = allowanceWeight.div(100).times(portfolio.totalFiat)
         // allowanceFiat = this.state.allowance.fiat.plus(available)
-        // allowanceWeight = percentage(allowanceFiat, wallet.totalFiat)
+        // allowanceWeight = percentage(allowanceFiat, portfolio.totalFiat)
     }
     const updatedState = {
-      list: updateObjectInArray(list, {
-        index: assetIx,
-        item: {
-          ...asset,
-          weight: { ...asset.weight, adjusted: weight },
-          fiat: { ...asset.fiat, adjusted: fiat },
-          units: { ...asset.units, adjusted: units }
-        }
-      }),
+      holdings: {
+        ...holdings,
+        [walletId]: updateObjectInArray(walletHoldings, {
+          index: assetIx,
+          item: {
+            ...asset,
+            weight: { ...asset.weight, adjusted: weight },
+            fiat: { ...asset.fiat, adjusted: fiat },
+            units: { ...asset.units, adjusted: units }
+          }
+        }),
+      },
       allowance: {
         fiat: allowanceFiat,
         weight: allowanceWeight
@@ -134,24 +148,23 @@ class Modify extends Component {
     return updatedState
   }
 
-  _handleFiatChange (change) {
-    const symbol = Object.keys(change)[0]
-    return this._handleSlider(symbol, change[symbol])
+  _handleFiatChange (walletId, symbol, value) {
+    return this._handleSlider(walletId, symbol, value)
   }
 
-  _handleWeightChange (change) {
-    const symbol = Object.keys(change)[0]
-    const weight = toBigNumber(change[symbol])
-    const fiat = weight.div(100).times(this.props.wallet.totalFiat).round(2)
-    return this._handleSlider(symbol, fiat)
+  _handleWeightChange (walletId, symbol, value) {
+    const weight = toBigNumber(value)
+    const fiat = weight.div(100).times(this.props.portfolio.totalFiat).round(2)
+    return this._handleSlider(walletId, symbol, fiat)
   }
 
   _handleSave () {
     log.info('modify save')
-    const { wallet } = this.props
+    const { portfolio } = this.props
+    const { allowance, holdings } = this.state
     // const slider = this.state.slider
-    if (this.state.allowance.fiat.greaterThan(0)) return toastr.error('Amounts remain to move')
-    const filtered = this.state.list.map((a) => {
+    if (allowance.fiat.greaterThan(0)) return toastr.error('Amounts remain to move')
+    const filtered = Object.values(holdings).flatten().map((a) => {
       if (!a.fiat.adjusted.equals(a.fiat.original)) {
         const fiatToSwap = a.fiat.original.minus(a.fiat.adjusted)
         return Object.assign({}, a, { fiatToSwap })
@@ -186,6 +199,7 @@ class Modify extends Component {
       }, { toSwap: sVal.fiatToSwap, toSend: [], list: [] })
       return Object.assign({}, sAcc, {
         swapList: sAcc.swapList.concat({
+          walletId: sVal.walletId,
           symbol: sVal.symbol,
           list: receiveReduce.toSend,
           emptyAsset: sVal.emptyAsset
@@ -198,7 +212,7 @@ class Modify extends Component {
         const sum = s.list.reduce((a, c) => {
           return a.plus(c.unit)
         }, new BigNumber(0))
-        const asset = wallet.assetHoldings.find((a) => a.symbol === s.symbol)
+        const asset = portfolio.assetHoldings.find((a) => a.symbol === s.symbol)
         const difference = asset.balance.minus(sum)
         const last = s.list[s.list.length - 1]
         const newAmount = last.unit.plus(difference)
@@ -215,7 +229,7 @@ class Modify extends Component {
     if (emptyingETH) return toastr.error('Swapping the entire balance of your Ether is not possible as some ETH is required for transaction fees', { timeOut: 10000 })
     this.props.setSwap(repairedList)
     this.props.showOrderModal()
-    this.props.initiateSwaps(repairedList, wallet)
+    this.props.initiateSwaps(repairedList, portfolio)
     // this.props.routerPush('/swap')
     // this.props.changeSwapStatus('edit')
   }
@@ -228,35 +242,40 @@ class Modify extends Component {
     this.setState({ showAssetList: false })
   }
 
-  _handleSelectAsset (asset) {
-    const symbol = asset.symbol || asset
+  _handleSelectAsset (walletId, symbol) {
     const { allAssets } = this.props
-    let { list } = this.state
+    let { holdings } = this.state
+    let walletHoldings = holdings[walletId]
     let selectedHolding
-    const existingHoldingIndex = list.findIndex((a) => a.symbol === symbol)
+    let existingHoldingIndex = walletHoldings.findIndex((a) => a.symbol === symbol)
     if (existingHoldingIndex >= 0) {
       selectedHolding = {
-        ...list[existingHoldingIndex],
+        ...walletHoldings[existingHoldingIndex],
         shown: true
       }
-      list = [...list.slice(0, existingHoldingIndex), ...list.slice(existingHoldingIndex + 1)]
+      walletHoldings = splice(walletHoldings, existingHoldingIndex, 1)
     } else {
-      selectedHolding = this._assetItem(allAssets[symbol])
+      selectedHolding = this._assetItem(walletId, allAssets[symbol])
     }
     this.setState({
-      list: [selectedHolding].concat(list)
+      holdings: {
+        ...holdings,
+        [walletId]: [selectedHolding].concat(walletHoldings)
+      }
     })
     this._handleAssetListHide()
   }
 
-  _handleRemoveAsset (symbol) {
-    let list = this.state.list
-    const selectedAssetIx = list.findIndex((a) => a.symbol === symbol)
-    const selectedAsset = list[selectedAssetIx]
-    const updatedState = this._handleFiatChange({ [selectedAsset.symbol]: '0' })
-    list = updatedState.list
+  _handleRemoveAsset (walletId, symbol) {
+    const updatedState = this._handleFiatChange(walletId, symbol, 0)
+    const { holdings } = updatedState
+    const walletHoldings = holdings[walletId]
+    const selectedAssetIx = walletHoldings.findIndex((a) => a.symbol === symbol)
     this.setState({
-      list: [...list.slice(0, selectedAssetIx), { ...list[selectedAssetIx], shown: false }, ...list.slice(selectedAssetIx + 1)]
+      holdings: {
+        ...holdings,
+        [walletId]: splice(walletHoldings, selectedAssetIx, 1, { ...walletHoldings[selectedAssetIx], shown: false })
+      }
     })
   }
 
@@ -266,11 +285,12 @@ class Modify extends Component {
   }
 
   render () {
-    const { wallet } = this.props
-    const { list } = this.state
-    const shownList = list.filter(({ shown }) => shown)
+    const { portfolio } = this.props
+    const { holdings } = this.state
+    console.log('render', holdings)
+    const shownList = Object.values(holdings).reduce((a, b) => a.concat(b), []).filter(({ shown }) => shown)
     const sliderProps = {
-      max: wallet.totalFiat.toNumber(),
+      max: portfolio.totalFiat.toNumber(),
       // allowance: this.state.allowance.fiat,
       onValueChange: this._handleSlider
     }
@@ -282,7 +302,7 @@ class Modify extends Component {
       stickyHeader: true
     }
     const assetListProps = {
-      supportedAssetSymbols: wallet.supportedAssets,
+      supportedAssetSymbols: portfolio.supportedAssets,
       hiddenAssetSymbols: shownList.map(({ symbol }) => symbol),
       handleClose: this._handleAssetListHide,
       selectAsset: this._handleSelectAsset,
@@ -296,7 +316,7 @@ class Modify extends Component {
         showAssetList={this.state.showAssetList}
         handleAssetListShow={this._handleAssetListShow}
         handleRemove={this._handleRemoveAsset}
-        list={shownList}
+        holdings={holdings}
         sliderProps={sliderProps}
         allowance={this.state.allowance}
         handleFiatChange={this._handleFiatChange}
@@ -310,7 +330,7 @@ class Modify extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  wallet: getCurrentPortfolioWithHoldings(state),
+  portfolio: getCurrentPortfolioWithWalletHoldings(state),
   allAssets: getAllAssets(state),
   orderModal: state.orderModal,
   mq: state.mediaQueries

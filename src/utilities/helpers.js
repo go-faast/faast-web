@@ -5,6 +5,12 @@ import union from 'lodash.union'
 import without from 'lodash.without'
 import omit from 'lodash.omit'
 
+export const splice = (arr, ...args) => {
+  const spliced = [...arr]
+  spliced.splice(...args)
+  return spliced
+}
+
 export const uppercase = (str) => {
   if (typeof str !== 'string') return str
   return str.toUpperCase()

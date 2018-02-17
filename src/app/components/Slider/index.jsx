@@ -7,28 +7,18 @@ class Slider extends Component {
     this._handleChange = this._handleChange.bind(this)
   }
 
-  _handleChange (value, extra) {
-    // const newSlider = Math.round(value * 100)
-    // const currentValue = this.props.map[this.props.asset.symbol][this.props.type].adjusted
-    // const currentValue = this.props.asset.fiat.adjusted
-    // let newValue
-    // if (currentValue.plus(this.props.allowance).greaterThan(value)) {
-    // // if (newSlider <= currentValue + this.props.allowance) {
-    //   newValue = value
-    // } else {
-    //   // newValue = currentValue + this.props.allowance
-    //   newValue = currentValue.plus(this.props.allowance)
-    // }
-    this.props.onValueChange(this.props.asset.symbol, value)
+  _handleChange (value) {
+    const { onValueChange, walletId, asset } = this.props
+    onValueChange(walletId, asset.symbol, value)
   }
 
   render () {
-    // const value = this.props.map[this.props.asset.symbol][this.props.type].adjusted
-    const value = this.props.asset.fiat.adjusted.toNumber()
+    const { asset, max } = this.props
+    const value = asset.fiat.adjusted.toNumber()
     return (
       <SliderView
         value={value}
-        max={this.props.max}
+        max={max}
         onChange={this._handleChange}
       />
     )

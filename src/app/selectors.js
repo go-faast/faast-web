@@ -96,6 +96,7 @@ export const getWalletWithHoldings = createItemSelector(
           fiat24hAgo,
         }
       })
+      .filter(({ shown }) => shown)
       .map((holding) => ({
         ...holding,
         percentage: toPercentage(holding.fiat, totalFiat)
@@ -142,6 +143,16 @@ export const getCurrentPortfolioWithHoldings = wrapSelectorArgs(getWalletWithHol
 export const areCurrentPortfolioHoldingsLoaded = wrapSelectorArgs(areWalletHoldingsLoaded, getCurrentPortfolioId)
 export const getCurrentPortfolioHoldingsError = wrapSelectorArgs(getWalletHoldingsError, getCurrentPortfolioId)
 export const getCurrentPortfolioWalletIds = createSelector(getCurrentPortfolio, ({ nestedWalletIds }) => nestedWalletIds)
+
+export const getCurrentPortfolioWithWalletHoldings = (state) => {
+  const currentPortfolio = getCurrentPortfolioWithHoldings(state)
+  const result = {
+    ...currentPortfolio,
+    nestedWallets: currentPortfolio.nestedWalletIds.map((nestedId) => getWalletWithHoldings(state, nestedId))
+  }
+  console.log(result)
+  return result
+}
 
 export const getCurrentWallet = wrapSelectorArgs(getWallet, getCurrentWalletId)
 export const getCurrentWalletWithHoldings = wrapSelectorArgs(getWalletWithHoldings, getCurrentWalletId)
