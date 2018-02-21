@@ -9,6 +9,7 @@
 //
 // Define the minimum dimensions at which your layout will change,
 // adapting to different screen sizes, for use in media queries.
+@import 'mixins/breakpoints';
 
 $grid-breakpoints: (
   xxs: 0,
@@ -25,7 +26,16 @@ $grid-breakpoints: (
   }
 }
 
-@import 'mixins/breakpoints';
+// Gutter sizes between row columns
+$gutter-sizes: (
+  no: 0px,
+  tiny: 1px,
+  x-small: 2px,
+  small: 4px,
+  medium: 8px,
+  large: 12px,
+  x-large: 16px
+);
 
 //Text sizes
 $text-x-small: 12px;
@@ -50,28 +60,73 @@ $tileBgColor1: #1c1c1c;
 $tileBgColor2: #131313;
 $tileBgColor3: #191919;
 
+$menu-bg-color: $ultra-dark-grey;
+$menu-bg-color-accent: lighten($menu-bg-color, 2%);
+$menu-bg-color-hover: lighten($menu-bg-color, 5%);
+$menu-bg-color-active: lighten($menu-bg-color, 10%);
+
+$menu-border-color: lighten($menu-bg-color, 5%);
+$menu-border-color-accent: lighten($menu-bg-color-accent, 5%);
+$menu-border-color-hover: lighten($menu-bg-color-hover, 5%);
+$menu-border-color-active: lighten($menu-bg-color-active, 5%);
+
+$menu-border-width: 1px;
+$menu-border: solid $menu-border-width $menu-border-color;
+$menu-border-hover: solid $menu-border-width $menu-border-color-hover;
+$menu-border-active: solid $menu-border-width $menu-border-color-active;
+
+$table-bg-color: $menu-bg-color;
+$table-border-color: $menu-border-color;
+$table-border: solid $menu-border-width $table-border-color;
+$table-row-bg-accent: rgba(255, 255, 255, .02);
+$table-row-bg-hover: rgba(255, 255, 255, .05);
+
 //mixins
+@mixin disabled {
+  &:disabled, &.disabled {
+    @content;
+  }
+}
+
+@mixin not-disabled {
+  &:not(:disabled):not(.disabled) {
+    @content;
+  }
+}
+
+@mixin hover {
+  &:hover {
+    @content;
+  }
+}
+
+@mixin active {
+  &:active, &.active {
+    @content;
+  }
+}
+
+@mixin col {
+  > .col,
+  > [class*="col-"] {
+    @content;
+  }
+}
+
 @mixin flex($direction, $justify, $align) {
   display: -webkit-flex;
   display: flex;
   flex-direction: $direction;
-  -webkit-flex-direction: $direction;
   justify-content: $justify;
-  -webkit-justify-content: $justify;
   align-items: $align;
-  -webkit-align-items: $align;
 }
 
 @mixin flex-grow($value) {
   flex-grow: $value;
-  -webkit-flex-grow: $value;
 }
 
 @mixin gradient-background-variable($color-1, $color-2) {
   background: $primary-color; /* For browsers that do not support gradients */
-  background: -webkit-linear-gradient(top, $color-1, $color-2); /* For Safari 5.1 to 6.0 */
-  background: -o-linear-gradient(bottom, $color-1, $color-2); /* For Opera 11.1 to 12.0 */
-  background: -moz-linear-gradient(bottom, $color-1, $color-2); /* For Firefox 3.6 to 15 */
   background: linear-gradient(to bottom, $color-1, $color-2); /* Standard syntax */
 }
 
@@ -106,10 +161,6 @@ $tileBgColor3: #191919;
 
 //Common classes
 
-.text-primary {
-  color: $primary-color !important;
-}
-
 .color-bg-1 {
   background-color: $tileBgColor1;
 }
@@ -125,12 +176,7 @@ $tileBgColor3: #191919;
 .gradient-text {
   background: linear-gradient(to right, $primary-color, $secondary-color);
   background-clip: text;
-  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-}
-
-.text-shadow {
-  text-shadow: 2px 3px 5px #090909;
 }
 
 .gradient-background {
@@ -166,7 +212,7 @@ $active-darken-percent: 10%;
   to {opacity: 0.0;}
 }
 
-.blink{
+.blink {
   text-decoration: blink;
   -webkit-animation-name: blinker;
   -webkit-animation-duration: 0.6s;
@@ -175,24 +221,12 @@ $active-darken-percent: 10%;
   -webkit-animation-direction: alternate;
 }
 
-.pull-left {
-  float: left;
-}
-
-.pull-right {
-  float: right;
-}
-
 .full-width {
   width: 100%;
 }
 
 .flex-row-center {
   @include flex(row, flex-start, center);
-}
-
-.clearfix {
-  clear: both;
 }
 
 .word-break-all {
@@ -213,16 +247,21 @@ $active-darken-percent: 10%;
   }
 }
 
+.pull-left { float: left; }
+.pull-right { float: right; }
+.clearfix { clear: both; }
+
+.text-left { text-align: left; }
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
 .text-x-small { font-size: $text-x-small; }
 .text-small { font-size: $text-small; }
 .text-medium { font-size: $text-medium; }
 .text-large { font-size: $text-large; }
 .text-x-large { font-size: $text-x-large; }
 
-.text-center { text-align: center; }
-.text-left { text-align: left; }
-.text-right { text-align: right; }
-
+.text-primary { color: $primary-color !important; }
 .text-light-grey { color: $light-grey; }
 .text-medium-grey { color: $medium-grey; }
 .text-dark-grey { color: $dark-grey; }

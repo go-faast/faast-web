@@ -1,1525 +1,802 @@
 @import "variables";
+@import "base";
 
-html, body {
-  // Set root font size (rem)
-  font-size: 14px;
+.beta-tag {
+  font-family: 'Kaushan Script', cursive;
+  @extend .text-small;
+  @extend .text-white;
 }
 
-body {
-  margin: 0;
-  font-family: 'Kanit', sans-serif;
-  font-weight: 200;
-  color: white;
-  background-color: $pageBgColor1;
-  min-height: 100vh;
-  position: relative;
-
-  a, .btn-link {
-    color: $primary-color;
-    &:hover, &:focus {
-      color: darken($primary-color, 5%);
-    }
+span.faast-loading {
+  display: inline-block;
+  line-height: 0;
+  vertical-align: middle;
+}
+.faast-loading {
+  background-image: url(https://faa.st/img/faast-loading.svg);
+  background-size: contain;
+  background-position: center center;
+  background-repeat: no-repeat;
+  &.loading-small {
+    height: 2px;
+    width: 80px;
   }
-
-  h1, h2, h3, h4, h5, h6, th {
-    color: $primary-color;
-    font-weight: 300;
-    .btn-link {
-      padding: 0;
-      border: none;
-    }
+  &.loading-medium {
+    height: 4px;
+    width: 160px;
   }
-
-  p {
-    color: $medium-grey;
-    font-weight: inherit;
-    &:last-child {
-      margin-bottom: 0;
-    }
-    
-    a {
-      color: $medium-grey;
-      text-decoration: underline;
-      &:hover, &:focus {
-        color: $medium-grey;
-        text-decoration: $medium-grey;
-      }
-    }
+  &.loading-large {
+    height: 8px;
+    width: 320px;
   }
+}
 
-  @mixin disabled {
-    &:disabled, &.disabled {
-      @content;
-    }
-  }
-
-  @mixin not-disabled {
-    &:not(:disabled):not(.disabled) {
-      @content;
-    }
-  }
-
-  @mixin hover {
-    &:hover {
-      @content;
-    }
-  }
-
-  @mixin active {
-    &:active, &.active {
-      @content;
-    }
-  }
-
-  @mixin col {
-    > .col,
-    > [class*="col-"] {
-      @content;
-    }
-  }
-
-  $gutter-sizes: (
-    no: 0px,
-    tiny: 1px,
-    x-small: 2px,
-    small: 4px,
-    medium: 8px,
-    large: 12px,
-    x-large: 16px
-  );
-
-  .row {
-    @each $name, $value in $gutter-sizes {
-      &.#{$name}-gutters-x, &.#{$name}-gutters {
-        margin-left: -$value;
-        margin-right: -$value;
-        @include col {
-          padding-left: $value;
-          padding-right: $value;
-        }
-      }
-      &.#{$name}-gutters-y, &.#{$name}-gutters {
-        margin-top: -$value;
-        margin-bottom: -$value;
-        @include col {
-          padding-top: $value;
-          padding-bottom: $value;
-        }
-      }
-    }
-  }
-
-  .btn, button {
-    @include not-disabled {
-      cursor: pointer;
-    }
-    &:focus {
-      outline: none;
-    }
-  }
-
-  .btn-faast, .button-container {
-    @extend .text-small;
-    @extend .text-center;
-    @extend .box-shadow;
-    color: $secondary-color-text;
-    font-weight: 300;
-    line-height: 1.5em;
-    border: 1px solid;
-    @extend .gradient-border;
-    @extend .gradient-background;
-    border-radius: 0;
-    padding: 15px 30px;
-
-    @include not-disabled {
-      @include hover {
-        @extend .gradient-background-hover;
-      }
-      @include active {
-        @extend .gradient-background-active;
-      }
-    }
-
-    &.button-small, &.btn-sm {
-      padding: 10px 20px;
-    }
-    &.button-outline, &.btn-outline-faast {
-      background: $dark-grey;
-      color: $secondary-color;
-      @include not-disabled {
-        @include hover {
-          background: darken($dark-grey, $hover-darken-percent);
-        }
-        @include active {
-          background: darken($dark-grey, $active-darken-percent)
-        }
-      }
-    }
-  }
-
-  $menu-bg-color: $ultra-dark-grey;
-  $menu-bg-color-accent: lighten($menu-bg-color, 2%);
-  $menu-bg-color-hover: lighten($menu-bg-color, 5%);
-  $menu-bg-color-active: lighten($menu-bg-color, 10%);
-
-  $menu-border-color: lighten($menu-bg-color, 5%);
-  $menu-border-color-accent: lighten($menu-bg-color-accent, 5%);
-  $menu-border-color-hover: lighten($menu-bg-color-hover, 5%);
-  $menu-border-color-active: lighten($menu-bg-color-active, 5%);
-
-  $menu-border-width: 1px;
-  $menu-border: solid $menu-border-width $menu-border-color;
-  $menu-border-hover: solid $menu-border-width $menu-border-color-hover;
-  $menu-border-active: solid $menu-border-width $menu-border-color-active;
-
-  %menu-action {
-    background-color: $menu-bg-color;
-    border-color: $menu-border-color;
-    @include disabled {
-      filter: grayscale(1);
-      color: $medium-grey;
-      cursor: default;
-    }
-    @include not-disabled {
-      @include hover {
-        z-index: 1;
-        background-color: $menu-bg-color-hover;
-        border-color: $menu-border-color-hover;
-      }
-      @include active {
-        background-color: $menu-bg-color-active;
-        border-color: $menu-border-color-active;
-      }
-      &:active {
-        z-index: 2;
-      }
-      &.active {
-        z-index: 3;
-      }
-    }
-  }
-
-  @mixin grid-group($border: $menu-border) {
-    $border-width: get-border-width($border);
-    padding: 0;
-
-    > .row {
-      margin: (-$border-width) 0 0 (-$border-width);
-
-      @include col {
-        padding: 0;
-        overflow: visible;
-        @include not-disabled {
-          &:hover, &:active, &.active {
-            z-index: 1;
-          }
-        }
-        > .grid-cell {
-          padding: 0;
-          border: $border;
-          display: block;
-          width: calc(100% + #{$border-width});
-          height: calc(100% + #{$border-width});
-          margin: 0;
-        }
-        > button, > a {
-          &.grid-cell {
-            text-align: center;
-            color: $primary-color;
-            text-decoration: none;
-            font-weight: 300;
-            @extend %menu-action;
-          }
-        }
-      }
-
-      @each $name, $value in $gutter-sizes {
-        &.#{$name}-gutters-x, &.#{$name}-gutters {
-          @include col {
-            > .grid-cell {
-              padding-left: $value;
-              padding-right: $value;
-            }
-          }
-        }
-        &.#{$name}-gutters-y, &.#{$name}-gutters {
-          @include col {
-            > .grid-cell {
-              padding-top: $value;
-              padding-bottom: $value;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  $table-bg-color: $menu-bg-color;
-  $table-border-color: $menu-border-color;
-  $table-border: solid $menu-border-width $table-border-color;
-  $table-row-bg-accent: rgba(255, 255, 255, .02);
-  $table-row-bg-hover: rgba(255, 255, 255, .05);
-
-  .table {
-    background-color: $table-bg-color;
-    td, th {
-      border-color: $table-border-color;
-      padding: 8px;
-    }
-    thead {
-      tr:first-child {
-        td, th {
-          border-top: none;
-        }
-      }
-    }
-  }
-  .table-striped tbody {
-    td {
-      border: none !important;
-    }
-    tr:nth-of-type(odd) {
-      background-color: $table-row-bg-accent;
-    }
-  }
-  .table-hover tbody tr:hover {
-    background-color: $table-row-bg-hover;
-    cursor: pointer;
-  }
-
-  .table-accordian {
-    border-collapse: collapse;
-    tbody {
-      tr.accordian {
-        td {
-          padding: 0;
-          overflow: hidden;
-          border-top: none;
-          border-bottom: $table-border;
-        }
-        &:last-child {
-          td {
-            border-bottom: none;
-          }
-        }
-      }
-    }
-    &.table-striped tbody {
-      tr {
-        background-color: transparent;
-        &:nth-of-type(4n+1) {
-          &, & + .accordian, & + .accordian:hover {
-            background-color: $table-row-bg-accent;
-          }
-        }
-      }
-    }
-    &.table-hover tbody {
-      tr:hover {
-        &, & + .accordian {
-          background-color: $table-row-bg-hover;
-        }
-        &.accordian {
-          background-color: transparent;
-          cursor: default;
-        }
-      }
-    }
-  }
-
-  .card-header, .list-group-item {
-    > h1,h2,h3,h4,h5,h6 {
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-  }
-
-  .card {
-    $card-border: $menu-border;
-    background-color: $menu-bg-color;
-    border: $card-border;
-    border-radius: 0;
-
-    .card-header {
-      border-color: $menu-border-color;
-      padding: 12px 20px;
-      &.grid-group {
-        @include grid-group($card-border);
-      }
-    }
-
-    > .list-group {
-      margin: -1px;
-      &:not(:first-child) .list-group-item:first-child {
-        border-top-left-radius: 0;
-        border-top-right-radius: 0;
-      }
-      &:not(:last-child) .list-group-item:last-child {
-        border-bottom-left-radius: 0;
-        border-bottom-right-radius: 0;
-      }
-    }
-
-    > .table {
-      margin-bottom: 0;
-    }
-  }
-
-  .dropdown-menu {
-    background-color: $menu-bg-color;
-    border: $menu-border;
-    .dropdown-item {
-      color: $light-grey;
-      font-weight: 200;
-      @extend %menu-action;
-    }
-    .dropdown-divider {
-      border-color: $secondary-color;
-    }
-  }
-
-  .list-group {
-    .list-group-item {
-      background-color: $menu-bg-color;
-      border: $menu-border;
-      border-radius: 0;
-      color: $light-grey;
-      font-weight: 200;
-      padding: 12px 20px;
-      &.compact {
-        padding: 8px 20px;
-      }
-
-      &.grid-group {
-        @include grid-group($menu-border);
-      }
-    }
-    .list-group-item-action {
-      @extend %menu-action;
-      @include not-disabled {
-        &.active {
-          border: 1px solid $secondary-color;
-        }
-      }
-    }
-
-    > .collapse {
-      margin-bottom: -1px;
-    }
-  }
-
-  .beta-tag {
-    font-family: 'Kaushan Script', cursive;
-    @extend .text-small;
-    @extend .text-white;
-  }
-
-  span.faast-loading {
-    display: inline-block;
-    line-height: 0;
-    vertical-align: middle;
-  }
-  .faast-loading {
-    background-image: url(https://faa.st/img/faast-loading.svg);
-    background-size: contain;
-    background-position: center center;
-    background-repeat: no-repeat;
-    &.loading-small {
-      height: 2px;
-      width: 80px;
-    }
-    &.loading-medium {
-      height: 4px;
-      width: 160px;
-    }
-    &.loading-large {
-      height: 8px;
-      width: 320px;
-    }
-  }
-
-  .redux-toastr {
-    .toastr {
-      border-radius: 0px;
-      @extend .text-medium;
-      &.rrt-error {
-        background-color: #131313;
-        border-bottom: 5px solid red;
-      }
-    }
-    .rrt-middle-container {
-      .rrt-title {
-        font-size: 14px !important;
-        letter-spacing: 1px;
-        font-weight: 200 !important;
-      }
-    }
-    .rrt-right-container {
-      .close-toastr {
-        font-size: 14px !important;
-        color: white;
-      }
-    }
-  }
-
-  .modal-dialog {
-    min-height: 500px;
-    //height: 60%;
-    top: 15%;
-    letter-spacing: 1px;
-    .modal-content {
-      height: 100%;
-      border-radius: 0;
+.redux-toastr {
+  .toastr {
+    border-radius: 0px;
+    @extend .text-medium;
+    &.rrt-error {
       background-color: #131313;
-      box-shadow: 10px 20px 30px #000;
-      padding-bottom: 50px;
-      .modal-title {
-        @extend .text-gradient;
-        @extend .text-large;
-        margin-top: 7%;
-       }
-       .modal-text {
-         width: 80%;
-         margin: auto;
+      border-bottom: 5px solid red;
+    }
+  }
+  .rrt-middle-container {
+    .rrt-title {
+      font-size: 14px !important;
+      letter-spacing: 1px;
+      font-weight: 200 !important;
+    }
+  }
+  .rrt-right-container {
+    .close-toastr {
+      font-size: 14px !important;
+      color: white;
+    }
+  }
+}
+
+.modal-dialog {
+  min-height: 500px;
+  //height: 60%;
+  top: 15%;
+  letter-spacing: 1px;
+  .modal-content {
+    height: 100%;
+    border-radius: 0;
+    background-color: #131313;
+    box-shadow: 10px 20px 30px #000;
+    padding-bottom: 50px;
+    .modal-title {
+      @extend .text-gradient;
+      @extend .text-large;
+      margin-top: 7%;
+     }
+     .modal-text {
+       width: 80%;
+       margin: auto;
+       @extend .text-small;
+       @extend .text-medium-grey;
+       margin-top: 30px;
+     }
+     .form-group {
+       margin-top: 20px;
+       input {
+         background-color: #121212;
+         border: 1px solid #222222;
+         padding: 15px 30px;
+         text-align: center;
+         letter-spacing: 1px;
          @extend .text-small;
+         min-width: 350px;
+         outline: none;
          @extend .text-medium-grey;
-         margin-top: 30px;
-       }
-       .form-group {
-         margin-top: 20px;
-         input {
-           background-color: #121212;
-           border: 1px solid #222222;
-           padding: 15px 30px;
-           text-align: center;
-           letter-spacing: 1px;
-           @extend .text-small;
-           min-width: 350px;
+         &:active, &:focus {
            outline: none;
-           @extend .text-medium-grey;
-           &:active, &:focus {
-             outline: none;
-             color: $secondary-color;
-           }
-         }
-         .button-primary {
-           @extend .gradient-background;
-           padding: 15px 30px;
-           color: $dark-grey;
-           @extend .text-medium;
-           text-align: center;
-           max-width: 150px;
-           margin: auto;
-         }
-         .cancel {
-           @extend .text-medium-grey;
+           color: $secondary-color;
          }
        }
-       .download-keystore {
-         .download-keystore-icon {
-           background-image: url(https://faa.st/img/faast-logo.png);
-           background-size: 64px 64px;
-           background-repeat: no-repeat;
-         }
-         .download-text {
-           @extend .gradient-text;
-           @extend .text-medium;
-         }
+       .button-primary {
+         @extend .gradient-background;
+         padding: 15px 30px;
+         color: $dark-grey;
+         @extend .text-medium;
+         text-align: center;
+         max-width: 150px;
+         margin: auto;
        }
-    }
+       .cancel {
+         @extend .text-medium-grey;
+       }
+     }
+     .download-keystore {
+       .download-keystore-icon {
+         background-image: url(https://faa.st/img/faast-logo.png);
+         background-size: 64px 64px;
+         background-repeat: no-repeat;
+       }
+       .download-text {
+         @extend .gradient-text;
+         @extend .text-medium;
+       }
+     }
+  }
+}
+
+//navbar styles starts here
+.navbar {
+  background-color: $ultra-dark-grey;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  // padding: 0;
+  box-shadow: 1px 5px 10px #121212;
+
+  .container {
+    padding: 0;
   }
 
-  //navbar styles starts here
-  .navbar {
-    background-color: $ultra-dark-grey;
-    padding-top: 20px;
-    padding-bottom: 20px;
+  .navbar-brand {
     // padding: 0;
-    box-shadow: 1px 5px 10px #121212;
+    // height: 75px;
+    // width: 150px;
+    // @extend .gradient-background;
+    margin-right: 50px;
 
-    .container {
-      padding: 0;
+    .logo {
+      background-image: url(https://faa.st/img/faast-logo.png);
+      background-repeat: no-repeat;
+      background-position: center bottom;
+      background-size: 42px 42px;
+      height: 50px;
+      width: 100%;
     }
 
-    .navbar-brand {
-      // padding: 0;
-      // height: 75px;
-      // width: 150px;
-      // @extend .gradient-background;
-      margin-right: 50px;
-
-      .logo {
-        background-image: url(https://faa.st/img/faast-logo.png);
-        background-repeat: no-repeat;
-        background-position: center bottom;
-        background-size: 42px 42px;
-        height: 50px;
-        width: 100%;
-      }
-
-      .logo-text {
-        height: 20px;
-        font-size: $text-medium;
-        text-align: center;
-        color: $dark-grey;
-        line-height: 20px;
-      }
+    .logo-text {
+      height: 20px;
+      font-size: $text-medium;
+      text-align: center;
+      color: $dark-grey;
+      line-height: 20px;
     }
+  }
 
-    .navbar-nav {
-      .nav-item {
-        margin-left: 20px;
-        .nav-link {
-          color: $medium-grey;
+  .navbar-nav {
+    .nav-item {
+      margin-left: 20px;
+      .nav-link {
+        color: $medium-grey;
 
-          &.nav-icon {
-            background-repeat: no-repeat;
-            background-position: left center;
-            padding-left: 40px;
-            background-size: 32px 32px;
-            height: 50px;
-            width: 100%;
-            line-height: 33px;
+        &.nav-icon {
+          background-repeat: no-repeat;
+          background-position: left center;
+          padding-left: 40px;
+          background-size: 32px 32px;
+          height: 50px;
+          width: 100%;
+          line-height: 33px;
 
-            &.faast-swap-icon {
-              background-image: url(https://faa.st/img/faast-swap.svg);
-            }
-            &.faast5-index-icon {
-              background-image: url(https://faa.st/img/faast5-index.svg);
-            }
-            &.discovery-icon {
-              background-image: url(https://faa.st/img/discovery.svg);
-            }
+          &.faast-swap-icon {
+            background-image: url(https://faa.st/img/faast-swap.svg);
+          }
+          &.faast5-index-icon {
+            background-image: url(https://faa.st/img/faast5-index.svg);
+          }
+          &.discovery-icon {
+            background-image: url(https://faa.st/img/discovery.svg);
           }
         }
+      }
 
-        &.active {
-          &.nav-link {
-            color: $white;
-          }
+      &.active {
+        &.nav-link {
+          color: $white;
         }
       }
     }
   }
-  //navbar styles ends here
+}
+//navbar styles ends here
 
-  //content style starts here
-  .content {
-    background-color: #121212;
-    min-height: 700px;
+//content style starts here
+.content {
+  background-color: #121212;
+  min-height: 700px;
 
-    .main-content {
-      height: 100%;
-      min-height: 300px;
-      background-image: url(https://faa.st/img/bg.svg);
-      background-position: left center;
-      background-repeat: no-repeat;
-      background-size: contain;
+  .main-content {
+    height: 100%;
+    min-height: 300px;
+    background-image: url(https://faa.st/img/bg.svg);
+    background-position: left center;
+    background-repeat: no-repeat;
+    background-size: contain;
 
-      .welcome-text {
+    .welcome-text {
+      font-size: $text-large;
+      font-weight: 100;
+      line-height: 36px;
+    }
+
+    .process {
+      padding: 10px 0px 10px 0px;
+      border-top: 1px solid $primary-color;
+      border-bottom: 1px solid $primary-color;
+      border-right: none;
+      border-left: none;
+      @extend .margin-top-20;
+
+      .process-text {
+        font-size: $text-medium;
+        color: $medium-grey;
+      }
+
+      .process-item {
+        .process-icon {
+          height: 42px;
+          width: 42px;
+          @extend .margin-right-10;
+          background-position: center center;
+          background-repeat: no-repeat;
+          background-size: contain;
+
+          &.step-1 {
+            background-image: url(https://faa.st/img/process_1.png);
+          }
+
+          &.step-2 {
+            background-image: url(https://faa.st/img/process_2.png);
+          }
+
+          &.step-3 {
+            background-image: url(https://faa.st/img/process_3.png);
+          }
+        }
+
+        &.completed {
+          .process-text {
+            @extend .gradient-text;
+          }
+
+          .process-icon {
+            background-image: url(https://faa.st/img/process_completed.png);
+          }
+        }
+      }
+    }
+
+    .stats {
+      .title {
         font-size: $text-large;
         font-weight: 100;
-        line-height: 36px;
       }
 
-      .process {
-        padding: 10px 0px 10px 0px;
-        border-top: 1px solid $primary-color;
-        border-bottom: 1px solid $primary-color;
-        border-right: none;
-        border-left: none;
+      .stats-item-container {
         @extend .margin-top-20;
-
-        .process-text {
-          font-size: $text-medium;
-          color: $medium-grey;
-        }
-
-        .process-item {
-          .process-icon {
-            height: 42px;
-            width: 42px;
-            @extend .margin-right-10;
-            background-position: center center;
+        .stats-item {
+          .stats-icon {
+            height: 72px;
+            width: 72px;
+            background-position: center left;
             background-repeat: no-repeat;
             background-size: contain;
 
-            &.step-1 {
-              background-image: url(https://faa.st/img/process_1.png);
+            &.transactions {
+              background-image: url(https://faa.st/img/transactions.png);
             }
 
-            &.step-2 {
-              background-image: url(https://faa.st/img/process_2.png);
+            &.volume {
+              background-image: url(https://faa.st/img/bitcoin.png);
             }
 
-            &.step-3 {
-              background-image: url(https://faa.st/img/process_3.png);
+            &.time {
+              background-image: url(https://faa.st/img/time.png);
             }
           }
 
-          &.completed {
-            .process-text {
-              @extend .gradient-text;
-            }
+          .stats-label {
+            color: $medium-grey;
+          }
+        }
+      }
+    }
+  }
+  .application {
+    background-color: $ultra-dark-grey;
+    top: 5%;
+    box-shadow: 5px 10px 15px #090909;
+    text-align: center;
+    position: relative;
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+    min-height: 645px;
+    padding: 30px;
 
-            .process-icon {
-              background-image: url(https://faa.st/img/process_completed.png);
-            }
+    .button-container {
+      margin-left: auto;
+      margin-right: auto;
+      max-width: 250px;
+      padding: 10px 0px;
+      border: 1px solid transparent;
+      @extend .gradient-background;
+
+      .button-item {
+        &:hover {
+          cursor: pointer;
+        }
+      }
+    }
+
+    .title {
+      @extend .gradient-text;
+      font-size: $text-large;
+    }
+
+    .info-container {
+      max-width: 250px;
+      font-size: $text-small;
+      text-align: left;
+      margin-left: auto;
+      margin-right: auto;
+      .label {
+        color: $medium-grey;
+      }
+      .value {
+        color: $primary-color;
+      }
+    }
+
+    .progress-container {
+      max-width: 250px;
+      margin-left: auto;
+      margin-right: auto;
+      .progress-dots {
+        height: 100px;
+        width: 20px;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position: center center;
+
+        &.progress-1 {
+          background-image: url(https://faa.st/img/progress_dots_1.png);
+        }
+        &.progress-2 {
+          background-image: url(https://faa.st/img/progress_dots_2.png);
+        }
+        &.progress-3 {
+          background-image: url(https://faa.st/img/progress_dots_3.png);
+        }
+      }
+
+      .progress-label {
+        font-size: $text-x-small;
+        text-align: left;
+        letter-spacing: 1px;
+        margin-top: 24px;
+        &:first-child {
+          margin-top: 0;
+        }
+        &.active {
+          color: $primary-color;
+          @extend .blink;
+        }
+        &.pending {
+          color: $medium-grey;
+        }
+        &.completed {
+          color: $primary-color;
+        }
+      }
+    }
+
+    .select-assets-screen {
+      .connecting-dots {
+        height: 110px;
+        width: 290px;
+        position: absolute;
+        background-image: url(https://faa.st/img/connecting_dots.png);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        top: 255px;
+      }
+
+      .asset-container {
+        height: 175px;
+        max-width: 250px;
+        margin-left: auto;
+        margin-right: auto;
+        border: 1px solid $primary-color;
+        box-shadow: 10px 10px 5px #121212;
+
+        &:hover {
+          box-shadow: none;
+          cursor: pointer;
+        }
+
+        .label {
+          width: 100px;
+          height: 35px;
+          padding: 5px;
+          color: $white;
+          @extend .gradient-background;
+          margin: 0 auto;
+        }
+
+        .asset-icon {
+          height: 84px;
+          background-repeat: no-repeat;
+          background-size: auto 80%;
+          background-position: center center;
+        }
+
+        .asset-name {
+          height: 55px;
+          font-size: $text-medium;
+
+          .asset-link {
+            font-size: $text-small;
+            @extend .gradient-text;
+          }
+        }
+      }
+    }
+
+    .select-asset-container {
+      height: 600px;
+      border: 1px solid $primary-color;
+      position: absolute;
+      top: -1px;
+      background-color: $dark-grey;
+      padding: 10px;
+      overflow: auto;
+
+      .search-container {
+        poistion: fixed;
+        .input-text {
+          border: none;
+          border-bottom: 1px solid $primary-color;
+          background-color: $dark-grey;
+          padding: 10px 30px 10px 10px;
+          color: $primary-color;
+          background-image: url(https://faa.st/img/search_icon.png);
+          background-repeat: no-repeat;
+          background-position: center right;
+          background-size: 30px 30px;
+
+          &:focus {
+            outline: none;
+          }
+        }
+
+        .close-button {
+          width: 40px;
+          height: 40px;
+          &:hover {
+            cursor: pointer;
           }
         }
       }
 
-      .stats {
-        .title {
-          font-size: $text-large;
-          font-weight: 100;
-        }
+      .asset-list-container {
+        .asset-list-container-row {
+          margin: 0;
+          .asset-list-item {
+            border-right: 1px solid $medium-grey;
+            border-bottom: 1px solid $medium-grey;
+            color: $medium-grey;
+            text-align: center;
+            padding: 15px;
 
-        .stats-item-container {
-          @extend .margin-top-20;
-          .stats-item {
-            .stats-icon {
-              height: 72px;
-              width: 72px;
-              background-position: center left;
-              background-repeat: no-repeat;
+            .asset-list-item-icon {
+              height: 60px;
+              background-position: center center;
               background-size: contain;
+              background-repeat: no-repeat;
+              -webkit-filter: grayscale(1); /* Old WebKit */
+              filter: grayscale(1);
+              opacity: 0.5;
 
-              &.transactions {
-                background-image: url(https://faa.st/img/transactions.png);
-              }
-
-              &.volume {
-                background-image: url(https://faa.st/img/bitcoin.png);
-              }
-
-              &.time {
-                background-image: url(https://faa.st/img/time.png);
-              }
             }
 
-            .stats-label {
-              color: $medium-grey;
+            &:hover {
+              cursor: pointer;
+              color: $white;
+              .asset-list-item-icon {
+                -webkit-filter: grayscale(0); /* Old WebKit */
+                filter: grayscale(0);
+                opacity: 1.0;
+              }
             }
           }
         }
       }
     }
-    .application {
-      background-color: $ultra-dark-grey;
-      top: 5%;
-      box-shadow: 5px 10px 15px #090909;
-      text-align: center;
-      position: relative;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-      min-height: 645px;
-      padding: 30px;
 
-      .button-container {
-        margin-left: auto;
-        margin-right: auto;
-        max-width: 250px;
-        padding: 10px 0px;
-        border: 1px solid transparent;
-        @extend .gradient-background;
-
-        .button-item {
-          &:hover {
-            cursor: pointer;
-          }
-        }
-      }
-
-      .title {
-        @extend .gradient-text;
-        font-size: $text-large;
-      }
-
-      .info-container {
-        max-width: 250px;
-        font-size: $text-small;
-        text-align: left;
-        margin-left: auto;
-        margin-right: auto;
-        .label {
-          color: $medium-grey;
-        }
-        .value {
-          color: $primary-color;
-        }
-      }
-
-      .progress-container {
+    .enter-wallet-screen {
+      .wallet-info-container {
+        height: 150px;
         max-width: 250px;
         margin-left: auto;
         margin-right: auto;
-        .progress-dots {
-          height: 100px;
-          width: 20px;
-          background-repeat: no-repeat;
-          background-size: contain;
-          background-position: center center;
+        background-color: $dark-grey;
+        border: 1px solid $primary-color;
+        box-shadow: 10px 10px 5px $ultra-dark-grey;
 
-          &.progress-1 {
-            background-image: url(https://faa.st/img/progress_dots_1.png);
-          }
-          &.progress-2 {
-            background-image: url(https://faa.st/img/progress_dots_2.png);
-          }
-          &.progress-3 {
-            background-image: url(https://faa.st/img/progress_dots_3.png);
-          }
-        }
-
-        .progress-label {
-          font-size: $text-x-small;
+        .asset-info {
           text-align: left;
-          letter-spacing: 1px;
-          margin-top: 24px;
-          &:first-child {
-            margin-top: 0;
-          }
-          &.active {
-            color: $primary-color;
-            @extend .blink;
-          }
-          &.pending {
-            color: $medium-grey;
-          }
-          &.completed {
-            color: $primary-color;
-          }
-        }
-      }
-
-      .select-assets-screen {
-        .connecting-dots {
-          height: 110px;
-          width: 290px;
-          position: absolute;
-          background-image: url(https://faa.st/img/connecting_dots.png);
-          background-position: center center;
-          background-repeat: no-repeat;
-          background-size: contain;
-          top: 255px;
-        }
-
-        .asset-container {
-          height: 175px;
-          max-width: 250px;
-          margin-left: auto;
-          margin-right: auto;
-          border: 1px solid $primary-color;
-          box-shadow: 10px 10px 5px #121212;
-
-          &:hover {
-            box-shadow: none;
-            cursor: pointer;
-          }
-
-          .label {
-            width: 100px;
-            height: 35px;
-            padding: 5px;
-            color: $white;
-            @extend .gradient-background;
-            margin: 0 auto;
-          }
+          padding: 10px 10px;
+          background-color: $dark-grey;
+          border-bottom: 1px solid $primary-color;
+          height: 70px;
 
           .asset-icon {
-            height: 84px;
+            height: 40px;
+            width: 40px;
+            background-size: 40px 40px;
+            background-position: left center;
             background-repeat: no-repeat;
-            background-size: auto 80%;
-            background-position: center center;
           }
 
           .asset-name {
-            height: 55px;
             font-size: $text-medium;
+          }
+        }
 
-            .asset-link {
-              font-size: $text-small;
-              @extend .gradient-text;
-            }
+        .wallet-info {
+          background-color: $ultra-dark-grey;
+          border: none;
+          border-bottom: 1px solid $primary-color;
+          width: 100%;
+          height: 80px;
+          padding: 10px;
+          color: $primary-color;
+          font-size: $text-small;
+          letter-spacing: 2px;
+
+          &:focus {
+            outline: none;
           }
         }
       }
 
-      .select-asset-container {
-        height: 600px;
-        border: 1px solid $primary-color;
+      .connecting-dots {
+        height: 80px;
+        width: 50px;
         position: absolute;
-        top: -1px;
+        background-image: url(https://faa.st/img/connecting_dots_medium.png);
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-size: contain;
+        top: 200px;
+        left: 20px;
+      }
+
+      .exchange-rate {
+        font-size: $text-small;
+        height: 70px;
+        max-width: 250px;
+        margin-left: auto;
+        margin-right: auto;
+        padding: 15px 10px 10px 50px;
+      }
+    }
+
+    .deposit-asset-screen {
+      .wallet-address-container {
+        height: 304px;
+        max-width: 250px;
+        margin-left: auto;
+        margin-right: auto;
         background-color: $dark-grey;
-        padding: 10px;
-        overflow: auto;
+        border: 1px solid $primary-color;
+        box-shadow: 10px 10px 5px $ultra-dark-grey;
 
-        .search-container {
-          poistion: fixed;
-          .input-text {
-            border: none;
-            border-bottom: 1px solid $primary-color;
-            background-color: $dark-grey;
-            padding: 10px 30px 10px 10px;
-            color: $primary-color;
-            background-image: url(https://faa.st/img/search_icon.png);
+        .qr-code-container {
+          height: 250px;
+          max-width: 250px;
+          border-bottom: 1px solid $primary-color;
+          .qr-code {
+            height: 250px;
+            width: 250px;
+            background-image: url(https://faa.st/img/qrcode.png);
+            background-size: 230px 230px;
+            background-position: center center;
             background-repeat: no-repeat;
-            background-position: center right;
-            background-size: 30px 30px;
+          }
+        }
 
-            &:focus {
-              outline: none;
-            }
+        .address-info {
+          height: 50px;
+          font-size: $text-small;
+          word-wrap: break-word;
+          text-align: left;
+          .row {
+            margin: 0;
+          }
+          .address-text {
+            padding: 5px;
+            border-right: 1px solid $primary-color;
           }
 
-          .close-button {
-            width: 40px;
-            height: 40px;
+          .copy-button {
+            height: 50px;
+            background-image: url(https://faa.st/img/copy_icon.png);
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: 30px 40px;
+
             &:hover {
               cursor: pointer;
             }
           }
         }
+      }
+      .info-container {
+        padding-bottom: 10px;
+        border-bottom: 1px solid $primary-color;
+      }
+    }
 
-        .asset-list-container {
-          .asset-list-container-row {
-            margin: 0;
-            .asset-list-item {
-              border-right: 1px solid $medium-grey;
-              border-bottom: 1px solid $medium-grey;
-              color: $medium-grey;
-              text-align: center;
-              padding: 15px;
+    // .swapping-assets-screen {
+    //   .progress-container {
+    //     margin-top: 250px;
+    //   }
+    // }
 
-              .asset-list-item-icon {
-                height: 60px;
-                background-position: center center;
-                background-size: contain;
-                background-repeat: no-repeat;
-                -webkit-filter: grayscale(1); /* Old WebKit */
-                filter: grayscale(1);
-                opacity: 0.5;
-
-              }
-
-              &:hover {
-                cursor: pointer;
-                color: $white;
-                .asset-list-item-icon {
-                  -webkit-filter: grayscale(0); /* Old WebKit */
-                  filter: grayscale(0);
-                  opacity: 1.0;
-                }
-              }
-            }
-          }
+    .completed-screen {
+      .progress-container {
+        border-bottom: 1px solid $primary-color;
+        padding-bottom: 20px;
+      }
+      .message-container {
+        max-width: 250px;
+        margin-left: auto;
+        margin-right: auto;
+        text-align: left;
+        border-bottom: 1px solid $primary-color;
+        padding-bottom: 20px;
+        padding-top: 20px;
+        .value {
+          font-size: $text-medium;
+        }
+        .description {
+          font-size: $text-small;
+          letter-spacing: 1px;
+          word-wrap: break-word;
         }
       }
-
-      .enter-wallet-screen {
-        .wallet-info-container {
-          height: 150px;
-          max-width: 250px;
-          margin-left: auto;
-          margin-right: auto;
-          background-color: $dark-grey;
-          border: 1px solid $primary-color;
-          box-shadow: 10px 10px 5px $ultra-dark-grey;
-
-          .asset-info {
-            text-align: left;
-            padding: 10px 10px;
-            background-color: $dark-grey;
-            border-bottom: 1px solid $primary-color;
-            height: 70px;
-
-            .asset-icon {
-              height: 40px;
-              width: 40px;
-              background-size: 40px 40px;
-              background-position: left center;
-              background-repeat: no-repeat;
-            }
-
-            .asset-name {
-              font-size: $text-medium;
-            }
-          }
-
-          .wallet-info {
-            background-color: $ultra-dark-grey;
-            border: none;
-            border-bottom: 1px solid $primary-color;
-            width: 100%;
-            height: 80px;
-            padding: 10px;
-            color: $primary-color;
-            font-size: $text-small;
-            letter-spacing: 2px;
-
-            &:focus {
-              outline: none;
-            }
-          }
-        }
-
-        .connecting-dots {
-          height: 80px;
-          width: 50px;
-          position: absolute;
-          background-image: url(https://faa.st/img/connecting_dots_medium.png);
-          background-position: center center;
-          background-repeat: no-repeat;
+      .thanks-message {
+        max-width: 250px;
+        margin-left: auto;
+        margin-right: auto;
+        .thanks-icon {
+          height: 128px;
+          width: 128px;
+          background-image: url(https://faa.st/img/smiley.png);
           background-size: contain;
-          top: 200px;
-          left: 20px;
-        }
-
-        .exchange-rate {
-          font-size: $text-small;
-          height: 70px;
-          max-width: 250px;
-          margin-left: auto;
-          margin-right: auto;
-          padding: 15px 10px 10px 50px;
-        }
-      }
-
-      .deposit-asset-screen {
-        .wallet-address-container {
-          height: 304px;
-          max-width: 250px;
-          margin-left: auto;
-          margin-right: auto;
-          background-color: $dark-grey;
-          border: 1px solid $primary-color;
-          box-shadow: 10px 10px 5px $ultra-dark-grey;
-
-          .qr-code-container {
-            height: 250px;
-            max-width: 250px;
-            border-bottom: 1px solid $primary-color;
-            .qr-code {
-              height: 250px;
-              width: 250px;
-              background-image: url(https://faa.st/img/qrcode.png);
-              background-size: 230px 230px;
-              background-position: center center;
-              background-repeat: no-repeat;
-            }
-          }
-
-          .address-info {
-            height: 50px;
-            font-size: $text-small;
-            word-wrap: break-word;
-            text-align: left;
-            .row {
-              margin: 0;
-            }
-            .address-text {
-              padding: 5px;
-              border-right: 1px solid $primary-color;
-            }
-
-            .copy-button {
-              height: 50px;
-              background-image: url(https://faa.st/img/copy_icon.png);
-              background-repeat: no-repeat;
-              background-position: center center;
-              background-size: 30px 40px;
-
-              &:hover {
-                cursor: pointer;
-              }
-            }
-          }
-        }
-        .info-container {
-          padding-bottom: 10px;
-          border-bottom: 1px solid $primary-color;
-        }
-      }
-
-      // .swapping-assets-screen {
-      //   .progress-container {
-      //     margin-top: 250px;
-      //   }
-      // }
-
-      .completed-screen {
-        .progress-container {
-          border-bottom: 1px solid $primary-color;
-          padding-bottom: 20px;
-        }
-        .message-container {
-          max-width: 250px;
-          margin-left: auto;
-          margin-right: auto;
-          text-align: left;
-          border-bottom: 1px solid $primary-color;
-          padding-bottom: 20px;
-          padding-top: 20px;
-          .value {
-            font-size: $text-medium;
-          }
-          .description {
-            font-size: $text-small;
-            letter-spacing: 1px;
-            word-wrap: break-word;
-          }
-        }
-        .thanks-message {
-          max-width: 250px;
-          margin-left: auto;
-          margin-right: auto;
-          .thanks-icon {
-            height: 128px;
-            width: 128px;
-            background-image: url(https://faa.st/img/smiley.png);
-            background-size: contain;
-            background-repeat: no-repeat;
-            background-position: center center;
-          }
-          .thanks-text {
-            margin-top: 5px;
-            font-size: $text-medium;
-            text-align: left;
-          }
-        }
-      }
-    }
-  }
-  //content style ends here
-
-  .faast5-content {
-    min-height: 600px;
-  }
-
-  .info-container {
-    background-color: $ultra-dark-grey;
-    box-shadow: -1px -5px 10px #121212;
-
-    .container {
-      .info-item {
-        text-align: center;
-        .info-icon {
-          height: 80px;
-          background-position: center bottom;
           background-repeat: no-repeat;
-          background-size: 42px 42px;
-
-          &.instant-icon {
-            background-image: url(https://faa.st/img/instant.svg);
-          }
-          &.alert-icon {
-            background-image: url(https://faa.st/img/alert.svg);
-          }
-          &.token-icon {
-            background-image: url(https://faa.st/img/token.svg);
-          }
-          &.indexes-icon {
-            background-image: url(https://faa.st/img/indexes.svg);
-          }
-          &.opportunity-icon {
-            background-image: url(https://faa.st/img/opportunity.svg);
-          }
-          &.diversify-icon {
-            background-image: url(https://faa.st/img/diversify.svg);
-          }
-          &.instant-icon {
-            background-image: url(https://faa.st/img/instant.svg);
-          }
-          &.control-icon {
-            background-image: url(https://faa.st/img/control.svg);
-          }
-
-          .path {
-            stroke-dasharray: 1000;
-            stroke-dashoffset: 1000;
-            animation: dash 5s linear alternate infinite;
-          }
-
-          @keyframes dash {
-            from {
-              stroke-dashoffset: 1000;
-            }
-            to {
-              stroke-dashoffset: 0;
-            }
-          }
+          background-position: center center;
         }
-        .info-title {
-          margin-top: 10px;
-          color: $white;
+        .thanks-text {
+          margin-top: 5px;
           font-size: $text-medium;
-          letter-spacing: 1px;
-        }
-        .info-text {
-          color: $medium-grey;
-        }
-      }
-
-      &.faast5-info-container {
-        .info-item {
-          margin-top: 35px;
-        }
-        .info-text {
-          font-size: $text-medium;
-          color: $medium-grey;
-          letter-spacing: 1px;
-        }
-        .info-title {
-          font-size: $text-small;
+          text-align: left;
         }
       }
     }
   }
+}
+//content style ends here
 
-  //faast5 container starts here
-  .faast5-container {
-    padding-top: 50px;
-    .section-title {
-      font-size: $text-large;
-      letter-spacing: 1px;
-      color: $secondary-color;
-      font-weight: 100;
-    }
-    .change-container {
-      .change-value {
-        font-size: 24px;
-        letter-spacing: 2px;
-        height: 26px;
+.faast5-content {
+  min-height: 600px;
+}
+
+.info-container {
+  background-color: $ultra-dark-grey;
+  box-shadow: -1px -5px 10px #121212;
+
+  .container {
+    .info-item {
+      text-align: center;
+      .info-icon {
+        height: 80px;
+        background-position: center bottom;
+        background-repeat: no-repeat;
+        background-size: 42px 42px;
+
+        &.instant-icon {
+          background-image: url(https://faa.st/img/instant.svg);
+        }
+        &.alert-icon {
+          background-image: url(https://faa.st/img/alert.svg);
+        }
+        &.token-icon {
+          background-image: url(https://faa.st/img/token.svg);
+        }
+        &.indexes-icon {
+          background-image: url(https://faa.st/img/indexes.svg);
+        }
+        &.opportunity-icon {
+          background-image: url(https://faa.st/img/opportunity.svg);
+        }
+        &.diversify-icon {
+          background-image: url(https://faa.st/img/diversify.svg);
+        }
+        &.instant-icon {
+          background-image: url(https://faa.st/img/instant.svg);
+        }
+        &.control-icon {
+          background-image: url(https://faa.st/img/control.svg);
+        }
+
+        .path {
+          stroke-dasharray: 1000;
+          stroke-dashoffset: 1000;
+          animation: dash 5s linear alternate infinite;
+        }
+
+        @keyframes dash {
+          from {
+            stroke-dashoffset: 1000;
+          }
+          to {
+            stroke-dashoffset: 0;
+          }
+        }
       }
-      .change-label {
+      .info-title {
+        margin-top: 10px;
+        color: $white;
+        font-size: $text-medium;
+        letter-spacing: 1px;
+      }
+      .info-text {
         color: $medium-grey;
+      }
+    }
+
+    &.faast5-info-container {
+      .info-item {
+        margin-top: 35px;
+      }
+      .info-text {
+        font-size: $text-medium;
+        color: $medium-grey;
+        letter-spacing: 1px;
+      }
+      .info-title {
         font-size: $text-small;
       }
-      .change-icon {
-        background-position: center center;
-        background-repeat: no-repeat;
-        height: 30px;
-        width: 30px;
-        margin-top: 10px;
-        margin-right: 5px;
-      }
-      .up-icon {
-        background-image: url(https://faa.st/img/up-icon.svg);
-      }
-      .down-icon {
-        background-image: url(https://faa.st/img/down-icon.svg);
-      }
     }
-  }
-  //faast5 container ends here
-
-  //footer style starts here
-  .footer {
-    background-color: $dark-grey;
-    padding: 10px 10px;
-    color: $medium-grey;
-    font-size: $text-x-small;
-    a {
-      color: $medium-grey;
-    }
-  }
-  //footer style ends here
-
-
-  .tile-container {
-    background-color: $ultra-dark-grey;
-    @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-    padding: 20px;
-    box-shadow: 5px 10px 15px #090909;
-    .title-large {
-      font-size: $text-large;
-      font-weight: 100;
-      color: $secondary-color;
-    }
-    .text {
-      color: $medium-grey;
-      font-size: $text-medium;
-      line-height: 20px;
-      margin-bottom: 10px;
-      &.current {
-        color: $white;
-      }
-    }
-    .tile-new {
-      @extend .gradient-background;
-      color: $dark-grey;
-      padding: 10px 20px;
-      top: 8px;
-      right: 8px;
-      position: absolute;
-      @extend .text-small;
-      letter-spacing: 1px;
-      font-weight: 300;
-      @extend .cursor-pointer;
-    }
-  }
-  .description-container {
-    height: 235px;
-    padding-top: 80px;
-  }
-  .process-container {
-    height: 235px;
-  }
-  .price-container {
-    height: 75px;
-    padding: 15px;
-    .change-icon {
-      height: 50px;
-      width: 50px;
-      background-size: 28px 28px;
-      background-repeat: no-repeat;
-      background-position: center center;
-    }
-    .up-icon {
-      background-image: url(https://faa.st/img/up-icon.svg);
-    }
-    .down-icon {
-      background-image: url(https://faa.st/img/down-icon.svg);
-    }
-    .change-label {
-      font-size: 12px;
-      color: $medium-grey;
-      letter-spacing: 2px;
-      height: 12px;
-      margin-top: 5px;
-    }
-    .change-value {
-      font-size: 18px;
-      height: 18px;
-    }
-  }
-  .application-container {
-    height: 650px;
-    .application {
-      top: -20px;
-      box-shadow: none;
-      .select-assets-screen {
-        .connecting-dots {
-          width: 265px;
-        }
-      }
-    }
-  }
-  .chart-container {
-    height: 400px;
   }
 }
 
-  @media (max-width: 991px) {
-
-    body {
-      #root {
-        padding-top: 0px;
-      }
-      .modal-dialog {
-        top: 0;
-        .modal-content {
-          .modal-text {
-            width: 90%;
-          }
-          .form-group {
-            input {
-              min-width: 150px;
-            }
-          }
-        }
-      }
-      .instruction-container {
-        border: 0;
-        margin-bottom: 10px;
-      }
-    }
-
-    .welcome-text {
-      margin-top: 50px;
-    }
-
-    .select-asset-container {
-      max-width: 300px;
-      left: -1px;
-
-      .search-container {
-        .input-text {
-          width: 230px;
-        }
-      }
-
-      .asset-list-container {
-        .asset-list-container-row {
-          .asset-list-item {
-            &:nth-child(3) { // changes on media tags
-              border-right: none !important;
-            }
-
-            &:nth-child(6) { // changes on media tags
-              border-right: none !important;
-            }
-          }
-        }
-      }
-    }
+//faast5 container starts here
+.faast5-container {
+  padding-top: 50px;
+  .section-title {
+    font-size: $text-large;
+    letter-spacing: 1px;
+    color: $secondary-color;
+    font-weight: 100;
   }
-
-  .faast5 {
-    .description-container {
-      height: 170px;
-      padding-top: 25px;
-      .text {
-        font-size: $text-small;
-      }
+  .change-container {
+    .change-value {
+      font-size: 24px;
+      letter-spacing: 2px;
+      height: 26px;
     }
-    .price-container {
-      height: 170px;
-      .change-icon {
-        height: 50px;
-        width: 100%;
-      }
-    }
-    .title {
-      color: $secondary-color;
-    }
-    .label {
+    .change-label {
       color: $medium-grey;
-      font-size: 14px;
+      font-size: $text-small;
     }
-  }
-
-  .table-container {
-    .table-head {
-      .table-head-item {
-        border: none;
-        background-color: $ultra-dark-grey;
-        color: $secondary-color;
-        font-size: $text-small;
-        font-weight: 200;
-        padding: 10px;
-        border-right: 5px solid #121212;
-        &:last-child {
-          border-right: 10px solid #121212;
-        }
-      }
-    }
-    .table-row {
-      .table-row-item {
-        padding: 10px;
-        background-color: $dark-grey;
-        border-top: 5px solid #121212;
-        border-right: 5px solid #121212;
-        &:nth-child(5) {
-          border-right: 10px solid #121212;
-        }
-        .label {
-          color: $medium-grey;
-          font-size: $text-small;
-        }
-      }
-    }
-  }
-
-  @media (min-width: 992px) {
-
-    .welcome-text {
-      margin-top: 150px;
-    }
-
-    .select-asset-container {
-      width: 650px;
-      left: -649px;
-
-      .search-container {
-        .input-text {
-          width: 585px;
-        }
-      }
-
-      .asset-list-container {
-        .asset-list-container-row {
-          .asset-list-item {
-            &:last-child {
-              border-right: none !important;
-            }
-          }
-          &:last-child {
-            .asset-list-item {
-              border-bottom: none !important;
-            }
-          }
-        }
-      }
-    }
-  }
-
-  /*faast portfolio styles starts here*/
-  #portfolio-page {
-    .page-title {
-      @extend .gradient-text;
-      font-size: $text-large;
-    }
-    .page-desc {
-      color: $medium-grey;
-      font-size: $text-medium;
-    }
-    .start-container {
-      .tile-container {
-        height: 150px;
-        padding: 20px;
-        letter-spacing: 1px;
-
-        .file-input-container {
-          border-left: 1px dashed $primary-color;
-          border-top: 1px dashed $primary-color;
-          border-right: 1px dashed $secondary-color;
-          border-bottom: 1px dashed $secondary-color;
-          position: relative;
-          .file-input {
-            height: 110px;
-            width: 100%;
-            opacity: 0;
-            z-index: 99999;
-          }
-          .file-desc {
-            position: absolute;
-            top: 0;
-            left: 0;
-            height: 100%;
-            width: 100%;
-            color: $medium-grey;
-            text-align: center;
-            padding: 30px 10px 10px 10px;
-          }
-        }
-
-        &.tile-border {
-          border-left: 1px solid rgba(12, 211, 185, 0.2);
-          border-top: 1px solid rgba(12, 211, 185, 0.2);
-          border-right: 1px solid rgba(13, 211, 144, 0.2);
-          border-bottom: 1px solid rgba(13, 211, 144, 0.2);
-        }
-
-        .add-new {
-          background-image: url('https://faa.st/img/add.png');
-          background-size: 32px 32px;
-          background-repeat: no-repeat;
-          background-position: center center;
-          height: 40px;
-          width: 100%;
-        }
-      }
-    }
-
     .change-icon {
       background-position: center center;
       background-repeat: no-repeat;
       height: 30px;
       width: 30px;
+      margin-top: 10px;
+      margin-right: 5px;
     }
     .up-icon {
       background-image: url(https://faa.st/img/up-icon.svg);
@@ -1527,80 +804,288 @@ body {
     .down-icon {
       background-image: url(https://faa.st/img/down-icon.svg);
     }
+  }
+}
+//faast5 container ends here
 
-    .stats-container {
-      .tile-container {
-        height: 90px;
-        letter-spacing: 1px;
+//footer style starts here
+.footer {
+  background-color: $dark-grey;
+  padding: 10px 10px;
+  color: $medium-grey;
+  font-size: $text-x-small;
+  a {
+    color: $medium-grey;
+  }
+}
+//footer style ends here
+
+
+.tile-container {
+  background-color: $ultra-dark-grey;
+  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+  padding: 20px;
+  box-shadow: 5px 10px 15px #090909;
+  .title-large {
+    font-size: $text-large;
+    font-weight: 100;
+    color: $secondary-color;
+  }
+  .text {
+    color: $medium-grey;
+    font-size: $text-medium;
+    line-height: 20px;
+    margin-bottom: 10px;
+    &.current {
+      color: $white;
+    }
+  }
+  .tile-new {
+    @extend .gradient-background;
+    color: $dark-grey;
+    padding: 10px 20px;
+    top: 8px;
+    right: 8px;
+    position: absolute;
+    @extend .text-small;
+    letter-spacing: 1px;
+    font-weight: 300;
+    @extend .cursor-pointer;
+  }
+}
+.description-container {
+  height: 235px;
+  padding-top: 80px;
+}
+.process-container {
+  height: 235px;
+}
+.price-container {
+  height: 75px;
+  padding: 15px;
+  .change-icon {
+    height: 50px;
+    width: 50px;
+    background-size: 28px 28px;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+  .up-icon {
+    background-image: url(https://faa.st/img/up-icon.svg);
+  }
+  .down-icon {
+    background-image: url(https://faa.st/img/down-icon.svg);
+  }
+  .change-label {
+    font-size: 12px;
+    color: $medium-grey;
+    letter-spacing: 2px;
+    height: 12px;
+    margin-top: 5px;
+  }
+  .change-value {
+    font-size: 18px;
+    height: 18px;
+  }
+}
+.application-container {
+  height: 650px;
+  .application {
+    top: -20px;
+    box-shadow: none;
+    .select-assets-screen {
+      .connecting-dots {
+        width: 265px;
       }
     }
+  }
+}
+.chart-container {
+  height: 400px;
+}
 
-    .table-header {
-      @extend .text-center;
-      @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-      @extend .box-shadow;
-      padding: 20px 5px;
-      letter-spacing: 1px;
-      .column-title {
-        font-weight: 300;
-        @extend .gradient-text;
-        @extend .text-small;
+@media (max-width: 991px) {
+  #root {
+    padding-top: 0px;
+  }
+  .modal-dialog {
+    top: 0;
+    .modal-content {
+      .modal-text {
+        width: 90%;
       }
-    }
-
-    .table-row {
-      @extend .text-center;
-      letter-spacing: 1px;
-      @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-      @extend .box-shadow;
-      padding: 20px 5px;
-      @extend .text-center;
-      .change-icon {
-        height: 18px;
-        width: 18px;
-        margin: 0px 5px 0px 0px;
-      }
-    }
-
-    .status-menu-container {
-      padding-top: 10px;
-      padding-left: 10px;
-      float: right;
-      .menu-label {
-        width: 150px;
-        @extend .text-medium-grey;
-      }
-      .menu-item {
-        @extend .text-white;
-        width: 120px;
-        &.active {
-          @extend .gradient-text;
+      .form-group {
+        input {
+          min-width: 150px;
         }
       }
     }
+  }
+  .instruction-container {
+    border: 0;
+    margin-bottom: 10px;
+  }
+}
 
-    .status-data-container {
-      .status-table-label {
-        @extend .text-medium-grey;
-      }
-      .status-table-value {
-        @extend .text-light-grey;
-      }
-      &.active {
-        .status-table-label {
-          @extend .text-gradient;
+.welcome-text {
+  margin-top: 50px;
+}
+
+.select-asset-container {
+  max-width: 300px;
+  left: -1px;
+
+  .search-container {
+    .input-text {
+      width: 230px;
+    }
+  }
+
+  .asset-list-container {
+    .asset-list-container-row {
+      .asset-list-item {
+        &:nth-child(3) { // changes on media tags
+          border-right: none !important;
         }
-        .status-table-value {
-          @extend .text-white;
+
+        &:nth-child(6) { // changes on media tags
+          border-right: none !important;
         }
       }
     }
+  }
+}
 
+.faast5 {
+  .description-container {
+    height: 170px;
+    padding-top: 25px;
+    .text {
+      font-size: $text-small;
+    }
+  }
+  .price-container {
+    height: 170px;
+    .change-icon {
+      height: 50px;
+      width: 100%;
+    }
+  }
+  .title {
+    color: $secondary-color;
+  }
+  .label {
+    color: $medium-grey;
+    font-size: 14px;
+  }
+}
 
+.table-container {
+  .table-head {
+    .table-head-item {
+      border: none;
+      background-color: $ultra-dark-grey;
+      color: $secondary-color;
+      font-size: $text-small;
+      font-weight: 200;
+      padding: 10px;
+      border-right: 5px solid #121212;
+      &:last-child {
+        border-right: 10px solid #121212;
+      }
+    }
+  }
+  .table-row {
+    .table-row-item {
+      padding: 10px;
+      background-color: $dark-grey;
+      border-top: 5px solid #121212;
+      border-right: 5px solid #121212;
+      &:nth-child(5) {
+        border-right: 10px solid #121212;
+      }
+      .label {
+        color: $medium-grey;
+        font-size: $text-small;
+      }
+    }
+  }
+}
+
+@media (min-width: 992px) {
+
+  .welcome-text {
+    margin-top: 150px;
+  }
+
+  .select-asset-container {
+    width: 650px;
+    left: -649px;
+
+    .search-container {
+      .input-text {
+        width: 585px;
+      }
+    }
+
+    .asset-list-container {
+      .asset-list-container-row {
+        .asset-list-item {
+          &:last-child {
+            border-right: none !important;
+          }
+        }
+        &:last-child {
+          .asset-list-item {
+            border-bottom: none !important;
+          }
+        }
+      }
+    }
+  }
+}
+
+/*faast portfolio styles starts here*/
+#portfolio-page {
+  .page-title {
+    @extend .gradient-text;
+    font-size: $text-large;
+  }
+  .page-desc {
+    color: $medium-grey;
+    font-size: $text-medium;
+  }
+  .start-container {
     .tile-container {
+      height: 150px;
+      padding: 20px;
+      letter-spacing: 1px;
+
+      .file-input-container {
+        border-left: 1px dashed $primary-color;
+        border-top: 1px dashed $primary-color;
+        border-right: 1px dashed $secondary-color;
+        border-bottom: 1px dashed $secondary-color;
+        position: relative;
+        .file-input {
+          height: 110px;
+          width: 100%;
+          opacity: 0;
+          z-index: 99999;
+        }
+        .file-desc {
+          position: absolute;
+          top: 0;
+          left: 0;
+          height: 100%;
+          width: 100%;
+          color: $medium-grey;
+          text-align: center;
+          padding: 30px 10px 10px 10px;
+        }
+      }
+
       &.tile-border {
-        padding: 0;
-        height: 120px;
         border-left: 1px solid rgba(12, 211, 185, 0.2);
         border-top: 1px solid rgba(12, 211, 185, 0.2);
         border-right: 1px solid rgba(13, 211, 144, 0.2);
@@ -1617,108 +1102,211 @@ body {
       }
     }
   }
-  /*faast portfolio styles ends here*/
 
-  /*review, in progress and completed swap styles starts here*/
-  .review-list {
-    margin: auto;
-    margin-top: 20px;
+  .change-icon {
+    background-position: center center;
+    background-repeat: no-repeat;
+    height: 30px;
+    width: 30px;
+  }
+  .up-icon {
+    background-image: url(https://faa.st/img/up-icon.svg);
+  }
+  .down-icon {
+    background-image: url(https://faa.st/img/down-icon.svg);
+  }
 
-    .status {
+  .stats-container {
+    .tile-container {
+      height: 90px;
+      letter-spacing: 1px;
+    }
+  }
+
+  .table-header {
+    @extend .text-center;
+    @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+    @extend .box-shadow;
+    padding: 20px 5px;
+    letter-spacing: 1px;
+    .column-title {
+      font-weight: 300;
+      @extend .gradient-text;
       @extend .text-small;
-      &.done {
+    }
+  }
+
+  .table-row {
+    @extend .text-center;
+    letter-spacing: 1px;
+    @include gradient-background-variable($tileBgColor1, $tileBgColor2);
+    @extend .box-shadow;
+    padding: 20px 5px;
+    @extend .text-center;
+    .change-icon {
+      height: 18px;
+      width: 18px;
+      margin: 0px 5px 0px 0px;
+    }
+  }
+
+  .status-menu-container {
+    padding-top: 10px;
+    padding-left: 10px;
+    float: right;
+    .menu-label {
+      width: 150px;
+      @extend .text-medium-grey;
+    }
+    .menu-item {
+      @extend .text-white;
+      width: 120px;
+      &.active {
+        @extend .gradient-text;
+      }
+    }
+  }
+
+  .status-data-container {
+    .status-table-label {
+      @extend .text-medium-grey;
+    }
+    .status-table-value {
+      @extend .text-light-grey;
+    }
+    &.active {
+      .status-table-label {
         @extend .text-gradient;
       }
-      &.in-progress {
-        @extend .text-gradient;
-        @extend .blink;
-      }
-      &.failed {
-        @extend .text-red;
-      }
-      &.pending {
-        @extend .text-medium-grey;
+      .status-table-value {
+        @extend .text-white;
       }
     }
   }
-  /*review, in progress and completed swap styles ends here*/
 
-  /*icons styles starts here*/
-  .coin-icon {
-    height: 32px;
-    width: 32px;
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: contain;
-  }
 
-  .coin-info {
-    float: left;
-  }
-
-  .right-icon {
-    height: 32px;
-    width: 32px;
-    background-repeat: no-repeat;
-    background-position: center center;
-    background-size: contain;
-    margin: auto;
-    background-image: url(https://faa.st/img/right-icon.svg);
-  }
-
-  .status-icon {
-    height: 72px;
-    background-position: center center;
-    background-size: auto 75%;
-    background-repeat: no-repeat;
-
-    &.connecting {
-      background-image: url('https://faa.st/img/status_connecting.png');
+  .tile-container {
+    &.tile-border {
+      padding: 0;
+      height: 120px;
+      border-left: 1px solid rgba(12, 211, 185, 0.2);
+      border-top: 1px solid rgba(12, 211, 185, 0.2);
+      border-right: 1px solid rgba(13, 211, 144, 0.2);
+      border-bottom: 1px solid rgba(13, 211, 144, 0.2);
     }
 
-    &.waiting {
-      background-image: url('https://faa.st/img/status_waiting.png');
-    }
-    &.connected {
-      background-image: url('https://faa.st/img/status_connected.png');
+    .add-new {
+      background-image: url('https://faa.st/img/add.png');
+      background-size: 32px 32px;
+      background-repeat: no-repeat;
+      background-position: center center;
+      height: 40px;
+      width: 100%;
     }
   }
+}
+/*faast portfolio styles ends here*/
 
-  .instruction-icon {
-    height: 48px;
-    background-position: center center;
-    background-size: auto 75%;
-    background-repeat: no-repeat;
+/*review, in progress and completed swap styles starts here*/
+.review-list {
+  margin: auto;
+  margin-top: 20px;
 
-    &.pendrive {
-      background-image: url('https://faa.st/img/pendrive.png');
+  .status {
+    @extend .text-small;
+    &.done {
+      @extend .text-gradient;
     }
-
-    &.smartphone {
-      background-image: url('https://faa.st/img/smartphone.png');
+    &.in-progress {
+      @extend .text-gradient;
+      @extend .blink;
     }
-
-    &.browser {
-      background-image: url('https://faa.st/img/browser.png');
+    &.failed {
+      @extend .text-red;
     }
-
-    &.refresh-arrow {
-      background-image: url('https://faa.st/img/refresh-arrow.png');
-    }
-
-    &.export {
-      background-image: url('https://faa.st/img/export.png');
-    }
-
-    &.pin-code {
-      background-image: url('https://faa.st/img/pin-code.png');
+    &.pending {
+      @extend .text-medium-grey;
     }
   }
-  /*icons styles ends here*/
+}
+/*review, in progress and completed swap styles ends here*/
 
+/*icons styles starts here*/
+.coin-icon {
+  height: 32px;
+  width: 32px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+}
 
-  .instruction-container {
-    @extend .color-bg-1;
-    padding: 20px;
-    border-color: #131313;
+.coin-info {
+  float: left;
+}
+
+.right-icon {
+  height: 32px;
+  width: 32px;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-size: contain;
+  margin: auto;
+  background-image: url(https://faa.st/img/right-icon.svg);
+}
+
+.status-icon {
+  height: 72px;
+  background-position: center center;
+  background-size: auto 75%;
+  background-repeat: no-repeat;
+
+  &.connecting {
+    background-image: url('https://faa.st/img/status_connecting.png');
   }
+
+  &.waiting {
+    background-image: url('https://faa.st/img/status_waiting.png');
+  }
+  &.connected {
+    background-image: url('https://faa.st/img/status_connected.png');
+  }
+}
+
+.instruction-icon {
+  height: 48px;
+  background-position: center center;
+  background-size: auto 75%;
+  background-repeat: no-repeat;
+
+  &.pendrive {
+    background-image: url('https://faa.st/img/pendrive.png');
+  }
+
+  &.smartphone {
+    background-image: url('https://faa.st/img/smartphone.png');
+  }
+
+  &.browser {
+    background-image: url('https://faa.st/img/browser.png');
+  }
+
+  &.refresh-arrow {
+    background-image: url('https://faa.st/img/refresh-arrow.png');
+  }
+
+  &.export {
+    background-image: url('https://faa.st/img/export.png');
+  }
+
+  &.pin-code {
+    background-image: url('https://faa.st/img/pin-code.png');
+  }
+}
+/*icons styles ends here*/
+
+
+.instruction-container {
+  @extend .color-bg-1;
+  padding: 20px;
+  border-color: #131313;
+}
