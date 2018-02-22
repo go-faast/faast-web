@@ -9,8 +9,6 @@ import { isAppReady, getAppError } from 'Selectors'
 import App from 'Components/App'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 
-import styles from './style'
-
 class Entry extends Component {
 
   componentWillMount () {
@@ -19,16 +17,10 @@ class Entry extends Component {
 
   render () {
     const { ready, error } = this.props
-    return (
-      <div className={styles.container}>
-        <div className={`container-fluid ${styles.content}`}>
-          {ready ? (
-            <Route component={App} />
-          ) : (
-            <LoadingFullscreen error={error} />
-          )}
-        </div>
-      </div>
+    return ready ? (
+      <Route component={App} />
+    ) : (
+      <LoadingFullscreen error={error} />
     )
   }
 }

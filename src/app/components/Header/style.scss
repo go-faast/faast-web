@@ -1,7 +1,7 @@
 @import "~Styles/variables";
 
 .header {
-  background-color: $pageBgColor2;
+  background-color: $pageBgColor;
   padding-bottom: 16px;
   // The following ensures the background color covers the page container padding
   // preventing transparent edges from showing on mobile when stickied
