@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { ListGroup, ListGroupItem, Collapse, Row, Col } from 'reactstrap'
 import classNames from 'class-names'
-import { setCurrentPortfolio, setCurrentWallet, createNewPortfolio, removePortfolio } from 'Actions/portfolio'
+import { defaultPortfolioId, setCurrentPortfolio, setCurrentWallet, createNewPortfolio, removePortfolio } from 'Actions/portfolio'
 import { getAllPortfolioWalletIds, getCurrentWalletId, getCurrentPortfolioId } from 'Selectors'
 import WalletSummary from 'Components/WalletSummary'
 import Button from 'Components/Button'
@@ -61,7 +61,7 @@ class WalletSelector extends React.Component {
                   <ListGroupItem className='grid-group'>
                     <Row className='medium-gutters'>
                       <Col xs='4'>
-                        <button className='grid-cell text-red' onClick={() => removePortfolio(portfolioId)}>
+                        <button disabled={portfolioId === defaultPortfolioId} className='grid-cell text-red' onClick={() => removePortfolio(portfolioId)}>
                           <i className='fa fa-trash'/> delete
                         </button>
                       </Col>
