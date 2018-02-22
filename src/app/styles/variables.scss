@@ -176,6 +176,7 @@ $table-row-bg-hover: rgba(255, 255, 255, .05);
 .gradient-text {
   background: linear-gradient(to right, $primary-color, $secondary-color);
   background-clip: text;
+  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
