@@ -1,10 +1,9 @@
 import React from 'react'
 import Header from 'Components/Header'
-import styles from './style'
 
 const LayoutView = (props) => {
   return (
-    <div className={`container ${styles.container}`}>
+    <div className='container padding-bottom-100 pt-3'>
       <Header {...props} />
       {props.children}
     </div>
