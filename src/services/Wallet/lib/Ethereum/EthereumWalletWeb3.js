@@ -23,14 +23,18 @@ const providerToIconUrl = {
 
 export default class EthereumWalletWeb3 extends EthereumWallet {
 
+  static type = 'EthereumWalletWeb3';
+
   constructor(address, providerName) {
-    super('EthereumWalletWeb3')
+    super()
     if (!address) {
       throw new Error('Wallet address must be provided')
     }
     this.address = address
     this.providerName = providerName || web3.providerName
   }
+
+  getType = () => EthereumWalletWeb3.type;
 
   getTypeLabel = () => this.providerName === 'faast' ? 'Web3 Wallet' : this.providerName;
 

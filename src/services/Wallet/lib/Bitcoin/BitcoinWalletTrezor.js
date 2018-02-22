@@ -7,20 +7,24 @@ import BitcoinWallet from './BitcoinWallet'
 
 export default class BitcoinWalletTrezor extends BitcoinWallet {
 
+  static type = 'BitcoinWalletTrezor';
+
   constructor(xpub, derivationPath) {
-    super('BitcoinWalletTrezor', xpub)
+    super(xpub)
     this.derivationPath = derivationPath
   }
+
+  getType = BitcoinWalletTrezor.type;
+
+  getTypeLabel = () => 'TREZOR';
+
+  getIconUrl = () => 'https://faa.st/img/trezor-logo.png';
 
   isLegacyAccount = () => this.derivationPath.startsWith('m/44');
 
   getAccountNumber = () => Number.parseInt(this.derivationPath.match(/(\d+)'$/)[1]) + 1;
 
   getLabel = () => this.label || `Bitcoin ${this.isLegacyAccount() ? 'legacy ' : ''}account #${this.getAccountNumber()}`;
-
-  getTypeLabel = () => 'TREZOR';
-
-  getIconUrl = () => 'https://faa.st/img/trezor-logo.png';
 
   static fromPath = (derivationPath = null) => {
     Trezor.setCurrency('BTC')

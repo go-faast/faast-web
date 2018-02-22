@@ -11,6 +11,8 @@ export default class Wallet {
     this._assetProvider = () => {}
   }
 
+  get type() { return this.getType() }
+
   getIconUrl = () => 'https://faa.st/img/faast-logo-transparent.png';
 
   getLabel = () => this.label || this.getType();
@@ -91,5 +93,10 @@ export default class Wallet {
         [symbol]: balance
       }), {}))
   };
+
+  toJSON = () => ({
+    type: this.getType(),
+    ...this
+  })
 
 }

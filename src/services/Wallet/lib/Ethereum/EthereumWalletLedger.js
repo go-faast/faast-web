@@ -13,12 +13,16 @@ const createAddressGetter = (derivationPath) => (index) =>
 
 export default class EthereumWalletLedger extends EthereumWalletSigner {
 
+  static type = 'EthereumWalletLedger';
+
   constructor(address, derivationPath, isMocking) {
     super('EthereumWalletLedger')
     this.address = address
     this.derivationPath = derivationPath // Expects full path to `address`
     this._isMocking = isMocking
   }
+
+  getType = () => EthereumWalletLedger.type;
 
   getTypeLabel = () => 'Ledger Wallet';
 

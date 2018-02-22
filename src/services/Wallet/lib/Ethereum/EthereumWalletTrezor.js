@@ -12,12 +12,16 @@ import EthereumWalletSigner from './EthereumWalletSigner'
 
 export default class EthereumWalletTrezor extends EthereumWalletSigner {
 
+  static type = 'EthereumWalletTrezor';
+
   constructor(address, derivationPath, isMocking) {
     super('EthereumWalletTrezor')
     this.address = address
     this.derivationPath = derivationPath // Expects full path to `address`
     this._isMocking = isMocking
   }
+
+  getType = EthereumWalletTrezor.type;
 
   getTypeLabel = () => 'TREZOR';
 
