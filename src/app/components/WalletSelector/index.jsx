@@ -94,12 +94,12 @@ class WalletSelector extends React.Component {
                         </button>
                       </Col>
                       <Col xs='4'>
-                        <button className='grid-cell' onClick={() => this.connectWalletToPortfolio(portfolioId)}>
+                        <button className='grid-cell text-green' onClick={() => this.connectWalletToPortfolio(portfolioId)}>
                           <i className='fa fa-plus'/> add wallet
                         </button>
                       </Col>
                       <Col xs='4'>
-                        <button className='grid-cell' onClick={() => this.togglePortfolio(portfolioId)}>
+                        <button className='grid-cell text-light-grey' onClick={() => this.togglePortfolio(portfolioId)}>
                           {showWallets
                             ? (<span><i className='fa fa-caret-up'/> hide wallets</span>)
                             : (<span><i className='fa fa-caret-down'/> show wallets</span>)}
