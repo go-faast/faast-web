@@ -13,7 +13,7 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
   static type = 'EthereumWalletKeystore';
 
   constructor(keystore) {
-    super('EthereumWalletKeystore')
+    super()
     if (keystore instanceof EthereumjsWallet) {
       this.isEncrypted = false
     } else {

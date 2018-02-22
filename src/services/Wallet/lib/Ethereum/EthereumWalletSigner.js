@@ -8,8 +8,8 @@ import EthereumWallet from './EthereumWallet'
 @abstractMethod('getAddress', 'signTx')
 export default class EthereumWalletSigner extends EthereumWallet {
 
-  constructor(type) {
-    super(type)
+  constructor() {
+    super()
     assertExtended(this, EthereumWalletSigner)
   }
 

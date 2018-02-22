@@ -11,8 +11,8 @@ const supportedAssets = ['BTC']
 @abstractMethod('createTransaction', 'sendTransaction', 'getTypeLabel')
 export default class BitcoinWallet extends Wallet {
 
-  constructor(type, xpub) {
-    super(type)
+  constructor(xpub) {
+    super()
     assertExtended(this, BitcoinWallet)
     this.xpub = xpub
     this._latestDiscoveryResults = {}

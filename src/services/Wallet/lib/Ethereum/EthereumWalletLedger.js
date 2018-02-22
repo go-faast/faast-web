@@ -16,7 +16,7 @@ export default class EthereumWalletLedger extends EthereumWalletSigner {
   static type = 'EthereumWalletLedger';
 
   constructor(address, derivationPath, isMocking) {
-    super('EthereumWalletLedger')
+    super()
     this.address = address
     this.derivationPath = derivationPath // Expects full path to `address`
     this._isMocking = isMocking
