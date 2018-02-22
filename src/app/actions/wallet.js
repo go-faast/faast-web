@@ -1,20 +1,20 @@
 import { createAction } from 'redux-act'
 
 import log from 'Utilities/log'
-import walletService, { Wallet, MultiWallet } from 'Services/Wallet'
+import walletService, { Wallet, MultiWallet, BlockstackWallet } from 'Services/Wallet'
 import { getAllAssets, getWalletParents } from 'Selectors'
 
 const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   id: wallet.getId(),
   label: wallet.getLabel(),
-  type: wallet.type,
+  type: wallet.getType(),
   typeLabel: wallet.getTypeLabel(),
   address: wallet.isSingleAddress() ? wallet.getAddress() : '',
   iconUrl: wallet.getIconUrl(),
-  isBlockstack: wallet.isBlockstack,
+  isBlockstack: wallet.getType() === BlockstackWallet.type,
   isReadOnly: wallet.isReadOnly,
   supportedAssets: wallet.getSupportedAssetSymbols(),
-  nestedWalletIds: wallet.type === 'MultiWallet' ? wallet.wallets.map((w) => w.getId()) : [],
+  nestedWalletIds: wallet.getType() === MultiWallet.type ? wallet.wallets.map((w) => w.getId()) : [],
 }) : wallet
 
 export const walletAdded = createAction('WALLET_ADDED', convertWalletInstance)
@@ -71,7 +71,7 @@ export const updateWalletBalances = (walletId) => (dispatch) => Promise.resolve(
       log.error('no wallet with id', walletId)
       throw new Error('failed to load balances')
     }
-    if (wallet.type === MultiWallet.type) {
+    if (wallet.getType() === MultiWallet.type) {
       return Promise.all(wallet.wallets.map((nested) => dispatch(updateWalletBalances(nested.getId()))))
     }
     dispatch(walletBalancesUpdating(walletId))
@@ -91,7 +91,7 @@ const doForNestedWallets = (cb) => (multiWalletId, ...nestedWalletIds) => (dispa
     walletService.get(multiWalletId),
     ...nestedWalletIds.map((nestedWalletId) => walletService.get(nestedWalletId)),
   ]).then(([multiWallet, ...nestedWallets]) => {
-    if (multiWallet.type !== MultiWallet.type) {
+    if (multiWallet.getType() !== MultiWallet.type) {
       throw new Error(`Wallet ${multiWalletId} is not a ${MultiWallet.type}`)
     }
     return Promise.all(nestedWallets.map((nestedWallet) => Promise.resolve(cb(multiWallet, nestedWallet))))

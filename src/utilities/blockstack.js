@@ -9,15 +9,9 @@ import {
   loadUserData
 } from 'blockstack'
 import log from 'Utilities/log'
-import { EthereumWalletKeystore } from 'Services/Wallet'
+import { BlockstackWallet } from 'Services/Wallet'
 
-const createWallet = () => {
-  const userPrivateKey = loadUserData().appPrivateKey
-  const wallet = EthereumWalletKeystore.fromPrivateKey(userPrivateKey)
-  wallet.setPersistAllowed(false)
-  wallet.isBlockstack = true
-  return wallet
-}
+const createWallet = () => BlockstackWallet.create()
 
 const restoreWallet = () => {
   if (isUserSignedIn()) {

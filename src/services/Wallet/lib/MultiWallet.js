@@ -17,7 +17,7 @@ export default class MultiWallet extends Wallet {
   static type = 'MultiWallet';
 
   constructor(id, wallets) {
-    super('MultiWallet')
+    super()
     if (Array.isArray(id)) {
       wallets = id
     }
@@ -29,13 +29,11 @@ export default class MultiWallet extends Wallet {
     const clone = new MultiWallet(this.getId(), this.wallets)
     clone.setLabel(this.label)
     return clone
-  }
+  };
 
   getId = () => this.id;
 
-  getLabel = () => this.label || `Portfolio ${this.id.slice(0, 8)}`
-
-  getIconUrl = () => 'https://faa.st/img/portfolio.svg';
+  getType = () => MultiWallet.type;
 
   getTypeLabel = () => {
     const walletCount = this.wallets.length
@@ -43,6 +41,10 @@ export default class MultiWallet extends Wallet {
     if (walletCount === 1) return '1 wallet'
     return `${walletCount} wallets`
   };
+
+  getLabel = () => this.label || `Portfolio ${this.id.slice(0, 8)}`;
+
+  getIconUrl = () => 'https://faa.st/img/portfolio.svg';
 
   isSingleAddress = () => false;
 

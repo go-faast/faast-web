@@ -1,5 +1,6 @@
 export { default as WalletSerializer } from './WalletSerializer'
 export { default as MultiWallet } from './MultiWallet'
 export { default as Wallet } from './Wallet'
+export { default as BlockstackWallet } from './BlockstackWallet'
 export * from './Ethereum'
 export * from './Bitcoin'

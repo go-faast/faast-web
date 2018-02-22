@@ -42,11 +42,11 @@ const batchRequest = (batch, batchableFn, ...fnArgs) => {
   return batchableFn(...fnArgs)
 }
 
-@abstractMethod('getAddress', 'sendTransaction', 'getTypeLabel')
+@abstractMethod('getType', 'getTypeLabel', 'getAddress', 'sendTransaction', 'getTypeLabel')
 export default class EthereumWallet extends Wallet {
 
-  constructor(type) {
-    super(type)
+  constructor() {
+    super()
     assertExtended(this, EthereumWallet)
   }
 

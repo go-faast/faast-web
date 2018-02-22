@@ -10,6 +10,8 @@ import EthereumWalletSigner from './EthereumWalletSigner'
 
 export default class EthereumWalletKeystore extends EthereumWalletSigner {
 
+  static type = 'EthereumWalletKeystore';
+
   constructor(keystore) {
     super('EthereumWalletKeystore')
     if (keystore instanceof EthereumjsWallet) {
@@ -46,6 +48,8 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
   static fromJson = (jsonKeystore) => {
     return new EthereumWalletKeystore(jsonKeystore)
   };
+
+  getType = () => EthereumWalletKeystore.type;
 
   getTypeLabel = () => 'Keystore file';
 
