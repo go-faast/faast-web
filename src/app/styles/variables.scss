@@ -263,14 +263,14 @@ $active-darken-percent: 10%;
 .text-x-large { font-size: $text-x-large; }
 
 .text-primary { color: $primary-color !important; }
-.text-light-grey { color: $light-grey; }
-.text-medium-grey { color: $medium-grey; }
-.text-dark-grey { color: $dark-grey; }
+.text-light-grey { color: $light-grey !important; }
+.text-medium-grey { color: $medium-grey !important; }
+.text-dark-grey { color: $dark-grey !important; }
 .text-gradient { @extend .gradient-text; }
-.text-green { color: $secondary-color; }
-.text-white { color: #ffffff; }
-.text-orange { color: #FACC2E; }
-.text-red { color: #BC1515; }
+.text-green { color: $secondary-color !important; }
+.text-white { color: #ffffff !important; }
+.text-orange { color: #FACC2E !important; }
+.text-red { color: #BC1515 !important; }
 
 .flex-grow-1 { @include flex-grow(1); }
 
