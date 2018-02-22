@@ -73,16 +73,18 @@ const HeaderView = (props) => {
   return (
     <Sticky enabled={!!stickyHeader} innerZ={config.sticky.zIndex}>
       <div id='header' className={styles.header}>
-        <Row className='medium-gutters'>
-          <Col xs='12' md='6'>
-            <div className={styles.headerTitle}>faast Portfolio <sup className='text-medium-grey beta-tag'>beta</sup></div>
-            <div className={styles.headerDesc}>manage your crypto assets collection with faast portfolio</div>
-          </Col>
-          <Col xs='12' md='6'>
-            {showAddressSearch && <AddressSearchForm onSubmit={handleAddressSearch} />}
-          </Col>
-        </Row>
-        {showAction && renderActions()}
+        <div>
+          <Row className='medium-gutters'>
+            <Col xs='12' md='6'>
+              <div className={styles.headerTitle}>faast Portfolio <sup className='text-medium-grey beta-tag'>beta</sup></div>
+              <div className={styles.headerDesc}>manage your crypto assets collection with faast portfolio</div>
+            </Col>
+            <Col xs='12' md='6'>
+              {showAddressSearch && <AddressSearchForm onSubmit={handleAddressSearch} />}
+            </Col>
+          </Row>
+          {showAction && renderActions()}
+        </div>
       </div>
     </Sticky>
   )

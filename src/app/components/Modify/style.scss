@@ -15,9 +15,18 @@
 }
 
 .modifyAssetList {
+  margin-top: 8px;
+  h5 {
+    margin-top: 16px;
+  }
   @include media-breakpoint-down(xs) {
-    margin-left: -15px;
-    margin-right: -15px;
+    // Extend to the edge of the screen on mobile
+    margin-left: -16px;
+    margin-right: -16px;
+    h5 {
+      margin-left: 16px;
+      margin-right: 16px;
+    }
   }
 }
 
