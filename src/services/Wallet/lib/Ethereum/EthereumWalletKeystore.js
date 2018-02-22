@@ -15,7 +15,7 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
   constructor(keystore) {
     super()
     if (keystore instanceof EthereumjsWallet) {
-      this.isEncrypted = false
+      this._isEncrypted = false
     } else {
       keystore = parseJson(keystore)
       if (!keystore) {
@@ -31,7 +31,7 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
       if (!(keystore.crypto || keystore.Crypto)) {
         throw new Error('Keystore crypto information missing')
       }
-      this.isEncrypted = true
+      this._isEncrypted = true
     }
     this.keystore = keystore
   }
@@ -55,17 +55,17 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
 
   getAddress = () => toChecksumAddress(this.keystore.address || this.keystore.Address || this.keystore.getAddressString());
 
-  isPersistAllowed = () => this.isEncrypted && this._persistAllowed;
+  isPersistAllowed = () => this._isEncrypted && this._persistAllowed;
 
   encrypt = (password = '') => {
-    if (this.isEncrypted) {
+    if (this._isEncrypted) {
       return this
     }
     return new EthereumWalletKeystore(this.keystore.toV3(password, config.encrOpts))
   };
 
   decrypt = (password) => {
-    if (!this.isEncrypted) {
+    if (!this._isEncrypted) {
       return this
     }
     if (typeof password === 'undefined' || password === null) {
@@ -81,7 +81,7 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
     return Promise.resolve(txParams)
       .then(this._validateTx)
       .then(() => {
-        if (this.isEncrypted) {
+        if (this._isEncrypted) {
           return this.decrypt(password).signTx(txParams)
         }
         const tx = new EthereumjsTx(txParams)

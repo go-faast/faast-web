@@ -176,10 +176,6 @@ export function WalletService() {
   const add = (wallet) => {
     if (wallet instanceof Wallet) {
       const id = wallet.getId()
-      if (wallet.isEncrypted === false) {
-        // Need to explicitly compare with false because isEncrypted === undefined -> encryption not applicable
-        throw new Error(`Cannot add unencrypted wallet ${id}`)
-      }
       if (!activeWallets.hasOwnProperty(id)) {
         log.debug('adding new wallet', id)
       }
