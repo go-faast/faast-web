@@ -1,7 +1,7 @@
 import React from 'react'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
+import { push } from 'react-router-redux';
 import { ListGroup, ListGroupItem, Collapse, Row, Col } from 'reactstrap'
 import classNames from 'class-names'
 import { defaultPortfolioId, setCurrentPortfolio, setCurrentWallet, createNewPortfolio, removePortfolio } from 'Actions/portfolio'
@@ -18,31 +18,58 @@ const ListItem = ({ id, active, nested, onClick }) => (
 class WalletSelector extends React.Component {
   constructor(props) {
     super(props)
+    const { currentPortfolioId, currentWalletId } = props
     this.state = {
-      expandedPortfolios: {}
+      expandedPortfolios: {
+        [currentPortfolioId]: currentWalletId !== currentPortfolioId
+      }
     }
+    this.setPortfolioExpanded = this.setPortfolioExpanded.bind(this)
     this.togglePortfolio = this.togglePortfolio.bind(this)
+    this.connectWalletToPortfolio = this.connectWalletToPortfolio.bind(this)
+  }
+
+  setPortfolioExpanded(portfolioId, expanded) {
+    const { expandedPortfolios } = this.state
+    const currentlyExpanded = Boolean(expandedPortfolios[portfolioId]) // Coerce undefined
+    if (expanded !== currentlyExpanded) {
+      const { currentPortfolioId, currentWalletId, setCurrentPortfolio } = this.props
+      if (!expanded && currentPortfolioId === portfolioId && currentWalletId !== portfolioId) {
+        // Set current wallet to this portfolio when collapsing the wallet list
+        setCurrentPortfolio(portfolioId)
+      }
+      this.setState({
+        expandedPortfolios: {
+          ...expandedPortfolios,
+          [portfolioId]: expanded
+        }
+      })
+    }
   }
 
   togglePortfolio(id) {
-    const { expandedPortfolios } = this.state
-    const isExpanded = expandedPortfolios[id]
-    const { currentPortfolioId, currentWalletId } = this.props
-    if (currentPortfolioId === id && currentWalletId !== id) {
-      this.switchWallet(id)
+    this.setPortfolioExpanded(id, !this.state.expandedPortfolios[id])
+  }
+
+  connectWalletToPortfolio(portfolioId) {
+    const { routerPush, setCurrentPortfolio } = this.props
+    setCurrentPortfolio(portfolioId)
+    routerPush('/connect')
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { currentWalletId: nextWalletId, currentPortfolioId: nextPortfolioId } = nextProps
+    const nextPortfolioExpanded = this.state.expandedPortfolios[nextPortfolioId]
+    if (!nextPortfolioExpanded && nextWalletId !== nextPortfolioId) {
+      // Expand the wallet list if the next wallet isn't visible
+      this.setPortfolioExpanded(nextPortfolioId, true)
     }
-    this.setState({
-      expandedPortfolios: {
-        ...expandedPortfolios,
-        [id]: !isExpanded
-      }
-    })
   }
 
   render() {
     const {
       portfolioWalletIds, currentPortfolioId, currentWalletId,
-      createNewPortfolio, removePortfolio, setCurrentPortfolio, setCurrentWallet,
+      createNewPortfolio, removePortfolio, setCurrentPortfolio, setCurrentWallet
     } = this.props
     
     return (
@@ -67,9 +94,9 @@ class WalletSelector extends React.Component {
                         </button>
                       </Col>
                       <Col xs='4'>
-                        <Link className='grid-cell' to='/connect'>
+                        <button className='grid-cell' onClick={() => this.connectWalletToPortfolio(portfolioId)}>
                           <i className='fa fa-plus'/> add wallet
-                        </Link>
+                        </button>
                       </Col>
                       <Col xs='4'>
                         <button className='grid-cell' onClick={() => this.togglePortfolio(portfolioId)}>
@@ -113,6 +140,7 @@ const mapDispatchToProps = {
   setCurrentPortfolio,
   createNewPortfolio,
   removePortfolio,
+  routerPush: push,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletSelector)

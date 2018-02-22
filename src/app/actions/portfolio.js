@@ -44,17 +44,14 @@ export const openWallet = (walletInstance, isMocking) => (dispatch, getState) =>
   .then(() => dispatch(addWallet(walletInstance)))
   .then((wallet) => {
     const { id: walletId } = wallet
+    const { id: portfolioId, type: portfolioType } = getCurrentPortfolio(getState())
     return dispatch(addNestedWallet(defaultPortfolioId, walletId))
       .then(() => {
-        const currentPortfolio = getCurrentPortfolio(getState())
-        if (currentPortfolio.type === MultiWallet.type) {
-          if (currentPortfolio.id !== defaultPortfolioId) {
-            return dispatch(addNestedWallet(currentPortfolio.id, walletId))
-          }
-        } else {
-          return dispatch(setCurrentPortfolio(defaultPortfolioId))
+        if (portfolioType === MultiWallet.type && portfolioId !== defaultPortfolioId) {
+          return dispatch(addNestedWallet(portfolioId, walletId))
         }
       })
+      .then(() => dispatch(setCurrentWallet(portfolioId, walletId)))
       .then(() => dispatch(restoreSwapsForWallet(walletId, isMocking)))
   })
 
