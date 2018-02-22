@@ -4,7 +4,6 @@ import { processArray } from 'Utilities/helpers'
 import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
 import { restoreFromAddress } from 'Utilities/storage'
 import log from 'Utilities/log'
-import blockstack from 'Utilities/blockstack'
 import {
   toBigNumber,
   toHex,
@@ -21,12 +20,12 @@ import { insertSwapData, updateSwapTx, setSwap } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
 import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
 import {
-  addWallet, removeWallet, addNestedWallet, restoreAllWallets, updateWalletBalances, updateAllWalletBalances,
+  addWallet, removeWallet, addNestedWallet, restoreAllWallets, updateWalletBalances,
 } from 'Actions/wallet'
 import { retrieveAssetPrices } from 'Actions/asset'
 
 import {
-  getCurrentPortfolio, getCurrentPortfolioId, getWallet
+  getCurrentPortfolio, getCurrentPortfolioId
 } from 'Selectors'
 
 export const defaultPortfolioId = 'default'
@@ -59,24 +58,12 @@ export const openWallet = (walletInstance, isMocking) => (dispatch, getState) =>
       .then(() => dispatch(restoreSwapsForWallet(walletId, isMocking)))
   })
 
-export const removePortfolio = (id) => (dispatch, getState) => Promise.resolve()
+export const removePortfolio = (id) => (dispatch) => Promise.resolve()
   .then(() => {
     if (id === defaultPortfolioId) {
-      // Don't remove default portfolio, only its nested wallets
-      const wallet = getWallet(getState(), id)
-      return Promise.all(wallet.nestedWalletIds.map((nestedId) => {
-        if (id !== nestedId) { // Avoid accidental infinite recursion
-          return dispatch(removePortfolio(nestedId))
-        }
-      }))
+      throw new Error('Cannot delete default portfolio');
     }
     return dispatch(removeWallet(id))
-      .then((wallet) => {
-        if (wallet && wallet.isBlockstack) {
-          blockstack.signUserOut()
-        }
-        return wallet
-      })
   })
 
 export const closeCurrentPortfolio = () => (dispatch, getState) => {

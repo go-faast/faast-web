@@ -1,5 +1,6 @@
 import { createAction } from 'redux-act'
 
+import blockstack from 'Utilities/blockstack'
 import log from 'Utilities/log'
 import walletService, { Wallet, MultiWallet, BlockstackWallet } from 'Services/Wallet'
 import { getAllAssets, getWalletParents } from 'Selectors'
@@ -51,6 +52,9 @@ export const removeWallet = (id) => (dispatch, getState) => Promise.resolve()
     const wallet = convertWalletInstance(walletInstance) || { id }
     const parents = getWalletParents(getState(), id)
     dispatch(walletRemoved(wallet))
+    if (wallet.type === BlockstackWallet.type) {
+      blockstack.signUserOut()
+    }
     return Promise.all(parents.map((parent) => dispatch(updateWallet(parent.id))))
       .then(() => wallet)
   })
@@ -66,16 +70,16 @@ export const restoreAllWallets = () => (dispatch, getState) => Promise.resolve()
 
 export const updateWalletBalances = (walletId) => (dispatch) => Promise.resolve()
   .then(() => {
-    const wallet = walletService.get(walletId)
-    if (!wallet) {
+    const walletInstance = walletService.get(walletId)
+    if (!walletInstance) {
       log.error('no wallet with id', walletId)
       throw new Error('failed to load balances')
     }
-    if (wallet.getType() === MultiWallet.type) {
-      return Promise.all(wallet.wallets.map((nested) => dispatch(updateWalletBalances(nested.getId()))))
+    if (walletInstance.getType() === MultiWallet.type) {
+      return Promise.all(walletInstance.wallets.map((nested) => dispatch(updateWalletBalances(nested.getId()))))
     }
     dispatch(walletBalancesUpdating(walletId))
-    return wallet.getAllBalances()
+    return walletInstance.getAllBalances()
   })
   .then((symbolToBalance) => {
     dispatch(walletBalancesUpdated(walletId, symbolToBalance))
