@@ -11,7 +11,7 @@ body {
   font-family: 'Kanit', sans-serif;
   font-weight: 200;
   color: white;
-  background-color: $pageBgColor1;
+  background-color: $pageBgColor;
   min-height: 100vh;
   position: relative;
 }
@@ -45,6 +45,19 @@ p {
     &:hover, &:focus {
       color: $medium-grey;
       text-decoration: $medium-grey;
+    }
+  }
+}
+
+.container, .container-fluid {
+  padding-left: $spacer;
+  padding-right: $spacer;
+}
+
+@each $bp, $width in $container-max-widths {
+  .container {
+    @include media-breakpoint-up($bp) {
+      max-width: $width;
     }
   }
 }

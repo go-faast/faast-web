@@ -11,13 +11,23 @@
 // adapting to different screen sizes, for use in media queries.
 @import 'mixins/breakpoints';
 
+$spacer: 16px;
+
 $grid-breakpoints: (
   xxs: 0,
-  xs: 400px,
-  sm: 576px,
-  md: 768px,
-  lg: 992px,
-  xl: 1200px
+  xs: 25 * $spacer,
+  sm: 36 * $spacer,
+  md: 48 * $spacer,
+  lg: 62 * $spacer,
+  xl: 75 * $spacer,
+);
+
+$container-max-widths: (
+  xs: 100%,
+  sm: map-get($grid-breakpoints, sm),
+  md: map-get($grid-breakpoints, md),
+  lg: map-get($grid-breakpoints, lg),
+  xl: map-get($grid-breakpoints, xl)
 );
 
 @each $breakpoint in map-keys($grid-breakpoints) {
@@ -54,8 +64,7 @@ $secondary-color: #0dd390;
 $secondary-color-text: #06412D;
 $white: #ffffff;
 
-$pageBgColor1: #1a1a1a;
-$pageBgColor2: #121212;
+$pageBgColor: #121212;
 $tileBgColor1: #1c1c1c;
 $tileBgColor2: #131313;
 $tileBgColor3: #191919;
