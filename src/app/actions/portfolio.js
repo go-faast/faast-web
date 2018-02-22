@@ -30,8 +30,8 @@ import {
 
 export const defaultPortfolioId = 'default'
 
-export const setCurrentPortfolio = createAction('SET_CURRENT_PORTFOLIO')
-export const setCurrentWallet = createAction('SET_CURRENT_WALLET')
+export const setCurrentPortfolio = createAction('SET_CURRENT_PORTFOLIO', (portfolioId) => ({ portfolioId }))
+export const setCurrentWallet = createAction('SET_CURRENT_WALLET', (portfolioId, walletId) => ({ portfolioId, walletId }))
 export const portfolioAdded = createAction('PORTFOLIO_ADDED')
 
 export const openWallet = (walletInstance, isMocking) => (dispatch, getState) => Promise.resolve()

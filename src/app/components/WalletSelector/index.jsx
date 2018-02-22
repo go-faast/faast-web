@@ -22,7 +22,6 @@ class WalletSelector extends React.Component {
       expandedPortfolios: {}
     }
     this.togglePortfolio = this.togglePortfolio.bind(this)
-    this.switchWallet = this.switchWallet.bind(this)
   }
 
   togglePortfolio(id) {
@@ -40,13 +39,11 @@ class WalletSelector extends React.Component {
     })
   }
 
-  switchWallet(portfolioId, walletId) {
-    this.props.changePortfolio(portfolioId)
-    this.props.changeWallet(walletId || portfolioId)
-  }
-
   render() {
-    const { portfolioWalletIds, createPortfolio, currentPortfolioId, currentWalletId, removePortfolio } = this.props
+    const {
+      portfolioWalletIds, currentPortfolioId, currentWalletId,
+      createNewPortfolio, removePortfolio, setCurrentPortfolio, setCurrentWallet,
+    } = this.props
     
     return (
       <div>
@@ -57,11 +54,15 @@ class WalletSelector extends React.Component {
             return (
               <Col key={portfolioId} xs='12'>
                 <ListGroup>
-                  <ListItem id={portfolioId} active={currentWalletId === portfolioId} onClick={() => this.switchWallet(portfolioId)}/>
+                  <ListItem id={portfolioId}
+                    active={currentWalletId === portfolioId}
+                    onClick={() => setCurrentPortfolio(portfolioId)}/>
                   <ListGroupItem className='grid-group'>
                     <Row className='medium-gutters'>
                       <Col xs='4'>
-                        <button disabled={portfolioId === defaultPortfolioId} className='grid-cell text-red' onClick={() => removePortfolio(portfolioId)}>
+                        <button className='grid-cell text-red' 
+                          disabled={portfolioId === defaultPortfolioId}
+                          onClick={() => removePortfolio(portfolioId)}>
                           <i className='fa fa-trash'/> delete
                         </button>
                       </Col>
@@ -81,7 +82,11 @@ class WalletSelector extends React.Component {
                   </ListGroupItem>
                   <Collapse isOpen={showWallets}>
                     {walletIds.length > 0
-                      ? walletIds.map((id) => (<ListItem key={id} id={id} nested active={currentPortfolioId === portfolioId && currentWalletId === id} onClick={() => this.switchWallet(portfolioId, id)}/>))
+                      ? walletIds.map((id) => (
+                          <ListItem key={id} id={id} nested
+                            active={currentPortfolioId === portfolioId && currentWalletId === id}
+                            onClick={() => setCurrentWallet(portfolioId, id)}/>
+                        ))
                       : (<ListGroupItem><i>No wallets in this portfolio</i></ListGroupItem>)}
                   </Collapse>
                 </ListGroup>
@@ -89,7 +94,7 @@ class WalletSelector extends React.Component {
             )
           })}
           <Col xs='12'>            
-            <Button small onClick={() => createPortfolio(true)}>+ add portfolio</Button>
+            <Button small onClick={() => createNewPortfolio(true)}>+ add portfolio</Button>
           </Col>
         </Row>
       </div>
@@ -104,10 +109,10 @@ const mapStateToProps = createStructuredSelector({
 })
 
 const mapDispatchToProps = {
-  changeWallet: setCurrentWallet,
-  changePortfolio: setCurrentPortfolio,
-  createPortfolio: createNewPortfolio,
-  removePortfolio: removePortfolio,
+  setCurrentWallet,
+  setCurrentPortfolio,
+  createNewPortfolio,
+  removePortfolio,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletSelector)

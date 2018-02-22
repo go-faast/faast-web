@@ -14,8 +14,8 @@ const initialState = {
 
 export default createReducer({
   [resetAll]: () => initialState,
-  [setCurrentPortfolio]: (state, walletId) => ({ ...state, currentId: walletId }),
-  [setCurrentWallet]: (state, walletId) => ({ ...state, currentWalletId: walletId }),
+  [setCurrentPortfolio]: (state, { portfolioId }) => ({ ...state, currentId: portfolioId, currentWalletId: portfolioId }),
+  [setCurrentWallet]: (state, { portfolioId, walletId }) => ({ ...state, currentId: portfolioId, currentWalletId: walletId }),
   [portfolioAdded]: (state, walletId) => merge(state, {
     portfolioIds: { $union: [walletId] }
   }),
