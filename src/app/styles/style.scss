@@ -77,6 +77,9 @@ span.faast-loading {
        @extend .text-small;
        @extend .text-medium-grey;
        margin-top: 30px;
+       ul {
+        text-align: left;
+       }
      }
      .form-group {
        margin-top: 20px;

@@ -154,13 +154,13 @@ p {
 
 .table {
   background-color: $table-bg-color;
-  td, th {
+  tbody td, thead th {
     border-color: $table-border-color;
     padding: 8px;
   }
   thead {
     tr:first-child {
-      td, th {
+      th {
         border-top: none;
       }
     }
