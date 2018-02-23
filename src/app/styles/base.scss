@@ -348,6 +348,12 @@ p {
 
 .alert {
   border-radius: 0;
+  .alert-link {
+    text-decoration: underline;
+    &:hover, &:focus {
+      text-decoration: none;
+    }
+  }
   &.alert-info {
     background-color: #106e7d;
     border-color: #117b8c;
@@ -356,9 +362,17 @@ p {
       color: #bce5ea;
       &:hover, &:focus {
         color: lighten(#bce5ea, 10%);
-        u {
-          text-decoration: none;
-        }
+      }
+    }
+  }
+  &.alert-danger {
+    background-color: #800e0e;
+    border-color: #8f1010;
+    color: #f7e3e3;
+    .alert-link {
+      color: #ecbbbb;
+      &:hover, &:focus {
+        color: lighten(#ecbbbb, 10%);
       }
     }
   }
