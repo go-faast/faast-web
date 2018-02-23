@@ -11,15 +11,15 @@
 // adapting to different screen sizes, for use in media queries.
 @import 'mixins/breakpoints';
 
-$spacer: 16px;
+$spacer: 12px; // Use 12px spacer to ensure row widths are evenly divisible into 12 columns
 
 $grid-breakpoints: (
   xxs: 0,
-  xs: 25 * $spacer,
-  sm: 36 * $spacer,
-  md: 48 * $spacer,
-  lg: 62 * $spacer,
-  xl: 75 * $spacer,
+  xs: 36 * $spacer,
+  sm: 48 * $spacer,
+  md: 64 * $spacer,
+  lg: 82 * $spacer,
+  xl: 100 * $spacer,
 );
 
 $container-max-widths: (
@@ -40,11 +40,9 @@ $container-max-widths: (
 $gutter-sizes: (
   no: 0px,
   tiny: 1px,
-  x-small: 2px,
-  small: 4px,
-  medium: 8px,
-  large: 12px,
-  x-large: 16px
+  small: ($spacer / 4),
+  medium: ($spacer / 2),
+  large: $spacer
 );
 
 //Text sizes
