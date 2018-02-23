@@ -11,7 +11,7 @@ import display from 'Utilities/display'
 import styles from './style'
 import headerStyles from 'Components/Header/style'
 import config from 'Config'
-import { Row, Col, Card, CardHeader, CardBody, ListGroup, ListGroupItem } from 'reactstrap'
+import { Row, Col, Card, CardHeader, CardBody, ListGroup, ListGroupItem, Modal } from 'reactstrap'
 import WalletSummary from 'Components/WalletSummary'
 import Button from 'Components/Button'
 
@@ -138,7 +138,7 @@ const ModifyView = (props) => {
           <CardHeader><h4 className='m-0'>{label}</h4></CardHeader>
           <ListGroup>
             {renderAssetRows(assetHoldings.filter(({ shown }) => shown))}
-            <ListGroupItem action onClick={props.handleAssetListShow} tag='button' className='text-center'>
+            <ListGroupItem action onClick={() => props.showAssetList(id)} tag='button' className='text-center'>
               <span className={styles.addNew} />
               <span className='text-gradient ml-3 h5 align-middle'>add asset</span>
             </ListGroupItem>
@@ -149,25 +149,25 @@ const ModifyView = (props) => {
 
   return (
     <Layout {...props.layoutProps}>
-      {props.showAssetList &&
-        <AssetList {...props.assetListProps} className='gradient-background' />
-      }
+      <Modal size='lg' center isOpen={props.isAssetListOpen} toggle={props.toggleAssetList} className='m-0 mx-md-auto' contentClassName='p-0'>
+        <AssetList {...props.assetListProps} />
+      </Modal>
       <SignTxModal showModal={props.showSignTxModal} toggleModal={props.handleToggleSignTxModal} />
       <Sticky innerZ={config.sticky.zIndex} top='#header'>
         <div className={headerStyles.header}>
           <Row className='medium-gutters'>
-            <Col xs='12' md='6' lg='4'>
+            <Col xs='6' md='4'>
               <Card tag={CardBody} className='h-100 justify-content-center'>
                 <WalletSummary wallet={portfolio}/>
               </Card>
             </Col>
-            <Col xs='12' md='6' lg='4' className='text-center'>
+            <Col xs='6' md='4' className='text-center'>
               <Card tag={CardBody} className='h-100 justify-content-center'>
                 <div className='text-small text-medium-grey'>available to swap</div>
                 <div className='text-medium text-white'>{display.fiat(props.allowance.fiat)} / {display.percentage(props.allowance.weight)}</div>
               </Card>
             </Col>
-            <Col xs='12' md='6' lg='4'>
+            <Col xs='12' md='4'>
               <Card tag={CardBody} className='h-100'>
                 <Row className='medium-gutters'>
                   <Col xs='6'>

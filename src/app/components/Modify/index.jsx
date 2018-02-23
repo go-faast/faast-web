@@ -22,18 +22,20 @@ class Modify extends Component {
         fiat: ZERO,
         weight: ZERO
       },
-      showAssetList: false,
+      isAssetListOpen: false,
+      assetListWalletId: '',
       holdings: {},
     }
     this._assetItem = this._assetItem.bind(this)
     this._handleSlider = this._handleSlider.bind(this)
     this._handleFiatChange = this._handleFiatChange.bind(this)
     this._handleWeightChange = this._handleWeightChange.bind(this)
-    this._handleSave = this._handleSave.bind(this)
-    this._handleAssetListShow = this._handleAssetListShow.bind(this)
-    this._handleAssetListHide = this._handleAssetListHide.bind(this)
+    this._showAssetList = this._showAssetList.bind(this)
+    this._hideAssetList = this._hideAssetList.bind(this)
+    this._toggleAssetList = this._toggleAssetList.bind(this)
     this._handleSelectAsset = this._handleSelectAsset.bind(this)
     this._handleRemoveAsset = this._handleRemoveAsset.bind(this)
+    this._handleSave = this._handleSave.bind(this)
     this._handleCancel = this._handleCancel.bind(this)
   }
 
@@ -234,17 +236,21 @@ class Modify extends Component {
     // this.props.changeSwapStatus('edit')
   }
 
-  _handleAssetListShow () {
-    this.setState({ showAssetList: true })
+  _hideAssetList () {
+    this.setState({ isAssetListOpen: false })
   }
 
-  _handleAssetListHide () {
-    this.setState({ showAssetList: false })
+  _showAssetList (walletId) {
+    this.setState({ isAssetListOpen: true, assetListWalletId: walletId })
   }
 
-  _handleSelectAsset (walletId, symbol) {
+  _toggleAssetList () {
+    this.setState({ isAssetListOpen: !this.state.isAssetListOpen })
+  }
+
+  _handleSelectAsset ({ symbol }) {
     const { allAssets } = this.props
-    let { holdings } = this.state
+    let { holdings, assetListWalletId: walletId } = this.state
     let walletHoldings = holdings[walletId]
     let selectedHolding
     let existingHoldingIndex = walletHoldings.findIndex((a) => a.symbol === symbol)
@@ -260,10 +266,10 @@ class Modify extends Component {
     this.setState({
       holdings: {
         ...holdings,
-        [walletId]: [selectedHolding].concat(walletHoldings)
+        [walletId]: walletHoldings.concat([selectedHolding])
       }
     })
-    this._handleAssetListHide()
+    this._hideAssetList()
   }
 
   _handleRemoveAsset (walletId, symbol) {
@@ -286,8 +292,7 @@ class Modify extends Component {
 
   render () {
     const { portfolio } = this.props
-    const { holdings } = this.state
-    const shownList = Object.values(holdings).reduce((a, b) => a.concat(b), []).filter(({ shown }) => shown)
+    const { holdings, assetListWalletId } = this.state
     const adjustedPortfolio = {
       ...portfolio,
       nestedWallets: portfolio.nestedWallets.map((nestedWallet) => ({ ...nestedWallet, assetHoldings: holdings[nestedWallet.id] }))
@@ -303,9 +308,9 @@ class Modify extends Component {
       stickyHeader: true
     }
     const assetListProps = {
-      supportedAssetSymbols: portfolio.supportedAssets,
-      hiddenAssetSymbols: shownList.map(({ symbol }) => symbol),
-      handleClose: this._handleAssetListHide,
+      supportedAssetSymbols: ((portfolio.nestedWallets.find(({ id }) => id === assetListWalletId) || {}).supportedAssets || []),
+      hiddenAssetSymbols: (holdings[assetListWalletId] || []).filter(({ shown }) => shown).map(({ symbol }) => symbol),
+      handleClose: this._hideAssetList,
       selectAsset: this._handleSelectAsset,
       ignoreUnavailable: false
     }
@@ -313,8 +318,10 @@ class Modify extends Component {
       <ModifyView
         layoutProps={layoutProps}
         assetListProps={assetListProps}
-        showAssetList={this.state.showAssetList}
-        handleAssetListShow={this._handleAssetListShow}
+        isAssetListOpen={this.state.isAssetListOpen}
+        showAssetList={this._showAssetList}
+        hideAssetList={this._hideAssetList}
+        toggleAssetList={this._toggleAssetList}
         handleRemove={this._handleRemoveAsset}
         portfolio={adjustedPortfolio}
         sliderProps={sliderProps}
