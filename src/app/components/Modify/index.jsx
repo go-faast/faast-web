@@ -68,7 +68,6 @@ class Modify extends Component {
   }
 
   _assetItem (walletId, asset) {
-    console.log('assetItem', walletId, asset)
     const weight = asset.percentage || ZERO
     const value = asset.fiat || ZERO
     const units = asset.balance || ZERO
