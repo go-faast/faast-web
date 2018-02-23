@@ -2,11 +2,13 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import AddressModal from 'Components/AddressModal'
 import CreateWalletModal from 'Components/CreateWalletModal'
+import { Button } from 'reactstrap'
+import classNames from 'class-names'
 
 const AddressView = (props) => {
   return props.address ? (
     <div>
-      <span onClick={props.handleClick} className={props.className}>{props.address}</span>
+      <Button color='link' onClick={props.handleClick} className={classNames(props.className, 'p-0')}>{props.address}</Button>
       {(props.view === 'downloadKeystore' &&
         <CreateWalletModal {...props.modalProps} />) ||
         (<AddressModal address={props.address} {...props.modalProps} />)
