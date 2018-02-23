@@ -14,8 +14,8 @@ export const assertExtended = (context, BaseClass) => {
 
 export const abstractMethod = (...methodNames) => (TargetClass) => {
   methodNames.forEach((methodName) => {
-    //TargetClass.prototype[methodName] = function() {
-    //  throw new TypeError(`Class ${className(this)} extending the abstract class ${className(TargetClass)} must define a ${methodName} method.`)
-    //}
+    TargetClass[methodName] = TargetClass[methodName] || function() {
+      throw new TypeError(`Class ${className(this)} extending the abstract class ${className(TargetClass)} must define a ${methodName} method.`)
+    }
   })
 }

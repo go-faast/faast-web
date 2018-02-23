@@ -26,19 +26,19 @@ export const filterErrors = (err) => {
   if (!err || !err.message) return genericError
   console.error('ERROR:', err.message)
   switch (err.message) {
-  case 'Please enter a valid address':
-  case 'Please enter a valid address or change the exchange type':
-    return 'Please enter a valid receiving address'
-  case 'Warning: Return address appears to be invalid for the deposit coin type.':
-    return 'Please enter a valid refund address'
-  case 'Please enter a valid address ( invalid characters )':
-    return 'Please enter a valid address'
-  case 'Invalid Ethereum Address':
-    return err.message
-  case 'inactive':
-    return 'Sorry, the exchange is unavailable at this time. Please try again later'
-  default:
-    return genericError
+    case 'Please enter a valid address':
+    case 'Please enter a valid address or change the exchange type':
+      return 'Please enter a valid receiving address'
+    case 'Warning: Return address appears to be invalid for the deposit coin type.':
+      return 'Please enter a valid refund address'
+    case 'Please enter a valid address ( invalid characters )':
+      return 'Please enter a valid address'
+    case 'Invalid Ethereum Address':
+      return err.message
+    case 'inactive':
+      return 'Sorry, the exchange is unavailable at this time. Please try again later'
+    default:
+      return genericError
   }
 }
 

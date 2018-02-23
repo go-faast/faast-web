@@ -1,4 +1,3 @@
-import log from 'Utilities/log'
 import { abstractMethod, assertExtended } from 'Utilities/reflect'
 
 @abstractMethod('getId', 'getType', 'getTypeLabel', 'createTransaction', 'sendTransaction', 'getBalance', 'isAssetSupported', 'isSingleAddress', 'getFreshAddress')

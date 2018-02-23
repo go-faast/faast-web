@@ -2,7 +2,6 @@ import pad from 'pad-left'
 
 import config from 'Config'
 import web3 from 'Services/Web3'
-import log from 'Utilities/log'
 import { toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee } from 'Utilities/convert'
 import { abstractMethod, assertExtended } from 'Utilities/reflect'
 import { ellipsize } from 'Utilities/display'

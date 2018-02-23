@@ -7,13 +7,13 @@ const initialState = {
 
 export default (state = initialState, { type, payload }) => {
   switch (type) {
-  case 'SET_BREAKPOINTS':
-    const newBreakpoints = Object.assign({}, state.breakpoints, payload)
-    return Object.assign({}, state, {
-      breakpoints: newBreakpoints,
-      isMobile: mediaBreakpointDown(newBreakpoints, 'md')
-    })
-  default:
-    return state
+    case 'SET_BREAKPOINTS':
+      const newBreakpoints = Object.assign({}, state.breakpoints, payload)
+      return Object.assign({}, state, {
+        breakpoints: newBreakpoints,
+        isMobile: mediaBreakpointDown(newBreakpoints, 'md')
+      })
+    default:
+      return state
   }
 }
