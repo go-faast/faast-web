@@ -12,9 +12,13 @@ const AddressModalView = (props) => (
       </button>
       <div className='modal-title'>address</div>
       <div className='modal-text'>
-        <a href={`ethereum:${props.address}`}>
-          <QRCode size={210} level='H' value={`ethereum:${props.address}`} />
-        </a>
+        <div className={styles.qrOuterContainer}>
+          <div className={styles.qrInnerContainer}>
+            <a href={`ethereum:${props.address}`}>
+              <QRCode size={210} level='L' value={`${props.address}`} />
+            </a>
+          </div>
+        </div>
         <div className={styles.addressText}>
           {props.address}
         </div>

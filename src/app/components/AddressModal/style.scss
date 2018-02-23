@@ -20,3 +20,12 @@
 .link {
   @extend .text-medium-grey;
 }
+
+.qrOuterContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.qrInnerContainer {
+  border: .25in solid white;
+}

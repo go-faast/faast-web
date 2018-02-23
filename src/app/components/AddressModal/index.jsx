@@ -12,9 +12,13 @@ const AddressModal = ({ address, showModal, toggleModal, showDownload, handleDow
       </button>
       <div className='modal-title'>address</div>
       <div className='modal-text'>
-        <a href={`ethereum:${address}`}>
-          <QRCode size={210} level='H' value={`ethereum:${address}`} />
-        </a>
+        <div className={styles.qrOuterContainer}>
+          <div className={styles.qrInnerContainer}>
+            <a href={`ethereum:${address}`}>
+              <QRCode size={210} level='L' value={`${address}`} />
+            </a>
+          </div>
+        </div>
         <div className={styles.addressText}>
           {address}
         </div>
