@@ -56,8 +56,6 @@ class SignTxModal extends Component {
       const statuses = this.props.swap.reduce((a, b) => {
         return a.concat(b.list.map(getSwapStatus).map(c => c.details))
       }, [])
-      console.log('hasError', hasError)
-      console.log('statuses', statuses)
       return !hasError && statuses.every(s => s === 'waiting for transaction to be signed')
     }
     const estimateTxFee = ({ tx }) => {

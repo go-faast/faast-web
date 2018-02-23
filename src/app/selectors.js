@@ -160,7 +160,6 @@ export const getCurrentPortfolioWithWalletHoldings = (state) => {
         }))
       }))
   }
-  console.log(result)
   return result
 }
 
