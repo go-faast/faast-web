@@ -169,6 +169,8 @@ export const getCurrentWalletWithHoldings = wrapSelectorArgs(getWalletWithHoldin
 export const areCurrentWalletHoldingsLoaded = wrapSelectorArgs(areWalletHoldingsLoaded, getCurrentWalletId)
 export const getCurrentWalletHoldingsError = wrapSelectorArgs(getWalletHoldingsError, getCurrentWalletId)
 
-export const isCurrentPortfolioEmpty = createSelector(getCurrentPortfolio, ({ type, nestedWalletIds }) => type === 'MultiWallet' && nestedWalletIds.length === 0)
+export const isPortfolioEmpty = createItemSelector(getWallet, ({ type, nestedWalletIds }) => type === 'MultiWallet' && nestedWalletIds.length === 0)
+export const isCurrentPortfolioEmpty = wrapSelectorArgs(isPortfolioEmpty, getCurrentPortfolioId)
+export const isDefaultPortfolioEmpty = (state) => isPortfolioEmpty(state, 'default')
 
 export const canAddWalletsToCurrentPortfolio = createSelector(getCurrentPortfolio, ({ type }) => type === 'MultiWallet')

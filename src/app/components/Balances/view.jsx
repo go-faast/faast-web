@@ -89,7 +89,7 @@ const BalancesView = (props) => {
   const {
     totalChange, total24hAgo, total, assetRows, viewOnly, orderStatus, addressProps, pieChart,
     toggleChart, layoutProps, showOrderModal, handleToggleOrderModal, openCharts, balancesLoading, balancesError,
-    disableModify, isPortfolioEmpty
+    disableModify, isDefaultPortfolioEmpty
   } = props
 
   const collapsedOnly = `d-${expandTablePoint}-none`
@@ -188,7 +188,10 @@ const BalancesView = (props) => {
 
   return (
     <Layout {...layoutProps}>
-      <Row className='justify-content-end'>
+      <Row className='medium-gutters justify-content-end'>
+        <Col xs='auto'>
+          <Button color='faast' tag={Link} to='/connect'>connect wallet</Button>
+        </Col>
         <Col xs='auto'>
           <Button color='faast' tag={Link} to='/modify' disabled={disableModify || viewOnly}>modify portfolio</Button>
         </Col>
@@ -204,9 +207,11 @@ const BalancesView = (props) => {
       }
       <div className='my-3'>
         <Row className='medium-gutters'>
-          <Col xs='12' md='6' lg='5' xl='4'>
-            <WalletSelector/>
-          </Col>
+          {!isDefaultPortfolioEmpty && (
+            <Col xs='12' md='6' lg='5' xl='4'>
+              <WalletSelector/>
+            </Col>
+          )}
           <Col xs='12' md>
             <Row className='medium-gutters'>
               {balancesLoading && (<LoadingFullscreen center error={balancesError}/>)}
