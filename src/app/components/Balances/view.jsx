@@ -87,10 +87,15 @@ const ChangePercent = ({ children: change }) => <span className={change.isNegati
 
 const BalancesView = (props) => {
   const {
-    totalChange, total24hAgo, total, assetRows, viewOnly, orderStatus, addressProps, pieChart,
-    toggleChart, layoutProps, showOrderModal, handleToggleOrderModal, openCharts, balancesLoading, balancesError,
-    disableModify, isDefaultPortfolioEmpty
+    wallet, viewOnly, orderStatus, addressProps, pieChart,
+    toggleChart, layoutProps, showOrderModal, handleToggleOrderModal,
+    openCharts, disableModify, disableRemove, handleRemove, isDefaultPortfolioEmpty
   } = props
+
+  const { label, type, totalFiat, totalFiat24hAgo, totalChange, balancesLoaded, balancesError } = wallet
+  const isPortfolio = type === 'MultiWallet'
+  const assetRows = wallet.assetHoldings.filter(({ shown }) => shown)
+  const balancesLoading = !balancesLoaded
 
   const collapsedOnly = `d-${expandTablePoint}-none`
   const expandedOnlyBlock = `d-none d-${expandTablePoint}-block`
@@ -104,12 +109,12 @@ const BalancesView = (props) => {
     },
     {
       title: 'current (USD)',
-      value: display.fiat(total),
+      value: display.fiat(totalFiat),
       colClass: 'order-1 order-lg-2'
     },
     {
       title: '24h ago (USD)',
-      value: display.fiat(total24hAgo),
+      value: display.fiat(totalFiat24hAgo),
       colClass: 'order-3'
     },
     {
@@ -206,7 +211,7 @@ const BalancesView = (props) => {
         <OrderInProgress status={orderStatus} handleViewStatus={handleToggleOrderModal} />
       }
       <div className='my-3'>
-        <Row className='medium-gutters'>
+        <Row className='large-gutters'>
           {!isDefaultPortfolioEmpty && (
             <Col xs='12' md='6' lg='5' xl='4'>
               <WalletSelector/>
@@ -215,11 +220,24 @@ const BalancesView = (props) => {
           <Col xs='12' md>
             <Row className='medium-gutters'>
               {balancesLoading && (<LoadingFullscreen center error={balancesError}/>)}
-              {viewOnly && (
+              {viewOnly ? (
                 <Col xs='12' className='text-center'>
                   <Alert color='info' className='m-0'>
                     You are viewing a read-only wallet. If this is your address, you need to <Link to='/connect' className='font-weight-normal alert-link'><u>connect your wallet</u></Link> in order to trade assets.
                   </Alert>
+                </Col>
+              ) : (
+                <Col xs='12'>
+                  <Row className='medium-gutters align-items-end'>
+                    <Col>
+                      <h5 className='m-0'>{label}</h5>
+                    </Col>
+                    <Col xs='auto'>
+                      <Button color='danger' size='sm' onClick={handleRemove} disabled={disableRemove}>
+                        <i className='fa fa-trash'/> remove {isPortfolio ? 'portfolio' : 'wallet'}
+                      </Button>
+                    </Col>
+                  </Row>
                 </Col>
               )}
               <Col xs='12'>

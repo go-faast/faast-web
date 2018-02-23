@@ -28,6 +28,7 @@ class Balances extends Component {
     this._orderStatus = this._orderStatus.bind(this)
     this._forgetOrder = this._forgetOrder.bind(this)
     this._updateHoldings = this._updateHoldings.bind(this)
+    this._removeWallet = this._removeWallet.bind(this)
   }
 
   componentWillMount () {
@@ -94,6 +95,11 @@ class Balances extends Component {
     })
   }
 
+  _removeWallet () {
+    const { wallet, removePortfolio } = this.props
+    removePortfolio(wallet.id)
+  }
+
   render () {
     const orderStatus = this._orderStatus()
 
@@ -105,6 +111,7 @@ class Balances extends Component {
     }
 
     const disableModify = !wallet || !wallet.assetHoldings || !wallet.assetHoldings.length || orderStatus === 'working'
+    const disableRemove = wallet.id === 'default'
     const layoutProps = {
       showAction: true,
       showAddressSearch: true,
@@ -114,28 +121,23 @@ class Balances extends Component {
       address: wallet.address,
       showDownloadKeystore: !isViewOnly && wallet.isBlockstack
     }
-    const totalDecrease = wallet.totalChange.isNegative()
     return (
       <BalancesView
         pieChart={<PieChart portfolio={wallet} selectedSymbol={this.state.pieChartSelection} handleChartSelect={this._setChartSelect} />}
         priceChart={<PriceChart />}
         layoutProps={layoutProps}
-        total={wallet.totalFiat}
-        total24hAgo={wallet.totalFiat24hAgo}
-        totalChange={wallet.totalChange}
-        totalDecrease={totalDecrease}
-        assetRows={wallet.assetHoldings.filter((holding) => holding.shown)}
+        wallet={wallet}
         toggleChart={this._toggleChart}
         showOrderModal={this.props.orderModal.show}
         handleToggleOrderModal={this.props.toggleOrderModal}
         handleForgetOrder={this._forgetOrder}
+        handleRemoveWallet={this._removeWallet}
         orderStatus={orderStatus}
         addressProps={addressProps}
         viewOnly={isViewOnly}
         openCharts={this.state.openCharts}
-        balancesLoading={!wallet.balancesLoaded}
-        balancesError={wallet.balancesError}
         disableModify={disableModify}
+        disableRemove={disableRemove}
         isDefaultPortfolioEmpty={isDefaultPortfolioEmpty}
       />
     )
