@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
+import { Redirect } from 'react-router-dom'
 import { push } from 'react-router-redux'
 import PieChart from 'Components/PieChart'
 import PriceChart from 'Components/PriceChart'
@@ -98,6 +99,11 @@ class Balances extends Component {
 
     const { wallet, isDefaultPortfolioEmpty } = this.props
     const isViewOnly = wallet.isReadOnly
+
+    if (isDefaultPortfolioEmpty && !isViewOnly) {
+      return (<Redirect to='/connect'/>)
+    }
+
     const disableModify = !wallet || !wallet.assetHoldings || !wallet.assetHoldings.length || orderStatus === 'working'
     const layoutProps = {
       showAction: true,

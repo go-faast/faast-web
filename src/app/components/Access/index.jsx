@@ -1,6 +1,8 @@
 import React from 'react'
 import { Row, Col, Button } from 'reactstrap'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 
 import Layout from 'Components/Layout'
 import Keystore from 'Components/Keystore'
@@ -9,16 +11,18 @@ import CreateWallet from 'Components/CreateWallet'
 import HardwareWallet from 'Components/HardwareWallet'
 import Blockstack from 'Components/Blockstack'
 
+import { isDefaultPortfolioEmpty } from 'Selectors'
+
 import styles from './style'
 
 const TileRow = ({ children }) => (<div className='my-3'><Row className='large-gutters justify-content-center'>{children}</Row></div>)
 const TileCol = ({ children }) => (<Col xs='9' sm='6' md='4' lg='3'>{children}</Col>)
 
-const Access = () => (
+const Access = ({ disablePortfolioAccess }) => (
   <Layout showAddressSearch view='connect'>
     <Row className='medium-gutters justify-content-end'>
       <Col xs='auto'>
-        <Button color='faast' tag={Link} to='/balances'>portfolio</Button>
+        <Button color='faast' tag={Link} to='/balances' disabled={disablePortfolioAccess}>portfolio</Button>
       </Col>
     </Row>
     <h3 className={styles.title}>Select your wallet</h3>
@@ -56,4 +60,6 @@ const Access = () => (
   </Layout>
 )
 
-export default Access
+export default connect(createStructuredSelector({
+  disablePortfolioAccess: isDefaultPortfolioEmpty,
+}))(Access)
