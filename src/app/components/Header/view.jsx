@@ -22,7 +22,7 @@ let AddressSearchForm = (props) => (
           placeholder='view by address'
         />
         <InputGroupAddon addonType="append">
-          <Button color='faast' outline type='submit'>go</Button>
+          <Button color='faast' size='lg' outline type='submit'>go</Button>
         </InputGroupAddon>
       </InputGroup>
     </div>
