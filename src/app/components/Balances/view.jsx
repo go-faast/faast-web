@@ -190,10 +190,10 @@ const BalancesView = (props) => {
     <Layout {...layoutProps}>
       <Row className='medium-gutters justify-content-end'>
         <Col xs='auto'>
-          <Button color='faast' tag={Link} to='/connect'>connect wallet</Button>
+          <Button color='faast' tag={Link} to='/connect'><i className='fa fa-plus'/> add wallet</Button>
         </Col>
         <Col xs='auto'>
-          <Button color='faast' tag={Link} to='/modify' disabled={disableModify || viewOnly}>modify portfolio</Button>
+          <Button color='faast' tag={Link} to='/modify' disabled={disableModify || viewOnly}><i className='fa fa-edit'/> modify portfolio</Button>
         </Col>
       </Row>
       {!viewOnly &&

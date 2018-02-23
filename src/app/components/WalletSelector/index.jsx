@@ -120,7 +120,7 @@ class WalletSelector extends React.Component {
             )
           })}
           <Col xs='12'>            
-            <Button color='faast' size='sm' onClick={() => createNewPortfolio(true)}>+ add portfolio</Button>
+            <Button color='faast' size='sm' onClick={() => createNewPortfolio(true)}><i className='fa fa-plus'/> add portfolio</Button>
           </Col>
         </Row>
       </div>
