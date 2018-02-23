@@ -314,6 +314,10 @@ p {
   &.btn-lg {
     padding: 12px 24px;
   }
+
+  @include disabled {
+    opacity: 0.5;
+  }
 }
 
 .btn-link {
