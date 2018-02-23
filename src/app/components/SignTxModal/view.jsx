@@ -1,6 +1,6 @@
 import React from 'react'
 import { reduxForm, Field } from 'redux-form'
-import { Modal, ModalBody, Row, Col } from 'reactstrap'
+import { Modal, ModalBody, Row, Col, Button } from 'reactstrap'
 import Units from 'Components/Units'
 import CoinIcon from 'Components/CoinIcon'
 import web3 from 'Services/Web3'
@@ -105,11 +105,6 @@ const SwapStatusRow = ({ status: { swap, from, to, receiveAmount }, children }) 
 const SignTxForm = reduxForm({
   form: 'signTxForm'
 })((props) => {
-  const buttonStyle = {}
-  if (!props.readyToSign || props.isSigning) {
-    buttonStyle.opacity = 0.3
-    buttonStyle.cursor = 'not-allowed'
-  }
   let nextToSign = 0
   const swapRow = props.swapList.map((a, i) => {
     const sigStatus = () => {
@@ -190,10 +185,14 @@ const SignTxForm = reduxForm({
           </div>
         }
         <div className='form-group text-center'>
-          <div style={buttonStyle} className='button-primary cursor-pointer' onClick={props.readyToSign && !props.isSigning && props.handleSubmit}>{props.buttonText}</div>
+          <Button color='faast'
+            disabled={!props.readyToSign || props.isSigning}
+            onClick={props.readyToSign && !props.isSigning && props.handleSubmit}>
+            {props.buttonText}
+          </Button>
         </div>
         <div className='form-group text-center'>
-          <div className='cancel cursor-pointer' onClick={props.handleCancel}>cancel</div>
+          <Button color='link' onClick={props.handleCancel}>cancel</Button>
         </div>
       </ModalBody>
     </form>
@@ -216,7 +215,7 @@ const OrderStatus = (props) => {
         {statusRow}
       </div>
       <div className='form-group'>
-        <div className='cancel cursor-pointer' onClick={props.handleClose}>hide</div>
+        <Button color='link' onClick={props.handleClose}>hide</Button>
       </div>
     </ModalBody>
   )
