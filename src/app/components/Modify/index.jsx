@@ -166,7 +166,7 @@ class Modify extends Component {
     const { allowance, holdings } = this.state
     // const slider = this.state.slider
     if (allowance.fiat.greaterThan(0)) return toastr.error('Amounts remain to move')
-    const filtered = Object.values(holdings).flatten().map((a) => {
+    const filtered = Object.values(holdings).reduce((flat, h) => flat.concat(h)).map((a) => {
       if (!a.fiat.adjusted.equals(a.fiat.original)) {
         const fiatToSwap = a.fiat.original.minus(a.fiat.adjusted)
         return Object.assign({}, a, { fiatToSwap })
