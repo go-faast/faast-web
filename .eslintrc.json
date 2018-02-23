@@ -36,6 +36,7 @@
         "react/react-in-jsx-scope": "error",
         "react/prop-types": "off",
         "no-console": "off",
-        "react/no-find-dom-node": "off"
+        "react/no-find-dom-node": "off",
+        "no-case-declarations": "off"
     }
 }
