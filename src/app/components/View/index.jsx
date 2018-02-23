@@ -6,26 +6,16 @@ import Balances from 'Components/Balances'
 import { isValidAddress } from 'Utilities/wallet'
 import { toChecksumAddress } from 'Utilities/convert'
 import toastr from 'Utilities/toastrWrapper'
-import { createViewOnlyPortfolio, setCurrentPortfolio, removePortfolio } from 'Actions/portfolio'
-import LoadingFullscreen from 'Components/LoadingFullscreen'
+import { createViewOnlyPortfolio } from 'Actions/portfolio'
 
 class View extends Component {
   constructor () {
     super()
-    this.state = { walletId: '', removeOnUnmount: false }
     this._setAddress = this._setAddress.bind(this)
   }
 
   componentWillMount () {
     this._setAddress(this.props.match.params.address)
-  }
-
-  componentWillUnmount () {
-    const { removePortfolio } = this.props
-    const { walletId, removeOnUnmount } = this.state
-    if (removeOnUnmount) {
-      removePortfolio(walletId)
-    }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -35,20 +25,16 @@ class View extends Component {
   }
 
   _setAddress (address) {
+    const { historyReplace, createViewOnlyPortfolio } = this.props
     if (!isValidAddress(address)) {
       toastr.error('Not a valid address')
-      this.props.historyReplace('/')
+      historyReplace('/')
     } else {
-      this.props.createViewOnlyPortfolio(toChecksumAddress(address), true)
-        .then(({ id, isReadOnly }) => {
-          this.setState({ walletId: id, removeOnUnmount: isReadOnly })
-        })
+      createViewOnlyPortfolio(toChecksumAddress(address), true)
     }
   }
 
   render () {
-    if (!this.state.walletId) return (<LoadingFullscreen/>)
-
     return <Balances />
   }
 }
@@ -61,9 +47,7 @@ const mapStateToProps = () => ({})
 
 const mapDispatchToProps = {
   historyReplace: replace,
-  createViewOnlyPortfolio,
-  removePortfolio,
-  setCurrentPortfolio,
+  createViewOnlyPortfolio
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(View)
