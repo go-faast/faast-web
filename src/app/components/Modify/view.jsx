@@ -173,7 +173,7 @@ const ModifyView = (props) => {
                     <Button color='faast' outline onClick={handleCancel} className='w-100'>cancel</Button>
                   </Col>
                   <Col xs='6'>
-                    <Button color='faast' onClick={handleSave} className='w-100' disabled={disableSaveMessage}>save</Button>
+                    <Button color='faast' onClick={handleSave} className='w-100' disabled={Boolean(disableSaveMessage)}>save</Button>
                   </Col>
                 </Row>
               </Card>
