@@ -9,9 +9,9 @@
     "build-webpack": "cross-env NODE_ENV=production webpack --progress --profile",
     "lint": "eslint src/",
     "build": "npm run lint && npm run build-webpack",
-    "preversion": "git checkout develop",
     "version": "npm run build && git add -A dist",
-    "postversion": "git push && git checkout master && git merge develop && git push && git push --tags && git checkout develop",
+    "postversion": "git push && git push --tags",
+    "release": "git checkout master && git merge develop && git push && git checkout develop",
     "dev-server": "cross-env WEBPACK_PORT=8080 webpack-dev-server",
     "dev": "concurrently --kill-others \"serve dist --cors\" \"npm run dev-server\""
   },
