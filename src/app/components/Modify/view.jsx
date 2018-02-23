@@ -115,7 +115,7 @@ const ModifyView = (props) => {
             </Row>
           </Col>
           <Col xs='auto' className='align-self-start order-2 order-lg-3'>
-            <Button color='faast' small onClick={() => props.handleRemove(walletId, symbol)}>remove</Button>
+            <Button color='faast' size='sm' onClick={() => props.handleRemove(walletId, symbol)}>remove</Button>
           </Col>
         </Row>
         
