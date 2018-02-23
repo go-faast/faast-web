@@ -249,7 +249,7 @@ const swapSufficientFees = (swapList, wallet) => (dispatch) => {
 }
 
 export const initiateSwaps = (swap, wallet) => (dispatch) => {
-  log.info('swap submit initiated')
+  log.info('swap submit initiated', swap)
   const swapList = swap.reduce((a, b) => {
     return a.concat(b.list.map((c) => {
       return {

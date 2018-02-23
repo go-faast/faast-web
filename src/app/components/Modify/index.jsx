@@ -179,12 +179,18 @@ class Modify extends Component {
 
   _handleSave () {
     log.info('modify save')
-    const { portfolio } = this.props
     const { allowance, holdings } = this.state
-    // const slider = this.state.slider
+    
     if (allowance.fiat.greaterThan(0)) return toastr.error('Amounts remain to move')
-    const filtered = flatten(Object.values(filterAdjustedHoldings(holdings)))
-    if (!filtered.length) return toastr.error('Nothing to swap')
+
+    const filteredHoldingsByWalletId = filterAdjustedHoldings(holdings)
+    const adjustedWalletIds = Object.keys(filteredHoldingsByWalletId)
+    if (adjustedWalletIds.length === 0) return toastr.error('Nothing to swap')
+    if (adjustedWalletIds.length > 1) return toastr.error('Swapping from more than one wallet at once is unsupported at this time')
+
+    const adjustedWalletId = adjustedWalletIds[0]
+    const adjustedWallet = this.props.portfolio.nestedWallets.find((w) => w.id === adjustedWalletId)
+    const filtered = flatten(Object.values(filteredHoldingsByWalletId))
     const swapSend = filtered.filter(s => !s.fiatToSwap.isNegative()).map((s) => {
       return Object.assign({}, s, { emptyAsset: s.fiat.adjusted.isZero() })
     })
@@ -226,7 +232,7 @@ class Modify extends Component {
         const sum = s.list.reduce((a, c) => {
           return a.plus(c.unit)
         }, new BigNumber(0))
-        const asset = portfolio.assetHoldings.find((a) => a.symbol === s.symbol)
+        const asset = adjustedWallet.assetHoldings.find((a) => a.symbol === s.symbol)
         const difference = asset.balance.minus(sum)
         const last = s.list[s.list.length - 1]
         const newAmount = last.unit.plus(difference)
@@ -243,7 +249,7 @@ class Modify extends Component {
     if (emptyingETH) return toastr.error('Swapping the entire balance of your Ether is not possible as some ETH is required for transaction fees', { timeOut: 10000 })
     this.props.setSwap(repairedList)
     this.props.showOrderModal()
-    this.props.initiateSwaps(repairedList, portfolio)
+    this.props.initiateSwaps(repairedList, adjustedWallet)
     // this.props.routerPush('/swap')
     // this.props.changeSwapStatus('edit')
   }
