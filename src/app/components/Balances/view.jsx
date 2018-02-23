@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { Collapse } from 'reactstrap'
 import BigNumber from 'bignumber.js'
 import classNames from 'class-names'
+import { Link } from 'react-router-dom'
 import Layout from 'Components/Layout'
 import Address from 'Components/Address'
 import PriceChart from 'Components/PriceChart'
@@ -88,6 +89,7 @@ const BalancesView = (props) => {
   const {
     totalChange, total24hAgo, total, assetRows, viewOnly, orderStatus, addressProps, pieChart,
     toggleChart, layoutProps, showOrderModal, handleToggleOrderModal, openCharts, balancesLoading, balancesError,
+    disableModify, isPortfolioEmpty
   } = props
 
   const collapsedOnly = `d-${expandTablePoint}-none`
@@ -186,12 +188,12 @@ const BalancesView = (props) => {
 
   return (
     <Layout {...layoutProps}>
-      {viewOnly &&
-        <div className='col-12 my-3'>
-          <div className={`text-center ${styles.viewMode}`}>
-            You are in VIEW MODE. If this is your address, you will need to access the wallet before you can trade assets.
-          </div>
-        </div>
+      {!viewOnly && 
+        <Row className='justify-content-end'>
+          <Col xs='auto'>
+            <Button color='faast' tag={Link} to='/modify' disabled={disableModify}>modify portfolio</Button>
+          </Col>
+        </Row>
       }
       {!viewOnly &&
         <SignTxModal showModal={showOrderModal} toggleModal={handleToggleOrderModal} view='orderStatus' />
@@ -202,60 +204,77 @@ const BalancesView = (props) => {
       {!viewOnly && !!orderStatus &&
         <OrderInProgress status={orderStatus} handleViewStatus={handleToggleOrderModal} />
       }
-      <Row className='medium-gutters'>
-        <Col xs='12' md='6' lg='5' xl='4'>
-          <WalletSelector/>
-        </Col>
-        <Col xs='12' md='6' lg='7' xl='8'>
-          <Row className='medium-gutters'>
-            {balancesLoading && (<LoadingFullscreen center error={balancesError}/>)}
-            <Col xs='12'>
-              <Card>
-                <CardHeader className='grid-group'>
-                  <Row className='medium-gutters'>
-                    {stats.map(({ title, value, valueClass, colClass }, i) => (
-                      <Col xs='6' lg='3' key={i} className={classNames('text-center', colClass)}>
-                        <div className='grid-cell'>
-                          <div className='text-medium-grey'>{title}</div>
-                          <div className={classNames('text-medium', valueClass)}>{value}</div>
-                        </div>
-                      </Col>
-                    ))}
-                  </Row>
-                </CardHeader>
-                <CardBody>
-                  {addressProps.address && (
-                    <div className='text-right px-3' style={{ lineHeight: 1 }}>
-                      <div className='text-medium-grey mb-1'>address</div>
-                      <Address className={styles.addressLink} {...addressProps} />
-                    </div>
-                  )}
-                  {pieChart}
-                </CardBody>
-              </Card>
+      <div className='my-3'>
+        <Row className='medium-gutters'>
+          {!viewOnly && (
+            <Col xs='12' md='6' lg='5' xl='4'>
+              <WalletSelector/>
             </Col>
-            <Col xs='12'>
-              <Card>
-                <Table hover striped className={classNames(styles.balanceTable, 'table-accordian')}>
-                  <thead>
-                    <tr>
-                      <th>Asset</th>
-                      <th>Units</th>
-                      <th>Holdings</th>
-                      <th className={expandedOnlyCell}>Weight</th>
-                      <th>Price</th>
-                      <th className={expandedOnlyCell}>24h change</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {renderAssets()}
-                  </tbody>
-                </Table>
-              </Card>
-            </Col>
-          </Row>
-        </Col>
-      </Row>
+          )}
+          <Col xs='12' md>
+            <Row className='medium-gutters'>
+              {balancesLoading && (<LoadingFullscreen center error={balancesError}/>)}
+              {viewOnly && ([
+                <Col className='text-center text-primary' key='notice'>
+                  <Card tag={CardBody} className='p-2 h-100 justify-content-center'>
+                    You are in VIEW MODE. If this is your address, you will need to connect your wallet before you can trade assets.
+                  </Card>
+                </Col>,
+                <Col xs='auto' key='action'>
+                  {!isPortfolioEmpty
+                    ? (<Button color='faast' tag={Link} to='/balances'>back to portfolio</Button>)
+                    : (<Button color='faast' tag={Link} to='/connect'>connect wallet</Button>)
+                  }
+                </Col>
+              ])}
+              <Col xs='12'>
+                <Card>
+                  <CardHeader className='grid-group'>
+                    <Row className='medium-gutters'>
+                      {stats.map(({ title, value, valueClass, colClass }, i) => (
+                        <Col xs='6' lg='3' key={i} className={classNames('text-center', colClass)}>
+                          <div className='grid-cell'>
+                            <div className='text-medium-grey'>{title}</div>
+                            <div className={classNames('text-medium', valueClass)}>{value}</div>
+                          </div>
+                        </Col>
+                      ))}
+                    </Row>
+                  </CardHeader>
+                  <CardBody>
+                    {addressProps.address && (
+                      <div className='text-right px-3' style={{ lineHeight: 1 }}>
+                        <div className='text-medium-grey mb-1'>address</div>
+                        <Address className={styles.addressLink} {...addressProps} />
+                      </div>
+                    )}
+                    {pieChart}
+                  </CardBody>
+                </Card>
+              </Col>
+              <Col xs='12'>
+                <Card>
+                  <Table hover striped className={classNames(styles.balanceTable, 'table-accordian')}>
+                    <thead>
+                      <tr>
+                        <th>Asset</th>
+                        <th>Units</th>
+                        <th>Holdings</th>
+                        <th className={expandedOnlyCell}>Weight</th>
+                        <th>Price</th>
+                        <th className={expandedOnlyCell}>24h change</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {renderAssets()}
+                    </tbody>
+                  </Table>
+                </Card>
+              </Col>
+            </Row>
+          </Col>
+        </Row>
+      </div>
     </Layout>
   )
 }

@@ -11,7 +11,7 @@ import { getSwapStatus } from 'Utilities/swap'
 import { removeSwundle } from 'Actions/request'
 import { toggleOrderModal, resetSwap } from 'Actions/redux'
 import { clearAllIntervals, updateHoldings } from 'Actions/portfolio'
-import { getCurrentWalletWithHoldings } from 'Selectors'
+import { getCurrentWalletWithHoldings, isCurrentPortfolioEmpty } from 'Selectors'
 
 let balancesInterval
 
@@ -31,6 +31,10 @@ class Balances extends Component {
 
   componentWillMount () {
     balancesInterval = window.setInterval(this._updateHoldings, 30000)
+    const { wallet } = this.props
+    if (!(wallet.balancesLoaded && wallet.balancesUpdating)) {
+      this._updateHoldings()
+    }
   }
 
   componentWillUnmount () {
@@ -92,14 +96,13 @@ class Balances extends Component {
   render () {
     const orderStatus = this._orderStatus()
 
-    const { wallet } = this.props
+    const { wallet, isPortfolioEmpty } = this.props
     const isViewOnly = wallet.isReadOnly
+    const disableModify = !wallet || !wallet.assetHoldings || !wallet.assetHoldings.length || orderStatus === 'working'
     const layoutProps = {
       showAction: true,
       showAddressSearch: true,
-      view: isViewOnly ? 'view' : 'balances',
-      disableAction: !wallet || !wallet.assetHoldings || !wallet.assetHoldings.length || orderStatus === 'working',
-      handleModify: () => this.props.routerPush('/modify'),
+      view: isViewOnly ? 'view' : 'balances'
     }
     const addressProps = {
       address: wallet.address,
@@ -111,7 +114,6 @@ class Balances extends Component {
         pieChart={<PieChart portfolio={wallet} selectedSymbol={this.state.pieChartSelection} handleChartSelect={this._setChartSelect} />}
         priceChart={<PriceChart />}
         layoutProps={layoutProps}
-        mq={this.props.mq}
         total={wallet.totalFiat}
         total24hAgo={wallet.totalFiat24hAgo}
         totalChange={wallet.totalChange}
@@ -127,6 +129,8 @@ class Balances extends Component {
         openCharts={this.state.openCharts}
         balancesLoading={!wallet.balancesLoaded}
         balancesError={wallet.balancesError}
+        disableModify={disableModify}
+        isPortfolioEmpty={isPortfolioEmpty}
       />
     )
   }
@@ -141,10 +145,10 @@ Balances.propTypes = {
 
 const mapStateToProps = (state) => ({
   wallet: getCurrentWalletWithHoldings(state),
+  isPortfolioEmpty: isCurrentPortfolioEmpty(state),
   mock: state.mock,
   orderModal: state.orderModal,
-  swap: state.swap,
-  mq: state.mediaQueries
+  swap: state.swap
 })
 
 const mapDispatchToProps = {

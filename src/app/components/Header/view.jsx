@@ -1,14 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Sticky from 'react-stickynode'
-import { Link } from 'react-router-dom'
 import { reduxForm, Field } from 'redux-form'
 import { InputGroup, InputGroupAddon } from 'reactstrap'
 import styles from './style'
 import config from 'Config'
 import { Row, Col } from 'reactstrap'
 import Button from 'Components/Button'
-import SelectPortfolioDropdown from 'Components/SelectPortfolioDropdown'
 
 let AddressSearchForm = (props) => (
   <form onSubmit={props.handleSubmit} className={styles.searchForm}>
@@ -37,31 +35,7 @@ AddressSearchForm = reduxForm({
 })(AddressSearchForm)
 
 const HeaderView = (props) => {
-  const {
-    view, disableAction, showAction, isPortfolioEmpty, stickyHeader, showAddressSearch,
-    handleModify, handleAddressSearch
-  } = props
-  const renderActions = () => (
-    <Row className='medium-gutters justify-content-between justify-content-md-end'>
-      {view === 'balances' && ([
-        <Col key='modify' xs='auto'>
-          <Button onClick={handleModify} disabled={disableAction}>modify</Button>
-        </Col>
-      ])}
-      {view === 'view' && (
-        <Col xs='auto'>
-          {!isPortfolioEmpty
-            ? (<Button tag={Link} to='/balances'>back to wallet</Button>)
-            : (<Button tag={Link} to='/'>access wallet</Button>)
-          }
-        </Col>
-      )}
-      {view === 'connect' && ([
-        <Col key='balances' xs='auto'>
-          <Button tag={Link} to ='/balances'>portfolio</Button>
-        </Col>
-      ])}
-    </Row>)
+  const { stickyHeader, showAddressSearch, handleAddressSearch } = props
   return (
     <Sticky enabled={!!stickyHeader} innerZ={config.sticky.zIndex}>
       <div id='header' className={styles.header}>
@@ -75,7 +49,6 @@ const HeaderView = (props) => {
               {showAddressSearch && <AddressSearchForm onSubmit={handleAddressSearch} />}
             </Col>
           </Row>
-          {showAction && renderActions()}
         </div>
       </div>
     </Sticky>
@@ -83,17 +56,7 @@ const HeaderView = (props) => {
 }
 
 HeaderView.propTypes = {
-  view: PropTypes.string,
-  showAction: PropTypes.bool,
-  disableAction: PropTypes.bool,
-  handleModify: PropTypes.func,
-  handleSave: PropTypes.func,
-  handleCancel: PropTypes.func,
-  isPortfolioEmpty: PropTypes.bool
-}
-
-HeaderView.defaultProps = {
-  showAction: true
+  view: PropTypes.string
 }
 
 export default HeaderView

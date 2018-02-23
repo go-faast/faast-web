@@ -1,5 +1,6 @@
 import React from 'react'
 import { Row, Col } from 'reactstrap'
+import { Link } from 'react-router-dom'
 
 import Layout from 'Components/Layout'
 import Keystore from 'Components/Keystore'
@@ -7,6 +8,7 @@ import Web3Wallet from 'Components/Web3Wallet'
 import CreateWallet from 'Components/CreateWallet'
 import HardwareWallet from 'Components/HardwareWallet'
 import Blockstack from 'Components/Blockstack'
+import Button from 'Components/Button'
 
 import styles from './style'
 
@@ -15,6 +17,11 @@ const TileCol = ({ children }) => (<Col xs='9' sm='6' md='4' lg='3'>{children}</
 
 const Access = () => (
   <Layout showAddressSearch view='connect'>
+    <Row className='medium-gutters justify-content-end'>
+      <Col xs='auto'>
+        <Button tag={Link} to='/balances'>portfolio</Button>
+      </Col>
+    </Row>
     <h3 className={styles.title}>Select your wallet</h3>
     <h4 className={styles.walletRowHeading}>Hardware Wallets</h4>
     <h6 className={styles.walletRowSubheading}>Recommended</h6>
