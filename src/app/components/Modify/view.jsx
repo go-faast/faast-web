@@ -11,12 +11,11 @@ import display from 'Utilities/display'
 import styles from './style'
 import headerStyles from 'Components/Header/style'
 import config from 'Config'
-import { Row, Col, Card, CardHeader, CardBody, ListGroup, ListGroupItem, Modal } from 'reactstrap'
+import { Row, Col, Card, CardHeader, CardBody, ListGroup, ListGroupItem, Modal, Alert, Button } from 'reactstrap'
 import WalletSummary from 'Components/WalletSummary'
-import Button from 'Components/Button'
 
 const ModifyView = (props) => {
-  const { portfolio, handleCancel, handleSave } = props
+  const { portfolio, handleCancel, handleSave, disableSaveMessage } = props
 
   const renderAssetRows = (assetHoldings) => assetHoldings.map((a) => {
     const changeIconDirection = a.priceDecrease ? 'down-icon' : 'up-icon'
@@ -116,7 +115,7 @@ const ModifyView = (props) => {
             </Row>
           </Col>
           <Col xs='auto' className='align-self-start order-2 order-lg-3'>
-            <Button small onClick={() => props.handleRemove(walletId, symbol)}>remove</Button>
+            <Button color='faast' small onClick={() => props.handleRemove(walletId, symbol)}>remove</Button>
           </Col>
         </Row>
         
@@ -171,14 +170,21 @@ const ModifyView = (props) => {
               <Card tag={CardBody} className='h-100 justify-content-center'>
                 <Row className='medium-gutters'>
                   <Col xs='6'>
-                    <Button outline onClick={handleCancel} className='w-100'>cancel</Button>
+                    <Button color='faast' outline onClick={handleCancel} className='w-100'>cancel</Button>
                   </Col>
                   <Col xs='6'>
-                    <Button onClick={handleSave} className='w-100'>save</Button>
+                    <Button color='faast' onClick={handleSave} className='w-100' disabled={disableSaveMessage}>save</Button>
                   </Col>
                 </Row>
               </Card>
             </Col>
+            {disableSaveMessage && (
+              <Col xs='12'>
+                <Alert color='danger' className='m-0 w-100 text-center'>
+                  {disableSaveMessage}
+                </Alert>
+              </Col>
+            )}
           </Row>
         </div>
       </Sticky>

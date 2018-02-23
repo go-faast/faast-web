@@ -14,6 +14,23 @@ import { toBigNumber } from 'Utilities/convert'
 
 const ZERO = new BigNumber(0)
 
+const filterAdjustedHoldings = (holdingsByWalletId) => {
+  return Object.entries(holdingsByWalletId).reduce((filteredResult, [walletId, holdings]) => {
+    const filteredHoldings = holdings.map((a) => {
+      if (!a.fiat.adjusted.equals(a.fiat.original)) {
+        const fiatToSwap = a.fiat.original.minus(a.fiat.adjusted)
+        return { ...a, fiatToSwap }
+      }
+    }).filter(a => !!a)
+    if (filteredHoldings.length > 0) {
+      filteredResult[walletId] = filteredHoldings
+    }
+    return filteredResult
+  }, {})
+}
+
+const flatten = (arrays) => arrays.reduce((flat, array) => flat.concat(array), [])
+
 class Modify extends Component {
   constructor () {
     super()
@@ -166,12 +183,7 @@ class Modify extends Component {
     const { allowance, holdings } = this.state
     // const slider = this.state.slider
     if (allowance.fiat.greaterThan(0)) return toastr.error('Amounts remain to move')
-    const filtered = Object.values(holdings).reduce((flat, h) => flat.concat(h)).map((a) => {
-      if (!a.fiat.adjusted.equals(a.fiat.original)) {
-        const fiatToSwap = a.fiat.original.minus(a.fiat.adjusted)
-        return Object.assign({}, a, { fiatToSwap })
-      }
-    }).filter(a => !!a)
+    const filtered = flatten(Object.values(filterAdjustedHoldings(holdings)))
     if (!filtered.length) return toastr.error('Nothing to swap')
     const swapSend = filtered.filter(s => !s.fiatToSwap.isNegative()).map((s) => {
       return Object.assign({}, s, { emptyAsset: s.fiat.adjusted.isZero() })
@@ -314,6 +326,11 @@ class Modify extends Component {
       selectAsset: this._handleSelectAsset,
       ignoreUnavailable: false
     }
+    let disableSaveMessage
+    const adjustedHoldings = filterAdjustedHoldings(holdings)
+    if (Object.keys(adjustedHoldings).length > 1) {
+      disableSaveMessage = 'Swapping from more than one wallet at once is unsupported at this time'
+    }
     return (
       <ModifyView
         layoutProps={layoutProps}
@@ -332,6 +349,7 @@ class Modify extends Component {
         handleToggleSignTxModal={this.props.toggleOrderModal}
         handleCancel={this._handleCancel}
         handleSave={this._handleSave}
+        disableSaveMessage={disableSaveMessage}
       />
     )
   }
