@@ -6,7 +6,7 @@ import Balances from 'Components/Balances'
 import { isValidAddress } from 'Utilities/wallet'
 import { toChecksumAddress } from 'Utilities/convert'
 import toastr from 'Utilities/toastrWrapper'
-import { createViewOnlyPortfolio } from 'Actions/portfolio'
+import { createViewOnlyPortfolio, setCurrentPortfolio, defaultPortfolioId } from 'Actions/portfolio'
 
 class View extends Component {
   constructor () {
@@ -16,6 +16,10 @@ class View extends Component {
 
   componentWillMount () {
     this._setAddress(this.props.match.params.address)
+  }
+
+  componentWillUnmount () {
+    this.props.setCurrentPortfolio(defaultPortfolioId)
   }
 
   componentWillReceiveProps (nextProps) {
@@ -47,7 +51,8 @@ const mapStateToProps = () => ({})
 
 const mapDispatchToProps = {
   historyReplace: replace,
-  createViewOnlyPortfolio
+  createViewOnlyPortfolio,
+  setCurrentPortfolio
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(View)
