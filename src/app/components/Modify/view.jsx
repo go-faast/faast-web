@@ -168,7 +168,7 @@ const ModifyView = (props) => {
               </Card>
             </Col>
             <Col xs='12' md='4'>
-              <Card tag={CardBody} className='h-100'>
+              <Card tag={CardBody} className='h-100 justify-content-center'>
                 <Row className='medium-gutters'>
                   <Col xs='6'>
                     <Button outline onClick={handleCancel} className='w-100'>cancel</Button>
