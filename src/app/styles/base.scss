@@ -21,6 +21,11 @@ a, .btn-link {
   &:hover, &:focus {
     color: darken($primary-color, 5%);
   }
+  u {
+    &:hover, &:focus {
+      text-decoration: none;
+    }
+  }
 }
 
 h1, h2, h3, h4, h5, h6, th {
@@ -330,6 +335,24 @@ p {
       }
       @include active {
         background: darken($dark-grey, $active-darken-percent)
+      }
+    }
+  }
+}
+
+.alert {
+  border-radius: 0;
+  &.alert-info {
+    background-color: #106e7d;
+    border-color: #117b8c;
+    color: #e3f4f6;
+    .alert-link {
+      color: #bce5ea;
+      &:hover, &:focus {
+        color: lighten(#bce5ea, 10%);
+        u {
+          text-decoration: none;
+        }
       }
     }
   }

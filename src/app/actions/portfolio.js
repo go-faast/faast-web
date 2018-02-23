@@ -25,7 +25,7 @@ import {
 import { retrieveAssetPrices } from 'Actions/asset'
 
 import {
-  getCurrentPortfolio, getCurrentPortfolioId
+  getCurrentPortfolio, getCurrentPortfolioId, getWallet
 } from 'Selectors'
 
 export const defaultPortfolioId = 'default'
@@ -83,15 +83,27 @@ export const addPortfolio = (walletInstance, setCurrent = false) => (dispatch) =
 export const createNewPortfolio = (setCurrent = false) => (dispatch) => Promise.resolve()
   .then(() => dispatch(addPortfolio(new MultiWallet(), setCurrent)))
 
-export const createViewOnlyPortfolio = (address, setCurrent = false) => (dispatch) => Promise.resolve()
+export const createViewOnlyPortfolio = (address, setCurrent = false) => (dispatch, getState) => Promise.resolve()
   .then(() => {
     if (!address) {
       throw new Error('invalid view only address')
     }
-    const wallet = new EthereumWalletWeb3(address)
-    wallet.setPersistAllowed(false)
-    wallet.isReadOnly = true
-    return dispatch(addPortfolio(wallet, setCurrent))
+    const wallet = getWallet(getState(), address)
+    if (!wallet) {
+      const walletInstance = new EthereumWalletWeb3(address)
+      walletInstance.setPersistAllowed(false)
+      walletInstance.isReadOnly = true
+      return dispatch(addWallet(walletInstance))
+    }
+    return wallet
+  })
+  .then((wallet) => {
+    if (setCurrent) {
+      const { id, isReadOnly } = wallet
+      const portfolioId = isReadOnly ? id : defaultPortfolioId
+      dispatch(setCurrentWallet(portfolioId, id))
+    }
+    return wallet
   })
 
 const createDefaultPortfolio = () => (dispatch) => Promise.resolve()

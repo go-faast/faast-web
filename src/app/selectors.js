@@ -40,6 +40,9 @@ export const getWallet = createItemSelector(
   selectItemId,
   (allWallets, id) => {
     const wallet = allWallets[id]
+    if (!wallet) {
+      return wallet
+    }
     const nestedWallets = wallet.nestedWalletIds.map((nestedWalletId) => allWallets[nestedWalletId])
     let { balances, balancesLoaded, balancesUpdating, balancesError } = wallet
     if (wallet.type === 'MultiWallet') {
@@ -48,15 +51,13 @@ export const getWallet = createItemSelector(
       balancesUpdating = nestedWallets.some((w) => w.balancesUpdating)
       balancesError = nestedWallets.map((w) => w.balancesError).find(Boolean) || ''
     }
-    if (wallet) {
-      return {
-        ...wallet,
-        nestedWallets,
-        balances,
-        balancesLoaded,
-        balancesUpdating,
-        balancesError
-      }
+    return {
+      ...wallet,
+      nestedWallets,
+      balances,
+      balancesLoaded,
+      balancesUpdating,
+      balancesError
     }
   }
 )

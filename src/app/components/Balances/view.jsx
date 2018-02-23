@@ -14,7 +14,7 @@ import display from 'Utilities/display'
 import styles from './style'
 import config from 'Config'
 import { breakpointNext } from 'Utilities/breakpoints'
-import { Row, Col, Card, CardBody, CardHeader, Table, Button } from 'reactstrap'
+import { Row, Col, Card, CardBody, CardHeader, Table, Button, Alert } from 'reactstrap'
 import WalletSelector from 'Components/WalletSelector'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 
@@ -188,13 +188,11 @@ const BalancesView = (props) => {
 
   return (
     <Layout {...layoutProps}>
-      {!viewOnly && 
-        <Row className='justify-content-end'>
-          <Col xs='auto'>
-            <Button color='faast' tag={Link} to='/modify' disabled={disableModify}>modify portfolio</Button>
-          </Col>
-        </Row>
-      }
+      <Row className='justify-content-end'>
+        <Col xs='auto'>
+          <Button color='faast' tag={Link} to='/modify' disabled={disableModify || viewOnly}>modify portfolio</Button>
+        </Col>
+      </Row>
       {!viewOnly &&
         <SignTxModal showModal={showOrderModal} toggleModal={handleToggleOrderModal} view='orderStatus' />
       }
@@ -206,27 +204,19 @@ const BalancesView = (props) => {
       }
       <div className='my-3'>
         <Row className='medium-gutters'>
-          {!viewOnly && (
-            <Col xs='12' md='6' lg='5' xl='4'>
-              <WalletSelector/>
-            </Col>
-          )}
+          <Col xs='12' md='6' lg='5' xl='4'>
+            <WalletSelector/>
+          </Col>
           <Col xs='12' md>
             <Row className='medium-gutters'>
               {balancesLoading && (<LoadingFullscreen center error={balancesError}/>)}
-              {viewOnly && ([
-                <Col className='text-center text-primary' key='notice'>
-                  <Card tag={CardBody} className='p-2 h-100 justify-content-center'>
-                    You are in VIEW MODE. If this is your address, you will need to connect your wallet before you can trade assets.
-                  </Card>
-                </Col>,
-                <Col xs='auto' key='action'>
-                  {!isPortfolioEmpty
-                    ? (<Button color='faast' tag={Link} to='/balances'>back to portfolio</Button>)
-                    : (<Button color='faast' tag={Link} to='/connect'>connect wallet</Button>)
-                  }
+              {viewOnly && (
+                <Col xs='12' className='text-center'>
+                  <Alert color='info' className='m-0'>
+                    You are viewing a read-only wallet. If this is your address, you need to <Link to='/connect' className='font-weight-normal alert-link'><u>connect your wallet</u></Link> in order to trade assets.
+                  </Alert>
                 </Col>
-              ])}
+              )}
               <Col xs='12'>
                 <Card>
                   <CardHeader className='grid-group'>
