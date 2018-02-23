@@ -136,6 +136,7 @@ class CreateWalletModal extends Component {
         handleImportPrivKey={this._handleImportPrivKey}
         showModal={this.props.showModal}
         isNewWallet={this.props.isNewWallet}
+        downloaded={this.state.download}
       />
     )
   }

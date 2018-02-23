@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Field } from 'redux-form'
+import { Button } from 'reactstrap'
 import TextInput from 'Components/TextInput'
 import styles from './style'
 
@@ -14,9 +15,9 @@ const DerivationPathFormView = (props) => {
             component={TextInput}
           />
           <div className={`input-group-btn ${styles.inputBtn}`}>
-            <button className={`btn btn-sm ${styles.submitButton}`} type='submit'>
+            <Button color='faast' size='sm' type='submit'>
               <i className='fa fa-level-down fa-rotate-90' />
-            </button>
+            </Button>
           </div>
         </div>
       </div>

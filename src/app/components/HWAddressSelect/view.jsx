@@ -1,5 +1,6 @@
 import React from 'react'
 import Units from 'Components/Units'
+import { Row, Col, Button } from 'reactstrap'
 import DerivationPathForm from 'Components/DerivationPathForm'
 import styles from './style'
 
@@ -7,7 +8,7 @@ const HWAddressSelectView = (props) => (
   <div className={styles.container}>
     <div>
       <div className='text-small text-medium-grey text-center'>Select the address to use</div>
-      <form className={`form-check margin-bottom-10 ${styles.form}`}>
+      <form className='form-check margin-bottom-10'>
         <div>
           {props.addresses.map((a, i) => (
             <div key={i} className='row margin-top-5'>
@@ -36,24 +37,30 @@ const HWAddressSelectView = (props) => (
         </div>
       </form>
       <div>
-        <div className='row'>
-          <div className='col-md-4 text-gradient cursor-pointer' onClick={props.handleDecreaseIxGroup}>previous</div>
-          <div className='col-md-4'>showing indexes {props.startIndex} - {props.endIndex}</div>
-          <div className='col-md-4 text-gradient cursor-pointer' onClick={props.handleIncreaseIxGroup}>next</div>
-        </div>
+        <Row className='small-gutters justify-content-between align-items-center'>
+          <Col xs='auto'>
+            <Button color='link' onClick={props.handleDecreaseIxGroup}>previous</Button>
+          </Col>
+          <Col xs='auto'>
+            showing indexes {props.startIndex} - {props.endIndex}
+          </Col>
+          <Col xs='auto'>
+            <Button color='link' onClick={props.handleIncreaseIxGroup}>next</Button>
+          </Col>
+        </Row>
       </div>
     </div>
     <div className='form-group'>
-      <div className='button-primary cursor-pointer' onClick={props.handleAddressSubmit}><span className='text-small'>confirm</span></div>
+      <Button color='faast' onClick={props.handleAddressSubmit}>confirm</Button>
       <div className='margin-top-10'>
         {(props.showPathInput &&
           <DerivationPathForm
             onSubmit={props.handlePathSubmit}
             initialValues={props.pathInitialValues}
           />) ||
-          <div onClick={props.handleShowPathInput} className='text-gradient cursor-pointer'>
+          <Button color='link' onClick={props.handleShowPathInput}>
             change derivation path
-          </div>
+          </Button>
         }
       </div>
     </div>

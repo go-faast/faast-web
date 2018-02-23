@@ -2,8 +2,8 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, ModalBody } from 'reactstrap'
 import { Field, reduxForm } from 'redux-form'
+import { Button } from 'reactstrap'
 import { addKeys } from 'Utilities/reactFuncs'
-import styles from './style'
 
 const CreateWalletModalView = (props) => {
   const renderView = () => {
@@ -43,7 +43,7 @@ const CreateWalletModalView = (props) => {
     }
   }
   return (
-    <Modal size='lg' className={styles.container} backdrop='static' isOpen={props.showModal}>
+    <Modal size='lg' backdrop='static' isOpen={props.showModal} className='text-center'>
       {/* <ModalHeader toggle={props.handleCloseModal}></ModalHeader> */}
       {renderView()}
     </Modal>
@@ -84,15 +84,15 @@ let CreatePasswordForm = (props) => {
           />
         </div>
         <div className='form-group'>
-          <div className='button-primary cursor-pointer' onClick={props.handleSubmit}>Create</div>
+          <Button color='faast' onClick={props.handleSubmit}>create new</Button>
         </div>
         {props.isNewWallet &&
           <div className='form-group'>
-            <div className={styles.importPrivKey} onClick={props.handleImportPrivKey}>import private key</div>
+            <Button color='faast' outline onClick={props.handleImportPrivKey}>import private key</Button>
           </div>
         }
         <div className='form-group'>
-          <div className='cancel cursor-pointer' onClick={props.handleCancel}>cancel</div>
+          <Button color='link' onClick={props.handleCancel}>cancel</Button>
         </div>
       </ModalBody>
     </form>
@@ -130,10 +130,10 @@ let ConfirmPasswordForm = (props) => (
         />
       </div>
       <div className='form-group'>
-        <div className='button-primary cursor-pointer' onClick={props.handleSubmit}>Confirm</div>
+        <Button color='faast' onClick={props.handleSubmit}>continue</Button>
       </div>
       <div className='form-group'>
-        <div className='cancel cursor-pointer' onClick={props.handleCancel}>cancel</div>
+        <Button color='link' onClick={props.handleCancel} className='m-2'>cancel</Button>
       </div>
     </ModalBody>
   </form>
@@ -171,10 +171,10 @@ let ImportWalletForm = (props) => (
         />
       </div>
       <div className='form-group'>
-        <div className='button-primary cursor-pointer' onClick={props.handleSubmit}>Import</div>
+        <Button color='faast' onClick={props.handleSubmit}>continue</Button>
       </div>
       <div className='form-group'>
-        <div className='cancel cursor-pointer' onClick={props.handleCancel}>cancel</div>
+        <Button color='link' onClick={props.handleCancel} className='m-2'>cancel</Button>
       </div>
     </ModalBody>
   </form>
@@ -198,16 +198,14 @@ const DownloadKeystore = (props) => (
           <span>download keystore file</span>
         }
       </div>
-      <div onClick={props.handleDownload} className={`download-keystore ${styles.downloadContainer}`}>
-        <div className='download-keystore-icon' />
-        <div className='download-text'>
-          <span className={styles.download}>
-            {(props.isNewWallet &&
-              <span>Download keystore file</span>) ||
-              <span>download</span>
-            }
-          </span>
-        </div>
+      <div className='mt-3 text-center'>
+        <Button color='faast' size='lg' onClick={props.handleDownload} className='text-medium'>
+          <i className='fa fa-download'/>&nbsp;
+          {(props.isNewWallet &&
+            <span>Download keystore file</span>) ||
+            <span>download</span>
+          }
+        </Button>
       </div>
       <div className='modal-text'>
         <ul>
@@ -222,10 +220,10 @@ const DownloadKeystore = (props) => (
         </ul>
       </div>
       <div className='form-group'>
-        <div className='button-primary cursor-pointer' onClick={props.handleContinue}>Continue</div>
+        <Button color='faast' onClick={props.handleContinue} disabled={!props.downloaded}>continue</Button>
       </div>
       <div className='form-group'>
-        <div className='cancel cursor-pointer' onClick={props.handleCancel}>cancel</div>
+        <Button color='link' onClick={props.handleCancel}>cancel</Button>
       </div>
     </ModalBody>
   </div>

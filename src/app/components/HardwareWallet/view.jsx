@@ -1,6 +1,7 @@
 import React from 'react'
 import { Modal, ModalBody } from 'reactstrap'
 import { reduxForm } from 'redux-form'
+import { Button } from 'reactstrap'
 import AccessTile from 'Components/AccessTile'
 import HWAddressSelect from 'Components/HWAddressSelect'
 import Units from 'Components/Units'
@@ -118,10 +119,10 @@ let HardwareWalletModal = (props) => {
             }
           </div>
           <div className='form-group'>
-            <div className='button-primary cursor-pointer' onClick={props.handleChooseFirstAddress}><span className='text-small'>Use this address</span></div>
+            <Button color='faast' onClick={props.handleChooseFirstAddress}>Use this address</Button>
           </div>
           <div className='form-group'>
-            <div className='text-gradient text-center cursor-pointer' onClick={props.handleToggleAddressSelect}>Select another address</div>
+            <Button color='faast' outline onClick={props.handleToggleAddressSelect}>Select another address</Button>
           </div>
         </div>
       )
@@ -151,7 +152,7 @@ let HardwareWalletModal = (props) => {
           </div>
         </div>
         <div className='form-group'>
-          <div className='cancel cursor-pointer' onClick={props.handleClose}>cancel</div>
+          <Button color='link' onClick={props.handleClose}>cancel</Button>
         </div>
       </ModalBody>
     </Modal>
