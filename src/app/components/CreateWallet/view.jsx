@@ -2,14 +2,15 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import CreateWalletModal from 'Components/CreateWalletModal'
 import styles from './style'
+import { accessTile as accessTileStyle } from 'Components/AccessTile/style'
 
 const CreateWalletView = (props) => {
   return (
-    <div onClick={props.handleClick} className={`${styles.tileContainer} ${styles.tileBorder}`}>
+    <button onClick={props.handleClick} className={`${accessTileStyle} ${styles.tileBorder}`}>
       <div className={styles.addNew} />
-      <div className={styles.walletDesc}>create a new wallet</div>
+      <h5 className='text-gradient pt-3'>create a new wallet</h5>
       <CreateWalletModal {...props.modalProps} />
-    </div>
+    </button>
   )
 }
 

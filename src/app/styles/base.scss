@@ -83,33 +83,6 @@ p {
   }
 }
 
-%menu-action {
-  background-color: $menu-bg-color;
-  border-color: $menu-border-color;
-  @include disabled {
-    filter: grayscale(1);
-    color: $medium-grey;
-    cursor: default;
-  }
-  @include not-disabled {
-    @include hover {
-      z-index: 1;
-      background-color: $menu-bg-color-hover;
-      border-color: $menu-border-color-hover;
-    }
-    @include active {
-      background-color: $menu-bg-color-active;
-      border-color: $menu-border-color-active;
-    }
-    &:active {
-      z-index: 2;
-    }
-    &.active {
-      z-index: 3;
-    }
-  }
-}
-
 @mixin grid-group($border: $menu-border) {
   $border-width: get-border-width($border);
   padding: 0;

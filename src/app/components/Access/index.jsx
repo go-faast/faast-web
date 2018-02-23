@@ -10,7 +10,7 @@ import Blockstack from 'Components/Blockstack'
 
 import styles from './style'
 
-const TileRow = ({ children }) => (<Row className='justify-content-center'>{children}</Row>)
+const TileRow = ({ children }) => (<div className='my-3'><Row className='large-gutters justify-content-center'>{children}</Row></div>)
 const TileCol = ({ children }) => (<Col xs='9' sm='6' md='4' lg='3'>{children}</Col>)
 
 const Access = () => (
@@ -31,11 +31,7 @@ const Access = () => (
     </TileRow>
     <h4 className={styles.walletRowHeading}>Manual</h4>
     <TileRow>
-      <TileCol>
-        <div id='keystore-container' className={styles.tileContainer}>
-          <Keystore />
-        </div>
-      </TileCol>
+      <TileCol><Keystore /></TileCol>
       <TileCol><CreateWallet /></TileCol>
     </TileRow>
     <div className={`row ${styles.bottomContainer}`}>

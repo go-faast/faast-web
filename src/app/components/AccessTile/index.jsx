@@ -1,8 +1,16 @@
 import React from 'react'
-import AccessTileView from './view'
+import styles from './style'
 
-const AccessTile = (props) => (
-  <AccessTileView {...props} />
-)
+const AccessTile = ({ name, icon, handleClick }) => {
+  return (
+    <button onClick={handleClick} className={styles.accessTile}>
+      <div className={`text-uppercase ${styles.header}`}>Access With</div>
+      <div className={styles.name}>
+        {name}
+      </div>
+      <img src={`/img/${icon}`} className={styles.icon}/>
+    </button>
+  )
+}
 
 export default AccessTile

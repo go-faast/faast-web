@@ -9,32 +9,9 @@
   width: 100%;
 }
 
-.walletDesc {
-  @extend .text-medium;
-  @extend .text-gradient;
-}
-
-.tileContainer {
-  background-color: $ultra-dark-grey;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-  padding: 20px;
-  box-shadow: 5px 10px 15px #090909;
-  @extend .cursor-pointer;
-  @extend .text-center;
-  height: 150px;
-  padding: 8px;
-  letter-spacing: 1px;
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
 .tileBorder {
-  border-left: 1px solid rgba(12, 211, 185, 0.2);
-  border-top: 1px solid rgba(12, 211, 185, 0.2);
-  border-right: 1px solid rgba(13, 211, 144, 0.2);
-  border-bottom: 1px solid rgba(13, 211, 144, 0.2);
+  border: 1px solid darken($secondary-color, 20%);
+  &:hover {
+    border-color: darken($secondary-color, 10%) !important;
+  }
 }

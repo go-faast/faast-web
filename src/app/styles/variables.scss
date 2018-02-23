@@ -167,6 +167,34 @@ $table-row-bg-hover: rgba(255, 255, 255, .05);
   @return null;    
 }
 
+%menu-action {
+  background-color: $menu-bg-color;
+  border-color: $menu-border-color;
+  @include disabled {
+    filter: grayscale(1);
+    color: $medium-grey;
+    cursor: default;
+  }
+  @include not-disabled {
+    @include hover {
+      cursor: pointer;
+      z-index: 1;
+      background-color: $menu-bg-color-hover;
+      border-color: $menu-border-color-hover;
+    }
+    @include active {
+      background-color: $menu-bg-color-active;
+      border-color: $menu-border-color-active;
+    }
+    &:active {
+      z-index: 2;
+    }
+    &.active {
+      z-index: 3;
+    }
+  }
+}
+
 
 //Common classes
 
