@@ -2,11 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import Sticky from 'react-stickynode'
 import { reduxForm, Field } from 'redux-form'
-import { InputGroup, InputGroupAddon } from 'reactstrap'
+import { InputGroup, InputGroupAddon, Button } from 'reactstrap'
 import styles from './style'
 import config from 'Config'
 import { Row, Col } from 'reactstrap'
-import Button from 'Components/Button'
 
 let AddressSearchForm = (props) => (
   <form onSubmit={props.handleSubmit} className={styles.searchForm}>
@@ -23,7 +22,7 @@ let AddressSearchForm = (props) => (
           placeholder='view by address'
         />
         <InputGroupAddon addonType="append">
-          <Button outline type='submit'>go</Button>
+          <Button color='faast' outline type='submit'>go</Button>
         </InputGroupAddon>
       </InputGroup>
     </div>

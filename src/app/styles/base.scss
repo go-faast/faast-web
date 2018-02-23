@@ -296,58 +296,52 @@ p {
   @include not-disabled {
     cursor: pointer;
   }
-  &:focus {
+  &:hover, &:focus {
     outline: none;
   }
 }
 
-.btn-faast {
+.btn-faast, .btn-outline-faast {
   @extend .text-small;
   @extend .text-center;
   @extend .box-shadow;
-  color: $secondary-color-text;
   font-weight: 300;
   line-height: 1.5em;
   border: 1px solid;
-  @extend .gradient-border;
-  @extend .gradient-background;
   border-radius: 0;
   padding: 10px 30px;
 
+  &.btn-sm {
+    padding: 8px 16px;
+  }
+}
+
+.btn-faast {
+  color: $secondary-color-text;
+  @extend .gradient-border;
+  @extend .gradient-background;
+
   @include not-disabled {
     @include hover {
-      outline: none;
+      color: $secondary-color-text;
       @extend .gradient-background-hover;
     }
     @include active {
       @extend .gradient-background-active;
     }
   }
-
-  &.btn-sm {
-    padding: 8px 16px;
-  }
-  &.btn-outline-faast {
-    background: $dark-grey;
-    color: $secondary-color;
-    @include not-disabled {
-      @include hover {
-        background: darken($dark-grey, $hover-darken-percent);
-      }
-      @include active {
-        background: darken($dark-grey, $active-darken-percent)
-      }
-    }
-  }
 }
 
-a.btn-faast {
+.btn-outline-faast {
+  background: $dark-grey;
+  color: $secondary-color;
   @include not-disabled {
     @include hover {
-      color: $secondary-color-text;
-      &.btn-outline-faast {
-        color: $secondary-color;
-      }
+      color: $secondary-color;
+      background: darken($dark-grey, $hover-darken-percent);
+    }
+    @include active {
+      background: darken($dark-grey, $active-darken-percent)
     }
   }
 }

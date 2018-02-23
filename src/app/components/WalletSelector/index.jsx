@@ -2,12 +2,11 @@ import React from 'react'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux';
-import { ListGroup, ListGroupItem, Collapse, Row, Col } from 'reactstrap'
+import { ListGroup, ListGroupItem, Collapse, Row, Col, Button } from 'reactstrap'
 import classNames from 'class-names'
 import { defaultPortfolioId, setCurrentPortfolio, setCurrentWallet, createNewPortfolio, removePortfolio } from 'Actions/portfolio'
 import { getAllPortfolioWalletIds, getCurrentWalletId, getCurrentPortfolioId } from 'Selectors'
 import WalletSummary from 'Components/WalletSummary'
-import Button from 'Components/Button'
 
 const ListItem = ({ id, active, nested, onClick }) => (
   <ListGroupItem action active={active} onClick={onClick} tag='button' className={classNames({ 'compact pl-5': nested })}>
@@ -121,7 +120,7 @@ class WalletSelector extends React.Component {
             )
           })}
           <Col xs='12'>            
-            <Button small onClick={() => createNewPortfolio(true)}>+ add portfolio</Button>
+            <Button color='faast' small onClick={() => createNewPortfolio(true)}>+ add portfolio</Button>
           </Col>
         </Row>
       </div>

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col } from 'reactstrap'
+import { Row, Col, Button } from 'reactstrap'
 import { Link } from 'react-router-dom'
 
 import Layout from 'Components/Layout'
@@ -8,7 +8,6 @@ import Web3Wallet from 'Components/Web3Wallet'
 import CreateWallet from 'Components/CreateWallet'
 import HardwareWallet from 'Components/HardwareWallet'
 import Blockstack from 'Components/Blockstack'
-import Button from 'Components/Button'
 
 import styles from './style'
 
@@ -19,7 +18,7 @@ const Access = () => (
   <Layout showAddressSearch view='connect'>
     <Row className='medium-gutters justify-content-end'>
       <Col xs='auto'>
-        <Button tag={Link} to='/balances'>portfolio</Button>
+        <Button color='faast' tag={Link} to='/balances'>portfolio</Button>
       </Col>
     </Row>
     <h3 className={styles.title}>Select your wallet</h3>
