@@ -73,8 +73,13 @@ class WalletSelector extends React.Component {
     
     return (
       <div>
-        <h5>Portfolios</h5>
-        <Row className='medium-gutters-y'>
+        <Row className='medium-gutters align-items-end'>
+          <Col>
+            <h5 className='m-0'>Portfolios</h5>
+          </Col>
+          <Col xs='auto'>
+            <Button color='faast' size='sm' onClick={() => createNewPortfolio(true)}><i className='fa fa-plus'/> add portfolio</Button>
+          </Col>
           {Object.entries(portfolioWalletIds).map(([portfolioId, walletIds]) => {
             const showWallets = this.state.expandedPortfolios[portfolioId]
             return (
@@ -85,19 +90,12 @@ class WalletSelector extends React.Component {
                     onClick={() => setCurrentPortfolio(portfolioId)}/>
                   <ListGroupItem className='grid-group'>
                     <Row className='medium-gutters'>
-                      <Col xs='4'>
-                        <button className='grid-cell text-red' 
-                          disabled={portfolioId === defaultPortfolioId}
-                          onClick={() => removePortfolio(portfolioId)}>
-                          <i className='fa fa-trash'/> delete
-                        </button>
-                      </Col>
-                      <Col xs='4'>
+                      <Col xs='6'>
                         <button className='grid-cell text-green' onClick={() => this.connectWalletToPortfolio(portfolioId)}>
                           <i className='fa fa-plus'/> add wallet
                         </button>
                       </Col>
-                      <Col xs='4'>
+                      <Col xs='6'>
                         <button className='grid-cell text-light-grey' onClick={() => this.togglePortfolio(portfolioId)}>
                           {showWallets
                             ? (<span><i className='fa fa-caret-up'/> hide wallets</span>)
@@ -119,9 +117,6 @@ class WalletSelector extends React.Component {
               </Col>
             )
           })}
-          <Col xs='12'>            
-            <Button color='faast' size='sm' onClick={() => createNewPortfolio(true)}><i className='fa fa-plus'/> add portfolio</Button>
-          </Col>
         </Row>
       </div>
     )
