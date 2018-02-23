@@ -51,12 +51,14 @@ export const removeWallet = (id) => (dispatch, getState) => Promise.resolve()
   .then((walletInstance) => {
     const wallet = convertWalletInstance(walletInstance) || { id }
     const parents = getWalletParents(getState(), id)
-    dispatch(walletRemoved(wallet))
-    if (wallet.type === BlockstackWallet.type) {
-      blockstack.signUserOut()
-    }
     return Promise.all(parents.map((parent) => dispatch(updateWallet(parent.id))))
-      .then(() => wallet)
+      .then(() => {
+        dispatch(walletRemoved(wallet))
+        if (wallet.type === BlockstackWallet.type) {
+          blockstack.signUserOut()
+        }
+        return wallet
+      })
   })
 
 export const removeAllWallets = () => (dispatch) => Promise.resolve()

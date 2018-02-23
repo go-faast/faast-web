@@ -8,7 +8,7 @@ const defaultPortfolioId = 'default'
 
 const initialState = {
   currentId: defaultPortfolioId,
-  currentWalletId: null,
+  currentWalletId: defaultPortfolioId,
   portfolioIds: [],
 }
 
@@ -21,7 +21,10 @@ export default createReducer({
   }),
   [walletRemoved]: (state, { id }) => merge(state, {
     portfolioIds: { $without: [id] },
-    currentId: state.currentId === id ? defaultPortfolioId : state.currentId,
-    currentWalletId: state.currentWalletId === id ? null : state.currentWalletId,
+    currentWalletId: state.currentWalletId === id ? state.currentId : state.currentWalletId,
+    ...(state.currentId === id ? {
+      currentId: defaultPortfolioId,
+      currentWalletId: defaultPortfolioId,
+    } : {}),
   }),
 }, initialState)

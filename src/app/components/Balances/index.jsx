@@ -11,7 +11,7 @@ import log from 'Utilities/log'
 import { getSwapStatus } from 'Utilities/swap'
 import { removeSwundle } from 'Actions/request'
 import { toggleOrderModal, resetSwap } from 'Actions/redux'
-import { clearAllIntervals, updateHoldings } from 'Actions/portfolio'
+import { clearAllIntervals, updateHoldings, removePortfolio } from 'Actions/portfolio'
 import { getCurrentWalletWithHoldings, isDefaultPortfolioEmpty } from 'Selectors'
 
 let balancesInterval
@@ -131,7 +131,7 @@ class Balances extends Component {
         showOrderModal={this.props.orderModal.show}
         handleToggleOrderModal={this.props.toggleOrderModal}
         handleForgetOrder={this._forgetOrder}
-        handleRemoveWallet={this._removeWallet}
+        handleRemove={this._removeWallet}
         orderStatus={orderStatus}
         addressProps={addressProps}
         viewOnly={isViewOnly}
@@ -164,7 +164,8 @@ const mapDispatchToProps = {
   routerPush: push,
   toggleOrderModal,
   resetSwap,
-  removeSwundle
+  removeSwundle,
+  removePortfolio
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Balances)
