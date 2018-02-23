@@ -301,7 +301,7 @@ p {
   }
 }
 
-.btn-faast, .button-container {
+.btn-faast {
   @extend .text-small;
   @extend .text-center;
   @extend .box-shadow;
@@ -316,6 +316,7 @@ p {
 
   @include not-disabled {
     @include hover {
+      outline: none;
       @extend .gradient-background-hover;
     }
     @include active {
@@ -323,10 +324,10 @@ p {
     }
   }
 
-  &.button-small, &.btn-sm {
+  &.btn-sm {
     padding: 10px 20px;
   }
-  &.button-outline, &.btn-outline-faast {
+  &.btn-outline-faast {
     background: $dark-grey;
     color: $secondary-color;
     @include not-disabled {
@@ -335,6 +336,17 @@ p {
       }
       @include active {
         background: darken($dark-grey, $active-darken-percent)
+      }
+    }
+  }
+}
+
+a.btn-faast {
+  @include not-disabled {
+    @include hover {
+      color: $secondary-color-text;
+      &.btn-outline-faast {
+        color: $secondary-color;
       }
     }
   }

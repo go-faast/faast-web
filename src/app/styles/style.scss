@@ -98,15 +98,6 @@ span.faast-loading {
            color: $secondary-color;
          }
        }
-       .button-primary {
-         @extend .gradient-background;
-         padding: 15px 30px;
-         color: $dark-grey;
-         @extend .text-medium;
-         text-align: center;
-         max-width: 150px;
-         margin: auto;
-       }
        .cancel {
          @extend .text-medium-grey;
        }
@@ -312,21 +303,6 @@ span.faast-loading {
     margin-right: auto;
     min-height: 645px;
     padding: 30px;
-
-    .button-container {
-      margin-left: auto;
-      margin-right: auto;
-      max-width: 250px;
-      padding: 10px 0px;
-      border: 1px solid transparent;
-      @extend .gradient-background;
-
-      .button-item {
-        &:hover {
-          cursor: pointer;
-        }
-      }
-    }
 
     .title {
       @extend .gradient-text;
