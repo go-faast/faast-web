@@ -21,7 +21,7 @@ export default class EthereumWalletTrezor extends EthereumWalletSigner {
     this._isMocking = isMocking
   }
 
-  getType = EthereumWalletTrezor.type;
+  getType = () => EthereumWalletTrezor.type;
 
   getTypeLabel = () => 'TREZOR';
 

@@ -14,7 +14,7 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
     this.derivationPath = derivationPath
   }
 
-  getType = BitcoinWalletTrezor.type;
+  getType = () => BitcoinWalletTrezor.type;
 
   getTypeLabel = () => 'TREZOR';
 
