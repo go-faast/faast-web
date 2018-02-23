@@ -14,7 +14,7 @@ const SelectPortfolioDropdown = ({ portfolioIds, currentPortfolioId, changePortf
     <DropdownMenu>
       {portfolioIds.map((portfolioId) => (
         <DropdownItem key={portfolioId} active={portfolioId === currentPortfolioId} onClick={() => changePortfolio(portfolioId)}>
-          <WalletSummary id={portfolioId}/>
+          <WalletSummary.Connected id={portfolioId}/>
         </DropdownItem>
       ))}
       <DropdownItem divider />

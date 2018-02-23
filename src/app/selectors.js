@@ -148,7 +148,16 @@ export const getCurrentPortfolioWithWalletHoldings = (state) => {
   const currentPortfolio = getCurrentPortfolioWithHoldings(state)
   const result = {
     ...currentPortfolio,
-    nestedWallets: currentPortfolio.nestedWalletIds.map((nestedId) => getWalletWithHoldings(state, nestedId))
+    nestedWallets: currentPortfolio.nestedWalletIds
+      .map((nestedId) => getWalletWithHoldings(state, nestedId))
+      .map((nestedWallet) => ({
+        ...nestedWallet,
+        weight: toPercentage(nestedWallet.totalFiat, currentPortfolio.totalFiat),
+        assetHoldings: nestedWallet.assetHoldings.map((assetHolding) => ({
+          ...assetHolding,
+          percentage: toPercentage(assetHolding.fiat, currentPortfolio.totalFiat)
+        }))
+      }))
   }
   console.log(result)
   return result

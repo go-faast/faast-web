@@ -39,7 +39,7 @@ AddressSearchForm = reduxForm({
 const HeaderView = (props) => {
   const {
     view, disableAction, showAction, isPortfolioEmpty, stickyHeader, showAddressSearch,
-    handleCloseWallet, handleModify, handleCancel, handleSave, handleAddressSearch
+    handleModify, handleAddressSearch
   } = props
   const renderActions = () => (
     <Row className='medium-gutters justify-content-between justify-content-md-end'>
@@ -56,14 +56,6 @@ const HeaderView = (props) => {
           }
         </Col>
       )}
-      {view === 'modify' && ([
-        <Col key='cancel' xs='auto'>
-          <Button outline onClick={handleCancel}>cancel</Button>
-        </Col>,
-        <Col key='save' xs='auto'>
-          <Button onClick={handleSave}>save</Button>
-        </Col>
-      ])}
       {view === 'connect' && ([
         <Col key='balances' xs='auto'>
           <Button tag={Link} to ='/balances'>portfolio</Button>

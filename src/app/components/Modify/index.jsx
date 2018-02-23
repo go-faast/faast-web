@@ -281,24 +281,25 @@ class Modify extends Component {
 
   _handleCancel () {
     this.props.resetSwap()
-    this.props.history.goBack()
+    this.props.routerPush('/balances')
   }
 
   render () {
     const { portfolio } = this.props
     const { holdings } = this.state
-    console.log('render', holdings)
     const shownList = Object.values(holdings).reduce((a, b) => a.concat(b), []).filter(({ shown }) => shown)
+    const adjustedPortfolio = {
+      ...portfolio,
+      nestedWallets: portfolio.nestedWallets.map((nestedWallet) => ({ ...nestedWallet, assetHoldings: holdings[nestedWallet.id] }))
+    }
     const sliderProps = {
       max: portfolio.totalFiat.toNumber(),
       // allowance: this.state.allowance.fiat,
       onValueChange: this._handleSlider
     }
     const layoutProps = {
-      showAction: true,
+      showAction: false,
       view: 'modify',
-      handleCancel: this._handleCancel,
-      handleSave: this._handleSave,
       stickyHeader: true
     }
     const assetListProps = {
@@ -311,19 +312,19 @@ class Modify extends Component {
     return (
       <ModifyView
         layoutProps={layoutProps}
-        mq={this.props.mq}
         assetListProps={assetListProps}
         showAssetList={this.state.showAssetList}
         handleAssetListShow={this._handleAssetListShow}
         handleRemove={this._handleRemoveAsset}
-        holdings={holdings}
+        portfolio={adjustedPortfolio}
         sliderProps={sliderProps}
         allowance={this.state.allowance}
         handleFiatChange={this._handleFiatChange}
         handleWeightChange={this._handleWeightChange}
         showSignTxModal={this.props.orderModal.show}
         handleToggleSignTxModal={this.props.toggleOrderModal}
-        handleCancel={() => this.props.changeView('balances')}
+        handleCancel={this._handleCancel}
+        handleSave={this._handleSave}
       />
     )
   }
@@ -332,8 +333,7 @@ class Modify extends Component {
 const mapStateToProps = (state) => ({
   portfolio: getCurrentPortfolioWithWalletHoldings(state),
   allAssets: getAllAssets(state),
-  orderModal: state.orderModal,
-  mq: state.mediaQueries
+  orderModal: state.orderModal
 })
 
 const mapDispatchToProps = {

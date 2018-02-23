@@ -11,7 +11,7 @@ import Button from 'Components/Button'
 
 const ListItem = ({ id, active, nested, onClick }) => (
   <ListGroupItem action active={active} onClick={onClick} tag='button' className={classNames({ 'compact pl-5': nested })}>
-    <WalletSummary id={id} icon={nested} labelTag={nested ? 'span' : 'h6'}/>
+    <WalletSummary.Connected id={id} icon={nested} labelTag={nested ? 'span' : 'h6'}/>
   </ListGroupItem>
 )
 

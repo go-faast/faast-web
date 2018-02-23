@@ -1,13 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { Row, Col } from 'reactstrap'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
-import { Row, Col } from 'reactstrap'
 import { getWalletWithHoldings } from 'Selectors'
 import display from 'Utilities/display'
 import styles from './style'
 
-const WalletSummary = ({ icon, labelTag: LabelTag, wallet: { id, label, typeLabel, totalFiat, iconUrl, balancesLoaded } }) => (
+export const WalletSummary = ({ icon, labelTag: LabelTag, wallet: { id, label, typeLabel, totalFiat, iconUrl, balancesLoaded } }) => (
   <Row className='no-gutters'>
     <Col xs='12'><LabelTag>{id === 'default' ? (<i>{label}</i>) : label}</LabelTag></Col>
     <Col xs='12'>
@@ -29,7 +29,7 @@ const WalletSummary = ({ icon, labelTag: LabelTag, wallet: { id, label, typeLabe
 )
 
 WalletSummary.propTypes = {
-  id: PropTypes.string.isRequired,
+  wallet: PropTypes.object.isRequired,
   icon: PropTypes.bool,
   labelTag: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
 }
@@ -39,8 +39,10 @@ WalletSummary.defaultProps = {
   labelTag: 'h6',
 }
 
-const mapStateToProps = createStructuredSelector({
+export const ConnectedWalletSummary = connect(createStructuredSelector({
   wallet: (state, { id }) => getWalletWithHoldings(state, id),
-})
+}))(WalletSummary)
 
-export default connect(mapStateToProps)(WalletSummary)
+WalletSummary.Connected = ConnectedWalletSummary
+
+export default WalletSummary
