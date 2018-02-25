@@ -80,9 +80,11 @@ var config = {
   resolve: {
     alias: {
       Src: path.resolve(__dirname, 'src'),
+      Test: path.resolve(__dirname, 'test'),
+      Mock: 'Test/mock',
       Config: 'Src/config',
       Utilities: 'Src/utilities',
-      Services: 'Src/services',
+      Services: process.env.MOCK ? 'Mock/services' : 'Src/services',
       App: 'Src/app',
       Components: 'App/components',
       Styles: 'App/styles',
