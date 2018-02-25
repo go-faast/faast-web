@@ -1,7 +1,6 @@
 import { createAction } from 'redux-act'
-import { fetchGet } from 'Utilities/fetch'
 import log from 'Utilities/log'
-import config from 'Config'
+import Faast from 'Services/Faast'
 
 export const assetsAdded = createAction('ASSETS_UPDATED')
 export const assetsLoadingError = createAction('ASSETS_LOADING_ERROR')
@@ -12,19 +11,8 @@ export const assetPriceError = createAction('ASSET_PRICE_ERROR', (symbol, priceE
 export const assetPricesUpdated = createAction('ASSET_PRICES_UPDATED')
 export const assetPricesError = createAction('ASSET_PRICES_ERROR')
 
-export const retrieveAssets = () => (dispatch) => {
-  return fetchGet(`${config.siteUrl}/app/assets`)
-    .then((assets) => assets.filter((asset) => {
-      if (!asset.symbol) {
-        log.warn('omitting asset without symbol', asset)
-        return false
-      }
-      if (!asset.name) {
-        log.warn('omitting asset without name', asset.symbol)
-        return false
-      }
-      return true
-    }))
+export const retrieveAssets = () => (dispatch) =>
+  Faast.getAssets()
     .then((assets) => dispatch(assetsAdded(assets)))
     .catch((e) => {
       log.error(e)
@@ -32,10 +20,9 @@ export const retrieveAssets = () => (dispatch) => {
       dispatch(assetsLoadingError(message))
       throw new Error(message)
     })
-}
 
-export const retrieveAssetPrice = (symbol) => (dispatch) => {
-  return fetchGet(`${config.siteUrl}/app/portfolio-price/${symbol}`)
+export const retrieveAssetPrice = (symbol) => (dispatch) =>
+  Faast.getAssetPrice(symbol)
     .then((asset) => dispatch(assetPriceUpdated(asset)))
     .catch((e) => {
       log.error(e)
@@ -43,10 +30,9 @@ export const retrieveAssetPrice = (symbol) => (dispatch) => {
       dispatch(assetPriceError(symbol, message))
       throw new Error(message)
     })
-}
 
-export const retrieveAssetPrices = () => (dispatch) => {
-  return fetchGet(`${config.siteUrl}/app/portfolio-price`)
+export const retrieveAssetPrices = () => (dispatch) =>
+  Faast.getAssetPrices()
     .then((assets) => dispatch(assetPricesUpdated(assets)))
     .catch((e) => {
       log.error(e)
@@ -54,4 +40,3 @@ export const retrieveAssetPrices = () => (dispatch) => {
       dispatch(assetPricesError(message))
       throw new Error(message)
     })
-}

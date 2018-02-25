@@ -1,33 +1,25 @@
-
 import { filterErrors, filterObj } from 'Utilities/helpers'
-import { fetchGet, fetchPost, fetchDelete } from 'Utilities/fetch'
 import { clearSwap } from 'Utilities/storage'
 import log from 'Utilities/log'
+import Faast from 'Services/Faast'
 import { updateSwapOrder } from 'Actions/redux'
 import { restoreSwundle } from 'Actions/portfolio'
 import config from 'Config'
 
-export const getPriceChart = (symbol) => () => {
-  return fetchGet(`${config.siteUrl}/app/portfolio-chart/${symbol}`)
-}
+export const getPriceChart = (symbol) => () => Faast.getPriceChart(symbol)
 
-export const getMarketInfo = (pair) => () => {
-  return fetchGet(`${config.apiUrl}/marketinfo/${pair}`)
-}
+export const getMarketInfo = (pair) => () => Faast.getMarketInfo(pair)
 
-export const postExchange = (info) => () => {
-  return fetchPost(`${config.apiUrl}/shift`, info)
+export const postExchange = (info) => () => 
+  Faast.postExchange(info)
     .catch((err) => {
       log.error(err)
       const errMsg = filterErrors(err)
       throw new Error(errMsg)
     })
-}
 
-export const getOrderStatus = (depositSymbol, receiveSymbol, address, timestamp) => (dispatch) => {
-  let url = `${config.apiUrl}/txStat/${address}`
-  if (timestamp) url += `?after=${timestamp}`
-  return fetchGet(url)
+export const getOrderStatus = (depositSymbol, receiveSymbol, address, timestamp) => (dispatch) =>
+  Faast.getOrderStatus(depositSymbol, receiveSymbol, address, timestamp)
     .then((data) => {
       log.info('order status receive', data)
       // if (data.error || !data.status) throw new Error(data.error)
@@ -42,28 +34,22 @@ export const getOrderStatus = (depositSymbol, receiveSymbol, address, timestamp)
       const errMsg = filterErrors(err)
       throw new Error(errMsg)
     })
-}
 
-export const getSwundle = (address, isMocking) => (dispatch) => {
-  let url = `${config.apiUrl}/swundle/${address}`
-  return fetchGet(url)
+export const getSwundle = (address) => (dispatch) => 
+  Faast.getSwundle(address)
     .then((data) => {
       if (data.result && data.result.swap) {
-        dispatch(restoreSwundle(data.result.swap, address, isMocking))
+        dispatch(restoreSwundle(data.result.swap, address))
       }
     })
     .catch(log.error)
-}
 
-export const postSwundle = (address, swap) => () => {
-  const url = `${config.apiUrl}/swundle/${address}`
-  return fetchPost(url, { swap })
+export const postSwundle = (address, swap) => () =>
+  Faast.postSwundle(address, swap)
     .catch(log.error)
-}
 
 export const removeSwundle = (address) => () => {
   clearSwap(address)
-  const url = `${config.apiUrl}/swundle/${address}`
-  return fetchDelete(url)
+  return Faast.removeSwundle(address)
     .catch(log.error)
 }
