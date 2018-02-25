@@ -1,40 +1,20 @@
+import assets from 'Mock/assets'
+import assetPrices from 'Mock/assetPrices'
 
-const assets = {
-  ETH: {
-    symbol: 'ETH',
-    name: 'Ethereum',
-    decimals: 18,
-    walletUrl: 'faa.st/asset/ETH/walletUrl',
-    infoUrl: 'faa.st/asset/ETH/infoUrl',
-    deposit: true,
-    receive: true,
-  }
-}
+const indexBySymbol = (arr) => arr.reduce((bySymbol, a) => ({ ...bySymbol, [a.symbol]: a }), {})
 
-const priceData = {
-  ETH: {
-    symbol: 'ETH',
-    price_usd: 1234.56,
-    percent_change_1h: 1.23,
-    percent_change_24h: 4.56,
-    percent_change_7d: 7.89,
-    '24h_volume_usd': 123456789,
-    market_cap_usd: 9876543210,
-    available_supply: 99999999,
-    last_updated: '123456789'
-  }
-}
+const assetPriceBySymbol = indexBySymbol(assetPrices)
 
-const getAssets = () => Promise.resolve(Object.values(assets))
+const getAssets = () => Promise.resolve(assets)
 
 const getAssetPrice = (symbol) => {
-  if (!priceData[symbol]) {
+  if (!assetPriceBySymbol[symbol]) {
     return Promise.reject(new Error(`No price data mocked for ${symbol}`))
   }
-  return Promise.resolve(priceData[symbol])
+  return Promise.resolve(assetPriceBySymbol[symbol])
 }
 
-const getAssetPrices = () => Promise.resolve(Object.values(priceData))
+const getAssetPrices = () => Promise.resolve(assetPrices)
 
 const getPriceChart = (symbol) => Promise.resolve({})
 
