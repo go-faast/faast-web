@@ -74,8 +74,7 @@ export const updateWalletBalances = (walletId) => (dispatch) => Promise.resolve(
   .then(() => {
     const walletInstance = walletService.get(walletId)
     if (!walletInstance) {
-      log.error('no wallet with id', walletId)
-      throw new Error('failed to load balances')
+      throw new Error(`Could not find wallet with id ${walletId}`)
     }
     if (walletInstance.getType() === MultiWallet.type) {
       return Promise.all(walletInstance.wallets.map((nested) => dispatch(updateWalletBalances(nested.getId()))))
@@ -88,7 +87,12 @@ export const updateWalletBalances = (walletId) => (dispatch) => Promise.resolve(
     return symbolToBalance
   })
   .catch((e) => {
-    dispatch(walletBalancesError(walletId, e))
+    log.error(`Failed to update balances for wallet ${walletId}:`, e)
+    let message = e.message
+    if (message.includes('Failed to fetch')) {
+      message = 'Error loading wallet balances'
+    }
+    dispatch(walletBalancesError(walletId, message))
     return {}
   })
 

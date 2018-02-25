@@ -47,7 +47,7 @@ export const setupLogger = () => Promise.resolve()
       .then(() => idb.removeOld('logging'))
   })
   .catch((e) => {
-    log.error(e)
+    log.error('Failed to setup logger', e)
   })
 
 export const setupBlockstack = (dispatch) => Promise.resolve()
@@ -64,7 +64,9 @@ export const setupBlockstack = (dispatch) => Promise.resolve()
         .then((settings) => dispatch(setSettings(settings)))
     }
   })
-  .catch(log.error)
+  .catch((e) => {
+    log.error('Failed to setup Blockstack', e)
+  })
 
 export const setupLedger = () => Promise.resolve()
   .then(() => {
@@ -76,7 +78,9 @@ export const setupLedger = () => Promise.resolve()
         })
     }
   })
-  .catch(log.error)
+  .catch((e) => {
+    log.error('Failed to setup Ledger', e)
+  })
 
 export const init = () => (dispatch) => Promise.resolve()
   .then(() => dispatch(setupLogger))
