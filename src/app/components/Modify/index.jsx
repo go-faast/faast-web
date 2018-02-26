@@ -72,12 +72,8 @@ class Modify extends Component {
     const value = asset.fiat || ZERO
     const units = asset.balance || ZERO
     return {
+      ...asset,
       walletId,
-      symbol: asset.symbol,
-      name: asset.name,
-      decimals: asset.decimals,
-      price: asset.price,
-      change24: asset.change24,
       priceDecrease: asset.change24.isNegative(),
       shown: true,
       weight: {

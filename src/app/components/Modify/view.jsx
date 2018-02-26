@@ -13,13 +13,15 @@ import headerStyles from 'Components/Header/style'
 import config from 'Config'
 import { Row, Col, Card, CardHeader, CardBody, ListGroup, ListGroupItem, Modal, Alert, Button } from 'reactstrap'
 import WalletSummary from 'Components/WalletSummary'
+import Overlay from 'Components/Overlay'
 
 const ModifyView = (props) => {
   const { portfolio, handleCancel, handleSave, disableSaveMessage } = props
 
   const renderAssetRows = (assetHoldings) => assetHoldings.map((a) => {
     const changeIconDirection = a.priceDecrease ? 'down-icon' : 'up-icon'
-    const { walletId, symbol, name, change24, price, units, fiat, weight } = a
+    console.log(a)
+    const { walletId, symbol, name, change24, price, units, fiat, weight, swapEnabled } = a
     const fiatPrice = display.fiat(price)
     const percentChange24 = display.percentage(change24, true)
     const originalFiat = display.fiat(fiat.original)
@@ -34,6 +36,13 @@ const ModifyView = (props) => {
 
     return (
       <ListGroupItem key={symbol}>
+        {!swapEnabled && (
+          <Overlay>
+            <span className='text-orange'>
+              Swapping {name} is currently unavailable
+            </span>
+          </Overlay>
+        )}
         <Row className='medium-gutters-x align-items-center'>
           <Col xs lg='4' xl='5' className='order-1'>
             <Row className='medium-gutters align-items-center'>
