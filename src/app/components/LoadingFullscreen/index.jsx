@@ -1,16 +1,13 @@
 import React from 'react'
+import Overlay from 'Components/Overlay'
 import Loading from 'Components/Loading'
-import styles from './style'
 
-const LoadingFullScreen = (props) => (
-  <div>
-    <div className={styles.background} />
-    <div className={styles.loadingContainer}>
-      <div className={styles.loadingInnerContainer}>
-        <Loading {...props}/>
-      </div>
-    </div>
-  </div>
+const LoadingFullscreen = (props) => (
+  <Overlay>
+    <Loading {...props}/>
+  </Overlay>
 )
 
-export default LoadingFullScreen
+LoadingFullscreen.propTypes = Loading.propTypes
+
+export default LoadingFullscreen
