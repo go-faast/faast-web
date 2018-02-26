@@ -386,6 +386,11 @@ p {
       }
     }
   }
+  &.alert-warning {
+    background-color: #aa8b1f;
+    border-color: #be9b23;
+    color: #fef9e6;
+  }
   &.alert-danger {
     background-color: #800e0e;
     border-color: #8f1010;
