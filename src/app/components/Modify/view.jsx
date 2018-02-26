@@ -20,7 +20,6 @@ const ModifyView = (props) => {
 
   const renderAssetRows = (assetHoldings) => assetHoldings.map((a) => {
     const changeIconDirection = a.priceDecrease ? 'down-icon' : 'up-icon'
-    console.log(a)
     const { walletId, symbol, name, change24, price, units, fiat, weight, swapEnabled } = a
     const fiatPrice = display.fiat(price)
     const percentChange24 = display.percentage(change24, true)
@@ -37,10 +36,10 @@ const ModifyView = (props) => {
     return (
       <ListGroupItem key={symbol}>
         {!swapEnabled && (
-          <Overlay>
-            <span className='text-orange'>
+          <Overlay className='justify-content-start'>
+            <Alert color='info'>
               Swapping {name} is currently unavailable
-            </span>
+            </Alert>
           </Overlay>
         )}
         <Row className='medium-gutters-x align-items-center'>
