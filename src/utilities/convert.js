@@ -1,8 +1,9 @@
 import BigNumber from 'bignumber.js'
 import EthereumjsUtil from 'ethereumjs-util'
 import web3 from 'Services/Web3'
+import config from 'Config'
 
-if (!window.faast.dev) {
+if (!config.isDev) {
   BigNumber.config({ ERRORS: false })
 } else {
   window.BigNumber = BigNumber

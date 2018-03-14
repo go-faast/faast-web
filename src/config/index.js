@@ -12,7 +12,12 @@ BigNumber.config({ FORMAT: {
   fractionGroupSize: 0
 }})
 
+const nodeEnv = process.env.NODE_ENV
+
 export default {
+  nodeEnv,
+  isDev: nodeEnv === 'development',
+  isProd: nodeEnv === 'production',
   web3Provider: 'https://web3.faa.st/eth',
   bitcoreInsightApi: 'https://bitcore.faa.st/insight-api',
   siteUrl: typeof SITE_URL !== 'undefined' ? SITE_URL : 'https://faa.st',

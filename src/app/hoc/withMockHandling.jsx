@@ -4,6 +4,7 @@ import queryString from 'query-string'
 import { setMock } from 'Actions/redux'
 import { uppercase, lowercase } from 'Utilities/helpers'
 import { getAllAssetsArray } from 'Selectors'
+import config from 'Config'
 
 const withMockHandling = (Wrapped) => {
   class Mock extends Component {
@@ -18,7 +19,7 @@ const withMockHandling = (Wrapped) => {
     componentWillMount () {
       const assets = this.props.assets
       const query = queryString.parse(window.location.search)
-      if (window.faast.dev && query && query.mock === 'true') {
+      if (config.isDev && query && query.mock === 'true') {
         const mockObj = {}
         Object.keys(query).forEach((q) => {
           if (q.includes('_')) {

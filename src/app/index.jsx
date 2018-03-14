@@ -16,6 +16,7 @@ import { saveToAddress } from 'Utilities/storage'
 import 'react-redux-toastr/src/styles/index.scss?nsm'
 import 'Styles/style.scss?nsm'
 import { getCurrentPortfolio, isAppReady } from 'Selectors'
+import config from 'Config'
 
 const history = createHistory()
 const middleware = [
@@ -23,7 +24,7 @@ const middleware = [
   routerMiddleware(history)
 ]
 if (!window.faast) window.faast = {}
-if (window.faast.dev && !window.__REDUX_DEVTOOLS_EXTENSION__) middleware.push(logger)
+if (config.isDev && !window.__REDUX_DEVTOOLS_EXTENSION__) middleware.push(logger)
 window.faast.intervals = {
   orderStatus: [],
   txReceipt: []
