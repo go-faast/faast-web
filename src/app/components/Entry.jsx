@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
+import { hot } from 'react-hot-loader'
 import { init } from 'Actions/app'
 import { isAppReady, getAppError } from 'Selectors'
 import App from 'Components/App'
@@ -37,4 +38,4 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = { initApp: init }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Entry)
+export default hot(module)(connect(mapStateToProps, mapDispatchToProps)(Entry))

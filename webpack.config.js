@@ -57,20 +57,22 @@ const cssLoader = ({ sourceMap = true, modules = true } = {}) => ExtractTextPlug
   }]
 })
 
-const fileOutputDir = 'file/'
+const fileOutputPath = 'file/'
 const fileLoader = () => ({
   loader: 'file-loader',
   options: {
-    outputPath: fileOutputDir,
+    outputPath: fileOutputPath,
+    publicPath: fileOutputPath
   }
 })
 
-const assetOutputDir = 'asset/'
+const assetOutputPath = 'asset/'
 const assetLoader = (subDir) => ({
   loader: 'file-loader',
   options: {
     context: res,
-    outputPath: assetOutputDir,
+    outputPath: assetOutputPath,
+    publicPath: assetOutputPath,
     name: isDev ? '[path][name].[ext]' : `${subDir}/[hash].[ext]`
   }
 })
@@ -80,7 +82,7 @@ let config = {
   entry: path.join(src, 'index.jsx'),
   output: {
     path: dist,
-    filename: 'portfolio.[hash:10].js'
+    filename: isDev ? 'portfolio.js' : 'portfolio.[hash:10].js'
   },
   node: {
     fs: 'empty',
@@ -137,7 +139,7 @@ let config = {
     extensions: ['.js', '.jsx', '.json', '.scss', '.css']
   },
   plugins: [
-    new CleanPlugin(['*.*', assetOutputDir, fileOutputDir], { root: dist }),
+    new CleanPlugin(['*.*', assetOutputPath, fileOutputPath], { root: dist }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV)
     }),
@@ -203,7 +205,9 @@ if (!isDev) {
       new webpack.DefinePlugin({
         SITE_URL: JSON.stringify(process.env.SITE_URL),
         API_URL: JSON.stringify(process.env.API_URL)
-      })
+      }),
+      new webpack.NamedModulesPlugin(),
+      new webpack.HotModuleReplacementPlugin()
     ]
   })
 }
