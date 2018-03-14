@@ -1,5 +1,6 @@
 {
   "name": "faast-portfolio",
+  "productName": "faast Portfolio",
   "version": "2.0.0-alpha4",
   "description": "portfolio app for faa.st",
   "main": "dist/bundle.js",
@@ -25,8 +26,13 @@
     "autoprefixer": "^7.2.4",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "class-names": "^1.0.0",
+    "clean-webpack-plugin": "^0.1.19",
+    "copy-webpack-plugin": "^4.5.1",
+    "extract-text-webpack-plugin": "^3.0.2",
+    "favicons-webpack-plugin": "0.0.7",
     "file-loader": "^1.1.6",
     "hd-wallet": "^7.11.2",
+    "html-webpack-plugin": "^3.0.6",
     "lodash.merge": "^4.6.0",
     "lodash.mergewith": "^4.6.0",
     "lodash.omit": "^4.5.0",
@@ -41,6 +47,7 @@
     "reselect": "^3.0.1",
     "serve": "^6.0.6",
     "uuid": "^3.2.1",
+    "webpack-merge": "^4.1.2",
     "worker-loader": "^1.1.0"
   },
   "devDependencies": {
