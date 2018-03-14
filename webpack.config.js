@@ -61,8 +61,7 @@ const fileOutputPath = 'file/'
 const fileLoader = () => ({
   loader: 'file-loader',
   options: {
-    outputPath: fileOutputPath,
-    publicPath: fileOutputPath
+    outputPath: fileOutputPath
   }
 })
 
@@ -72,7 +71,6 @@ const assetLoader = (subDir) => ({
   options: {
     context: res,
     outputPath: assetOutputPath,
-    publicPath: assetOutputPath,
     name: isDev ? '[path][name].[ext]' : `${subDir}/[hash].[ext]`
   }
 })
@@ -125,6 +123,7 @@ let config = {
       Src: src,
       Res: res,
       Test: test,
+      Img: 'Res/img',
       Mock: 'Test/mock',
       Config: 'Src/config',
       Utilities: 'Src/utilities',

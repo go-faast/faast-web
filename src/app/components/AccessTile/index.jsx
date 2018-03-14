@@ -8,7 +8,7 @@ const AccessTile = ({ name, icon, handleClick }) => {
       <div className={styles.name}>
         {name}
       </div>
-      <img src={`/img/${icon}`} className={styles.icon}/>
+      <img src={icon} className={styles.icon}/>
     </button>
   )
 }

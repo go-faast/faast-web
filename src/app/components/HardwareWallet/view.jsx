@@ -7,14 +7,17 @@ import HWAddressSelect from 'Components/HWAddressSelect'
 import Units from 'Components/Units'
 import styles from './style'
 
+import ledgerLogo from 'Img/ledger-logo.png'
+import trezorLogo from 'Img/trezor-logo.png'
+
 const typeToProps = {
   ledger: {
     name: 'Ledger Wallet',
-    icon: 'ledger-logo.png'
+    icon: ledgerLogo
   },
   trezor: {
     name: 'TREZOR',
-    icon: 'trezor-logo.png'
+    icon: trezorLogo
   }
 }
 

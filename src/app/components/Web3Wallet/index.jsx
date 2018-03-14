@@ -8,18 +8,22 @@ import { openWallet } from 'Actions/portfolio'
 import web3 from 'Services/Web3'
 import { EthereumWalletWeb3 } from 'Services/Wallet'
 
+import metamaskLogo from 'Img/metamask-logo.png'
+import mistLogo from 'Img/mist-logo.png'
+import parityLogo from 'Img/parity-logo.svg'
+
 const typeToProps = {
   metamask: {
     name: 'MetaMask',
-    icon: 'metamask-logo.png',
+    icon: metamaskLogo,
   },
   mist: {
     name: 'Mist Browser',
-    icon: 'mist-logo.png',
+    icon: mistLogo,
   },
   parity: {
     name: 'Parity',
-    icon: 'parity-logo.svg',
+    icon: parityLogo,
   }
 }
 
