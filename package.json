@@ -1,20 +1,17 @@
 {
   "name": "faast-portfolio",
-  "productName": "faast Portfolio",
+  "productName": "Faast Portfolio",
   "version": "2.0.0-alpha4",
   "description": "portfolio app for faa.st",
-  "main": "dist/bundle.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "serve dist --cors --open",
-    "build-webpack": "cross-env NODE_ENV=production webpack --progress --profile",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server",
     "lint": "eslint src/",
-    "build": "npm run lint && npm run build-webpack",
+    "build:webpack": "webpack --progress",
+    "build": "npm run lint && npm run build:webpack",
     "version": "npm run build && git add -A dist",
     "postversion": "git push && git push --tags",
-    "release": "git checkout master && git merge develop && git push && git checkout develop",
-    "dev-server": "cross-env WEBPACK_PORT=8080 webpack-dev-server",
-    "dev": "concurrently --kill-others \"serve dist --cors\" \"npm run dev-server\""
+    "release": "git checkout master && git merge develop && git push && git checkout develop"
   },
   "author": "Nathan Wood <nathan@bitaccess.co>",
   "license": "MIT",
