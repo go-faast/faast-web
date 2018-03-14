@@ -68,7 +68,6 @@
     "idb-wrapper": "^1.7.1",
     "lodash": "^4.17.4",
     "node-sass": "^4.5.3",
-    "open-browser-webpack-plugin": "0.0.5",
     "pad-left": "^2.1.0",
     "prop-types": "^15.6.0",
     "qrcode.react": "^0.7.1",
