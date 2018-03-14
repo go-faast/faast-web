@@ -192,6 +192,8 @@ if (!isDev) {
   config = merge(config, {
     devtool: 'eval-source-map',
     devServer: {
+      contentBase: dist,
+      hot: true,
       compress: true,
       historyApiFallback: true,
       inline: true,

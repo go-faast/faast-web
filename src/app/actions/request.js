@@ -4,7 +4,6 @@ import log from 'Utilities/log'
 import Faast from 'Services/Faast'
 import { updateSwapOrder } from 'Actions/redux'
 import { restoreSwundle } from 'Actions/portfolio'
-import config from 'Config'
 
 export const getPriceChart = (symbol) => () => Faast.getPriceChart(symbol)
 
