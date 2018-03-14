@@ -3,6 +3,12 @@
   "productName": "Faast Portfolio",
   "version": "2.0.0-alpha4",
   "description": "portfolio app for faa.st",
+  "author": "Nathan Wood <nathan@bitaccess.co>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/go-faast/faast-portfolio.git"
+  },
   "scripts": {
     "start": "serve dist --cors --open",
     "dev": "cross-env NODE_ENV=development webpack-dev-server",
@@ -13,13 +19,13 @@
     "postversion": "git push && git push --tags",
     "release": "git checkout master && git merge develop && git push && git checkout develop"
   },
-  "author": "Nathan Wood <nathan@bitaccess.co>",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/go-faast/faast-portfolio.git"
+  "standard": {
+    "ignore": [
+      "dist/",
+      "res/"
+    ]
   },
-  "dependencies": {
+  "devDependencies": {
     "autoprefixer": "^7.2.4",
     "babel-plugin-transform-decorators-legacy": "^1.3.4",
     "class-names": "^1.0.0",
@@ -45,9 +51,7 @@
     "serve": "^6.0.6",
     "uuid": "^3.2.1",
     "webpack-merge": "^4.1.2",
-    "worker-loader": "^1.1.0"
-  },
-  "devDependencies": {
+    "worker-loader": "^1.1.0",
     "accounting": "^0.4.1",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.3",
@@ -99,11 +103,5 @@
     "uglifyjs-webpack-plugin": "^1.1.1",
     "webpack": "^3.5.5",
     "webpack-dev-server": "^2.7.1"
-  },
-  "standard": {
-    "ignore": [
-      "*.bundle.js",
-      "**/vendor/"
-    ]
   }
 }
