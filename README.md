@@ -4,7 +4,7 @@ The open-source portfolio application featured on https://faa.st
 
 ## Getting Started
 
-To run the application from your machine, download and open the **index.html** file.
+To run the application from your machine, download and open the **dist/index.html** file.
 You may also serve the file to your local network, instructions follow below:
 
 ## Production/Building/Development
@@ -17,7 +17,7 @@ You may also serve the file to your local network, instructions follow below:
 
 To serve the application only, install the **serve** module as follows:
 ```
-npm install --production
+npm install serve
 ```
 
 To start serving:
@@ -51,7 +51,7 @@ The faast Portfolio is a React app that is bundled with Webpack. For easier deve
 npm run dev
 ```
 
-Once compiled, the browser will open to **http://localhost:5000#dev**. The **#dev** hash indicates that the bundle should be read from the Webpack Dev Server on port 8080.
+Once compiled, open **http://localhost:8080** in your browser.
 
 ### Branches
 
