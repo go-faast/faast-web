@@ -88,7 +88,10 @@ export const updateWalletBalances = (walletId) => (dispatch) => Promise.resolve(
   })
   .catch((e) => {
     log.error(`Failed to update balances for wallet ${walletId}:`, e)
-    let message = e.message
+    let message = e.message || e
+    if (typeof message !== 'string') { 
+      message = 'Unknown error occured while updating wallet balances'
+    }
     if (message.includes('Failed to fetch')) {
       message = 'Error loading wallet balances'
     }
