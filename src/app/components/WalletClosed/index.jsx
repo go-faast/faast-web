@@ -16,8 +16,7 @@ const WalletClosed = ({ isEmpty, path }) => (
 
 WalletClosed.propTypes = {
   isEmpty: PropTypes.bool.isRequired,
-  path: PropTypes.string.isRequired,
-  component: PropTypes.func.isRequired
+  path: PropTypes.string.isRequired
 }
 
 const mapStateToProps = (state) => ({
