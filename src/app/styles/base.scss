@@ -226,7 +226,6 @@ p {
 
   .card-header {
     border-color: $menu-border-color;
-    padding: 12px 20px;
     &.grid-group {
       @include grid-group($card-border);
     }

@@ -1,6 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Collapse } from 'reactstrap'
+import {
+  Row, Col, Table, Button, Alert, Collapse,
+  Card, CardBody, CardHeader, CardTitle, CardSubtitle, CardText
+} from 'reactstrap'
 import BigNumber from 'bignumber.js'
 import classNames from 'class-names'
 import { Link } from 'react-router-dom'
@@ -14,81 +17,19 @@ import display from 'Utilities/display'
 import styles from './style'
 import config from 'Config'
 import { breakpointNext } from 'Utilities/breakpoints'
-import { Row, Col, Card, CardBody, CardHeader, Table, Button, Alert } from 'reactstrap'
 import WalletSelector from 'Components/WalletSelector'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
+import OrderStatus from 'Components/OrderStatus'
 
 const { collapseTablePoint } = styles
 const expandTablePoint = breakpointNext(collapseTablePoint)
-
-const OrderInProgress = (props) => {
-  const statusIcon = () => {
-    switch (props.status) {
-    case 'working':
-      return <div className='faast-loading loading-medium margin-top-30 margin-left-10' />
-    case 'complete':
-      return <div className='margin-top-30 margin-left-10' />
-    case 'error':
-      return <div className='margin-top-30 margin-left-10' />
-    }
-  }
-  const statusTitle = () => {
-    switch (props.status) {
-    case 'working':
-      return 'orders in progress'
-    case 'complete':
-      return 'orders complete'
-    case 'error':
-      return 'orders done with errors'
-    }
-  }
-  const statusContent = () => {
-    switch (props.status) {
-    case 'working':
-      return 'The orders placed with respect to your previous transaction is still in progress. You cannot modify your portfolio until your previous orders have been fulfilled.'
-    case 'complete':
-      return 'The orders have completed successfully. It may take a short amount of time to see the adjusted balances reflected in your portfolio.'
-    case 'error':
-      return 'There was an issue with one or more of your orders. Select "view status" for more details.'
-    }
-  }
-  return (
-    <Row className='no-gutters-x my-3'>
-      <Col className='tile-container'>
-        <div onClick={props.handleViewStatus} className='tile-new' style={{ zIndex: 10 }}>view status</div>
-        <Row>
-          <Col xs='12' md='3'>
-            {statusIcon()}
-          </Col>
-          <Col xs='12' md='6'>
-            <div className='text-medium text-gradient'>
-              {statusTitle()}
-            </div>
-            <div className='text-small text-medium-grey'>
-              {statusContent()}
-            </div>
-          </Col>
-          <Col xs='12' md='3'>
-            {props.status === 'working' &&
-              <div className='row align-items-end' style={{ height: '100%' }}>
-                <div className='col text-right text-x-small text-medium-grey'>
-                  <span className='cursor-pointer' onClick={props.handleForgetOrder}>forget</span>
-                </div>
-              </div>
-            }
-          </Col>
-        </Row>
-      </Col>
-    </Row>
-  )
-}
 
 const ChangePercent = ({ children: change }) => <span className={change.isNegative() ? 'text-red' : 'text-green'}>{display.percentage(change, true)}</span>
 
 const BalancesView = (props) => {
   const {
     wallet, viewOnly, orderStatus, addressProps, pieChart,
-    toggleChart, layoutProps, showOrderModal, handleToggleOrderModal,
+    toggleChart, layoutProps, showOrderModal, handleToggleOrderModal, handleForgetOrder,
     openCharts, disableModify, disableRemove, handleRemove, isDefaultPortfolioEmpty
   } = props
 
@@ -207,9 +148,6 @@ const BalancesView = (props) => {
       {!viewOnly &&
         <Welcome />
       }
-      {!viewOnly && !!orderStatus &&
-        <OrderInProgress status={orderStatus} handleViewStatus={handleToggleOrderModal} />
-      }
       <div className='my-3'>
         <Row className='large-gutters'>
           {!isDefaultPortfolioEmpty && (
@@ -240,6 +178,11 @@ const BalancesView = (props) => {
                   </Row>
                 </Col>
               )}
+              {!viewOnly && Boolean(orderStatus) &&
+                <Col xs='12'>
+                  <OrderStatus status={orderStatus} handleViewStatus={handleToggleOrderModal} handleForgetOrder={handleForgetOrder} />
+                </Col>
+              }
               <Col xs='12'>
                 <Card>
                   <CardHeader className='grid-group'>
