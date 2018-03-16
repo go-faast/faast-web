@@ -101,7 +101,7 @@ export default class Wallet {
   signTransaction = (tx, options = {}) => Promise.resolve(tx)
     .then(this._validateTx)
     .then(() => this._signTxData(tx.txData, { ...options, tx }))
-    .then((signedTxData) => log.traceInline('signTransaction', ({
+    .then((signedTxData) => log.debugInline('signTransaction', ({
       ...tx,
       signed: true,
       signedTxData,

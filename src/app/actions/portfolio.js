@@ -187,6 +187,7 @@ const swapMarketInfo = (swapList) => (dispatch) => {
 }
 
 const swapPostExchange = (swapList, wallet) => (dispatch) => {
+  let previousTx = null
   return processArray(swapList, (swap) => {
     const finish = (e, x) => dispatch(swapFinish('swapPostExchange', swap, e, x))
     const walletInstance = walletService.get(wallet.id)
@@ -200,8 +201,9 @@ const swapPostExchange = (swapList, wallet) => (dispatch) => {
     }))).then((order) => {
       const fromAsset = order.depositType.toUpperCase()
       const toAsset = order.withdrawalType.toUpperCase()
-      return walletInstance.createTransaction(order.deposit, swap.amount, fromAsset)
+      return walletInstance.createTransaction(order.deposit, swap.amount, fromAsset, { previousTx })
         .then((tx) => {
+          previousTx = tx
           dispatch(insertSwapData(fromAsset, toAsset, {
             order,
             tx
@@ -302,7 +304,8 @@ export const sendSwapDeposits = (swap, options, isMocking) => (dispatch) => {
         return dispatch(mockTransaction(send, receive))
       }
       const eventListeners = createTransferEventListeners(dispatch, send, receive, true)
-      return dispatch(getCurrentPortfolioInstance()).sendTransaction(receive.tx, { ...eventListeners, ...options })
+      const walletInstance = dispatch(getCurrentPortfolioInstance())
+      return walletInstance.sendTransaction(receive.tx, { ...eventListeners, ...options })
         .then(() => dispatch(pollOrderStatus(send, receive)))
     })
   })

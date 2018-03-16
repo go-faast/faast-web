@@ -149,10 +149,15 @@ export default class EthereumWallet extends Wallet {
         throw new Error(`Unsupported asset ${asset.symbol || asset} provided to EthereumWallet`)
       }
       tx.value = toHex(tx.value)
+
       const previousTx = options.previousTx
+      let customNonce = options.nonce
+      if (!customNonce && previousTx && previousTx.txData.from === tx.from) {
+        customNonce = toBigNumber(previousTx.txData.nonce).plus(1).toNumber()
+      }
       const customGasPrice = options.gasPrice
       const customGasLimit = options.gasLimit || options.gas
-      const customNonce = options.nonce || (previousTx && previousTx.txData.from === tx.from && previousTx.txData.nonce)
+
       return Promise.all([
         customGasPrice || web3.eth.getGasPrice(),
         customGasLimit || web3.eth.estimateGas(tx),
@@ -172,7 +177,7 @@ export default class EthereumWallet extends Wallet {
           nonce: toHex(nonce)
         }
       }))
-      .then((tx) => log.traceInline('createTransaction', ({
+      .then((tx) => log.debugInline('createTransaction', ({
         ...tx,
         ...tx.txData // TODO: Added for back compat. Remove after refactoring
       })))
