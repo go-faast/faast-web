@@ -13,11 +13,14 @@ BigNumber.config({ FORMAT: {
 }})
 
 const nodeEnv = process.env.NODE_ENV
+const isDev = nodeEnv === 'development'
+const isProd = nodeEnv === 'production'
 
 export default {
   nodeEnv,
-  isDev: nodeEnv === 'development',
-  isProd: nodeEnv === 'production',
+  isDev,
+  isProd,
+  logLevel: process.env.LOG_LEVEL || (isDev ? 'debug' : 'info'),
   web3Provider: 'https://web3.faa.st/eth',
   bitcoreInsightApi: 'https://bitcore.faa.st/insight-api',
   siteUrl: typeof SITE_URL !== 'undefined' ? SITE_URL : 'https://faa.st',

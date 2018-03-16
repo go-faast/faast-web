@@ -1,5 +1,6 @@
 import idb from './idb'
 import { dateNowString } from './helpers'
+import config from 'Config'
 
 const logger = {}
 
@@ -12,7 +13,7 @@ const logLevels = {
 }
 
 const log = (level) => (text, ...data) => {
-  const appLogLevel = window.faast.log_level || 'info'
+  const appLogLevel = window.faast.log_level || config.logLevel
   if (logLevels[level] >= logLevels[appLogLevel]) {
     console[level](text, ...data)
     if (text instanceof Error) text = text.message
