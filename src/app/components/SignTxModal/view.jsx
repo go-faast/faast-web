@@ -187,7 +187,7 @@ const SignTxForm = reduxForm({
         <div className='form-group text-center'>
           <Button color='faast'
             disabled={!props.readyToSign || props.isSigning}
-            onClick={props.readyToSign && !props.isSigning && props.handleSubmit}>
+            onClick={props.handleSubmit}>
             {props.buttonText}
           </Button>
         </div>
