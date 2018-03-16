@@ -43,34 +43,46 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
       })
   };
 
-  createTransaction = (toAddress, amount, assetOrSymbol) =>
-    Promise.resolve(assetOrSymbol)
-      .then(this.assertAssetSupported)
-      .then(this.getAsset)
-      .then((asset) => ({
-        toAddress,
-        amount,
-        asset,
-        signed: false,
-        feeAmount: null,
-        feeAsset: 'BTC',
-        txData: [{
-          address: toAddress,
-          amount: toSmallestDenomination(amount, asset.decimals).toNumber(),
-        }]
-      }));
+  createTransaction = (toAddress, amount, assetOrSymbol) => Promise.resolve(assetOrSymbol)
+    .then(this.assertAssetSupported)
+    .then(this.getAsset)
+    .then((asset) => ({
+      walletId: this.getId(),
+      toAddress,
+      amount,
+      asset,
+      signed: false,
+      feeAmount: null,
+      feeAsset: 'BTC',
+      txData: [{
+        address: toAddress,
+        amount: toSmallestDenomination(amount, asset.decimals).toNumber(),
+      }]
+    }));
 
-  sendTransaction = ({ txData, ...rest }) => {
-    log.info('sendTransaction', txData, rest)
-    return Trezor.composeAndSignTx(txData)
-      .then((result) => {
-        log.info('Transaction composed and signed:', result)
-        return result.serialized_tx
-      })
-      .then(Trezor.pushTransaction)
-      .then((result) => {
-        log.info('Transaction pushed:', result)
-        return result.txid
-      })
+  _signTxData = (txData) => Trezor.composeAndSignTx(txData)
+    .then((result) => {
+      log.info('Transaction composed and signed:', result)
+      return result.serialized_tx
+    });
+
+  _sendSignedTxData = (signedTxData) => Trezor.pushTransaction(signedTxData)
+    .then((result) => {
+      log.info('Transaction pushed:', result)
+      return result.txid
+    });
+
+  _validateTxData = (txData) => {
+    if (txData === null || !Array.isArray(txData)) {
+      throw new Error(`Invalid ${this.getType} txData of type ${typeof txData}`)
+    }
+    return txData
   };
+
+  _validateSignedTxData = (signedTxData) => {
+    if (typeof signedTxData !== 'string') {
+      throw new Error(`Invalid ${this.getType} signedTxData of type ${typeof signedTxData}`)
+    }
+    return signedTxData
+  }
 }

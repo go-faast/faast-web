@@ -44,22 +44,14 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
 
   _checkAvailable = () => checkAccountAvailable(this.address);
 
-  sendTransaction = ({ txData: tx }, options = {}) => {
-    const { onTxHash, onReceipt, onConfirmation, onError } = options
-    return Promise.resolve(tx)
-      .then(this._assignNonce)
-      .then((tx) => web3.eth.sendTransaction({
-        ...tx,
-        value: toBigNumber(tx.value),
-        gas: toBigNumber(tx.gasLimit).toNumber(),
-        gasPrice: toBigNumber(tx.gasPrice),
-        nonce: toBigNumber(tx.nonce).toNumber()
-      }).once('transactionHash', onTxHash)
-        .once('receipt', onReceipt)
-        .on('confirmation', onConfirmation)
-        .on('error', onError))
-        .catch(onError)
-  };
+  _signTxData = (txData) => Promise.resolve().then(() =>
+    web3.eth.signTransaction({
+      ...txData,
+      value: toBigNumber(txData.value),
+      gas: toBigNumber(txData.gasLimit).toNumber(),
+      gasPrice: toBigNumber(txData.gasPrice),
+      nonce: toBigNumber(txData.nonce).toNumber()
+    }));
 
   static fromDefaultAccount = () => {
     const { defaultAccount, getAccounts } = web3.eth

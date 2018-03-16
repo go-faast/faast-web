@@ -2,12 +2,13 @@ import EthereumjsWallet from 'ethereumjs-wallet'
 import EthereumjsTx from 'ethereumjs-tx'
 
 import config from 'Config'
-import { stripHexPrefix, parseJson } from 'Utilities/helpers'
+import { addHexPrefix, stripHexPrefix, parseJson } from 'Utilities/helpers'
 import { toChecksumAddress } from 'Utilities/convert'
+import log from 'Utilities/log'
 
-import EthereumWalletSigner from './EthereumWalletSigner'
+import EthereumWallet from './EthereumWallet'
 
-export default class EthereumWalletKeystore extends EthereumWalletSigner {
+export default class EthereumWalletKeystore extends EthereumWallet {
 
   static type = 'EthereumWalletKeystore';
 
@@ -76,18 +77,15 @@ export default class EthereumWalletKeystore extends EthereumWalletSigner {
     return new EthereumWalletKeystore(EthereumjsWallet.fromV3(this.keystore, password, true))
   };
 
-  signTx = (txParams, { password }) => {
-    return Promise.resolve(txParams)
-      .then(this._validateTx)
-      .then(() => {
-        if (this._isEncrypted) {
-          return this.decrypt(password).signTx(txParams)
-        }
-        const tx = new EthereumjsTx(txParams)
-        tx.sign(this.keystore.getPrivateKey())
-        return tx.serialize().toString('hex')
-      })
-  };
+  _signTxData = (txData, { password }) => Promise.resolve().then(() => {
+    let keystore = this.keystore
+    if (this._isEncrypted) {
+      keystore = this.decrypt(password).keystore
+    }
+    const signedTx = new EthereumjsTx(txData)
+    signedTx.sign(keystore.getPrivateKey())
+    return this._signedEthJsTxToObject(signedTx)
+  });
 
   getFileName = (password) => {
     return Promise.resolve(this.decrypt(password).keystore.getV3Filename())

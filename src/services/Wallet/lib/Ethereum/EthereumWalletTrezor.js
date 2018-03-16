@@ -5,12 +5,11 @@ import HDKey from 'hdkey'
 import log from 'Utilities/log'
 import { stripHexPrefix, addHexPrefix } from 'Utilities/helpers'
 import { toHex } from 'Utilities/convert'
-import { mockHardwareWalletSign } from 'Actions/mock'
 import Trezor from 'Services/Trezor'
 
-import EthereumWalletSigner from './EthereumWalletSigner'
+import EthereumWallet from './EthereumWallet'
 
-export default class EthereumWalletTrezor extends EthereumWalletSigner {
+export default class EthereumWalletTrezor extends EthereumWallet {
 
   static type = 'EthereumWalletTrezor';
 
@@ -46,11 +45,9 @@ export default class EthereumWalletTrezor extends EthereumWalletSigner {
 
   getAddress = () => this.address;
 
-  signTx = (txParams) => {
-    this._validateTx(txParams)
-    if (this._isMocking) return mockHardwareWalletSign('trezor')
+  _signTxData = (txData) => Promise.resolve().then(() => {
     Trezor.closeAfterSuccess(false)
-    const { nonce, gasPrice, gasLimit, to, value, data, chainId } = txParams
+    const { nonce, gasPrice, gasLimit, to, value, data, chainId } = txData
     return Trezor.signEthereumTx(
       this.derivationPath,
       stripHexPrefix(nonce),
@@ -60,14 +57,14 @@ export default class EthereumWalletTrezor extends EthereumWalletSigner {
       stripHexPrefix(value),
       stripHexPrefix(data) || null,
       chainId
-    ).then(({ r, s, v }) => {
-      log.info('trezor signed tx')
-      return new EthereumjsTx({
-        ...txParams,
-        r: addHexPrefix(r),
-        s: addHexPrefix(s),
-        v: toHex(v)
-      }).serialize().toString('hex')
+    ).then((result) => {
+      log.info('trezor signed tx', result)
+      return this._signedEthJsTxToObject(new EthereumjsTx({
+        ...txData,
+        r: addHexPrefix(result.r),
+        s: addHexPrefix(result.s),
+        v: toHex(result.v)
+      }))
     }).catch((e) => {
       if (e.message === 'Action cancelled by user') {
         throw new Error('Transaction was denied')
@@ -75,5 +72,5 @@ export default class EthereumWalletTrezor extends EthereumWalletSigner {
         throw new Error(`Error from Trezor - ${e.message}`)
       }
     })
-  };
+  });
 }

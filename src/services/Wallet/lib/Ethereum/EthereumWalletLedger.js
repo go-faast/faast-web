@@ -3,15 +3,14 @@ import EthereumjsTx from 'ethereumjs-tx'
 
 import log from 'Utilities/log'
 import { addHexPrefix } from 'Utilities/helpers'
-import { mockHardwareWalletSign } from 'Actions/mock'
 
-import EthereumWalletSigner from './EthereumWalletSigner'
+import EthereumWallet from './EthereumWallet'
 
 const createAddressGetter = (derivationPath) => (index) =>
   window.faast.hw.ledger.getAddress_async(`${derivationPath}/${index}`)
     .then(({ address }) => address)
 
-export default class EthereumWalletLedger extends EthereumWalletSigner {
+export default class EthereumWalletLedger extends EthereumWallet {
 
   static type = 'EthereumWalletLedger';
 
@@ -41,13 +40,11 @@ export default class EthereumWalletLedger extends EthereumWalletSigner {
 
   getAddress = () => this.address;
 
-  signTx = (txParams) => {
-    this._validateTx(txParams)
-    if (this._isMocking) return mockHardwareWalletSign('ledger')
+  _signTxData = (txData) => Promise.resolve().then(() => {
     let tx
     try {
-      tx = new EthereumjsTx(txParams)
-      tx.raw[6] = Buffer.from([txParams.chainId])
+      tx = new EthereumjsTx(txData)
+      tx.raw[6] = Buffer.from([txData.chainId])
       tx.raw[7] = 0
       tx.raw[8] = 0
     } catch (e) {
@@ -56,12 +53,13 @@ export default class EthereumWalletLedger extends EthereumWalletSigner {
 
     return window.faast.hw.ledger.signTransaction_async(this.derivationPath, RLP.encode(tx.raw))
       .then((result) => {
-        log.info('ledger wallet signed tx')
-        return new EthereumjsTx(Object.assign({}, txParams, {
+        log.info('ledger wallet signed tx', result)
+        return this._signedEthJsTxToObject(new EthereumjsTx({
+          ...txData,
           r: addHexPrefix(result.r),
           s: addHexPrefix(result.s),
           v: addHexPrefix(result.v)
-        })).serialize().toString('hex')
+        }))
       })
       .fail((ex) => {
         if (ex === 'Invalid status 6a80') {
@@ -74,6 +72,6 @@ export default class EthereumWalletLedger extends EthereumWalletSigner {
           throw new Error('Transaction timed out, please try again')
         }
       })
-  };
+  });
 }
   

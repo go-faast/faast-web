@@ -6,7 +6,7 @@ import Wallet from './Wallet'
 
 const selectFirst = (wallets) => wallets[0]
 
-const resolveId = (walletOrId) => typeof walletOrId !== 'string' ? walletOrId.getId() : walletOrId
+const resolveId = (walletOrId) => walletOrId instanceof Wallet ? walletOrId.getId() : walletOrId
 
 const ZERO = toBigNumber(0)
 
@@ -99,7 +99,7 @@ export default class MultiWallet extends Wallet {
 
   isAssetSupported = (assetOrSymbol) => this.wallets.some((wallet) => wallet.isAssetSupported(assetOrSymbol));
 
-  _chooseWallet = (assetOrSymbol, options, applyToWallet) => {
+  _chooseWallet = (assetOrSymbol, options, applyToWallet) => Promise.resolve().then(() => {
     options = {
       selectWalletCallback: selectFirst,
       ...(options || {})
@@ -118,27 +118,38 @@ export default class MultiWallet extends Wallet {
       return selectedWallet.then(applyToWallet)
     }
     return applyToWallet(selectedWallet)
-  };
+  });
   
-  getFreshAddress = (assetOrSymbol, options = {}) => {
+  getFreshAddress = (assetOrSymbol, options = {}) => Promise.resolve().then(() => {
     if (!assetOrSymbol) {
       return null
     }
     return this._chooseWallet(assetOrSymbol, options, (wallet) => wallet.getFreshAddress(assetOrSymbol, options))
-  };
-
-  transfer = (toAddress, amount, assetOrSymbol, options = {}) => {
-    return this._chooseWallet(assetOrSymbol, options, (wallet) => wallet.transfer(toAddress, amount, assetOrSymbol, options))
-  };
+  });
 
   createTransaction = (toAddress, amount, assetOrSymbol, options = {}) => {
     return this._chooseWallet(assetOrSymbol, options, (wallet) => wallet.createTransaction(toAddress, amount, assetOrSymbol, options))
   };
 
-  sendTransaction = (tx, options = {}) => {
-    // TODO: Choose wallet based on tx.fromAddress
-    return this._chooseWallet(tx.asset, options, (wallet) => wallet.sendTransaction(tx, options))
+  _validateTx = (tx) => {
+    if (tx === null || typeof tx !== 'object') {
+      throw new Error(`Invalid tx of type ${typeof tx}`)
+    }
+    const wallet = this.getWallet(tx.walletId)
+    if (!wallet) {
+      throw new Error(`Invalid tx provided to ${this.getType()} ${this.getId()} with invalid walletId ${tx.walletId}`)
+    }
+    return tx
   };
+
+  _callWalletTxFn = (fnName) => (tx, options) => Promise.resolve().then(() => {
+    const wallet = this.getWallet(options.tx.walletId)
+    return wallet[fnName](tx, options)
+  });
+
+  _signTxData = this._callWalletTxFn('_signTxData');
+
+  _sendSignedTxData = this._callWalletTxFn('_sendSignedTxData');
 
   getBalance = (assetOrSymbol, options = {}) => {
     const balancePromises = this._getWalletsForAsset(assetOrSymbol)
@@ -151,4 +162,3 @@ export default class MultiWallet extends Wallet {
       .then((walletBalances) => reduceByKey(walletBalances, plus, ZERO))
   };
 }
-window.MultiWallet = MultiWallet

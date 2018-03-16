@@ -1,6 +1,9 @@
 import { abstractMethod, assertExtended } from 'Utilities/reflect'
+import log from 'Utilities/log'
 
-@abstractMethod('getId', 'getType', 'getTypeLabel', 'createTransaction', 'sendTransaction', 'getBalance', 'isAssetSupported', 'isSingleAddress', 'getFreshAddress')
+@abstractMethod(
+  'getId', 'getType', 'getTypeLabel', 'getBalance', 'isAssetSupported', 'isSingleAddress', 'getFreshAddress',
+  'createTransaction', '_signTxData', '_sendSignedTxData', '_validateTxData', '_validateSignedTxData')
 export default class Wallet {
 
   constructor(label) {
@@ -75,12 +78,47 @@ export default class Wallet {
     return asset
   };
 
-  transfer = (toAddress, amount, assetOrSymbol, options) => {
-    return Promise.resolve(assetOrSymbol)
-      .then(this.assertAssetSupported)
-      .then(() => this.createTransaction(toAddress, amount, assetOrSymbol, options))
-      .then((tx) => this.sendTransaction(tx, options))
+  /** Default does nothing, should be overridden in subclass */
+  _validateTxData = (signedTxData) => signedTxData;
+
+  /** Default does nothing, should be overridden in subclass */
+  _validateSignedTxData = (txData) => txData;
+
+  _validateTx = (tx) => {
+    if (tx === null || typeof tx !== 'object') {
+      throw new Error(`Invalid tx of type ${typeof tx}`)
+    }
+    if (tx.walletId !== this.getId()) {
+      throw new Error(`Invalid tx provided to wallet ${this.getId()} with mismatched walletId ${tx.walletId}`)
+    }
+    this._validateTxData(tx.txData)
+    if (tx.signed) {
+      this._validateSignedTxData(tx.signedTxData)
+    }
+    return tx
   };
+
+  signTransaction = (tx, options = {}) => Promise.resolve(tx)
+    .then(this._validateTx)
+    .then(() => this._signTxData(tx.txData, { ...options, tx }))
+    .then((signedTxData) => log.traceInline('signTransaction', ({
+      ...tx,
+      signed: true,
+      signedTxData,
+    })));
+
+  sendSignedTransaction = (tx, options = {}) => Promise.resolve(tx)
+    .then(this._validateTx)
+    .then(() => this._sendSignedTxData(tx.signedTxData, { ...options, tx }));
+
+  sendTransaction = (tx, options = {}) => Promise.resolve(tx)
+    .then(this._validateTx)
+    .then((tx) => this.signTransaction(tx, options))
+    .then((tx) => this.sendSignedTransaction(tx, options));
+
+  transfer = (toAddress, amount, assetOrSymbol, options) =>
+    this.createTransaction(toAddress, amount, assetOrSymbol, options)
+      .then((tx) => this.sendTransaction(tx, options));
 
   getAllBalances = (options) => {
     return Promise.resolve(this.getSupportedAssets())
