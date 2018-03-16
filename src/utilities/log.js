@@ -1,6 +1,8 @@
 import idb from './idb'
 import { dateNowString } from './helpers'
 
+const logger = {}
+
 const logLevels = {
   error: 5,
   warn: 4,
@@ -20,7 +22,8 @@ const log = (level) => (text, ...data) => {
       time: now,
       message: text
     }
-    if (data && data.length) {
+    if (data && data.length > 0) {
+      data = data.map((item) => item instanceof Error ? item.toString() : item)
       if (data.length === 1) {
         data = data[0]
       }
@@ -33,4 +36,19 @@ const log = (level) => (text, ...data) => {
   }
 }
 
-export default Object.keys(logLevels).reduce((logger, level) => ({ ...logger, [level]: log(level) }), {})
+const logInline = (level) => (text, ...data) => {
+  logger[level](text, ...data)
+  // Return the last argument
+  if (data.length > 0) {
+    return data[data.length - 1]
+  } else {
+    return text
+  }
+}
+
+Object.keys(logLevels).forEach((level) => {
+  logger[level] = log(level)
+  logger[`${level}Inline`] = logInline(level)
+})
+
+export default logger
