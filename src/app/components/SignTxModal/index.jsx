@@ -117,8 +117,6 @@ class SignTxModal extends Component {
         const { symbol: toSymbol } = receiving
         const fromAsset = assets[fromSymbol]
         const toAsset = assets[toSymbol]
-        console.log('sending', sending)
-        console.log('receiving', receiving)
         return {
           from: fromAsset,
           to: toAsset,

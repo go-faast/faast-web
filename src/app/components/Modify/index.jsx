@@ -93,7 +93,6 @@ class Modify extends Component {
   }
 
   _handleSlider (walletId, symbol, value, type = 'fiat') {
-    console.log('handleSlider', walletId, symbol, value, type)
     const { portfolio } = this.props
     const { holdings } = this.state
     const walletHoldings = holdings[walletId]
