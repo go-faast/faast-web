@@ -19,11 +19,27 @@ export default class EthereumWalletSigner extends EthereumWallet {
       .then(this._assignNonce)
       .then((tx) => this.signTx(tx, options))
       .then(addHexPrefix)
-      .then((signedTx) => web3.eth.sendSignedTransaction(signedTx)
-        .once('transactionHash', onTxHash)
-        .once('receipt', onReceipt)
-        .on('confirmation', onConfirmation)
-        .on('error', onError))
+      .then((signedTx) => new Promise((resolve, reject) => {
+        // sendSignedTransaction resolves when the tx receipt is available.
+        // we don't want to wait for that so wrap it in a promise that
+        // resolves after the tx is sent
+        let resolved = false
+        web3.eth.sendSignedTransaction(signedTx)
+          .once('transactionHash', (txId) => {
+            onTxHash(txId)
+            resolve(txId)
+            resolved = true
+          })
+          .once('receipt', onReceipt)
+          .on('confirmation', onConfirmation)
+          .on('error', (e) => {
+            onError(e)
+            if (!resolved) {
+              // Avoid rejecting after resolve was called
+              reject(e)
+            }
+          })
+      }))
   };
 
   _isValidTx = (txParams) => {
