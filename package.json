@@ -38,6 +38,7 @@
     "babel-preset-react": "^6.24.1",
     "bignumber.js": "^4.0.4",
     "blockstack": "^0.14.0",
+    "bootstrap": "^4.0.0",
     "class-names": "^1.0.0",
     "clean-webpack-plugin": "^0.1.19",
     "concurrently": "^3.5.0",
