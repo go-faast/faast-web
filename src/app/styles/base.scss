@@ -1,91 +1,10 @@
 // Base bootstrap theme customizations
-@import "variables";
-
-html, body {
-  // Set root font size (rem)
-  font-size: 14px;
-}
+@import 'variables';
 
 body {
   margin: 0;
-  font-family: 'Kanit', sans-serif;
-  font-weight: 200;
-  color: white;
-  background-color: $pageBgColor;
   min-height: 100vh;
   position: relative;
-}
-
-a, .btn-link {
-  color: $primary-color;
-  &:hover, &:focus {
-    color: darken($primary-color, 5%);
-  }
-  u {
-    &:hover, &:focus {
-      text-decoration: none;
-    }
-  }
-}
-
-h1, h2, h3, h4, h5, h6, th {
-  color: $primary-color;
-  font-weight: 300;
-  .btn-link {
-    padding: 0;
-    border: none;
-  }
-}
-
-p {
-  color: $medium-grey;
-  font-weight: inherit;
-  &:last-child {
-    margin-bottom: 0;
-  }
-  
-  a {
-    color: $medium-grey;
-    text-decoration: underline;
-    &:hover, &:focus {
-      color: $medium-grey;
-      text-decoration: $medium-grey;
-    }
-  }
-}
-
-.container, .container-fluid {
-  padding-left: $spacer;
-  padding-right: $spacer;
-}
-
-@each $bp, $width in $container-max-widths {
-  .container {
-    @include media-breakpoint-up($bp) {
-      max-width: $width;
-    }
-  }
-}
-
-.row {
-  @each $name, $value in $gutter-sizes {
-    &.#{$name}-gutters-x, &.#{$name}-gutters {
-      margin-left: -$value;
-      margin-right: -$value;
-      @include col {
-        padding-left: $value;
-        padding-right: $value;
-      }
-    }
-    &.#{$name}-gutters-y, &.#{$name}-gutters {
-      margin-top: -$value;
-      margin-bottom: -$value;
-      @include col {
-        padding-top: $value;
-        padding-bottom: $value;
-      }
-    }
-  }
 }
 
 @mixin grid-group($border: $menu-border) {
@@ -99,7 +18,7 @@ p {
       padding: 0;
       overflow: visible;
       @include not-disabled {
-        &:hover, &:active, &.active {
+        &:hover, &:focus, &:active, &.active {
           z-index: 1;
         }
       }
@@ -291,51 +210,6 @@ p {
   }
 }
 
-.btn, button {
-  @extend .text-small;
-  @extend .text-center;
-  font-weight: 300;
-  line-height: 1.5em;
-  border: 1px solid;
-  border-radius: 0;
-
-  @include not-disabled {
-    cursor: pointer;
-  }
-  &:hover, &:focus {
-    outline: none;
-  }
-
-  padding: 10px 20px;
-  &.btn-sm {
-    padding: 6px 16px;
-  }
-  &.btn-lg {
-    padding: 12px 24px;
-  }
-
-  @include disabled {
-    opacity: 0.5;
-  }
-}
-
-.btn-link {
-  border: none;
-}
-
-.btn-danger {
-  &, &:disabled, &.disabled {
-    background-color: #BC1515;
-    border-color: #BC1515;
-  }
-  @include not-disabled {
-    &:hover {
-      background-color: #9a1111;
-      border-color: #8e1010;
-    }
-  }
-}
-
 .btn-faast {
   color: $secondary-color-text;
   @extend .gradient-border;
@@ -362,43 +236,6 @@ p {
     }
     @include active {
       background: darken($dark-grey, $active-darken-percent)
-    }
-  }
-}
-
-.alert {
-  border-radius: 0;
-  .alert-link {
-    text-decoration: underline;
-    &:hover, &:focus {
-      text-decoration: none;
-    }
-  }
-  &.alert-info {
-    background-color: #106e7d;
-    border-color: #117b8c;
-    color: #e3f4f6;
-    .alert-link {
-      color: #bce5ea;
-      &:hover, &:focus {
-        color: lighten(#bce5ea, 10%);
-      }
-    }
-  }
-  &.alert-warning {
-    background-color: #aa8b1f;
-    border-color: #be9b23;
-    color: #fef9e6;
-  }
-  &.alert-danger {
-    background-color: #800e0e;
-    border-color: #8f1010;
-    color: #f7e3e3;
-    .alert-link {
-      color: #ecbbbb;
-      &:hover, &:focus {
-        color: lighten(#ecbbbb, 10%);
-      }
     }
   }
 }

@@ -1,34 +1,6 @@
 //style sheet variables are declared here
 // and then imported into style.scss file
-
-//Fonts
-@import url('https://fonts.googleapis.com/css?family=Kanit:100,200,300,400,500');
-@import url('https://fonts.googleapis.com/css?family=Kaushan+Script');
-
-// Grid breakpoints
-//
-// Define the minimum dimensions at which your layout will change,
-// adapting to different screen sizes, for use in media queries.
-@import 'mixins/breakpoints';
-
-$spacer: 12px; // Use 12px spacer to ensure row widths are evenly divisible into 12 columns
-
-$grid-breakpoints: (
-  xxs: 0,
-  xs: 36 * $spacer,
-  sm: 48 * $spacer,
-  md: 64 * $spacer,
-  lg: 82 * $spacer,
-  xl: 100 * $spacer,
-);
-
-$container-max-widths: (
-  xs: 100%,
-  sm: map-get($grid-breakpoints, sm),
-  md: map-get($grid-breakpoints, md),
-  lg: map-get($grid-breakpoints, lg),
-  xl: map-get($grid-breakpoints, xl)
-);
+@import '~faast-ui/src/style/variables.scss';
 
 @each $breakpoint in map-keys($grid-breakpoints) {
   :export {
@@ -40,9 +12,9 @@ $container-max-widths: (
 $gutter-sizes: (
   no: 0px,
   tiny: 1px,
-  small: ($spacer / 4),
-  medium: ($spacer / 2),
-  large: $spacer
+  small: ($grid-spacer / 4),
+  medium: ($grid-spacer / 2),
+  large: $grid-spacer
 );
 
 //Text sizes
@@ -113,13 +85,6 @@ $table-row-bg-hover: rgba(255, 255, 255, .05);
   }
 }
 
-@mixin col {
-  > .col,
-  > [class*="col-"] {
-    @content;
-  }
-}
-
 @mixin flex($direction, $justify, $align) {
   display: -webkit-flex;
   display: flex;
@@ -148,21 +113,6 @@ $table-row-bg-hover: rgba(255, 255, 255, .05);
       @content;
     }
   }
-}
-
-// Functions for getting parts of a border: https://stackoverflow.com/a/42276096
-// Note! the null return will not be rendered 
-@function get-border-width($input){
-  @each $part in $input { @if type-of($part) == number { @return $part; } }   
-  @return null;
-}
-@function get-border-style($input){
-  @each $part in $input { @if type-of($part) == string { @return $part; } }   
-  @return null;    
-}
-@function get-border-color($input){
-  @each $part in $input { @if type-of($part) == color { @return $part; } }   
-  @return null;    
 }
 
 %menu-action {

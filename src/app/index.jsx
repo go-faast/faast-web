@@ -14,7 +14,7 @@ import Entry from 'Components/Entry'
 import reducers from './reducers'
 import { saveToAddress } from 'Utilities/storage'
 import 'react-redux-toastr/src/styles/index.scss?nsm'
-import 'Styles/style.scss?nsm'
+import 'Styles/global?nsm'
 import { getCurrentPortfolio, isAppReady } from 'Selectors'
 import config from 'Config'
 
