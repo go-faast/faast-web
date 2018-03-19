@@ -7,6 +7,7 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const FaviconPlugin = require('favicons-webpack-plugin')
 const CleanPlugin = require('clean-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 
 const pkg = require('./package.json')
 
@@ -34,7 +35,7 @@ const cssLoader = ({ sourceMap = true, modules = true } = {}) => ExtractTextPlug
     options: {
       sourceMap,
       modules,
-      minimize: !isDev,
+      minimize: false, // CSS minification handled by OptimizeCssAssetsPlugin
       importLoaders: 2,
       localIdentName: isDev ? '[name]__[local]__[hash:base64:5]' : '[hash:base64]'
     }
@@ -164,6 +165,7 @@ let config = {
       ignoreOrder: true,
       disable: isDev
     }),
+    new OptimizeCssAssetsPlugin(),
     new FaviconPlugin({
       logo: path.join(res, 'img', 'faast-logo.png'),
       prefix: 'favicon-[hash:10]/',
