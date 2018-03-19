@@ -50,8 +50,11 @@ const cssLoader = ({ sourceMap = true, modules = true } = {}) => ExtractTextPlug
   }, {
     loader: 'sass-loader', // compiles SASS to CSS
     options: { 
-      includePaths: [nodeModules],
       sourceMap,
+      includePaths: [nodeModules],
+      sourceMapContents: true,
+      outputStyle: 'expanded',
+      precision: 6,
       data: `$env: ${NODE_ENV};` // Inject env as sass variable
     }
   }]
