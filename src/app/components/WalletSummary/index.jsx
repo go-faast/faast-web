@@ -8,10 +8,10 @@ import display from 'Utilities/display'
 import styles from './style'
 
 export const WalletSummary = ({ icon, labelTag: LabelTag, wallet: { id, label, typeLabel, totalFiat, iconUrl, balancesLoaded } }) => (
-  <Row className='no-gutters'>
+  <Row className='gutter-0'>
     <Col xs='12'><LabelTag>{id === 'default' ? (<i>{label}</i>) : label}</LabelTag></Col>
     <Col xs='12'>
-      <Row className='small-gutters-x align-items-center justify-content-between'>
+      <Row className='gutter-x-2 align-items-center justify-content-between'>
         {icon && (
           <Col xs='auto'>
             <div className={styles.walletIcon} style={{ backgroundImage: `url(${iconUrl})` }}></div>

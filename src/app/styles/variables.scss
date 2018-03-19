@@ -8,15 +8,6 @@
   }
 }
 
-// Gutter sizes between row columns
-$gutter-sizes: (
-  no: 0px,
-  tiny: 1px,
-  small: ($grid-spacer / 4),
-  medium: ($grid-spacer / 2),
-  large: $grid-spacer
-);
-
 //Text sizes
 $text-x-small: 12px;
 $text-small: 14px;

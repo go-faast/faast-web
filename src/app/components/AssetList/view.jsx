@@ -26,7 +26,7 @@ const AssetListView = (props) => {
     const { list, columns, showBalance, handleSelect } = props
     const bsColSize = `${Math.floor(12 / columns)}`
     return (
-      <Row className={classNames('tiny-gutters', styles.assetListContainerRow)}>
+      <Row className={classNames('gutter-1', styles.assetListContainerRow)}>
         {list.map((asset, i) => {
           const { symbol, name, balance, swapEnabled, hasWalletSupport } = asset
           const isDisabled = !(swapEnabled && hasWalletSupport)
@@ -55,7 +55,7 @@ const AssetListView = (props) => {
     <div className={styles.container} id='select-asset-container'>
       <div className={styles.searchContainer}>
         <form onSubmit={props.handleSubmit}>
-          <Row className='no-gutters'>
+          <Row className='gutter-0'>
             <Col>
               <Field name='searchAsset' component={SearchInput} value={props.searchValue} handleChange={props.handleSearchChange} />
             </Col>

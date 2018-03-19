@@ -73,7 +73,7 @@ class WalletSelector extends React.Component {
     
     return (
       <div>
-        <Row className='medium-gutters align-items-end'>
+        <Row className='gutter-3 align-items-end'>
           <Col>
             <h5 className='m-0'>Portfolios</h5>
           </Col>
@@ -89,7 +89,7 @@ class WalletSelector extends React.Component {
                     active={currentWalletId === portfolioId}
                     onClick={() => setCurrentPortfolio(portfolioId)}/>
                   <ListGroupItem className='grid-group'>
-                    <Row className='medium-gutters'>
+                    <Row className='gutter-3'>
                       <Col xs='6'>
                         <button className='grid-cell text-green' onClick={() => this.connectWalletToPortfolio(portfolioId)}>
                           <i className='fa fa-plus'/> add wallet

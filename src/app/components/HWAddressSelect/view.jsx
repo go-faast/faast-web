@@ -37,7 +37,7 @@ const HWAddressSelectView = (props) => (
         </div>
       </form>
       <div>
-        <Row className='small-gutters justify-content-between align-items-center'>
+        <Row className='gutter-2 justify-content-between align-items-center'>
           <Col xs='auto'>
             <Button color='link' onClick={props.handleDecreaseIxGroup}>previous</Button>
           </Col>

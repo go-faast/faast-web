@@ -68,12 +68,12 @@ const SignTxModal = (props) => {
 
 const SwapStatusRow = ({ status: { swap, from, to, receiveAmount }, children }) => (
   <div className='color-bg-3 text-small text-medium-grey p-2 p-md-3'>
-    <Row className='no-gutters align-items-center'>
+    <Row className='gutter-0 align-items-center'>
       <Col>
-        <Row className='small-gutters align-items-center text-center text-sm-left'>
+        <Row className='gutter-2 align-items-center text-center text-sm-left'>
           <Col xs='12' sm='auto'><CoinIcon coin={from.symbol}/></Col>
           <Col xs='12' sm>
-            <Row className='no-gutters'>
+            <Row className='gutter-0'>
               <Col xs='12' className='order-sm-2'>{from.name}</Col>
               <Col xs='12' className='text-white'><Units value={swap.unit} symbol={from.symbol}/></Col>
             </Row>
@@ -84,10 +84,10 @@ const SwapStatusRow = ({ status: { swap, from, to, receiveAmount }, children }) 
         {children}
       </Col>
       <Col>
-        <Row className='small-gutters align-items-center text-center text-sm-right'>
+        <Row className='gutter-2 align-items-center text-center text-sm-right'>
           <Col xs='12' sm='auto' className='order-sm-2'><CoinIcon coin={to.symbol}/></Col>
           <Col xs='12' sm>
-            <Row className='no-gutters'>
+            <Row className='gutter-0'>
               <Col xs='12' className='order-sm-2'>{to.name}</Col>
               <Col xs='12' className='text-white'>
                 {typeof receiveAmount !== 'undefined' && receiveAmount !== null
@@ -131,7 +131,7 @@ const SignTxForm = reduxForm({
           {sigStatus()}
         </SwapStatusRow>
         <div className='color-bg-1 text-x-small text-medium-grey p-2'>
-          <Row className='small-gutters'>
+          <Row className='gutter-2'>
             <Col xs='6' sm>
               <span className='margin-right-10'>swap fee</span>
               {a.swap.hasOwnProperty('fee')

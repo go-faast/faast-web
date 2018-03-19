@@ -88,7 +88,7 @@ const BalancesView = (props) => {
       return ([
         <tr key={symbol} onClick={() => toggleChart(symbol)}>
           <td>
-            <Row className='no-gutters'>
+            <Row className='gutter-0'>
               <Col {...({ xs: '12', [expandTablePoint]: 'auto' })}>
                 <div className={styles.tableCoinIcon} style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${symbol}.png)` }} />
               </Col>
@@ -134,7 +134,7 @@ const BalancesView = (props) => {
 
   return (
     <Layout {...layoutProps}>
-      <Row className='medium-gutters justify-content-end'>
+      <Row className='gutter-3 justify-content-end'>
         <Col xs='auto'>
           <Button color='faast' tag={Link} to='/connect'><i className='fa fa-plus'/> add wallet</Button>
         </Col>
@@ -149,14 +149,14 @@ const BalancesView = (props) => {
         <Welcome />
       }
       <div className='my-3'>
-        <Row className='large-gutters'>
+        <Row className='gutter-4'>
           {!isDefaultPortfolioEmpty && (
             <Col xs='12' md='6' lg='5' xl='4'>
               <WalletSelector/>
             </Col>
           )}
           <Col xs='12' md>
-            <Row className='medium-gutters'>
+            <Row className='gutter-3'>
               {balancesLoading && (<LoadingFullscreen center error={balancesError}/>)}
               {viewOnly ? (
                 <Col xs='12' className='text-center'>
@@ -166,7 +166,7 @@ const BalancesView = (props) => {
                 </Col>
               ) : (
                 <Col xs='12'>
-                  <Row className='medium-gutters align-items-end'>
+                  <Row className='gutter-3 align-items-end'>
                     <Col>
                       <h5 className='m-0'>{label}</h5>
                     </Col>
@@ -186,7 +186,7 @@ const BalancesView = (props) => {
               <Col xs='12'>
                 <Card>
                   <CardHeader className='grid-group'>
-                    <Row className='medium-gutters'>
+                    <Row className='gutter-3'>
                       {stats.map(({ title, value, valueClass, colClass }, i) => (
                         <Col xs='6' lg='3' key={i} className={classNames('text-center', colClass)}>
                           <div className='grid-cell'>

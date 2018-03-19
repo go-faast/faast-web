@@ -42,15 +42,15 @@ const ModifyView = (props) => {
             </Alert>
           </Overlay>
         )}
-        <Row className='medium-gutters-x align-items-center'>
+        <Row className='gutter-x-3 align-items-center'>
           <Col xs lg='4' xl='5' className='order-1'>
-            <Row className='medium-gutters align-items-center'>
+            <Row className='gutter-3 align-items-center'>
               <Col xs='3' md='2' lg='auto' className='text-center text-md-right'>
                 <div className='coin-icon mx-auto mr-md-0' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${symbol}.png)` }} />
               </Col>
               <Col xs='auto'><h5 className='m-0'>{name}</h5></Col>
             </Row>
-            <Row className='medium-gutters-x my-3 align-items-center'>
+            <Row className='gutter-x-3 my-3 align-items-center'>
               <Col xs='3' md='2' lg='auto'>
                 <div className={`change-icon mx-auto mr-md-0 ${changeIconDirection}`} />
               </Col>
@@ -65,16 +65,16 @@ const ModifyView = (props) => {
             </Row>
           </Col>
           <Col xs='12' lg style={{ lineHeight: 1 }} className='order-3 order-lg-2'>
-            <Row className='medium-gutters'>
+            <Row className='gutter-3'>
               <Col xs='12' md='2' lg='auto'>
-                <Row className='medium-gutters flex-md-column'>
+                <Row className='gutter-3 flex-md-column'>
                   <Col xs='3' md='12'>&nbsp;</Col>
                   <Col xs='4' md='12' className={`${styles.greyStatus} text-md-right`}>Before</Col>
                   <Col xs='5' md='12' className={`${styles.greyStatus} text-md-right`}>After</Col>
                 </Row>
               </Col>
               <Col xs='12' md='3' lg>
-                <Row className='medium-gutters flex-md-column'>
+                <Row className='gutter-3 flex-md-column'>
                   <Col xs='3' md='12' className={`${styles.greyStatus} text-right text-md-left`}>Value</Col>
                   <Col xs='4' md='12' className='status-table-value'>{originalFiat}</Col>
                   <Col xs='5' md='12' className='status-data-container'>
@@ -94,7 +94,7 @@ const ModifyView = (props) => {
                 </Row>
               </Col>
               <Col xs='12' md='3' lg>
-                <Row className="medium-gutters flex-md-column">
+                <Row className="gutter-3 flex-md-column">
                   <Col xs='3' md='12' className={`${styles.greyStatus} text-right text-md-left`}>Weight</Col>
                   <Col xs='4' md='12' className='status-table-value'>{originalWeight}</Col>
                   <Col xs='5' md='12' className='status-data-container'>
@@ -114,7 +114,7 @@ const ModifyView = (props) => {
                 </Row>
               </Col>
               <Col xs='12' md>
-                <Row className="medium-gutters flex-md-column">
+                <Row className="gutter-3 flex-md-column">
                   <Col xs='3' md='12' className={`${styles.greyStatus} text-right text-md-left`}>Units</Col>
                   <Col xs='4' md='12' className='status-table-value'>{originalUnits}</Col>
                   <Col xs='5' md='12' className='status-table-value'>{adjustedUnits}</Col>
@@ -162,7 +162,7 @@ const ModifyView = (props) => {
       <SignTxModal showModal={props.showSignTxModal} toggleModal={props.handleToggleSignTxModal} />
       <Sticky innerZ={config.sticky.zIndex} top='#header'>
         <div className={headerStyles.header}>
-          <Row className='medium-gutters'>
+          <Row className='gutter-3'>
             <Col xs='6' md='4'>
               <Card tag={CardBody} className='h-100 justify-content-center'>
                 <WalletSummary wallet={portfolio}/>
@@ -176,7 +176,7 @@ const ModifyView = (props) => {
             </Col>
             <Col xs='12' md='4'>
               <Card tag={CardBody} className='h-100 justify-content-center'>
-                <Row className='medium-gutters'>
+                <Row className='gutter-3'>
                   <Col xs='6'>
                     <Button color='faast' outline onClick={handleCancel} className='w-100'>cancel</Button>
                   </Col>
@@ -197,7 +197,7 @@ const ModifyView = (props) => {
         </div>
       </Sticky>
       <div className={styles.modifyAssetList}>
-        <Row className='no-gutters-x medium-gutters-y'>
+        <Row className='gutter-x-0 gutter-y-3'>
           {renderHoldings(portfolio.nestedWallets)}
         </Row>
       </div>

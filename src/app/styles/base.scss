@@ -41,8 +41,9 @@ body {
       }
     }
 
-    @each $name, $value in $gutter-sizes {
-      &.#{$name}-gutters-x, &.#{$name}-gutters {
+    @each $size, $width in $grid-gutter-widths-custom {
+      $value: ($width / 2);
+      &.gutter-x-#{$size}, &.gutter-#{$size} {
         @include col {
           > .grid-cell {
             padding-left: $value;
@@ -50,7 +51,7 @@ body {
           }
         }
       }
-      &.#{$name}-gutters-y, &.#{$name}-gutters {
+      &.gutter-y-#{$size}, &.gutter-#{$size} {
         @include col {
           > .grid-cell {
             padding-top: $value;

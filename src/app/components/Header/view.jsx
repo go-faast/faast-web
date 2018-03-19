@@ -39,7 +39,7 @@ const HeaderView = (props) => {
     <Sticky enabled={!!stickyHeader} innerZ={config.sticky.zIndex}>
       <div id='header' className={styles.header}>
         <div>
-          <Row className='medium-gutters'>
+          <Row className='gutter-3'>
             <Col xs='12' md='6'>
               <div className={styles.headerTitle}>faast Portfolio <sup className='text-medium-grey beta-tag'>beta</sup></div>
               <div className={styles.headerDesc}>manage your crypto assets collection with faast portfolio</div>
