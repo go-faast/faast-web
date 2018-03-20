@@ -150,7 +150,6 @@ let config = {
     extensions: ['.js', '.jsx', '.json', '.scss', '.css']
   },
   plugins: [
-    new CleanPlugin(['*.*', assetOutputPath, fileOutputPath], { root: dist }),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV)
     }),
@@ -192,6 +191,7 @@ if (!isDev) {
   config = merge(config, {
     devtool: 'source-map',
     plugins: [
+      new CleanPlugin(['*.*', assetOutputPath, fileOutputPath], { root: dist }),
       new UglifyJsPlugin({
         sourceMap: true,
         uglifyOptions: {
