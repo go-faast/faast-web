@@ -6,7 +6,7 @@ import {
   getCurrentPortfolio, isCurrentPortfolioEmpty, areCurrentPortfolioHoldingsLoaded, getCurrentPortfolioHoldingsError
 } from 'Selectors'
 import { updateHoldings } from 'Actions/portfolio'
-import Loading from 'Components/Loading'
+import LoadingFullscreen from 'Components/LoadingFullscreen'
 
 class WalletOpened extends React.PureComponent {
 
@@ -28,7 +28,7 @@ class WalletOpened extends React.PureComponent {
       <Route path={path} render={props => (
         !isEmpty
           ? (!walletHoldingsLoaded
-            ? (<Loading center error={walletHoldingsError}/>)
+            ? (<LoadingFullscreen error={walletHoldingsError}/>)
             : (<Component {...props} />))
           : (<Redirect to='/connect' />)
       )} />

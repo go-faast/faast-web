@@ -78,6 +78,8 @@ const assetLoader = (subDir) => ({
     name: isDev ? '[path][name].[ext]' : `${subDir}/[hash].[ext]`
   }
 })
+const imgAssetLoader = assetLoader('img')
+const fontAssetLoader = assetLoader('font')
 
 let config = {
   context: projectRoot,
@@ -103,24 +105,29 @@ let config = {
       }]
     }, {
       test: /(\.css|\.scss)$/,
-      oneOf: [
-        {
-          resourceQuery: /nsm/,
-          use: cssLoader({ modules: false })
-        },
-        {
-          use: cssLoader(),
-        }
-      ]
+      oneOf: [{
+        resourceQuery: /nsm/,
+        use: cssLoader({ modules: false })
+      }, {
+        use: cssLoader(),
+      }]
     }, {
       resourceQuery: /file/,
       use: fileLoader()
     }, {
-      test: /\.(png|jpe?g|gif|svg|ico)(\?.*)?$/,
-      use: assetLoader('img')
+      test: /\.svg$/,
+      oneOf: [{     
+        resourceQuery: /inline/,
+        loader: 'svg-react-loader'
+      }, {
+        use: imgAssetLoader
+      }]
+    }, {
+      test: /\.(png|jpe?g|gif|ico)(\?.*)?$/,
+      use: imgAssetLoader
     }, {
       test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
-      use: assetLoader('font')
+      use: fontAssetLoader
     }]
   },
   resolve: {

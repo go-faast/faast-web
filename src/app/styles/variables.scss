@@ -153,10 +153,6 @@ $active-darken-percent: 10%;
 .pull-right { float: right; }
 .clearfix { clear: both; }
 
-.text-left { text-align: left; }
-.text-center { text-align: center; }
-.text-right { text-align: right; }
-
 .text-x-small { font-size: $text-x-small; }
 .text-small { font-size: $text-small; }
 .text-medium { font-size: $text-medium; }
@@ -167,11 +163,11 @@ $active-darken-percent: 10%;
 .text-light-grey { color: $light-grey !important; }
 .text-medium-grey { color: $medium-grey !important; }
 .text-dark-grey { color: $dark-grey !important; }
-.text-gradient { @extend .gradient-text; }
-.text-green { color: $secondary-color !important; }
-.text-white { color: #ffffff !important; }
-.text-orange { color: #FACC2E !important; }
-.text-red { color: #BC1515 !important; }
+.text-gradient { @extend .text-primary; }
+.text-green { color: $success !important; }
+.text-white { color: $white !important; }
+.text-orange { color: $warning !important; }
+.text-red { color: $danger !important; }
 
 .flex-grow-1 { @include flex-grow(1); }
 

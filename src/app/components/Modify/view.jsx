@@ -15,6 +15,7 @@ import { Row, Col, Card, CardHeader, CardBody, ListGroup, ListGroupItem, Modal, 
 import WalletSummary from 'Components/WalletSummary'
 import Overlay from 'Components/Overlay'
 import { zIndexSticky } from 'faast-ui'
+import ArrowIcon from 'Components/ArrowIcon'
 
 const ModifyView = (props) => {
   const { portfolio, handleCancel, handleSave, disableSaveMessage } = props
@@ -22,7 +23,8 @@ const ModifyView = (props) => {
   const renderAssetRows = (assetHoldings) => assetHoldings.map((a) => {
     const { walletId, symbol, name, change24, price, units, fiat, weight, swapEnabled, priceDecrease } = a
     const disabled = !swapEnabled
-    const changeIconDirection = priceDecrease ? 'down-icon' : 'up-icon'
+    const changeIconDirection = priceDecrease ? 'down' : 'up'
+    const changeColor = priceDecrease ? 'danger' : 'success'
     const fiatPrice = display.fiat(price)
     const percentChange24 = display.percentage(change24, true)
     const originalFiat = display.fiat(fiat.original)
@@ -54,14 +56,14 @@ const ModifyView = (props) => {
             </Row>
             <Row className='gutter-x-3 my-3 align-items-center'>
               <Col xs='3' md='2' lg='auto'>
-                <div className={`change-icon mx-auto mr-md-0 ${changeIconDirection}`} />
+                <ArrowIcon dir={changeIconDirection} size='2rem' color={changeColor} className='mx-auto mr-md-0' />
               </Col>
               <Col xs='4' md='3' lg>
-                <div className='text-small text-grey'>24h change</div>
-                <div className='text-medium text-white'>{percentChange24}</div>
+                <div className='text-grey'>24h change</div>
+                <div className={`text-medium text-${changeColor}`}>{percentChange24}</div>
               </Col>
               <Col>
-                <div className='text-small text-grey'>current price</div>
+                <div className='text-grey'>current price</div>
                 <div className='text-medium text-white'>{fiatPrice}</div>
               </Col>
             </Row>
