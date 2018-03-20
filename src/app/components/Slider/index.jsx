@@ -13,13 +13,14 @@ class Slider extends Component {
   }
 
   render () {
-    const { asset, max } = this.props
+    const { asset, max, disabled } = this.props
     const value = asset.fiat.adjusted.toNumber()
     return (
       <SliderView
         value={value}
         max={max}
         onChange={this._handleChange}
+        disabled={disabled}
       />
     )
   }

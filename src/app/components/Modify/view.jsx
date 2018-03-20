@@ -14,13 +14,15 @@ import config from 'Config'
 import { Row, Col, Card, CardHeader, CardBody, ListGroup, ListGroupItem, Modal, Alert, Button } from 'reactstrap'
 import WalletSummary from 'Components/WalletSummary'
 import Overlay from 'Components/Overlay'
+import { zIndexSticky } from 'faast-ui'
 
 const ModifyView = (props) => {
   const { portfolio, handleCancel, handleSave, disableSaveMessage } = props
 
   const renderAssetRows = (assetHoldings) => assetHoldings.map((a) => {
-    const changeIconDirection = a.priceDecrease ? 'down-icon' : 'up-icon'
-    const { walletId, symbol, name, change24, price, units, fiat, weight, swapEnabled } = a
+    const { walletId, symbol, name, change24, price, units, fiat, weight, swapEnabled, priceDecrease } = a
+    const disabled = !swapEnabled
+    const changeIconDirection = priceDecrease ? 'down-icon' : 'up-icon'
     const fiatPrice = display.fiat(price)
     const percentChange24 = display.percentage(change24, true)
     const originalFiat = display.fiat(fiat.original)
@@ -35,7 +37,7 @@ const ModifyView = (props) => {
 
     return (
       <ListGroupItem key={symbol}>
-        {!swapEnabled && (
+        {disabled && (
           <Overlay className='justify-content-start'>
             <Alert color='info'>
               Swapping {name} is currently unavailable
@@ -55,11 +57,11 @@ const ModifyView = (props) => {
                 <div className={`change-icon mx-auto mr-md-0 ${changeIconDirection}`} />
               </Col>
               <Col xs='4' md='3' lg>
-                <div className='text-small text-medium-grey'>24h change</div>
+                <div className='text-small text-grey'>24h change</div>
                 <div className='text-medium text-white'>{percentChange24}</div>
               </Col>
               <Col>
-                <div className='text-small text-medium-grey'>current price</div>
+                <div className='text-small text-grey'>current price</div>
                 <div className='text-medium text-white'>{fiatPrice}</div>
               </Col>
             </Row>
@@ -69,61 +71,70 @@ const ModifyView = (props) => {
               <Col xs='12' md='2' lg='auto'>
                 <Row className='gutter-3 flex-md-column'>
                   <Col xs='3' md='12'>&nbsp;</Col>
-                  <Col xs='4' md='12' className={`${styles.greyStatus} text-md-right`}>Before</Col>
-                  <Col xs='5' md='12' className={`${styles.greyStatus} text-md-right`}>After</Col>
+                  <Col xs='4' md='12' className='text-grey text-md-right'>Before</Col>
+                  <Col xs='5' md='12' className='text-grey text-md-right'>After</Col>
                 </Row>
               </Col>
               <Col xs='12' md='3' lg>
                 <Row className='gutter-3 flex-md-column'>
-                  <Col xs='3' md='12' className={`${styles.greyStatus} text-right text-md-left`}>Value</Col>
-                  <Col xs='4' md='12' className='status-table-value'>{originalFiat}</Col>
-                  <Col xs='5' md='12' className='status-data-container'>
-                    <div className='status-table-value'>
-                      <RIENumber
-                        value={adjustedFiat}
-                        format={display.fiat}
-                        change={(change) => props.handleFiatChange(walletId, symbol, change[symbol])}
-                        propName={symbol}
-                        className={styles.editable}
-                        classEditing={styles.editableEditing}
-                        ref={(input) => { fiatInput = input }}
-                      />
-                      <i onClick={() => fiatInput.startEditing()} className='fa fa-pencil margin-left-5 text-gradient cursor-pointer' aria-hidden='true' />
-                    </div>
+                  <Col xs='3' md='12' className='text-grey text-right text-md-left'>Value</Col>
+                  <Col xs='4' md='12'>{originalFiat}</Col>
+                  <Col xs='5' md='12'>
+                    {disabled ? (
+                      display.fiat(adjustedFiat)
+                    ) : (
+                      <span className='text-primary'>
+                        <RIENumber
+                          value={adjustedFiat}
+                          format={display.fiat}
+                          change={(change) => props.handleFiatChange(walletId, symbol, change[symbol])}
+                          propName={symbol}
+                          className='cursor-pointer'
+                          classEditing={styles.editableEditing}
+                          ref={(input) => { fiatInput = input }}
+                        />
+                        <i onClick={() => fiatInput.startEditing()} className='fa fa-pencil margin-left-5 cursor-pointer' aria-hidden='true' />
+                      </span>
+                    )}
                   </Col>
                 </Row>
               </Col>
               <Col xs='12' md='3' lg>
                 <Row className="gutter-3 flex-md-column">
-                  <Col xs='3' md='12' className={`${styles.greyStatus} text-right text-md-left`}>Weight</Col>
-                  <Col xs='4' md='12' className='status-table-value'>{originalWeight}</Col>
-                  <Col xs='5' md='12' className='status-data-container'>
-                    <div className='status-table-value'>
-                      <RIENumber
-                        value={adjustedWeight}
-                        format={display.percentage}
-                        change={(change) => props.handleWeightChange(walletId, symbol, change[symbol])}
-                        propName={symbol}
-                        className={styles.editable}
-                        classEditing={styles.editableEditing}
-                        ref={(input) => { weightInput = input }}
-                      />
-                      <i onClick={() => weightInput.startEditing()} className='fa fa-pencil margin-left-5 text-gradient cursor-pointer' aria-hidden='true' />
-                    </div>
+                  <Col xs='3' md='12' className='text-grey text-right text-md-left'>Weight</Col>
+                  <Col xs='4' md='12'>{originalWeight}</Col>
+                  <Col xs='5' md='12'>
+                    {disabled ? (
+                      display.percentage(adjustedWeight)
+                    ) : (
+                      <span className='text-primary'>
+                        <RIENumber
+                          value={adjustedWeight}
+                          format={display.percentage}
+                          change={(change) => props.handleWeightChange(walletId, symbol, change[symbol])}
+                          propName={symbol}
+                          className='cursor-pointer'
+                          classEditing={styles.editableEditing}
+                          ref={(input) => { weightInput = input }}
+                          disabled={disabled}
+                        />
+                        <i onClick={() => weightInput.startEditing()} className='fa fa-pencil margin-left-5 cursor-pointer' aria-hidden='true' />
+                      </span>
+                    )}
                   </Col>
                 </Row>
               </Col>
               <Col xs='12' md>
                 <Row className="gutter-3 flex-md-column">
-                  <Col xs='3' md='12' className={`${styles.greyStatus} text-right text-md-left`}>Units</Col>
-                  <Col xs='4' md='12' className='status-table-value'>{originalUnits}</Col>
-                  <Col xs='5' md='12' className='status-table-value'>{adjustedUnits}</Col>
+                  <Col xs='3' md='12' className='text-grey text-right text-md-left'>Units</Col>
+                  <Col xs='4' md='12'>{originalUnits}</Col>
+                  <Col xs='5' md='12'>{adjustedUnits}</Col>
                 </Row>
               </Col>
             </Row>
           </Col>
           <Col xs='auto' className='align-self-start order-2 order-lg-3'>
-            <Button color='faast' size='sm' onClick={() => props.handleRemove(walletId, symbol)}>remove</Button>
+            <Button color='faast' size='sm' onClick={() => props.handleRemove(walletId, symbol)} disabled={disabled}>remove</Button>
           </Col>
         </Row>
         
@@ -131,6 +142,7 @@ const ModifyView = (props) => {
           <Slider
             asset={a}
             walletId={walletId}
+            disabled={disabled}
             {...props.sliderProps}
           />
         </div>
@@ -145,9 +157,9 @@ const ModifyView = (props) => {
           <CardHeader><h4 className='m-0'>{label}</h4></CardHeader>
           <ListGroup>
             {renderAssetRows(assetHoldings.filter(({ shown }) => shown))}
-            <ListGroupItem action onClick={() => props.showAssetList(id)} tag='button' className='text-center'>
-              <span className={styles.addNew} />
-              <span className='text-gradient ml-3 h5 align-middle'>add asset</span>
+            <ListGroupItem action onClick={() => props.showAssetList(id)} tag='button' className='btn btn-ultra-dark text-center text-primary'>
+              <i className='fa fa-plus fa-2x align-middle' />
+              <span className='pl-2 h5'>add asset</span>
             </ListGroupItem>
           </ListGroup>
         </Card>
@@ -160,7 +172,7 @@ const ModifyView = (props) => {
         <AssetList {...props.assetListProps} />
       </Modal>
       <SignTxModal showModal={props.showSignTxModal} toggleModal={props.handleToggleSignTxModal} />
-      <Sticky innerZ={config.sticky.zIndex} top='#header'>
+      <Sticky innerZ={zIndexSticky} top='#header'>
         <div className={headerStyles.header}>
           <Row className='gutter-3'>
             <Col xs='6' md='4'>
@@ -170,8 +182,8 @@ const ModifyView = (props) => {
             </Col>
             <Col xs='6' md='4' className='text-center'>
               <Card tag={CardBody} className='h-100 justify-content-center'>
-                <div className='text-small text-medium-grey'>available to swap</div>
-                <div className='text-medium text-white'>{display.fiat(props.allowance.fiat)} / {display.percentage(props.allowance.weight)}</div>
+                <div className='text-grey text-small'>available to swap</div>
+                <div className='text-grey text-white'>{display.fiat(props.allowance.fiat)} / {display.percentage(props.allowance.weight)}</div>
               </Card>
             </Col>
             <Col xs='12' md='4'>

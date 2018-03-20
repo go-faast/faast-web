@@ -5,7 +5,9 @@ import toastr from 'Utilities/toastrWrapper'
 import { filterUrl } from 'Utilities/helpers'
 import blockstack from 'Utilities/blockstack'
 import { openWallet } from 'Actions/portfolio'
-import BlockstackView from './view'
+
+import AccessTile from 'Components/AccessTile'
+import blockstackLogo from 'Img/blockstack-logo.png'
 
 class Blockstack extends Component {
   constructor () {
@@ -30,7 +32,7 @@ class Blockstack extends Component {
 
   render () {
     return (
-      <BlockstackView handleClick={this._handleClick} />
+      <AccessTile name='Blockstack' icon={blockstackLogo} onClick={this._handleClick}/>
     )
   }
 }

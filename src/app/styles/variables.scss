@@ -16,65 +16,18 @@ $text-large: 30px;
 $text-x-large: 36px;
 
 //Colors
-$ultra-dark-grey: #181818;
-$dark-grey: #202020;
-$light-grey: #efefef;
-$medium-grey: #a9a9a9;
-$primary-color: #0dd3b9;
-$secondary-color: #0dd390;
+$ultra-dark-grey: $grey-ultra-dark;
+$dark-grey: $grey-dark;
+$light-grey: $grey-light;
+$medium-grey: $grey-medium;
+$primary-color: $primary;
+$secondary-color: $secondary;
 $secondary-color-text: #06412D;
-$white: #ffffff;
 
-$pageBgColor: #121212;
+$pageBgColor: $bg-color;
 $tileBgColor1: #1c1c1c;
 $tileBgColor2: #131313;
 $tileBgColor3: #191919;
-
-$menu-bg-color: $ultra-dark-grey;
-$menu-bg-color-accent: lighten($menu-bg-color, 2%);
-$menu-bg-color-hover: lighten($menu-bg-color, 5%);
-$menu-bg-color-active: lighten($menu-bg-color, 10%);
-
-$menu-border-color: lighten($menu-bg-color, 5%);
-$menu-border-color-accent: lighten($menu-bg-color-accent, 5%);
-$menu-border-color-hover: lighten($menu-bg-color-hover, 5%);
-$menu-border-color-active: lighten($menu-bg-color-active, 5%);
-
-$menu-border-width: 1px;
-$menu-border: solid $menu-border-width $menu-border-color;
-$menu-border-hover: solid $menu-border-width $menu-border-color-hover;
-$menu-border-active: solid $menu-border-width $menu-border-color-active;
-
-$table-bg-color: $menu-bg-color;
-$table-border-color: $menu-border-color;
-$table-border: solid $menu-border-width $table-border-color;
-$table-row-bg-accent: rgba(255, 255, 255, .02);
-$table-row-bg-hover: rgba(255, 255, 255, .05);
-
-//mixins
-@mixin disabled {
-  &:disabled, &.disabled {
-    @content;
-  }
-}
-
-@mixin not-disabled {
-  &:not(:disabled):not(.disabled) {
-    @content;
-  }
-}
-
-@mixin hover {
-  &:hover {
-    @content;
-  }
-}
-
-@mixin active {
-  &:active, &.active {
-    @content;
-  }
-}
 
 @mixin flex($direction, $justify, $align) {
   display: -webkit-flex;
@@ -102,34 +55,6 @@ $table-row-bg-hover: rgba(255, 255, 255, .05);
   @else if $media == wide-screens {
     @media (min-width: 992px) {
       @content;
-    }
-  }
-}
-
-%menu-action {
-  background-color: $menu-bg-color;
-  border-color: $menu-border-color;
-  @include disabled {
-    filter: grayscale(1);
-    color: $medium-grey;
-    cursor: default;
-  }
-  @include not-disabled {
-    @include hover {
-      cursor: pointer;
-      z-index: 1;
-      background-color: $menu-bg-color-hover;
-      border-color: $menu-border-color-hover;
-    }
-    @include active {
-      background-color: $menu-bg-color-active;
-      border-color: $menu-border-color-active;
-    }
-    &:active {
-      z-index: 2;
-    }
-    &.active {
-      z-index: 3;
     }
   }
 }

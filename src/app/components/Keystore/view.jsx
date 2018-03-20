@@ -1,15 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import Dropzone from 'react-dropzone'
-import classNames from 'class-names'
-import styles from './style'
-import { accessTile as accessTileStyle } from 'Components/AccessTile/style'
+import AccessTile from 'Components/AccessTile'
 
 const KeystoreView = (props) => (
-  <Dropzone className={classNames(accessTileStyle, 'p-3')} multiple={false} onDrop={props.handleDrop}>
-    <div className={styles.dropzoneContent}>
-      <h5 className='text-gradient' style={{ lineHeight: 1.5 }}>Drop your wallet keystore file here</h5>
-    </div>
+  <Dropzone className='p-0' multiple={false} onDrop={props.handleDrop}>
+    <AccessTile outline color='primary' className='border-dashed'>
+      <h5 className='font-weight-light' style={{ lineHeight: 1.5 }}>Drop your wallet keystore file here</h5>
+    </AccessTile>
   </Dropzone>
 )
 

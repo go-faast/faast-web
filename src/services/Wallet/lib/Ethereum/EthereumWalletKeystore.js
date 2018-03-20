@@ -2,9 +2,8 @@ import EthereumjsWallet from 'ethereumjs-wallet'
 import EthereumjsTx from 'ethereumjs-tx'
 
 import config from 'Config'
-import { addHexPrefix, stripHexPrefix, parseJson } from 'Utilities/helpers'
+import { stripHexPrefix, parseJson } from 'Utilities/helpers'
 import { toChecksumAddress } from 'Utilities/convert'
-import log from 'Utilities/log'
 
 import EthereumWallet from './EthereumWallet'
 

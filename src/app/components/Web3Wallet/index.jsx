@@ -60,7 +60,7 @@ const Web3Wallet = ({ type, openWallet, mock, routerPush }) => {
     })
   }
 
-  return <AccessTile name={name} icon={icon} handleClick={handleClick} />
+  return <AccessTile name={name} icon={icon} onClick={handleClick} />
 }
 
 const mapStateToProps = (state) => ({

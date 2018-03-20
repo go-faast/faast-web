@@ -168,7 +168,7 @@ const BalancesView = (props) => {
                 <Col xs='12'>
                   <Row className='gutter-3 align-items-end'>
                     <Col>
-                      <h5 className='m-0'>{label}</h5>
+                      <h4 className='m-0'>{label}</h4>
                     </Col>
                     <Col xs='auto'>
                       <Button color='danger' size='sm' onClick={handleRemove} disabled={disableRemove}>
@@ -185,7 +185,7 @@ const BalancesView = (props) => {
               }
               <Col xs='12'>
                 <Card>
-                  <CardHeader className='grid-group'>
+                  <CardBody className='grid-group'>
                     <Row className='gutter-3'>
                       {stats.map(({ title, value, valueClass, colClass }, i) => (
                         <Col xs='6' lg='3' key={i} className={classNames('text-center', colClass)}>
@@ -196,7 +196,7 @@ const BalancesView = (props) => {
                         </Col>
                       ))}
                     </Row>
-                  </CardHeader>
+                  </CardBody>
                   <CardBody>
                     {addressProps.address && (
                       <div className='text-right px-3' style={{ lineHeight: 1 }}>

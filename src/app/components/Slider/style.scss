@@ -1,17 +1,17 @@
 @import "~Styles/variables";
 
 .innerknob {
-  @extend .gradient-background;
+  background-color: $primary;
   @extend .cursor-pointer;
 }
 .innerprogress {
-  background-color: $dark-grey;
+  background-color: $grey-dark;
   div {
     span:last-child {
-      @extend .gradient-background;
+      background-color: $primary;
     }
   }
 }
 .value {
-  background-color: $primary-color;
+  background-color: $primary;
 }

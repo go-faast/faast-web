@@ -25,7 +25,7 @@ const HardwareWalletView = (props) => {
   const { name, icon } = typeToProps[props.type]
   return (
     <div>
-      <AccessTile name={name} icon={icon} handleClick={props.handleClick} />
+      <AccessTile name={name} icon={icon} onClick={props.handleClick} />
       <HardwareWalletModal name={name} type={props.type} {...props.modalProps} />
     </div>
   )

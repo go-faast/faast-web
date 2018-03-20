@@ -29,9 +29,6 @@ export default {
     ledger: 'm/44\'/60\'/0\'',
     trezor: 'm/44\'/60\'/0\'/0'
   },
-  sticky: {
-    zIndex: 201
-  },
   encrOpts: {
     kdf: 'scrypt',
     n: 1024

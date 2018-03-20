@@ -29,26 +29,3 @@
     margin-top: 5px;
   }
 }
-
-.searchForm {
-  width: 100%;
-}
-
-.searchInput {
-  font-size: $text-small;
-
-  background-color: #121212;
-  border: 1px solid #222222;
-  padding: 12px 24px;
-  text-align: center;
-  letter-spacing: 1px;
-  @extend .text-x-small;
-  width: 100%;
-  display: block;
-  outline: none;
-  @extend .text-medium-grey;
-  &:active, &:focus {
-    outline: none;
-    color: $secondary-color;
-  }
-}
