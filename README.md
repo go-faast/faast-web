@@ -15,33 +15,33 @@ You may also serve the file to your local network, instructions follow below:
 
 ### Serving application
 
-To serve the application only, install the **serve** module as follows:
+To serve the application only, install **local-web-server** as follows:
 ```
-npm install serve
+npm install local-web-server
 ```
 
 To start serving:
 ```
-npm run start
+npm start
 ```
 
-The application will open on your default browser.
+The application will be running at [https://localhost:8000](https://localhost:8000). To resolve the SSL warning follow [these steps](https://github.com/lwsjs/local-web-server/wiki/How-to-get-the-%22green-padlock%22-using-the-built-in-certificate) to install the certificate.
 
 ### Building
 
-For development and the build the application, you will need to install all of the modules:
+For development and to build the application, you will need to install all of the modules:
 ```
 npm install
 ```
 
-Build the code:
+Build the app:
 ```
 npm run build
 ```
 
-Files will be built to the **dist** folder. You may then open **dist/index.html** directly, or serve the files from your machine with:
+Files will be built to the **dist** folder. They can be served from your machine with:
 ```
-npm run start
+npm start
 ```
 
 ### Development Server
@@ -51,7 +51,7 @@ The faast Portfolio is a React app that is bundled with Webpack. For easier deve
 npm run dev
 ```
 
-Once compiled, open **http://localhost:8080** in your browser.
+Once compiled, open [http://localhost:8080](http://localhost:8080) in your browser.
 
 ### Branches
 
