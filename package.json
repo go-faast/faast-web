@@ -5,6 +5,7 @@
   "description": "portfolio app for faa.st",
   "author": "Nathan Wood <nathan@bitaccess.co>",
   "license": "MIT",
+  "files": ["dist/", "src/"],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/go-faast/faast-portfolio.git"
