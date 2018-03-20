@@ -29,6 +29,13 @@ const res = path.join(projectRoot, 'res')
 const test = path.join(projectRoot, 'test')
 const nodeModules = path.join(projectRoot, 'node_modules')
 
+const fileOutputPath = 'file/'
+const assetOutputPath = 'asset/'
+const vendorOutputPath = 'vendor/'
+const bundleOutputPath = 'bundle/'
+
+const vendorDeps = ['font-awesome/css/font-awesome.min.css', 'ledger.min.js', 'web3.min.js']
+
 const cssLoader = ({ sourceMap = true, modules = true } = {}) => ExtractTextPlugin.extract({
   fallback: 'style-loader',
   use: [{
@@ -62,7 +69,6 @@ const cssLoader = ({ sourceMap = true, modules = true } = {}) => ExtractTextPlug
   }]
 })
 
-const fileOutputPath = 'file/'
 const fileLoader = () => ({
   loader: 'file-loader',
   options: {
@@ -70,7 +76,6 @@ const fileLoader = () => ({
   }
 })
 
-const assetOutputPath = 'asset/'
 const assetLoader = (subDir) => ({
   loader: 'file-loader',
   options: {
@@ -88,7 +93,7 @@ let config = {
   output: {
     path: dist,
     publicPath: '/portfolio/',
-    filename: isDev ? 'bundle.js' : 'bundle.[hash:10].js'
+    filename: bundleOutputPath + (isDev ? '[name].js' : '[name].[hash].js')
   },
   node: {
     fs: 'empty',
@@ -99,7 +104,9 @@ let config = {
       rules: [{
         resourceQuery: /worker/,
         loader: 'worker-loader',
-        options: { inline: true }
+        options: {
+          name: bundleOutputPath + 'worker.[hash].js'
+        }
       }, {
         exclude: /node_modules/,
         loader: 'babel-loader'
@@ -168,15 +175,14 @@ let config = {
       }
     }),
     new ExtractTextPlugin({
-      filename: 'style.[contenthash:10].css',
-      allChunks: true,
+      filename: bundleOutputPath + (isDev ? '[name].css' : '[name].[hash].css'),
       ignoreOrder: true,
       disable: isDev
     }),
     new OptimizeCssAssetsPlugin(),
     new FaviconPlugin({
       logo: path.join(res, 'img', 'faast-logo.png'),
-      prefix: 'favicon-[hash:10]/',
+      prefix: 'favicon-[hash]/',
       title: pkg.productName,
       description: pkg.description,
       background: '#181818',
@@ -184,9 +190,9 @@ let config = {
       cache: true,
       inject: true
     }),
-    new CopyPlugin([{ from: path.join(res, 'vendor'), to: path.join(dist, 'vendor') }]),
+    new CopyPlugin([{ from: path.join(res, 'vendor'), to: vendorOutputPath }]),
     new IncludeAssetsPlugin({
-      assets: ['vendor/font-awesome/css/font-awesome.min.css', 'vendor/ledger.min.js', 'vendor/web3.min.js'],
+      assets: vendorDeps.map((vendorDep) => path.join(vendorOutputPath, vendorDep)),
       append: false,
       hash: true
     })
@@ -197,7 +203,7 @@ if (!isDev) {
   config = merge(config, {
     devtool: 'source-map',
     plugins: [
-      new CleanPlugin(['*.*', assetOutputPath, fileOutputPath], { root: dist }),
+      new CleanPlugin(['*.*', fileOutputPath, assetOutputPath, vendorOutputPath], { root: dist }),
       new UglifyJsPlugin({
         sourceMap: true,
         uglifyOptions: {
