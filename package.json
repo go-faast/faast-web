@@ -64,7 +64,7 @@
     "highcharts": "^5.0.14",
     "html-webpack-plugin": "^3.0.6",
     "idb-wrapper": "^1.7.1",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.5",
     "lodash.merge": "^4.6.0",
     "lodash.mergewith": "^4.6.0",
     "lodash.omit": "^4.5.0",
