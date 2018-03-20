@@ -29,7 +29,6 @@ const res = path.join(projectRoot, 'res')
 const test = path.join(projectRoot, 'test')
 const nodeModules = path.join(projectRoot, 'node_modules')
 
-const fileOutputPath = 'file/'
 const assetOutputPath = 'asset/'
 const vendorOutputPath = 'vendor/'
 const bundleOutputPath = 'bundle/'
@@ -69,23 +68,17 @@ const cssLoader = ({ sourceMap = true, modules = true } = {}) => ExtractTextPlug
   }]
 })
 
-const fileLoader = () => ({
-  loader: 'file-loader',
-  options: {
-    outputPath: fileOutputPath
-  }
-})
-
 const assetLoader = (subDir) => ({
   loader: 'file-loader',
   options: {
-    context: res,
+    context: projectRoot,
     outputPath: assetOutputPath,
     name: isDev ? '[path][name].[ext]' : `${subDir}/[hash].[ext]`
   }
 })
 const imgAssetLoader = assetLoader('img')
 const fontAssetLoader = assetLoader('font')
+const fileAssetLoader = assetLoader('file')
 
 let config = {
   context: projectRoot,
@@ -121,7 +114,7 @@ let config = {
       }]
     }, {
       resourceQuery: /file/,
-      use: fileLoader()
+      use: fileAssetLoader
     }, {
       test: /\.svg$/,
       oneOf: [{     
@@ -182,7 +175,7 @@ let config = {
     new OptimizeCssAssetsPlugin(),
     new FaviconPlugin({
       logo: path.join(res, 'img', 'faast-logo.png'),
-      prefix: 'favicon-[hash]/',
+      prefix: 'favicon-[hash:8]/',
       title: pkg.productName,
       description: pkg.description,
       background: '#181818',
@@ -203,7 +196,7 @@ if (!isDev) {
   config = merge(config, {
     devtool: 'source-map',
     plugins: [
-      new CleanPlugin(['*.*', fileOutputPath, assetOutputPath, vendorOutputPath], { root: dist }),
+      new CleanPlugin(['*.*', assetOutputPath, vendorOutputPath, bundleOutputPath], { root: dist }),
       new UglifyJsPlugin({
         sourceMap: true,
         uglifyOptions: {
