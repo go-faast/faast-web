@@ -84,7 +84,8 @@ let config = {
   entry: path.join(src, 'index.jsx'),
   output: {
     path: dist,
-    filename: isDev ? 'portfolio.js' : 'portfolio.[hash:10].js'
+    publicPath: '/portfolio/',
+    filename: isDev ? 'bundle.js' : 'bundle.[hash:10].js'
   },
   node: {
     fs: 'empty',
@@ -200,9 +201,9 @@ if (!isDev) {
     devServer: {
       contentBase: dist,
       hot: true,
-      compress: true,
-      historyApiFallback: true,
-      inline: true,
+      historyApiFallback: {
+        index: config.output.publicPath
+      },
       headers: { 'Access-Control-Allow-Origin': '*' }
     },
     plugins: [
