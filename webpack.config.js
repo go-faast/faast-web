@@ -22,7 +22,7 @@ const isDev = NODE_ENV === 'development'
 const isMocking = Boolean(process.env.MOCK)
 
 const projectRoot = path.resolve(__dirname)
-const dist = path.join(projectRoot, 'dist')
+const dist = path.join(projectRoot, isDev ? 'dist-dev' : 'dist')
 const src = path.join(projectRoot, 'src')
 const res = path.join(projectRoot, 'res')
 const test = path.join(projectRoot, 'test')

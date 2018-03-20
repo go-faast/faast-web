@@ -1,3 +1,4 @@
+dist-dev/
 test/
 scripts/
 .eslintrc.json
