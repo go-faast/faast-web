@@ -32,6 +32,7 @@ const nodeModules = path.join(projectRoot, 'node_modules')
 const assetOutputPath = 'asset/'
 const vendorOutputPath = 'vendor/'
 const bundleOutputPath = 'bundle/'
+const faviconOutputPath = 'favicon/'
 
 const vendorDeps = ['font-awesome/css/font-awesome.min.css', 'ledger.min.js', 'web3.min.js']
 
@@ -175,7 +176,7 @@ let config = {
     new OptimizeCssAssetsPlugin(),
     new FaviconPlugin({
       logo: path.join(res, 'img', 'faast-logo.png'),
-      prefix: 'favicon-[hash:8]/',
+      prefix: faviconOutputPath + '[hash:8]/',
       title: pkg.productName,
       description: pkg.description,
       background: '#181818',
@@ -196,7 +197,7 @@ if (!isDev) {
   config = merge(config, {
     devtool: 'source-map',
     plugins: [
-      new CleanPlugin(['*.*', assetOutputPath, vendorOutputPath, bundleOutputPath], { root: dist }),
+      new CleanPlugin(['*'], { root: dist, exclude: [faviconOutputPath] }),
       new UglifyJsPlugin({
         sourceMap: true,
         uglifyOptions: {
