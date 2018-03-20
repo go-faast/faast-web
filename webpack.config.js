@@ -8,6 +8,7 @@ const FaviconPlugin = require('favicons-webpack-plugin')
 const CleanPlugin = require('clean-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const IncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 
 const pkg = require('./package.json')
 
@@ -183,7 +184,12 @@ let config = {
       cache: true,
       inject: true
     }),
-    new CopyPlugin([{ from: path.join(res, 'vendor'), to: path.join(dist, 'vendor') }])
+    new CopyPlugin([{ from: path.join(res, 'vendor'), to: path.join(dist, 'vendor') }]),
+    new IncludeAssetsPlugin({
+      assets: ['vendor/font-awesome/css/font-awesome.min.css', 'vendor/ledger.min.js', 'vendor/web3.min.js'],
+      append: false,
+      hash: true
+    })
   ]
 }
 
