@@ -14,7 +14,7 @@
     "url": "git+https://github.com/go-faast/faast-portfolio.git"
   },
   "scripts": {
-    "start": "serve dist --cors --open",
+    "start": "ws --https --spa dist/index.html --rewrite '/portfolio/* -> /dist/$1'",
     "dev": "cross-env NODE_ENV=development webpack-dev-server",
     "lint": "eslint src/",
     "build:webpack": "webpack --progress",
@@ -65,6 +65,7 @@
     "html-webpack-include-assets-plugin": "^1.0.4",
     "html-webpack-plugin": "^3.0.6",
     "idb-wrapper": "^1.7.1",
+    "local-web-server": "^2.5.1",
     "lodash": "^4.17.5",
     "lodash.merge": "^4.6.0",
     "lodash.mergewith": "^4.6.0",
@@ -103,7 +104,6 @@
     "riek": "^1.1.0",
     "rlp": "^2.0.0",
     "sass-loader": "^6.0.6",
-    "serve": "^6.0.6",
     "standard": "^10.0.3",
     "style-loader": "^0.18.2",
     "svg-react-loader": "^0.4.5",
@@ -112,7 +112,8 @@
     "webpack": "^3.5.5",
     "webpack-dev-server": "^2.7.1",
     "webpack-merge": "^4.1.2",
-    "worker-loader": "^1.1.0"
+    "worker-loader": "^1.1.0",
+    "ws": "^5.1.0"
   },
   "dependencies": {}
 }
