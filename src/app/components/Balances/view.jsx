@@ -81,7 +81,7 @@ const BalancesView = (props) => {
       const fiatPrice = display.fiat(price)
       const chartOpen = openCharts[symbol]
       return ([
-        <tr key={symbol} onClick={() => toggleChart(symbol)}>
+        <tr key={symbol} onClick={() => toggleChart(symbol)} tabIndex='0'>
           <td>
             <CoinIcon coin={symbol} size={1.5}/>
             <span className={classNames(style.coinName, collapsedRow, 'mx-2')}>{displayName}</span>
