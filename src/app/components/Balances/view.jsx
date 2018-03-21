@@ -162,7 +162,7 @@ const BalancesView = (props) => {
                     </Col>
                     <Col xs='auto'>
                       <Button color='danger' size='sm' onClick={handleRemove} disabled={disableRemove}>
-                        <i className='fa fa-trash'/> remove {isPortfolio ? 'portfolio' : 'wallet'}
+                        <i className='fa fa-times'/> remove {isPortfolio ? 'portfolio' : 'wallet'}
                       </Button>
                     </Col>
                   </Row>

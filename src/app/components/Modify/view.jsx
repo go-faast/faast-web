@@ -136,7 +136,9 @@ const ModifyView = (props) => {
             </Row>
           </Col>
           <Col xs='auto' className='align-self-start order-2 order-lg-3'>
-            <Button color='faast' size='sm' onClick={() => props.handleRemove(walletId, symbol)} disabled={disabled}>remove</Button>
+            <Button color='danger' size='sm' disabled={disabled} onClick={() => props.handleRemove(walletId, symbol)}>
+              <i className='fa fa-times'/> remove
+            </Button>
           </Col>
         </Row>
         
@@ -156,10 +158,21 @@ const ModifyView = (props) => {
     .map(({ id, label, assetHoldings }) => (
       <Col xs='12' key={id}>
         <Card>
-          <CardHeader><h4 className='m-0'>{label}</h4></CardHeader>
+          <CardHeader>
+            <Row className='gutter-3 align-items-center'>
+              <Col>
+                <h4 className='m-0 lh-0'>{label}</h4>
+              </Col>
+              <Col xs='auto'>
+                <Button color='success' size='sm' onClick={() => props.showAssetList(id)}>
+                  <i className='fa fa-plus'/> add asset
+                </Button>
+              </Col>
+            </Row>
+          </CardHeader>
           <ListGroup>
             {renderAssetRows(assetHoldings.filter(({ shown }) => shown))}
-            <ListGroupItem action onClick={() => props.showAssetList(id)} tag='button' className='btn btn-ultra-dark text-center text-primary'>
+            <ListGroupItem action onClick={() => props.showAssetList(id)} tag='button' className='btn btn-ultra-dark text-center text-success'>
               <i className='fa fa-plus fa-2x align-middle' />
               <span className='pl-2 h5'>add asset</span>
             </ListGroupItem>
