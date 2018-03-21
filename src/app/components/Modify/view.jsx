@@ -11,7 +11,7 @@ import display from 'Utilities/display'
 import styles from './style'
 import headerStyles from 'Components/Header/style'
 import config from 'Config'
-import { Row, Col, Card, CardHeader, CardBody, ListGroup, ListGroupItem, Modal, Alert, Button } from 'reactstrap'
+import { Row, Col, Card, CardHeader, ListGroup, ListGroupItem, Modal, Alert, Button } from 'reactstrap'
 import WalletSummary from 'Components/WalletSummary'
 import Overlay from 'Components/Overlay'
 import { zIndexSticky } from 'faast-ui'
@@ -40,8 +40,8 @@ const ModifyView = (props) => {
     return (
       <ListGroupItem key={symbol}>
         {disabled && (
-          <Overlay className='justify-content-start'>
-            <Alert color='info'>
+          <Overlay className='justify-content-end'>
+            <Alert color='info' className='m-1'>
               Swapping {name} is currently unavailable
             </Alert>
           </Overlay>
@@ -176,29 +176,23 @@ const ModifyView = (props) => {
       <SignTxModal showModal={props.showSignTxModal} toggleModal={props.handleToggleSignTxModal} />
       <Sticky innerZ={zIndexSticky} top='#header'>
         <div className={headerStyles.header}>
-          <Row className='gutter-3'>
-            <Col xs='6' md='4'>
-              <Card tag={CardBody} className='h-100 justify-content-center'>
+          <Row className='gutter-3 align-items-center'>
+            <Col xs='6' md='4' className='align-self-stretch'>
+              <Card body className='h-100 px-3 py-2 justify-content-center'>
                 <WalletSummary wallet={portfolio}/>
               </Card>
             </Col>
-            <Col xs='6' md='4' className='text-center'>
-              <Card tag={CardBody} className='h-100 justify-content-center'>
-                <div className='text-grey text-small'>available to swap</div>
+            <Col xs='6' md='4' className='text-center align-self-stretch'>
+              <Card body className='h-100 px-3 py-2 justify-content-center'>
+                <div className='text-grey'>available to swap</div>
                 <div className='text-grey text-white'>{display.fiat(props.allowance.fiat)} / {display.percentage(props.allowance.weight)}</div>
               </Card>
             </Col>
-            <Col xs='12' md='4'>
-              <Card tag={CardBody} className='h-100 justify-content-center'>
-                <Row className='gutter-3'>
-                  <Col xs='6'>
-                    <Button color='faast' outline onClick={handleCancel} className='w-100'>cancel</Button>
-                  </Col>
-                  <Col xs='6'>
-                    <Button color='faast' onClick={handleSave} className='w-100' disabled={Boolean(disableSaveMessage)}>save</Button>
-                  </Col>
-                </Row>
-              </Card>
+            <Col xs='6' md='2'>
+              <Button color='faast' outline onClick={handleCancel} className='w-100'>cancel</Button>
+            </Col>
+            <Col xs='6' md='2'>
+              <Button color='faast' onClick={handleSave} className='w-100' disabled={Boolean(disableSaveMessage)}>save</Button>
             </Col>
             {disableSaveMessage && (
               <Col xs='12'>
