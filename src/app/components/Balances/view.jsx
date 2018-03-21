@@ -129,7 +129,7 @@ const BalancesView = (props) => {
           <Button color='faast' tag={Link} to='/connect'><i className='fa fa-plus'/> add wallet</Button>
         </Col>
         <Col xs='auto'>
-          <Button color='faast' tag={Link} to='/modify' disabled={disableModify || viewOnly}><i className='fa fa-edit'/> modify portfolio</Button>
+          <Button color='faast' tag={Link} to='/modify' disabled={disableModify || viewOnly}><i className='fa fa-exchange'/> swap</Button>
         </Col>
       </Row>
       {!viewOnly &&

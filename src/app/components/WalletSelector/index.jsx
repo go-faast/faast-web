@@ -87,7 +87,7 @@ class WalletSelector extends React.Component {
             <h4 className='m-0'>Portfolios</h4>
           </Col>
           <Col xs='auto'>
-            <Button color='faast' size='sm' onClick={() => createNewPortfolio(true)}><i className='fa fa-plus'/> add portfolio</Button>
+            <Button color='success' outline size='sm' onClick={() => createNewPortfolio(true)}><i className='fa fa-plus'/> add portfolio</Button>
           </Col>
           {Object.entries(portfolioWalletIds).map(([portfolioId, walletIds]) => {
             const showWallets = this.state.expandedPortfolios[portfolioId]
