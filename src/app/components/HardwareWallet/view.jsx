@@ -5,7 +5,6 @@ import { Button } from 'reactstrap'
 import AccessTile from 'Components/AccessTile'
 import HWAddressSelect from 'Components/HWAddressSelect'
 import Units from 'Components/Units'
-import styles from './style'
 
 import ledgerLogo from 'Img/ledger-logo.png'
 import trezorLogo from 'Img/trezor-logo.png'
@@ -133,14 +132,14 @@ let HardwareWalletModal = (props) => {
   }
 
   return (
-    <Modal size='lg' className={styles.container} isOpen={props.isOpen} toggle={props.handleToggle}>
+    <Modal size='lg' className='text-center' isOpen={props.isOpen} toggle={props.handleToggle}>
       <ModalBody>
         <div className='modal-title'>Connect to {props.name}</div>
         <div className='modal-text'>
           <div>
             {renderHwCommStatus(props.commStatus)}
           </div>
-          <div className={styles.instructions}>
+          <div className='mt-2r'>
             {(props.commStatus !== 'connected' &&
               <div>
                 {renderInstructions()}
