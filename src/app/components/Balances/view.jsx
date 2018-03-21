@@ -14,15 +14,13 @@ import SignTxModal from 'Components/SignTxModal'
 import Welcome from 'Components/Welcome'
 import Units from 'Components/Units'
 import display from 'Utilities/display'
-import styles from './style'
-import config from 'Config'
-import { breakpointNext } from 'Utilities/breakpoints'
+import style from './style'
 import WalletSelector from 'Components/WalletSelector'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import OrderStatus from 'Components/OrderStatus'
+import CoinIcon from 'Components/CoinIcon'
 
-const { collapseTablePoint } = styles
-const expandTablePoint = breakpointNext(collapseTablePoint)
+const { tableExpandPoint: expandPoint } = style
 
 const ChangePercent = ({ children: change }) => <span className={change.isNegative() ? 'text-red' : 'text-green'}>{display.percentage(change, true)}</span>
 
@@ -38,9 +36,7 @@ const BalancesView = (props) => {
   const assetRows = wallet.assetHoldings.filter(({ shown }) => shown)
   const balancesLoading = !balancesLoaded
 
-  const collapsedOnly = `d-${expandTablePoint}-none`
-  const expandedOnlyBlock = `d-none d-${expandTablePoint}-block`
-  const expandedOnlyCell = `d-none d-${expandTablePoint}-table-cell`
+  const { expandedOnly, collapsedOnly, collapsedRow } = style
 
   const stats = [
     {
@@ -49,12 +45,12 @@ const BalancesView = (props) => {
       colClass: 'order-2 order-lg-1'
     },
     {
-      title: 'current (USD)',
+      title: 'current holdings',
       value: display.fiat(totalFiat),
       colClass: 'order-1 order-lg-2'
     },
     {
-      title: '24h ago (USD)',
+      title: 'holdings 24h ago',
       value: display.fiat(totalFiat24hAgo),
       colClass: 'order-3'
     },
@@ -68,7 +64,7 @@ const BalancesView = (props) => {
   const renderAssets = () => {
     if (assetRows.length === 0) {
       return (
-        <tr className={`text-center ${styles.tableRow}`}>
+        <tr className='text-center'>
           <td colSpan='10'>
             <i>No assets to show</i>
           </td>
@@ -79,7 +75,6 @@ const BalancesView = (props) => {
       const { symbol, name, fiat, balance, price, percentage, change24, infoUrl } = asset
       const displayName = name.length > 12 ? symbol : name
       const displayUnits = (<Units value={balance} symbol={symbol} showSymbol={false}/>)
-      const displayUnitsWithSymbol = (<Units value={balance} symbol={symbol} showSymbol={true}/>)
       const displayWeight = display.percentage(percentage)
       const displayChange = (<ChangePercent>{change24}</ChangePercent>)
       const fiatValue = display.fiat(fiat)
@@ -88,30 +83,25 @@ const BalancesView = (props) => {
       return ([
         <tr key={symbol} onClick={() => toggleChart(symbol)}>
           <td>
-            <Row className='gutter-0'>
-              <Col {...({ xs: '12', [expandTablePoint]: 'auto' })}>
-                <div className={styles.tableCoinIcon} style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${symbol}.png)` }} />
-              </Col>
-              <Col {...({ xs: '12', [expandTablePoint]: 'auto' })} tag='p' className={styles.tableCoinName}>{displayName}</Col>
-            </Row>
+            <CoinIcon coin={symbol} size={1.5}/>
+            <span className={classNames(style.coinName, collapsedRow, 'mx-2')}>{displayName}</span>
           </td>
           <td>
-            <p className={expandedOnlyBlock}>{displayUnitsWithSymbol}</p>
-            <p className={collapsedOnly}>{displayUnits}</p>
-            <p className={collapsedOnly}>{symbol}</p>
+            {displayUnits}
+            <span className={collapsedRow}>&nbsp;{symbol}</span>
           </td>
           <td>
-            <p>{fiatValue}</p>
-            <p className={collapsedOnly}>{displayWeight}</p>
+            {fiatValue}
+            <div className={classNames(collapsedOnly, collapsedRow)}>{displayWeight}</div>
           </td>
-          <td className={expandedOnlyCell}>
+          <td className={expandedOnly}>
             {displayWeight}
           </td>
           <td>
-            <p>{fiatPrice}</p>
-            <p className={collapsedOnly}>{displayChange}</p>
+            {fiatPrice}
+            <div className={classNames(collapsedOnly, collapsedRow)}>{displayChange}</div>
           </td>
-          <td className={expandedOnlyCell}>
+          <td className={expandedOnly}>
             {displayChange}
           </td>
         </tr>,
@@ -149,13 +139,13 @@ const BalancesView = (props) => {
         <Welcome />
       }
       <div className='my-3'>
-        <Row className='gutter-4'>
+        <Row className='gutter-3'>
           {!isDefaultPortfolioEmpty && (
             <Col xs='12' md='6' lg='5' xl='4'>
               <WalletSelector/>
             </Col>
           )}
-          <Col xs='12' md>
+          <Col xs='12' md='6' lg='7' xl='8'>
             <Row className='gutter-3'>
               {balancesLoading && (<LoadingFullscreen center error={balancesError}/>)}
               {viewOnly ? (
@@ -187,11 +177,11 @@ const BalancesView = (props) => {
                 <Card>
                   <CardBody className='grid-group'>
                     <Row className='gutter-3'>
-                      {stats.map(({ title, value, valueClass, colClass }, i) => (
+                      {stats.map(({ title, value, colClass }, i) => (
                         <Col xs='6' lg='3' key={i} className={classNames('text-center', colClass)}>
                           <div className='grid-cell'>
-                            <div className='text-medium-grey'>{title}</div>
-                            <div className={classNames('text-medium', valueClass)}>{value}</div>
+                            <h4>{value}</h4>
+                            <h6 className='mb-0'>{title}</h6>
                           </div>
                         </Col>
                       ))}
@@ -201,7 +191,7 @@ const BalancesView = (props) => {
                     {addressProps.address && (
                       <div className='text-right px-3' style={{ lineHeight: 1 }}>
                         <div className='text-medium-grey mb-1'>address</div>
-                        <Address className={styles.addressLink} {...addressProps} />
+                        <Address className={style.addressLink} {...addressProps} />
                       </div>
                     )}
                     {pieChart}
@@ -210,15 +200,15 @@ const BalancesView = (props) => {
               </Col>
               <Col xs='12'>
                 <Card>
-                  <Table hover striped className={classNames(styles.balanceTable, 'table-accordian')}>
+                  <Table hover striped className={classNames(style.balanceTable, 'table-accordian')}>
                     <thead>
                       <tr>
-                        <th>Asset</th>
-                        <th>Units</th>
-                        <th>Holdings</th>
-                        <th className={expandedOnlyCell}>Weight</th>
-                        <th>Price</th>
-                        <th className={expandedOnlyCell}>24h change</th>
+                        <th><h6>Asset</h6></th>
+                        <th><h6>Units</h6></th>
+                        <th><h6>Holdings</h6></th>
+                        <th className={expandedOnly}><h6>Weight</h6></th>
+                        <th><h6>Price</h6></th>
+                        <th className={expandedOnly}><h6>24h change</h6></th>
                       </tr>
                     </thead>
                     <tbody>

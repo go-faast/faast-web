@@ -4,17 +4,22 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux';
 import { ListGroup, ListGroupItem, Collapse, Row, Col, Button } from 'reactstrap'
 import classNames from 'class-names'
-import { defaultPortfolioId, setCurrentPortfolio, setCurrentWallet, createNewPortfolio, removePortfolio } from 'Actions/portfolio'
+import { setCurrentPortfolio, setCurrentWallet, createNewPortfolio, removePortfolio } from 'Actions/portfolio'
 import { getAllPortfolioWalletIds, getCurrentWalletId, getCurrentPortfolioId } from 'Selectors'
 import WalletSummary from 'Components/WalletSummary'
 
-const ListButton = ({ className, ...props }) => (
-  <ListGroupItem action tag='button' className={classNames('btn btn-ultra-dark', className)} {...props}/>
+const ListButton = ({ className, color = 'ultra-dark', size, ...props }) => (
+  <ListGroupItem action tag='button'
+    className={classNames(
+      className,
+      `btn btn-${color}`,
+      { [`btn-${size}`]: size }
+    )} {...props}/>
 )
 
-const ListItem = ({ id, active, nested, onClick }) => (
-  <ListButton active={active} onClick={onClick} className={classNames({ 'compact pl-5': nested })}>
-    <WalletSummary.Connected id={id} icon={nested} labelTag={nested ? 'span' : 'h6'}/>
+const ListItem = ({ id, active, nested, onClick, className, ...props }) => (
+  <ListButton active={active} onClick={onClick} className={classNames({ 'compact pl-5': nested }, className)} {...props}>
+    <WalletSummary.Connected id={id} icon={nested} labelTag={nested ? 'span' : 'h5'}/>
   </ListButton>
 )
 
@@ -72,7 +77,7 @@ class WalletSelector extends React.Component {
   render() {
     const {
       portfolioWalletIds, currentPortfolioId, currentWalletId,
-      createNewPortfolio, removePortfolio, setCurrentPortfolio, setCurrentWallet
+      createNewPortfolio, setCurrentPortfolio, setCurrentWallet
     } = this.props
     
     return (
@@ -95,12 +100,12 @@ class WalletSelector extends React.Component {
                   <ListGroupItem className='grid-group'>
                     <Row className='gutter-3'>
                       <Col xs='6'>
-                        <ListButton className='grid-cell compact text-green text-center' onClick={() => this.connectWalletToPortfolio(portfolioId)}>
+                        <ListButton className='grid-cell btn-sm text-success text-center' onClick={() => this.connectWalletToPortfolio(portfolioId)}>
                           <i className='fa fa-plus'/> add wallet
                         </ListButton>
                       </Col>
                       <Col xs='6'>
-                        <ListButton className='grid-cell compact text-light-grey text-center' onClick={() => this.togglePortfolio(portfolioId)}>
+                        <ListButton className='grid-cell btn-sm text-light-grey text-center' onClick={() => this.togglePortfolio(portfolioId)}>
                           {showWallets
                             ? (<span><i className='fa fa-caret-up'/> hide wallets</span>)
                             : (<span><i className='fa fa-caret-down'/> show wallets</span>)}

@@ -17,7 +17,7 @@ export const WalletSummary = ({ icon, labelTag: LabelTag, wallet: { id, label, t
             <div className={styles.walletIcon} style={{ backgroundImage: `url(${iconUrl})` }}></div>
           </Col>
         )}
-        <Col className='text-medium-grey'>{typeLabel}</Col>
+        <Col className='text-grey'>{typeLabel}</Col>
         <Col xs='auto'>
           {balancesLoaded
             ? display.fiat(totalFiat)
@@ -36,7 +36,7 @@ WalletSummary.propTypes = {
 
 WalletSummary.defaultProps = {
   icon: false,
-  labelTag: 'h6',
+  labelTag: 'h5',
 }
 
 export const ConnectedWalletSummary = connect(createStructuredSelector({

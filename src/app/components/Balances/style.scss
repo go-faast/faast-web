@@ -1,52 +1,18 @@
 @import "~Styles/variables";
 
-$collapse-table: md;
+$collapse-point: md;
+$expand-point: breakpoint-next($collapse-point);
 
 :export {
-  collapseTablePoint: $collapse-table;
-}
-
-.upIcon {
-  background-image: url(https://faa.st/img/up-icon.svg);
-}
-
-.downIcon {
-  background-image: url(https://faa.st/img/down-icon.svg);
-}
-
-.changeIcon {
-  background-position: center center;
-  background-repeat: no-repeat;
-  height: 30px;
-  width: 30px;
-  margin-top: 10px;
-  margin-right: 5px;
-}
-
-.changeUpIcon {
-  @extend .changeIcon;
-  @extend .upIcon;
-}
-
-.changeDownIcon {
-  @extend .changeIcon;
-  @extend .downIcon;
+  tableCollapsePoint: $collapse-point;
+  tableExpandPoint: $expand-point;
 }
 
 .addressLink {
   @include media-breakpoint-down(xs) {
-    font-size: $text-x-small;
+    font-size: $small-font-size;
   }
   overflow-wrap: break-word;
-}
-
-.statsTitle, .addressTitle {
-  @extend .text-small;
-  @extend .text-medium-grey;
-}
-
-.statsContent {
-  @extend .text-medium;
 }
 
 .chart {
@@ -54,64 +20,52 @@ $collapse-table: md;
 }
 
 .balanceTable {
+  line-height: 1;
+
+  tbody {
+    font-size: 1rem;
+  }
+
   td, th {
+    vertical-align: middle !important;
     text-align: right;
     &:first-child {
       text-align: left;
-      @include media-breakpoint-down($collapse-table) {
+      @include media-breakpoint-down($collapse-point) {
         text-align: center;
       }
     }
   }
-  td {
-    &, p {
-      color: #dedede;
-    }
-    p {
-      margin: 0;
-      padding: 0;
-      + p {
-        font-size: 0.8em;
-        margin-top: 4px;
-        color: #ddd;
-      }
-    }
-    @include media-breakpoint-down($collapse-table) {
-      font-size: $text-small;
+
+  .expandedOnly {
+    @include media-breakpoint-down($collapse-point) {
+      display: none;
     }
   }
-}
 
-.gradientSeparator {
-  height: 1px;
-  padding: 0;
-  @extend .gradient-background;
-  opacity: 0.4;
-}
-
-.tableCoinIcon {
-  background-size: 24px;
-  background-position: center;
-  background-repeat: no-repeat;
-  height: 24px;
-  width: 24px;
-  margin-right: 10px;
-  @include media-breakpoint-down($collapse-table) {
-    margin: auto;
+  .collapsedOnly {
+    @include media-breakpoint-up($expand-point) {
+      display: none;
+    }
   }
-}
 
-.tableCoinName {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  @include media-breakpoint-down($collapse-table) {
-    font-size: 0.8em;
+  .collapsedRow {
+    @include media-breakpoint-down($collapse-point) {
+      margin-top: 0.5rem;
+      display: block;
+      font-size: $small-font-size;
+    }
+  }
+
+  .coinName {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 }
 
 .viewMode {
-  @extend .gradient-text;
+  @extend .text-primary;
   border-width: 1px;
   border-style: solid;
   border-radius: 10px;
