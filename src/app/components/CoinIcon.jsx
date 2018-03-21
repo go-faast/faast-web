@@ -1,19 +1,23 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import config from 'Config'
-import classNames from 'class-names'
+import { reduceStyles, resize } from 'Utilities/style'
 
-const CoinIcon = ({ coin, tag: Tag, className, style, ...props }) => {
+const defaultStyle = { width: '1rem', height: '1rem' }
+
+const CoinIcon = ({ coin, size, tag: Tag, style, ...props }) => {
   const src = `${config.siteUrl}/img/coins/coin_${coin}.png`
   if (Tag === 'img') {
-    props = Object.assign({ src }, props)
+    props = { src, ...props }
   } else {
-    style = Object.assign({ backgroundImage: `url(${src})` }, style)
+    style = { backgroundImage: `url(${src})`, ...style }
   }
   return (
-    <Tag
-      className={classNames('coin-icon', className)}
-      style={style}
+    <Tag style={reduceStyles(
+        defaultStyle,
+        resize(size),
+        style
+      )}
       {...props}
     />
   )
@@ -21,12 +25,14 @@ const CoinIcon = ({ coin, tag: Tag, className, style, ...props }) => {
 
 CoinIcon.propTypes = {
   coin: PropTypes.string.isRequired, // Coin symbol (e.g. ETH, BTC)
+  size: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   tag: PropTypes.oneOfType([PropTypes.string, PropTypes.func]), // Component/HTML tag to render as
   className: PropTypes.string,
   style: PropTypes.object,
 }
 
 CoinIcon.defaultProps = {
+  size: 'md',
   tag: 'img',
   className: '',
   style: {},

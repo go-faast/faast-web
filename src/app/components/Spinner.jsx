@@ -4,7 +4,7 @@ import { reduceStyles, fill, resize } from 'Utilities/style'
 
 import Icon from 'Img/loading-spinner.svg?inline'
 
-const defaultStyle = { height: '0.25rem', width: '10rem' }
+const defaultStyle = { height: '0.125rem', width: '5rem' }
 
 const inlineStyle = {
   display: 'inline-block',

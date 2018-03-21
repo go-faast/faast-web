@@ -11,9 +11,9 @@ const defaultRotateAbbreviations = {
 }
 
 const defaultScalarAbbreviations = {
-  'sm': 0.5,
-  'md': 1,
-  'lg': 2
+  'sm': 1,
+  'md': 2,
+  'lg': 4
 }
 
 export const scaleUnit = (unit, scalar) => {

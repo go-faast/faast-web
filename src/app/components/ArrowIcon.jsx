@@ -4,7 +4,7 @@ import { reduceStyles, rotate, resize, fill } from 'Utilities/style'
 
 import Icon from 'Img/arrow-icon.svg?inline'
 
-const defaultStyle = { width: '2rem', height: '2rem' }
+const defaultStyle = { width: '1rem', height: '1rem' }
 
 const ArrowIcon = ({ dir, color, size, style, ...props }) => (
   <Icon style={reduceStyles(

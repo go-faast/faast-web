@@ -56,7 +56,7 @@ const ModifyView = (props) => {
             </Row>
             <Row className='gutter-x-3 my-3 align-items-center'>
               <Col xs='3' md='2' lg='auto'>
-                <ArrowIcon dir={changeIconDirection} size='2rem' color={changeColor} className='mx-auto mr-md-0' />
+                <ArrowIcon dir={changeIconDirection} size='md' color={changeColor} className='mx-auto mr-md-0' />
               </Col>
               <Col xs='4' md='3' lg>
                 <div className='text-grey'>24h change</div>
