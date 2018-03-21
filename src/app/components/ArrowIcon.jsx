@@ -9,7 +9,7 @@ const ArrowIcon = ({ dir, ...props }) => (
 
 ArrowIcon.propTypes = {
   dir: Icon.propTypes.rotate,
-  ...Icon.propTypes
+  ...Icon.stylePropTypes
 }
 
 ArrowIcon.defaultProps = {

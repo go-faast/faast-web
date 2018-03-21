@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
 
+import { tag as tagPropType } from 'Utilities/propTypes'
 import faastLogo from 'Img/faast-logo.png'
 import Spinner from 'Components/Spinner'
 
@@ -15,7 +16,7 @@ const Loading = ({ tag: Tag, error, center, className, ...props }) => (
 )
 
 Loading.propTypes = {
-  tag: PropTypes.oneOfType([PropTypes.string, PropTypes.func]),
+  tag: tagPropType,
   error: PropTypes.string,
   center: PropTypes.bool,
 }

@@ -24,7 +24,7 @@ const Spinner = ({ inline, style, ...props }) => (
 
 Spinner.propTypes = {
   inline: PropTypes.bool,
-  ...Icon.propTypes
+  ...Icon.stylePropTypes
 }
 
 Spinner.defaultProps = {

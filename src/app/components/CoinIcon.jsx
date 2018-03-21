@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import config from 'Config'
 
+import config from 'Config'
 import Icon from 'Components/Icon'
 
 const CoinIcon = ({ symbol, ...props }) => (
@@ -10,7 +10,7 @@ const CoinIcon = ({ symbol, ...props }) => (
 
 CoinIcon.propTypes = {
   symbol: PropTypes.string.isRequired, // Coin symbol (e.g. ETH, BTC)
-  ...Icon.propTypes
+  ...Icon.stylePropTypes
 }
 
 CoinIcon.defaultProps = {
