@@ -1,31 +1,21 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { reduceStyles, rotate, resize, fill } from 'Utilities/style'
 
-import Icon from 'Img/arrow-icon.svg?inline'
+import Icon from 'Components/Icon'
+import ArrowIconSvg from 'Img/arrow-icon.svg?inline'
 
-const defaultStyle = { width: '1rem', height: '1rem' }
-
-const ArrowIcon = ({ dir, color, size, style, ...props }) => (
-  <Icon style={reduceStyles(
-    defaultStyle,
-    resize(size),
-    rotate(dir),
-    fill(color),
-    style
-  )} {...props}/>
+const ArrowIcon = ({ dir, ...props }) => (
+  <Icon src={ArrowIconSvg} rotate={dir} {...props}/>
 )
 
 ArrowIcon.propTypes = {
-  dir: PropTypes.string,
-  color: PropTypes.string,
-  size: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
+  dir: Icon.propTypes.rotate,
+  ...Icon.propTypes
 }
 
 ArrowIcon.defaultProps = {
   dir: 'up',
-  color: 'white',
-  size: 'md',
+  color: 'primary',
+  size: 'md'
 }
 
 export default ArrowIcon

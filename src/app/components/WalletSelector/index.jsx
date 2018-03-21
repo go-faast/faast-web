@@ -100,12 +100,12 @@ class WalletSelector extends React.Component {
                   <ListGroupItem className='grid-group'>
                     <Row className='gutter-3'>
                       <Col xs='6'>
-                        <ListButton className='grid-cell btn-sm text-success text-center' onClick={() => this.connectWalletToPortfolio(portfolioId)}>
+                        <ListButton size='sm' className='grid-cell text-success text-center' onClick={() => this.connectWalletToPortfolio(portfolioId)}>
                           <i className='fa fa-plus'/> add wallet
                         </ListButton>
                       </Col>
                       <Col xs='6'>
-                        <ListButton className='grid-cell btn-sm text-light-grey text-center' onClick={() => this.togglePortfolio(portfolioId)}>
+                        <ListButton size='sm' className='grid-cell text-center' onClick={() => this.togglePortfolio(portfolioId)}>
                           {showWallets
                             ? (<span><i className='fa fa-caret-up'/> hide wallets</span>)
                             : (<span><i className='fa fa-caret-down'/> show wallets</span>)}
@@ -120,7 +120,7 @@ class WalletSelector extends React.Component {
                             active={currentPortfolioId === portfolioId && currentWalletId === id}
                             onClick={() => setCurrentWallet(portfolioId, id)}/>
                         ))
-                      : (<ListGroupItem><i>No wallets in this portfolio</i></ListGroupItem>)}
+                      : (<ListGroupItem><i className='text-muted'>No wallets in this portfolio</i></ListGroupItem>)}
                   </Collapse>
                 </ListGroup>
               </Col>

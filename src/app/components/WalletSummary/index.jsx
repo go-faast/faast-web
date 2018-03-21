@@ -3,9 +3,11 @@ import PropTypes from 'prop-types'
 import { Row, Col } from 'reactstrap'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
+
+import Icon from 'Components/Icon'
+import Spinner from 'Components/Spinner'
 import { getWalletWithHoldings } from 'Selectors'
 import display from 'Utilities/display'
-import styles from './style'
 
 export const WalletSummary = ({ icon, labelTag: LabelTag, wallet: { id, label, typeLabel, totalFiat, iconUrl, balancesLoaded } }) => (
   <Row className='gutter-0'>
@@ -14,14 +16,14 @@ export const WalletSummary = ({ icon, labelTag: LabelTag, wallet: { id, label, t
       <Row className='gutter-x-2 align-items-center justify-content-between'>
         {icon && (
           <Col xs='auto'>
-            <div className={styles.walletIcon} style={{ backgroundImage: `url(${iconUrl})` }}></div>
+            <Icon width='1.25em' height='1.25em' src={iconUrl}/>
           </Col>
         )}
-        <Col className='text-grey'>{typeLabel}</Col>
-        <Col xs='auto'>
+        <Col className='text-muted'>{typeLabel}</Col>
+        <Col xs='auto' className='text-muted'>
           {balancesLoaded
             ? display.fiat(totalFiat)
-            : (<span className='faast-loading loading-small'/>)}
+            : (<Spinner size='sm'/>)}
         </Col>
       </Row>
     </Col>

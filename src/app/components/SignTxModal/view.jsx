@@ -71,7 +71,7 @@ const SwapStatusRow = ({ status: { swap, from, to, receiveAmount }, children }) 
     <Row className='gutter-0 align-items-center'>
       <Col>
         <Row className='gutter-2 align-items-center text-center text-sm-left'>
-          <Col xs='12' sm='auto'><CoinIcon coin={from.symbol}/></Col>
+          <Col xs='12' sm='auto'><CoinIcon symbol={from.symbol}/></Col>
           <Col xs='12' sm>
             <Row className='gutter-0'>
               <Col xs='12' className='order-sm-2'>{from.name}</Col>
@@ -85,7 +85,7 @@ const SwapStatusRow = ({ status: { swap, from, to, receiveAmount }, children }) 
       </Col>
       <Col>
         <Row className='gutter-2 align-items-center text-center text-sm-right'>
-          <Col xs='12' sm='auto' className='order-sm-2'><CoinIcon coin={to.symbol}/></Col>
+          <Col xs='12' sm='auto' className='order-sm-2'><CoinIcon symbol={to.symbol}/></Col>
           <Col xs='12' sm>
             <Row className='gutter-0'>
               <Col xs='12' className='order-sm-2'>{to.name}</Col>
