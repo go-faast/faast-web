@@ -73,7 +73,7 @@ class HardwareWallet extends Component {
   }
 
   _handleToggleModal () {
-    this.setState({ showModal: !this.state.showPasswordModal })
+    this.setState({ showModal: !this.state.showModal })
   }
 
   _handleCloseModal () {

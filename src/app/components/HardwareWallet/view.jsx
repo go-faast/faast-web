@@ -165,7 +165,7 @@ const HardwareWalletModal = ({
   commStatusProps, accountSelectProps, confirmAccountSelectionProps, toggleAccountSelect
 }) => (
   <Modal size='lg' className='text-center modal-dialog-centered' isOpen={isOpen} toggle={handleToggle}>
-    <ModalHeader tag='h3' className='text-primary' cssModule={{ 'modal-title': 'modal-title mx-auto' }}toggle={handleToggle}>
+    <ModalHeader tag='h3' className='text-primary' cssModule={{ 'modal-title': 'modal-title mx-auto' }} toggle={handleToggle}>
       Connecting {walletRenderData[type].name}
     </ModalHeader>
     <ModalBody className='flex-col-center'>
