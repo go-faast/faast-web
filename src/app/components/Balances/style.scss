@@ -3,11 +3,6 @@
 $collapse-point: md;
 $expand-point: breakpoint-next($collapse-point);
 
-:export {
-  tableCollapsePoint: $collapse-point;
-  tableExpandPoint: $expand-point;
-}
-
 .addressLink {
   @include media-breakpoint-down(xs) {
     font-size: $small-font-size;
@@ -21,10 +16,6 @@ $expand-point: breakpoint-next($collapse-point);
 
 .balanceTable {
   line-height: 1;
-
-  tbody {
-    font-size: 1rem;
-  }
 
   td, th {
     vertical-align: middle !important;

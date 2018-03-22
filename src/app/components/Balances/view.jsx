@@ -2,25 +2,25 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   Row, Col, Table, Button, Alert, Collapse,
-  Card, CardBody, CardHeader, CardTitle, CardSubtitle, CardText
+  Card, CardBody
 } from 'reactstrap'
 import BigNumber from 'bignumber.js'
 import classNames from 'class-names'
 import { Link } from 'react-router-dom'
+
+import display from 'Utilities/display'
 import Layout from 'Components/Layout'
 import Address from 'Components/Address'
 import PriceChart from 'Components/PriceChart'
 import SignTxModal from 'Components/SignTxModal'
 import Welcome from 'Components/Welcome'
 import Units from 'Components/Units'
-import display from 'Utilities/display'
-import style from './style'
 import WalletSelector from 'Components/WalletSelector'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import OrderStatus from 'Components/OrderStatus'
 import CoinIcon from 'Components/CoinIcon'
 
-const { tableExpandPoint: expandPoint } = style
+import style from './style'
 
 const ChangePercent = ({ children: change }) => <span className={change.isNegative() ? 'text-red' : 'text-green'}>{display.percentage(change, true)}</span>
 
@@ -83,7 +83,7 @@ const BalancesView = (props) => {
       return ([
         <tr key={symbol} onClick={() => toggleChart(symbol)} tabIndex='0'>
           <td>
-            <CoinIcon symbol={symbol} size={1.5}/>
+            <CoinIcon symbol={symbol} width='1.5em' height='1.5em' size={1}/>
             <span className={classNames(style.coinName, collapsedRow, 'mx-2')}>{displayName}</span>
           </td>
           <td>
