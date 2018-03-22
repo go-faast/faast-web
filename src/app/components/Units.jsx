@@ -8,8 +8,8 @@ const numberType = PropTypes.oneOfType([PropTypes.number, PropTypes.instanceOf(B
 
 class Units extends React.Component {
   render() {
-    const { symbol, showSymbol, precision, maxDigits } = this.props
-    const value = toBigNumber(this.props.value)
+    const { value: propValue, symbol, showSymbol, precision, maxDigits, ...props } = this.props
+    const value = toBigNumber(propValue)
     let expanded = value.toFormat()
     let shrunk = value.toDigits(precision, BigNumber.ROUND_DOWN).toFormat()
     const digitCount = shrunk.replace(/\D/g, '').length
@@ -22,7 +22,7 @@ class Units extends React.Component {
         shrunk = `${shrunk} ${symbol}`
       }
     }
-    return (<Expandable shrunk={shrunk} expanded={expanded}/>)
+    return (<Expandable shrunk={shrunk} expanded={expanded} {...props}/>)
   }
 }
 

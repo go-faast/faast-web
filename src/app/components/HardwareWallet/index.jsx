@@ -1,9 +1,11 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import HardwareWalletView from './view'
 import toastr from 'Utilities/toastrWrapper'
 import { timer } from 'Utilities/helpers'
+import { setStatePromise } from 'Utilities/reactFuncs'
 import { toMainDenomination } from 'Utilities/convert'
 import log from 'Utilities/log'
 import { closeTrezorWindow } from 'Utilities/wallet'
@@ -22,11 +24,11 @@ let hwConnectTimerTimeout
 const initialState = {
   showModal: false,
   showAddressSelect: false,
-  addressIxGroup: 0,
-  addresses: [],
+  accounts: [],
+  selectedPage: 0,
+  selectedIndex: 0,
   commStatus: '',
   seconds: CONNECT_SECONDS,
-  addressIxSelected: null,
   getAddress: () => Promise.resolve(),
 }
 
@@ -36,6 +38,7 @@ class HardwareWallet extends Component {
     this.state = Object.assign({}, initialState, {
       derivationPath: config.hdDerivationPath[props.type]
     })
+    this.setStatePromise = (newState) => setStatePromise(this, newState)
     this._handleOpenModal = this._handleOpenModal.bind(this)
     this._handleToggleModal = this._handleToggleModal.bind(this)
     this._handleCloseModal = this._handleCloseModal.bind(this)
@@ -45,11 +48,11 @@ class HardwareWallet extends Component {
     this._connectLedger = this._connectLedger.bind(this)
     this._connectTrezor = this._connectTrezor.bind(this)
     this._getAddresses = this._getAddresses.bind(this)
-    this._handleChangeAddressIxGroup = this._handleChangeAddressIxGroup.bind(this)
-    this._handleSelectAddressIx = this._handleSelectAddressIx.bind(this)
+    this._handleChangePage = this._handleChangePage.bind(this)
+    this._handleSelectIndex = this._handleSelectIndex.bind(this)
     this._handleChangeDerivationPath = this._handleChangeDerivationPath.bind(this)
-    this._handleChooseAddress = this._handleChooseAddress.bind(this)
-    this._handleChooseFirstAddress = this._handleChooseFirstAddress.bind(this)
+    this._handleConfirmAccountSelection = this._handleConfirmAccountSelection.bind(this)
+    this._mergeAccountState = this._mergeAccountState.bind(this)
   }
 
   componentDidUpdate (prevProps, prevState) {
@@ -59,6 +62,10 @@ class HardwareWallet extends Component {
     if (prevState.showModal && !this.state.showModal) {
       this._clearAsync()
     }
+  }
+
+  componentWillUnmount () {
+    this._clearAsync()
   }
 
   _handleOpenModal () {
@@ -92,8 +99,7 @@ class HardwareWallet extends Component {
     const type = this.props.type
     this._clearAsync()
     this.setState({
-      seconds: CONNECT_SECONDS,
-      addressIxGroup: 0
+      seconds: CONNECT_SECONDS
     })
 
     const { derivationPath } = this.state
@@ -119,11 +125,13 @@ class HardwareWallet extends Component {
 
     const resetTimer = () => {
       this.setState({ commStatus: 'waiting', seconds: CONNECT_SECONDS })
+      window.clearInterval(hwConnectTimer)
       hwConnectTimer = timer(CONNECT_SECONDS, setSeconds, ledgerConnect)
     }
 
     const ledgerError = (e) => {
       log.error(e)
+      window.clearTimeout(hwConnectTimerTimeout)
       hwConnectTimerTimeout = window.setTimeout(resetTimer, 1000)
     }
 
@@ -150,9 +158,14 @@ class HardwareWallet extends Component {
     this.setState({ commStatus: 'connecting' })
 
     const trezorError = (e) => {
-      log.error(e)
-      toastr.error(`Error from Trezor - ${e.message}`)
-      this._handleCloseModal()
+      const message = e.message
+      if (['cancelled', 'window closed'].includes(message.toLowerCase())) {
+        this.setState({ commStatus: 'cancelled' })
+      } else {
+        log.error(e)
+        toastr.error(`Error from Trezor - ${message}`)
+        this.setState({ commStatus: 'error' })
+      }
     }
     return EthereumWalletTrezor.connect(derivationPath)
       .then(({ getAddress }) => {
@@ -162,61 +175,64 @@ class HardwareWallet extends Component {
       .catch(trezorError)
   }
 
-  _getAddresses () {
-    const ixGroup = this.state.addressIxGroup
-    const getAddress = this.state.getAddress
-    const startIndex = ixGroup * (ADDRESS_GROUP_SIZE)
+  _mergeAccountState (index, accountState) {
+    const lastTransition = this.lastTransition || Promise.resolve()
+    return lastTransition.then(() => {
+      this.lastTransition = this.setStatePromise((prev) => {
+        console.log('mergeAccountState', index, accountState)
+        const newAccounts = [...prev.accounts]
+        newAccounts[index] = { ...(newAccounts[index] || {}), ...accountState }
+        return {
+          ...prev,
+          accounts: newAccounts
+        }
+      })
+      return this.lastTransition
+    })
+  }
+
+  _getAddresses (page = 0) {
+    const { getAddress } = this.state
+    const startIndex = page * ADDRESS_GROUP_SIZE
     const endIndex = startIndex + (ADDRESS_GROUP_SIZE - 1)
     for (let i = startIndex; i <= endIndex; i++) {
-      getAddress(i)
-      .then((address) => {
-        const addresses = this.state.addresses
-        addresses[i] = { address }
-        this.setState({ addresses })
+      getAddress(i).then((address) => Promise.all([
+        this._mergeAccountState(i, { address }),
         web3.eth.getBalance(address)
-        .then((res) => {
-          this.setState({
-            addresses: this.state.addresses.map((item, index) => {
-              if (index !== i) return item
-              return Object.assign({}, item, {
-                balance: toMainDenomination(res, 18)
-              })
-            })
-          })
-        })
-        .catch(log.error)
-      })
+          .then((balance) => this._mergeAccountState(i, {
+            balance: toMainDenomination(balance, 18)
+          }))
+      ]))
       .catch(log.error)
     }
   }
 
-  _handleChangeAddressIxGroup (incr) {
-    const newIxGroup = this.state.addressIxGroup + incr
-    if (newIxGroup >= 0) {
-      this.setState({ addressIxGroup: newIxGroup, addressIxSelected: null })
-      this._getAddresses()
+  _handleChangePage (page) {
+    if (page >= 0) {
+      this.setState({ selectedPage: page })
+      this._getAddresses(page)
     }
   }
 
-  _handleSelectAddressIx (event) {
-    this.setState({ addressIxSelected: event.target.value })
+  _handleSelectIndex (index) {
+    this.setState({ selectedIndex: Number.parseInt(index), showAddressSelect: false })
   }
 
   _handleChangeDerivationPath (path) {
-    this.setState({
-      addresses: [],
-      addressIxGroup: 0,
-      addressIxSelected: null,
-      derivationPath: path
-    })
-    this._connect()
+    if (this.state.derivationPath !== path) {
+      this.setStatePromise({
+        accounts: [],
+        selectedPage: 0,
+        selectedIndex: 0,
+        derivationPath: path
+      }).then(() => this._connect())
+    }
   }
 
-  _handleChooseAddress (selected = 0) {
-    const { addresses, derivationPath, addressIxGroup } = this.state
-    const ix = addressIxGroup * ADDRESS_GROUP_SIZE + selected
-    const { address } = addresses[ix]
-    const addressPath = `${derivationPath}/${ix}`
+  _handleConfirmAccountSelection () {
+    const { accounts, derivationPath, selectedIndex } = this.state
+    const { address } = accounts[selectedIndex]
+    const addressPath = `${derivationPath}/${selectedIndex}`
     const { type, openWallet, routerPush, mock: { mocking: isMocking } } = this.props
     let wallet
     if (type === 'ledger') {
@@ -236,34 +252,46 @@ class HardwareWallet extends Component {
     log.info('Hardware wallet set')
   }
 
-  _handleChooseFirstAddress () {
-    this._handleChooseAddress(0)
-  }
-
   render () {
-    const startIndex = this.state.addressIxGroup * ADDRESS_GROUP_SIZE
+    const {
+      selectedPage, selectedIndex, accounts, commStatus, seconds, derivationPath,
+      showAddressSelect, showModal
+    } = this.state
+    const startIndex = selectedPage * ADDRESS_GROUP_SIZE
     const endIndex = startIndex + (ADDRESS_GROUP_SIZE - 1)
-    const firstAddress = this.state.addresses[0]
+    const selectedPageAccounts = accounts.slice(startIndex, endIndex + 1).map((a, i) => ({ ...a, index: startIndex + i }))
+    const selectedAccount = accounts[selectedIndex] || {}
+    const { address, balance } = selectedAccount
     const modalProps = {
-      isOpen: this.state.showModal,
+      isOpen: showModal,
       handleToggle: this._handleToggleModal,
       handleClose: this._handleCloseModal,
-      commStatus: this.state.commStatus,
-      seconds: this.state.seconds,
-      firstAddress,
-      handleChooseFirstAddress: this._handleChooseFirstAddress,
-      showAddressSelect: this.state.showAddressSelect,
-      handleToggleAddressSelect: this._handleToggleAddressSelect,
-      addressSelectProps: {
-        addressIxSelected: this.state.addressIxSelected,
-        addresses: this.state.addresses,
-        derivationPath: this.state.derivationPath,
-        handleChangeAddressIxGroup: this._handleChangeAddressIxGroup,
-        handleSelectAddressIx: this._handleSelectAddressIx,
-        handleChangeDerivationPath: this._handleChangeDerivationPath,
-        handleChooseAddress: this._handleChooseAddress,
+      confirmAccountSelection: this._handleConfirmAccountSelection,
+      showAccountSelect: showAddressSelect,
+      toggleAccountSelect: this._handleToggleAddressSelect,
+      commStatus,
+      onConfirm: this._handleConfirmAccountSelection,
+      disableConfirm: typeof balance === 'undefined' || balance === null,
+      commStatusProps: {
+        status: commStatus,
+        seconds: seconds,
+        handleManualRetry: this._connect,
+      },
+      confirmAccountSelectionProps: {
+        address,
+        balance,
+        index: selectedIndex,
+        toggleAccountSelect: this._handleToggleAddressSelect
+      },
+      accountSelectProps: {
         startIndex,
-        endIndex
+        endIndex,
+        page: selectedPage,
+        accounts: selectedPageAccounts,
+        derivationPath: derivationPath,
+        selectIndex: this._handleSelectIndex,
+        changePage: this._handleChangePage,
+        changePath: this._handleChangeDerivationPath,
       }
     }
     return (
@@ -284,6 +312,10 @@ const mapDispatchToProps = {
   openWallet,
   mockAddress,
   routerPush: push,
+}
+
+HardwareWallet.propTypes = {
+  type: PropTypes.string.isRequired,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(HardwareWallet)

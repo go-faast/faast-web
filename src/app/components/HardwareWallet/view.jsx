@@ -1,168 +1,203 @@
 import React from 'react'
-import { Modal, ModalBody } from 'reactstrap'
-import { reduxForm } from 'redux-form'
+import { Row, Col, Modal, ModalBody, ModalHeader, ModalFooter, Card } from 'reactstrap'
 import { Button } from 'reactstrap'
+import classNames from 'class-names'
+
 import AccessTile from 'Components/AccessTile'
-import HWAddressSelect from 'Components/HWAddressSelect'
 import Units from 'Components/Units'
+import Spinner from 'Components/Spinner'
+import AddressLink from 'Components/AddressLink'
 
 import ledgerLogo from 'Img/ledger-logo.png'
 import trezorLogo from 'Img/trezor-logo.png'
 
-const typeToProps = {
+import AccountSelect from './AccountSelect'
+
+const walletRenderData = {
   ledger: {
     name: 'Ledger Wallet',
-    icon: ledgerLogo
+    icon: ledgerLogo,
+    instructions: [{
+      icon: 'fa-usb',
+      text: 'Connect your Ledger Wallet to begin'
+    }, {
+      icon: 'fa-mobile',
+      text: 'Open the Ethereum app on the Ledger Wallet'
+    }, {
+      icon: 'fa-cogs',
+      text: 'Ensure that Browser Support is enabled in Settings'
+    }, {
+      icon: 'fa-download',
+      text: 'You may need to update the firmware if Browser Support is not available'
+    }]
   },
   trezor: {
     name: 'TREZOR',
-    icon: trezorLogo
+    icon: trezorLogo,
+    instructions: [{
+      icon: 'fa-usb',
+      text: 'Connect your TREZOR to begin'
+    }, {
+      icon: 'fa-external-link-square',
+      text: (<span>When the popop asks if you want to export the public key, select <b>Export</b></span>)
+    }, {
+      icon: 'fa-unlock',
+      text: 'If required, enter your pin or password to unlock the TREZOR'
+    }]
   }
 }
 
-const HardwareWalletView = (props) => {
-  const { name, icon } = typeToProps[props.type]
+const StatusPending = ({ status }) => (
+  <h5 className='blink'>{status.toUpperCase()}</h5>
+)
+
+const StatusWaiting = ({ seconds }) => (
+  <div>
+    Unable to connect, trying again in <b>{seconds}</b> seconds
+  </div>
+)
+
+const StatusSuccess = ({ status, confVersion }) => (
+  <h5>
+    {status.toUpperCase()}
+    {Boolean(confVersion) &&
+      <small className='text-muted'>&nbsp;&nbsp;(v. {confVersion})</small>
+    }
+  </h5>
+)
+
+const StatusFailed = ({ status, handleManualRetry }) => (
+  <div>
+    <h5>
+      {status.toUpperCase()}
+    </h5>
+    <Button size='sm' color='link' onClick={handleManualRetry}>
+      Retry <i className='fa fa-repeat'/>
+    </Button>
+  </div>
+)
+
+const statusRenderData = {
+  connecting: {
+    color: 'primary',
+    icon: 'fa-cog fa-spin',
+    component: StatusPending,
+  },
+  connected: {
+    color: 'success',
+    icon: 'fa-check-circle-o',
+    component: StatusSuccess,
+  },
+  waiting: {
+    color: 'warning',
+    icon: 'fa-exclamation-circle',
+    component: StatusWaiting,
+  },
+  cancelled: {
+    color: 'warning',
+    icon: 'fa-exclamation-circle',
+    component: StatusFailed,
+  },
+  error: {
+    color: 'danger',
+    icon: 'fa-exclamation-triangle',
+    component: StatusFailed,
+  },
+}
+
+const CommStatus = ({ status, className, ...props }) => {
+  const renderData = statusRenderData[status]
+  if (!renderData) {
+    return null
+  }
+  const { color, icon, component: StatusComponent } = renderData
   return (
-    <div>
-      <AccessTile name={name} icon={icon} onClick={props.handleClick} />
-      <HardwareWalletModal name={name} type={props.type} {...props.modalProps} />
+    <div className={classNames(className, 'text-center')}>
+      <h6>STATUS</h6>
+      <div className={`text-${color}`}>
+        <i className={classNames('mb-2 fa fa-4x', icon)}/>
+        {StatusComponent && <StatusComponent status={status} {...props}/>}
+      </div>
     </div>
   )
 }
 
-let HardwareWalletModal = (props) => {
-  const renderHwCommStatus = (commStatus) => {
-    switch (commStatus) {
-      case 'connecting':
-        return (
-          <div className='text-center'>
-            <div className='text-small text-medium-grey text-uppercase'>Status</div>
-            <div className='status-icon connecting' />
-            <div className='blink text-white text-uppercase text-small'>Connecting</div>
-          </div>
-        )
-      case 'waiting':
-        return (
-          <div className='text-center'>
-            <div className='text-small text-medium-grey text-uppercase'>Status</div>
-            <div className='status-icon waiting' />
-            <div className='text-white text-uppercase text-small'>Unable to connect, trying again in <span className='blink'>{props.seconds}</span> seconds</div>
-          </div>
-        )
-      case 'connected':
-        return (
-          <div className='text-center'>
-            <div className='text-small text-medium-grey text-uppercase'>Status</div>
-            <div className='status-icon connected' />
-            <div className='text-white text-uppercase text-small'>Connected</div>
-            <div className='text-medium-grey'>
-              {!!props.confVersion &&
-                <span>&nbsp;&nbsp;(v. {props.confVersion})</span>
-              }
-            </div>
-          </div>
-        )
-    }
-  }
-
-  const renderInstructions = () => {
-    switch (props.type) {
-      case 'trezor':
-        return (
-          <div className='row'>
-            <div className='col-md-6 instruction-container border-right-10 border-bottom-10'>
-              <div className='instruction-icon pendrive' />
-              <div className='text-small'>Connect your Trezor to begin</div>
-            </div>
-            <div className='col-md-6 instruction-container border-bottom-10'>
-              <div className='instruction-icon export' />
-              <div className='text-small'>When the Trezor popop asks to export the public key, select "Export"</div>
-            </div>
-            <div className='col-md-12 instruction-container'>
-              <div className='instruction-icon pin-code' />
-              <div className='text-small'>Enter your pin if required</div>
-            </div>
-          </div>
-        )
-      case 'ledger':
-        return (
-          <div className='row text-center'>
-            <div className='col-md-6 instruction-container border-right-10 border-bottom-10'>
-              <div className='instruction-icon pendrive margin-right-10' />
-              <div className='text-small'>Connect your Ledger Wallet to begin</div>
-            </div>
-            <div className='col-md-6 instruction-container border-bottom-10'>
-              <div className='instruction-icon smartphone margin-right-10' />
-              <div className='text-small'>Open the Ethereum app on the Ledger Wallet</div>
-            </div>
-            <div className='col-md-6 instruction-container border-right-10'>
-              <div className='instruction-icon browser margin-right-10' />
-              <div className='text-small'>Ensure that Browser Support is enabled in Settings</div>
-            </div>
-            <div className='col-md-6 instruction-container'>
-              <div className='instruction-icon refresh-arrow margin-right-10' />
-              <div className='text-small'>You may need to update the firmware if Browser Support is not available</div>
-            </div>
-          </div>
-        )
-    }
-  }
-
-  const renderFirstAddress = () => {
-    const a = props.firstAddress
-    if (a) {
-      return (
-        <div>
-          <div className='word-break-all'>{a.address}</div>
-          <div>
-            {(a.hasOwnProperty('balance') &&
-              <div className='margin-top-10 text-small text-white'><Units value={a.balance} symbol='ETH'/></div>) ||
-              <div className='faast-loading loading-small margin-top-10 margin-auto' />
-            }
-          </div>
-          <div className='form-group'>
-            <Button color='faast' onClick={props.handleChooseFirstAddress}>Use this address</Button>
-          </div>
-          <div className='form-group'>
-            <Button color='faast' outline onClick={props.handleToggleAddressSelect}>Select another address</Button>
-          </div>
-        </div>
-      )
-    }
-  }
-
+const ConnectionInstructions = ({ type }) => {
+  const { instructions } = walletRenderData[type]
   return (
-    <Modal size='lg' className='text-center' isOpen={props.isOpen} toggle={props.handleToggle}>
-      <ModalBody>
-        <div className='modal-title'>Connect to {props.name}</div>
-        <div className='modal-text'>
-          <div>
-            {renderHwCommStatus(props.commStatus)}
-          </div>
-          <div className='mt-2r'>
-            {(props.commStatus !== 'connected' &&
-              <div>
-                {renderInstructions()}
-              </div>) ||
-              <div>
-                {(props.showAddressSelect &&
-                  <HWAddressSelect {...props.addressSelectProps} />) ||
-                  renderFirstAddress()
-                }
-              </div>
-            }
-          </div>
-        </div>
-        <div className='form-group'>
-          <Button color='link' onClick={props.handleClose}>cancel</Button>
-        </div>
-      </ModalBody>
-    </Modal>
+    <Row className='gutter-2 text-muted'>
+      {instructions.map(({ icon, text }, i) => (
+        <Col key={i} xs='12' md={(i === instructions.length - 1) ? true : '6'}>
+          <Card body className='h-100 flex-col-center'>
+            <i className={classNames('mb-2 fa fa-2x', icon)} />
+            <div>{text}</div>
+          </Card>
+        </Col>
+      ))}
+    </Row>
   )
 }
 
-HardwareWalletModal = reduxForm({
-  form: 'hardwareWalletForm'
-})(HardwareWalletModal)
+const ConfirmAccountSelection = ({ address, balance, index, toggleAccountSelect }) => (
+  <div className='flex-col-center'>
+    <Card body className='text-left my-3'>
+      <h5>Account #{index + 1}
+        <span className='float-right text-muted'>
+          {typeof balance !== 'undefined'
+            ? (<Units value={balance} symbol='ETH'/>)
+            : (<Spinner inline size='sm'/>)}
+        </span>
+      </h5>
+      {address && (<AddressLink address={address} className='mt-2'/>)}
+    </Card>
+    <div className='mt-2 align-self-stretch'>
+      <Row className='gutter-3 justify-content-center'>
+        <Col xs='auto'>
+          <Button color='primary' onClick={toggleAccountSelect}>Change account</Button>
+        </Col>
+      </Row>
+    </div>
+  </div>
+)
+
+const HardwareWalletModal = ({
+  isOpen, handleToggle, handleClose, type, commStatus, showAccountSelect, onConfirm, disableConfirm,
+  commStatusProps, accountSelectProps, confirmAccountSelectionProps, toggleAccountSelect
+}) => (
+  <Modal size='lg' className='text-center modal-dialog-centered' isOpen={isOpen} toggle={handleToggle}>
+    <ModalHeader tag='h3' className='text-primary' cssModule={{ 'modal-title': 'modal-title mx-auto' }}toggle={handleToggle}>
+      Connecting {walletRenderData[type].name}
+    </ModalHeader>
+    <ModalBody className='flex-col-center'>
+      <div className='modal-text flex-col-center py-4'>
+        <CommStatus className='mb-3' {...commStatusProps}/>
+        {(commStatus !== 'connected'
+          ? (<ConnectionInstructions type={type}/>)
+          : (showAccountSelect
+            ? (<AccountSelect {...accountSelectProps} />)
+            : (<ConfirmAccountSelection {...confirmAccountSelectionProps}/>)))
+        }
+      </div>
+    </ModalBody>
+    <ModalFooter className='justify-content-between'>
+      {showAccountSelect
+        ? (<Button outline color='primary' onClick={toggleAccountSelect}>back</Button>)
+        : (<Button outline color='primary' onClick={handleClose}>cancel</Button>)}
+      {commStatus === 'connected' && !showAccountSelect && (
+        <Button color='success' onClick={onConfirm} disabled={disableConfirm}>Confirm</Button>
+      )}
+    </ModalFooter>
+  </Modal>
+)
+
+const HardwareWalletView = ({ type, handleClick, modalProps }) => {
+  const { name, icon } = walletRenderData[type]
+  return (
+    <div>
+      <AccessTile name={name} icon={icon} onClick={handleClick} />
+      <HardwareWalletModal type={type} {...modalProps} />
+    </div>
+  )
+}
 
 export default HardwareWalletView

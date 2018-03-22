@@ -63,152 +63,41 @@ span.faast-loading {
 
 .modal-dialog {
   min-height: 500px;
-  //height: 60%;
-  top: 15%;
-  letter-spacing: 1px;
-  .modal-content {
-    height: 100%;
-    border-radius: 0;
-    background-color: #131313;
-    box-shadow: 10px 20px 30px #000;
-    padding-bottom: 50px;
-    .modal-title {
-      @extend .text-gradient;
-      @extend .text-large;
-      margin-top: 7%;
-     }
-     .modal-text {
-       width: 80%;
-       margin: auto;
-       @extend .text-small;
-       @extend .text-medium-grey;
-       margin-top: 30px;
-       ul {
-        text-align: left;
-       }
-     }
-     .form-group {
-       margin-top: 20px;
-       input {
-         background-color: #121212;
-         border: 1px solid #222222;
-         padding: 15px 30px;
-         text-align: center;
-         letter-spacing: 1px;
-         @extend .text-small;
-         min-width: 350px;
-         outline: none;
-         @extend .text-medium-grey;
-         &:active, &:focus {
-           outline: none;
-           color: $secondary-color;
-         }
-       }
-     }
-     .download-keystore {
-       .download-keystore-icon {
-         background-image: url(https://faa.st/img/faast-logo.png);
-         background-size: 64px 64px;
-         background-repeat: no-repeat;
-       }
-       .download-text {
-         @extend .gradient-text;
-         @extend .text-medium;
-       }
-     }
+}
+.modal-content {
+  height: 100%;
+}
+.modal-header {
+  .close {
+    line-height: $modal-title-line-height;
+    margin: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+  }
+  h1 ~ .close { font-size: $h1-font-size; }
+  h2 ~ .close { font-size: $h2-font-size; }
+  h3 ~ .close { font-size: $h3-font-size; }
+  h4 ~ .close { font-size: $h4-font-size; }
+  h5 ~ .close { font-size: $h5-font-size; }
+  h6 ~ .close { font-size: $h6-font-size; }
+}
+.modal-text {
+  @include media-breakpoint-up(lg) {
+    width: 75%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  ul {
+    text-align: left;
   }
 }
 
-
-/*faast portfolio styles starts here*/
-#portfolio-page {
-
-  .change-icon {
-    background-position: center center;
-    background-repeat: no-repeat;
-    height: 30px;
-    width: 30px;
-  }
-  .up-icon {
-    background-image: url(https://faa.st/img/up-icon.svg);
-  }
-  .down-icon {
-    background-image: url(https://faa.st/img/down-icon.svg);
-  }
-
-  .stats-container {
-    .tile-container {
-      height: 90px;
-      letter-spacing: 1px;
-    }
-  }
-
-  .table-header {
-    @extend .text-center;
-    @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-    @extend .box-shadow;
-    padding: 20px 5px;
-    letter-spacing: 1px;
-    .column-title {
-      font-weight: 300;
-      @extend .gradient-text;
-      @extend .text-small;
-    }
-  }
-
-  .table-row {
-    @extend .text-center;
-    letter-spacing: 1px;
-    @include gradient-background-variable($tileBgColor1, $tileBgColor2);
-    @extend .box-shadow;
-    padding: 20px 5px;
-    @extend .text-center;
-    .change-icon {
-      height: 18px;
-      width: 18px;
-      margin: 0px 5px 0px 0px;
-    }
-  }
-
-  .status-menu-container {
-    padding-top: 10px;
-    padding-left: 10px;
-    float: right;
-    .menu-label {
-      width: 150px;
-      @extend .text-medium-grey;
-    }
-    .menu-item {
-      @extend .text-white;
-      width: 120px;
-      &.active {
-        @extend .gradient-text;
-      }
-    }
-  }
-
-
-  .tile-container {
-    &.tile-border {
-      padding: 0;
-      height: 120px;
-      border-left: 1px solid rgba(12, 211, 185, 0.2);
-      border-top: 1px solid rgba(12, 211, 185, 0.2);
-      border-right: 1px solid rgba(13, 211, 144, 0.2);
-      border-bottom: 1px solid rgba(13, 211, 144, 0.2);
-    }
-
-    .add-new {
-      background-image: url('https://faa.st/img/add.png');
-      background-size: 32px 32px;
-      background-repeat: no-repeat;
-      background-position: center center;
-      height: 40px;
-      width: 100%;
-    }
-  }
+.download-keystore-icon {
+  background-image: url(https://faa.st/img/faast-logo.png);
+  background-size: 64px 64px;
+  background-repeat: no-repeat;
 }
-/*faast portfolio styles ends here*/
 
 /*review, in progress and completed swap styles starts here*/
 .review-list {
@@ -218,34 +107,21 @@ span.faast-loading {
   .status {
     @extend .text-small;
     &.done {
-      @extend .text-gradient;
+      @extend .text-success;
     }
     &.in-progress {
-      @extend .text-gradient;
+      @extend .text-primary;
       @extend .blink;
     }
     &.failed {
-      @extend .text-red;
+      @extend .text-danger;
     }
     &.pending {
-      @extend .text-medium-grey;
+      @extend .text-grey;
     }
   }
 }
 /*review, in progress and completed swap styles ends here*/
-
-/*icons styles starts here*/
-.coin-icon {
-  height: 32px;
-  width: 32px;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: contain;
-}
-
-.coin-info {
-  float: left;
-}
 
 .right-icon {
   height: 32px;
@@ -257,26 +133,9 @@ span.faast-loading {
   background-image: url(https://faa.st/img/right-icon.svg);
 }
 
-.status-icon {
-  height: 72px;
-  background-position: center center;
-  background-size: auto 75%;
-  background-repeat: no-repeat;
-
-  &.connecting {
-    background-image: url('https://faa.st/img/status_connecting.png');
-  }
-
-  &.waiting {
-    background-image: url('https://faa.st/img/status_waiting.png');
-  }
-  &.connected {
-    background-image: url('https://faa.st/img/status_connected.png');
-  }
-}
-
 .instruction-icon {
   height: 48px;
+  width: 48px;
   background-position: center center;
   background-size: auto 75%;
   background-repeat: no-repeat;
@@ -307,9 +166,3 @@ span.faast-loading {
 }
 /*icons styles ends here*/
 
-
-.instruction-container {
-  @extend .color-bg-1;
-  padding: 20px;
-  border-color: #131313;
-}

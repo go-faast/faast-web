@@ -10,6 +10,8 @@ export const addKeys = (arr) => (
   })
 )
 
+export const setStatePromise = (that, newState) => new Promise((resolve) => that.setState(newState, resolve))
+
 export const expandable = (props) => (
   <Expandable {...props} />
 )

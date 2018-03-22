@@ -7,20 +7,12 @@ import classNames from 'class-names'
 import { setCurrentPortfolio, setCurrentWallet, createNewPortfolio, removePortfolio } from 'Actions/portfolio'
 import { getAllPortfolioWalletIds, getCurrentWalletId, getCurrentPortfolioId } from 'Selectors'
 import WalletSummary from 'Components/WalletSummary'
-
-const ListButton = ({ className, color = 'ultra-dark', size, ...props }) => (
-  <ListGroupItem action tag='button'
-    className={classNames(
-      className,
-      `btn btn-${color}`,
-      { [`btn-${size}`]: size }
-    )} {...props}/>
-)
+import ListGroupButton from 'Components/ListGroupButton'
 
 const ListItem = ({ id, active, nested, onClick, className, ...props }) => (
-  <ListButton active={active} onClick={onClick} className={classNames({ 'compact pl-5': nested }, className)} {...props}>
+  <ListGroupButton active={active} onClick={onClick} className={classNames({ 'compact pl-5': nested }, className)} {...props}>
     <WalletSummary.Connected id={id} icon={nested} labelTag={nested ? 'span' : 'h5'}/>
-  </ListButton>
+  </ListGroupButton>
 )
 
 class WalletSelector extends React.Component {
@@ -100,16 +92,16 @@ class WalletSelector extends React.Component {
                   <ListGroupItem className='grid-group'>
                     <Row className='gutter-3'>
                       <Col xs='6'>
-                        <ListButton size='sm' className='grid-cell text-success text-center' onClick={() => this.connectWalletToPortfolio(portfolioId)}>
+                        <ListGroupButton size='sm' className='grid-cell text-success text-center' onClick={() => this.connectWalletToPortfolio(portfolioId)}>
                           <i className='fa fa-plus'/> add wallet
-                        </ListButton>
+                        </ListGroupButton>
                       </Col>
                       <Col xs='6'>
-                        <ListButton size='sm' className='grid-cell text-center' onClick={() => this.togglePortfolio(portfolioId)}>
+                        <ListGroupButton size='sm' className='grid-cell text-center' onClick={() => this.togglePortfolio(portfolioId)}>
                           {showWallets
                             ? (<span><i className='fa fa-caret-up'/> hide wallets</span>)
                             : (<span><i className='fa fa-caret-down'/> show wallets</span>)}
-                        </ListButton>
+                        </ListGroupButton>
                       </Col>
                     </Row>
                   </ListGroupItem>

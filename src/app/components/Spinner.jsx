@@ -29,7 +29,7 @@ Spinner.propTypes = {
 
 Spinner.defaultProps = {
   inline: false,
-  size: 'md'
+  size: 'sm'
 }
 
 export default Spinner

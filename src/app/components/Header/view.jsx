@@ -15,7 +15,7 @@ let AddressSearchForm = (props) => (
           tag={Field}
           component='input'
           name='address'
-          type='text'
+          type='search'
           autoCorrect={false}
           autoCapitalize={false}
           spellCheck={false}
