@@ -1,9 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, ModalBody } from 'reactstrap'
+import { Modal, ModalBody, ModalHeader, ModalFooter, Form, FormGroup, Input, Label } from 'reactstrap'
 import { Field, reduxForm } from 'redux-form'
 import { Button } from 'reactstrap'
-import { addKeys } from 'Utilities/reactFuncs'
 
 const CreateWalletModalView = (props) => {
   const renderView = () => {
@@ -35,7 +34,8 @@ const CreateWalletModalView = (props) => {
         )
       case 'download':
         return (
-          <DownloadKeystore
+          <DownloadKeystoreForm
+            onSubmit={props.handleContinue}
             handleCancel={props.handleCloseModal}
             {...props}
           />
@@ -43,8 +43,13 @@ const CreateWalletModalView = (props) => {
     }
   }
   return (
-    <Modal size='lg' backdrop='static' isOpen={props.showModal} className='text-center'>
-      {/* <ModalHeader toggle={props.handleCloseModal}></ModalHeader> */}
+    <Modal backdrop='static' isOpen={props.showModal} className='text-center' toggle={props.handleCancel}>
+      <ModalHeader tag='h3' className='text-primary' cssModule={{ 'modal-title': 'modal-title mx-auto' }} toggle={props.handleCancel}>
+        {(props.isNewWallet &&
+          <span>Create wallet</span>) ||
+          <span>Download keystore file</span>
+        }
+      </ModalHeader>
       {renderView()}
     </Modal>
   )
@@ -61,43 +66,31 @@ CreateWalletModalView.propTypes = {
   handleContinue: PropTypes.func
 }
 
-let CreatePasswordForm = (props) => {
-  const name = props.isNewWallet ? 'wallet' : 'keystore file'
-  return (
-    <form onSubmit={props.handleSubmit}>
-      <ModalBody>
-        <div className='modal-title'>
-          {(props.isNewWallet &&
-            <span>Create a new wallet</span>) ||
-            <span>download keystore file</span>
-          }
-        </div>
-        <div className='modal-text'>
-          Enter a password for your {name}. Please make a note of your password. You will not be able to access the funds in your {name} without your password.
-        </div>
-        <div className='form-group'>
-          <Field
+let CreatePasswordForm = ({ handleSubmit, handleCancel, walletName }) => (
+  <Form onSubmit={handleSubmit}>
+    <ModalBody>
+      <div className='modal-text'>
+        <FormGroup>
+          Enter a password for your {walletName}. Please make a note of your password. You will not be able to access the funds in your {walletName} without your password.
+        </FormGroup>
+        <FormGroup>
+          <Input
+            tag={Field}
             name='password'
             component='input'
             type='password'
-            placeholder='enter a password'
+            placeholder='Enter a password'
+            className='text-center'
           />
-        </div>
-        <div className='form-group'>
-          <Button color='faast' onClick={props.handleSubmit}>create new</Button>
-        </div>
-        {props.isNewWallet &&
-          <div className='form-group'>
-            <Button color='faast' outline onClick={props.handleImportPrivKey}>import private key</Button>
-          </div>
-        }
-        <div className='form-group'>
-          <Button color='link' onClick={props.handleCancel}>cancel</Button>
-        </div>
-      </ModalBody>
-    </form>
-  )
-}
+        </FormGroup>
+      </div>
+    </ModalBody>
+    <ModalFooter className='justify-content-between'>
+      <Button outline color='primary' onClick={handleCancel}>Cancel</Button>
+      <Button color='success' type='submit' onClick={handleSubmit}>Continue</Button>
+    </ModalFooter>
+  </Form>
+)
 
 CreatePasswordForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
@@ -109,34 +102,30 @@ CreatePasswordForm = reduxForm({
   form: 'createPasswordForm'
 })(CreatePasswordForm)
 
-let ConfirmPasswordForm = (props) => (
-  <form onSubmit={props.handleSubmit}>
+let ConfirmPasswordForm = ({ handleSubmit, handleCancel }) => (
+  <Form onSubmit={handleSubmit}>
     <ModalBody>
-      <div className='modal-title'>
-        {(props.isNewWallet &&
-          <span>Create a new wallet</span>) ||
-          <span>download keystore file</span>
-        }
-      </div>
       <div className='modal-text'>
-        Please confirm your password
-      </div>
-      <div className='form-group'>
-        <Field
-          name='password'
-          component='input'
-          type='password'
-          placeholder='enter your password'
-        />
-      </div>
-      <div className='form-group'>
-        <Button color='faast' onClick={props.handleSubmit}>continue</Button>
-      </div>
-      <div className='form-group'>
-        <Button color='link' onClick={props.handleCancel} className='m-2'>cancel</Button>
+        <FormGroup>
+          Please confirm your password
+        </FormGroup>
+        <FormGroup>
+          <Input
+            tag={Field}
+            name='password'
+            component='input'
+            type='password'
+            placeholder='Enter password again'
+            className='text-center'
+          />
+        </FormGroup>
       </div>
     </ModalBody>
-  </form>
+    <ModalFooter className='justify-content-between'>
+      <Button outline color='primary' onClick={handleCancel}>Cancel</Button>
+      <Button color='success' type='submit' onClick={handleSubmit}>Confirm</Button>
+    </ModalFooter>
+  </Form>
 )
 
 ConfirmPasswordForm.propTypes = {
@@ -149,35 +138,35 @@ ConfirmPasswordForm = reduxForm({
 })(ConfirmPasswordForm)
 
 let ImportWalletForm = (props) => (
-  <form onSubmit={props.handleSubmit}>
+  <Form onSubmit={props.handleSubmit}>
     <ModalBody>
-      <div className='modal-title'>Import your exisiting wallet</div>
+      <h4 className='modal-title'>Import your exisiting wallet</h4>
       <div className='modal-text'>
         Enter the private key of your exisiting wallet and a new password that will be used to encrypt the wallet.
-      </div>
-      <div className='form-group'>
-        <Field
-          name='privateKey'
-          component='textarea'
-          placeholder='Private Key'
-        />
-      </div>
-      <div className='form-group'>
-        <Field
-          name='password'
-          component='input'
-          type='password'
-          placeholder='enter a password'
-        />
-      </div>
-      <div className='form-group'>
-        <Button color='faast' onClick={props.handleSubmit}>continue</Button>
-      </div>
-      <div className='form-group'>
-        <Button color='link' onClick={props.handleCancel} className='m-2'>cancel</Button>
+        <FormGroup>
+          <Input
+            tag={Field}
+            name='privateKey'
+            component='textarea'
+            placeholder='Private Key'
+          />
+        </FormGroup>
+        <FormGroup>
+          <Input
+            tag={Field}
+            name='password'
+            component='input'
+            type='password'
+            placeholder='enter a password'
+          />
+        </FormGroup>
       </div>
     </ModalBody>
-  </form>
+    <ModalFooter className='justify-content-between'>
+      <Button outline color='primary' onClick={props.handleCancel}>Cancel</Button>
+      <Button color='success' onClick={props.handleSubmit}>Continue</Button>
+    </ModalFooter>
+  </Form>
 )
 
 ImportWalletForm.propTypes = {
@@ -189,50 +178,54 @@ ImportWalletForm = reduxForm({
   form: 'importWalletFor'
 })(ImportWalletForm)
 
-const DownloadKeystore = (props) => (
-  <div>
+const getAcks = ({ isNewWallet, walletName }) => [
+  `The ${walletName} file can used to send any funds it contains.`,
+  `The ${walletName} file contains a sensitive private key that is encrypted and can only be accessed using the password I entered.`,
+  ...(isNewWallet ? [
+    `Faast does not have a backup of the file or password. This ${walletName} was generated in my web browser and was never sent over the internet.`,
+    'If I lose access to the file or forget the password I forfeit all funds it contains.',
+    'I have downloaded and stored this file in a secure location on my computer.',
+  ] : [
+    `The ${walletName} file, in combination with my password, can be used to send funds using applications other than Faast.`,
+  ])
+]
+
+let DownloadKeystoreForm = ({ handleSubmit, handleCancel, handleDownload, downloaded, isNewWallet, walletName }) => (
+  <Form onSubmit={handleSubmit}>
     <ModalBody>
-      <div className='modal-title'>
-        {(props.isNewWallet &&
-          <span>Create a new wallet</span>) ||
-          <span>download keystore file</span>
-        }
-      </div>
-      <div className='mt-3 text-center'>
-        <Button color='faast' size='lg' onClick={props.handleDownload} className='text-medium'>
-          <i className='fa fa-download'/>&nbsp;
-          {(props.isNewWallet &&
-            <span>Download keystore file</span>) ||
-            <span>download</span>
-          }
-        </Button>
-      </div>
       <div className='modal-text'>
-        <ul>
-          <li>Your wallet's private key allows you to send funds</li>
-          <li>The keystore file contains your private key and is encrypted with the password you entered</li>
-          {(props.isNewWallet && addKeys([
-            <li>If you lose access to the file or your password, then you will lose access to your funds</li>,
-            <li>It is highly recommended to backup this file. This procedure was all done on your computer, we do not hold your file or password</li>
-          ])) ||
-            <li>The keystore file, as well as your password, can be used to send assets from other wallets</li>
-          }
-        </ul>
-      </div>
-      <div className='form-group'>
-        <Button color='faast' onClick={props.handleContinue} disabled={!props.downloaded}>continue</Button>
-      </div>
-      <div className='form-group'>
-        <Button color='link' onClick={props.handleCancel}>cancel</Button>
+        <FormGroup>
+          <Button color='faast' size='lg' onClick={handleDownload} className='text-medium'>
+            <i className='fa fa-download mr-2'/>Download {walletName} file
+          </Button>
+        </FormGroup>
+        <FormGroup tag="fieldset" className='text-left'>
+          <legend className='h5 text-primary'>Please acknowledge that you understand the following:</legend>
+          {getAcks({ isNewWallet, walletName }).map((ack, i) => (
+            <FormGroup key={ack} check className='mb-2'>
+              <Label check>
+                <Input type="checkbox" name={`ack${i}`} />{' '}{ack}
+              </Label>
+            </FormGroup>
+          ))}
+        </FormGroup>
       </div>
     </ModalBody>
-  </div>
+    <ModalFooter className='justify-content-between'>
+      <Button outline color='primary' onClick={handleCancel}>Cancel</Button>
+      <Button color='success' onClick={handleSubmit} disabled={!downloaded}>Confirm</Button>
+    </ModalFooter>
+  </Form>
 )
 
-DownloadKeystore.propTypes = {
+DownloadKeystoreForm.propTypes = {
   handleDownload: PropTypes.func.isRequired,
   handleContinue: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired
 }
+
+DownloadKeystoreForm = reduxForm({
+  form: 'downloadKeystore'
+})(DownloadKeystoreForm)
 
 export default CreateWalletModalView

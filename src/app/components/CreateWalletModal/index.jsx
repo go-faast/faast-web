@@ -17,6 +17,8 @@ const initialState = {
   downloaded: false
 }
 
+const getWalletName = (isNewWallet) => isNewWallet ? 'wallet' : 'keystore'
+
 const validateCreatePassword = (values, name = 'wallet') => {
   if (!values || !values.password || values.password.length < 8) {
     toastr.error(`It is important to secure your ${name} with a strong password. Please use a minimum of 8 characters`, { timeOut: 8000 })
@@ -59,7 +61,7 @@ class CreateWalletModal extends Component {
   }
 
   _handleCreatePasswordWithPrivKey (values) {
-    const name = this.props.isNewWallet ? 'wallet' : 'keystore file'
+    const name = getWalletName(this.props.isNewWallet)
     if (validateCreatePassword(values, name)) {
       const createdWallet = this._generateFromPrivKey(values.privateKey, values.password)
       if (createdWallet) {
@@ -124,6 +126,8 @@ class CreateWalletModal extends Component {
   }
 
   render () {
+    const { isNewWallet, showModal } = this.props
+    const { download } = this.state
     return (
       <CreateWalletModalView
         view={this.state.view}
@@ -134,9 +138,10 @@ class CreateWalletModal extends Component {
         handleDownload={this._handleDownload}
         handleContinue={this._handleContinue}
         handleImportPrivKey={this._handleImportPrivKey}
-        showModal={this.props.showModal}
-        isNewWallet={this.props.isNewWallet}
-        downloaded={this.state.download}
+        showModal={showModal}
+        isNewWallet={isNewWallet}
+        downloaded={download}
+        walletName={getWalletName(isNewWallet)}
       />
     )
   }
