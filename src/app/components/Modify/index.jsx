@@ -314,11 +314,6 @@ class Modify extends Component {
       // allowance: this.state.allowance.fiat,
       onValueChange: this._handleSlider
     }
-    const layoutProps = {
-      showAction: false,
-      view: 'modify',
-      stickyHeader: true
-    }
     const assetListProps = {
       supportedAssetSymbols: ((portfolio.nestedWallets.find(({ id }) => id === assetListWalletId) || {}).supportedAssets || []),
       hiddenAssetSymbols: (holdings[assetListWalletId] || []).filter(({ shown }) => shown).map(({ symbol }) => symbol),
@@ -335,7 +330,6 @@ class Modify extends Component {
     }
     return (
       <ModifyView
-        layoutProps={layoutProps}
         assetListProps={assetListProps}
         isAssetListOpen={this.state.isAssetListOpen}
         showAssetList={this._showAssetList}

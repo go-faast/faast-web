@@ -1,32 +1,5 @@
 @import "~Styles/variables";
 
-.addNew {
-  background-image: url('https://faa.st/img/add.png');
-  background-size: 32px 32px;
-  background-repeat: no-repeat;
-  background-position: center center;
-  height: 40px;
-  width: 40px;
-  display: inline-block;
-  vertical-align: middle;
-}
-
-.modifyAssetList {
-  margin-top: 8px;
-  h5 {
-    margin-top: 16px;
-  }
-  @include media-breakpoint-down(xs) {
-    // Extend to the edge of the screen on mobile
-    margin-left: -16px;
-    margin-right: -16px;
-    h5 {
-      margin-left: 16px;
-      margin-right: 16px;
-    }
-  }
-}
-
 .editableEditing {
   text-decoration: none;
   background-color: inherit;

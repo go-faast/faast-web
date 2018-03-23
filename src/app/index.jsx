@@ -51,7 +51,7 @@ const Portfolio = () => {
   return (
     <Provider store={store}>
       <ConnectedRouter history={history}>
-        <div id='portfolio-page'>
+        <div>
           <Route component={Entry} />
           <ReduxToastr
             timeOut={4000}

@@ -123,100 +123,90 @@ const BalancesView = (props) => {
   }
 
   return (
-    <Layout {...layoutProps}>
-      <Row className='gutter-3 justify-content-end'>
-        <Col xs='auto'>
-          <Button color='faast' tag={Link} to='/connect'><i className='fa fa-plus'/> add wallet</Button>
-        </Col>
-        <Col xs='auto'>
-          <Button color='faast' tag={Link} to='/modify' disabled={disableModify || viewOnly}><i className='fa fa-exchange'/> swap</Button>
-        </Col>
-      </Row>
+    <Layout {...layoutProps} className='pt-3'>
       {!viewOnly &&
         <SignTxModal showModal={showOrderModal} toggleModal={handleToggleOrderModal} view='orderStatus' />
       }
       {!viewOnly &&
         <Welcome />
       }
-      <div className='my-3'>
-        <Row className='gutter-3'>
-          {!isDefaultPortfolioEmpty && (
-            <Col xs='12' md='5' lg='4' xl='3'>
-              <WalletSelector/>
-            </Col>
-          )}
-          <Col xs='12' md='7' lg='8' xl='9'>
-            <Row className='gutter-3'>
-              {balancesLoading && (<LoadingFullscreen center error={balancesError}/>)}
-              {viewOnly ? (
-                <Col xs='12' className='text-center'>
-                  <Alert color='info' className='m-0'>
-                    You are viewing a read-only wallet. If this is your address, you need to <Link to='/connect' className='font-weight-normal alert-link'><u>connect your wallet</u></Link> in order to trade assets.
-                  </Alert>
-                </Col>
-              ) : (
-                <Col xs='12'>
-                  <Row className='gutter-3 align-items-end'>
-                    <Col>
-                      <h4 className='m-0 text-primary'>{label}</h4>
-                    </Col>
-                    <Col xs='auto'>
-                      <Button color='danger' size='sm' onClick={handleRemove} disabled={disableRemove}>
-                        <i className='fa fa-times'/> remove {isPortfolio ? 'portfolio' : 'wallet'}
-                      </Button>
-                    </Col>
-                  </Row>
-                </Col>
-              )}
-              {!viewOnly && Boolean(orderStatus) &&
-                <Col xs='12'>
-                  <OrderStatus status={orderStatus} handleViewStatus={handleToggleOrderModal} handleForgetOrder={handleForgetOrder} />
-                </Col>
-              }
-              <Col xs='12'>
-                <Card>
-                  <CardHeader className='grid-group'>
-                    <Row className='gutter-3'>
-                      {stats.map(({ title, value, colClass }, i) => (
-                        <Col xs='6' lg='3' key={i} className={classNames('text-center', colClass)}>
-                          <div className='grid-cell'>
-                            <div className='h3 mb-0'>{value}</div>
-                            <small className='mb-0 font-weight-light text-muted text-uppercase text-spacing'>{title}</small>
-                          </div>
-                        </Col>
-                      ))}
-                    </Row>
-                  </CardHeader>
-                  <CardBody>
-                    {addressProps.address && (
-                      <div className='text-right px-3' style={{ lineHeight: 1 }}>
-                        <div className='text-medium-grey mb-1'>address</div>
-                        <Address className={style.addressLink} {...addressProps} />
-                      </div>
-                    )}
-                    {pieChart}
-                  </CardBody>
-                  <Table hover striped className={classNames(style.balanceTable, 'table-accordian')}>
-                    <thead>
-                      <tr>
-                        <th><h6>Asset</h6></th>
-                        <th><h6>Units</h6></th>
-                        <th><h6>Holdings</h6></th>
-                        <th className={expandedOnly}><h6>Weight</h6></th>
-                        <th><h6>Price</h6></th>
-                        <th className={expandedOnly}><h6>24h change</h6></th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {renderAssets()}
-                    </tbody>
-                  </Table>
-                </Card>
-              </Col>
-            </Row>
+      <Row className='gutter-3'>
+        {!isDefaultPortfolioEmpty && (
+          <Col xs='12' md='5' lg='4' xl='3'>
+            <WalletSelector/>
           </Col>
-        </Row>
-      </div>
+        )}
+        <Col xs='12' md='7' lg='8' xl='9'>
+          <Row className='gutter-3'>
+            {balancesLoading && (<LoadingFullscreen center error={balancesError}/>)}
+            {viewOnly ? (
+              <Col xs='12' className='text-center'>
+                <Alert color='info' className='m-0'>
+                  You are viewing a read-only wallet. If this is your address, you need to <Link to='/connect' className='font-weight-normal alert-link'><u>connect your wallet</u></Link> in order to trade assets.
+                </Alert>
+              </Col>
+            ) : (
+              <Col xs='12'>
+                <Row className='gutter-3 align-items-end'>
+                  <Col>
+                    <h4 className='m-0 text-primary'>{label}</h4>
+                  </Col>
+                  <Col xs='auto'>
+                    <Button color='danger' size='sm' onClick={handleRemove} disabled={disableRemove}>
+                      <i className='fa fa-times'/> remove {isPortfolio ? 'portfolio' : 'wallet'}
+                    </Button>
+                  </Col>
+                </Row>
+              </Col>
+            )}
+            {!viewOnly && Boolean(orderStatus) &&
+              <Col xs='12'>
+                <OrderStatus status={orderStatus} handleViewStatus={handleToggleOrderModal} handleForgetOrder={handleForgetOrder} />
+              </Col>
+            }
+            <Col xs='12'>
+              <Card>
+                <CardHeader className='grid-group'>
+                  <Row className='gutter-3'>
+                    {stats.map(({ title, value, colClass }, i) => (
+                      <Col xs='6' lg='3' key={i} className={classNames('text-center', colClass)}>
+                        <div className='grid-cell'>
+                          <div className='h3 mb-0'>{value}</div>
+                          <small className='mb-0 font-weight-light text-muted text-uppercase text-spacing'>{title}</small>
+                        </div>
+                      </Col>
+                    ))}
+                  </Row>
+                </CardHeader>
+                <CardBody>
+                  {addressProps.address && (
+                    <div className='text-right px-3' style={{ lineHeight: 1 }}>
+                      <div className='text-medium-grey mb-1'>address</div>
+                      <Address className={style.addressLink} {...addressProps} />
+                    </div>
+                  )}
+                  {pieChart}
+                </CardBody>
+                <Table hover striped className={classNames(style.balanceTable, 'table-accordian')}>
+                  <thead>
+                    <tr>
+                      <th><h6>Asset</h6></th>
+                      <th><h6>Units</h6></th>
+                      <th><h6>Holdings</h6></th>
+                      <th className={expandedOnly}><h6>Weight</h6></th>
+                      <th><h6>Price</h6></th>
+                      <th className={expandedOnly}><h6>24h change</h6></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {renderAssets()}
+                  </tbody>
+                </Table>
+              </Card>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
     </Layout>
   )
 }

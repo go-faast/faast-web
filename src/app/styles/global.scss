@@ -9,8 +9,8 @@ body {
 
 .beta-tag {
   font-family: 'Kaushan Script', cursive;
-  @extend .text-small;
-  @extend .text-white;
+  font-size: 12px;
+  color: $primary;
 }
 
 span.faast-loading {

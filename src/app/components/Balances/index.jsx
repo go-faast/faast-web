@@ -112,11 +112,6 @@ class Balances extends Component {
 
     const disableModify = !wallet || !wallet.assetHoldings || !wallet.assetHoldings.length || orderStatus === 'working'
     const disableRemove = wallet.id === 'default'
-    const layoutProps = {
-      showAction: true,
-      showAddressSearch: true,
-      view: isViewOnly ? 'view' : 'balances'
-    }
     const addressProps = {
       address: wallet.address,
       showDownloadKeystore: !isViewOnly && wallet.isBlockstack
@@ -125,7 +120,6 @@ class Balances extends Component {
       <BalancesView
         pieChart={<PieChart portfolio={wallet} selectedSymbol={this.state.pieChartSelection} handleChartSelect={this._setChartSelect} />}
         priceChart={<PriceChart />}
-        layoutProps={layoutProps}
         wallet={wallet}
         toggleChart={this._toggleChart}
         showOrderModal={this.props.orderModal.show}

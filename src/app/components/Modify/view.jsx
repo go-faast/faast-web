@@ -1,22 +1,26 @@
 import React from 'react'
-import Sticky from 'react-stickynode'
+import {
+  Container, Row, Col, Button, Alert, Modal,
+  Card, CardHeader, ListGroup, ListGroupItem,
+  Navbar
+} from 'reactstrap'
 import accounting from 'accounting'
 import { RIENumber } from 'riek'
+
+import display from 'Utilities/display'
+
 import Layout from 'Components/Layout'
 import Slider from 'Components/Slider'
 import AssetList from 'Components/AssetList'
 import SignTxModal from 'Components/SignTxModal'
 import Units from 'Components/Units'
-import display from 'Utilities/display'
-import styles from './style'
-import headerStyles from 'Components/Header/style'
-import { Row, Col, Card, CardHeader, ListGroup, ListGroupItem, Modal, Alert, Button } from 'reactstrap'
 import WalletSummary from 'Components/WalletSummary'
 import Overlay from 'Components/Overlay'
-import { zIndex } from 'Utilities/style'
 import ArrowIcon from 'Components/ArrowIcon'
 import ListGroupButton from 'Components/ListGroupButton'
 import CoinIcon from 'Components/CoinIcon'
+
+import styles from './style'
 
 const ModifyView = (props) => {
   const { portfolio, handleCancel, handleSave, disableSave } = props
@@ -182,47 +186,53 @@ const ModifyView = (props) => {
       </Col>
     ))
 
+  const secondNavbar = (
+    <Navbar color='ultra-dark' dark fixed='top'>
+      <Container className='d-block'>
+        <Row className='gutter-x-3 align-items-center text-center'>
+          {portfolio.id !== 'default' && (
+            <Col xs='6' md='2'>
+              <h4 className='m-0 font-weight-light'>{portfolio.label}</h4>
+              <small className='text-muted'>current portfolio</small>
+            </Col>
+          )}
+          <Col xs='6' md>
+            <h4 className='m-0 font-weight-light'>{display.fiat(portfolio.totalFiat)}</h4>
+            <small className='text-muted'>total balance</small>
+          </Col>
+          <Col xs='6' md='4'>
+            <h4 className='text-primary m-0'>{display.fiat(props.allowance.fiat)} / {display.percentage(props.allowance.weight)}</h4>
+            <small className='text-muted'>available to swap</small>
+          </Col>
+          <Col xs='6' md='2'>
+            <Button color='faast' outline onClick={handleCancel} className='w-100'>cancel</Button>
+          </Col>
+          <Col xs='6' md='2'>
+            <Button color='faast' onClick={handleSave} className='w-100' disabled={Boolean(disableSave)}>save</Button>
+          </Col>
+          {typeof disableSave === 'string' && (
+            <Col xs='12'>
+              <Alert color='danger' className='m-0 w-100 text-center'>
+                {disableSave}
+              </Alert>
+            </Col>
+          )}
+        </Row>
+      </Container>
+    </Navbar>
+  )
+
   return (
-    <Layout {...props.layoutProps}>
+    <Layout tag='div' afterNav={secondNavbar}>
+      <Container className='p-0 p-md-3'>
+        <Row className='gutter-x-0 gutter-y-3'>
+          {renderHoldings(portfolio.nestedWallets)}
+        </Row>
+      </Container>
       <Modal size='lg' center isOpen={props.isAssetListOpen} toggle={props.toggleAssetList} className='m-0 mx-md-auto' contentClassName='p-0'>
         <AssetList {...props.assetListProps} />
       </Modal>
       <SignTxModal showModal={props.showSignTxModal} toggleModal={props.handleToggleSignTxModal} />
-      <Sticky innerZ={zIndex.sticky} top='#header'>
-        <div className={headerStyles.header}>
-          <Row className='gutter-3 align-items-center'>
-            <Col xs='6' md='4' className='align-self-stretch'>
-              <Card body className='h-100 px-3 py-2 justify-content-center'>
-                <WalletSummary wallet={portfolio}/>
-              </Card>
-            </Col>
-            <Col xs='6' md='4' className='text-center align-self-stretch'>
-              <Card body className='h-100 px-3 py-2 justify-content-center'>
-                <h3 className='text-primary'>{display.fiat(props.allowance.fiat)} / {display.percentage(props.allowance.weight)}</h3>
-                <h6 className='m-0'>available to swap</h6>
-              </Card>
-            </Col>
-            <Col xs='6' md='2'>
-              <Button color='faast' outline onClick={handleCancel} className='w-100'>cancel</Button>
-            </Col>
-            <Col xs='6' md='2'>
-              <Button color='faast' onClick={handleSave} className='w-100' disabled={Boolean(disableSave)}>save</Button>
-            </Col>
-            {typeof disableSave === 'string' && (
-              <Col xs='12'>
-                <Alert color='danger' className='m-0 w-100 text-center'>
-                  {disableSave}
-                </Alert>
-              </Col>
-            )}
-          </Row>
-        </div>
-      </Sticky>
-      <div className={styles.modifyAssetList}>
-        <Row className='gutter-x-0 gutter-y-3'>
-          {renderHoldings(portfolio.nestedWallets)}
-        </Row>
-      </div>
     </Layout>
   )
 }
