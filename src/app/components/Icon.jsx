@@ -60,7 +60,7 @@ Icon.propTypes = {
 
 Icon.defaultProps = {
   tag: 'img',
-  inline: false,
+  inline: true,
   size: null,
   width: null,
   height: null,

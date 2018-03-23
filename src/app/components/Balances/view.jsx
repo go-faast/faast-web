@@ -141,11 +141,11 @@ const BalancesView = (props) => {
       <div className='my-3'>
         <Row className='gutter-3'>
           {!isDefaultPortfolioEmpty && (
-            <Col xs='12' md='6' lg='5' xl='4'>
+            <Col xs='12' md='5' lg='4' xl='3'>
               <WalletSelector/>
             </Col>
           )}
-          <Col xs='12' md='6' lg='7' xl='8'>
+          <Col xs='12' md='7' lg='8' xl='9'>
             <Row className='gutter-3'>
               {balancesLoading && (<LoadingFullscreen center error={balancesError}/>)}
               {viewOnly ? (
@@ -180,8 +180,8 @@ const BalancesView = (props) => {
                       {stats.map(({ title, value, colClass }, i) => (
                         <Col xs='6' lg='3' key={i} className={classNames('text-center', colClass)}>
                           <div className='grid-cell'>
-                            <h4>{value}</h4>
-                            <h6 className='mb-0'>{title}</h6>
+                            <div className='h3 mb-0'>{value}</div>
+                            <small className='mb-0 font-weight-light text-muted text-uppercase text-spacing'>{title}</small>
                           </div>
                         </Col>
                       ))}

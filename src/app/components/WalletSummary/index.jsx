@@ -9,23 +9,19 @@ import Spinner from 'Components/Spinner'
 import { getWalletWithHoldings } from 'Selectors'
 import display from 'Utilities/display'
 
-export const WalletSummary = ({ icon, labelTag: LabelTag, wallet: { id, label, typeLabel, totalFiat, iconUrl, balancesLoaded } }) => (
-  <Row className='gutter-0'>
-    <Col xs='12'><LabelTag>{id === 'default' ? (<i>{label}</i>) : label}</LabelTag></Col>
-    <Col xs='12'>
-      <Row className='gutter-x-2 align-items-center justify-content-between'>
-        {icon && (
-          <Col xs='auto'>
-            <Icon height='1.25em' src={iconUrl}/>
-          </Col>
-        )}
-        <Col className='text-muted'>{typeLabel}</Col>
-        <Col xs='auto' className='text-muted'>
-          {balancesLoaded
-            ? display.fiat(totalFiat)
-            : (<Spinner size='sm'/>)}
-        </Col>
-      </Row>
+export const WalletSummary = ({ icon, labelClass, wallet: { id, label, typeLabel, totalFiat, iconUrl, balancesLoaded } }) => (
+  <Row className='gutter-0 font-weight-light'>
+    <Col xs='12' className={labelClass}>{id === 'default' ? (<i>{label}</i>) : label}</Col>
+    <Col>
+      <small className='text-muted'>
+        {icon && (<Icon height='1.25em' src={iconUrl} inline className='mr-2'/>)}
+        {typeLabel}
+      </small>
+    </Col>
+    <Col xs='auto'>
+      {balancesLoaded
+        ? display.fiat(totalFiat)
+        : (<Spinner size='sm'/>)}
     </Col>
   </Row>
 )
@@ -38,7 +34,7 @@ WalletSummary.propTypes = {
 
 WalletSummary.defaultProps = {
   icon: false,
-  labelTag: 'h5',
+  labelTag: 'div',
 }
 
 export const ConnectedWalletSummary = connect(createStructuredSelector({

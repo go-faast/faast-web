@@ -79,7 +79,7 @@ export default class EthereumWallet extends Wallet {
 
   getId = () => this.getAddress();
 
-  getLabel = () => this.label || `Ethereum account ${ellipsize(this.getAddress(), 6, 4)}`;
+  getLabel = () => this.label || `Ethereum ${ellipsize(this.getAddress(), 6, 4)}`;
 
   getIconUrl = () => 'https://faa.st/img/coins/coin_ETH.png';
 

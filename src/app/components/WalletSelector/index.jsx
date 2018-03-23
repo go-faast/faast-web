@@ -10,8 +10,8 @@ import WalletSummary from 'Components/WalletSummary'
 import ListGroupButton from 'Components/ListGroupButton'
 
 const ListItem = ({ id, active, nested, onClick, className, ...props }) => (
-  <ListGroupButton active={active} onClick={onClick} className={classNames({ 'compact pl-5': nested }, className)} {...props}>
-    <WalletSummary.Connected id={id} icon={nested} labelTag={nested ? 'span' : 'h5'}/>
+  <ListGroupButton active={active} onClick={onClick} className={classNames({ 'compact': nested }, className)} {...props}>
+    <WalletSummary.Connected id={id} icon={nested} labelClass={nested ? 'font-weight-light' : 'font-weight-normal'}/>
   </ListGroupButton>
 )
 
@@ -76,7 +76,7 @@ class WalletSelector extends React.Component {
       <div>
         <Row className='gutter-3 align-items-end'>
           <Col>
-            <h4 className='m-0'>Portfolios</h4>
+            <h4 className='m-0 text-primary'>Portfolios</h4>
           </Col>
           <Col xs='auto'>
             <Button color='success' outline size='sm' onClick={() => createNewPortfolio(true)}><i className='fa fa-plus'/> add portfolio</Button>

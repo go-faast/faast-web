@@ -20,7 +20,7 @@ export default class BitcoinWallet extends Wallet {
 
   getId = () => this.xpub;
 
-  getLabel = () => this.label || `Bitcoin account ${ellipsize(this.xpub, 8, 4)}`;
+  getLabel = () => this.label || `Bitcoin ${ellipsize(this.xpub, 8, 4)}`;
 
   getIconUrl = () => 'https://faa.st/img/coins/coin_BTC.png';
 

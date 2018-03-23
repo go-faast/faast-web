@@ -18,7 +18,7 @@ export default class BlockstackWallet extends EthereumWalletKeystore {
 
   getType = () => BlockstackWallet.type;
 
-  getTypeLabel = () => 'Blockstack wallet';
+  getTypeLabel = () => 'Blockstack';
 
   getIconUrl = () => 'https://faa.st/img/blockstack-logo.png';
 }
