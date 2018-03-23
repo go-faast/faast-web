@@ -17,6 +17,7 @@ const walletRenderData = {
   ledger: {
     name: 'Ledger Wallet',
     icon: ledgerLogo,
+    supportedAssets: ['ETH'],
     instructions: [{
       icon: 'fa-usb',
       text: 'Connect your Ledger Wallet to begin'
@@ -34,6 +35,7 @@ const walletRenderData = {
   trezor: {
     name: 'TREZOR',
     icon: trezorLogo,
+    supportedAssets: ['BTC', 'ETH'],
     instructions: [{
       icon: 'fa-usb',
       text: 'Connect your TREZOR to begin'
@@ -191,10 +193,10 @@ const HardwareWalletModal = ({
 )
 
 const HardwareWalletView = ({ type, handleClick, modalProps }) => {
-  const { name, icon } = walletRenderData[type]
+  const { name, icon, supportedAssets } = walletRenderData[type]
   return (
     <div>
-      <AccessTile name={name} icon={icon} onClick={handleClick} />
+      <AccessTile name={name} icon={icon} assets={supportedAssets} onClick={handleClick} color='primary' outline/>
       <HardwareWalletModal type={type} {...modalProps} />
     </div>
   )

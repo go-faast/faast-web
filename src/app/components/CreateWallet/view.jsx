@@ -2,16 +2,18 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import CreateWalletModal from 'Components/CreateWalletModal'
 import AccessTile from 'Components/AccessTile'
+import CoinIcon from 'Components/CoinIcon'
 
-const CreateWalletView = (props) => {
-  return (
-    <AccessTile outline color='primary' onClick={props.handleClick}>
-      <i className='fa fa-plus fa-3x'/>
-      <h5 className='pt-3'>create a new wallet</h5>
-      <CreateWalletModal {...props.modalProps} />
+const CreateWalletView = ({ handleClick, modalProps }) => (
+  <div>
+    <AccessTile onClick={handleClick}>
+      <h5 className='text-primary'><i className='fa fa-plus mr-2'/>Create wallet</h5>
+      <h6>Generate a new keystore file</h6>
+      <CoinIcon symbol='ETH' size={3} className='m-2'/>
     </AccessTile>
-  )
-}
+    <CreateWalletModal {...modalProps} />
+  </div>
+)
 
 CreateWalletView.propTypes = {
   handleClick: PropTypes.func.isRequired,

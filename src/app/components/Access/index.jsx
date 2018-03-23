@@ -10,6 +10,7 @@ import Web3Wallet from 'Components/Web3Wallet'
 import CreateWallet from 'Components/CreateWallet'
 import HardwareWallet from 'Components/HardwareWallet'
 import Blockstack from 'Components/Blockstack'
+import CoinIcon from 'Components/CoinIcon'
 
 import { isDefaultPortfolioEmpty } from 'Selectors'
 
@@ -25,20 +26,21 @@ const Access = ({ disablePortfolioAccess }) => (
     </Row>
     <div className='text-center'>
       <h3 className='mt-5'>Select your wallet</h3>
-      <h4 className='text-grey mt-4'>Hardware Wallets</h4>
+      <h4 className='text-muted mt-4'>Hardware Wallets</h4>
       <h6 className='text-primary'>Recommended</h6>
       <TileRow>
         <TileCol><HardwareWallet type='trezor' /></TileCol>
         <TileCol><HardwareWallet type='ledger' /></TileCol>
       </TileRow>
-      <h4 className='text-grey'>Software Wallets</h4>
+      <h4 className='text-muted'>Software Wallets</h4>
+      <h6><CoinIcon symbol='ETH' size='sm' inline /> Ethereum only</h6>
       <TileRow>
         <TileCol><Web3Wallet type='metamask' /></TileCol>
         <TileCol><Web3Wallet type='mist' /></TileCol>
         <TileCol><Web3Wallet type='parity' /></TileCol>
         <TileCol><Blockstack /></TileCol>
       </TileRow>
-      <h4 className='text-grey'>Manual</h4>
+      <h4 className='text-muted'>Manual</h4>
       <TileRow>
         <TileCol><Keystore /></TileCol>
         <TileCol><CreateWallet /></TileCol>

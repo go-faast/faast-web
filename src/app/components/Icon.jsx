@@ -4,7 +4,17 @@ import PropTypes from 'prop-types'
 import { reduceStyles, resize, rotate, fill } from 'Utilities/style'
 import { tag as tagPropType } from 'Utilities/propTypes'
 
-const Icon = ({ src, tag: Tag, width, height, size: scale, rotate: rotation, color: fillColor, style, ...props }) => {
+const inlineStyle = {
+  display: 'inline-block',
+  lineHeight: 0,
+  verticalAlign: 'middle'
+}
+
+const blockStyle = {
+  display: 'block'
+}
+
+const Icon = ({ src, tag: Tag, inline, width, height, size: scale, rotate: rotation, color: fillColor, style, ...props }) => {
   if (typeof src === 'string') {
     if (Tag === 'img') {
       props = { src, ...props }
@@ -24,6 +34,7 @@ const Icon = ({ src, tag: Tag, width, height, size: scale, rotate: rotation, col
         resize(scale),
         rotate(rotation),
         fill(fillColor),
+        (inline ? inlineStyle : blockStyle),
         style
       )}
       {...props}
@@ -33,6 +44,7 @@ const Icon = ({ src, tag: Tag, width, height, size: scale, rotate: rotation, col
 
 // Prop types that affect the appearance of the icon
 Icon.stylePropTypes = {
+  inline: PropTypes.bool,
   width: PropTypes.string, // Valid css unit (2rem, 16px, etc)
   height: PropTypes.string, // Valid css unit (2rem, 16px, etc)
   size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]), // Width/height scale factor or abbreviation (sm, md, lg)
@@ -48,6 +60,7 @@ Icon.propTypes = {
 
 Icon.defaultProps = {
   tag: 'img',
+  inline: false,
   size: null,
   width: null,
   height: null,
