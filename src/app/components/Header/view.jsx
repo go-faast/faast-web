@@ -5,7 +5,7 @@ import { reduxForm, Field } from 'redux-form'
 import { InputGroup, InputGroupAddon, Input, Button } from 'reactstrap'
 import styles from './style'
 import { Row, Col } from 'reactstrap'
-import { zIndexSticky } from 'faast-ui'
+import { zIndex } from 'Utilities/style'
 
 let AddressSearchForm = (props) => (
   <form onSubmit={props.handleSubmit} className='w-100'>
@@ -36,7 +36,7 @@ AddressSearchForm = reduxForm({
 const HeaderView = (props) => {
   const { stickyHeader, showAddressSearch, handleAddressSearch } = props
   return (
-    <Sticky enabled={!!stickyHeader} innerZ={zIndexSticky}>
+    <Sticky enabled={!!stickyHeader} innerZ={zIndex.sticky}>
       <div id='header' className={styles.header}>
         <div>
           <Row className='gutter-3'>

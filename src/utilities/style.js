@@ -1,7 +1,16 @@
 import parseUnit from 'parse-unit'
-import styleVars from 'faast-ui/src/style/variables'
 import log from 'Utilities/log'
-import { reduce, isFunction, isObject } from 'lodash'
+import { isFunction, isObject, set, camelCase } from 'lodash'
+
+import * as styleVars from 'faast-ui/src/style/variables'
+
+const nestedStyleVars = Object.entries(styleVars)
+  .reduce((result, [key, value]) => set(result, key.split('_').map(camelCase), value), {})
+
+const { themeColor, zIndex, chartColor } = nestedStyleVars
+console.log('styleVars', nestedStyleVars)
+
+export { nestedStyleVars as styleVars, themeColor, zIndex, chartColor }
 
 const defaultRotateAbbreviations = {
   up: '0',
@@ -21,7 +30,7 @@ export const scaleUnit = (unit, scalar) => {
   return [value * scalar, units].join('')
 }
 
-export const reduceStyles = (...styles) => reduce(styles, (result, style) => {
+export const reduceStyles = (...styles) => styles.reduce((result, style) => {
   if (isFunction(style)) {
     return { ...result, ...style(result) }
   }
@@ -53,6 +62,6 @@ export const resize = (scalar, scalarAbbreviations = defaultScalarAbbreviations)
 
 export const fill = (color) => {
   if (!color) return {}
-  color = styleVars[`themeColor-${color}`] || color
+  color = themeColor[color] || color
   return { fill: color }
 }

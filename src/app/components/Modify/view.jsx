@@ -13,7 +13,7 @@ import headerStyles from 'Components/Header/style'
 import { Row, Col, Card, CardHeader, ListGroup, ListGroupItem, Modal, Alert, Button } from 'reactstrap'
 import WalletSummary from 'Components/WalletSummary'
 import Overlay from 'Components/Overlay'
-import { zIndexSticky } from 'faast-ui'
+import { zIndex } from 'Utilities/style'
 import ArrowIcon from 'Components/ArrowIcon'
 import ListGroupButton from 'Components/ListGroupButton'
 import CoinIcon from 'Components/CoinIcon'
@@ -188,7 +188,7 @@ const ModifyView = (props) => {
         <AssetList {...props.assetListProps} />
       </Modal>
       <SignTxModal showModal={props.showSignTxModal} toggleModal={props.handleToggleSignTxModal} />
-      <Sticky innerZ={zIndexSticky} top='#header'>
+      <Sticky innerZ={zIndex.sticky} top='#header'>
         <div className={headerStyles.header}>
           <Row className='gutter-3 align-items-center'>
             <Col xs='6' md='4' className='align-self-stretch'>

@@ -45,17 +45,17 @@ const BalancesView = (props) => {
       colClass: 'order-2 order-lg-1'
     },
     {
-      title: 'current holdings',
+      title: 'total balance',
       value: display.fiat(totalFiat),
       colClass: 'order-1 order-lg-2'
     },
     {
-      title: 'holdings 24h ago',
+      title: 'balance 24h ago',
       value: display.fiat(totalFiat24hAgo),
       colClass: 'order-3'
     },
     {
-      title: '24h change',
+      title: 'since 24h ago',
       value: (<ChangePercent>{totalChange}</ChangePercent>),
       colClass: 'order-4'
     },
@@ -158,7 +158,7 @@ const BalancesView = (props) => {
                 <Col xs='12'>
                   <Row className='gutter-3 align-items-end'>
                     <Col>
-                      <h4 className='m-0'>{label}</h4>
+                      <h4 className='m-0 text-primary'>{label}</h4>
                     </Col>
                     <Col xs='auto'>
                       <Button color='danger' size='sm' onClick={handleRemove} disabled={disableRemove}>
