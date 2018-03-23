@@ -14,6 +14,10 @@ const Icon = ({ src, tag: Tag, width, height, size: scale, rotate: rotation, col
   } else {
     Tag = src
   }
+  if (scale && !(width || height)) {
+    width = '1rem'
+    height= '1rem'
+  }
   return (
     <Tag style={reduceStyles(
         { width, height },
@@ -44,9 +48,9 @@ Icon.propTypes = {
 
 Icon.defaultProps = {
   tag: 'img',
-  width: '1rem',
-  height: '1rem',
-  size: 1,
+  size: null,
+  width: null,
+  height: null,
   rotate: null,
   color: null
 }

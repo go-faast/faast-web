@@ -2,7 +2,7 @@ import React from 'react'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux';
-import { ListGroup, ListGroupItem, Collapse, Row, Col, Button } from 'reactstrap'
+import { ListGroup, ListGroupItem, Collapse, Row, Col, Button, Card } from 'reactstrap'
 import classNames from 'class-names'
 import { setCurrentPortfolio, setCurrentWallet, createNewPortfolio, removePortfolio } from 'Actions/portfolio'
 import { getAllPortfolioWalletIds, getCurrentWalletId, getCurrentPortfolioId } from 'Selectors'
@@ -85,36 +85,38 @@ class WalletSelector extends React.Component {
             const showWallets = this.state.expandedPortfolios[portfolioId]
             return (
               <Col key={portfolioId} xs='12'>
-                <ListGroup>
-                  <ListItem id={portfolioId}
-                    active={currentWalletId === portfolioId}
-                    onClick={() => setCurrentPortfolio(portfolioId)}/>
-                  <ListGroupItem className='grid-group'>
-                    <Row className='gutter-3'>
-                      <Col xs='6'>
-                        <ListGroupButton size='sm' className='grid-cell text-success text-center' onClick={() => this.connectWalletToPortfolio(portfolioId)}>
-                          <i className='fa fa-plus'/> add wallet
-                        </ListGroupButton>
-                      </Col>
-                      <Col xs='6'>
-                        <ListGroupButton size='sm' className='grid-cell text-center' onClick={() => this.togglePortfolio(portfolioId)}>
-                          {showWallets
-                            ? (<span><i className='fa fa-caret-up'/> hide wallets</span>)
-                            : (<span><i className='fa fa-caret-down'/> show wallets</span>)}
-                        </ListGroupButton>
-                      </Col>
-                    </Row>
-                  </ListGroupItem>
-                  <Collapse isOpen={showWallets}>
-                    {walletIds.length > 0
-                      ? walletIds.map((id) => (
-                          <ListItem key={id} id={id} nested
-                            active={currentPortfolioId === portfolioId && currentWalletId === id}
-                            onClick={() => setCurrentWallet(portfolioId, id)}/>
-                        ))
-                      : (<ListGroupItem><i className='text-muted'>No wallets in this portfolio</i></ListGroupItem>)}
-                  </Collapse>
-                </ListGroup>
+                <Card>
+                  <ListGroup>
+                    <ListItem id={portfolioId}
+                      active={currentWalletId === portfolioId}
+                      onClick={() => setCurrentPortfolio(portfolioId)}/>
+                    <ListGroupItem className='grid-group'>
+                      <Row className='gutter-3'>
+                        <Col xs='6'>
+                          <Button color='ultra-dark' size='sm' className='grid-cell text-success text-center' onClick={() => this.connectWalletToPortfolio(portfolioId)}>
+                            <i className='fa fa-plus'/> add wallet
+                          </Button>
+                        </Col>
+                        <Col xs='6'>
+                          <Button color='ultra-dark' size='sm' className='grid-cell text-center' onClick={() => this.togglePortfolio(portfolioId)}>
+                            {showWallets
+                              ? (<span><i className='fa fa-caret-up'/> hide wallets</span>)
+                              : (<span><i className='fa fa-caret-down'/> show wallets</span>)}
+                          </Button>
+                        </Col>
+                      </Row>
+                    </ListGroupItem>
+                    <Collapse isOpen={showWallets}>
+                      {walletIds.length > 0
+                        ? walletIds.map((id) => (
+                            <ListItem key={id} id={id} nested
+                              active={currentPortfolioId === portfolioId && currentWalletId === id}
+                              onClick={() => setCurrentWallet(portfolioId, id)}/>
+                          ))
+                        : (<ListGroupItem><i className='text-muted'>No wallets in this portfolio</i></ListGroupItem>)}
+                    </Collapse>
+                  </ListGroup>
+                </Card>
               </Col>
             )
           })}

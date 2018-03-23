@@ -61,38 +61,6 @@ span.faast-loading {
   }
 }
 
-.modal-dialog {
-  min-height: 500px;
-}
-.modal-content {
-  height: 100%;
-}
-.modal-header {
-  .close {
-    line-height: $modal-title-line-height;
-    margin: 0;
-    position: absolute;
-    top: 0;
-    right: 0;
-  }
-  h1 ~ .close { font-size: $h1-font-size; }
-  h2 ~ .close { font-size: $h2-font-size; }
-  h3 ~ .close { font-size: $h3-font-size; }
-  h4 ~ .close { font-size: $h4-font-size; }
-  h5 ~ .close { font-size: $h5-font-size; }
-  h6 ~ .close { font-size: $h6-font-size; }
-}
-.modal-text {
-  @include media-breakpoint-up(lg) {
-    width: 75%;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  ul {
-    text-align: left;
-  }
-}
-
 .download-keystore-icon {
   background-image: url(https://faa.st/img/faast-logo.png);
   background-size: 64px 64px;

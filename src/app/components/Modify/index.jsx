@@ -304,7 +304,7 @@ class Modify extends Component {
 
   render () {
     const { portfolio } = this.props
-    const { holdings, assetListWalletId } = this.state
+    const { holdings, assetListWalletId, allowance } = this.state
     const adjustedPortfolio = {
       ...portfolio,
       nestedWallets: portfolio.nestedWallets.map((nestedWallet) => ({ ...nestedWallet, assetHoldings: holdings[nestedWallet.id] }))
@@ -326,10 +326,12 @@ class Modify extends Component {
       selectAsset: this._handleSelectAsset,
       ignoreUnavailable: false
     }
-    let disableSaveMessage
+    let disableSave
     const adjustedHoldings = filterAdjustedHoldings(holdings)
     if (Object.keys(adjustedHoldings).length > 1) {
-      disableSaveMessage = 'Swapping from more than one wallet at once is unsupported at this time'
+      disableSave = 'Swapping from more than one wallet at once is unsupported at this time'
+    } else if (allowance.fiat.greaterThan(0)) {
+      disableSave = true
     }
     return (
       <ModifyView
@@ -342,14 +344,14 @@ class Modify extends Component {
         handleRemove={this._handleRemoveAsset}
         portfolio={adjustedPortfolio}
         sliderProps={sliderProps}
-        allowance={this.state.allowance}
+        allowance={allowance}
         handleFiatChange={this._handleFiatChange}
         handleWeightChange={this._handleWeightChange}
         showSignTxModal={this.props.orderModal.show}
         handleToggleSignTxModal={this.props.toggleOrderModal}
         handleCancel={this._handleCancel}
         handleSave={this._handleSave}
-        disableSaveMessage={disableSaveMessage}
+        disableSave={disableSave}
       />
     )
   }

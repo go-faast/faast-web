@@ -10,15 +10,16 @@ import Units from 'Components/Units'
 import display from 'Utilities/display'
 import styles from './style'
 import headerStyles from 'Components/Header/style'
-import config from 'Config'
 import { Row, Col, Card, CardHeader, ListGroup, ListGroupItem, Modal, Alert, Button } from 'reactstrap'
 import WalletSummary from 'Components/WalletSummary'
 import Overlay from 'Components/Overlay'
 import { zIndexSticky } from 'faast-ui'
 import ArrowIcon from 'Components/ArrowIcon'
+import ListGroupButton from 'Components/ListGroupButton'
+import CoinIcon from 'Components/CoinIcon'
 
 const ModifyView = (props) => {
-  const { portfolio, handleCancel, handleSave, disableSaveMessage } = props
+  const { portfolio, handleCancel, handleSave, disableSave } = props
 
   const renderAssetRows = (assetHoldings) => assetHoldings.map((a) => {
     const { walletId, symbol, name, change24, price, units, fiat, weight, swapEnabled, priceDecrease } = a
@@ -50,7 +51,7 @@ const ModifyView = (props) => {
           <Col xs lg='4' xl='5' className='order-1'>
             <Row className='gutter-3 align-items-center'>
               <Col xs='3' md='2' lg='auto' className='text-center text-md-right'>
-                <div className='coin-icon mx-auto mr-md-0' style={{ backgroundImage: `url(${config.siteUrl}/img/coins/coin_${symbol}.png)` }} />
+                <CoinIcon symbol={symbol} />
               </Col>
               <Col xs='auto'><h5 className='m-0'>{name}</h5></Col>
             </Row>
@@ -136,7 +137,7 @@ const ModifyView = (props) => {
             </Row>
           </Col>
           <Col xs='auto' className='align-self-start order-2 order-lg-3'>
-            <Button color='danger' size='sm' disabled={disabled} onClick={() => props.handleRemove(walletId, symbol)}>
+            <Button color='danger' size='sm' disabled={disabled} className='flat' onClick={() => props.handleRemove(walletId, symbol)}>
               <i className='fa fa-times'/> remove
             </Button>
           </Col>
@@ -164,7 +165,7 @@ const ModifyView = (props) => {
                 <h4 className='m-0 lh-0'>{label}</h4>
               </Col>
               <Col xs='auto'>
-                <Button color='success' size='sm' onClick={() => props.showAssetList(id)}>
+                <Button color='success' size='sm' className='flat' onClick={() => props.showAssetList(id)}>
                   <i className='fa fa-plus'/> add asset
                 </Button>
               </Col>
@@ -172,10 +173,10 @@ const ModifyView = (props) => {
           </CardHeader>
           <ListGroup>
             {renderAssetRows(assetHoldings.filter(({ shown }) => shown))}
-            <ListGroupItem action onClick={() => props.showAssetList(id)} tag='button' className='btn btn-ultra-dark text-center text-success'>
+            <ListGroupButton action onClick={() => props.showAssetList(id)} className='text-center text-success'>
               <i className='fa fa-plus fa-2x align-middle' />
               <span className='pl-2 h5'>add asset</span>
-            </ListGroupItem>
+            </ListGroupButton>
           </ListGroup>
         </Card>
       </Col>
@@ -197,20 +198,20 @@ const ModifyView = (props) => {
             </Col>
             <Col xs='6' md='4' className='text-center align-self-stretch'>
               <Card body className='h-100 px-3 py-2 justify-content-center'>
-                <div className='text-grey'>available to swap</div>
-                <div className='text-grey text-white'>{display.fiat(props.allowance.fiat)} / {display.percentage(props.allowance.weight)}</div>
+                <h3 className='text-primary'>{display.fiat(props.allowance.fiat)} / {display.percentage(props.allowance.weight)}</h3>
+                <h6 className='m-0'>available to swap</h6>
               </Card>
             </Col>
             <Col xs='6' md='2'>
               <Button color='faast' outline onClick={handleCancel} className='w-100'>cancel</Button>
             </Col>
             <Col xs='6' md='2'>
-              <Button color='faast' onClick={handleSave} className='w-100' disabled={Boolean(disableSaveMessage)}>save</Button>
+              <Button color='faast' onClick={handleSave} className='w-100' disabled={Boolean(disableSave)}>save</Button>
             </Col>
-            {disableSaveMessage && (
+            {typeof disableSave === 'string' && (
               <Col xs='12'>
                 <Alert color='danger' className='m-0 w-100 text-center'>
-                  {disableSaveMessage}
+                  {disableSave}
                 </Alert>
               </Col>
             )}

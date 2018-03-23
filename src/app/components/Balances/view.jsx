@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import {
   Row, Col, Table, Button, Alert, Collapse,
-  Card, CardBody
+  Card, CardHeader, CardBody
 } from 'reactstrap'
 import BigNumber from 'bignumber.js'
 import classNames from 'class-names'
@@ -175,7 +175,7 @@ const BalancesView = (props) => {
               }
               <Col xs='12'>
                 <Card>
-                  <CardBody className='grid-group'>
+                  <CardHeader className='grid-group'>
                     <Row className='gutter-3'>
                       {stats.map(({ title, value, colClass }, i) => (
                         <Col xs='6' lg='3' key={i} className={classNames('text-center', colClass)}>
@@ -186,7 +186,7 @@ const BalancesView = (props) => {
                         </Col>
                       ))}
                     </Row>
-                  </CardBody>
+                  </CardHeader>
                   <CardBody>
                     {addressProps.address && (
                       <div className='text-right px-3' style={{ lineHeight: 1 }}>
@@ -196,10 +196,6 @@ const BalancesView = (props) => {
                     )}
                     {pieChart}
                   </CardBody>
-                </Card>
-              </Col>
-              <Col xs='12'>
-                <Card>
                   <Table hover striped className={classNames(style.balanceTable, 'table-accordian')}>
                     <thead>
                       <tr>

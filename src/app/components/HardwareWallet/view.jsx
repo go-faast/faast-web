@@ -128,7 +128,7 @@ const ConnectionInstructions = ({ type }) => {
     <Row className='gutter-2 text-muted'>
       {instructions.map(({ icon, text }, i) => (
         <Col key={i} xs='12' md={(i === instructions.length - 1) ? true : '6'}>
-          <Card body className='h-100 flex-col-center'>
+          <Card body className='h-100 flex-col-center flat'>
             <i className={classNames('mb-2 fa fa-2x', icon)} />
             <div>{text}</div>
           </Card>
@@ -140,7 +140,7 @@ const ConnectionInstructions = ({ type }) => {
 
 const ConfirmAccountSelection = ({ address, balance, index, toggleAccountSelect }) => (
   <div className='flex-col-center'>
-    <Card body className='text-left my-3'>
+    <Card body color='dark' className='text-left my-3'>
       <h5>Account #{index + 1}
         <span className='float-right text-muted'>
           {typeof balance !== 'undefined'

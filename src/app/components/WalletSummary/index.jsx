@@ -16,7 +16,7 @@ export const WalletSummary = ({ icon, labelTag: LabelTag, wallet: { id, label, t
       <Row className='gutter-x-2 align-items-center justify-content-between'>
         {icon && (
           <Col xs='auto'>
-            <Icon width='1.25em' height='1.25em' src={iconUrl}/>
+            <Icon height='1.25em' src={iconUrl}/>
           </Col>
         )}
         <Col className='text-muted'>{typeLabel}</Col>
