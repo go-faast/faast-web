@@ -19,7 +19,13 @@ const Icon = ({ src, tag: Tag, inline, width, height, size: scale, rotate: rotat
     if (Tag === 'img') {
       props = { src, ...props }
     } else {
-      style = { backgroundImage: `url(${src})`, ...style }
+      style = {
+        backgroundImage: `url(${src})`,
+        backgroundSize: 'contain',
+        backgroundRepeat: 'no-repeat',
+        backgroundPosition: 'center',
+        ...style
+      }
     }
   } else {
     Tag = src
