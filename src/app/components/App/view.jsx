@@ -1,7 +1,6 @@
 import React from 'react'
 import { Switch, Route } from 'react-router-dom'
 import WalletClosed from 'Components/WalletClosed'
-import WalletOpened from 'Components/WalletOpened'
 import Access from 'Components/Access'
 import Balances from 'Components/Balances'
 import Modify from 'Components/Modify'
@@ -13,7 +12,7 @@ const AppView = () => {
       <WalletClosed exact path='/' />
       <Route path='/connect' component={Access} />
       <Route path='/balances' component={Balances} />
-      <WalletOpened path='/modify' component={Modify} />
+      <Route path='/modify' component={Modify} />
       <Route path='/address/:address' component={View} />
     </Switch>
   )

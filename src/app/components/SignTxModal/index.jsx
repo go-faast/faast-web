@@ -15,7 +15,7 @@ class SignTxModal extends Component {
     const { view, wallet } = props
     const { isBlockstack, type, nestedWallets } = wallet
     this.state = {
-      view: view || (isBlockstack ? 'blockstack' : (type === 'MultiWallet' ? nestedWallets[0].type : type)),
+      view: view || (isBlockstack ? 'blockstack' : (type === 'MultiWallet' && nestedWallets.length > 0 ? nestedWallets[0].type : type)),
       isSigning: false
     }
     this._handleCloseModal = this._handleCloseModal.bind(this)
