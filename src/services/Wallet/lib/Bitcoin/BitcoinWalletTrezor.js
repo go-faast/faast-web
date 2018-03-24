@@ -24,7 +24,7 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
 
   getAccountNumber = () => Number.parseInt(this.derivationPath.match(/(\d+)'$/)[1]) + 1;
 
-  getLabel = () => this.label || `Bitcoin${this.isLegacyAccount() ? 'legacy ' : ''} #${this.getAccountNumber()}`;
+  getLabel = () => this.label || `Bitcoin${this.isLegacyAccount() ? 'legacy ' : ''} account #${this.getAccountNumber()}`;
 
   static fromPath = (derivationPath = null) => {
     Trezor.setCurrency('BTC')
