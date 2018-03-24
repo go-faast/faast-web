@@ -21,6 +21,7 @@ import ArrowIcon from 'Components/ArrowIcon'
 import ListGroupButton from 'Components/ListGroupButton'
 import CoinIcon from 'Components/CoinIcon'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
+import IconLabel from 'Components/IconLabel'
 
 import styles from './style'
 
@@ -164,13 +165,14 @@ const ModifyView = (props) => {
   })
 
   const renderHoldings = (wallets) => wallets
-    .map(({ id, label, balancesLoaded, assetHoldings }) => (
+    .map(({ id, label, typeLabel, iconUrl, balancesLoaded, assetHoldings }) => (
       <Col xs='12' key={id}>
         <Card>
           <CardHeader>
             <Row className='gutter-3 align-items-center'>
               <Col>
                 <h4 className='m-0 lh-0'>{label}</h4>
+                <IconLabel label={typeLabel} icon={iconUrl}/>
               </Col>
               <Col xs='auto'>
                 <Button color='success' size='sm' className='flat' disabled={!balancesLoaded} onClick={() => props.showAssetList(id)}>
