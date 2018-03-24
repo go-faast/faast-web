@@ -1,15 +1,16 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import { setCurrentPortfolio, createNewPortfolio } from 'Actions/portfolio'
-import { getAllPortfolioIds, getCurrentPortfolioId } from 'Selectors'
+import { getAllPortfolioIds, getCurrentPortfolioId, getCurrentPortfolioLabel } from 'Selectors'
 import WalletSummary from 'Components/WalletSummary'
 
-const SelectPortfolioDropdown = ({ portfolioIds, currentPortfolioId, changePortfolio, createPortfolio }) => (
-  <UncontrolledDropdown>
-    <DropdownToggle caret color='faast'>
-      Select Portfolio
+const SelectPortfolioDropdown = ({ portfolioIds, currentPortfolioId, currentPortfolioLabel, changePortfolio, createPortfolio, showCreatePortfolio, togglerProps, ...props }) => (
+  <UncontrolledDropdown {...props}>
+    <DropdownToggle caret {...togglerProps}>
+      {currentPortfolioLabel}
     </DropdownToggle>
     <DropdownMenu>
       {portfolioIds.map((portfolioId) => (
@@ -17,15 +18,28 @@ const SelectPortfolioDropdown = ({ portfolioIds, currentPortfolioId, changePortf
           <WalletSummary.Connected id={portfolioId}/>
         </DropdownItem>
       ))}
-      <DropdownItem divider />
-      <DropdownItem onClick={() => createPortfolio(true)}><h6 className='my-0 font-weight-normal'>+ add portfolio</h6></DropdownItem>
+      {showCreatePortfolio && ([
+        <DropdownItem key='1' divider />,
+        <DropdownItem key='2' onClick={() => createPortfolio(true)}>
+          <small className='m-0 font-weight-normal text-primary'><i className='fa fa-plus'/> add portfolio</small>
+        </DropdownItem>
+      ])}
     </DropdownMenu>
   </UncontrolledDropdown>
 )
 
+SelectPortfolioDropdown.propTypes = {
+  showCreatePortfolio: PropTypes.bool,
+}
+
+SelectPortfolioDropdown.defaulProps = {
+  showCreatePortfolio: false
+}
+
 const mapStateToProps = createStructuredSelector({
   portfolioIds: getAllPortfolioIds,
   currentPortfolioId: getCurrentPortfolioId,
+  currentPortfolioLabel: getCurrentPortfolioLabel
 })
 
 const mapDispatchToProps = {

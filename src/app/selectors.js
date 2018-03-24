@@ -144,6 +144,7 @@ export const getCurrentPortfolioWithHoldings = wrapSelectorArgs(getWalletWithHol
 export const areCurrentPortfolioHoldingsLoaded = wrapSelectorArgs(areWalletHoldingsLoaded, getCurrentPortfolioId)
 export const getCurrentPortfolioHoldingsError = wrapSelectorArgs(getWalletHoldingsError, getCurrentPortfolioId)
 export const getCurrentPortfolioWalletIds = createSelector(getCurrentPortfolio, ({ nestedWalletIds }) => nestedWalletIds)
+export const getCurrentPortfolioLabel = createSelector(getCurrentPortfolio, ({ label }) => label)
 
 export const getCurrentPortfolioWithWalletHoldings = (state) => {
   const currentPortfolio = getCurrentPortfolioWithHoldings(state)

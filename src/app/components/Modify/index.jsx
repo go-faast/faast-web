@@ -31,18 +31,20 @@ const filterAdjustedHoldings = (holdingsByWalletId) => {
 
 const flatten = (arrays) => arrays.reduce((flat, array) => flat.concat(array), [])
 
+const initialState = {
+  allowance: {
+    fiat: ZERO,
+    weight: ZERO
+  },
+  isAssetListOpen: false,
+  assetListWalletId: '',
+  holdings: {},
+}
+
 class Modify extends Component {
   constructor () {
     super()
-    this.state = {
-      allowance: {
-        fiat: ZERO,
-        weight: ZERO
-      },
-      isAssetListOpen: false,
-      assetListWalletId: '',
-      holdings: {},
-    }
+    this.state = initialState
     this._assetItem = this._assetItem.bind(this)
     this._handleSlider = this._handleSlider.bind(this)
     this._handleFiatChange = this._handleFiatChange.bind(this)
@@ -56,15 +58,27 @@ class Modify extends Component {
     this._handleCancel = this._handleCancel.bind(this)
   }
 
-  componentWillMount () {
-    const holdings = this.props.portfolio.nestedWallets
+  init = (props) => {
+    const holdings = props.portfolio.nestedWallets
       .reduce((byWalletId, { id, assetHoldings }) => ({
         ...byWalletId,
-        [id]: assetHoldings
+        [id]: byWalletId[id] || assetHoldings // Don't overwrite adjusted holdings
           .filter(({ shown }) => shown)
           .map((asset) => this._assetItem(id, asset))
-      }), {})
+      }), this.state.holdings)
     this.setState({ holdings })
+  }
+
+  componentWillMount () {
+    this.init(this.props)
+  }
+
+  componentWillReceiveProps (nextProps) {
+    const { id: currentId } = this.props.portfolio
+    const { id: nextId } = nextProps.portfolio
+    if (currentId !== nextId) {
+      this.init(nextProps)
+    }
   }
 
   _assetItem (walletId, asset) {
@@ -307,7 +321,10 @@ class Modify extends Component {
     const { holdings, assetListWalletId, allowance } = this.state
     const adjustedPortfolio = {
       ...portfolio,
-      nestedWallets: portfolio.nestedWallets.map((nestedWallet) => ({ ...nestedWallet, assetHoldings: holdings[nestedWallet.id] }))
+      nestedWallets: portfolio.nestedWallets.map((nestedWallet) => ({
+        ...nestedWallet,
+        assetHoldings: holdings[nestedWallet.id] || nestedWallet.assetHoldings
+      }))
     }
     const sliderProps = {
       max: portfolio.totalFiat.toNumber(),

@@ -2,7 +2,7 @@ import React from 'react'
 import {
   Container, Row, Col, Button, Alert, Modal,
   Card, CardHeader, ListGroup, ListGroupItem,
-  Navbar
+  Navbar, Nav
 } from 'reactstrap'
 import accounting from 'accounting'
 import { RIENumber } from 'riek'
@@ -14,7 +14,7 @@ import Slider from 'Components/Slider'
 import AssetList from 'Components/AssetList'
 import SignTxModal from 'Components/SignTxModal'
 import Units from 'Components/Units'
-import WalletSummary from 'Components/WalletSummary'
+import SelectPortfolioDropdown from 'Components/SelectPortfolioDropdown'
 import Overlay from 'Components/Overlay'
 import ArrowIcon from 'Components/ArrowIcon'
 import ListGroupButton from 'Components/ListGroupButton'
@@ -54,22 +54,22 @@ const ModifyView = (props) => {
         <Row className='gutter-x-3 align-items-center'>
           <Col xs lg='4' xl='5' className='order-1'>
             <Row className='gutter-3 align-items-center'>
-              <Col xs='3' md='2' lg='auto' className='text-center text-md-right'>
+              <Col xs='auto' className='text-right'>
                 <CoinIcon symbol={symbol} />
               </Col>
               <Col xs='auto'><h5 className='m-0'>{name}</h5></Col>
             </Row>
             <Row className='gutter-x-3 my-3 align-items-center'>
-              <Col xs='3' md='2' lg='auto'>
+              <Col xs='auto' className='text-right'>
                 <ArrowIcon dir={changeIconDirection} size='md' color={changeColor} className='mx-auto mr-md-0' />
               </Col>
               <Col xs='4' md='3' lg>
-                <div className='text-grey'>24h change</div>
-                <div className={`text-medium text-${changeColor}`}>{percentChange24}</div>
+                <div className={`h5 m-0 text-${changeColor}`}>{percentChange24}</div>
+                <small className='text-muted font-weight-light'>24h change</small>
               </Col>
               <Col>
-                <div className='text-grey'>current price</div>
-                <div className='text-medium text-white'>{fiatPrice}</div>
+                <div className='h5 m-0'>{fiatPrice}</div>
+                <small className='text-muted font-weight-light'>current price</small>
               </Col>
             </Row>
           </Col>
@@ -78,13 +78,13 @@ const ModifyView = (props) => {
               <Col xs='12' md='2' lg='auto'>
                 <Row className='gutter-3 flex-md-column'>
                   <Col xs='3' md='12'>&nbsp;</Col>
-                  <Col xs='4' md='12' className='text-grey text-md-right'>Before</Col>
-                  <Col xs='5' md='12' className='text-grey text-md-right'>After</Col>
+                  <Col xs='4' md='12' className='text-muted text-md-right'>Before</Col>
+                  <Col xs='5' md='12' className='text-muted text-md-right'>After</Col>
                 </Row>
               </Col>
               <Col xs='12' md='3' lg>
                 <Row className='gutter-3 flex-md-column'>
-                  <Col xs='3' md='12' className='text-grey text-right text-md-left'>Value</Col>
+                  <Col xs='3' md='12' className='text-muted text-right text-md-left'>Value</Col>
                   <Col xs='4' md='12'>{originalFiat}</Col>
                   <Col xs='5' md='12'>
                     {disabled ? (
@@ -108,7 +108,7 @@ const ModifyView = (props) => {
               </Col>
               <Col xs='12' md='3' lg>
                 <Row className="gutter-3 flex-md-column">
-                  <Col xs='3' md='12' className='text-grey text-right text-md-left'>Weight</Col>
+                  <Col xs='3' md='12' className='text-muted text-right text-md-left'>Weight</Col>
                   <Col xs='4' md='12'>{originalWeight}</Col>
                   <Col xs='5' md='12'>
                     {disabled ? (
@@ -133,7 +133,7 @@ const ModifyView = (props) => {
               </Col>
               <Col xs='12' md>
                 <Row className="gutter-3 flex-md-column">
-                  <Col xs='3' md='12' className='text-grey text-right text-md-left'>Units</Col>
+                  <Col xs='3' md='12' className='text-muted text-right text-md-left'>Units</Col>
                   <Col xs='4' md='12'>{originalUnits}</Col>
                   <Col xs='5' md='12'>{adjustedUnits}</Col>
                 </Row>
@@ -187,33 +187,27 @@ const ModifyView = (props) => {
     ))
 
   const secondNavbar = (
-    <Navbar color='ultra-dark' dark fixed='top'>
+    <Navbar color='ultra-dark' dark fixed='top' expand='md'>
       <Container className='d-block'>
-        <Row className='gutter-x-3 align-items-center text-center'>
-          {portfolio.id !== 'default' && (
-            <Col xs='6' md='2'>
-              <h4 className='m-0 font-weight-light'>{portfolio.label}</h4>
-              <small className='text-muted'>current portfolio</small>
-            </Col>
-          )}
-          <Col xs='6' md>
-            <h4 className='m-0 font-weight-light'>{display.fiat(portfolio.totalFiat)}</h4>
-            <small className='text-muted'>total balance</small>
+        <Row className='gutter-3 justify-content-left align-items-center'>
+          <Col xs='auto'>
+            <SelectPortfolioDropdown togglerProps={{ color: 'link-plain', block: true, className: 'm-0 h4 font-weight-light' }} inNavbar/>
+            <div className='text-muted font-weight-light'>{display.fiat(portfolio.totalFiat)}</div>
           </Col>
-          <Col xs='6' md='4'>
-            <h4 className='text-primary m-0'>{display.fiat(props.allowance.fiat)} / {display.percentage(props.allowance.weight)}</h4>
-            <small className='text-muted'>available to swap</small>
+          <Col xs='auto' className='text-right ml-auto'>
+            <h4 className='m-0 text-primary font-weight-bold'>{display.fiat(props.allowance.fiat)} <small className='text-muted'>{display.percentage(props.allowance.weight)}</small></h4>
+            <small className='text-muted font-weight-light'>available to swap</small>
           </Col>
-          <Col xs='6' md='2'>
-            <Button color='faast' outline onClick={handleCancel} className='w-100'>cancel</Button>
+          <Col xs='auto'>
+            <Button color='primary' outline onClick={handleCancel}>Cancel</Button>
           </Col>
-          <Col xs='6' md='2'>
-            <Button color='faast' onClick={handleSave} className='w-100' disabled={Boolean(disableSave)}>save</Button>
+          <Col xs='auto'>
+            <Button color='primary' onClick={handleSave} disabled={Boolean(disableSave)}>Save</Button>
           </Col>
           {typeof disableSave === 'string' && (
             <Col xs='12'>
               <Alert color='danger' className='m-0 w-100 text-center'>
-                {disableSave}
+                <i className='fa fa-exclamation-triangle mr-2'/>{disableSave}
               </Alert>
             </Col>
           )}
@@ -223,12 +217,10 @@ const ModifyView = (props) => {
   )
 
   return (
-    <Layout tag='div' afterNav={secondNavbar}>
-      <Container className='p-0 p-md-3'>
-        <Row className='gutter-x-0 gutter-y-3'>
-          {renderHoldings(portfolio.nestedWallets)}
-        </Row>
-      </Container>
+    <Layout className='pt-3 px-0 px-md-3' afterNav={secondNavbar} navbarProps={{ className: 'flat' }}>
+      <Row className='gutter-x-0 gutter-y-3'>
+        {renderHoldings(portfolio.nestedWallets)}
+      </Row>
       <Modal size='lg' center isOpen={props.isAssetListOpen} toggle={props.toggleAssetList} className='m-0 mx-md-auto' contentClassName='p-0'>
         <AssetList {...props.assetListProps} />
       </Modal>

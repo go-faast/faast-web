@@ -35,7 +35,7 @@ export default class AppNavbar extends React.Component {
     return (
       <Navbar color='ultra-dark' dark expand='md' fixed='top' {...props}>
         <Container>
-          <NavbarBrand tag={Link} to='/'><Icon src={FaastLogo} height='1.5rem' width='1.5rem' inline/> Faast Portfolio <sup className='beta-tag'>beta</sup></NavbarBrand>
+          <NavbarBrand tag={Link} to='/'><Icon src={FaastLogo} height='1.5rem' width='1.5rem' inline className='ml-3_4r mr-3_2r'/>Faast Portfolio <sup className='beta-tag'>beta</sup></NavbarBrand>
           <NavbarToggler onClick={toggle} />
           <Collapse isOpen={isOpen} navbar>
             <Nav className='ml-auto' navbar>
