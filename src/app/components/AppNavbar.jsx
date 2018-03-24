@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   Container,
-  Collapse,
+//  Collapse,
   Navbar,
 //  NavbarToggler,
   NavbarBrand,
@@ -35,11 +35,8 @@ class AppNavbar extends React.Component {
     return (
       <Navbar color='ultra-dark' dark fixed='top' {...props}>
         <Container>
-          <NavbarBrand tag={Link} to='/' className='expand-only'>
-            <Icon src={FaastLogo} height='1.5rem' width='1.5rem' inline className='ml-3_4r mr-3_2r'/>Faast Portfolio <sup className='beta-tag'>beta</sup>
-          </NavbarBrand>
-          <NavbarBrand tag={Link} to='/' className='collapse-only'>
-            <i className='fa fa-arrow-left ml-3_4r mr-3_2r'/>Page
+          <NavbarBrand tag={Link} to='/'>
+            <Icon src={FaastLogo} height='1.5rem' width='1.5rem' inline className='mx-3'/>Faast Portfolio <sup className='beta-tag'>beta</sup>
           </NavbarBrand>
           {/*<NavbarToggler onClick={toggle} />*/}
           {/*<Collapse isOpen={isOpen} navbar>*/}
@@ -59,7 +56,7 @@ class AppNavbar extends React.Component {
               <NavItem>
                 <NavLink tag={RouterNavLink} to='/modify/'>
                   <i className='nav-link-icon fa fa-exchange'/>
-                  <span className='nav-link-label'>Swap</span>
+                  <span className='nav-link-label d-none d-xs-inline'>Swap</span>
                 </NavLink>
               </NavItem>
             </Nav>
