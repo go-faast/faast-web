@@ -31,6 +31,9 @@ const filterAdjustedHoldings = (holdingsByWalletId) => {
 
 const flatten = (arrays) => arrays.reduce((flat, array) => flat.concat(array), [])
 
+const countLoadedWallets = (portfolio) => portfolio.nestedWallets
+  .reduce((total, { balancesLoaded }) => balancesLoaded ? total + 1 : total, 0)
+
 const initialState = {
   allowance: {
     fiat: ZERO,
@@ -38,7 +41,8 @@ const initialState = {
   },
   isAssetListOpen: false,
   assetListWalletId: '',
-  holdings: {},
+  walletBalancesLoaded: {}, // By walletId
+  holdings: {}, // By walletId
 }
 
 class Modify extends Component {
@@ -59,14 +63,20 @@ class Modify extends Component {
   }
 
   init = (props) => {
-    const holdings = props.portfolio.nestedWallets
-      .reduce((byWalletId, { id, assetHoldings }) => ({
-        ...byWalletId,
-        [id]: byWalletId[id] || assetHoldings // Don't overwrite adjusted holdings
+    const { portfolio } = props
+    const walletHoldings = { ...this.state.holdings }
+    const walletBalancesLoaded = { ...this.state.walletBalancesLoaded }
+    portfolio.nestedWallets.forEach(({ id, balancesLoaded, assetHoldings }) => {
+      const alreadyLoaded = walletBalancesLoaded[id]
+      if (!alreadyLoaded) {
+        // Only update holdings if balances weren't already loaded to avoid overwriting existing adjustments
+        walletHoldings[id] = assetHoldings
           .filter(({ shown }) => shown)
           .map((asset) => this._assetItem(id, asset))
-      }), this.state.holdings)
-    this.setState({ holdings })
+        walletBalancesLoaded[id] = balancesLoaded
+      }
+    })
+    this.setState({ holdings: walletHoldings, walletBalancesLoaded })
   }
 
   componentWillMount () {
@@ -74,16 +84,17 @@ class Modify extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
-    const { id: currentId } = this.props.portfolio
-    const { id: nextId } = nextProps.portfolio
-    if (currentId !== nextId) {
+    const { portfolio: currentPortfolio } = this.props
+    const { portfolio: nextPortfolio } = nextProps
+    if (currentPortfolio.id !== nextPortfolio.id
+      || countLoadedWallets(currentPortfolio) !== countLoadedWallets(nextPortfolio)) {
       this.init(nextProps)
     }
   }
 
   _assetItem (walletId, asset) {
     const weight = asset.percentage || ZERO
-    const value = asset.fiat || ZERO
+    const fiat = asset.fiat || ZERO
     const units = asset.balance || ZERO
     return {
       ...asset,
@@ -95,8 +106,8 @@ class Modify extends Component {
         adjusted: weight
       },
       fiat: {
-        original: value,
-        adjusted: value
+        original: fiat,
+        adjusted: fiat,
       },
       units: {
         original: units,
@@ -323,7 +334,7 @@ class Modify extends Component {
       ...portfolio,
       nestedWallets: portfolio.nestedWallets.map((nestedWallet) => ({
         ...nestedWallet,
-        assetHoldings: holdings[nestedWallet.id] || nestedWallet.assetHoldings
+        assetHoldings: holdings[nestedWallet.id] || []
       }))
     }
     const sliderProps = {

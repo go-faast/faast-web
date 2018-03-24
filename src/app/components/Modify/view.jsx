@@ -2,10 +2,11 @@ import React from 'react'
 import {
   Container, Row, Col, Button, Alert, Modal,
   Card, CardHeader, ListGroup, ListGroupItem,
-  Navbar, Nav
+  Navbar
 } from 'reactstrap'
 import accounting from 'accounting'
 import { RIENumber } from 'riek'
+import { Link } from 'react-router-dom'
 
 import display from 'Utilities/display'
 
@@ -19,6 +20,7 @@ import Overlay from 'Components/Overlay'
 import ArrowIcon from 'Components/ArrowIcon'
 import ListGroupButton from 'Components/ListGroupButton'
 import CoinIcon from 'Components/CoinIcon'
+import LoadingFullscreen from 'Components/LoadingFullscreen'
 
 import styles from './style'
 
@@ -55,15 +57,15 @@ const ModifyView = (props) => {
           <Col xs lg='4' xl='5' className='order-1'>
             <Row className='gutter-3 align-items-center'>
               <Col xs='auto' className='text-right'>
-                <CoinIcon symbol={symbol} />
+                <CoinIcon size='md' symbol={symbol} />
               </Col>
               <Col xs='auto'><h5 className='m-0'>{name}</h5></Col>
             </Row>
             <Row className='gutter-x-3 my-3 align-items-center'>
               <Col xs='auto' className='text-right'>
-                <ArrowIcon dir={changeIconDirection} size='md' color={changeColor} className='mx-auto mr-md-0' />
+                <ArrowIcon size='md' dir={changeIconDirection} color={changeColor} />
               </Col>
-              <Col xs='4' md='3' lg>
+              <Col xs='auto'>
                 <div className={`h5 m-0 text-${changeColor}`}>{percentChange24}</div>
                 <small className='text-muted font-weight-light'>24h change</small>
               </Col>
@@ -160,7 +162,7 @@ const ModifyView = (props) => {
   })
 
   const renderHoldings = (wallets) => wallets
-    .map(({ id, label, assetHoldings }) => (
+    .map(({ id, label, balancesLoaded, assetHoldings }) => (
       <Col xs='12' key={id}>
         <Card>
           <CardHeader>
@@ -169,13 +171,14 @@ const ModifyView = (props) => {
                 <h4 className='m-0 lh-0'>{label}</h4>
               </Col>
               <Col xs='auto'>
-                <Button color='success' size='sm' className='flat' onClick={() => props.showAssetList(id)}>
+                <Button color='success' size='sm' className='flat' disabled={!balancesLoaded} onClick={() => props.showAssetList(id)}>
                   <i className='fa fa-plus'/> add asset
                 </Button>
               </Col>
             </Row>
           </CardHeader>
           <ListGroup>
+            {!balancesLoaded && (<LoadingFullscreen center/>)}
             {renderAssetRows(assetHoldings.filter(({ shown }) => shown))}
             <ListGroupButton action onClick={() => props.showAssetList(id)} className='text-center text-success'>
               <i className='fa fa-plus fa-2x align-middle' />
@@ -189,20 +192,20 @@ const ModifyView = (props) => {
   const secondNavbar = (
     <Navbar color='ultra-dark' dark fixed='top' expand='md'>
       <Container className='d-block'>
-        <Row className='gutter-3 justify-content-left align-items-center'>
-          <Col xs='auto'>
+        <Row className='px-3_4r gutter-2 gutter-md-3 justify-content-left align-items-center'>
+          <Col xs='auto' className='expand-only'>
             <SelectPortfolioDropdown togglerProps={{ color: 'link-plain', block: true, className: 'm-0 h4 font-weight-light' }} inNavbar/>
             <div className='text-muted font-weight-light'>{display.fiat(portfolio.totalFiat)}</div>
           </Col>
-          <Col xs='auto' className='text-right ml-auto'>
+          <Col xs='auto' className='text-left text-md-right mr-auto mr-md-0 ml-0 ml-md-auto'>
             <h4 className='m-0 text-primary font-weight-bold'>{display.fiat(props.allowance.fiat)} <small className='text-muted'>{display.percentage(props.allowance.weight)}</small></h4>
             <small className='text-muted font-weight-light'>available to swap</small>
           </Col>
           <Col xs='auto'>
-            <Button color='primary' outline onClick={handleCancel}>Cancel</Button>
+            <Button color='primary' outline onClick={handleCancel} className='flat'>Cancel</Button>
           </Col>
           <Col xs='auto'>
-            <Button color='primary' onClick={handleSave} disabled={Boolean(disableSave)}><i className='fa fa-check mr-2'/>Save</Button>
+            <Button color='primary' onClick={handleSave} disabled={Boolean(disableSave)} className='flat'><i className='fa fa-check mr-2'/>Save</Button>
           </Col>
           {typeof disableSave === 'string' && (
             <Col xs='12'>
@@ -218,9 +221,15 @@ const ModifyView = (props) => {
 
   return (
     <Layout className='pt-3 px-0 px-md-3' navbarProps={{ className: 'flat' }} afterNav={secondNavbar}>
+    {(portfolio.nestedWallets.length === 0) ? (
+      <Alert color='info' className='text-center w-100'>
+        This portfolio is empty. To begin swapping you must <Link to='/connect' className='alert-link'>add a wallet</Link> first.
+      </Alert>
+    ) : (
       <Row className='gutter-x-0 gutter-y-3'>
         {renderHoldings(portfolio.nestedWallets)}
       </Row>
+    )}
       <Modal size='lg' center isOpen={props.isAssetListOpen} toggle={props.toggleAssetList} className='m-0 mx-md-auto' contentClassName='p-0'>
         <AssetList {...props.assetListProps} />
       </Modal>
