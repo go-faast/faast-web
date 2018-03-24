@@ -61,15 +61,17 @@ const ModifyView = (props) => {
               </Col>
               <Col xs='auto'><h5 className='m-0'>{name}</h5></Col>
             </Row>
-            <Row className='gutter-x-3 my-3 align-items-center'>
-              <Col xs='auto' className='text-right'>
-                <ArrowIcon size='md' dir={changeIconDirection} color={changeColor} />
+            <Row className='gutter-x-4 my-3 align-items-center'>
+              <Col xs='auto'>
+                <Row className='gutter-3 align-items-center'>
+                  <Col xs='auto'><ArrowIcon size='md' dir={changeIconDirection} color={changeColor} /></Col>
+                  <Col>
+                    <div className={`h5 m-0 text-${changeColor}`}>{percentChange24}</div>
+                    <small className='text-muted font-weight-light'>24h change</small>
+                  </Col>
+                </Row>
               </Col>
               <Col xs='auto'>
-                <div className={`h5 m-0 text-${changeColor}`}>{percentChange24}</div>
-                <small className='text-muted font-weight-light'>24h change</small>
-              </Col>
-              <Col>
                 <div className='h5 m-0'>{fiatPrice}</div>
                 <small className='text-muted font-weight-light'>current price</small>
               </Col>
