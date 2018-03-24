@@ -4,7 +4,7 @@ import { Row, Col } from 'reactstrap'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 
-import Icon from 'Components/Icon'
+import IconLabel from 'Components/IconLabel'
 import Spinner from 'Components/Spinner'
 import { getWalletWithHoldings } from 'Selectors'
 import display from 'Utilities/display'
@@ -13,10 +13,7 @@ export const WalletSummary = ({ icon, labelClass, wallet: { id, label, typeLabel
   <Row className='gutter-0 font-weight-light'>
     <Col xs='12' className={labelClass}>{id === 'default' ? (<i>{label}</i>) : label}</Col>
     <Col>
-      <small className='text-muted'>
-        {icon && (<Icon height='1.25em' src={iconUrl} inline className='mr-2'/>)}
-        {typeLabel}
-      </small>
+      <IconLabel label={typeLabel} icon={icon && iconUrl}/>
     </Col>
     <Col xs='auto'>
       {balancesLoaded
