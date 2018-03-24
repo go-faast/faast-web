@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
-import style from './style'
 
 const Overlay = ({ tag: Tag, children, className, ...props }) => (
-  <Tag className={classNames(style.overlay, className)} {...props}>
+  <Tag className={classNames('overlay', className)} {...props}>
     {children}
   </Tag>
 )

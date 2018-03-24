@@ -4,6 +4,18 @@ import { Modal, ModalBody, ModalHeader, ModalFooter, Form, FormGroup, Input, Lab
 import { Field, reduxForm } from 'redux-form'
 import { Button } from 'reactstrap'
 
+const getAcks = ({ isNewWallet, walletName }) => [
+  `The ${walletName} file can used to send any funds it contains.`,
+  `The ${walletName} file contains a sensitive private key that is encrypted and can only be accessed using the password I entered.`,
+  ...(isNewWallet ? [
+    `Faast does not have a backup of the file or password. This ${walletName} was generated in my web browser and was never sent over the internet.`,
+    'If I lose access to the file or forget the password I forfeit all funds it contains.',
+    'I have downloaded and stored this file in a secure location on my computer.',
+  ] : [
+    `The ${walletName} file, in combination with my password, can be used to send funds using applications other than Faast.`,
+  ])
+]
+
 const CreateWalletModalView = (props) => {
   const renderView = () => {
     switch (props.view) {
@@ -177,18 +189,6 @@ ImportWalletForm.propTypes = {
 ImportWalletForm = reduxForm({
   form: 'importWalletFor'
 })(ImportWalletForm)
-
-const getAcks = ({ isNewWallet, walletName }) => [
-  `The ${walletName} file can used to send any funds it contains.`,
-  `The ${walletName} file contains a sensitive private key that is encrypted and can only be accessed using the password I entered.`,
-  ...(isNewWallet ? [
-    `Faast does not have a backup of the file or password. This ${walletName} was generated in my web browser and was never sent over the internet.`,
-    'If I lose access to the file or forget the password I forfeit all funds it contains.',
-    'I have downloaded and stored this file in a secure location on my computer.',
-  ] : [
-    `The ${walletName} file, in combination with my password, can be used to send funds using applications other than Faast.`,
-  ])
-]
 
 let DownloadKeystoreForm = ({ handleSubmit, handleCancel, handleDownload, downloaded, isNewWallet, walletName }) => (
   <Form onSubmit={handleSubmit}>

@@ -4,13 +4,14 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
 import Layout from 'Components/Layout'
-import Keystore from 'Components/Keystore'
-import Web3Wallet from 'Components/Web3Wallet'
-import CreateWallet from 'Components/CreateWallet'
-import HardwareWallet from 'Components/HardwareWallet'
-import Blockstack from 'Components/Blockstack'
 import CoinIcon from 'Components/CoinIcon'
 import AddressSearch from 'Components/AddressSearch'
+
+import Web3Wallet from './Web3Wallet'
+import Blockstack from './Blockstack'
+import CreateWallet from './CreateWallet'
+import ImportKeystore from './ImportKeystore'
+import HardwareWallet from './HardwareWallet'
 
 import { isDefaultPortfolioEmpty } from 'Selectors'
 
@@ -37,7 +38,7 @@ const Access = () => (
     <h4 className='text-muted'>Manual</h4>
     <TileRow>
       <TileCol><CreateWallet /></TileCol>
-      <TileCol><Keystore /></TileCol>
+      <TileCol><ImportKeystore /></TileCol>
       <div className='w-100'/>
       <Col xs='9' sm='12' md='8' lg='6'><AddressSearch /></Col>
     </TileRow>

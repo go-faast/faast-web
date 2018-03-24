@@ -1,11 +1,15 @@
 import React from 'react'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import Dropzone from 'react-dropzone'
-import AccessTile from 'Components/AccessTile'
+
+import { openKeystoreFileWallet } from 'Actions/access'
+
 import CoinIcon from 'Components/CoinIcon'
 
-const KeystoreView = (props) => (
-  <Dropzone className='p-0' multiple={false} onDrop={props.handleDrop}>
+import AccessTile from './AccessTile'
+
+const ImportKeystore = ({ handleDrop }) => (
+  <Dropzone className='p-0' multiple={false} onDrop={handleDrop}>
     <AccessTile className='border-dashed'>
       <h5 className='text-primary'><i className='fa fa-sign-in mr-2'/>Import wallet</h5>
       <h6>Drag and drop your keystore file</h6>
@@ -14,8 +18,8 @@ const KeystoreView = (props) => (
   </Dropzone>
 )
 
-KeystoreView.propTypes = {
-  handleDrop: PropTypes.func.isRequired
+const mapDispatchToProps = {
+  handleDrop: openKeystoreFileWallet,
 }
 
-export default KeystoreView
+export default connect(null, mapDispatchToProps)(ImportKeystore)

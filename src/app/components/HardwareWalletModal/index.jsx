@@ -2,19 +2,22 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import HardwareWalletView from './view'
+
+import config from 'Config'
 import toastr from 'Utilities/toastrWrapper'
 import { timer } from 'Utilities/helpers'
 import { setStatePromise } from 'Utilities/reactFuncs'
 import { toMainDenomination } from 'Utilities/convert'
 import log from 'Utilities/log'
 import { closeTrezorWindow } from 'Utilities/wallet'
-import config from 'Config'
+
 import { openWallet } from 'Actions/portfolio'
-import { mockAddress } from 'Actions/mock'
+
 import web3 from 'Services/Web3'
 import { EthereumWalletLedger, EthereumWalletTrezor, BitcoinWalletTrezor } from 'Services/Wallet'
 import Trezor from 'Services/Trezor'
+
+import HardwareWalletModalView from './view'
 
 const CONNECT_SECONDS = 6
 const ADDRESS_GROUP_SIZE = 5
@@ -22,7 +25,6 @@ let hwConnectTimer
 let hwConnectTimerTimeout
 
 const initialState = {
-  showModal: false,
   showAddressSelect: false,
   accounts: [],
   selectedPage: 0,
@@ -32,7 +34,7 @@ const initialState = {
   getAddress: () => Promise.resolve(),
 }
 
-class HardwareWallet extends Component {
+class HardwareWalletModal extends Component {
   constructor (props) {
     super(props)
     this.state = Object.assign({}, initialState, {
@@ -55,11 +57,11 @@ class HardwareWallet extends Component {
     this._mergeAccountState = this._mergeAccountState.bind(this)
   }
 
-  componentDidUpdate (prevProps, prevState) {
-    if (!prevState.showModal && this.state.showModal) {
+  componentDidUpdate (prevProps) {
+    if (!prevProps.isOpen && this.props.isOpen) {
       this._connect()
     }
-    if (prevState.showModal && !this.state.showModal) {
+    if (prevProps.isOpen && !this.props.isOpen) {
       this._clearAsync()
     }
   }
@@ -69,18 +71,24 @@ class HardwareWallet extends Component {
   }
 
   _handleOpenModal () {
-    this.setState({ showModal: true })
+    this.props.setOpen(true)
   }
 
   _handleToggleModal () {
-    this.setState({ showModal: !this.state.showModal })
+    if (this.props.isOpen) {
+      this._handleCloseModal()
+    } else {
+      this._handleOpenModal()
+    }
   }
 
   _handleCloseModal () {
     closeTrezorWindow()
-    this.setState(Object.assign({}, initialState, {
+    this.props.setOpen(false)
+    this.setState({
+      ...initialState,
       derivationPath: config.hdDerivationPath[this.props.type]
-    }))
+    })
   }
 
   _handleToggleAddressSelect () {
@@ -101,14 +109,6 @@ class HardwareWallet extends Component {
     this.setState({
       seconds: CONNECT_SECONDS
     })
-
-    const { derivationPath } = this.state
-    if (this.props.mock.mocking && Array.isArray(this.props.mock.hw) && this.props.mock.hw.includes(type)) {
-      return window.setTimeout(() => {
-        this.setState({ commStatus: 'connected', getAddress: (i) => Promise.resolve(this.props.mockAddress(derivationPath, i)) })
-        this._getAddresses()
-      }, 3000)
-    }
 
     if (type === 'ledger') this._connectLedger()
     if (type === 'trezor') this._connectTrezor()
@@ -233,17 +233,17 @@ class HardwareWallet extends Component {
     const { accounts, derivationPath, selectedIndex } = this.state
     const { address } = accounts[selectedIndex]
     const addressPath = `${derivationPath}/${selectedIndex}`
-    const { type, openWallet, routerPush, mock: { mocking: isMocking } } = this.props
+    const { type, openWallet, routerPush } = this.props
     let wallet
     if (type === 'ledger') {
       wallet = new EthereumWalletLedger(address, addressPath)
-      openWallet(wallet, isMocking)
+      openWallet(wallet)
         .then(() => routerPush('/balances'))
     } else if (type === 'trezor') {
       wallet = new EthereumWalletTrezor(address, addressPath)
       BitcoinWalletTrezor.fromPath()
-        .then((bitcoinWallet) => openWallet(bitcoinWallet, isMocking))
-        .then(() => openWallet(wallet, isMocking))
+        .then((bitcoinWallet) => openWallet(bitcoinWallet))
+        .then(() => openWallet(wallet))
         .then(() => closeTrezorWindow())
         .then(() => routerPush('/balances'))
     } else {
@@ -255,15 +255,15 @@ class HardwareWallet extends Component {
   render () {
     const {
       selectedPage, selectedIndex, accounts, commStatus, seconds, derivationPath,
-      showAddressSelect, showModal
+      showAddressSelect
     } = this.state
     const startIndex = selectedPage * ADDRESS_GROUP_SIZE
     const endIndex = startIndex + (ADDRESS_GROUP_SIZE - 1)
     const selectedPageAccounts = accounts.slice(startIndex, endIndex + 1).map((a, i) => ({ ...a, index: startIndex + i }))
     const selectedAccount = accounts[selectedIndex] || {}
     const { address, balance } = selectedAccount
-    const modalProps = {
-      isOpen: showModal,
+    const viewProps = {
+      handleOpen: this._handleOpenModal,
       handleToggle: this._handleToggleModal,
       handleClose: this._handleCloseModal,
       confirmAccountSelection: this._handleConfirmAccountSelection,
@@ -295,27 +295,28 @@ class HardwareWallet extends Component {
       }
     }
     return (
-      <HardwareWalletView
-        handleClick={this._handleOpenModal}
-        modalProps={modalProps}
+      <HardwareWalletModalView
         {...this.props}
+        {...viewProps}
       />
     )
   }
 }
 
-const mapStateToProps = (state) => ({
-  mock: state.mock
-})
-
 const mapDispatchToProps = {
   openWallet,
-  mockAddress,
   routerPush: push,
 }
 
-HardwareWallet.propTypes = {
+HardwareWalletModal.propTypes = {
   type: PropTypes.string.isRequired,
+  name: PropTypes.string.isRequired,
+  instructions: PropTypes.arrayOf(PropTypes.shape({
+    icon: PropTypes.string,
+    text: PropTypes.node
+  })).isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  setOpen: PropTypes.func.isRequired
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(HardwareWallet)
+export default connect(null, mapDispatchToProps)(HardwareWalletModal)

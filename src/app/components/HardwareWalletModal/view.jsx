@@ -3,51 +3,11 @@ import { Row, Col, Modal, ModalBody, ModalHeader, ModalFooter, Card } from 'reac
 import { Button } from 'reactstrap'
 import classNames from 'class-names'
 
-import AccessTile from 'Components/AccessTile'
 import Units from 'Components/Units'
 import Spinner from 'Components/Spinner'
 import AddressLink from 'Components/AddressLink'
 
-import ledgerLogo from 'Img/ledger-logo.png'
-import trezorLogo from 'Img/trezor-logo.png'
-
 import AccountSelect from './AccountSelect'
-
-const walletRenderData = {
-  ledger: {
-    name: 'Ledger Wallet',
-    icon: ledgerLogo,
-    supportedAssets: ['ETH'],
-    instructions: [{
-      icon: 'fa-usb',
-      text: 'Connect your Ledger Wallet to begin'
-    }, {
-      icon: 'fa-mobile',
-      text: 'Open the Ethereum app on the Ledger Wallet'
-    }, {
-      icon: 'fa-cogs',
-      text: 'Ensure that Browser Support is enabled in Settings'
-    }, {
-      icon: 'fa-download',
-      text: 'You may need to update the firmware if Browser Support is not available'
-    }]
-  },
-  trezor: {
-    name: 'TREZOR',
-    icon: trezorLogo,
-    supportedAssets: ['BTC', 'ETH'],
-    instructions: [{
-      icon: 'fa-usb',
-      text: 'Connect your TREZOR to begin'
-    }, {
-      icon: 'fa-external-link-square',
-      text: (<span>When the popop asks if you want to export the public key, select <b>Export</b></span>)
-    }, {
-      icon: 'fa-unlock',
-      text: 'If required, enter your pin or password to unlock the TREZOR'
-    }]
-  }
-}
 
 const StatusPending = ({ status }) => (
   <h5 className='blink'>{status.toUpperCase()}</h5>
@@ -124,21 +84,18 @@ const CommStatus = ({ status, className, ...props }) => {
   )
 }
 
-const ConnectionInstructions = ({ type }) => {
-  const { instructions } = walletRenderData[type]
-  return (
-    <Row className='gutter-2 text-muted'>
-      {instructions.map(({ icon, text }, i) => (
-        <Col key={i} xs='12' md={(i === instructions.length - 1) ? true : '6'}>
-          <Card body className='h-100 flex-col-center flat'>
-            <i className={classNames('mb-2 fa fa-2x', icon)} />
-            <div>{text}</div>
-          </Card>
-        </Col>
-      ))}
-    </Row>
-  )
-}
+const ConnectionInstructions = ({ instructions }) => (
+  <Row className='gutter-2 text-muted'>
+    {instructions.map(({ icon, text }, i) => (
+      <Col key={i} xs='12' md={(i === instructions.length - 1) ? true : '6'}>
+        <Card body className='h-100 flex-col-center flat'>
+          <i className={classNames('mb-2 fa fa-2x', icon)} />
+          <div>{text}</div>
+        </Card>
+      </Col>
+    ))}
+  </Row>
+)
 
 const ConfirmAccountSelection = ({ address, balance, index, toggleAccountSelect }) => (
   <div className='flex-col-center'>
@@ -162,19 +119,20 @@ const ConfirmAccountSelection = ({ address, balance, index, toggleAccountSelect 
   </div>
 )
 
-const HardwareWalletModal = ({
-  isOpen, handleToggle, handleClose, type, commStatus, showAccountSelect, onConfirm, disableConfirm,
-  commStatusProps, accountSelectProps, confirmAccountSelectionProps, toggleAccountSelect
+const HardwareWalletModalView = ({
+  name, instructions, isOpen, handleToggle, handleClose, commStatus,
+  showAccountSelect, onConfirm, disableConfirm, toggleAccountSelect,
+  commStatusProps, accountSelectProps, confirmAccountSelectionProps
 }) => (
   <Modal size='lg' className='text-center' isOpen={isOpen} toggle={handleToggle}>
     <ModalHeader tag='h3' className='text-primary' cssModule={{ 'modal-title': 'modal-title mx-auto' }} toggle={handleToggle}>
-      Connecting {walletRenderData[type].name}
+      Adding {name}
     </ModalHeader>
     <ModalBody className='flex-col-center'>
       <div className='modal-text flex-col-center py-4'>
         <CommStatus className='mb-3' {...commStatusProps}/>
         {(commStatus !== 'connected'
-          ? (<ConnectionInstructions type={type}/>)
+          ? (<ConnectionInstructions instructions={instructions}/>)
           : (showAccountSelect
             ? (<AccountSelect {...accountSelectProps} />)
             : (<ConfirmAccountSelection {...confirmAccountSelectionProps}/>)))
@@ -192,14 +150,4 @@ const HardwareWalletModal = ({
   </Modal>
 )
 
-const HardwareWalletView = ({ type, handleClick, modalProps }) => {
-  const { name, icon, supportedAssets } = walletRenderData[type]
-  return (
-    <div>
-      <AccessTile name={name} icon={icon} assets={supportedAssets} onClick={handleClick} color='primary' outline/>
-      <HardwareWalletModal type={type} {...modalProps} />
-    </div>
-  )
-}
-
-export default HardwareWalletView
+export default HardwareWalletModalView
