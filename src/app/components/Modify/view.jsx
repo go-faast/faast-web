@@ -75,18 +75,18 @@ const ModifyView = (props) => {
           </Col>
           <Col xs='12' lg style={{ lineHeight: 1 }} className='order-3 order-lg-2'>
             <Row className='gutter-3'>
-              <Col xs='12' md='2' lg='auto'>
-                <Row className='gutter-3 flex-md-column'>
-                  <Col xs='3' md='12'>&nbsp;</Col>
-                  <Col xs='4' md='12' className='text-muted text-md-right'>Before</Col>
-                  <Col xs='5' md='12' className='text-muted text-md-right'>After</Col>
+              <Col xs='12' sm='2' lg='auto'>
+                <Row className='gutter-3 flex-sm-column'>
+                  <Col xs='3' sm='12'>&nbsp;</Col>
+                  <Col xs='4' sm='12' className='text-muted text-sm-right'>Before</Col>
+                  <Col xs='5' sm='12' className='text-muted text-sm-right'>After</Col>
                 </Row>
               </Col>
-              <Col xs='12' md='3' lg>
-                <Row className='gutter-3 flex-md-column'>
-                  <Col xs='3' md='12' className='text-muted text-right text-md-left'>Value</Col>
-                  <Col xs='4' md='12'>{originalFiat}</Col>
-                  <Col xs='5' md='12'>
+              <Col xs='12' sm='3' lg>
+                <Row className='gutter-3 flex-sm-column'>
+                  <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>Value</Col>
+                  <Col xs='4' sm='12'>{originalFiat}</Col>
+                  <Col xs='5' sm='12'>
                     {disabled ? (
                       display.fiat(adjustedFiat)
                     ) : (
@@ -106,11 +106,11 @@ const ModifyView = (props) => {
                   </Col>
                 </Row>
               </Col>
-              <Col xs='12' md='3' lg>
-                <Row className="gutter-3 flex-md-column">
-                  <Col xs='3' md='12' className='text-muted text-right text-md-left'>Weight</Col>
-                  <Col xs='4' md='12'>{originalWeight}</Col>
-                  <Col xs='5' md='12'>
+              <Col xs='12' sm='3' lg>
+                <Row className="gutter-3 flex-sm-column">
+                  <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>Weight</Col>
+                  <Col xs='4' sm='12'>{originalWeight}</Col>
+                  <Col xs='5' sm='12'>
                     {disabled ? (
                       display.percentage(adjustedWeight)
                     ) : (
@@ -131,11 +131,11 @@ const ModifyView = (props) => {
                   </Col>
                 </Row>
               </Col>
-              <Col xs='12' md>
-                <Row className="gutter-3 flex-md-column">
-                  <Col xs='3' md='12' className='text-muted text-right text-md-left'>Units</Col>
-                  <Col xs='4' md='12'>{originalUnits}</Col>
-                  <Col xs='5' md='12'>{adjustedUnits}</Col>
+              <Col xs='12' sm>
+                <Row className="gutter-3 flex-sm-column">
+                  <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>Units</Col>
+                  <Col xs='4' sm='12'>{originalUnits}</Col>
+                  <Col xs='5' sm='12'>{adjustedUnits}</Col>
                 </Row>
               </Col>
             </Row>
@@ -202,7 +202,7 @@ const ModifyView = (props) => {
             <Button color='primary' outline onClick={handleCancel}>Cancel</Button>
           </Col>
           <Col xs='auto'>
-            <Button color='primary' onClick={handleSave} disabled={Boolean(disableSave)}>Save</Button>
+            <Button color='primary' onClick={handleSave} disabled={Boolean(disableSave)}><i className='fa fa-check mr-2'/>Save</Button>
           </Col>
           {typeof disableSave === 'string' && (
             <Col xs='12'>
@@ -217,7 +217,7 @@ const ModifyView = (props) => {
   )
 
   return (
-    <Layout className='pt-3 px-0 px-md-3' afterNav={secondNavbar} navbarProps={{ className: 'flat' }}>
+    <Layout className='pt-3 px-0 px-md-3' navbarProps={{ className: 'flat' }} afterNav={secondNavbar}>
       <Row className='gutter-x-0 gutter-y-3'>
         {renderHoldings(portfolio.nestedWallets)}
       </Row>
