@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import WelcomeView from './view'
+
 import { setSettings } from 'Actions/redux'
 import { getCurrentWallet } from 'Selectors'
+
+import WelcomeView from './view'
 
 class Welcome extends Component {
   constructor (props) {
@@ -45,10 +47,8 @@ const mapStateToProps = (state) => ({
   settings: state.settings
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  setSettings: (settings) => {
-    dispatch(setSettings(settings))
-  }
-})
+const mapDispatchToProps = {
+  setSettings
+}
 
 export default connect(mapStateToProps, mapDispatchToProps)(Welcome)

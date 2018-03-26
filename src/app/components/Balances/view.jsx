@@ -13,7 +13,7 @@ import Layout from 'Components/Layout'
 import Address from 'Components/Address'
 import PriceChart from 'Components/PriceChart'
 import SignTxModal from 'Components/SignTxModal'
-import Welcome from 'Components/Welcome'
+import BlockstackWelcome from 'Components/BlockstackWelcome'
 import Units from 'Components/Units'
 import WalletSelector from 'Components/WalletSelector'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
@@ -128,7 +128,7 @@ const BalancesView = (props) => {
         <SignTxModal showModal={showOrderModal} toggleModal={handleToggleOrderModal} view='orderStatus' />
       }
       {!viewOnly &&
-        <Welcome />
+        <BlockstackWelcome />
       }
       <Row className='gutter-3'>
         {!isDefaultPortfolioEmpty && (

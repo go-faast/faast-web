@@ -1,5 +1,6 @@
 import React from 'react'
-import WelcomeModal from 'Components/WelcomeModal'
+
+import WelcomeModal from './Modal'
 import CreateWalletModal from 'Components/CreateWalletModal'
 
 const WelcomeView = (props) => {
