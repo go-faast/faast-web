@@ -234,9 +234,11 @@ const ModifyView = (props) => {
         {renderHoldings(portfolio.nestedWallets)}
       </Row>
     )}
-      <Modal size='lg' center isOpen={props.isAssetListOpen} toggle={props.toggleAssetList} className='m-0 mx-md-auto' contentClassName='p-0'>
-        <AssetList {...props.assetListProps} />
-      </Modal>
+      {props.isAssetListOpen && /* Reactstrap + redux-forms workaround https://github.com/reactstrap/reactstrap/issues/820 */ ( 
+        <Modal size='lg' center isOpen={props.isAssetListOpen} toggle={props.toggleAssetList} className='m-0 mx-md-auto' contentClassName='p-0'>
+          <AssetList {...props.assetListProps} />
+        </Modal>
+      )}
       <SignTxModal showModal={props.showSignTxModal} toggleModal={props.handleToggleSignTxModal} />
     </Layout>
   )
