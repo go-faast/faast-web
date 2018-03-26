@@ -15,12 +15,12 @@ const IconLabel = ({ tag: Tag, className, icon, label }) => (
 
 IconLabel.propTypes = {
   label: PropTypes.node.isRequired,
-  icon: tagPropType,
+  icon: PropTypes.oneOfType([PropTypes.bool, tagPropType]),
   tag: tagPropType,
 }
 
 IconLabel.defaultProps = {
-  icon: null,
+  icon: false,
   tag: 'small'
 }
 
