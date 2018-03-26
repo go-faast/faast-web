@@ -4,9 +4,9 @@ import { connect } from 'react-redux'
 
 import { openWeb3Wallet } from 'Actions/access'
 
-import metamaskLogo from 'Img/metamask-logo.png'
-import mistLogo from 'Img/mist-logo.png'
-import parityLogo from 'Img/parity-logo.svg'
+import metamaskLogo from 'Img/wallet/metamask-logo.png'
+import mistLogo from 'Img/wallet/mist-logo.png'
+import parityLogo from 'Img/wallet/parity-logo.svg'
 
 import AccessTile from './AccessTile'
 

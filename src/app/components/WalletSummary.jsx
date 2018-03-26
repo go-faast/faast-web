@@ -9,11 +9,11 @@ import Spinner from 'Components/Spinner'
 import { getWalletWithHoldings } from 'Selectors'
 import display from 'Utilities/display'
 
-export const WalletSummary = ({ icon, labelClass, wallet: { id, label, typeLabel, totalFiat, iconUrl, balancesLoaded } }) => (
+export const WalletSummary = ({ icon, labelClass, wallet: { id, label, typeLabel, totalFiat, iconProps, balancesLoaded } }) => (
   <Row className='gutter-0 font-weight-light'>
     <Col xs='12' className={labelClass}>{id === 'default' ? (<i>{label}</i>) : label}</Col>
     <Col>
-      <IconLabel label={typeLabel} icon={icon && iconUrl}/>
+      <IconLabel label={typeLabel} iconProps={icon && iconProps}/>
     </Col>
     <Col xs='auto'>
       {balancesLoaded

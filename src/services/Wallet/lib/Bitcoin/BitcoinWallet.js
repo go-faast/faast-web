@@ -22,8 +22,6 @@ export default class BitcoinWallet extends Wallet {
 
   getLabel = () => this.label || `Bitcoin ${ellipsize(this.xpub, 8, 4)}`;
 
-  getIconUrl = () => 'https://faa.st/img/coins/coin_BTC.png';
-
   isAssetSupported = (assetOrSymbol) => supportedAssets.includes(this.getSymbol(assetOrSymbol));
 
   isSingleAddress = () => false;

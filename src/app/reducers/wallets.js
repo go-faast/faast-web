@@ -12,7 +12,7 @@ const walletInitialState = {
   label: '',
   type: '',
   typeLabel: '',
-  iconUrl: '',
+  iconProps: '',
   address: '',
   isBlockstack: false,
   isReadOnly: false,

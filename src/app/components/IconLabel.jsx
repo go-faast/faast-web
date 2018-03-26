@@ -6,21 +6,21 @@ import { tag as tagPropType } from 'Utilities/propTypes'
 
 import Icon from 'Components/Icon'
 
-const IconLabel = ({ tag: Tag, className, icon, label }) => (
+const IconLabel = ({ tag: Tag, className, iconProps, label }) => (
   <Tag className={classNames('text-muted', className)}>
-    {icon && (<Icon height='1.25em' width='1.25em' src={icon} inline tag='span' className='mr-2'/>)}
+    {iconProps && (<Icon height='1.25em' width='1.25em' {...iconProps} inline tag='span' className='mr-2'/>)}
     {label}
   </Tag>
 )
 
 IconLabel.propTypes = {
   label: PropTypes.node.isRequired,
-  icon: PropTypes.oneOfType([PropTypes.bool, tagPropType]),
+  iconProps: PropTypes.oneOfType([PropTypes.bool, PropTypes.object]),
   tag: tagPropType,
 }
 
 IconLabel.defaultProps = {
-  icon: false,
+  iconProps: false,
   tag: 'small'
 }
 

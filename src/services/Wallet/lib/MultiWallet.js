@@ -44,8 +44,6 @@ export default class MultiWallet extends Wallet {
 
   getLabel = () => this.label || `Portfolio ${this.id.slice(0, 8)}`;
 
-  getIconUrl = () => 'https://faa.st/img/portfolio.svg';
-
   isSingleAddress = () => false;
 
   setAssetProvider = (assetProvider) => {

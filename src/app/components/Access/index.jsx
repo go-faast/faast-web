@@ -4,13 +4,13 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
 import CoinIcon from 'Components/CoinIcon'
-import AddressSearch from 'Components/AddressSearch'
 
 import Web3Wallet from './Web3Wallet'
 import Blockstack from './Blockstack'
 import CreateWallet from './CreateWallet'
 import ImportKeystore from './ImportKeystore'
 import HardwareWallet from './HardwareWallet'
+import AddressSearch from './AddressSearch'
 
 import { isDefaultPortfolioEmpty } from 'Selectors'
 

@@ -15,12 +15,6 @@ const checkAccountAvailable = (address) => Promise.resolve(address)
       }
     }))
 
-const providerToIconUrl = {
-  MetaMask: 'https://faa.st/img/metamask-logo.png',
-  Mist: 'https://faa.st/img/mist-logo.png',
-  Parity: 'https://faa.st/img/parity-logo.svg', 
-}
-
 export default class EthereumWalletWeb3 extends EthereumWallet {
 
   static type = 'EthereumWalletWeb3';
@@ -37,8 +31,6 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
   getType = () => EthereumWalletWeb3.type;
 
   getTypeLabel = () => this.providerName === 'faast' ? 'Web3 Wallet' : this.providerName;
-
-  getIconUrl = () => providerToIconUrl[this.providerName] || 'https://faa.st/img/coins/coin_ETH.png';
 
   getAddress = () => this.address;
 

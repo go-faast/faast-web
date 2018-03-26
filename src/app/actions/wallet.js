@@ -4,6 +4,7 @@ import blockstack from 'Utilities/blockstack'
 import log from 'Utilities/log'
 import walletService, { Wallet, MultiWallet, BlockstackWallet } from 'Services/Wallet'
 import { getAllAssets, getWalletParents } from 'Selectors'
+import { getWalletIconProps } from 'Utilities/walletIcon'
 
 const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   id: wallet.getId(),
@@ -11,7 +12,7 @@ const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   type: wallet.getType(),
   typeLabel: wallet.getTypeLabel(),
   address: wallet.isSingleAddress() ? wallet.getAddress() : '',
-  iconUrl: wallet.getIconUrl(),
+  iconProps: getWalletIconProps(wallet),
   isBlockstack: wallet.getType() === BlockstackWallet.type,
   isReadOnly: wallet.isReadOnly,
   supportedAssets: wallet.getSupportedAssetSymbols(),

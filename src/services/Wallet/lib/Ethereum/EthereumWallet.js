@@ -81,8 +81,6 @@ export default class EthereumWallet extends Wallet {
 
   getLabel = () => this.label || `Ethereum ${ellipsize(this.getAddress(), 6, 4)}`;
 
-  getIconUrl = () => 'https://faa.st/img/coins/coin_ETH.png';
-
   isSingleAddress = () => true;
 
   getFreshAddress = (assetOrSymbol) => Promise.resolve(assetOrSymbol)

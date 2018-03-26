@@ -1,8 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import ledgerLogo from 'Img/ledger-logo.png'
-import trezorLogo from 'Img/trezor-logo.png'
+import ledgerLogo from 'Img/wallet/ledger-logo.png'
+import trezorLogo from 'Img/wallet/trezor-logo.png'
 
 import withToggle from 'Hoc/withToggle'
 import HardwareWalletModal from 'Components/HardwareWalletModal'

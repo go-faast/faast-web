@@ -10,12 +10,11 @@ export default class Wallet {
     assertExtended(this, Wallet)
     this.label = label
     this._persistAllowed = true
+    this._readOnly = false
     this._assetProvider = () => {}
   }
 
   get type() { return this.getType() }
-
-  getIconUrl = () => 'https://faa.st/img/faast-logo-transparent.png';
 
   getLabel = () => this.label || this.getType();
 
@@ -26,6 +25,10 @@ export default class Wallet {
   setPersistAllowed = (persistAllowed) => this._persistAllowed = persistAllowed;
 
   isPersistAllowed = () => this._persistAllowed;
+
+  setReadOnly = (readOnly) => this._readOnly = readOnly;
+
+  isReadOnly = () => this._readOnly;
 
   setAssetProvider = (assetProvider) => {
     if (typeof assetProvider !== 'function') {

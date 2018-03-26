@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import blockstackLogo from 'Img/blockstack-logo.png'
+import blockstackLogo from 'Img/wallet/blockstack-logo.png'
 
 import { openBlockstackWallet } from 'Actions/access'
 
