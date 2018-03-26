@@ -95,6 +95,7 @@
     "react-toolbox": "^2.0.0-beta.12",
     "react-transition-group": "^1.2.1",
     "reactstrap": "^5.0.0-beta",
+    "recompose": "^0.26.0",
     "redux": "^3.7.2",
     "redux-act": "^1.6.0",
     "redux-form": "^7.0.3",
