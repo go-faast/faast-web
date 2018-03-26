@@ -59,7 +59,7 @@ class PieChart extends Component {
           events: {
             click: (e) => {
               const point = e.point || {}
-              handleChartSelect(point.name)
+              handleChartSelect && handleChartSelect(point.name)
             }
           }
         })
@@ -78,8 +78,8 @@ class PieChart extends Component {
 
 PieChart.propTypes = {
   portfolio: PropTypes.object.isRequired,
-  selectedSymbol: PropTypes.string.isRequired,
-  handleChartSelect: PropTypes.func.isRequired
+  selectedSymbol: PropTypes.string,
+  handleChartSelect: PropTypes.func
 }
 
 export default PieChart

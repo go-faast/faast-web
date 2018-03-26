@@ -72,9 +72,9 @@ export const pieChart = {
   },
   plotOptions: {
     pie: {
-      allowPointSelect: true,
+      allowPointSelect: false,
       borderColor: null,
-      cursor: 'pointer',
+      cursor: 'default',
       dataLabels: {
         enabled: true,
         format: '<b>{point.name}</b>',
