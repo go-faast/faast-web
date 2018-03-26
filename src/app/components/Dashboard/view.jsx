@@ -1,10 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  Row, Col, Button, Alert,
+  Row, Col, Button,
 } from 'reactstrap'
 import BigNumber from 'bignumber.js'
-import { Link } from 'react-router-dom'
 
 import Layout from 'Components/Layout'
 import SignTxModal from 'Components/SignTxModal'
@@ -39,31 +38,23 @@ const BalancesView = (props) => {
         )}
         <Col xs='12' md='7' lg='8' xl='9'>
           <Row className='gutter-3'>
-            {viewOnly ? (
-              <Col xs='12' className='text-center'>
-                <Alert color='info' className='m-0'>
-                  You are viewing a read-only wallet. If this is your address, you need to <Link to='/connect' className='font-weight-normal alert-link'><u>connect your wallet</u></Link> in order to trade assets.
-                </Alert>
-              </Col>
-            ) : (
-              <Col xs='12'>
-                <Row className='gutter-3 align-items-end'>
-                  <Col>
-                    <h4 className='m-0 text-primary'>{label}</h4>
-                  </Col>
-                  <Col xs='auto'>
-                    <Button color='danger' size='sm' onClick={handleRemove} disabled={disableRemove}>
-                      <i className='fa fa-times'/> remove {isPortfolio ? 'portfolio' : 'wallet'}
-                    </Button>
-                  </Col>
-                </Row>
-              </Col>
-            )}
-            {!viewOnly && Boolean(orderStatus) &&
+            <Col xs='12'>
+              <Row className='gutter-3 align-items-end'>
+                <Col>
+                  <h4 className='m-0 text-primary'>{label}</h4>
+                </Col>
+                <Col xs='auto'>
+                  <Button color='danger' size='sm' onClick={handleRemove} disabled={disableRemove}>
+                    <i className='fa fa-times'/> remove {isPortfolio ? 'portfolio' : 'wallet'}
+                  </Button>
+                </Col>
+              </Row>
+            </Col>
+            {Boolean(orderStatus) && (
               <Col xs='12'>
                 <OrderStatus status={orderStatus} handleViewStatus={handleToggleOrderModal} handleForgetOrder={handleForgetOrder} />
               </Col>
-            }
+            )}
             <Col xs='12'>
               <Balances wallet={wallet} toggleChart={toggleChart} openCharts={openCharts}/>
             </Col>

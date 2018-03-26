@@ -1,20 +1,50 @@
 import { push } from 'react-router-redux'
 
+import log from 'Utilities/log'
 import { filterUrl } from 'Utilities/helpers'
 import blockstack from 'Utilities/blockstack'
 import toastr from 'Utilities/toastrWrapper'
-import log from 'Utilities/log'
+import { isValidAddress } from 'Utilities/wallet'
+import { toChecksumAddress } from 'Utilities/convert'
 
 import web3 from 'Services/Web3'
-import { EthereumWalletKeystore, EthereumWalletWeb3 } from 'Services/Wallet'
+import { Wallet, MultiWallet, EthereumWalletKeystore, EthereumWalletWeb3, EthereumWalletViewOnly } from 'Services/Wallet'
 
-import { openWallet } from 'Actions/portfolio'
+import { getCurrentPortfolio, getWallet } from 'Selectors'
+import {
+  addWallet, addNestedWallet
+} from 'Actions/wallet'
+import { defaultPortfolioId, setCurrentWallet, restoreSwapsForWallet } from 'Actions/portfolio'
 
+/** Open a wallet, add it to the current portfolio, and restore swaps status for it */
+export const openWallet = (walletInstancePromise) => (dispatch, getState) => Promise.resolve(walletInstancePromise)
+  .then((walletInstance) => {
+    if (!(walletInstance instanceof Wallet)) {
+      throw new Error('Instance of Wallet required')
+    }
+    return dispatch(addWallet(walletInstance))
+  })
+  .then((wallet) => {
+    const { id: walletId } = wallet
+    const { id: portfolioId, type: portfolioType } = getCurrentPortfolio(getState())
+    return dispatch(addNestedWallet(defaultPortfolioId, walletId))
+      .then(() => {
+        if (portfolioType === MultiWallet.type && portfolioId !== defaultPortfolioId) {
+          return dispatch(addNestedWallet(portfolioId, walletId))
+        }
+      })
+      .then(() => dispatch(setCurrentWallet(portfolioId, walletId)))
+      .then(() => dispatch(restoreSwapsForWallet(walletId)))
+  })
 
-const handleOpenWalletError = (e) => {
-  log.error(e)
-  toastr.error(e.message)
-}
+/** Do everything in openWallet and then redirect to the dashboard */
+export const openWalletAndRedirect = (walletInstancePromise) => (dispatch) => Promise.resolve(walletInstancePromise)
+  .then((walletInstance) => dispatch(openWallet(walletInstance)))
+  .then(() => dispatch(push('/dashboard')))
+  .catch((e) => {
+    log.error(e)
+    toastr.error(e.message)
+  })
 
 export const openWeb3Wallet = () => (dispatch) => {
   if (web3.providerType !== 'user') {
@@ -32,11 +62,7 @@ export const openWeb3Wallet = () => (dispatch) => {
     if (id !== 1) {
       return toastr.error(`Please adjust ${name} to use the "Main Ethereum Network"`, { timeOut: 10000 })
     }
-
-    EthereumWalletWeb3.fromDefaultAccount()
-      .then((wallet) => dispatch(openWallet(wallet)))
-      .then(() => dispatch(push('/balances')))
-      .catch(handleOpenWalletError)
+    dispatch(openWalletAndRedirect(EthereumWalletWeb3.fromDefaultAccount()))
   })
 }
 
@@ -48,12 +74,8 @@ export const openKeystoreFileWallet = (files) => (dispatch) => {
     const encryptedWalletString = event.target.result
     if (!encryptedWalletString) return toastr.error('Unable to read keystore file')
 
-    dispatch(openWallet(new EthereumWalletKeystore(encryptedWalletString)))
-      .then(() => {
-        log.info('Encrypted wallet set')
-        dispatch(push('/balances'))
-      })
-      .catch(handleOpenWalletError)
+    const wallet = new EthereumWalletKeystore(encryptedWalletString)
+    dispatch(openWalletAndRedirect(wallet))
   }
 
   reader.readAsText(file)
@@ -67,8 +89,42 @@ export const openBlockstackWallet = () => (dispatch) => {
     if (!wallet) {
       toastr.error('Unable to open Blockstack wallet')
     }
-    dispatch(openWallet(wallet))
-      .then(() => dispatch(push('/balances')))
-      .catch(handleOpenWalletError)
+    dispatch(openWalletAndRedirect(wallet))
   }
 }
+
+/** Opens a view only wallet and adds it to the current portfolio */
+export const openViewOnlyWallet = (address) => (dispatch) => {
+  address = typeof address === 'string' ? address.trim() : ''
+  if (!isValidAddress(address)) {
+    toastr.error('Not a valid address')
+  } else {
+    address = toChecksumAddress(address)
+    const wallet = new EthereumWalletViewOnly(address)
+    dispatch(openWalletAndRedirect(wallet))
+  }
+}
+
+/** Open a temporary view only wallet as its own portfolio. */
+export const createViewOnlyPortfolio = (address, setCurrent = false) => (dispatch, getState) => Promise.resolve()
+  .then(() => {
+    if (!address) {
+      throw new Error('invalid view only address')
+    }
+    const wallet = getWallet(getState(), address)
+    if (!wallet) {
+      const walletInstance = new EthereumWalletViewOnly(address)
+      walletInstance.setPersistAllowed(false)
+      return dispatch(addWallet(walletInstance))
+    }
+    return wallet
+  })
+  .then((wallet) => {
+    if (setCurrent) {
+      const { id, isReadOnly } = wallet
+      // If the wallet was already connected it won't be read only
+      const portfolioId = isReadOnly ? id : defaultPortfolioId
+      dispatch(setCurrentWallet(portfolioId, id))
+    }
+    return wallet
+  })

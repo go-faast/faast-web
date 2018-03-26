@@ -14,7 +14,7 @@ import {
   getTransactionReceipt,
   getTransaction
 } from 'Utilities/wallet'
-import walletService, { Wallet, MultiWallet, EthereumWalletWeb3 } from 'Services/Wallet'
+import walletService, { MultiWallet, EthereumWalletViewOnly } from 'Services/Wallet'
 
 import { insertSwapData, updateSwapTx, setSwap } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
@@ -25,7 +25,7 @@ import {
 import { retrieveAssetPrices } from 'Actions/asset'
 
 import {
-  getCurrentPortfolio, getCurrentPortfolioId, getWallet
+  getCurrentPortfolioId, getWallet
 } from 'Selectors'
 
 export const defaultPortfolioId = 'default'
@@ -33,27 +33,6 @@ export const defaultPortfolioId = 'default'
 export const setCurrentPortfolio = createAction('SET_CURRENT_PORTFOLIO', (portfolioId) => ({ portfolioId }))
 export const setCurrentWallet = createAction('SET_CURRENT_WALLET', (portfolioId, walletId) => ({ portfolioId, walletId }))
 export const portfolioAdded = createAction('PORTFOLIO_ADDED')
-
-export const openWallet = (walletInstance, isMocking) => (dispatch, getState) => Promise.resolve()
-  .then(() => {
-    if (!(walletInstance instanceof Wallet)) {
-      throw new Error('Instance of Wallet required')
-    }
-    return walletInstance.getId()
-  })
-  .then(() => dispatch(addWallet(walletInstance)))
-  .then((wallet) => {
-    const { id: walletId } = wallet
-    const { id: portfolioId, type: portfolioType } = getCurrentPortfolio(getState())
-    return dispatch(addNestedWallet(defaultPortfolioId, walletId))
-      .then(() => {
-        if (portfolioType === MultiWallet.type && portfolioId !== defaultPortfolioId) {
-          return dispatch(addNestedWallet(portfolioId, walletId))
-        }
-      })
-      .then(() => dispatch(setCurrentWallet(portfolioId, walletId)))
-      .then(() => dispatch(restoreSwapsForWallet(walletId, isMocking)))
-  })
 
 export const removePortfolio = (id) => (dispatch) => Promise.resolve()
   .then(() => {
@@ -82,29 +61,6 @@ export const addPortfolio = (walletInstance, setCurrent = false) => (dispatch) =
 
 export const createNewPortfolio = (setCurrent = false) => (dispatch) => Promise.resolve()
   .then(() => dispatch(addPortfolio(new MultiWallet(), setCurrent)))
-
-export const createViewOnlyPortfolio = (address, setCurrent = false) => (dispatch, getState) => Promise.resolve()
-  .then(() => {
-    if (!address) {
-      throw new Error('invalid view only address')
-    }
-    const wallet = getWallet(getState(), address)
-    if (!wallet) {
-      const walletInstance = new EthereumWalletWeb3(address)
-      walletInstance.setPersistAllowed(false)
-      walletInstance.isReadOnly = true
-      return dispatch(addWallet(walletInstance))
-    }
-    return wallet
-  })
-  .then((wallet) => {
-    if (setCurrent) {
-      const { id, isReadOnly } = wallet
-      const portfolioId = isReadOnly ? id : defaultPortfolioId
-      dispatch(setCurrentWallet(portfolioId, id))
-    }
-    return wallet
-  })
 
 const createDefaultPortfolio = () => (dispatch) => Promise.resolve()
   .then(() => {

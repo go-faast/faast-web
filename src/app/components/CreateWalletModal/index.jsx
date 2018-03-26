@@ -6,7 +6,7 @@ import CreateWalletModalView from './view'
 import toastr from 'Utilities/toastrWrapper'
 import { downloadJson } from 'Utilities/helpers'
 import log from 'Utilities/log'
-import { openWallet } from 'Actions/portfolio'
+import { openWallet } from 'Actions/access'
 import { getCurrentWallet } from 'Selectors'
 import { EthereumWalletKeystore } from 'Services/Wallet'
 

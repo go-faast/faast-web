@@ -2,11 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { replace } from 'react-router-redux'
 import { connect } from 'react-redux'
-import Balances from 'Components/Balances'
+import Dashboard from 'Components/Dashboard'
 import { isValidAddress } from 'Utilities/wallet'
 import { toChecksumAddress } from 'Utilities/convert'
 import toastr from 'Utilities/toastrWrapper'
-import { createViewOnlyPortfolio, setCurrentPortfolio, defaultPortfolioId } from 'Actions/portfolio'
+import { setCurrentPortfolio, defaultPortfolioId } from 'Actions/portfolio'
+import { createViewOnlyPortfolio } from 'Actions/access'
 
 class View extends Component {
   constructor () {
@@ -39,7 +40,7 @@ class View extends Component {
   }
 
   render () {
-    return <Balances />
+    return <Dashboard />
   }
 }
 

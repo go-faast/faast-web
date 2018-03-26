@@ -1,9 +1,10 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { reduxForm, Field } from 'redux-form'
 import { Form, InputGroup, InputGroupAddon, Input, Button } from 'reactstrap'
 
-let AddressSearchForm = (props) => (
-  <Form onSubmit={props.handleSubmit} className='w-100'>
+let AddressSearchForm = ({ handleSubmit }) => (
+  <Form onSubmit={handleSubmit} className='w-100'>
     <InputGroup>
       <Input
         tag={Field}
@@ -25,5 +26,14 @@ let AddressSearchForm = (props) => (
 AddressSearchForm = reduxForm({
   form: 'addressSearchForm'
 })(AddressSearchForm)
+
+AddressSearchForm.propTypes = {
+  onSubmit: PropTypes.func.isRequired,
+  placeholder: PropTypes.string
+}
+
+AddressSearchForm.defaultProps = {
+  placeholder: 'Search by address...'
+}
 
 export default AddressSearchForm

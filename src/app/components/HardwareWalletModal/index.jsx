@@ -11,7 +11,7 @@ import { toMainDenomination } from 'Utilities/convert'
 import log from 'Utilities/log'
 import { closeTrezorWindow } from 'Utilities/wallet'
 
-import { openWallet } from 'Actions/portfolio'
+import { openWallet } from 'Actions/access'
 
 import web3 from 'Services/Web3'
 import { EthereumWalletLedger, EthereumWalletTrezor, BitcoinWalletTrezor } from 'Services/Wallet'

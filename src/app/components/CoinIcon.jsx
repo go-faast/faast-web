@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import config from 'Config'
 import Icon from 'Components/Icon'
 
-import Erc20Svg from 'Img/coin_ERC20.svg?inline'
+import Erc20Svg from 'Img/coin/ERC20.svg?inline'
 
 const getPropsForSymbol = (symbol) => {
   symbol = symbol.toUpperCase()

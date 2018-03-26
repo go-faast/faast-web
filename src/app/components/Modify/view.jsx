@@ -165,14 +165,14 @@ const ModifyView = (props) => {
   })
 
   const renderHoldings = (wallets) => wallets
-    .map(({ id, label, typeLabel, iconUrl, balancesLoaded, assetHoldings }) => (
+    .map(({ id, label, isReadOnly, typeLabel, iconProps, balancesLoaded, assetHoldings }) => (
       <Col xs='12' key={id}>
         <Card>
           <CardHeader>
             <Row className='gutter-3 align-items-center'>
               <Col>
                 <h4 className='m-0 lh-0'>{label}</h4>
-                <IconLabel label={typeLabel} icon={iconUrl}/>
+                <IconLabel label={typeLabel} iconProps={iconProps}/>
               </Col>
               <Col xs='auto'>
                 <Button color='success' size='sm' className='flat' disabled={!balancesLoaded} onClick={() => props.showAssetList(id)}>
@@ -181,14 +181,20 @@ const ModifyView = (props) => {
               </Col>
             </Row>
           </CardHeader>
-          <ListGroup>
-            {!balancesLoaded && (<LoadingFullscreen center/>)}
-            {renderAssetRows(assetHoldings.filter(({ shown }) => shown))}
-            <ListGroupButton action onClick={() => props.showAssetList(id)} className='text-center text-success'>
-              <i className='fa fa-plus fa-2x align-middle' />
-              <span className='pl-2 h5'>add asset</span>
-            </ListGroupButton>
-          </ListGroup>
+          {isReadOnly ? (
+            <Alert color='info' className='m-0 text-center'>
+              This wallet is read-only. You need to <Link to='/connect' className='font-weight-normal alert-link'><u>connect your wallet</u></Link> in order to trade assets.
+            </Alert>
+          ) : (
+            <ListGroup>
+              {!balancesLoaded && (<LoadingFullscreen center/>)}
+              {renderAssetRows(assetHoldings.filter(({ shown }) => shown))}
+              <ListGroupButton action onClick={() => props.showAssetList(id)} className='text-center text-success'>
+                <i className='fa fa-plus fa-2x align-middle' />
+                <span className='pl-2 h5'>add asset</span>
+              </ListGroupButton>
+            </ListGroup>
+          )}
         </Card>
       </Col>
     ))
