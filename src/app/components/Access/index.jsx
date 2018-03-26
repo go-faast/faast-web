@@ -3,7 +3,6 @@ import { Row, Col, Button } from 'reactstrap'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
-import Layout from 'Components/Layout'
 import CoinIcon from 'Components/CoinIcon'
 import AddressSearch from 'Components/AddressSearch'
 
@@ -19,7 +18,7 @@ const TileRow = ({ children }) => (<div className='my-3'><Row className='gutter-
 const TileCol = ({ children }) => (<Col xs='9' sm='6' md='4' lg='3'>{children}</Col>)
 
 const Access = () => (
-  <Layout className='text-center pt-3'>
+  <div className='text-center'>
     <h3 className='mt-lg-3'>Select your wallet</h3>
     <h4 className='text-muted mt-4'>Hardware Wallets</h4>
     <h6 className='text-primary'>Recommended</h6>
@@ -49,7 +48,7 @@ const Access = () => (
       <span className='px-3'>open source and secure</span>
       <i className='fa fa-lock fa-2x align-middle'/>
     </Button>
-  </Layout>
+  </div>
 )
 
 export default connect(createStructuredSelector({
