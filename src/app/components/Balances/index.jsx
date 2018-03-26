@@ -1,165 +1,81 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { connect } from 'react-redux'
-import { Redirect } from 'react-router-dom'
-import { push } from 'react-router-redux'
+import {
+  Row, Col, Card, CardHeader, CardBody
+} from 'reactstrap'
+import classNames from 'class-names'
+
+import display from 'Utilities/display'
+
+import Address from 'Components/Address'
+import ChangePercent from 'Components/ChangePercent'
+import LoadingFullscreen from 'Components/LoadingFullscreen'
 import PieChart from 'Components/PieChart'
-import PriceChart from 'Components/PriceChart'
-import BalancesView from './view'
-import toastr from 'Utilities/toastrWrapper'
-import log from 'Utilities/log'
-import { getSwapStatus } from 'Utilities/swap'
-import { removeSwundle } from 'Actions/request'
-import { toggleOrderModal, resetSwap } from 'Actions/redux'
-import { clearAllIntervals, updateHoldings, removePortfolio } from 'Actions/portfolio'
-import { getCurrentWalletWithHoldings, isDefaultPortfolioEmpty } from 'Selectors'
+import AssetTable from 'Components/AssetTable'
 
-let balancesInterval
+import { statLabel } from './style'
 
-class Balances extends Component {
-  constructor (props) {
-    super(props)
-    this.state = {
-      pieChartSelection: '',
-      openCharts: {},
-    }
-    this._toggleChart = this._toggleChart.bind(this)
-    this._setChartSelect = this._setChartSelect.bind(this)
-    this._orderStatus = this._orderStatus.bind(this)
-    this._forgetOrder = this._forgetOrder.bind(this)
-    this._updateHoldings = this._updateHoldings.bind(this)
-    this._removeWallet = this._removeWallet.bind(this)
-  }
+const Balances = ({ wallet }) => {
+  const {
+    address, assetHoldings,
+    totalFiat, totalFiat24hAgo, totalChange, balancesLoaded, balancesError
+  } = wallet
+  const assetRows = assetHoldings.filter(({ shown }) => shown)
+  const stats = [
+    {
+      title: 'total assets',
+      value: assetRows.length,
+      colClass: 'order-2 order-lg-1'
+    },
+    {
+      title: 'total balance',
+      value: display.fiat(totalFiat),
+      colClass: 'order-1 order-lg-2'
+    },
+    {
+      title: 'balance 24h ago',
+      value: display.fiat(totalFiat24hAgo),
+      colClass: 'order-3'
+    },
+    {
+      title: 'since 24h ago',
+      value: (<ChangePercent>{totalChange}</ChangePercent>),
+      colClass: 'order-4'
+    },
+  ]
 
-  componentWillMount () {
-    balancesInterval = window.setInterval(this._updateHoldings, 30000)
-    const { wallet } = this.props
-    if (!(wallet.balancesLoaded && wallet.balancesUpdating)) {
-      this._updateHoldings()
-    }
-  }
 
-  componentWillUnmount () {
-    window.clearInterval(balancesInterval)
-    if (!this.props.wallet.isReadOnly) {
-      const orderStatus = this._orderStatus()
-      if (orderStatus === 'error' || orderStatus === 'complete') {
-        this.props.resetSwap()
-        this.props.removeSwundle(this.props.wallet.id)
-      }
-    }
-  }
-
-  _updateHoldings () {
-    const { updateHoldings, wallet } = this.props
-    updateHoldings(wallet.id)
-  }
-
-  _toggleChart (symbol) {
-    const { openCharts } = this.state
-    this.setState({
-      openCharts: {
-        ...openCharts,
-        [symbol]: !openCharts[symbol]
-      }
-    })
-  }
-
-  _setChartSelect (symbol) {
-    this.setState({ pieChartSelection: symbol })
-  }
-
-  _orderStatus () {
-    if (!this.props.swap.length) return false
-
-    const statuses = this.props.swap.reduce((a, b) => {
-      return a.concat(b.list.map(getSwapStatus).map(c => c.status))
-    }, [])
-    if (statuses.some(s => s === 'working')) return 'working'
-    if (statuses.some(s => s === 'error')) return 'error'
-    return 'complete'
-  }
-
-  _forgetOrder () {
-    toastr.confirm(null, {
-      component: () => (
-        <div style={{ padding: 10, color: 'black' }}>
-          Please be aware that <strong>forget</strong> does not actually cancel an order, it justs stops the browser app from tracking the status of the order. The order may still process normally. Please only proceed if you have been instructed to do so, or you understand the effects.
-        </div>
-      ),
-      onOk: () => {
-        clearAllIntervals()
-        this.props.resetSwap()
-        this.props.removeSwundle(this.props.wallet.address)
-      }
-    })
-  }
-
-  _removeWallet () {
-    const { wallet, removePortfolio } = this.props
-    removePortfolio(wallet.id)
-  }
-
-  render () {
-    const orderStatus = this._orderStatus()
-
-    const { wallet, isDefaultPortfolioEmpty } = this.props
-    const isViewOnly = wallet.isReadOnly
-
-    if (isDefaultPortfolioEmpty && !isViewOnly) {
-      return (<Redirect to='/connect'/>)
-    }
-
-    const disableModify = !wallet || !wallet.assetHoldings || !wallet.assetHoldings.length || orderStatus === 'working'
-    const disableRemove = wallet.id === 'default'
-    const addressProps = {
-      address: wallet.address,
-      showDownloadKeystore: !isViewOnly && wallet.isBlockstack
-    }
-    return (
-      <BalancesView
-        pieChart={<PieChart portfolio={wallet} selectedSymbol={this.state.pieChartSelection} handleChartSelect={this._setChartSelect} />}
-        priceChart={<PriceChart />}
-        wallet={wallet}
-        toggleChart={this._toggleChart}
-        showOrderModal={this.props.orderModal.show}
-        handleToggleOrderModal={this.props.toggleOrderModal}
-        handleForgetOrder={this._forgetOrder}
-        handleRemove={this._removeWallet}
-        orderStatus={orderStatus}
-        addressProps={addressProps}
-        viewOnly={isViewOnly}
-        openCharts={this.state.openCharts}
-        disableModify={disableModify}
-        disableRemove={disableRemove}
-        isDefaultPortfolioEmpty={isDefaultPortfolioEmpty}
-      />
-    )
-  }
+  return (
+    <Card>
+      {!balancesLoaded && (<LoadingFullscreen center error={balancesError}/>)}
+      <CardHeader className='grid-group'>
+        <Row className='gutter-3'>
+          {stats.map(({ title, value, colClass }, i) => (
+            <Col xs='6' lg='3' key={i} className={classNames('text-center', colClass)}>
+              <div className='grid-cell'>
+                <div className='h3 mb-0'>{value}</div>
+                <small className={classNames('mb-0', statLabel)}>{title}</small>
+              </div>
+            </Col>
+          ))}
+        </Row>
+      </CardHeader>
+      <CardBody>
+        {address && (
+          <div className='text-right' style={{ lineHeight: 1 }}>
+            <Address address={address} />
+            <small className='text-muted'>address</small>
+          </div>
+        )}
+        <PieChart portfolio={wallet} />
+      </CardBody>
+      <AssetTable assetRows={assetRows}/>
+    </Card>
+  )
 }
 
 Balances.propTypes = {
-  wallet: PropTypes.object.isRequired,
-  mock: PropTypes.object.isRequired,
-  updateHoldings: PropTypes.func.isRequired,
-  routerPush: PropTypes.func.isRequired
+  wallet: PropTypes.object.isRequired
 }
 
-const mapStateToProps = (state) => ({
-  wallet: getCurrentWalletWithHoldings(state),
-  isDefaultPortfolioEmpty: isDefaultPortfolioEmpty(state),
-  mock: state.mock,
-  orderModal: state.orderModal,
-  swap: state.swap
-})
-
-const mapDispatchToProps = {
-  updateHoldings,
-  routerPush: push,
-  toggleOrderModal,
-  resetSwap,
-  removeSwundle,
-  removePortfolio
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Balances)
+export default Balances

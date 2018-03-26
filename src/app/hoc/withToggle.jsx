@@ -4,21 +4,20 @@ import { isObject, isString } from 'lodash'
 const capitalizeFirst = (s) => s.charAt(0).toUpperCase() + s.slice(1)
 
 /**
-  * Provides component with boolean state as prop with two functions: set and toggle.
-  * Requires single argument of type string or object that determines the names of the
+  * Provides component with state as a prop a setter function.
+  * Requires first argument of type string or object that determines the names of the
   * 3 props provided to the component.
   * If argument is a string: 'is', 'set', and 'toggle' will be used as prefixes.
   * If argument is an object: propName, setterName, and togglerName are used to specify
   * them explicitly.
-  * Additionally, if the object contains the field defaultState it will be used as the
-  * initial value.
+  * Additionally, if a second argument is provided or the object contains the field
+  * defaultState it will be used as the initial value.
   */
-const withToggle = (nameOrOptions) => (Wrapped) => {
+const withToggle = (nameOrOptions, defaultState) => (Wrapped) => {
   let baseName
   let propName
   let togglerName
   let setterName
-  let defaultState
 
   if (isObject(nameOrOptions)) {
     ({ propName, setterName, togglerName, defaultState } = nameOrOptions)

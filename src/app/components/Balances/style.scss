@@ -1,65 +1,8 @@
-@import "~Styles/variables";
+@import '~faast-ui/src/style/index';
 
-$collapse-point: md;
-$expand-point: breakpoint-next($collapse-point);
-
-.addressLink {
-  @include media-breakpoint-down(xs) {
-    font-size: $small-font-size;
-  }
-  overflow-wrap: break-word;
-}
-
-.chart {
-  height: 400px;
-}
-
-.balanceTable {
-  line-height: 1;
-
-  td, th {
-    vertical-align: middle !important;
-    text-align: right;
-    &:first-child {
-      text-align: left;
-      @include media-breakpoint-down($collapse-point) {
-        text-align: center;
-      }
-    }
-  }
-
-  .expandedOnly {
-    @include media-breakpoint-down($collapse-point) {
-      display: none;
-    }
-  }
-
-  .collapsedOnly {
-    @include media-breakpoint-up($expand-point) {
-      display: none;
-    }
-  }
-
-  .collapsedRow {
-    @include media-breakpoint-down($collapse-point) {
-      margin-top: 0.5rem;
-      display: block;
-      font-size: $small-font-size;
-    }
-  }
-
-  .coinName {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-}
-
-.viewMode {
-  @extend .text-primary;
-  border-width: 1px;
-  border-style: solid;
-  border-radius: 10px;
-  border-color: $medium-grey;
-  padding: 5px;
+.statLabel {
+  @extend .font-weight-light;
+  @extend .text-muted;
+  @extend .text-uppercase;
+  @extend .text-spacing;
 }

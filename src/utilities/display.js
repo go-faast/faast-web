@@ -4,8 +4,8 @@ export const fiat = (value) => {
   return accounting.formatMoney(value)
 }
 
-export const percentage = (value, showPositive) => {
-  const rounded = accounting.toFixed(value, 2)
+export const percentage = (value, showPositive, decimalPlaces = 2) => {
+  const rounded = accounting.toFixed(value, decimalPlaces)
 
   if (showPositive && value > 0) return `+${rounded}%`
   return `${rounded}%`

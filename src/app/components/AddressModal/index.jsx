@@ -1,33 +1,30 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, ModalBody } from 'reactstrap'
+import { Modal, ModalHeader, ModalBody } from 'reactstrap'
 import QRCode from 'qrcode.react'
 import styles from './style'
 
 const AddressModal = ({ address, showModal, toggleModal, showDownload, handleDownload }) => (
   <Modal backdrop='static' isOpen={showModal} toggle={toggleModal}>
+    <ModalHeader tag='h4' toggle={toggleModal} className='text-primary'>
+      Address
+    </ModalHeader>
     <ModalBody className='text-center'>
-      <button onClick={toggleModal} type='button' className={styles.closeButton} aria-label='Close'>
-        <i className={`fa fa-close ${styles.closeIcon}`} />
-      </button>
-      <div className='modal-title'>address</div>
-      <div className='modal-text'>
-        <div className={styles.qrOuterContainer}>
-          <div className={styles.qrInnerContainer}>
-            <a href={`ethereum:${address}`}>
-              <QRCode size={210} level='L' value={`${address}`} />
-            </a>
-          </div>
+      <div className={styles.qrOuterContainer}>
+        <div className={styles.qrInnerContainer}>
+          <a href={`ethereum:${address}`}>
+            <QRCode size={210} level='L' value={`${address}`} />
+          </a>
         </div>
-        <div className={styles.addressText}>
-          {address}
-        </div>
-        {showDownload &&
-          <div onClick={handleDownload} className='cursor-pointer'>
-            download keystore file
-          </div>
-        }
       </div>
+      <div className={styles.addressText}>
+        {address}
+      </div>
+      {showDownload &&
+        <div onClick={handleDownload} className='cursor-pointer'>
+          download keystore file
+        </div>
+      }
     </ModalBody>
   </Modal>
 )

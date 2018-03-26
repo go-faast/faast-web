@@ -9,7 +9,10 @@ if (!config.isDev) {
   window.BigNumber = BigNumber
 }
 
+const ZERO = new BigNumber(0)
 const TEN = new BigNumber(10)
+
+export { ZERO, TEN, BigNumber }
 
 export const toBigNumber = (value = 0) => {
   if (value === '0x') value = 0

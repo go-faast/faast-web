@@ -1,0 +1,39 @@
+@import '~Styles/variables';
+
+$collapse-point: md;
+$expand-point: breakpoint-next($collapse-point);
+
+.tableStyle {
+  line-height: 1;
+
+  td, th {
+    vertical-align: middle !important;
+    text-align: right;
+    &:first-child {
+      text-align: left;
+      @include media-breakpoint-down($collapse-point) {
+        text-align: center;
+      }
+    }
+  }
+
+  .expandedOnly {
+    @include media-breakpoint-down($collapse-point) {
+      display: none;
+    }
+  }
+
+  .collapsedOnly {
+    @include media-breakpoint-up($expand-point) {
+      display: none;
+    }
+  }
+
+  .collapsedRow {
+    @include media-breakpoint-down($collapse-point) {
+      margin-top: 0.5rem;
+      display: block;
+      font-size: $small-font-size;
+    }
+  }
+}

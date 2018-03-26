@@ -1,0 +1,10 @@
+@import '~Styles/variables';
+
+.addressButton {
+  max-width: 100%;
+  white-space: normal !important;
+  text-align: inherit !important;
+  @include media-breakpoint-down(xs) {
+    font-size: $font-size-sm;
+  }
+}
