@@ -29,6 +29,8 @@ const res = path.join(projectRoot, 'res')
 const test = path.join(projectRoot, 'test')
 const nodeModules = path.join(projectRoot, 'node_modules')
 
+const publicPath = '/portfolio/'
+
 const assetOutputPath = 'asset/'
 const vendorOutputPath = 'vendor/'
 const bundleOutputPath = 'bundle/'
@@ -86,7 +88,7 @@ let config = {
   entry: path.join(src, 'index.jsx'),
   output: {
     path: dist,
-    publicPath: '/portfolio/',
+    publicPath,
     filename: bundleOutputPath + (isDev ? '[name].js' : '[name].[hash].js')
   },
   node: {
@@ -153,7 +155,8 @@ let config = {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(NODE_ENV)
+      'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
+      'process.env.ROUTER_BASE_NAME': JSON.stringify(publicPath)
     }),
     new HtmlPlugin({
       template: path.join(src, 'index.html'),
@@ -215,7 +218,7 @@ if (!isDev) {
       contentBase: dist,
       hot: true,
       historyApiFallback: {
-        index: config.output.publicPath
+        index: publicPath
       },
       headers: { 'Access-Control-Allow-Origin': '*' }
     },

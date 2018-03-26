@@ -6,7 +6,7 @@ import thunk from 'redux-thunk'
 import logger from 'redux-logger'
 import { Provider } from 'react-redux'
 import throttle from 'lodash/throttle'
-import createHistory from 'history/createHashHistory'
+import createHistory from 'history/createBrowserHistory'
 import { ConnectedRouter, routerMiddleware } from 'react-router-redux'
 import { Route } from 'react-router-dom'
 import ReduxToastr from 'react-redux-toastr'
@@ -19,7 +19,7 @@ import 'faast-ui'
 import { getCurrentPortfolio, isAppReady } from 'Selectors'
 import config from 'Config'
 
-const history = createHistory()
+const history = createHistory({ basename: process.env.ROUTER_BASE_NAME })
 const middleware = [
   thunk,
   routerMiddleware(history)
