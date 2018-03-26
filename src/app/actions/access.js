@@ -48,11 +48,11 @@ export const openKeystoreFileWallet = (files) => (dispatch) => {
     const encryptedWalletString = event.target.result
     if (!encryptedWalletString) return toastr.error('Unable to read keystore file')
 
-    dispatch(openWallet(new EthereumWalletKeystore(encryptedWalletString))
+    dispatch(openWallet(new EthereumWalletKeystore(encryptedWalletString)))
       .then(() => {
         log.info('Encrypted wallet set')
         dispatch(push('/balances'))
-      }))
+      })
       .catch(handleOpenWalletError)
   }
 
@@ -67,7 +67,7 @@ export const openBlockstackWallet = () => (dispatch) => {
     if (!wallet) {
       toastr.error('Unable to open Blockstack wallet')
     }
-    openWallet(wallet)
+    dispatch(openWallet(wallet))
       .then(() => dispatch(push('/balances')))
       .catch(handleOpenWalletError)
   }
