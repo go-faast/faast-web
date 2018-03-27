@@ -2,18 +2,19 @@ import React from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import Connect from 'Components/Connect'
 import WalletClosed from 'Components/WalletClosed'
+import WalletOpened from 'Components/WalletOpened'
 import Dashboard from 'Components/Dashboard'
 import Modify from 'Components/Modify'
-import View from 'Components/View'
+import SearchResults from 'Components/SearchResults'
 
 const AppView = () => {
   return (
     <Switch>
       <WalletClosed exact path='/'/>
+      <WalletOpened path='/dashboard' component={Dashboard}/>
+      <WalletOpened path='/swap' component={Modify}/>
       <Route path='/connect' component={Connect}/>
-      <Route path='/dashboard' component={Dashboard}/>
-      <Route path='/swap' component={Modify}/>
-      <Route path='/address/:address' component={View}/>
+      <Route path='/address/:addressQuery' component={SearchResults}/>
 
       {/* Legacy routes */}
       <Redirect exact from='/balances' to='/dashboard'/>

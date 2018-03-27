@@ -1,26 +1,29 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Route, Redirect } from 'react-router-dom'
+import { createStructuredSelector } from 'reselect'
+
+import { tag as tagPropType } from 'Utilities/propTypes'
 import { isCurrentPortfolioEmpty } from 'Selectors'
 
-const WalletClosed = ({ isEmpty, path }) => (
-  <Route path={path} render={() => (
-    (isEmpty) ? (
-      <Redirect to='/connect' />
-    ) : (
-      <Redirect to='/balances' />
-    )
-  )} />
+const WalletClosed = ({ isClosed, tag: Tag, ...props }) => (
+  <Tag render={() => (
+    isClosed
+      ? (<Redirect to='/connect' />)
+      : (<Redirect to='/dashboard' />)
+  )} {...props}/>
 )
 
 WalletClosed.propTypes = {
-  isEmpty: PropTypes.bool.isRequired,
-  path: PropTypes.string.isRequired
+  tag: tagPropType
 }
 
-const mapStateToProps = (state) => ({
-  isEmpty: isCurrentPortfolioEmpty(state)
+WalletClosed.defaultProps = {
+  tag: Route
+}
+
+const mapStateToProps = createStructuredSelector({
+  isClosed: isCurrentPortfolioEmpty
 })
 
 export default connect(mapStateToProps)(WalletClosed)
