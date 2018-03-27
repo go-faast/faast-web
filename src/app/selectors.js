@@ -19,6 +19,8 @@ const getAppState = ({ app }) => app
 const getAssetState = ({ assets }) => assets
 const getPortfolioState = ({ portfolio }) => portfolio
 const getWalletState = ({ wallets }) => wallets
+const getRouterState = ({ router }) => router
+const getAccountSearchState = ({ accountSearch }) => accountSearch
 
 // App selectors
 export const isAppReady = createSelector(getAppState, ({ ready }) => ready)
@@ -74,6 +76,7 @@ export const getWalletWithHoldings = createItemSelector(
   getWallet,
   getAllAssets,
   (wallet, assets) => {
+    if (!wallet) return null
     let totalFiat = toBigNumber(0)
     let totalFiat24hAgo = toBigNumber(0)
     const balances = wallet.balances || {}
@@ -174,3 +177,12 @@ export const isCurrentPortfolioEmpty = wrapSelectorArgs(isPortfolioEmpty, getCur
 export const isDefaultPortfolioEmpty = (state) => isPortfolioEmpty(state, 'default')
 
 export const canAddWalletsToCurrentPortfolio = createSelector(getCurrentPortfolio, ({ type }) => type === 'MultiWallet')
+
+
+// Search selectors
+export const getAccountSearchQuery = createSelector(getRouterState, () => 'tmp123')
+export const getAccountSearchPending = createSelector(getAccountSearchState, ({ pending }) => pending)
+export const getAccountSearchError = createSelector(getAccountSearchState, ({ error }) => error)
+export const getAccountSearchResultId = createSelector(getAccountSearchState, ({ resultId }) => resultId)
+export const getAccountSearchResultWallet = wrapSelectorArgs(getWallet, getAccountSearchResultId)
+export const getAccountSearchResultWalletWithHoldings = wrapSelectorArgs(getWalletWithHoldings, getAccountSearchResultId)

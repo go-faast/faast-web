@@ -4,8 +4,10 @@ import {
   Row, Col, Card, CardHeader, CardBody
 } from 'reactstrap'
 import classNames from 'class-names'
+import { connect } from 'react-redux'
 
 import display from 'Utilities/display'
+import { getWalletWithHoldings } from 'Selectors'
 
 import Address from 'Components/Address'
 import ChangePercent from 'Components/ChangePercent'
@@ -20,6 +22,7 @@ const Balances = ({ wallet }) => {
     address, assetHoldings,
     totalFiat, totalFiat24hAgo, totalChange, balancesLoaded, balancesError
   } = wallet
+
   const assetRows = assetHoldings.filter(({ shown }) => shown)
   const stats = [
     {
@@ -43,7 +46,6 @@ const Balances = ({ wallet }) => {
       colClass: 'order-4'
     },
   ]
-
 
   return (
     <Card>
@@ -78,4 +80,15 @@ Balances.propTypes = {
   wallet: PropTypes.object.isRequired
 }
 
+const ConnectedBalances = connect((state, { id }) => ({
+  wallet: getWalletWithHoldings(state, id)
+}))(Balances)
+
+ConnectedBalances.propTypes = {
+  id: PropTypes.string.isRequired,
+}
+
+Balances.Connected = ConnectedBalances
+
+export { Balances, ConnectedBalances }
 export default Balances

@@ -77,7 +77,7 @@ export default class EthereumWallet extends Wallet {
     assertExtended(this, EthereumWallet)
   }
 
-  getId = () => this.getAddress();
+  getId = () => this.getAddress().toLowerCase();
 
   getLabel = () => this.label || `Ethereum ${ellipsize(this.getAddress(), 6, 4)}`;
 

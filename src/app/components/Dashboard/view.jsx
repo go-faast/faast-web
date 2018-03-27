@@ -1,9 +1,7 @@
 import React from 'react'
-import PropTypes from 'prop-types'
 import {
   Row, Col, Button,
 } from 'reactstrap'
-import BigNumber from 'bignumber.js'
 
 import Layout from 'Components/Layout'
 import SignTxModal from 'Components/SignTxModal'
@@ -12,7 +10,7 @@ import WalletSelector from 'Components/WalletSelector'
 import OrderStatus from 'Components/OrderStatus'
 import Balances from 'Components/Balances'
 
-const BalancesView = (props) => {
+const DashboardView = (props) => {
   const {
     wallet, viewOnly, orderStatus, toggleChart, openCharts,
     showOrderModal, handleToggleOrderModal, handleForgetOrder,
@@ -65,15 +63,4 @@ const BalancesView = (props) => {
   )
 }
 
-BalancesView.propTypes = {
-  totalChange: PropTypes.instanceOf(BigNumber),
-  totalDecrease: PropTypes.bool,
-  total24hAgo: PropTypes.instanceOf(BigNumber),
-  total: PropTypes.instanceOf(BigNumber),
-  assetRows: PropTypes.array,
-  toggleChart: PropTypes.func,
-  layoutProps: PropTypes.object,
-  pieChart: PropTypes.element
-}
-
-export default BalancesView
+export default DashboardView

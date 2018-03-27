@@ -16,7 +16,7 @@ import DashboardView from './view'
 
 let balancesInterval
 
-class Balances extends Component {
+class Dashboard extends Component {
   constructor (props) {
     super(props)
     this._orderStatus = this._orderStatus.bind(this)
@@ -107,7 +107,7 @@ class Balances extends Component {
   }
 }
 
-Balances.propTypes = {
+Dashboard.propTypes = {
   wallet: PropTypes.object.isRequired,
   mock: PropTypes.object.isRequired,
   updateHoldings: PropTypes.func.isRequired,
@@ -131,4 +131,4 @@ const mapDispatchToProps = {
   removePortfolio
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Balances)
+export default connect(mapStateToProps, mapDispatchToProps)(Dashboard)

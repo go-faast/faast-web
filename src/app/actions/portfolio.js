@@ -14,7 +14,7 @@ import {
   getTransactionReceipt,
   getTransaction
 } from 'Utilities/wallet'
-import walletService, { MultiWallet, EthereumWalletViewOnly } from 'Services/Wallet'
+import walletService, { MultiWallet } from 'Services/Wallet'
 
 import { insertSwapData, updateSwapTx, setSwap } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
@@ -24,9 +24,7 @@ import {
 } from 'Actions/wallet'
 import { retrieveAssetPrices } from 'Actions/asset'
 
-import {
-  getCurrentPortfolioId, getWallet
-} from 'Selectors'
+import { getCurrentPortfolioId } from 'Selectors'
 
 export const defaultPortfolioId = 'default'
 
