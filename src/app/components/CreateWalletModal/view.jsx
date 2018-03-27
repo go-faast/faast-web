@@ -160,8 +160,9 @@ ImportWalletForm = reduxForm({
 })(ImportWalletForm)
 
 let DownloadKeystoreForm = ({
-  invalid, handleSubmit, handleCancel, handleDownload,
-  hasDownloadedFile, isNewWallet, walletName, validateDisclaimerAgreed }) => (
+  handleSubmit, handleCancel, handleDownload, handleDisclaimerAgreedChange,
+  hasDownloadedFile, isNewWallet, walletName, agreedToDisclaimer
+}) => (
   <Form onSubmit={handleSubmit}>
     <ModalBody>
       <div className='modal-text'>
@@ -171,7 +172,7 @@ let DownloadKeystoreForm = ({
           </Button>
         </FormGroup>
         <div className='text-left'>
-          <h5 className='text-primary'>Please acknowledge that you understand the following:</h5>
+          <h5 className='text-primary'>Please acknowledge the following disclaimer:</h5>
           <ol className='mb-2'>
             {getAcks({ isNewWallet, walletName }).map((ack) => (
               <li key={ack} className='mb-2'>
@@ -182,15 +183,16 @@ let DownloadKeystoreForm = ({
           <ReduxFormField
             type='checkbox'
             name='disclaimerAgreed'
-            validate={validateDisclaimerAgreed}
-            label='I have read and understand the above disclaimer'
+            onChange={handleDisclaimerAgreedChange}
+            disabled={!hasDownloadedFile}
+            label='I understand and agree with all of the above'
           />
         </div>
       </div>
     </ModalBody>
     <ModalFooter className='justify-content-between'>
       <Button outline color='primary' onClick={handleCancel}>Cancel</Button>
-      <Button color='success' onClick={handleSubmit} disabled={invalid || !hasDownloadedFile}>Continue</Button>
+      <Button color='success' onClick={handleSubmit} disabled={!(hasDownloadedFile && agreedToDisclaimer)}>Continue</Button>
     </ModalFooter>
   </Form>
 )

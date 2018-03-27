@@ -6,7 +6,8 @@ import { isFunction } from 'lodash'
 
 const RenderInput = (props) => {
   const {
-    input: inputProps, label, type, meta: { touched, error, warning },
+    input: inputProps, meta: { touched, error, warning, form: formName },
+    label, type, placeholder, id, disabled,
     addonPrepend, addonAppend, row, className, inputClassName, labelProps, inputCol
   } = props
   const check = ['checkbox', 'radio'].includes(type)
@@ -14,37 +15,40 @@ const RenderInput = (props) => {
   if (!labelPosition) {
     labelPosition = check ? 'append' : 'prepend'
   }
+  const inputId = id || (label ? `form-${formName}-${inputProps.name}` : undefined)
   const invalid = touched && (error || warning)
   const useInputGroup = Boolean(addonPrepend || addonAppend)
   const renderAddon = (Addon) => isFunction(Addon) ? (<Addon invalid={invalid} {...props}/>) : Addon
   const inputElement = (
-    <Input type={type} className={inputClassName} {...inputProps} valid={invalid ? false : undefined}/>
+    <Input key='input' {...inputProps}
+      className={inputClassName} id={inputId} placeholder={placeholder}
+      type={type} disabled={disabled} valid={invalid ? false : undefined}
+    />
   )
   const feedbackElement = touched && (
-    (error && <FormFeedback>{error}</FormFeedback>) ||
-    (warning && <FormFeedback className='text-warning'>{warning}</FormFeedback>)
+    (error && <FormFeedback key='feedback-error'>{error}</FormFeedback>) ||
+    (warning && <FormFeedback key='feedback-warn' className='text-warning'>{warning}</FormFeedback>)
   )
-  const inputGroupElement = !useInputGroup ? inputElement : (
-    <InputGroup>
+  const inputGroupElement = !useInputGroup ? [inputElement, !check && feedbackElement] : (
+    <InputGroup key='input-group'>
       {renderAddon(addonPrepend)}
       {inputElement}
       {renderAddon(addonAppend)}
       {feedbackElement}
     </InputGroup>
   )
-  const labelComponent = (
-    <Label for={inputProps.id || inputProps.name} check={check}{...labelProps}>
+  const labelElement = label && [(
+    <Label key='label' for={inputId} check={check}{...labelProps}>
       {label}
     </Label>
-  )
+  ), check && feedbackElement]
   return (
     <FormGroup className={className} row={row} check={check}>
-      {label && labelPosition === 'prepend' && labelComponent}
+      {labelPosition === 'prepend' && labelElement}
       {inputCol
         ? (<Col {...inputCol}>{inputGroupElement}</Col>)
         : (inputGroupElement)}
-      {label && labelPosition === 'append' && labelComponent}
-      {!useInputGroup && feedbackElement}
+      {labelPosition === 'append' && labelElement}
     </FormGroup>
   )
 }

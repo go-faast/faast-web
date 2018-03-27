@@ -13,7 +13,8 @@ const initialState = {
   view: 'create',
   createdWallet: null,
   fileName: null,
-  hasDownloadedFile: false
+  hasDownloadedFile: false,
+  agreedToDisclaimer: false
 }
 
 class CreateWalletModal extends Component {
@@ -43,10 +44,11 @@ class CreateWalletModal extends Component {
     }
   }
 
-  validateDisclaimerAgreed = (disclaimerAgreed) => {
-    if (!disclaimerAgreed) {
-      return 'Please check that you\'ve read and understand the disclaimer'
-    }
+  handleDisclaimerAgreedChange = (event, disclaimerAgreed) => {
+    console.log('validateDisclaimerAgreed', disclaimerAgreed)
+    this.setState({
+      agreedToDisclaimer: disclaimerAgreed,
+    })
   }
 
   handleImportPrivKey = (formValues) => {
@@ -59,21 +61,24 @@ class CreateWalletModal extends Component {
   handleCreatePassword = (formValues) => {
     const { password } = formValues
     const walletName = this.getWalletName()
-    let createdWallet = this.state.createdWallet
-    if (!createdWallet) {
-      createdWallet = EthereumWalletKeystore.generate()
-    }
-    try {
-      const fileName = createdWallet.getFileName(password)
-      this.setState({
-        view: 'download',
-        createdWallet: createdWallet.encrypt(password),
-        fileName
+
+    Promise.resolve(this.state.createdWallet)
+      .then((createdWallet) => {
+        if (!createdWallet) {
+          return EthereumWalletKeystore.generate()
+        }
+        return createdWallet
       })
-    } catch (e) {
-      log.error('handleCreatePassword', e)
-      toastr.error(`Error creating ${walletName}`)
-    }
+      .then((createdWallet) => createdWallet.getFileName(password)
+        .then((fileName) => this.setState({
+          view: 'download',
+          createdWallet: createdWallet.encrypt(password),
+          fileName
+        })))
+      .catch((e) => {
+        log.error('handleCreatePassword', e)
+        toastr.error(`Error creating ${walletName}`)
+      })
   }
 
   handleDownload = () => {
@@ -90,9 +95,9 @@ class CreateWalletModal extends Component {
     if (!this.state.hasDownloadedFile) {
       return toastr.error('Please download the wallet keystore file before continuing')
     }
-    const { isNewWallet, openWallet, routerPush, handleContinue, mock: { mocking } } = this.props
+    const { isNewWallet, openWallet, routerPush, handleContinue } = this.props
     if (isNewWallet) {
-      openWallet(this.state.createdWallet, mocking)
+      openWallet(this.state.createdWallet)
         .then(() => routerPush('/balances'))
     } else {
       handleContinue ? handleContinue() : this._handleCloseModal()
@@ -106,7 +111,7 @@ class CreateWalletModal extends Component {
 
   render () {
     const { isNewWallet, showModal } = this.props
-    const { hasDownloadedFile } = this.state
+    const { hasDownloadedFile, agreedToDisclaimer } = this.state
     return (
       <CreateWalletModalView
         view={this.state.view}
@@ -115,9 +120,10 @@ class CreateWalletModal extends Component {
         handleCloseModal={this.handleCloseModal}
         handleDownload={this.handleDownload}
         handleContinue={this.handleContinue}
+        handleDisclaimerAgreedChange={this.handleDisclaimerAgreedChange}
         validatePassword={this.validatePassword}
         validatePasswordConfirm={this.validatePasswordConfirm}
-        validateDisclaimerAgreed={this.validateDisclaimerAgreed}
+        agreedToDisclaimer={agreedToDisclaimer}
         showModal={showModal}
         isNewWallet={isNewWallet}
         hasDownloadedFile={hasDownloadedFile}
