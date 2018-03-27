@@ -7,91 +7,87 @@ import toastr from 'Utilities/toastrWrapper'
 import { downloadJson } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import { openWallet } from 'Actions/access'
-import { getCurrentWallet } from 'Selectors'
 import { EthereumWalletKeystore } from 'Services/Wallet'
 
 const initialState = {
+  view: 'create',
   createdWallet: null,
   fileName: null,
-  view: 'create',
-  downloaded: false
-}
-
-const getWalletName = (isNewWallet) => isNewWallet ? 'wallet' : 'keystore'
-
-const validateCreatePassword = (values, name = 'wallet') => {
-  if (!values || !values.password || values.password.length < 8) {
-    toastr.error(`It is important to secure your ${name} with a strong password. Please use a minimum of 8 characters`, { timeOut: 8000 })
-    return false
-  }
-  return true
+  hasDownloadedFile: false
 }
 
 class CreateWalletModal extends Component {
   constructor () {
     super()
     this.state = initialState
-    this._handleCreatePassword = this._handleCreatePassword.bind(this)
-    this._handleCreatePasswordWithPrivKey = this._handleCreatePasswordWithPrivKey.bind(this)
-    this._handleConfirmPassword = this._handleConfirmPassword.bind(this)
-    this._handleCloseModal = this._handleCloseModal.bind(this)
-    this._handleDownload = this._handleDownload.bind(this)
-    this._handleContinue = this._handleContinue.bind(this)
-    this._generateNewWallet = this._generateNewWallet.bind(this)
-    this._generateFromPrivKey = this._generateFromPrivKey.bind(this)
-    this._getFileName = this._getFileName.bind(this)
-    this._handleImportPrivKey = this._handleImportPrivKey.bind(this)
   }
 
-  _handleCreatePassword (values) {
-    if (!this.props.isNewWallet && this.props.wallet.isBlockstack) {
-      return this.props.wallet.getPrivateKeyString(values.password)
-        .then((privateKey) => {
-          this._handleCreatePasswordWithPrivKey(Object.assign({}, values, { privateKey }))
-        })
+  getWalletName = () => this.props.isNewWallet ? 'wallet' : 'keystore'
+
+  validatePassword = (password) => {
+    const walletName = this.getWalletName()
+    if (!password) {
+      return 'Password is required'
     }
-    if (validateCreatePassword(values)) {
-      const createdWallet = this._generateNewWallet(values.password)
-      if (createdWallet) {
-        this.setState({ createdWallet, view: 'confirm' })
-      } else {
-        toastr.error('Error generating wallet')
-      }
+    if (password.length < 8) {
+      return `Please at least 8 characters. It is important to secure your ${walletName} with a strong password.`
     }
   }
 
-  _handleCreatePasswordWithPrivKey (values) {
-    const name = getWalletName(this.props.isNewWallet)
-    if (validateCreatePassword(values, name)) {
-      const createdWallet = this._generateFromPrivKey(values.privateKey, values.password)
-      if (createdWallet) {
-        this.setState({ createdWallet, view: 'confirm' })
-      } else {
-        toastr.error('Please enter a valid private key')
-      }
+  validatePasswordConfirm = (passwordConfirm, { password }) => {
+    if (!passwordConfirm) {
+      return 'Please confirm your password'
+    }
+    if (passwordConfirm !== password) {
+      return 'Passwords do not match'
     }
   }
 
-  _handleConfirmPassword (values) {
-    this._getFileName(values.password)
-    .then((fileName) => {
-      this.setState({ view: 'download', fileName })
-    })
-    .catch(log.error)
+  validateDisclaimerAgreed = (disclaimerAgreed) => {
+    if (!disclaimerAgreed) {
+      return 'Please check that you\'ve read and understand the disclaimer'
+    }
   }
 
-  _handleDownload () {
+  handleImportPrivKey = (formValues) => {
+    let { privateKey } = formValues
+    privateKey = privateKey.trim()
+    const wallet = EthereumWalletKeystore.fromPrivateKey(privateKey)
+    this.setState({ view: 'create', createdWallet: wallet })
+  }
+
+  handleCreatePassword = (formValues) => {
+    const { password } = formValues
+    const walletName = this.getWalletName()
+    let createdWallet = this.state.createdWallet
+    if (!createdWallet) {
+      createdWallet = EthereumWalletKeystore.generate()
+    }
+    try {
+      const fileName = createdWallet.getFileName(password)
+      this.setState({
+        view: 'download',
+        createdWallet: createdWallet.encrypt(password),
+        fileName
+      })
+    } catch (e) {
+      log.error('handleCreatePassword', e)
+      toastr.error(`Error creating ${walletName}`)
+    }
+  }
+
+  handleDownload = () => {
     downloadJson(this.state.createdWallet.keystore, this.state.fileName, true)
-    .then(() => {
-      this.setState({ download: true })
-    })
-    .catch(() => {
-      toastr.error('Sorry, there was a problem with your request')
-    })
+      .then(() => {
+        this.setState({ hasDownloadedFile: true })
+      })
+      .catch(() => {
+        toastr.error('Sorry, there was a problem with your request')
+      })
   }
 
-  _handleContinue () {
-    if (!this.state.download) {
+  handleContinue = () => {
+    if (!this.state.hasDownloadedFile) {
       return toastr.error('Please download the wallet keystore file before continuing')
     }
     const { isNewWallet, openWallet, routerPush, handleContinue, mock: { mocking } } = this.props
@@ -103,66 +99,37 @@ class CreateWalletModal extends Component {
     }
   }
 
-  _handleCloseModal () {
+  handleCloseModal = () => {
     this.setState(initialState)
     this.props.toggleModal()
   }
 
-  _generateFromPrivKey (privateKey, password) {
-    if (!privateKey) return null
-    return EthereumWalletKeystore.fromPrivateKey(privateKey).encrypt(password)
-  }
-
-  _generateNewWallet (password) {
-    return EthereumWalletKeystore.generate().encrypt(password)
-  }
-
-  _getFileName (password) {
-    return this.state.createdWallet.getFileName(password)
-  }
-
-  _handleImportPrivKey () {
-    this.setState({ view: 'import' })
-  }
-
   render () {
     const { isNewWallet, showModal } = this.props
-    const { download } = this.state
+    const { hasDownloadedFile } = this.state
     return (
       <CreateWalletModalView
         view={this.state.view}
-        handleCreatePassword={this._handleCreatePassword}
-        handleCreatePasswordWithPrivKey={this._handleCreatePasswordWithPrivKey}
-        handleConfirmPassword={this._handleConfirmPassword}
-        handleCloseModal={this._handleCloseModal}
-        handleDownload={this._handleDownload}
-        handleContinue={this._handleContinue}
-        handleImportPrivKey={this._handleImportPrivKey}
+        handleImportPrivKey={this.handleImportPrivKey}
+        handleCreatePassword={this.handleCreatePassword}
+        handleCloseModal={this.handleCloseModal}
+        handleDownload={this.handleDownload}
+        handleContinue={this.handleContinue}
+        validatePassword={this.validatePassword}
+        validatePasswordConfirm={this.validatePasswordConfirm}
+        validateDisclaimerAgreed={this.validateDisclaimerAgreed}
         showModal={showModal}
         isNewWallet={isNewWallet}
-        downloaded={download}
-        walletName={getWalletName(isNewWallet)}
+        hasDownloadedFile={hasDownloadedFile}
+        walletName={this.getWalletName()}
       />
     )
   }
 }
-
-CreateWalletModal.propTypes = {
-  mock: PropTypes.object.isRequired,
-  wallet: PropTypes.object.isRequired,
-  openWallet: PropTypes.func.isRequired,
-  toggleModal: PropTypes.func.isRequired,
-  showModal: PropTypes.bool
-}
-
-const mapStateToProps = (state) => ({
-  mock: state.mock,
-  wallet: getCurrentWallet(state)
-})
 
 const mapDispatchToProps = {
   openWallet,
   routerPush: push,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateWalletModal)
+export default connect(null, mapDispatchToProps)(CreateWalletModal)

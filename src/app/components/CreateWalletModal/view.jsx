@@ -4,6 +4,8 @@ import { Modal, ModalBody, ModalHeader, ModalFooter, Form, FormGroup, Input, Lab
 import { Field, reduxForm } from 'redux-form'
 import { Button } from 'reactstrap'
 
+import ReduxFormField from 'Components/ReduxFormField'
+
 const getAcks = ({ isNewWallet, walletName }) => [
   `The ${walletName} file can used to send any funds it contains.`,
   `The ${walletName} file contains a sensitive private key that is encrypted and can only be accessed using the password I entered.`,
@@ -24,22 +26,13 @@ const CreateWalletModalView = (props) => {
           <CreatePasswordForm
             onSubmit={props.handleCreatePassword}
             handleCancel={props.handleCloseModal}
-            handleImportPrivKey={props.handleImportPrivKey}
             {...props}
           />
         )
       case 'import':
         return (
           <ImportWalletForm
-            onSubmit={props.handleCreatePasswordWithPrivKey}
-            handleCancel={props.handleCloseModal}
-            {...props}
-          />
-        )
-      case 'confirm':
-        return (
-          <ConfirmPasswordForm
-            onSubmit={props.handleConfirmPassword}
+            onSubmit={props.handleImportPrivKey}
             handleCancel={props.handleCloseModal}
             {...props}
           />
@@ -78,35 +71,52 @@ CreateWalletModalView.propTypes = {
   handleContinue: PropTypes.func
 }
 
-let CreatePasswordForm = ({ handleSubmit, handleCancel, walletName }) => (
+let CreatePasswordForm = ({
+  walletName, handleSubmit, handleCancel,
+  invalid, validatePassword, validatePasswordConfirm }) => (
   <Form onSubmit={handleSubmit}>
-    <ModalBody>
-      <div className='modal-text'>
-        <FormGroup>
-          Enter a password for your {walletName}. Please make a note of your password. You will not be able to access the funds in your {walletName} without your password.
-        </FormGroup>
-        <FormGroup>
-          <Input
-            tag={Field}
-            name='password'
-            component='input'
-            type='password'
-            placeholder='Enter a password'
-            className='text-center'
-          />
-        </FormGroup>
+    <ModalBody className='text-left'>
+      <div className='mb-3'>
+        Enter a password for your {walletName}. Please make a note of your password. You will not be able to access the funds in your {walletName} without your password.
       </div>
+      <ReduxFormField
+        row
+        className='gutter-3 align-items-center'
+        id='create-password'
+        name='password'
+        type='password'
+        label='Password'
+        placeholder='Enter a password...'
+        autoFocus
+        autoComplete='new-password'
+        validate={validatePassword}
+        labelProps={{ xs: '12', md: '4'}}
+        inputCol={{ xs:'12', md: true }}
+      />
+      <ReduxFormField
+        row
+        className='gutter-3 align-items-center'
+        id='create-password-confirm'
+        name='passwordConfirm'
+        type='password'
+        label='Confirm Password'
+        placeholder='Enter the password again...'
+        autoFocus
+        autoComplete='new-password'
+        validate={validatePasswordConfirm}
+        labelProps={{ xs: '12', md: '4'}}
+        inputCol={{ xs:'12', md: true }}
+      />
     </ModalBody>
     <ModalFooter className='justify-content-between'>
       <Button outline color='primary' onClick={handleCancel}>Cancel</Button>
-      <Button color='success' type='submit' onClick={handleSubmit}>Continue</Button>
+      <Button color='success' type='submit' onClick={handleSubmit} disabled={invalid}>Continue</Button>
     </ModalFooter>
   </Form>
 )
 
 CreatePasswordForm.propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-  handleImportPrivKey: PropTypes.func.isRequired,
   handleCancel: PropTypes.func.isRequired
 }
 
@@ -114,69 +124,28 @@ CreatePasswordForm = reduxForm({
   form: 'createPasswordForm'
 })(CreatePasswordForm)
 
-let ConfirmPasswordForm = ({ handleSubmit, handleCancel }) => (
+let ImportWalletForm = ({
+  invalid, handleSubmit, handleCancel
+}) => (
   <Form onSubmit={handleSubmit}>
     <ModalBody>
+      <h4 className='modal-title'>Import private key</h4>
       <div className='modal-text'>
-        <FormGroup>
-          Please confirm your password
-        </FormGroup>
+        Enter the private key of your existing Ethereum wallet.
         <FormGroup>
           <Input
             tag={Field}
-            name='password'
-            component='input'
-            type='password'
-            placeholder='Enter password again'
-            className='text-center'
+            name='privateKey'
+            component='textarea'
+            placeholder='Enter your private key...'
+            autoComplete='off'
           />
         </FormGroup>
       </div>
     </ModalBody>
     <ModalFooter className='justify-content-between'>
       <Button outline color='primary' onClick={handleCancel}>Cancel</Button>
-      <Button color='success' type='submit' onClick={handleSubmit}>Confirm</Button>
-    </ModalFooter>
-  </Form>
-)
-
-ConfirmPasswordForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
-  handleCancel: PropTypes.func.isRequired
-}
-
-ConfirmPasswordForm = reduxForm({
-  form: 'confirmPasswordForm'
-})(ConfirmPasswordForm)
-
-let ImportWalletForm = (props) => (
-  <Form onSubmit={props.handleSubmit}>
-    <ModalBody>
-      <h4 className='modal-title'>Import your exisiting wallet</h4>
-      <div className='modal-text'>
-        Enter the private key of your exisiting wallet and a new password that will be used to encrypt the wallet.
-        <FormGroup>
-          <Input
-            tag={Field}
-            name='privateKey'
-            component='textarea'
-            placeholder='Private Key'
-          />
-        </FormGroup>
-        <FormGroup>
-          <Input
-            tag={Field}
-            name='password'
-            component='input'
-            type='password'
-            placeholder='enter a password'
-          />
-        </FormGroup>
-      </div>
-    </ModalBody>
-    <ModalFooter className='justify-content-between'>
-      <Button outline color='primary' onClick={props.handleCancel}>Cancel</Button>
-      <Button color='success' onClick={props.handleSubmit}>Continue</Button>
+      <Button color='success' onClick={handleSubmit} disabled={invalid}>Continue</Button>
     </ModalFooter>
   </Form>
 )
@@ -190,7 +159,9 @@ ImportWalletForm = reduxForm({
   form: 'importWalletFor'
 })(ImportWalletForm)
 
-let DownloadKeystoreForm = ({ handleSubmit, handleCancel, handleDownload, downloaded, isNewWallet, walletName }) => (
+let DownloadKeystoreForm = ({
+  invalid, handleSubmit, handleCancel, handleDownload,
+  hasDownloadedFile, isNewWallet, walletName, validateDisclaimerAgreed }) => (
   <Form onSubmit={handleSubmit}>
     <ModalBody>
       <div className='modal-text'>
@@ -199,21 +170,27 @@ let DownloadKeystoreForm = ({ handleSubmit, handleCancel, handleDownload, downlo
             <i className='fa fa-download mr-2'/>Download {walletName} file
           </Button>
         </FormGroup>
-        <FormGroup tag="fieldset" className='text-left'>
-          <legend className='h5 text-primary'>Please acknowledge that you understand the following:</legend>
-          {getAcks({ isNewWallet, walletName }).map((ack, i) => (
-            <FormGroup key={ack} check className='mb-2'>
-              <Label check>
-                <Input type="checkbox" name={`ack${i}`} />{' '}{ack}
-              </Label>
-            </FormGroup>
-          ))}
-        </FormGroup>
+        <div className='text-left'>
+          <h5 className='text-primary'>Please acknowledge that you understand the following:</h5>
+          <ol className='mb-2'>
+            {getAcks({ isNewWallet, walletName }).map((ack) => (
+              <li key={ack} className='mb-2'>
+                {ack}
+              </li>
+            ))}
+          </ol>
+          <ReduxFormField
+            type='checkbox'
+            name='disclaimerAgreed'
+            validate={validateDisclaimerAgreed}
+            label='I have read and understand the above disclaimer'
+          />
+        </div>
       </div>
     </ModalBody>
     <ModalFooter className='justify-content-between'>
       <Button outline color='primary' onClick={handleCancel}>Cancel</Button>
-      <Button color='success' onClick={handleSubmit} disabled={!downloaded}>Confirm</Button>
+      <Button color='success' onClick={handleSubmit} disabled={invalid || !hasDownloadedFile}>Continue</Button>
     </ModalFooter>
   </Form>
 )
