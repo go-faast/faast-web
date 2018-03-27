@@ -1,4 +1,5 @@
 import { createAction } from 'redux-act'
+import sha256 from 'hash.js/lib/hash/sha/256'
 
 import blockstack from 'Utilities/blockstack'
 import log from 'Utilities/log'
@@ -8,13 +9,14 @@ import { getWalletIconProps } from 'Utilities/walletIcon'
 
 const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   id: wallet.getId(),
+  hashId: sha256().update(wallet.getId()).digest('hex').slice(0, 10),
   label: wallet.getLabel(),
   type: wallet.getType(),
   typeLabel: wallet.getTypeLabel(),
   address: wallet.isSingleAddress() ? wallet.getAddress() : '',
   iconProps: getWalletIconProps(wallet),
   isBlockstack: wallet.getType() === BlockstackWallet.type,
-  isReadOnly: wallet.isReadOnly,
+  isReadOnly: wallet.isReadOnly(),
   supportedAssets: wallet.getSupportedAssetSymbols(),
   nestedWalletIds: wallet.getType() === MultiWallet.type ? wallet.wallets.map((w) => w.getId()) : [],
 }) : wallet
