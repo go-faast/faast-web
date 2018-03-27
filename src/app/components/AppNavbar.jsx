@@ -44,7 +44,8 @@ const AppNavbar = ({ routerPush, children, ...props }) => (
         </NavItem>
       </Nav>
       <AddressSearchForm
-        className='expand-only' buttonSize='md' formProps={{ inline: true }}
+        className='expand-only' size='md' formProps={{ inline: true }}
+        inputProps={{ className: 'flat' }} buttonProps={{ className: 'flat' }}
         onSubmit={({ address }) => routerPush(`/address/${address}`)}/>
     </Container>
     {children}
