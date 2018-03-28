@@ -1,9 +1,12 @@
 import React from 'react'
 import { reduxForm, Field } from 'redux-form'
 import { Modal, ModalBody, Row, Col, Button } from 'reactstrap'
+
+import web3 from 'Services/Web3'
+
+import Spinner from 'Components/Spinner'
 import Units from 'Components/Units'
 import CoinIcon from 'Components/CoinIcon'
-import web3 from 'Services/Web3'
 
 const SignTxModal = (props) => {
   const renderView = () => {
@@ -138,14 +141,14 @@ const SignTxForm = reduxForm({
                 ? `${a.swap.fee} ${a.to.symbol}`
                 : (a.error
                     ? (<span className='text-danger'> - </span>)
-                    : (<span className='faast-loading loading-small' />))
+                    : (<Spinner inline size='sm'/>))
               }
             </Col>
             <Col xs='12' sm='auto' className='text-center order-3 order-sm-2'>{a.error
               ? (<span className='text-danger'>{a.error}</span>)
               : (a.swap.hasOwnProperty('rate')
                   ? `1 ${a.from.symbol} = ${a.swap.rate} ${a.to.symbol}`
-                  : (<span className='faast-loading loading-small' />))
+                  : (<Spinner inline size='sm'/>))
               }
             </Col>
             <Col xs='6' sm className='text-right order-2 order-sm-3'>
@@ -154,7 +157,7 @@ const SignTxForm = reduxForm({
                 ? (typeof a.txFee === 'string' ? a.txFee : (<Units value={a.txFee} symbol={a.from.symbol}/>))
                 : (a.error
                     ? (<span className='text-danger'> - </span>)
-                    : (<span className='faast-loading loading-small' />))
+                    : (<Spinner inline size='sm'/>))
               }
             </Col>
           </Row>

@@ -3,10 +3,12 @@ import {
   Card, CardHeader, CardBody, CardTitle, CardSubtitle, CardText, Button
 } from 'reactstrap'
 
+import Spinner from 'Components/Spinner'
+
 const getTitle = (status) => {
   switch (status) {
     case 'working':
-      return (<span className='text-light'>In Progress <span className='faast-loading loading-small'/></span>)
+      return (<span className='text-light'>In Progress <Spinner inline size='sm'/></span>)
     case 'complete':
       return (<span className='text-green'>Complete <i className='fa fa-check-circle'/></span>)
     case 'error':

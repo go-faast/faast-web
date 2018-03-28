@@ -13,30 +13,6 @@ body {
   color: $primary;
 }
 
-span.faast-loading {
-  display: inline-block;
-  line-height: 0;
-  vertical-align: middle;
-}
-.faast-loading {
-  background-image: url('~Img/loading-spinner.svg');
-  background-size: contain;
-  background-position: center center;
-  background-repeat: no-repeat;
-  &.loading-small {
-    height: 2px;
-    width: 80px;
-  }
-  &.loading-medium {
-    height: 4px;
-    width: 160px;
-  }
-  &.loading-large {
-    height: 8px;
-    width: 320px;
-  }
-}
-
 .redux-toastr {
   .toastr {
     border-radius: 0px;
