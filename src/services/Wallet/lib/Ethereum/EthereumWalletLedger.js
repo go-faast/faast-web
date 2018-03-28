@@ -29,11 +29,14 @@ export default class EthereumWalletLedger extends EthereumWallet {
     return window.faast.hw.ledger.getAppConfiguration_async()
       .then((data) => {
         log.info(`Ledger connected, version ${data.version}`)
-        return {
-          derivationPath,
-          getAddress: createAddressGetter(derivationPath)
-        }
+        return createAddressGetter(derivationPath)
       })
+      .then((getAddressIndex) => getAddressIndex(0)
+        .then((address) => ({
+          derivationPath,
+          getAddress,
+          firstAddress: address
+        })))
   }
 
   getAddress = () => this.address;
