@@ -13,35 +13,12 @@ const walletTypes = {
   ledger: {
     name: 'Ledger Wallet',
     icon: ledgerLogo,
-    supportedAssets: ['ETH'],
-    instructions: [{
-      icon: 'fa-usb',
-      text: 'Connect your Ledger Wallet to begin'
-    }, {
-      icon: 'fa-mobile',
-      text: 'Open the Ethereum app on the Ledger Wallet'
-    }, {
-      icon: 'fa-cogs',
-      text: 'Ensure that Browser Support is enabled in Settings'
-    }, {
-      icon: 'fa-download',
-      text: 'You may need to update the firmware if Browser Support is not available'
-    }]
+    supportedAssets: ['ETH']
   },
   trezor: {
     name: 'TREZOR',
     icon: trezorLogo,
-    supportedAssets: ['BTC', 'ETH'],
-    instructions: [{
-      icon: 'fa-usb',
-      text: 'Connect your TREZOR to begin'
-    }, {
-      icon: 'fa-external-link-square',
-      text: (<span>When the popop asks if you want to export the public key, select <b>Export</b></span>)
-    }, {
-      icon: 'fa-unlock',
-      text: 'If required, enter your pin or password to unlock the TREZOR'
-    }]
+    supportedAssets: ['BTC', 'ETH']
   }
 }
 

@@ -19,7 +19,7 @@ import Trezor from 'Services/Trezor'
 
 import HardwareWalletModalView from './view'
 
-const CONNECT_SECONDS = 6
+const CONNECT_RETRY_SECONDS = 10
 const ADDRESS_GROUP_SIZE = 5
 let hwConnectTimer
 let hwConnectTimerTimeout
@@ -30,7 +30,7 @@ const initialState = {
   selectedPage: 0,
   selectedIndex: 0,
   commStatus: '',
-  seconds: CONNECT_SECONDS,
+  seconds: CONNECT_RETRY_SECONDS,
   getAddress: () => Promise.resolve(),
 }
 
@@ -107,7 +107,7 @@ class HardwareWalletModal extends Component {
     const type = this.props.type
     this._clearAsync()
     this.setState({
-      seconds: CONNECT_SECONDS
+      seconds: CONNECT_RETRY_SECONDS
     })
 
     if (type === 'ledger') this._connectLedger()
@@ -124,9 +124,9 @@ class HardwareWalletModal extends Component {
     }
 
     const resetTimer = () => {
-      this.setState({ commStatus: 'waiting', seconds: CONNECT_SECONDS })
+      this.setState({ commStatus: 'waiting', seconds: CONNECT_RETRY_SECONDS })
       window.clearInterval(hwConnectTimer)
-      hwConnectTimer = timer(CONNECT_SECONDS, setSeconds, ledgerConnect)
+      hwConnectTimer = timer(CONNECT_RETRY_SECONDS, setSeconds, ledgerConnect)
     }
 
     const ledgerError = (e) => {
@@ -179,7 +179,6 @@ class HardwareWalletModal extends Component {
     const lastTransition = this.lastTransition || Promise.resolve()
     return lastTransition.then(() => {
       this.lastTransition = this.setStatePromise((prev) => {
-        console.log('mergeAccountState', index, accountState)
         const newAccounts = [...prev.accounts]
         newAccounts[index] = { ...(newAccounts[index] || {}), ...accountState }
         return {
@@ -311,10 +310,6 @@ const mapDispatchToProps = {
 HardwareWalletModal.propTypes = {
   type: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
-  instructions: PropTypes.arrayOf(PropTypes.shape({
-    icon: PropTypes.string,
-    text: PropTypes.node
-  })).isRequired,
   isOpen: PropTypes.bool.isRequired,
   setOpen: PropTypes.func.isRequired
 }
