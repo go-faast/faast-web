@@ -4,7 +4,7 @@ import { Route, Redirect } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
 
 import { tag as tagPropType } from 'Utilities/propTypes'
-import { isCurrentPortfolioEmpty } from 'Selectors'
+import { isDefaultPortfolioEmpty } from 'Selectors'
 
 const WalletClosed = ({ isClosed, tag: Tag, ...props }) => (
   <Tag render={() => (
@@ -23,7 +23,7 @@ WalletClosed.defaultProps = {
 }
 
 const mapStateToProps = createStructuredSelector({
-  isClosed: isCurrentPortfolioEmpty
+  isClosed: isDefaultPortfolioEmpty
 })
 
 export default connect(mapStateToProps)(WalletClosed)

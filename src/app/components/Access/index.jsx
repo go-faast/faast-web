@@ -1,7 +1,5 @@
 import React from 'react'
 import { Row, Col, Button } from 'reactstrap'
-import { connect } from 'react-redux'
-import { createStructuredSelector } from 'reselect'
 
 import CoinIcon from 'Components/CoinIcon'
 
@@ -11,8 +9,6 @@ import CreateWallet from './CreateWallet'
 import ImportKeystore from './ImportKeystore'
 import HardwareWallet from './HardwareWallet'
 import AddressSearch from './AddressSearch'
-
-import { isDefaultPortfolioEmpty } from 'Selectors'
 
 const TileRow = ({ children }) => (<div className='my-3'><Row className='gutter-4 justify-content-center'>{children}</Row></div>)
 const TileCol = ({ children }) => (<Col xs='9' sm='6' md='4' lg='3'>{children}</Col>)
@@ -51,6 +47,4 @@ const Access = () => (
   </div>
 )
 
-export default connect(createStructuredSelector({
-  disablePortfolioAccess: isDefaultPortfolioEmpty,
-}))(Access)
+export default Access
