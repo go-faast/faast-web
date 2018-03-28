@@ -1,6 +1,9 @@
 import React from 'react'
 import { reduxForm, Field } from 'redux-form'
-import { Modal, ModalBody, Row, Col, Button } from 'reactstrap'
+import {
+  Row, Col, Button, Form, Card, CardBody, CardFooter,
+  Modal, ModalHeader, ModalBody, ModalFooter
+} from 'reactstrap'
 
 import web3 from 'Services/Web3'
 
@@ -71,112 +74,118 @@ const SignTxModal = (props) => {
 }
 
 const SwapStatusRow = ({ status: { swap, from, to, receiveAmount }, children }) => (
-  <div className='color-bg-3 text-small text-medium-grey p-2 p-md-3'>
-    <Row className='gutter-0 align-items-center'>
-      <Col>
-        <Row className='gutter-2 align-items-center text-center text-sm-left'>
-          <Col xs='12' sm='auto'><CoinIcon symbol={from.symbol}/></Col>
-          <Col xs='12' sm>
-            <Row className='gutter-0'>
-              <Col xs='12' className='order-sm-2'>{from.name}</Col>
-              <Col xs='12' className='text-white'><Units value={swap.unit} symbol={from.symbol}/></Col>
-            </Row>
-          </Col>
-        </Row>
-      </Col>
-      <Col xs='auto' className='text-center'>
-        {children}
-      </Col>
-      <Col>
-        <Row className='gutter-2 align-items-center text-center text-sm-right'>
-          <Col xs='12' sm='auto' className='order-sm-2'><CoinIcon symbol={to.symbol}/></Col>
-          <Col xs='12' sm>
-            <Row className='gutter-0'>
-              <Col xs='12' className='order-sm-2'>{to.name}</Col>
-              <Col xs='12' className='text-white'>
-                {typeof receiveAmount !== 'undefined' && receiveAmount !== null
-                  ? <Units value={receiveAmount} symbol={to.symbol}/>
-                  : ' '}
-              </Col>
-            </Row>
-          </Col>
-        </Row>
-      </Col>
-    </Row>
-  </div>
+  <Row className='gutter-0 align-items-center text-small text-muted'>
+    <Col>
+      <Row className='gutter-2 align-items-center text-center text-sm-left'>
+        <Col xs='12' sm='auto'><CoinIcon symbol={from.symbol}/></Col>
+        <Col xs='12' sm>
+          <Row className='gutter-0'>
+            <Col xs='12' className='order-sm-2'>{from.name}</Col>
+            <Col xs='12' className='text-white'><Units value={swap.unit} symbol={from.symbol}/></Col>
+          </Row>
+        </Col>
+      </Row>
+    </Col>
+    <Col xs='auto' className='text-center'>
+      {children}
+    </Col>
+    <Col>
+      <Row className='gutter-2 align-items-center text-center text-sm-right'>
+        <Col xs='12' sm='auto' className='order-sm-2'><CoinIcon symbol={to.symbol}/></Col>
+        <Col xs='12' sm>
+          <Row className='gutter-0'>
+            <Col xs='12' className='order-sm-2'>{to.name}</Col>
+            <Col xs='12' className='text-white'>
+              {typeof receiveAmount !== 'undefined' && receiveAmount !== null
+                ? <Units value={receiveAmount} symbol={to.symbol}/>
+                : ' '}
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    </Col>
+  </Row>
+)
+
+const SigningStatusCard = ({ order: a, status }) => (
+  <Card className='flat'>
+    <CardBody className='py-2 px-3'>
+      <SwapStatusRow status={a}>
+        <Icon tag='div' src='https://faa.st/img/right-icon.svg' size='md' className='m-auto'/>
+        {status}
+      </SwapStatusRow>
+    </CardBody>
+    <CardFooter className='text-x-small text-muted py-2 px-3'>
+      <Row className='gutter-2'>
+        <Col xs='6' sm>
+          <span className='margin-right-10'>swap fee</span>
+          {a.swap.hasOwnProperty('fee')
+            ? `${a.swap.fee} ${a.to.symbol}`
+            : (a.error
+                ? (<span className='text-danger'> - </span>)
+                : (<Spinner inline size='sm'/>))
+          }
+        </Col>
+        <Col xs='12' sm='auto' className='text-center order-3 order-sm-2'>{a.error
+          ? (<span className='text-danger'>{a.error}</span>)
+          : (a.swap.hasOwnProperty('rate')
+              ? `1 ${a.from.symbol} = ${a.swap.rate} ${a.to.symbol}`
+              : (<Spinner inline size='sm'/>))
+          }
+        </Col>
+        <Col xs='6' sm className='text-right order-2 order-sm-3'>
+          <span className='margin-right-10'>txn fee</span>
+          {typeof a.txFee !== 'undefined'
+            ? (typeof a.txFee === 'string' ? a.txFee : (<Units value={a.txFee} symbol={a.from.symbol}/>))
+            : (a.error
+                ? (<span className='text-danger'> - </span>)
+                : (<Spinner inline size='sm'/>))
+          }
+        </Col>
+      </Row>
+    </CardFooter>
+  </Card>
 )
 
 const SignTxForm = reduxForm({
   form: 'signTxForm'
 })((props) => {
   let nextToSign = 0
-  const swapRow = props.swapList.map((a, i) => {
-    const sigStatus = () => {
-      if (a.swap && a.swap.tx && a.swap.tx.signed) {
-        nextToSign += 1
-        return (
-          <div className='text-gradient'>signed</div>
-        )
-      } else if (a.swap && a.swap.error) {
-        nextToSign += 1
-        return (
-          <div className='text-red'>declined</div>
-        )
-      } else if (props.isSigning && i === nextToSign) {
-        return (
-          <div className='text-orange blink'>awaiting signature</div>
-        )
-      }
+  const signingStatuses = props.swapList.map((a, i) => {
+    let status
+    if (a.swap && a.swap.tx && a.swap.tx.signed) {
+      nextToSign += 1
+      status = (<div className='text-gradient'>signed</div>)
+    } else if (a.swap && a.swap.error) {
+      nextToSign += 1
+      status = (<div className='text-red'>declined</div>)
+    } else if (props.isSigning && i === nextToSign) {
+      status = (<div className='text-orange blink'>awaiting signature</div>)
     }
     return (
-      <div key={i} className='margin-top-10'>
-        <SwapStatusRow status={a}>
-          <Icon tag='div' src='https://faa.st/img/right-icon.svg' size='md' className='m-auto'/>
-          {sigStatus()}
-        </SwapStatusRow>
-        <div className='color-bg-1 text-x-small text-medium-grey p-2'>
-          <Row className='gutter-2'>
-            <Col xs='6' sm>
-              <span className='margin-right-10'>swap fee</span>
-              {a.swap.hasOwnProperty('fee')
-                ? `${a.swap.fee} ${a.to.symbol}`
-                : (a.error
-                    ? (<span className='text-danger'> - </span>)
-                    : (<Spinner inline size='sm'/>))
-              }
-            </Col>
-            <Col xs='12' sm='auto' className='text-center order-3 order-sm-2'>{a.error
-              ? (<span className='text-danger'>{a.error}</span>)
-              : (a.swap.hasOwnProperty('rate')
-                  ? `1 ${a.from.symbol} = ${a.swap.rate} ${a.to.symbol}`
-                  : (<Spinner inline size='sm'/>))
-              }
-            </Col>
-            <Col xs='6' sm className='text-right order-2 order-sm-3'>
-              <span className='margin-right-10'>txn fee</span>
-              {typeof a.txFee !== 'undefined'
-                ? (typeof a.txFee === 'string' ? a.txFee : (<Units value={a.txFee} symbol={a.from.symbol}/>))
-                : (a.error
-                    ? (<span className='text-danger'> - </span>)
-                    : (<Spinner inline size='sm'/>))
-              }
-            </Col>
-          </Row>
-        </div>
-      </div>
+      <Col xs='12' key={i}>
+        <SigningStatusCard order={a} status={status}/>
+      </Col>
     )
   })
   return (
-    <form onSubmit={props.handleSubmit}>
+    <Form onSubmit={props.handleSubmit}>
+      <ModalHeader className='text-primary'>
+        Review and Sign
+      </ModalHeader>
       <ModalBody>
-        <div className='modal-title text-center'>review and sign</div>
-        <div className='modal-text text-center'>
+        <div className='modal-text'>
+        <p>
           The following transactions will take place to save the changes you made to your wallet. Please review and sign them with {props.description}.
-          <br />
+        </p>
+        <p>
           The receive amount is an estimate based on the current rate and swap fee. Actual amount may vary.
+        </p>
         </div>
         <div className='review-list'>
-          {swapRow}
+          <Row className='gutter-2'>
+            {signingStatuses}
+          </Row>
         </div>
         {props.passwordPrompt &&
           <div className='form-group d-flex justify-content-center'>
@@ -188,41 +197,44 @@ const SignTxForm = reduxForm({
             />
           </div>
         }
-        <div className='form-group text-center'>
-          <Button color='faast'
-            disabled={!props.readyToSign || props.isSigning}
-            onClick={props.handleSubmit}>
-            {props.buttonText}
-          </Button>
-        </div>
-        <div className='form-group text-center'>
-          <Button color='link' onClick={props.handleCancel}>cancel</Button>
-        </div>
       </ModalBody>
-    </form>
+      <ModalFooter className='justify-content-between'>
+        <Button color='primary' outline onClick={props.handleCancel}>cancel</Button>
+        <Button color='primary'
+          disabled={!props.readyToSign || props.isSigning}
+          onClick={props.handleSubmit}>
+          {props.buttonText}
+        </Button>
+      </ModalFooter>
+    </Form>
   )
 })
 
-const OrderStatus = (props) => {
-  const statusRow = props.swapList.map((a, i) => (
-    <div key={i} className='margin-top-5'>
-      <SwapStatusRow status={a}>
-        <div className={`status margin-top-5 ${a.status.cl}`}>{a.status.text}</div>
-        <div>{a.status.details}</div>
-      </SwapStatusRow>
-    </div>
-  ))
-  return (
+const OrderStatus = ({ swapList, handleClose }) => (
+  <div>
+    <ModalHeader className='text-primary' toggle={handleClose}>
+      Order Status
+    </ModalHeader>
     <ModalBody className='text-center'>
-      <div className='modal-title'>order status</div>
-      <div className='review-list padding-bottom-20'>
-        {statusRow}
+      <div className='review-list pb-3'>
+        <Row className='gutter-2'>
+          {swapList.map((a, i) => (
+            <Col xs='12' key={i}>
+              <Card body className='py-2 px-3 flat'>
+                <SwapStatusRow status={a}>
+                  <div className={`status margin-top-5 ${a.status.cl}`}>{a.status.text}</div>
+                  <div>{a.status.details}</div>
+                </SwapStatusRow>
+              </Card>
+            </Col>
+          ))}
+        </Row>
       </div>
-      <div className='form-group'>
-        <Button color='link' onClick={props.handleClose}>hide</Button>
+      <div className='text-center'>
+        <Button color='link' onClick={handleClose}>hide</Button>
       </div>
     </ModalBody>
-  )
-}
+  </div>
+)
 
 export default SignTxModal
