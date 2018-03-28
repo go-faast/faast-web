@@ -34,8 +34,8 @@ class SignTxModal extends Component {
     }
     this.setState({ isSigning: true })
 
-    const { swap, mock: { mocking: isMocking } } = this.props
-    return dispatch(sendSwapDeposits(swap, { password: values.password }, isMocking))
+    const { swap } = this.props
+    return dispatch(sendSwapDeposits(swap, { password: values.password }))
       .then(() => {
         if (!this.props.showModal) throw new Error('modal closed')
         this._handleCloseModal()

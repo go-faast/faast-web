@@ -24,7 +24,7 @@ import {
 } from 'Actions/wallet'
 import { retrieveAssetPrices } from 'Actions/asset'
 
-import { getCurrentPortfolioId } from 'Selectors'
+import { getCurrentPortfolioId, getAsset } from 'Selectors'
 
 export const defaultPortfolioId = 'default'
 
@@ -106,6 +106,7 @@ const swapFinish = (type, swap, error, addition) => {
 }
 
 const swapMarketInfo = (swapList) => (dispatch) => {
+  log.debug('swapMarketInfo', swapList)
   return processArray(swapList, (a) => {
     const finish = (e, x) => dispatch(swapFinish('swapMarketInfo', a, e, x))
     if (a.from === a.to) return finish('cannot swap to same asset')
@@ -141,6 +142,7 @@ const swapMarketInfo = (swapList) => (dispatch) => {
 }
 
 const swapPostExchange = (swapList, wallet) => (dispatch) => {
+  log.debug('swapPostExchange', swapList)
   let previousTx = null
   return processArray(swapList, (swap) => {
     const finish = (e, x) => dispatch(swapFinish('swapPostExchange', swap, e, x))
@@ -173,12 +175,12 @@ const swapPostExchange = (swapList, wallet) => (dispatch) => {
 
 // Checks to see if the deposit is high enough for the rate and swap fee
 // so the expected amount ends up larger than zero
-const swapSufficientDeposit = (swapList, wallet) => (dispatch) => {
+const swapSufficientDeposit = (swapList, wallet) => (dispatch, getState) => {
   return processArray(swapList, (a) => {
     const finish = (e, x) => dispatch(swapFinish('swapSufficientDeposit', a, e, x))
     console.log('a', a)
-    const to = wallet.assetHoldings.find(b => b.symbol === a.to)
-    const expected = toPrecision(toUnit(a.amount, a.rate, to.decimals).minus(a.fee), to.decimals)
+    const toAsset = getAsset(getState(), a.to)
+    const expected = toPrecision(toUnit(a.amount, a.rate, toAsset.decimals).minus(a.fee), toAsset.decimals)
     if (expected.lessThanOrEqualTo(0)) {
       return finish('insufficient deposit for expected return')
     }
@@ -251,12 +253,10 @@ const createTransferEventListeners = (dispatch, send, receive, markSigned) => {
   }
 }
 
-export const sendSwapDeposits = (swap, options, isMocking) => (dispatch) => {
+export const sendSwapDeposits = (swap, options) => (dispatch) => {
+  log.debug('sendSwapDeposits', swap)
   return processArray(swap, (send) => {
     return processArray(send.list, (receive) => {
-      if (isMocking) {
-        return dispatch(mockTransaction(send, receive))
-      }
       const eventListeners = createTransferEventListeners(dispatch, send, receive, true)
       const walletInstance = dispatch(getCurrentPortfolioInstance())
       return walletInstance.sendTransaction(receive.tx, { ...eventListeners, ...options })
