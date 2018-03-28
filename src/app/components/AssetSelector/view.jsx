@@ -21,7 +21,7 @@ const SearchInput = (props) => (
   />
 )
 
-const AssetListView = (props) => {
+const AssetSelectorView = (props) => {
   const renderAssets = () => {
     const { list, columns, showBalance, handleSelect } = props
     const bsColSize = `${Math.floor(12 / columns)}`
@@ -75,7 +75,7 @@ const AssetListView = (props) => {
   )
 }
 
-AssetListView.propTypes = {
+AssetSelectorView.propTypes = {
   columns: PropTypes.number,
   input: PropTypes.object,
   handleChange: PropTypes.func,
@@ -90,4 +90,4 @@ AssetListView.propTypes = {
 
 export default reduxForm({
   form: 'assetForm'
-})(AssetListView)
+})(AssetSelectorView)

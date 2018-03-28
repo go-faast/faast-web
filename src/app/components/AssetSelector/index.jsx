@@ -8,7 +8,7 @@ import AssetListView from './view'
 import { sortByProperty } from 'Utilities/helpers'
 import { getAllAssetsArray } from 'Selectors'
 
-class AssetList extends Component {
+class AssetSelector extends Component {
   constructor () {
     super()
     this.state = {
@@ -102,7 +102,7 @@ class AssetList extends Component {
   }
 }
 
-AssetList.propTypes = {
+AssetSelector.propTypes = {
   assets: PropTypes.array.isRequired,
   supportedAssetSymbols: PropTypes.arrayOf(PropTypes.string),
   hiddenAssetSymbols: PropTypes.arrayOf(PropTypes.string),
@@ -111,7 +111,7 @@ AssetList.propTypes = {
   handleClose: PropTypes.func
 }
 
-AssetList.defaultProps = {
+AssetSelector.defaultProps = {
   supportedAssetSymbols: [],
   hiddenAssetSymbols: [],
   columns: 4,
@@ -119,4 +119,4 @@ AssetList.defaultProps = {
 
 export default connect(createStructuredSelector({
   assets: getAllAssetsArray,
-}))(AssetList)
+}))(AssetSelector)

@@ -12,7 +12,7 @@ import display from 'Utilities/display'
 
 import Layout from 'Components/Layout'
 import Slider from 'Components/Slider'
-import AssetList from 'Components/AssetList'
+import AssetSelector from 'Components/AssetSelector'
 import SignTxModal from 'Components/SignTxModal'
 import Units from 'Components/Units'
 import SelectPortfolioDropdown from 'Components/SelectPortfolioDropdown'
@@ -242,7 +242,7 @@ const ModifyView = (props) => {
     )}
       {props.isAssetListOpen && /* Reactstrap + redux-forms workaround https://github.com/reactstrap/reactstrap/issues/820 */ ( 
         <Modal size='lg' center isOpen={props.isAssetListOpen} toggle={props.toggleAssetList} className='m-0 mx-md-auto' contentClassName='p-0'>
-          <AssetList {...props.assetListProps} />
+          <AssetSelector {...props.assetListProps} />
         </Modal>
       )}
       <SignTxModal showModal={props.showSignTxModal} toggleModal={props.handleToggleSignTxModal} />
