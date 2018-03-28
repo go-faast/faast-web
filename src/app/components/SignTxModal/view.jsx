@@ -6,6 +6,7 @@ import web3 from 'Services/Web3'
 
 import Spinner from 'Components/Spinner'
 import Units from 'Components/Units'
+import Icon from 'Components/Icon'
 import CoinIcon from 'Components/CoinIcon'
 
 const SignTxModal = (props) => {
@@ -130,7 +131,7 @@ const SignTxForm = reduxForm({
     return (
       <div key={i} className='margin-top-10'>
         <SwapStatusRow status={a}>
-          <div className='right-icon' />
+          <Icon tag='div' src='https://faa.st/img/right-icon.svg' size='md' className='m-auto'/>
           {sigStatus()}
         </SwapStatusRow>
         <div className='color-bg-1 text-x-small text-medium-grey p-2'>
