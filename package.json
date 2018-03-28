@@ -15,7 +15,7 @@
   },
   "scripts": {
     "start": "ws --https --spa dist/index.html --rewrite '/portfolio/* -> /dist/$1'",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server",
+    "dev": "cross-env NODE_ENV=development webpack-dev-server --https",
     "lint": "eslint src/",
     "build:webpack": "webpack --progress",
     "build": "npm run lint && npm run build:webpack",
