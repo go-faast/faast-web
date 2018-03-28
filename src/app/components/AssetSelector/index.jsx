@@ -4,74 +4,68 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { toastr } from 'react-redux-toastr'
 import Fuse from 'fuse.js'
-import AssetListView from './view'
+import AssetSelectorView from './view'
 import { sortByProperty } from 'Utilities/helpers'
 import { getAllAssetsArray } from 'Selectors'
 
+function getInitState (props) {
+  const { assets, supportedAssetSymbols, hiddenAssetSymbols } = props
+  let assetList = [...assets]
+    .filter((a) => !hiddenAssetSymbols.includes(a.symbol))
+    .map((a) => ({
+      ...a,
+      hasWalletSupport: supportedAssetSymbols.includes(a.symbol)
+    }))
+    .sort((a, b) => b.marketCap.cmp(a.marketCap))
+  assetList = sortByProperty(assetList, 'swapEnabled', 'hasWalletSupport')
+  const fuse = new Fuse(assetList, {
+    shouldSort: true,
+    threshold: 0.6,
+    location: 0,
+    distance: 100,
+    keys: ['symbol', 'name']
+  })
+  return {
+    searchQuery: '',
+    fuse,
+    assetList,
+    assetListOriginal: assetList
+  }
+}
+
 class AssetSelector extends Component {
-  constructor () {
-    super()
-    this.state = {
-      value: '',
-      list: [],
-      originalList: []
-    }
-    this._setList = this._setList.bind(this)
-    this._handleChange = this._handleChange.bind(this)
-    this._handleSubmit = this._handleSubmit.bind(this)
-    this._handleSelect = this._handleSelect.bind(this)
+  constructor (props) {
+    super(props)
+    this.handleSelect = this.handleSelect.bind(this)
+    this.handleSearchChange = this.handleSearchChange.bind(this)
+    this.handleSearchSubmit = this.handleSearchSubmit.bind(this)
+    console.log('AssetSelector.constructor')
+    this.state = getInitState(props)
   }
 
-  componentWillMount () {
-    this._setList()
-  }
-
-  _setList () {
-    const { assets, supportedAssetSymbols, hiddenAssetSymbols } = this.props
-    let list = [...assets]
-      .filter((a) => !hiddenAssetSymbols.includes(a.symbol))
-      .map((a) => ({
-        ...a,
-        hasWalletSupport: supportedAssetSymbols.includes(a.symbol)
-      }))
-      .sort((a, b) => b.marketCap.cmp(a.marketCap))
-    list = sortByProperty(list, 'swapEnabled', 'hasWalletSupport')
-    this.fuse = new Fuse(list, {
-      shouldSort: true,
-      threshold: 0.6,
-      location: 0,
-      distance: 100,
-      keys: ['name']
-    })
-    this.setState({
-      value: '',
-      list,
-      originalList: list
-    })
-  }
-
-  _handleChange (event) {
-    const newValue = event.target.value
-    let newList
-    if (!newValue) {
-      newList = this.state.originalList
+  handleSearchChange (event) {
+    console.log('handleSearchChange', event)
+    const query = event.target.value
+    let results
+    if (!query) {
+      results = this.state.assetListOriginal
     } else {
-      newList = this.fuse.search(newValue)
+      results = this.state.fuse.search(query)
     }
     this.setState({
-      value: newValue,
-      list: newList
+      searchQuery: query,
+      assetList: results
     })
   }
 
-  _handleSubmit () {
-    const list = this.state.list
-    if (this.state.value && list.length) {
-      this._handleSelect(list[0])
+  handleSearchSubmit () {
+    const { assetList, searchQuery } = this.state
+    if (searchQuery && assetList.length > 0) {
+      this.handleSelect(assetList[0])
     }
   }
 
-  _handleSelect (asset) {
+  handleSelect (asset) {
     const { selectAsset } = this.props
     if (!asset.swapEnabled) {
       return toastr.warning('COMING SOON', `${asset.name} is not available yet`)
@@ -83,20 +77,15 @@ class AssetSelector extends Component {
   }
 
   render () {
-    const { columns, supportedAssetSymbols, showBalance, handleClose } = this.props
-    const { list, value } = this.state
-    const { _handleSelect, _handleChange, _handleSubmit } = this
+    const { columns, supportedAssetSymbols, showBalance } = this.props
+    const { assetList } = this.state
+    const { handleSelect, handleSearchSubmit, handleSearchChange } = this
     return (
-      <AssetListView
-        columns={columns}
-        list={list}
-        handleSelect={_handleSelect}
-        showBalance={showBalance}
-        searchValue={value}
-        handleSearchChange={_handleChange}
-        handleClose={handleClose}
-        onSubmit={_handleSubmit}
-        supportedAssetSymbols={supportedAssetSymbols}
+      <AssetSelectorView
+        assetList={assetList}
+        handleSelect={handleSelect}
+        handleSearchSubmit={handleSearchSubmit}
+        handleSearchChange={handleSearchChange}
       />
     )
   }
@@ -104,17 +93,14 @@ class AssetSelector extends Component {
 
 AssetSelector.propTypes = {
   assets: PropTypes.array.isRequired,
+  selectAsset: PropTypes.func.isRequired,
   supportedAssetSymbols: PropTypes.arrayOf(PropTypes.string),
   hiddenAssetSymbols: PropTypes.arrayOf(PropTypes.string),
-  columns: PropTypes.number,
-  showBalance: PropTypes.bool,
-  handleClose: PropTypes.func
 }
 
 AssetSelector.defaultProps = {
   supportedAssetSymbols: [],
   hiddenAssetSymbols: [],
-  columns: 4,
 }
 
 export default connect(createStructuredSelector({

@@ -1,7 +1,10 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Field } from 'redux-form'
-import { FormGroup, FormFeedback, Label, Input, InputGroup, Col } from 'reactstrap'
+import {
+  Col, FormGroup, FormFeedback, Label,
+  Input, InputGroup, InputGroupAddon,
+} from 'reactstrap'
 import { isFunction } from 'lodash'
 
 const RenderInput = (props) => {
@@ -18,7 +21,11 @@ const RenderInput = (props) => {
   const inputId = id || (label ? `form-${formName}-${inputProps.name}` : undefined)
   const invalid = touched && (error || warning)
   const useInputGroup = Boolean(addonPrepend || addonAppend)
-  const renderAddon = (Addon) => isFunction(Addon) ? (<Addon invalid={invalid} {...props}/>) : Addon
+  const renderAddon = (addonType, AddonContent) => AddonContent && (
+    <InputGroupAddon addonType={addonType}>
+      {isFunction(AddonContent) ? (<AddonContent invalid={invalid} {...props}/>) : AddonContent}
+    </InputGroupAddon>
+  )
   const inputElement = (
     <Input key='input' {...inputProps}
       className={inputClassName} id={inputId} placeholder={placeholder}
@@ -31,9 +38,9 @@ const RenderInput = (props) => {
   )
   const inputGroupElement = !useInputGroup ? [inputElement, !check && feedbackElement] : (
     <InputGroup key='input-group'>
-      {renderAddon(addonPrepend)}
+      {renderAddon('prepend', addonPrepend)}
       {inputElement}
-      {renderAddon(addonAppend)}
+      {renderAddon('append', addonAppend)}
       {feedbackElement}
     </InputGroup>
   )

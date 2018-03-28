@@ -26,11 +26,9 @@ export default reduxForm({
       spellCheck={false}
       validate={validateDerivationPath}
       addonAppend={({ invalid }) => (
-        <InputGroupAddon addonType="append">
-          <Button color='primary' size='md' outline type='submit' disabled={invalid}>
-            <i className='fa fa-level-down fa-rotate-90' />
-          </Button>
-        </InputGroupAddon>
+        <Button color='primary' size='md' outline type='submit' disabled={invalid}>
+          <i className='fa fa-level-down fa-rotate-90' />
+        </Button>
       )}
     />
   </Form>

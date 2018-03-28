@@ -328,8 +328,8 @@ class Modify extends Component {
   }
 
   render () {
-    const { portfolio } = this.props
-    const { holdings, assetListWalletId, allowance } = this.state
+    const { portfolio, toggleOrderModal, orderModal } = this.props
+    const { holdings, assetListWalletId, allowance, isAssetListOpen } = this.state
     const adjustedPortfolio = {
       ...portfolio,
       nestedWallets: portfolio.nestedWallets.map((nestedWallet) => ({
@@ -345,7 +345,6 @@ class Modify extends Component {
     const assetListProps = {
       supportedAssetSymbols: ((portfolio.nestedWallets.find(({ id }) => id === assetListWalletId) || {}).supportedAssets || []),
       hiddenAssetSymbols: (holdings[assetListWalletId] || []).filter(({ shown }) => shown).map(({ symbol }) => symbol),
-      handleClose: this._hideAssetList,
       selectAsset: this._handleSelectAsset,
       ignoreUnavailable: false
     }
@@ -356,10 +355,11 @@ class Modify extends Component {
     } else if (allowance.fiat.greaterThan(0)) {
       disableSave = true
     }
+    console.log('isAssetListOpen', isAssetListOpen)
     return (
       <ModifyView
         assetListProps={assetListProps}
-        isAssetListOpen={this.state.isAssetListOpen}
+        isAssetListOpen={isAssetListOpen}
         showAssetList={this._showAssetList}
         hideAssetList={this._hideAssetList}
         toggleAssetList={this._toggleAssetList}
@@ -369,8 +369,8 @@ class Modify extends Component {
         allowance={allowance}
         handleFiatChange={this._handleFiatChange}
         handleWeightChange={this._handleWeightChange}
-        showSignTxModal={this.props.orderModal.show}
-        handleToggleSignTxModal={this.props.toggleOrderModal}
+        showSignTxModal={orderModal.show}
+        handleToggleSignTxModal={toggleOrderModal}
         handleCancel={this._handleCancel}
         handleSave={this._handleSave}
         disableSave={disableSave}

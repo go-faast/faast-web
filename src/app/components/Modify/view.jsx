@@ -1,8 +1,9 @@
 import React from 'react'
 import {
-  Container, Row, Col, Button, Alert, Modal,
+  Container, Row, Col, Button, Alert,
+  Modal, ModalHeader, ModalBody,
   Card, CardHeader, ListGroup, ListGroupItem,
-  Navbar
+  Navbar,
 } from 'reactstrap'
 import accounting from 'accounting'
 import { RIENumber } from 'riek'
@@ -231,20 +232,25 @@ const ModifyView = (props) => {
 
   return (
     <Layout className='pt-3 px-0 px-md-3' navbarProps={{ className: 'flat' }} afterNav={secondNavbar}>
-    {(portfolio.nestedWallets.length === 0) ? (
-      <Alert color='info' className='text-center w-100'>
-        This portfolio is empty. To begin swapping you must <Link to='/connect' className='alert-link'>add a wallet</Link> first.
-      </Alert>
-    ) : (
-      <Row className='gutter-x-0 gutter-y-3'>
-        {renderHoldings(portfolio.nestedWallets)}
-      </Row>
-    )}
-      {props.isAssetListOpen && /* Reactstrap + redux-forms workaround https://github.com/reactstrap/reactstrap/issues/820 */ ( 
-        <Modal size='lg' center isOpen={props.isAssetListOpen} toggle={props.toggleAssetList} className='m-0 mx-md-auto' contentClassName='p-0'>
-          <AssetSelector {...props.assetListProps} />
-        </Modal>
+      {(portfolio.nestedWallets.length === 0) ? (
+        <Alert color='info' className='text-center w-100'>
+          This portfolio is empty. To begin swapping you must <Link to='/connect' className='alert-link'>add a wallet</Link> first.
+        </Alert>
+      ) : (
+        <Row className='gutter-x-0 gutter-y-3'>
+          {renderHoldings(portfolio.nestedWallets)}
+        </Row>
       )}
+      <Modal size='lg' isOpen={props.isAssetListOpen} toggle={props.toggleAssetList} className='m-0 mx-md-auto' contentClassName='p-0'>
+        <ModalHeader toggle={props.toggleAssetList} tag='h4' className='text-primary'>
+          Add Asset
+        </ModalHeader>
+        <ModalBody>
+          {props.isAssetListOpen && /* Reactstrap + redux-forms workaround https://github.com/reactstrap/reactstrap/issues/820 */ ( 
+            <AssetSelector {...props.assetListProps} />
+          )}
+        </ModalBody>
+      </Modal>
       <SignTxModal showModal={props.showSignTxModal} toggleModal={props.handleToggleSignTxModal} />
     </Layout>
   )

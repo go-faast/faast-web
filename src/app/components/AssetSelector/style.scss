@@ -1,112 +1,33 @@
 @import "~Styles/variables";
 
-$assetPickerBg: $dark-grey;
-
-.container {
-  width: 100%;
-  height: 100%;
+.assetButtonContainer {
   max-height: 600px;
-  background-color: $assetPickerBg;
-  padding: 10px;
-  overflow: auto;
-
-  @include media-breakpoint-down(sm) {
-    max-height: 100vh;
-  }
+  overflow-y: scroll;
 }
 
-.searchContainer {}
-
-.inputText {
-  @extend .pull-left;
-  border: none;
-  border-bottom: 1px solid $primary-color;
-  background-color: $dark-grey;
-  padding: 10px 30px 10px 10px;
+.assetButton {
+  padding: 1rem 0.5rem;
   width: 100%;
-  color: $primary-color;
-  background-image: url('https://faa.st/img/search_icon.png');
-  background-repeat: no-repeat;
-  background-position: center right;
-  background-size: 30px 30px;
-
-  &:focus {
-    outline: none;
-  }
-}
-
-.clearfix {
-  @extend .clearfix;
-}
-
-.closeButtonContainer {
-  @extend .pull-right;
-  @extend .flex-row-center;
-  width: 55px;
   height: 100%;
-  padding-left: 10px;
-  text-align: center;
-  color: $medium-grey;
-  font-size: 20px;
-  &:hover {
-    cursor: pointer;
-    color: $white;
-  }
-}
-
-.closeButton {
-  @extend .flex-grow-1;
-}
-
-.assetListContainer {
-  @extend .margin-top-20;
-}
-
-.assetListContainerRow {
-  font-size: 14px;
-  letter-spacing: normal;
-}
-
-.assetListItemInner {
-  height: 100%;
-  width: 100%;
-  padding-top: 16px;
-  padding-bottom: 16px;
-  padding-left: 8px;
-  padding-right: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-}
-
-.assetListItem {
-  color: $medium-grey;
-  text-align: center;
-  background-clip: content-box;
-  background-color: #303030;
-  &.itemDisabled {
-    background-color: #282828;
-  }
-
-  &:hover:not(.itemDisabled) {
-    cursor: pointer;
-    color: $white;
-    background-color: #404040;
-
-    .assetListItemIcon {
+  white-space: normal;
+  &:hover:not(:disabled) {
+    .assetButtonIcon {
       opacity: 1.0;
     }
   }
 }
 
-.itemDisabled {
-  -webkit-filter: grayscale(1); /* Old WebKit */
-  filter: grayscale(1);
+.assetButtonIcon {
+  opacity: 0.75;
+  margin-bottom: 16px;
 }
 
-.assetListItemIcon {
-  opacity: 0.75;
-  width: 50%;
-  margin-bottom: 16px;
+.assetDisabledMessage {
+  font-size: 12px;
+  font-color: $text-muted-color;
+  font-weight: $font-weight-light;
 }
