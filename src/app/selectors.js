@@ -33,6 +33,7 @@ export const areAssetPricesLoaded = createSelector(getAssetState, ({ loaded, pri
 export const getAssetPricesError = createSelector(getAssetState, ({ loadingError, pricesError }) => loadingError || pricesError)
 export const getAllAssets = createSelector(getAssetState, ({ data }) => data)
 export const getAllAssetsArray = createSelector(getAllAssets, Object.values)
+export const getAsset = createItemSelector(getAllAssets, selectItemId, (allAssets, id) => allAssets[id])
 
 // Wallet selectors
 export const getAllWallets = getWalletState
