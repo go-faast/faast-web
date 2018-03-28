@@ -1,24 +1,9 @@
 @import "~Styles/variables";
 
 .addressText {
-  margin-top: 20px;
-  margin-bottom: 20px;
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
   overflow-wrap: break-word;
-}
-
-.closeButton {
-  float: right;
-  border: none;
-  background: none;
-  @extend .cursor-pointer;
-}
-
-.closeIcon {
-  @extend .text-gradient;
-}
-
-.link {
-  @extend .text-medium-grey;
 }
 
 .qrOuterContainer {

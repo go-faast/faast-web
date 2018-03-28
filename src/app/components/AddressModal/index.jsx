@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Modal, ModalHeader, ModalBody } from 'reactstrap'
 import QRCode from 'qrcode.react'
-import styles from './style'
+import style from './style'
 
 const AddressModal = ({ address, showModal, toggleModal, showDownload, handleDownload }) => (
   <Modal backdrop='static' isOpen={showModal} toggle={toggleModal}>
@@ -10,14 +10,14 @@ const AddressModal = ({ address, showModal, toggleModal, showDownload, handleDow
       Address
     </ModalHeader>
     <ModalBody className='text-center'>
-      <div className={styles.qrOuterContainer}>
-        <div className={styles.qrInnerContainer}>
+      <div className={style.qrOuterContainer}>
+        <div className={style.qrInnerContainer}>
           <a href={`ethereum:${address}`}>
             <QRCode size={210} level='L' value={`${address}`} />
           </a>
         </div>
       </div>
-      <div className={styles.addressText}>
+      <div className={style.addressText}>
         {address}
       </div>
       {showDownload &&
