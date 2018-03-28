@@ -37,12 +37,6 @@ body {
   }
 }
 
-.download-keystore-icon {
-  background-image: url(https://faa.st/img/faast-logo.png);
-  background-size: 64px 64px;
-  background-repeat: no-repeat;
-}
-
 /*review, in progress and completed swap styles starts here*/
 .review-list {
   margin: auto;
@@ -66,47 +60,3 @@ body {
   }
 }
 /*review, in progress and completed swap styles ends here*/
-
-.right-icon {
-  height: 32px;
-  width: 32px;
-  background-repeat: no-repeat;
-  background-position: center center;
-  background-size: contain;
-  margin: auto;
-  background-image: url(https://faa.st/img/right-icon.svg);
-}
-
-.instruction-icon {
-  height: 48px;
-  width: 48px;
-  background-position: center center;
-  background-size: auto 75%;
-  background-repeat: no-repeat;
-
-  &.pendrive {
-    background-image: url('https://faa.st/img/pendrive.png');
-  }
-
-  &.smartphone {
-    background-image: url('https://faa.st/img/smartphone.png');
-  }
-
-  &.browser {
-    background-image: url('https://faa.st/img/browser.png');
-  }
-
-  &.refresh-arrow {
-    background-image: url('https://faa.st/img/refresh-arrow.png');
-  }
-
-  &.export {
-    background-image: url('https://faa.st/img/export.png');
-  }
-
-  &.pin-code {
-    background-image: url('https://faa.st/img/pin-code.png');
-  }
-}
-/*icons styles ends here*/
-
