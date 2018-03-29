@@ -1,3 +1,4 @@
+import { isFunction } from 'lodash'
 import {
   MultiWallet,
   BitcoinWallet,
@@ -36,7 +37,7 @@ const typeToIconProps = {
 export const getWalletIconProps = (walletInstance) => {
   const matchedTypeProps = typeToIconProps[walletInstance.constructor]
   if (matchedTypeProps) {
-    return matchedTypeProps
+    return isFunction(matchedTypeProps) ? matchedTypeProps(walletInstance) : matchedTypeProps
   }
   const type = walletInstance.getType().toLowerCase()
   if (type.includes('trezor')) {
