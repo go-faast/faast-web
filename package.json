@@ -1,7 +1,7 @@
 {
   "name": "faast-portfolio",
   "productName": "Faast Portfolio",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "portfolio app for faa.st",
   "author": "Nathan Wood <nathan@bitaccess.co>",
   "license": "MIT",
