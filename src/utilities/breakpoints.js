@@ -1,8 +1,8 @@
-import { breakpoint } from './style'
+import { breakpoint as breakpoints } from './style'
 
-const sortedBreakpoints = Object.keys(breakpoint)
+const sortedBreakpoints = Object.keys(breakpoints)
   .map((key) => {
-    const minWidth = breakpoint[key]
+    const minWidth = breakpoints[key]
     const parsedMinWidth = Number.parseInt(minWidth.replace('px', ''))
     return ({
       name: key,
