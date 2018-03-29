@@ -22,7 +22,6 @@ export const restoreState = (dispatch, getState) => Promise.resolve()
     const addressState = restoreFromAddress(wallet && wallet.id)
     if (addressState) {
       const status = statusAllSwaps(addressState.swap)
-      console.log('swapStatusAll', status)
       const swap = (status === 'finalized') ? [] : addressState.swap
       dispatch(setSwap(swap))
       const settings = addressState.settings
