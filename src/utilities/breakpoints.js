@@ -1,12 +1,11 @@
-import styleVars from 'Styles/variables.scss'
+import { breakpoint } from './style'
 
-const sortedBreakpoints = Object.keys(styleVars)
-  .filter((key) => /^breakpoint-/.test(key))
+const sortedBreakpoints = Object.keys(breakpoint)
   .map((key) => {
-    const minWidth = styleVars[key]
-    const parsedMinWidth = Number.parseInt(styleVars[key].replace('px', ''))
+    const minWidth = breakpoint[key]
+    const parsedMinWidth = Number.parseInt(minWidth.replace('px', ''))
     return ({
-      name: key.replace('breakpoint-', ''),
+      name: key,
       minWidth: minWidth,
       parsedMinWidth: parsedMinWidth
     })

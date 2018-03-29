@@ -7,10 +7,9 @@ import * as styleVars from 'faast-ui/src/style/variables'
 const nestedStyleVars = Object.entries(styleVars)
   .reduce((result, [key, value]) => set(result, key.split('_').map(camelCase), value), {})
 
-const { themeColor, zIndex, chartColor } = nestedStyleVars
-console.log('styleVars', nestedStyleVars)
+const { themeColor, zIndex, chartColor, breakpoint } = nestedStyleVars
 
-export { nestedStyleVars as styleVars, themeColor, zIndex, chartColor }
+export { nestedStyleVars as styleVars, themeColor, zIndex, chartColor, breakpoint }
 
 const defaultRotateAbbreviations = {
   up: '0',
