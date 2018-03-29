@@ -19,13 +19,15 @@ export const restoreState = (dispatch, getState) => Promise.resolve()
   .then(() => dispatch(restoreAllPortfolios()))
   .then(() => {
     const wallet = getDefaultPortfolio(getState())
-    const addressState = restoreFromAddress(wallet && wallet.id) || {}
-    const status = statusAllSwaps(addressState.swap)
-    console.log('swapStatusAll', status)
-    const swap = (status === 'finalized') ? [] : addressState.swap
-    dispatch(setSwap(swap))
-    const settings = addressState.settings
-    dispatch(setSettings(settings))
+    const addressState = restoreFromAddress(wallet && wallet.id)
+    if (addressState) {
+      const status = statusAllSwaps(addressState.swap)
+      console.log('swapStatusAll', status)
+      const swap = (status === 'finalized') ? [] : addressState.swap
+      dispatch(setSwap(swap))
+      const settings = addressState.settings
+      dispatch(setSettings(settings))
+    }
     dispatch(updateAllHoldings())
   })
   .catch((e) => {

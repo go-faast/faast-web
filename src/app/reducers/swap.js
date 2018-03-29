@@ -42,7 +42,7 @@ export default (state = initialState, action) => {
     case 'RESET_SWAP':
       return initialState
     case 'SET_SWAP':
-      return action.payload
+      return action.payload || []
       // case 'SET_SWAP_ITEM':
         // return Object.assign({}, state, { isFetching: false, list: updateObjectInArray(state.list, action.payload) })
     case 'ADD_SWAP_DEPOSIT':
