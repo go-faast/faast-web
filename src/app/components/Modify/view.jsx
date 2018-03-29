@@ -106,7 +106,7 @@ const ModifyView = (props) => {
                           classEditing={styles.editableEditing}
                           ref={(input) => { fiatInput = input }}
                         />
-                        <i onClick={() => fiatInput.startEditing()} className='fa fa-pencil margin-left-5 cursor-pointer' aria-hidden='true' />
+                        <i onClick={() => fiatInput.startEditing()} className='fa fa-pencil ml-1 cursor-pointer' aria-hidden='true' />
                       </span>
                     )}
                   </Col>
@@ -131,7 +131,7 @@ const ModifyView = (props) => {
                           ref={(input) => { weightInput = input }}
                           disabled={disabled}
                         />
-                        <i onClick={() => weightInput.startEditing()} className='fa fa-pencil margin-left-5 cursor-pointer' aria-hidden='true' />
+                        <i onClick={() => weightInput.startEditing()} className='fa fa-pencil ml-1 cursor-pointer' aria-hidden='true' />
                       </span>
                     )}
                   </Col>

@@ -74,7 +74,7 @@ const SignTxModal = (props) => {
 }
 
 const SwapStatusRow = ({ status: { swap, from, to, receiveAmount }, children }) => (
-  <Row className='gutter-0 align-items-center text-small text-muted'>
+  <Row className='gutter-0 align-items-center font-size-small text-muted'>
     <Col>
       <Row className='gutter-2 align-items-center text-center text-sm-left'>
         <Col xs='12' sm='auto'><CoinIcon symbol={from.symbol}/></Col>
@@ -115,10 +115,10 @@ const SigningStatusCard = ({ order: a, status }) => (
         {status}
       </SwapStatusRow>
     </CardBody>
-    <CardFooter className='text-x-small text-muted py-2 px-3'>
+    <CardFooter className='font-size-xs text-muted py-2 px-3'>
       <Row className='gutter-2'>
         <Col xs='6' sm>
-          <span className='margin-right-10'>swap fee</span>
+          <span className='mr-2'>swap fee</span>
           {a.swap.hasOwnProperty('fee')
             ? `${a.swap.fee} ${a.to.symbol}`
             : (a.error
@@ -134,7 +134,7 @@ const SigningStatusCard = ({ order: a, status }) => (
           }
         </Col>
         <Col xs='6' sm className='text-right order-2 order-sm-3'>
-          <span className='margin-right-10'>txn fee</span>
+          <span className='mr-2'>txn fee</span>
           {typeof a.txFee !== 'undefined'
             ? (typeof a.txFee === 'string' ? a.txFee : (<Units value={a.txFee} symbol={a.from.symbol}/>))
             : (a.error
@@ -155,12 +155,12 @@ const SignTxForm = reduxForm({
     let status
     if (a.swap && a.swap.tx && a.swap.tx.signed) {
       nextToSign += 1
-      status = (<div className='text-gradient'>signed</div>)
+      status = (<div className='text-success'>signed</div>)
     } else if (a.swap && a.swap.error) {
       nextToSign += 1
-      status = (<div className='text-red'>declined</div>)
+      status = (<div className='text-danger'>declined</div>)
     } else if (props.isSigning && i === nextToSign) {
-      status = (<div className='text-orange blink'>awaiting signature</div>)
+      status = (<div className='text-warning blink'>awaiting signature</div>)
     }
     return (
       <Col xs='12' key={i}>
@@ -222,7 +222,7 @@ const OrderStatus = ({ swapList, handleClose }) => (
             <Col xs='12' key={i}>
               <Card body className='py-2 px-3 flat'>
                 <SwapStatusRow status={a}>
-                  <div className={`status margin-top-5 ${a.status.cl}`}>{a.status.text}</div>
+                  <div className={`status mt-1 ${a.status.cl}`}>{a.status.text}</div>
                   <div>{a.status.details}</div>
                 </SwapStatusRow>
               </Card>

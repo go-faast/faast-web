@@ -2,7 +2,7 @@
 
 .innerknob {
   background-color: $primary;
-  @extend .cursor-pointer;
+  cursor: pointer;
 }
 .innerprogress {
   background-color: $grey-dark;

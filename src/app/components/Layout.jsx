@@ -10,7 +10,7 @@ const Layout = ({ tag: Tag, navbarProps, afterNav, className, children, ...props
   <div>
     <AppNavbar {...navbarProps}/>
     {afterNav}
-    <Tag className={classNames(className, 'content')} {...props}>
+    <Tag className={classNames(className, 'content pb-5')} {...props}>
       {children}
     </Tag>
   </div>

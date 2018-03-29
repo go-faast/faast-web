@@ -167,7 +167,7 @@ let DownloadKeystoreForm = ({
     <ModalBody>
       <div className='modal-text'>
         <FormGroup>
-          <Button color='faast' size='lg' onClick={handleDownload} className='text-medium'>
+          <Button color='primary' size='lg' onClick={handleDownload} className='text-medium'>
             <i className='fa fa-download mr-2'/>Download {walletName} file
           </Button>
         </FormGroup>
