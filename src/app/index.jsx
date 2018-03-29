@@ -13,7 +13,7 @@ import ReduxToastr from 'react-redux-toastr'
 import Entry from 'Components/Entry'
 import reducers from './reducers'
 import { saveToAddress } from 'Utilities/storage'
-import { getCurrentPortfolio, isAppReady } from 'Selectors'
+import { getDefaultPortfolio, isAppReady } from 'Selectors'
 import config from 'Config'
 
 const history = createHistory({ basename: process.env.ROUTER_BASE_NAME })
@@ -34,7 +34,7 @@ store.subscribe(throttle(() => {
   const state = store.getState()
   const appReady = isAppReady(state)
   if (appReady) {
-    const wallet = getCurrentPortfolio(state)
+    const wallet = getDefaultPortfolio(state)
     if (wallet) {
       saveToAddress(wallet.id, {
         swap: state.swap,

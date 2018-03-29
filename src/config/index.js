@@ -33,6 +33,7 @@ export default {
     kdf: 'scrypt',
     n: 1024
   },
+  defaultPortfolioId: 'default',
   highCharts,
   tokenFunctionSignatures
 }

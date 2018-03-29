@@ -6,10 +6,10 @@ import { statusAllSwaps } from 'Utilities/swap'
 import blockstack from 'Utilities/blockstack'
 import { filterUrl } from 'Utilities/helpers'
 import log from 'Utilities/log'
-import { getCurrentPortfolio } from 'Selectors'
+import { getDefaultPortfolio } from 'Selectors'
 
 import { retrieveAssets } from './asset'
-import { setSwapData, setSettings } from './redux'
+import { setSwap, setSettings } from './redux'
 import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
 
 export const appReady = createAction('APP_READY')
@@ -18,11 +18,12 @@ export const appError = createAction('APP_ERROR')
 export const restoreState = (dispatch, getState) => Promise.resolve()
   .then(() => dispatch(restoreAllPortfolios()))
   .then(() => {
-    const wallet = getCurrentPortfolio(getState())
-    const addressState = restoreFromAddress(wallet && wallet.address) || {}
+    const wallet = getDefaultPortfolio(getState())
+    const addressState = restoreFromAddress(wallet && wallet.id) || {}
     const status = statusAllSwaps(addressState.swap)
-    const swap = (status === 'unavailable' || status === 'unsigned' || status === 'unsent') ? undefined : addressState.swap
-    dispatch(setSwapData(swap))
+    console.log('swapStatusAll', status)
+    const swap = (status === 'finalized') ? [] : addressState.swap
+    dispatch(setSwap(swap))
     const settings = addressState.settings
     dispatch(setSettings(settings))
     dispatch(updateAllHoldings())

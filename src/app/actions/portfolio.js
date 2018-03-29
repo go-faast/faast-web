@@ -1,5 +1,6 @@
 import { createAction } from 'redux-act'
 
+import config from 'Config'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
 import { restoreFromAddress } from 'Utilities/storage'
@@ -26,7 +27,9 @@ import { retrieveAssetPrices } from 'Actions/asset'
 
 import { getCurrentPortfolioId, getAsset } from 'Selectors'
 
-export const defaultPortfolioId = 'default'
+const { defaultPortfolioId } = config
+
+export { defaultPortfolioId }
 
 export const setCurrentPortfolio = createAction('SET_CURRENT_PORTFOLIO', (portfolioId) => ({ portfolioId }))
 export const setCurrentWallet = createAction('SET_CURRENT_WALLET', (portfolioId, walletId) => ({ portfolioId, walletId }))

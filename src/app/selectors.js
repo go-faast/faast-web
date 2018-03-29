@@ -1,11 +1,17 @@
 import { createSelector } from 'reselect'
 import createCachedSelector from 're-reselect'
+import { isFunction } from 'lodash'
 
+import config from 'Config'
 import { toBigNumber, toUnit, toPercentage } from 'Utilities/convert'
 import { fixPercentageRounding, reduceByKey } from 'Utilities/helpers'
 
-/** Creates a new selector by passing the results of argSelectors into originalSelector as arguments */
-const wrapSelectorArgs = (originalSelector, ...argSelectors) => (state) => originalSelector(state, ...argSelectors.map((argSelector) => argSelector(state)))
+const { defaultPortfolioId } = config
+
+/** Creates a new selector by passing state and args into originalSelector */
+const currySelector = (originalSelector, ...args) => (state) => 
+  originalSelector(state, ...args.map((arg) => 
+    isFunction(arg) ? arg(state) : arg))
 
 /** Selector that returns the first non-state argument passed to it */
 const selectItemId = (state, id) => id
@@ -143,10 +149,10 @@ export const getAllPortfolioWalletIds = createSelector(
   (portfolioIds, allWallets) => portfolioIds.reduce((result, id) => ({ ...result, [id]: allWallets[id].nestedWalletIds }), {})
 )
 
-export const getCurrentPortfolio = wrapSelectorArgs(getWallet, getCurrentPortfolioId)
-export const getCurrentPortfolioWithHoldings = wrapSelectorArgs(getWalletWithHoldings, getCurrentPortfolioId)
-export const areCurrentPortfolioHoldingsLoaded = wrapSelectorArgs(areWalletHoldingsLoaded, getCurrentPortfolioId)
-export const getCurrentPortfolioHoldingsError = wrapSelectorArgs(getWalletHoldingsError, getCurrentPortfolioId)
+export const getCurrentPortfolio = currySelector(getWallet, getCurrentPortfolioId)
+export const getCurrentPortfolioWithHoldings = currySelector(getWalletWithHoldings, getCurrentPortfolioId)
+export const areCurrentPortfolioHoldingsLoaded = currySelector(areWalletHoldingsLoaded, getCurrentPortfolioId)
+export const getCurrentPortfolioHoldingsError = currySelector(getWalletHoldingsError, getCurrentPortfolioId)
 export const getCurrentPortfolioWalletIds = createSelector(getCurrentPortfolio, ({ nestedWalletIds }) => nestedWalletIds)
 export const getCurrentPortfolioLabel = createSelector(getCurrentPortfolio, ({ label }) => label)
 
@@ -168,13 +174,17 @@ export const getCurrentPortfolioWithWalletHoldings = (state) => {
   return result
 }
 
-export const getCurrentWallet = wrapSelectorArgs(getWallet, getCurrentWalletId)
-export const getCurrentWalletWithHoldings = wrapSelectorArgs(getWalletWithHoldings, getCurrentWalletId)
-export const areCurrentWalletHoldingsLoaded = wrapSelectorArgs(areWalletHoldingsLoaded, getCurrentWalletId)
-export const getCurrentWalletHoldingsError = wrapSelectorArgs(getWalletHoldingsError, getCurrentWalletId)
+export const getCurrentWallet = currySelector(getWallet, getCurrentWalletId)
+export const getCurrentWalletWithHoldings = currySelector(getWalletWithHoldings, getCurrentWalletId)
+export const areCurrentWalletHoldingsLoaded = currySelector(areWalletHoldingsLoaded, getCurrentWalletId)
+export const getCurrentWalletHoldingsError = currySelector(getWalletHoldingsError, getCurrentWalletId)
+
+export const getDefaultPortfolio = currySelector(getWallet, defaultPortfolioId)
+export const getDefaultPortfolioWithHoldings = currySelector(getWalletWithHoldings, defaultPortfolioId)
+export const getDefaultPortfolioWalletIds = createSelector(getCurrentPortfolio, ({ nestedWalletIds }) => nestedWalletIds)
 
 export const isPortfolioEmpty = createItemSelector(getWallet, ({ type, nestedWalletIds }) => type === 'MultiWallet' && nestedWalletIds.length === 0)
-export const isCurrentPortfolioEmpty = wrapSelectorArgs(isPortfolioEmpty, getCurrentPortfolioId)
+export const isCurrentPortfolioEmpty = currySelector(isPortfolioEmpty, getCurrentPortfolioId)
 export const isDefaultPortfolioEmpty = (state) => isPortfolioEmpty(state, 'default')
 
 export const canAddWalletsToCurrentPortfolio = createSelector(getCurrentPortfolio, ({ type }) => type === 'MultiWallet')
@@ -185,5 +195,5 @@ export const getAccountSearchQuery = createSelector(getRouterState, () => 'tmp12
 export const getAccountSearchPending = createSelector(getAccountSearchState, ({ pending }) => pending)
 export const getAccountSearchError = createSelector(getAccountSearchState, ({ error }) => error)
 export const getAccountSearchResultId = createSelector(getAccountSearchState, ({ resultId }) => resultId)
-export const getAccountSearchResultWallet = wrapSelectorArgs(getWallet, getAccountSearchResultId)
-export const getAccountSearchResultWalletWithHoldings = wrapSelectorArgs(getWalletWithHoldings, getAccountSearchResultId)
+export const getAccountSearchResultWallet = currySelector(getWallet, getAccountSearchResultId)
+export const getAccountSearchResultWalletWithHoldings = currySelector(getWalletWithHoldings, getAccountSearchResultId)

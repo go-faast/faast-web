@@ -16,8 +16,6 @@ export const resetSwap = createAction('RESET_SWAP')
 
 export const setMock = createAction('SET_MOCK')
 
-export const setSwapData = createAction('SET_SWAP_DATA')
-
 export const insertSwapData = createAction('INSERT_SWAP_DATA', (depositSymbol, receiveSymbol, data) => ({ depositSymbol, receiveSymbol, data }))
 
 export const updateSwapTx = createAction('UPDATE_SWAP_TX', (depositSymbol, receiveSymbol, data) => ({ depositSymbol, receiveSymbol, data }))
