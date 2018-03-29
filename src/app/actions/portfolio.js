@@ -19,7 +19,7 @@ import walletService, { MultiWallet } from 'Services/Wallet'
 
 import { insertSwapData, updateSwapTx, setSwap } from 'Actions/redux'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
-import { mockTransaction, mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
+import { mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
 import {
   addWallet, removeWallet, addNestedWallet, restoreAllWallets, updateWalletBalances,
 } from 'Actions/wallet'
@@ -178,7 +178,7 @@ const swapPostExchange = (swapList, wallet) => (dispatch) => {
 
 // Checks to see if the deposit is high enough for the rate and swap fee
 // so the expected amount ends up larger than zero
-const swapSufficientDeposit = (swapList, wallet) => (dispatch, getState) => {
+const swapSufficientDeposit = (swapList) => (dispatch, getState) => {
   return processArray(swapList, (a) => {
     const finish = (e, x) => dispatch(swapFinish('swapSufficientDeposit', a, e, x))
     console.log('a', a)

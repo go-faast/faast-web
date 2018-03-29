@@ -34,7 +34,7 @@ export default class EthereumWalletLedger extends EthereumWallet {
       .then((getAddressIndex) => getAddressIndex(0)
         .then((address) => ({
           derivationPath,
-          getAddress,
+          getAddress: getAddressIndex,
           firstAddress: address
         })))
   }
