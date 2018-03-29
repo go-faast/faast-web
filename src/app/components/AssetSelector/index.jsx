@@ -39,12 +39,10 @@ class AssetSelector extends Component {
     this.handleSelect = this.handleSelect.bind(this)
     this.handleSearchChange = this.handleSearchChange.bind(this)
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this)
-    console.log('AssetSelector.constructor')
     this.state = getInitState(props)
   }
 
   handleSearchChange (event) {
-    console.log('handleSearchChange', event)
     const query = event.target.value
     let results
     if (!query) {

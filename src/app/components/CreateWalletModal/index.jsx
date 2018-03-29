@@ -45,7 +45,6 @@ class CreateWalletModal extends Component {
   }
 
   handleDisclaimerAgreedChange = (event, disclaimerAgreed) => {
-    console.log('validateDisclaimerAgreed', disclaimerAgreed)
     this.setState({
       agreedToDisclaimer: disclaimerAgreed,
     })

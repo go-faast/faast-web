@@ -355,7 +355,6 @@ class Modify extends Component {
     } else if (allowance.fiat.greaterThan(0)) {
       disableSave = true
     }
-    console.log('isAssetListOpen', isAssetListOpen)
     return (
       <ModifyView
         assetListProps={assetListProps}
