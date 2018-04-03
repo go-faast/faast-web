@@ -131,7 +131,6 @@ export default class EthereumWallet extends Wallet {
     .then((asset) => {
       log.debug(`Sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${toAddress}`)
       let tx = {
-        chainId: 1,
         from: this.getAddress(),
         value: toBigNumber(0),
         data: ''

@@ -81,7 +81,7 @@ export default class EthereumWalletKeystore extends EthereumWallet {
     if (this._isEncrypted) {
       keystore = this.decrypt(password).keystore
     }
-    const signedTx = new EthereumjsTx(txData)
+    const signedTx = new EthereumjsTx({ ...txData, chainId: 1 })
     signedTx.sign(keystore.getPrivateKey())
     return this._signedEthJsTxToObject(signedTx)
   });
