@@ -1,5 +1,5 @@
 import React from 'react'
-import { reduxForm, Field } from 'redux-form'
+import { reduxForm } from 'redux-form'
 import {
   Row, Col, Button, Form, Card, CardBody, CardFooter,
   Modal, ModalHeader, ModalBody, ModalFooter
@@ -11,6 +11,7 @@ import Spinner from 'Components/Spinner'
 import Units from 'Components/Units'
 import Icon from 'Components/Icon'
 import CoinIcon from 'Components/CoinIcon'
+import ReduxFormField from 'Components/ReduxFormField'
 
 const SignTxModal = (props) => {
   const renderView = () => {
@@ -175,27 +176,25 @@ const SignTxForm = reduxForm({
       </ModalHeader>
       <ModalBody>
         <div className='modal-text'>
-        <p>
-          The following transactions will take place to save the changes you made to your wallet. Please review and sign them with {props.description}.
-        </p>
-        <p>
-          The receive amount is an estimate based on the current rate and swap fee. Actual amount may vary.
-        </p>
-        </div>
-        <div className='review-list'>
-          <Row className='gutter-2'>
-            {signingStatuses}
-          </Row>
+          <p>The following transactions will take place to save the changes you made to your wallet. Please review and sign them with {props.description}.</p>
+          <p>The receive amount is an estimate based on the current rate and swap fee. Actual amount may vary.</p>
+          <div className='review-list my-3'>
+            <Row className='gutter-2'>
+              {signingStatuses}
+            </Row>
+          </div>
         </div>
         {props.passwordPrompt &&
-          <div className='form-group d-flex justify-content-center'>
-            <Field
-              name='password'
-              component='input'
-              type='password'
-              placeholder='enter your wallet password'
-            />
-          </div>
+          <Row className='justify-content-center'>
+            <Col xs='12' md='8' lg='6' xl='5'>
+              <ReduxFormField
+                name='password'
+                type='password'
+                label='Wallet Password'
+                placeholder='Enter password to sign transactions...'
+              />
+            </Col>
+          </Row>
         }
       </ModalBody>
       <ModalFooter className='justify-content-between'>
