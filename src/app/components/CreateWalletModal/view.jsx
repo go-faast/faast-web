@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Modal, ModalBody, ModalHeader, ModalFooter, Form, FormGroup, Input, Label } from 'reactstrap'
+import { Modal, ModalBody, ModalHeader, ModalFooter, Form, FormGroup, Input } from 'reactstrap'
 import { Field, reduxForm } from 'redux-form'
 import { Button } from 'reactstrap'
 
@@ -72,13 +72,25 @@ CreateWalletModalView.propTypes = {
 }
 
 let CreatePasswordForm = ({
-  walletName, handleSubmit, handleCancel,
-  invalid, validatePassword, validatePasswordConfirm }) => (
+  walletName, walletAddress, handleSubmit, handleCancel, submitting,
+  invalid, validatePassword, validatePasswordConfirm
+}) => (
   <Form onSubmit={handleSubmit}>
     <ModalBody className='text-left'>
       <div className='mb-3'>
         Enter a password for your {walletName}. Please make a note of your password. You will not be able to access the funds in your {walletName} without your password.
       </div>
+
+      {/* Provide a hidden username field as per Google's password form guide:
+        * https://goo.gl/9p2vKq
+        * Using absolute position off screen because lastpass ignores
+        * "display: none" and hidden input elements.
+        */}
+      <input type='text' name='username' autoComplete='username'
+        readOnly value={walletAddress || ''}
+        style={{ position: 'absolute', top: 100000 }}
+      />
+
       <ReduxFormField
         row
         className='gutter-3 align-items-center'
@@ -101,7 +113,6 @@ let CreatePasswordForm = ({
         type='password'
         label='Confirm Password'
         placeholder='Enter the password again...'
-        autoFocus
         autoComplete='new-password'
         validate={validatePasswordConfirm}
         labelProps={{ xs: '12', md: '4'}}
@@ -110,7 +121,7 @@ let CreatePasswordForm = ({
     </ModalBody>
     <ModalFooter className='justify-content-between'>
       <Button outline color='primary' onClick={handleCancel}>Cancel</Button>
-      <Button color='success' type='submit' onClick={handleSubmit} disabled={invalid}>Continue</Button>
+      <Button color='success' type='submit' onClick={handleSubmit} disabled={submitting || invalid}>Continue</Button>
     </ModalFooter>
   </Form>
 )
@@ -156,7 +167,7 @@ ImportWalletForm.propTypes = {
 }
 
 ImportWalletForm = reduxForm({
-  form: 'importWalletFor'
+  form: 'importWalletForm'
 })(ImportWalletForm)
 
 let DownloadKeystoreForm = ({

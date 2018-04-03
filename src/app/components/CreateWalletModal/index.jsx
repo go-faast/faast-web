@@ -20,7 +20,23 @@ const initialState = {
 class CreateWalletModal extends Component {
   constructor () {
     super()
-    this.state = initialState
+    this.generateKeystore = this.generateKeystore.bind(this)
+    this.state = {
+      ...initialState,
+      createdWallet: this.generateKeystore()
+    }
+  }
+
+  generateKeystore () {
+    return EthereumWalletKeystore.generate()
+  }
+
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.showModal && !this.props.showModal) {
+      // Generate new keystore upon showing modal so address can be included
+      // in create password form as hidden field (helps password managers)
+      this.setState({ createdWallet: this.generateKeystore() })
+    }
   }
 
   getWalletName = () => this.props.isNewWallet ? 'wallet' : 'keystore'
@@ -36,9 +52,6 @@ class CreateWalletModal extends Component {
   }
 
   validatePasswordConfirm = (passwordConfirm, { password }) => {
-    if (!passwordConfirm) {
-      return 'Please confirm your password'
-    }
     if (passwordConfirm !== password) {
       return 'Passwords do not match'
     }
@@ -62,12 +75,6 @@ class CreateWalletModal extends Component {
     const walletName = this.getWalletName()
 
     Promise.resolve(this.state.createdWallet)
-      .then((createdWallet) => {
-        if (!createdWallet) {
-          return EthereumWalletKeystore.generate()
-        }
-        return createdWallet
-      })
       .then((createdWallet) => createdWallet.getFileName(password)
         .then((fileName) => this.setState({
           view: 'download',
@@ -110,7 +117,7 @@ class CreateWalletModal extends Component {
 
   render () {
     const { isNewWallet, showModal } = this.props
-    const { hasDownloadedFile, agreedToDisclaimer } = this.state
+    const { hasDownloadedFile, agreedToDisclaimer, createdWallet } = this.state
     return (
       <CreateWalletModalView
         view={this.state.view}
@@ -127,9 +134,15 @@ class CreateWalletModal extends Component {
         isNewWallet={isNewWallet}
         hasDownloadedFile={hasDownloadedFile}
         walletName={this.getWalletName()}
+        walletAddress={createdWallet && createdWallet.getAddress()}
       />
     )
   }
+}
+
+CreateWalletModal.propTypes = {
+  isNewWallet: PropTypes.bool,
+  showWallet: PropTypes.bool,
 }
 
 const mapDispatchToProps = {

@@ -9,33 +9,41 @@ import { isFunction } from 'lodash'
 
 const RenderInput = (props) => {
   const {
-    input: inputProps, meta: { touched, error, warning, form: formName },
-    label, type, placeholder, id, disabled,
+    meta: { touched, error, warning, form: formName },
+    label, type, placeholder, id, disabled, autoComplete,
     addonPrepend, addonAppend, row, className, inputClassName, labelProps, inputCol
   } = props
+  let { input: inputProps } = props
   const check = ['checkbox', 'radio'].includes(type)
   let { labelPosition } = props
   if (!labelPosition) {
     labelPosition = check ? 'append' : 'prepend'
   }
-  const inputId = id || (label ? `form-${formName}-${inputProps.name}` : undefined)
   const invalid = touched && (error || warning)
+  const inputId = id || (label ? `form-${formName}-${inputProps.name}` : undefined)
+  inputProps = {
+    ...inputProps,
+    id: inputId, placeholder, type,
+    disabled, autoComplete,
+    valid: (invalid ? false : undefined),
+    className: inputClassName
+  }
+  const inputElement = (
+    <Input key='input' {...inputProps} />
+  )
+
   const useInputGroup = Boolean(addonPrepend || addonAppend)
   const renderAddon = (addonType, AddonContent) => AddonContent && (
     <InputGroupAddon addonType={addonType}>
       {isFunction(AddonContent) ? (<AddonContent invalid={invalid} {...props}/>) : AddonContent}
     </InputGroupAddon>
   )
-  const inputElement = (
-    <Input key='input' {...inputProps}
-      className={inputClassName} id={inputId} placeholder={placeholder}
-      type={type} disabled={disabled} valid={invalid ? false : undefined}
-    />
-  )
-  const feedbackElement = touched && (
-    (error && <FormFeedback key='feedback-error'>{error}</FormFeedback>) ||
-    (warning && <FormFeedback key='feedback-warn' className='text-warning'>{warning}</FormFeedback>)
-  )
+
+  const feedbackElement = touched && ([
+    (error && <FormFeedback key='feedback-error'>{error}</FormFeedback>),
+    (warning && <FormFeedback key='feedback-warn' className='text-warning'>{warning}</FormFeedback>),
+  ])
+
   const inputGroupElement = !useInputGroup ? [inputElement, !check && feedbackElement] : (
     <InputGroup key='input-group'>
       {renderAddon('prepend', addonPrepend)}
@@ -44,11 +52,13 @@ const RenderInput = (props) => {
       {feedbackElement}
     </InputGroup>
   )
+
   const labelElement = label && [(
     <Label key='label' for={inputId} check={check}{...labelProps}>
       {label}
     </Label>
   ), check && feedbackElement]
+  
   return (
     <FormGroup className={className} row={row} check={check}>
       {labelPosition === 'prepend' && labelElement}
