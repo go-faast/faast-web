@@ -51,7 +51,7 @@ const AppNavbar = ({ disablePortfolioLinks, routerPush, children, ...props }) =>
       <AddressSearchForm
         className='expand-only' size='md' formProps={{ inline: true }}
         inputProps={{ className: 'flat' }} buttonProps={{ className: 'flat' }}
-        onSubmit={({ address }) => routerPush(`/address/${address}`)}/>
+        onSubmit={({ address }) => address && routerPush(`/address/${address}`)}/>
     </Container>
     {children}
   </Navbar>
