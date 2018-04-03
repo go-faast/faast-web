@@ -21,6 +21,12 @@ const middleware = [
   thunk,
   routerMiddleware(history)
 ]
+
+// Redirect legacy hash routes
+if ((window.location.hash || '').startsWith('#/')) {
+  history.replace(window.location.hash.slice(1))
+}
+
 if (!window.faast) window.faast = {}
 if (config.isDev && !window.__REDUX_DEVTOOLS_EXTENSION__) middleware.push(logger)
 window.faast.intervals = {
