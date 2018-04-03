@@ -1,13 +1,17 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import SignTxModalView from './view'
+
 import { closeTrezorWindow } from 'Utilities/wallet'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 import { getSwapStatus, estimateReceiveAmount } from 'Utilities/swap'
-import { sendSwapDeposits } from 'Actions/portfolio'
+
 import { getAllAssets, getCurrentPortfolio } from 'Selectors'
+import { sendSwapDeposits } from 'Actions/portfolio'
+import { resetSwap } from 'Actions/redux'
+
+import SignTxModalView from './view'
 
 class SignTxModal extends Component {
   constructor (props) {
@@ -25,6 +29,7 @@ class SignTxModal extends Component {
   _handleCloseModal () {
     closeTrezorWindow()
     this.setState({ isSigning: false })
+    this.props.resetSwap()
     this.props.toggleModal()
   }
 
@@ -158,4 +163,8 @@ const mapStateToProps = (state) => ({
   mock: state.mock
 })
 
-export default connect(mapStateToProps)(SignTxModal)
+const mapDispatchToProps = {
+  resetSwap,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(SignTxModal)

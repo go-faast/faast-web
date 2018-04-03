@@ -7,7 +7,7 @@ import { toUnit, toPercentage } from 'Utilities/convert'
 import { updateObjectInArray, splice } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
-import { setSwap, resetSwap, toggleOrderModal, showOrderModal } from 'Actions/redux'
+import { setSwap, toggleOrderModal, showOrderModal } from 'Actions/redux'
 import { initiateSwaps } from 'Actions/portfolio'
 import { getCurrentPortfolioWithWalletHoldings, getAllAssets } from 'Selectors'
 import { toBigNumber } from 'Utilities/convert'
@@ -46,9 +46,8 @@ const initialState = {
 }
 
 class Modify extends Component {
-  constructor () {
-    super()
-    this.state = initialState
+  constructor (props) {
+    super(props)
     this._assetItem = this._assetItem.bind(this)
     this._handleSlider = this._handleSlider.bind(this)
     this._handleFiatChange = this._handleFiatChange.bind(this)
@@ -59,13 +58,13 @@ class Modify extends Component {
     this._handleSelectAsset = this._handleSelectAsset.bind(this)
     this._handleRemoveAsset = this._handleRemoveAsset.bind(this)
     this._handleSave = this._handleSave.bind(this)
-    this._handleCancel = this._handleCancel.bind(this)
+    this.state = this.getInitialState(props, initialState)
   }
 
-  init = (props) => {
+  getInitialState = (props, state) => {
     const { portfolio } = props
-    const walletHoldings = { ...this.state.holdings }
-    const walletBalancesLoaded = { ...this.state.walletBalancesLoaded }
+    const walletHoldings = { ...state.holdings }
+    const walletBalancesLoaded = { ...state.walletBalancesLoaded }
     portfolio.nestedWallets.forEach(({ id, balancesLoaded, assetHoldings }) => {
       const alreadyLoaded = walletBalancesLoaded[id]
       if (!alreadyLoaded) {
@@ -76,11 +75,7 @@ class Modify extends Component {
         walletBalancesLoaded[id] = balancesLoaded
       }
     })
-    this.setState({ holdings: walletHoldings, walletBalancesLoaded })
-  }
-
-  componentWillMount () {
-    this.init(this.props)
+    return { ...state, holdings: walletHoldings, walletBalancesLoaded }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -88,7 +83,7 @@ class Modify extends Component {
     const { portfolio: nextPortfolio } = nextProps
     if (currentPortfolio.id !== nextPortfolio.id
       || countLoadedWallets(currentPortfolio) !== countLoadedWallets(nextPortfolio)) {
-      this.init(nextProps)
+      this.setState(this.getInitialState(nextProps, this.state))
     }
   }
 
@@ -322,11 +317,6 @@ class Modify extends Component {
     })
   }
 
-  _handleCancel () {
-    this.props.resetSwap()
-    this.props.routerPush('/balances')
-  }
-
   render () {
     const { portfolio, toggleOrderModal, orderModal } = this.props
     const { holdings, assetListWalletId, allowance, isAssetListOpen } = this.state
@@ -370,7 +360,6 @@ class Modify extends Component {
         handleWeightChange={this._handleWeightChange}
         showSignTxModal={orderModal.show}
         handleToggleSignTxModal={toggleOrderModal}
-        handleCancel={this._handleCancel}
         handleSave={this._handleSave}
         disableSave={disableSave}
       />
@@ -386,7 +375,6 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   setSwap,
-  resetSwap,
   routerPush: push,
   initiateSwaps,
   toggleOrderModal,

@@ -27,7 +27,7 @@ import IconLabel from 'Components/IconLabel'
 import styles from './style'
 
 const ModifyView = (props) => {
-  const { portfolio, handleCancel, handleSave, disableSave } = props
+  const { portfolio, handleSave, disableSave } = props
 
   const renderAssetRows = (assetHoldings) => assetHoldings.map((a) => {
     const { walletId, symbol, name, change24, price, units, fiat, weight, swapEnabled, priceDecrease } = a
@@ -213,10 +213,7 @@ const ModifyView = (props) => {
             <small className='text-muted font-weight-light'>available to swap</small>
           </Col>
           <Col xs='auto'>
-            <Button color='primary' outline onClick={handleCancel} className='flat'>Cancel</Button>
-          </Col>
-          <Col xs='auto'>
-            <Button color='primary' onClick={handleSave} disabled={Boolean(disableSave)} className='flat'><i className='fa fa-check mr-2'/>Save</Button>
+            <Button color='primary' onClick={handleSave} disabled={Boolean(disableSave)} className='flat'><i className='fa fa-check mr-2'/>Save Changes</Button>
           </Col>
           {typeof disableSave === 'string' && (
             <Col xs='12'>
