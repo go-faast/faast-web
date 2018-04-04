@@ -68,7 +68,7 @@ export default class EthereumWalletKeystore extends EthereumWallet {
       return this
     }
     if (typeof password === 'undefined' || password === null) {
-      password = window.prompt(`Enter password for Ethereum account ${this.address}`)
+      password = window.prompt(`Enter password for Ethereum account ${this.getId()}`)
     }
     if (typeof password !== 'string') {
       throw new Error('Password is required')

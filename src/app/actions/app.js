@@ -9,7 +9,8 @@ import log from 'Utilities/log'
 import { getDefaultPortfolio } from 'Selectors'
 
 import { retrieveAssets } from './asset'
-import { setSwap, setSettings } from './redux'
+import { setSettings } from './redux'
+import { setSwaps } from './swap'
 import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
 
 export const appReady = createAction('APP_READY')
@@ -23,7 +24,7 @@ export const restoreState = (dispatch, getState) => Promise.resolve()
     if (addressState) {
       const status = statusAllSwaps(addressState.swap)
       const swap = (status === 'finalized') ? [] : addressState.swap
-      dispatch(setSwap(swap))
+      dispatch(setSwaps(swap))
       const settings = addressState.settings
       dispatch(setSettings(settings))
     }

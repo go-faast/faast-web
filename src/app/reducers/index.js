@@ -4,7 +4,6 @@ import { reducer as toastrReducer } from 'react-redux-toastr'
 import { routerReducer } from 'react-router-redux'
 import assets from './assets'
 import swap from './swap'
-import mock from './mock'
 import orderModal from './orderModal'
 import settings from './settings'
 import mediaQueries from './mediaQueries'
@@ -20,7 +19,6 @@ export default combineReducers({
   wallets,
   assets,
   swap,
-  mock,
   orderModal,
   settings,
   form: formReducer,

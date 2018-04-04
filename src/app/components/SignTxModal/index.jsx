@@ -1,15 +1,16 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
+import { createStructuredSelector } from 'reselect'
 
 import { closeTrezorWindow } from 'Utilities/wallet'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 import { getSwapStatus, estimateReceiveAmount } from 'Utilities/swap'
 
-import { getAllAssets, getCurrentPortfolio } from 'Selectors'
+import { getAllAssets, getCurrentPortfolio, getAllSwapsArray } from 'Selectors'
 import { sendSwapDeposits } from 'Actions/portfolio'
-import { resetSwap } from 'Actions/redux'
+import { resetSwaps } from 'Actions/swap'
 
 import SignTxModalView from './view'
 
@@ -29,7 +30,7 @@ class SignTxModal extends Component {
   _handleCloseModal () {
     closeTrezorWindow()
     this.setState({ isSigning: false })
-    this.props.resetSwap()
+    this.props.resetSwaps()
     this.props.toggleModal()
   }
 
@@ -39,8 +40,8 @@ class SignTxModal extends Component {
     }
     this.setState({ isSigning: true })
 
-    const { swap } = this.props
-    return dispatch(sendSwapDeposits(swap, { password: values.password }))
+    const { swaps } = this.props
+    return dispatch(sendSwapDeposits(swaps, { password: values.password }))
       .then(() => {
         if (!this.props.showModal) throw new Error('modal closed')
         this._handleCloseModal()
@@ -54,13 +55,10 @@ class SignTxModal extends Component {
   }
 
   render () {
+    const { swaps, assets } = this.props
     const readyToSign = () => {
-      const hasError = this.props.swap.some((a) => {
-        return a.list.some((b) => b.errors && b.errors.length)
-      })
-      const statuses = this.props.swap.reduce((a, b) => {
-        return a.concat(b.list.map(getSwapStatus).map(c => c.details))
-      }, [])
+      const hasError = swaps.some((swap) => swap.errors && swap.errors.length)
+      const statuses = swaps.map(getSwapStatus).map(({ details }) => details)
       return !hasError && statuses.every(s => s === 'waiting for transaction to be signed')
     }
     const estimateTxFee = ({ tx }) => {
@@ -71,20 +69,20 @@ class SignTxModal extends Component {
         return `TBD ${tx.feeAsset}`
       }
     }
-    const getStatus = (a) => {
-      const status = getSwapStatus(a)
-      if (status.status === 'error') {
+    const getStatus = (swap) => {
+      const { status, details } = getSwapStatus(swap)
+      if (status === 'error') {
         return {
           cl: 'failed',
           text: 'failed',
-          details: status.details
+          details: details
         }
       }
-      if (status.status === 'working') {
+      if (status === 'working') {
         return {
           cl: 'in-progress',
           text: 'in progress',
-          details: status.details
+          details: details
         }
       }
       return {
@@ -92,11 +90,12 @@ class SignTxModal extends Component {
         text: 'done'
       }
     }
-    const getError = (a) => {
-      if (a.errors && Array.isArray(a.errors) && a.errors.length) {
-        const eKeys = a.errors.map(e => Object.keys(e)[0])
+    const getError = (swap) => {
+      const { errors } = swap
+      if (errors && Array.isArray(errors) && errors.length) {
+        const eKeys = errors.map(e => Object.keys(e)[0])
         if (eKeys.includes('swapMarketInfo')) {
-          const error = Object.values(a.errors.find(e => Object.keys(e)[0] === 'swapMarketInfo'))[0]
+          const error = Object.values(errors.find(e => Object.keys(e)[0] === 'swapMarketInfo'))[0]
           if (error.message && error.message.startsWith('minimum')) return error.message
           if (error.message && error.message.startsWith('maximum')) return error.message
         }
@@ -115,25 +114,20 @@ class SignTxModal extends Component {
         return 'unknown error'
       }
     }
-    const assets = this.props.assets
-    const swapList = this.props.swap.reduce((allSwaps, sending) => 
-      allSwaps.concat(sending.list.map((receiving) => {
-        const { symbol: fromSymbol } = sending
-        const { symbol: toSymbol } = receiving
-        const fromAsset = assets[fromSymbol]
-        const toAsset = assets[toSymbol]
-        return {
-          from: fromAsset,
-          to: toAsset,
-          pair: `${fromSymbol}_${toSymbol}`,
-          swap: receiving,
-          txFee: estimateTxFee(receiving),
-          receiveAmount: estimateReceiveAmount(receiving, toAsset),
-          status: getStatus(receiving),
-          error: getError(receiving)
-        }
-      })),
-    [])
+    const swapList = swaps.map((swap) => {
+      const { sendSymbol, receiveSymbol } = swap
+      const sendAsset = assets[sendSymbol]
+      const receiveAsset = assets[receiveSymbol]
+      return {
+        ...swap,
+        sendAsset,
+        receiveAsset,
+        txFee: estimateTxFee(swap),
+        receiveUnits: estimateReceiveAmount(swap, receiveAsset),
+        status: getStatus(swap),
+        error: getError(swap)
+      }
+    })
     const readyToSignResult = readyToSign()
     return (
       <SignTxModalView
@@ -156,15 +150,14 @@ class SignTxModal extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  assets: getAllAssets(state),
-  swap: state.swap,
-  wallet: getCurrentPortfolio(state),
-  mock: state.mock
+const mapStateToProps = createStructuredSelector({
+  assets: getAllAssets,
+  swaps: getAllSwapsArray,
+  wallet: getCurrentPortfolio,
 })
 
 const mapDispatchToProps = {
-  resetSwap,
+  resetSwaps,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SignTxModal)

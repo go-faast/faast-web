@@ -129,27 +129,27 @@ export default class EthereumWallet extends Wallet {
   createTransaction = (toAddress, amount, assetOrSymbol, options = {}) => Promise.resolve(assetOrSymbol)
     .then(this.assertAssetSupported)
     .then((asset) => {
-      log.debug(`Sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${toAddress}`)
-      let tx = {
+      log.debug(`Create transaction sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${toAddress}`)
+      let txData = {
         from: this.getAddress(),
         value: toBigNumber(0),
         data: ''
       }
       if (asset.symbol === 'ETH') {
-        tx.to = toAddress
-        tx.value = toSmallestDenomination(amount, asset.decimals)
+        txData.to = toAddress
+        txData.value = toSmallestDenomination(amount, asset.decimals)
       } else if (asset.ERC20) {
         // Handle ERC20
-        tx.to = asset.contractAddress,
-        tx.data = tokenSendData(toAddress, amount, asset.decimals)
+        txData.to = asset.contractAddress,
+        txData.data = tokenSendData(toAddress, amount, asset.decimals)
       } else {
         throw new Error(`Unsupported asset ${asset.symbol || asset} provided to EthereumWallet`)
       }
-      tx.value = toHex(tx.value)
+      txData.value = toHex(txData.value)
 
       const previousTx = options.previousTx
       let customNonce = options.nonce
-      if (!customNonce && previousTx && previousTx.txData.from === tx.from) {
+      if (!customNonce && previousTx && previousTx.txData.from === txData.from) {
         customNonce = toBigNumber(previousTx.txData.nonce).plus(1).toNumber()
       }
       const customGasPrice = options.gasPrice
@@ -157,30 +157,30 @@ export default class EthereumWallet extends Wallet {
 
       return Promise.all([
         customGasPrice || web3.eth.getGasPrice(),
-        customGasLimit || web3.eth.estimateGas(tx),
-        customNonce || web3.eth.getTransactionCount(tx.from)
+        customGasLimit || web3.eth.estimateGas(txData),
+        customNonce || web3.eth.getTransactionCount(txData.from)
       ]).then(([gasPrice, gasLimit, nonce]) => ({
         walletId: this.getId(),
         toAddress,
         amount,
         asset,
-        signed: false,
         feeAmount: toTxFee(gasLimit, gasPrice),
         feeAsset: 'ETH',
+        signed: false,
+        sent: false,
         txData: {
-          ...tx,
+          ...txData,
           gasPrice: toHex(gasPrice),
           gasLimit: toHex(gasLimit),
           nonce: toHex(nonce)
-        }
+        },
+        signedTxData: null
       }))
-      .then((tx) => log.debugInline('createTransaction', ({
-        ...tx,
-        ...tx.txData // TODO: Added for back compat. Remove after refactoring
-      })))
+      .then((tx) => log.debugInline('createTransaction', tx))
     });
 
-  _sendSignedTxData = (signedTxData, options = {}) => sendSerializedTx(signedTxData.raw, options);
+  _sendSignedTxData = (signedTxData, options = {}) => sendSerializedTx(signedTxData.raw, options)
+    .then((txId) => ({ id: txId }));
 
   _validateTxData = (txData) => {
     if (txData === null || txData !== 'object') {

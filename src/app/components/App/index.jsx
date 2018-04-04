@@ -5,12 +5,11 @@ import isEqual from 'lodash/isEqual'
 import blockstack from 'Utilities/blockstack'
 import { statusAllSwaps } from 'Utilities/swap'
 import AppView from './view'
-import withMockHandling from 'Hoc/withMockHandling'
-import { restorePolling } from 'Actions/portfolio'
-import { setSwap, setBreakpoints } from 'Actions/redux'
+import { restoreSwapPolling } from 'Actions/portfolio'
+import { setBreakpoints } from 'Actions/redux'
 import { postSwundle } from 'Actions/request'
 import { breakpointWidths } from 'Utilities/breakpoints'
-import { getCurrentWallet } from 'Selectors'
+import { getCurrentWallet, getAllSwapsArray } from 'Selectors'
 
 class App extends Component {
   constructor () {
@@ -19,8 +18,8 @@ class App extends Component {
   }
 
   componentWillMount () {
-    if (this.props.swap.length) {
-      this.props.restorePolling(this.props.swap, this.props.mocking)
+    if (this.props.swaps.length) {
+      this.props.restoreSwapPolling(this.props.swaps)
     }
   }
 
@@ -28,12 +27,12 @@ class App extends Component {
     if (this.props.wallet.isBlockstack && !isEqual(prevProps.settings, this.props.settings)) {
       blockstack.saveSettings(this.props.settings)
     }
-    const statusPrevSwap = statusAllSwaps(prevProps.swap)
-    const statusCurrSwap = statusAllSwaps(this.props.swap)
+    const statusPrevSwap = statusAllSwaps(prevProps.swaps)
+    const statusCurrSwap = statusAllSwaps(this.props.swaps)
     if (statusPrevSwap !== 'pending_receipts' && statusCurrSwap === 'pending_receipts') {
-      this.props.postSwundle(this.props.wallet.address, this.props.swap)
+      this.props.postSwundle(this.props.wallet.address, this.props.swaps)
     } else if (statusPrevSwap !== 'pending_receipts_restored' && statusCurrSwap === 'pending_receipts_restored') {
-      this.props.restorePolling(this.props.swap, this.props.mock.mocking)
+      this.props.restoreSwapPolling(this.props.swaps)
     }
   }
 
@@ -56,32 +55,17 @@ class App extends Component {
   }
 }
 
-App.propTypes = {
-  wallet: PropTypes.object.isRequired,
-  swap: PropTypes.array.isRequired
-}
-
 const mapStateToProps = (state) => ({
   wallet: getCurrentWallet(state),
-  swap: state.swap,
+  swaps: getAllSwapsArray(state),
   settings: state.settings,
-  mock: state.mock,
   mq: state.mediaQueries
 })
 
-const mapDispatchToProps = (dispatch) => ({
-  restorePolling: (swap, isMocking) => {
-    dispatch(restorePolling(swap, isMocking))
-  },
-  setSwap: (swap) => {
-    dispatch(setSwap(swap))
-  },
-  postSwundle: (address, swap) => {
-    dispatch(postSwundle(address, swap))
-  },
-  setBreakpoints: (mq) => {
-    dispatch(setBreakpoints(mq))
-  }
-})
+const mapDispatchToProps = {
+  restoreSwapPolling,
+  postSwundle,
+  setBreakpoints
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(withMockHandling(App))
+export default connect(mapStateToProps, mapDispatchToProps)(App)

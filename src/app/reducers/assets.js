@@ -4,10 +4,8 @@ import {
   assetPriceUpdated, assetPricesUpdated,
   assetPriceError, assetPricesError,
 } from 'Actions/asset'
-import { toBigNumber } from 'Utilities/convert'
+import { toBigNumber, ZERO } from 'Utilities/convert'
 import { createUpserter, createUpdater } from 'Utilities/helpers'
-
-const ZERO = toBigNumber(0)
 
 const initialState = {
   loaded: false,

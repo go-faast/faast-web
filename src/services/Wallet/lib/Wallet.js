@@ -112,7 +112,12 @@ export default class Wallet {
 
   sendSignedTransaction = (tx, options = {}) => Promise.resolve(tx)
     .then(this._validateTx)
-    .then(() => this._sendSignedTxData(tx.signedTxData, { ...options, tx }));
+    .then(() => this._sendSignedTxData(tx.signedTxData, { ...options, tx })
+    .then((result) => ({
+      ...tx,
+      sent: true,
+      ...result,
+    })));
 
   sendTransaction = (tx, options = {}) => Promise.resolve(tx)
     .then(this._validateTx)

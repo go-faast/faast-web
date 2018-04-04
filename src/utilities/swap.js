@@ -37,13 +37,13 @@ export const getSwapStatus = (swap) => {
       details: 'generating transaction'
     }
   }
-  if (swap.tx.signed === false) {
+  if (!swap.tx.signed) {
     return {
       status: 'working',
       details: 'waiting for transaction to be signed'
     }
   }
-  if (swap.txHash == null) {
+  if (!swap.tx.sent) {
     return {
       status: 'working',
       details: 'sending signed transaction'
@@ -75,49 +75,35 @@ export const getSwapStatus = (swap) => {
 }
 
 export const statusAllSwaps = (swapList) => {
-  if (!swapList || !swapList.length) return 'unavailable'
-  const allSigned = swapList.every((send) => {
-    return send.list.every((receive) => {
-      return receive.tx && receive.tx.signed
-    })
-  })
-  if (!allSigned) return 'unsigned'
-  const allSent = swapList.every((send) => {
-    return send.list.every((receive) => {
-      return !!receive.txHash
-    })
-  })
-  if (!allSent) return 'unsent'
-  const allReceipts = swapList.every((send) => {
-    return send.list.every((receive) => {
-      return !!receive.tx.receipt
-    })
-  })
-  if (!allReceipts) {
-    const allRestored = swapList.every((send) => {
-      return send.restored
-    })
-    if (allRestored) {
-      return 'pending_receipts_restored'
-    } else {
+  if (!swapList || !swapList.length) {
+    return 'unavailable'
+  }
+  if (swapList.some(({ tx }) => !tx)) {
+    return 'unspecified'
+  }
+  if (swapList.some(({ tx }) => !tx.signed)) {
+    return 'unsigned'
+  }
+  if (swapList.some(({ tx }) => !tx.sent)) {
+    return 'unsent'
+  }
+  if (swapList.some(({ tx }) => !tx.receipt)) {
+    if (swapList.some(({ restored }) => !restored)) {
       return 'pending_receipts'
+    } else {
+      return 'pending_receipts_restored'
     }
   }
-  const finalized = swapList.every((send) => {
-    return send.list.every((receive) => {
-      return receive.order && (receive.order.status === 'complete' || receive.order.status === 'failed')
-    })
-  })
-  if (finalized) {
+  if (swapList.every(({ order }) => order && (order.status === 'complete' || order.status === 'failed'))) {
     return 'finalized'
-  } else {
-    return 'pending_orders'
   }
+  return 'pending_orders'
 }
 
-export const estimateReceiveAmount = (a, b) => {
-  if (a.hasOwnProperty('fee') && a.hasOwnProperty('rate') && a.hasOwnProperty('unit')) {
-    const converted = toUnit(a.unit, a.rate, b.decimals)
-    return toPrecision(converted.minus(a.fee), b.decimals)
+export const estimateReceiveAmount = (swap, asset) => {
+  const { fee, rate, sendUnits } = (swap || {})
+  if (fee && rate && sendUnits) {
+    const converted = toUnit(sendUnits, rate, asset.decimals)
+    return toPrecision(converted.minus(fee), asset.decimals)
   }
 }

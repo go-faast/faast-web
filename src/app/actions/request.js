@@ -2,7 +2,6 @@ import { filterErrors, filterObj } from 'Utilities/helpers'
 import { clearSwap } from 'Utilities/storage'
 import log from 'Utilities/log'
 import Faast from 'Services/Faast'
-import { updateSwapOrder } from 'Actions/redux'
 import { restoreSwundle } from 'Actions/portfolio'
 
 export const getPriceChart = (symbol) => () => Faast.getPriceChart(symbol)
@@ -17,16 +16,12 @@ export const postExchange = (info) => () =>
       throw new Error(errMsg)
     })
 
-export const getOrderStatus = (depositSymbol, receiveSymbol, address, timestamp) => (dispatch) =>
-  Faast.getOrderStatus(depositSymbol, receiveSymbol, address, timestamp)
+export const getOrderStatus = ({ sendSymbol, receiveSymbol, order }) => () =>
+  Faast.getOrderStatus(sendSymbol, receiveSymbol, order.deposit, order.created)
     .then((data) => {
       log.info('order status receive', data)
       // if (data.error || !data.status) throw new Error(data.error)
-
-      const order = filterObj(['status', 'transaction', 'outgoingCoin', 'error'], data)
-
-      dispatch(updateSwapOrder(depositSymbol, receiveSymbol, order))
-      return data
+      return filterObj(['status', 'transaction', 'outgoingCoin', 'error'], data)
     })
     .catch((err) => {
       log.error(err)
@@ -34,21 +29,21 @@ export const getOrderStatus = (depositSymbol, receiveSymbol, address, timestamp)
       throw new Error(errMsg)
     })
 
-export const getSwundle = (address) => (dispatch) => 
-  Faast.getSwundle(address)
+export const getSwundle = (id) => (dispatch) => 
+  Faast.getSwundle(id)
     .then((data) => {
       if (data.result && data.result.swap) {
-        dispatch(restoreSwundle(data.result.swap, address))
+        dispatch(restoreSwundle(data.result.swap, id))
       }
     })
     .catch(log.error)
 
-export const postSwundle = (address, swap) => () =>
-  Faast.postSwundle(address, swap)
+export const postSwundle = (id, swapList) => () =>
+  Faast.postSwundle(id, { version: '2', swaps: swapList })
     .catch(log.error)
 
-export const removeSwundle = (address) => () => {
-  clearSwap(address)
-  return Faast.removeSwundle(address)
+export const removeSwundle = (id) => () => {
+  clearSwap(id)
+  return Faast.removeSwundle(id)
     .catch(log.error)
 }

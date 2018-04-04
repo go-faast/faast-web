@@ -27,6 +27,7 @@ const getPortfolioState = ({ portfolio }) => portfolio
 const getWalletState = ({ wallets }) => wallets
 const getRouterState = ({ router }) => router
 const getAccountSearchState = ({ accountSearch }) => accountSearch
+const getSwapState = ({ swap }) => swap
 
 // App selectors
 export const isAppReady = createSelector(getAppState, ({ ready }) => ready)
@@ -43,6 +44,7 @@ export const getAsset = createItemSelector(getAllAssets, selectItemId, (allAsset
 
 // Wallet selectors
 export const getAllWallets = getWalletState
+export const getAllWalletsArray = createSelector(getAllWallets, Object.values)
 
 export const getWallet = createItemSelector(
   getAllWallets,
@@ -197,3 +199,9 @@ export const getAccountSearchError = createSelector(getAccountSearchState, ({ er
 export const getAccountSearchResultId = createSelector(getAccountSearchState, ({ resultId }) => resultId)
 export const getAccountSearchResultWallet = currySelector(getWallet, getAccountSearchResultId)
 export const getAccountSearchResultWalletWithHoldings = currySelector(getWalletWithHoldings, getAccountSearchResultId)
+
+
+// Swap selectors
+export const getAllSwaps = getSwapState
+export const getAllSwapsArray = createSelector(getAllSwaps, Object.values)
+export const getSwap = createItemSelector(getAllSwaps, selectItemId, (allSwaps, id) => allSwaps[id])

@@ -4,6 +4,7 @@ import {
   Row, Col, Button, Form, Card, CardBody, CardFooter,
   Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap'
+import { isNil, isString } from 'lodash'
 
 import web3 from 'Services/Web3'
 
@@ -74,15 +75,15 @@ const SignTxModal = (props) => {
   )
 }
 
-const SwapStatusRow = ({ status: { swap, from, to, receiveAmount }, children }) => (
+const SwapStatusRow = ({ swap: { sendAsset, sendUnits, receiveAsset, receiveUnits }, children }) => (
   <Row className='gutter-0 align-items-center font-size-small text-muted'>
     <Col>
       <Row className='gutter-2 align-items-center text-center text-sm-left'>
-        <Col xs='12' sm='auto'><CoinIcon symbol={from.symbol}/></Col>
+        <Col xs='12' sm='auto'><CoinIcon symbol={sendAsset.symbol}/></Col>
         <Col xs='12' sm>
           <Row className='gutter-0'>
-            <Col xs='12' className='order-sm-2'>{from.name}</Col>
-            <Col xs='12' className='text-white'><Units value={swap.unit} symbol={from.symbol}/></Col>
+            <Col xs='12' className='order-sm-2'>{sendAsset.name}</Col>
+            <Col xs='12' className='text-white'><Units value={sendUnits} symbol={sendAsset.symbol}/></Col>
           </Row>
         </Col>
       </Row>
@@ -92,13 +93,13 @@ const SwapStatusRow = ({ status: { swap, from, to, receiveAmount }, children }) 
     </Col>
     <Col>
       <Row className='gutter-2 align-items-center text-center text-sm-right'>
-        <Col xs='12' sm='auto' className='order-sm-2'><CoinIcon symbol={to.symbol}/></Col>
+        <Col xs='12' sm='auto' className='order-sm-2'><CoinIcon symbol={receiveAsset.symbol}/></Col>
         <Col xs='12' sm>
           <Row className='gutter-0'>
-            <Col xs='12' className='order-sm-2'>{to.name}</Col>
+            <Col xs='12' className='order-sm-2'>{receiveAsset.name}</Col>
             <Col xs='12' className='text-white'>
-              {typeof receiveAmount !== 'undefined' && receiveAmount !== null
-                ? <Units value={receiveAmount} symbol={to.symbol}/>
+              {!isNil(receiveUnits)
+                ? <Units value={receiveUnits} symbol={receiveAsset.symbol}/>
                 : ' '}
             </Col>
           </Row>
@@ -108,56 +109,59 @@ const SwapStatusRow = ({ status: { swap, from, to, receiveAmount }, children }) 
   </Row>
 )
 
-const SigningStatusCard = ({ order: a, status }) => (
-  <Card className='flat'>
-    <CardBody className='py-2 px-3'>
-      <SwapStatusRow status={a}>
-        <Icon tag='div' src='https://faa.st/img/right-icon.svg' size='md' className='m-auto'/>
-        {status}
-      </SwapStatusRow>
-    </CardBody>
-    <CardFooter className='font-size-xs text-muted py-2 px-3'>
-      <Row className='gutter-2'>
-        <Col xs='6' sm>
-          <span className='mr-2'>swap fee</span>
-          {a.swap.hasOwnProperty('fee')
-            ? `${a.swap.fee} ${a.to.symbol}`
-            : (a.error
-                ? (<span className='text-danger'> - </span>)
+const SigningStatusCard = ({ swap, status }) => {
+  const { sendSymbol, receiveSymbol, rate, fee, error, txFee } = swap
+  return (
+    <Card className='flat'>
+      <CardBody className='py-2 px-3'>
+        <SwapStatusRow swap={swap}>
+          <Icon tag='div' src='https://faa.st/img/right-icon.svg' size='md' className='m-auto'/>
+          {status}
+        </SwapStatusRow>
+      </CardBody>
+      <CardFooter className='font-size-xs text-muted py-2 px-3'>
+        <Row className='gutter-2'>
+          <Col xs='6' sm>
+            <span className='mr-2'>swap fee</span>
+            {!isNil(fee)
+              ? `${fee} ${receiveSymbol}`
+              : (error
+                  ? (<span className='text-danger'> - </span>)
+                  : (<Spinner inline size='sm'/>))
+            }
+          </Col>
+          <Col xs='12' sm='auto' className='text-center order-3 order-sm-2'>{error
+            ? (<span className='text-danger'>{error}</span>)
+            : (!isNil(rate)
+                ? `1 ${sendSymbol} = ${rate} ${receiveSymbol}`
                 : (<Spinner inline size='sm'/>))
-          }
-        </Col>
-        <Col xs='12' sm='auto' className='text-center order-3 order-sm-2'>{a.error
-          ? (<span className='text-danger'>{a.error}</span>)
-          : (a.swap.hasOwnProperty('rate')
-              ? `1 ${a.from.symbol} = ${a.swap.rate} ${a.to.symbol}`
-              : (<Spinner inline size='sm'/>))
-          }
-        </Col>
-        <Col xs='6' sm className='text-right order-2 order-sm-3'>
-          <span className='mr-2'>txn fee</span>
-          {typeof a.txFee !== 'undefined'
-            ? (typeof a.txFee === 'string' ? a.txFee : (<Units value={a.txFee} symbol={a.from.symbol}/>))
-            : (a.error
-                ? (<span className='text-danger'> - </span>)
-                : (<Spinner inline size='sm'/>))
-          }
-        </Col>
-      </Row>
-    </CardFooter>
-  </Card>
-)
+            }
+          </Col>
+          <Col xs='6' sm className='text-right order-2 order-sm-3'>
+            <span className='mr-2'>txn fee</span>
+            {!isNil(txFee)
+              ? (isString(txFee) ? txFee : (<Units value={txFee} symbol={receiveSymbol}/>))
+              : (error
+                  ? (<span className='text-danger'> - </span>)
+                  : (<Spinner inline size='sm'/>))
+            }
+          </Col>
+        </Row>
+      </CardFooter>
+    </Card>
+  )
+}
 
 const SignTxForm = reduxForm({
   form: 'signTxForm'
 })((props) => {
   let nextToSign = 0
-  const signingStatuses = props.swapList.map((a, i) => {
+  const signingStatuses = props.swapList.map((swap, i) => {
     let status
-    if (a.swap && a.swap.tx && a.swap.tx.signed) {
+    if (swap.tx && swap.tx.signed) {
       nextToSign += 1
       status = (<div className='text-success'>signed</div>)
-    } else if (a.swap && a.swap.error) {
+    } else if (swap.error) {
       nextToSign += 1
       status = (<div className='text-danger'>declined</div>)
     } else if (props.isSigning && i === nextToSign) {
@@ -165,7 +169,7 @@ const SignTxForm = reduxForm({
     }
     return (
       <Col xs='12' key={i}>
-        <SigningStatusCard order={a} status={status}/>
+        <SigningStatusCard swap={swap} status={status}/>
       </Col>
     )
   })
@@ -217,12 +221,12 @@ const OrderStatus = ({ swapList, handleClose }) => (
     <ModalBody className='text-center'>
       <div className='review-list pb-3'>
         <Row className='gutter-2'>
-          {swapList.map((a, i) => (
-            <Col xs='12' key={i}>
+          {swapList.map((swap) => (
+            <Col xs='12' key={swap.id}>
               <Card body className='py-2 px-3 flat'>
-                <SwapStatusRow status={a}>
-                  <div className={`status mt-1 ${a.status.cl}`}>{a.status.text}</div>
-                  <div>{a.status.details}</div>
+                <SwapStatusRow swap={swap}>
+                  <div className={`status mt-1 ${swap.status.cl}`}>{swap.status.text}</div>
+                  <div>{swap.status.details}</div>
                 </SwapStatusRow>
               </Card>
             </Col>

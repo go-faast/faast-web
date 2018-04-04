@@ -1,4 +1,5 @@
 import { createAction } from 'redux-act'
+import { isObject, isArray } from 'lodash'
 
 import config from 'Config'
 import { processArray } from 'Utilities/helpers'
@@ -9,7 +10,8 @@ import {
   toBigNumber,
   toHex,
   toPrecision,
-  toUnit
+  toUnit,
+  ZERO
 } from 'Utilities/convert'
 import {
   getTransactionReceipt,
@@ -17,15 +19,14 @@ import {
 } from 'Utilities/wallet'
 import walletService, { MultiWallet } from 'Services/Wallet'
 
-import { insertSwapData, updateSwapTx, setSwap } from 'Actions/redux'
+import { swapUpdated, swapTxUpdated, swapOrderUpdated, setSwaps } from 'Actions/swap'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
-import { mockPollTransactionReceipt, mockPollOrderStatus, clearMockIntervals } from 'Actions/mock'
 import {
   addWallet, removeWallet, addNestedWallet, restoreAllWallets, updateWalletBalances,
 } from 'Actions/wallet'
 import { retrieveAssetPrices } from 'Actions/asset'
 
-import { getCurrentPortfolioId, getAsset } from 'Selectors'
+import { getCurrentPortfolioId, getAsset, getAllWalletsArray, getAllSwapsArray } from 'Selectors'
 
 const { defaultPortfolioId } = config
 
@@ -102,7 +103,7 @@ const swapFinish = (type, swap, error, addition) => {
     const errors = swap.errors || []
     if (error) {
       errors.push({ [type]: new Error(error) })
-      dispatch(insertSwapData(swap.from, swap.to, { errors }))
+      dispatch(swapUpdated({ id: swap.id, errors }))
     }
     return Object.assign({}, swap, addition, { errors })
   }
@@ -110,28 +111,29 @@ const swapFinish = (type, swap, error, addition) => {
 
 const swapMarketInfo = (swapList) => (dispatch) => {
   log.debug('swapMarketInfo', swapList)
-  return processArray(swapList, (a) => {
-    const finish = (e, x) => dispatch(swapFinish('swapMarketInfo', a, e, x))
-    if (a.from === a.to) return finish('cannot swap to same asset')
+  return processArray(swapList, (swap) => {
+    const { id: swapId, sendSymbol, sendUnits, receiveSymbol, pair } = swap
+    const finish = (e, x) => dispatch(swapFinish('swapMarketInfo', swap, e, x))
+    if (sendSymbol === receiveSymbol) return finish('cannot swap to same asset')
 
-    return dispatch(getMarketInfo(a.pair))
+    return dispatch(getMarketInfo(pair))
       .then((res) => {
         log.debug('marketinfo response', res)
         if (!res.pair) {
           return finish('error getting details')
         }
-        if (res.hasOwnProperty('minimum') && a.amount.lessThan(res.minimum)) {
+        if (res.hasOwnProperty('minimum') && sendUnits.lessThan(res.minimum)) {
           return finish(`minimum amount is ${res.minimum}`)
         }
-        if (res.hasOwnProperty('min') && a.amount.lessThan(res.min)) {
+        if (res.hasOwnProperty('min') && sendUnits.lessThan(res.min)) {
           return finish(`minimum amount is ${res.min}`)
         }
-        if ((res.hasOwnProperty('limit') && a.amount.greaterThan(res.limit)) || (res.maxLimit && a.amount.greaterThan(res.maxLimit))) {
+        if ((res.hasOwnProperty('limit') && sendUnits.greaterThan(res.limit)) || (res.maxLimit && sendUnits.greaterThan(res.maxLimit))) {
           return finish(`maximum amount is ${res.limit}`)
         }
         const fee = res.hasOwnProperty('outgoing_network_fee') ? toBigNumber(res.outgoing_network_fee) : toBigNumber(res.minerFee)
         const rate = toBigNumber(res.rate)
-        dispatch(insertSwapData(a.from, a.to, {
+        dispatch(swapUpdated(swapId, {
           rate,
           fee
         }))
@@ -144,26 +146,26 @@ const swapMarketInfo = (swapList) => (dispatch) => {
   })
 }
 
-const swapPostExchange = (swapList, wallet) => (dispatch) => {
+const swapPostExchange = (swapList) => (dispatch) => {
   log.debug('swapPostExchange', swapList)
   let previousTx = null
   return processArray(swapList, (swap) => {
     const finish = (e, x) => dispatch(swapFinish('swapPostExchange', swap, e, x))
-    const walletInstance = walletService.get(wallet.id)
+    const { id: swapId, sendWalletId, sendSymbol, sendUnits, receiveWalletId, receiveSymbol, pair } = swap
+    const sendWalletInstance = walletService.get(sendWalletId)
+    const receiveWalletInstance = walletService.get(receiveWalletId)
     return Promise.all([
-      walletInstance.getFreshAddress(swap.to),
-      walletInstance.getFreshAddress(swap.from),
+      sendWalletInstance.getFreshAddress(sendSymbol),
+      receiveWalletInstance.getFreshAddress(receiveSymbol),
     ]).then(([withdrawalAddress, returnAddress]) => dispatch(postExchange({
-      pair: swap.pair,
+      pair,
       withdrawal: withdrawalAddress,
       returnAddress,
     }))).then((order) => {
-      const fromAsset = order.depositType.toUpperCase()
-      const toAsset = order.withdrawalType.toUpperCase()
-      return walletInstance.createTransaction(order.deposit, swap.amount, fromAsset, { previousTx })
+      return sendWalletInstance.createTransaction(order.deposit, sendUnits, sendSymbol, { previousTx })
         .then((tx) => {
           previousTx = tx
-          dispatch(insertSwapData(fromAsset, toAsset, {
+          dispatch(swapUpdated(swapId, {
             order,
             tx
           }))
@@ -179,11 +181,11 @@ const swapPostExchange = (swapList, wallet) => (dispatch) => {
 // Checks to see if the deposit is high enough for the rate and swap fee
 // so the expected amount ends up larger than zero
 const swapSufficientDeposit = (swapList) => (dispatch, getState) => {
-  return processArray(swapList, (a) => {
-    const finish = (e, x) => dispatch(swapFinish('swapSufficientDeposit', a, e, x))
-    console.log('a', a)
-    const toAsset = getAsset(getState(), a.to)
-    const expected = toPrecision(toUnit(a.amount, a.rate, toAsset.decimals).minus(a.fee), toAsset.decimals)
+  return processArray(swapList, (swap) => {
+    const { sendUnits, receiveSymbol, rate, fee } = swap
+    const finish = (e, x) => dispatch(swapFinish('swapSufficientDeposit', swap, e, x))
+    const receiveAsset = getAsset(getState(), receiveSymbol)
+    const expected = toPrecision(toUnit(sendUnits, rate, receiveAsset.decimals).minus(fee), receiveAsset.decimals)
     if (expected.lessThanOrEqualTo(0)) {
       return finish('insufficient deposit for expected return')
     }
@@ -192,111 +194,107 @@ const swapSufficientDeposit = (swapList) => (dispatch, getState) => {
 }
 
 // Checks to see if there will be enough Ether if the full gas amount is paid
-const swapSufficientFees = (swapList, wallet) => (dispatch) => {
-  let adjustedBalances = { ...wallet.balances }
-  return processArray(swapList, (a) => {
-    const finish = (e, x) => dispatch(swapFinish('swapSufficientFees', a, e, x))
-    const { from, amount, tx } = a
+const swapSufficientFees = (swapList) => (dispatch, getState) => {
+  let walletAdjustedBalances = getAllWalletsArray(getState())
+    .reduce((byId, { id, balances }) => ({ ...byId, [id]: balances }), {})
+  return processArray(swapList, (swap) => {
+    const finish = (e, x) => dispatch(swapFinish('swapSufficientFees', swap, e, x))
+    const { sendWalletId, sendSymbol, sendUnits, tx } = swap
     const { feeAmount, feeAsset } = tx
-    adjustedBalances[from] = adjustedBalances[from].minus(amount)
+    const adjustedBalances = walletAdjustedBalances[sendWalletId] || {}
+    adjustedBalances[sendSymbol] = (adjustedBalances[sendSymbol] || ZERO).minus(sendUnits)
     if (feeAmount) {
-      adjustedBalances[feeAsset] = adjustedBalances[feeAsset].minus(feeAmount)
-    }
-    if (adjustedBalances[feeAsset].isNegative()) {
-      return finish(`not enough ${feeAsset} for tx fee`)
+      adjustedBalances[feeAsset] = (adjustedBalances[feeAsset] || ZERO).minus(feeAmount)
+      if (adjustedBalances[feeAsset].isNegative()) {
+        return finish(`not enough ${feeAsset} for tx fee`)
+      }
     }
     return finish()
   })
 }
 
-export const initiateSwaps = (swap, wallet) => (dispatch) => {
-  log.info('swap submit initiated', swap)
-  const swapList = swap.reduce((a, b) => {
-    return a.concat(b.list.map((c) => {
-      return {
-        from: b.symbol,
-        to: c.symbol,
-        amount: c.unit,
-        pair: b.symbol.toLowerCase() + '_' + c.symbol.toLowerCase()
-      }
-    }))
-  }, [])
+export const initiateSwaps = (swapList) => (dispatch) => {
+  log.info('swap submit initiated', swapList)
+  swapList = swapList.map((swap) => ({
+    ...swap,
+    pair: `${swap.sendSymbol}_${swap.receiveSymbol}`.toLowerCase()
+  }))
   return dispatch(swapMarketInfo(swapList))
-    .then((a) => dispatch(swapPostExchange(a, wallet)))
-    .then((a) => dispatch(swapSufficientDeposit(a, wallet)))
-    .then((a) => dispatch(swapSufficientFees(a, wallet)))
+    .then((a) => dispatch(swapPostExchange(a)))
+    .then((a) => dispatch(swapSufficientDeposit(a)))
+    .then((a) => dispatch(swapSufficientFees(a)))
 }
 
-const createTransferEventListeners = (dispatch, send, receive, markSigned) => {
+const createTransferEventListeners = (swap, markSigned) => (dispatch) => {
+  const { id: swapId } = swap
   let txId
   return {
     onTxHash: (txHash) => {
       log.info(`tx hash obtained - ${txHash}`)
       txId = txHash
-      dispatch(insertSwapData(send.symbol, receive.symbol, { txHash }))
-      if (markSigned) dispatch(updateSwapTx(send.symbol, receive.symbol, { signed: true }))
+      dispatch(swapTxUpdated(swapId, { id: txId }))
+      if (markSigned) dispatch(swapTxUpdated(swapId, { signed: true }))
     },
     onReceipt: (receipt) => {
       log.info('tx receipt obtained')
-      dispatch(updateSwapTx(send.symbol, receive.symbol, { receipt }))
+      dispatch(swapTxUpdated(swapId, { receipt }))
     },
     onConfirmation: (conf) => {
       log.info(`tx confirmation obtained - ${conf}`)
-      dispatch(updateSwapTx(send.symbol, receive.symbol, { confirmations: conf }))
+      dispatch(swapTxUpdated(swapId, { confirmations: conf }))
     },
     onError: (error) => {
       log.error(error)
       // Don't mark the following as a tx error, start polling for receipt instead
       if (error.message.includes('Transaction was not mined within')) {
-        return dispatch(pollTransactionReceipt(send, receive, txId))
+        return dispatch(pollTransactionReceipt(swap, txId))
       }
       const declined = error.message.includes('User denied transaction signature')
-      dispatch(insertSwapData(send.symbol, receive.symbol, { error, declined }))
+      dispatch(swapUpdated(swapId, { error, declined }))
     }
   }
 }
 
-export const sendSwapDeposits = (swap, options) => (dispatch) => {
-  log.debug('sendSwapDeposits', swap)
-  return processArray(swap, (send) => {
-    return processArray(send.list, (receive) => {
-      const eventListeners = createTransferEventListeners(dispatch, send, receive, true)
-      const walletInstance = dispatch(getCurrentPortfolioInstance())
-      return walletInstance.sendTransaction(receive.tx, { ...eventListeners, ...options })
-        .then(() => dispatch(pollOrderStatus(send, receive)))
-    })
+export const sendSwapDeposits = (swapList, sendOptions) => (dispatch) => {
+  log.debug('sendSwapDeposits', swapList)
+  return processArray(swapList, (swap) => {
+    const eventListeners = dispatch(createTransferEventListeners(swap, true))
+    const walletInstance = dispatch(getCurrentPortfolioInstance())
+    return walletInstance.sendTransaction(swap.tx, { ...eventListeners, ...sendOptions })
+      .then(() => dispatch(pollOrderStatus(swap)))
   })
 }
 
-export const pollOrderStatus = (send, receive) => (dispatch) => {
+export const pollOrderStatus = (swap) => (dispatch) => {
   const orderStatusInterval = window.setInterval(() => {
-    dispatch(getOrderStatus(send.symbol, receive.symbol, receive.order.deposit, receive.order.created))
-    .then((order) => {
-      if (order && (order.status === 'complete' || order.status === 'failed')) {
-        return window.clearInterval(orderStatusInterval)
-      }
-    })
-    .catch(log.error)
+    dispatch(getOrderStatus(swap))
+      .then((order) => {
+        dispatch(swapOrderUpdated(swap.id, order))
+        if (order && (order.status === 'complete' || order.status === 'failed')) {
+          return window.clearInterval(orderStatusInterval)
+        }
+      })
+      .catch(log.error)
   }, 10000)
 
   window.faast.intervals.orderStatus.push(orderStatusInterval)
 }
 
-export const pollTransactionReceipt = (send, receive, tx) => (dispatch) => {
-  const txHash = tx || receive.txHash
-  if (!txHash) {
-    const error = new Error('tx hash is missing, unable to poll for receipt')
+export const pollTransactionReceipt = (swap) => (dispatch) => {
+  const { id: swapId, tx: { id: txId } } = swap
+  if (!txId) {
+    const error = new Error('txId is missing, unable to poll for receipt')
     log.error(error)
-    return dispatch(insertSwapData(send.symbol, receive.symbol, { error }))
+    return dispatch(swapUpdated(swapId, { error }))
   }
   const receiptInterval = window.setInterval(() => {
-    getTransactionReceipt(txHash)
+    getTransactionReceipt(txId)
     .then((receipt) => {
       if (receipt) {
         window.clearInterval(receiptInterval)
         log.info('tx receipt obtained')
-        dispatch(updateSwapTx(send.symbol, receive.symbol, { receipt }))
-        dispatch(pollOrderStatus(send, receive))
+        dispatch(swapTxUpdated(swapId, { receipt }))
+        dispatch(pollOrderStatus(swap))
       }
     })
     .catch(log.error)
@@ -305,60 +303,57 @@ export const pollTransactionReceipt = (send, receive, tx) => (dispatch) => {
   window.faast.intervals.txReceipt.push(receiptInterval)
 }
 
-export const restorePolling = (swap, isMocking) => (dispatch) => {
-  swap.forEach((send) => {
-    if (send && send.list) {
-      send.list.forEach((receive) => {
-        const status = getSwapStatus(receive)
-        if (status.details === 'waiting for transaction receipt') {
-          if (isMocking) {
-            dispatch(mockPollTransactionReceipt(send, receive))
-          } else {
-            dispatch(pollTransactionReceipt(send, receive))
-          }
-        } else if (status.details === 'waiting for confirmations' || status.details === 'processing swap') {
-          if (isMocking) {
-            dispatch(mockPollOrderStatus(send, receive))
-          } else {
-            dispatch(pollOrderStatus(send, receive))
-          }
-        }
-      })
+export const restoreSwapPolling = () => (dispatch, getState) => {
+  const swapList = getAllSwapsArray(getState())
+  swapList.forEach((swap) => {
+    const status = getSwapStatus(swap)
+    if (status.details === 'waiting for transaction receipt') {
+      dispatch(pollTransactionReceipt(swap))
+    } else if (status.details === 'waiting for confirmations' || status.details === 'processing swap') {
+      dispatch(pollOrderStatus(swap))
     }
   })
 }
 
 export const restoreSwundle = (swundle) => (dispatch) => {
-  if (validateSwundle(swundle)) {
-    const newSwundle = swundle.map((send) => {
-      return {
-        symbol: send.symbol,
-        list: send.list.map((receive) => {
-          return {
-            fee: toBigNumber(receive.fee),
-            order: receive.order,
-            rate: toBigNumber(receive.rate),
-            symbol: receive.symbol,
-            txHash: receive.txHash,
-            unit: toBigNumber(receive.unit)
-          }
-        }),
+  let swapList
+  if (validateSwundleV2(swundle)) {
+    swapList = swundle.swaps.map((swap) => ({
+      ...swap,
+      restored: true
+    }))
+  } else if (validateSwundleV1(swundle)) {
+    swapList = swundle.reduce((swapList, send) => [
+      ...swapList,
+      ...send.list.map((receive) => ({
+        sendWalletId: send.walletId,
+        sendSymbol: send.symbol,
+        sendUnits: toBigNumber(receive.unit),
+        receiveWalletId: receive.walletId,
+        receiveSymbol: receive.symbol,
+        fee: toBigNumber(receive.fee),
+        order: receive.order,
+        rate: toBigNumber(receive.rate),
+        tx: {
+          id: receive.txHash,
+          ...(receive.tx || {})
+        },
         restored: true
-      }
-    })
-    dispatch(setSwap(newSwundle))
-    processArray(newSwundle, (send) => {
-      return processArray(send.list, (receive) => {
-        return getTransaction(receive.txHash)
-          .then((tx) => {
-            dispatch(updateSwapTx(send.symbol, receive.symbol, {
-              gasPrice: toHex(tx.gasPrice),
-              signed: true
-            }))
-          })
-          .catch(log.error)
-      })
-    })
+      })),
+    ], [])
+  }
+  if (swapList) {
+    dispatch(setSwaps(swapList))
+    processArray(swundle, (swap) =>
+      getTransaction(swap.tx.id)
+        .then((tx) => {
+          dispatch(swapTxUpdated(swap.id, {
+            gasPrice: toHex(tx.gasPrice),
+            signed: true,
+            sent: true,
+          }))
+        })
+        .catch(log.error))
     // .then(() => {
       // receipt polling restoration is done in App component
       // when statusAllSwaps changes to pending_receipts_restored
@@ -367,26 +362,25 @@ export const restoreSwundle = (swundle) => (dispatch) => {
   }
 }
 
-export const restoreSwapsForWallet = (walletId, isMocking) => (dispatch) => {
+export const restoreSwapsForWallet = (walletId) => (dispatch) => {
   const state = restoreFromAddress(walletId)
 
   if (state && state.swap && state.swap.length) {
     const status = statusAllSwaps(state.swap)
-    const swap = (status === 'unavailable' || status === 'unsigned' || status === 'unsent') ? undefined : state.swap
+    const swapState = (status === 'unavailable' || status === 'unsigned' || status === 'unsent') ? undefined : state.swap
 
-    if (swap) {
-      dispatch(setSwap(swap))
-      dispatch(restorePolling(swap, isMocking))
+    if (swapState) {
+      dispatch(setSwaps(swapState))
+      dispatch(restoreSwapPolling())
     }
   } else {
-    dispatch(getSwundle(walletId, isMocking))
+    dispatch(getSwundle(walletId))
   }
 }
 
-const validateSwundle = (swundle) => {
+const validateSwundleV1 = (swundle) => {
   if (!swundle) return false
-  // if (swundle.version !== config.swundleVersion) return false // convert old to new swundle here
-  if (!Array.isArray(swundle)) return false
+  if (!isArray(swundle)) return false
   const sendSymbols = []
   return swundle.every((send) => {
     if (!send.symbol) return false
@@ -403,8 +397,13 @@ const validateSwundle = (swundle) => {
   })
 }
 
+const validateSwundleV2 = (swundle) => {
+  if (!swundle) return false
+  if (!isObject(swundle)) return false
+  return swundle.version === '2'
+}
+
 export const clearAllIntervals = () => {
-  clearMockIntervals()
   Object.keys(window.faast.intervals).forEach((key) => {
     window.faast.intervals[key].forEach(a => window.clearInterval(a))
   })

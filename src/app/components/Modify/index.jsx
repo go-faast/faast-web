@@ -2,15 +2,20 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import BigNumber from 'bignumber.js'
-import ModifyView from './view'
+import uuid from 'uuid/v4'
+
 import { toUnit, toPercentage } from 'Utilities/convert'
 import { updateObjectInArray, splice } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
-import { setSwap, toggleOrderModal, showOrderModal } from 'Actions/redux'
-import { initiateSwaps } from 'Actions/portfolio'
-import { getCurrentPortfolioWithWalletHoldings, getAllAssets } from 'Selectors'
 import { toBigNumber } from 'Utilities/convert'
+
+import { getCurrentPortfolioWithWalletHoldings, getAllAssets } from 'Selectors'
+import { toggleOrderModal, showOrderModal } from 'Actions/redux'
+import { setSwaps } from 'Actions/swap'
+import { initiateSwaps } from 'Actions/portfolio'
+
+import ModifyView from './view'
 
 const ZERO = new BigNumber(0)
 
@@ -200,10 +205,7 @@ class Modify extends Component {
     const filteredHoldingsByWalletId = filterAdjustedHoldings(holdings)
     const adjustedWalletIds = Object.keys(filteredHoldingsByWalletId)
     if (adjustedWalletIds.length === 0) return toastr.error('Nothing to swap')
-    if (adjustedWalletIds.length > 1) return toastr.error('Swapping from more than one wallet at once is unsupported at this time')
 
-    const adjustedWalletId = adjustedWalletIds[0]
-    const adjustedWallet = this.props.portfolio.nestedWallets.find((w) => w.id === adjustedWalletId)
     const filtered = flatten(Object.values(filteredHoldingsByWalletId))
     const swapSend = filtered.filter(s => !s.fiatToSwap.isNegative()).map((s) => {
       return Object.assign({}, s, { emptyAsset: s.fiat.adjusted.isZero() })
@@ -212,58 +214,74 @@ class Modify extends Component {
     const sendReduce = swapSend.reduce((sAcc, sVal) => {
       const receiveReduce = sAcc.receiveList.reduce((rAcc, rVal) => {
         let remaining
-        let toSend
-        let spent = new BigNumber(0)
+        let toReceive
+        let spent = ZERO
         if (rAcc.toSwap.greaterThan(0) && rVal.fiatToSwap.lessThan(0)) {
           remaining = rAcc.toSwap.plus(rVal.fiatToSwap)
           spent = remaining.lessThan(0) ? rAcc.toSwap : rAcc.toSwap.minus(remaining)
-          const unit = toUnit(spent, sVal.price, sVal.decimals, true)
-          toSend = rAcc.toSend.concat({ symbol: rVal.symbol, unit })
+          const sendUnits = toUnit(spent, sVal.price, sVal.decimals, true)
+          toReceive = rAcc.toReceive.concat({
+            walletId: rVal.walletId,
+            symbol: rVal.symbol,
+            sendUnits
+          })
         } else {
           remaining = rAcc.toSwap
-          toSend = rAcc.toSend
+          toReceive = rAcc.toReceive
         }
         return Object.assign({}, rAcc, {
           toSwap: remaining,
-          toSend,
+          toReceive,
           list: rAcc.list.concat(Object.assign({}, rVal, {
             fiatToSwap: rVal.fiatToSwap.plus(spent)
           }))
         })
-      }, { toSwap: sVal.fiatToSwap, toSend: [], list: [] })
+      }, { toSwap: sVal.fiatToSwap, toReceive: [], list: [] })
       return Object.assign({}, sAcc, {
         swapList: sAcc.swapList.concat({
           walletId: sVal.walletId,
           symbol: sVal.symbol,
-          list: receiveReduce.toSend,
+          toReceive: receiveReduce.toReceive,
           emptyAsset: sVal.emptyAsset
         }),
         receiveList: receiveReduce.list
       })
     }, { receiveList: swapReceive, swapList: [] })
+
     const repairedList = sendReduce.swapList.map((s) => {
-      if (s.emptyAsset) {
-        const sum = s.list.reduce((a, c) => {
-          return a.plus(c.unit)
-        }, new BigNumber(0))
-        const asset = adjustedWallet.assetHoldings.find((a) => a.symbol === s.symbol)
-        const difference = asset.balance.minus(sum)
-        const last = s.list[s.list.length - 1]
-        const newAmount = last.unit.plus(difference)
-        const newLast = Object.assign({}, last, {
-          unit: newAmount
-        })
-        const newList = s.list.slice(0, -1).concat([newLast])
-        return Object.assign({}, s, { list: newList })
+      // If sending entire asset balance, ensure no dust is left behind
+      // by adding the difference to the last swap that sends it
+      const { walletId: fromWalletId, symbol: fromSymbol, emptyAsset, toReceive } = s
+      if (emptyAsset) {
+        const sendUnitsTotal = toReceive.reduce((sum, { sendUnits }) => sum.plus(sendUnits), ZERO)
+        const assetHolding = holdings[fromWalletId].find(({ symbol }) => symbol === fromSymbol)
+        const difference = assetHolding.balance.minus(sendUnitsTotal)
+        const last = toReceive[toReceive.length - 1]
+        const newSendUnits = last.sendUnits.plus(difference)
+        const newLast = { ...last, sendUnits: newSendUnits }
+        const repairedToReceive = toReceive.slice(0, -1).concat([newLast])
+        return { ...s, toReceive: repairedToReceive }
       }
       return s
     })
 
     const emptyingETH = repairedList.find(a => a.symbol === 'ETH' && a.emptyAsset)
     if (emptyingETH) return toastr.error('Swapping the entire balance of your Ether is not possible as some ETH is required for transaction fees', { timeOut: 10000 })
-    this.props.setSwap(repairedList)
+
+    const normalizedList = repairedList.reduce((result, send) => [
+      ...result, ...send.toReceive.map((receive) => ({
+        id: uuid(),
+        sendWalletId: send.walletId,
+        sendSymbol: send.symbol,
+        sendUnits: receive.sendUnits,
+        receiveWalletId: receive.walletId,
+        receiveSymbol: receive.symbol
+      }))
+    ], [])
+
+    this.props.setSwaps(normalizedList)
     this.props.showOrderModal()
-    this.props.initiateSwaps(repairedList, adjustedWallet)
+    this.props.initiateSwaps(normalizedList)
     // this.props.routerPush('/swap')
     // this.props.changeSwapStatus('edit')
   }
@@ -340,9 +358,7 @@ class Modify extends Component {
     }
     let disableSave
     const adjustedHoldings = filterAdjustedHoldings(holdings)
-    if (Object.keys(adjustedHoldings).length > 1) {
-      disableSave = 'Swapping from more than one wallet at once is unsupported at this time'
-    } else if (allowance.fiat.greaterThan(0)) {
+    if (Object.keys(adjustedHoldings).length === 0 || allowance.fiat.greaterThan(0)) {
       disableSave = true
     }
     return (
@@ -374,7 +390,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-  setSwap,
+  setSwaps,
   routerPush: push,
   initiateSwaps,
   toggleOrderModal,

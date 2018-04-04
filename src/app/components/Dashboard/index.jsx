@@ -7,9 +7,10 @@ import { push } from 'react-router-redux'
 import toastr from 'Utilities/toastrWrapper'
 import { getSwapStatus } from 'Utilities/swap'
 
-import { getCurrentWalletWithHoldings, isDefaultPortfolioEmpty } from 'Selectors'
+import { getCurrentWalletWithHoldings, isDefaultPortfolioEmpty, getAllSwapsArray } from 'Selectors'
 import { clearAllIntervals, updateHoldings, removePortfolio } from 'Actions/portfolio'
-import { toggleOrderModal, resetSwap } from 'Actions/redux'
+import { toggleOrderModal } from 'Actions/redux'
+import { resetSwaps } from 'Actions/swap'
 import { removeSwundle } from 'Actions/request'
 
 import DashboardView from './view'
@@ -38,7 +39,7 @@ class Dashboard extends Component {
     if (!this.props.wallet.isReadOnly) {
       const orderStatus = this._orderStatus()
       if (orderStatus === 'error' || orderStatus === 'complete') {
-        this.props.resetSwap()
+        this.props.resetSwaps()
         this.props.removeSwundle(this.props.wallet.id)
       }
     }
@@ -69,7 +70,7 @@ class Dashboard extends Component {
       ),
       onOk: () => {
         clearAllIntervals()
-        this.props.resetSwap()
+        this.props.resetSwaps()
         this.props.removeSwundle(this.props.wallet.address)
       }
     })
@@ -109,7 +110,6 @@ class Dashboard extends Component {
 
 Dashboard.propTypes = {
   wallet: PropTypes.object.isRequired,
-  mock: PropTypes.object.isRequired,
   updateHoldings: PropTypes.func.isRequired,
   routerPush: PropTypes.func.isRequired
 }
@@ -117,16 +117,15 @@ Dashboard.propTypes = {
 const mapStateToProps = (state) => ({
   wallet: getCurrentWalletWithHoldings(state),
   isDefaultPortfolioEmpty: isDefaultPortfolioEmpty(state),
-  mock: state.mock,
+  swap: getAllSwapsArray(state),
   orderModal: state.orderModal,
-  swap: state.swap
 })
 
 const mapDispatchToProps = {
   updateHoldings,
   routerPush: push,
   toggleOrderModal,
-  resetSwap,
+  resetSwaps,
   removeSwundle,
   removePortfolio
 }
