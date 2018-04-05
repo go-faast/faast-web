@@ -41,7 +41,7 @@ const instructions = {
 const ConnectionInstructions = ({ type }) => (
   <Row className='gutter-2 text-muted'>
     {instructions[type].map(({ icon, text }, i) => (
-      <Col key={i} xs='12' md={(i === instructions.length - 1) ? true : '6'}>
+      <Col key={i} xs='12' md={(i === instructions[type].length - 1) ? true : '6'}>
         <Card body className='h-100 flex-col-center flat'>
           <i className={classNames('mb-2 fa fa-2x', icon)} />
           <div>{text}</div>

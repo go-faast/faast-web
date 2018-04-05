@@ -1,11 +1,6 @@
 import React from 'react'
-import { Row, Col, Modal, ModalBody, ModalHeader, ModalFooter, Card } from 'reactstrap'
+import { Modal, ModalBody, ModalHeader, ModalFooter } from 'reactstrap'
 import { Button } from 'reactstrap'
-import classNames from 'class-names'
-
-import Units from 'Components/Units'
-import Spinner from 'Components/Spinner'
-import AddressLink from 'Components/AddressLink'
 
 import CommStatus from './CommStatus'
 import ConnectionInstructions from './ConnectionInstructions'
