@@ -8,7 +8,6 @@ import {
 } from 'reactstrap'
 import { isNil } from 'lodash'
 
-import web3 from 'Services/Web3'
 import { getWallet } from 'Selectors'
 
 import Spinner from 'Components/Spinner'
@@ -23,9 +22,8 @@ const SignTxModal = (props) => {
       case 'EthereumWalletKeystore':
         return (
           <SignTxForm
-            description='your wallet password'
             buttonText='I agree'
-            passwordPrompt={true}
+            passwordPrompt
             {...props.signTxProps}
           />
         )
@@ -33,23 +31,20 @@ const SignTxModal = (props) => {
       case 'EthereumWalletLedger':
         return (
           <SignTxForm
-            description='your hardware wallet'
-            buttonText='Sign'
+            buttonText='Approve & Sign'
             {...props.signTxProps}
           />
         )
       case 'EthereumWalletWeb3':
         return (
           <SignTxForm
-            description={web3.providerName}
-            buttonText='Sign'
+            buttonText='Approve & Sign'
             {...props.signTxProps}
           />
         )
       case 'blockstack':
         return (
           <SignTxForm
-            description='your Blockstack wallet'
             buttonText='I agree'
             {...props.signTxProps}
           />
@@ -63,8 +58,7 @@ const SignTxModal = (props) => {
       default:
         return (
           <SignTxForm
-            description={props.view}
-            buttonText='Sign and submit'
+            buttonText='Approve & Sign'
             {...props.signTxProps}
           />
         )
@@ -204,7 +198,9 @@ const SignTxForm = reduxForm({
         Review and Sign
       </ModalHeader>
       <ModalBody className='modal-text'>
-        <p>The following transactions will take place to save the changes you made to your wallet. Please review and sign them with {props.description}.</p>
+        <p>
+          The following swaps will take place to save the changes you made to your wallet. Please review them and click {`"${props.buttonText}"`} to proceed.
+        </p>
         <div className='review-list my-3'>
           <Row className='gutter-2'>
             {signingStatuses}
@@ -222,7 +218,9 @@ const SignTxForm = reduxForm({
             </Col>
           </Row>
         }
-        <p><small>The receive amount is an estimate based on the current rate and swap fee. Actual amount may vary.</small></p>
+        <p><small className='text-muted'>
+          The receive amount is an estimate based on the current Faast market rate and swap fee. Actual amount may vary.
+        </small></p>
       </ModalBody>
       <ModalFooter className='justify-content-between'>
         <Button color='primary' outline onClick={props.handleCancel}>cancel</Button>
