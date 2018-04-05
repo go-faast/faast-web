@@ -15,8 +15,6 @@ import { removeSwundle } from 'Actions/request'
 
 import DashboardView from './view'
 
-let balancesInterval
-
 class Dashboard extends Component {
   constructor (props) {
     super(props)
@@ -27,7 +25,8 @@ class Dashboard extends Component {
   }
 
   componentWillMount () {
-    balancesInterval = window.setInterval(this._updateHoldings, 30000)
+    const balancesInterval = window.setInterval(this._updateHoldings, 30000)
+    this.setState({ balancesInterval })
     const { wallet } = this.props
     if (!(wallet.balancesLoaded && wallet.balancesUpdating)) {
       this._updateHoldings()
@@ -35,7 +34,7 @@ class Dashboard extends Component {
   }
 
   componentWillUnmount () {
-    window.clearInterval(balancesInterval)
+    window.clearInterval(this.state.balancesInterval)
     if (!this.props.wallet.isReadOnly) {
       const orderStatus = this._orderStatus()
       if (orderStatus === 'error' || orderStatus === 'complete') {
