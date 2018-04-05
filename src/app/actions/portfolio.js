@@ -221,21 +221,20 @@ const createTransferEventListeners = (swap, markSigned) => (dispatch) => {
   let txId
   return {
     onTxHash: (txHash) => {
-      log.info(`tx hash obtained - ${txHash}`)
+      log.info(`tx hash ${txHash} obtained for swap ${swapId}`)
       txId = txHash
       dispatch(swapTxUpdated(swapId, { id: txId }))
       if (markSigned) dispatch(swapTxUpdated(swapId, { signed: true }))
     },
     onReceipt: (receipt) => {
-      log.info('tx receipt obtained')
+      log.info(`tx receipt obtained for swap ${swapId}`)
       dispatch(swapTxUpdated(swapId, { receipt }))
     },
     onConfirmation: (conf) => {
-      log.info(`tx confirmation obtained - ${conf}`)
       dispatch(swapTxUpdated(swapId, { confirmations: conf }))
     },
     onError: (error) => {
-      log.error(error)
+      log.error(`tx error for swap ${swapId}`, error)
       // Don't mark the following as a tx error, start polling for receipt instead
       if (error.message.includes('Transaction was not mined within')) {
         return dispatch(pollTransactionReceipt(swap, txId))
