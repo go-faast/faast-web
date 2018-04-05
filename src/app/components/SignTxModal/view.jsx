@@ -122,9 +122,9 @@ const SigningStatusCard = ({ swap, status }) => {
       <CardFooter className='font-size-xs text-muted py-2 px-3'>
         <Row className='gutter-2'>
           <Col xs='6' sm>
-            <span className='mr-2'>swap fee</span>
-            {!isNil(displayFee)
-              ? displayFee
+            <span className='mr-2'>txn fee</span>
+            {!isNil(displayTxFee)
+              ? displayTxFee
               : (error
                   ? (<span className='text-danger'> - </span>)
                   : (<Spinner inline size='sm'/>))
@@ -138,9 +138,9 @@ const SigningStatusCard = ({ swap, status }) => {
             }
           </Col>
           <Col xs='6' sm className='text-right order-2 order-sm-3'>
-            <span className='mr-2'>txn fee</span>
-            {!isNil(displayTxFee)
-              ? displayTxFee
+            <span className='mr-2'>swap fee</span>
+            {!isNil(displayFee)
+              ? displayFee
               : (error
                   ? (<span className='text-danger'> - </span>)
                   : (<Spinner inline size='sm'/>))
