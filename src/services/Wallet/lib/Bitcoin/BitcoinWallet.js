@@ -11,6 +11,8 @@ const supportedAssets = ['BTC']
 @abstractMethod('getTypeLabel', 'createTransaction', '_signTxData', '_sendSignedTxData', '_validateTxData', '_validateSignedTxData')
 export default class BitcoinWallet extends Wallet {
 
+  static type = 'BitcoinWallet';
+
   constructor(xpub) {
     super()
     assertExtended(this, BitcoinWallet)
@@ -46,12 +48,12 @@ export default class BitcoinWallet extends Wallet {
     });
 
   getFreshAddress = (assetOrSymbol, { index = 0 } = {}) => Promise.resolve(assetOrSymbol)
-    .then(this.assertAssetSupported)
+    .then(::this.assertAssetSupported)
     .then((asset) => this._getDiscoveryResult(asset.symbol))
     .then(({ unusedAddresses }) => unusedAddresses[index]);
 
   getBalance = (assetOrSymbol) => Promise.resolve(assetOrSymbol)
-    .then(this.getSupportedAsset)
+    .then(::this.getSupportedAsset)
     .then((asset) => {
       if (!asset) {
         return toBigNumber(0)

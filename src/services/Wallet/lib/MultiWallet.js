@@ -27,7 +27,7 @@ export default class MultiWallet extends Wallet {
 
   shallowClone = () => {
     const clone = new MultiWallet(this.getId(), this.wallets)
-    clone.setLabel(this.label)
+    clone.setLabel(this.getLabel())
     return clone
   };
 
@@ -66,7 +66,7 @@ export default class MultiWallet extends Wallet {
     */
   getWallet = (walletOrId) => this.wallets[this._getWalletIndex(walletOrId)];
 
-  hasWallet = (walletOrId) => !!this.getWallet(walletOrId);
+  hasWallet = (walletOrId) => Boolean(this.getWallet(walletOrId));
 
   /**
     * @param {Object} wallet - Wallet instance

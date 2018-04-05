@@ -1,76 +1,19 @@
-import pad from 'pad-left'
+import { difference } from 'lodash'
 
-import config from 'Config'
 import web3 from 'Services/Web3'
 import { addHexPrefix } from 'Utilities/helpers'
-import { toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee } from 'Utilities/convert'
+import { ZERO, toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee } from 'Utilities/convert'
 import { abstractMethod, assertExtended } from 'Utilities/reflect'
 import { ellipsize } from 'Utilities/display'
 import log from 'Utilities/log'
 
+import { batchRequest, tokenBalanceData, tokenSendData, web3SendTx } from './util'
 import Wallet from '../Wallet'
-
-const tokenSendData = (address, amount, decimals) => {
-  amount = toBigNumber(amount)
-
-  if (!web3.utils.isAddress(address)) return { error: 'invalid address' }
-  if (amount.lessThan(0)) return { error: 'invalid amount' }
-  if (typeof decimals !== 'number') return { error: 'invalid decimals' }
-
-  const dataAddress = pad(address.toLowerCase().replace('0x', ''), 64, '0')
-  const power = toBigNumber(10).toPower(decimals)
-  const dataAmount = pad(amount.times(power).toString(16), 64, '0')
-  return config.tokenFunctionSignatures.transfer + dataAddress + dataAmount
-};
-
-const tokenBalanceData = (walletAddress) => {
-  if (walletAddress.startsWith('0x')) walletAddress = walletAddress.slice(2)
-  return config.tokenFunctionSignatures.balanceOf + pad(walletAddress, 64, '0')
-};
-
-const batchRequest = (batch, batchableFn, ...fnArgs) => {
-  if (batch) {
-    return new Promise((resolve, reject) => {
-      batch.add(
-        batchableFn.request(...fnArgs, (err, result) => {
-          if (err) return reject(err)
-
-          resolve(result)
-        })
-      )
-    })
-  }
-  return batchableFn(...fnArgs)
-}
-
-/** Send the serialized transaction string and return a promise that resolves after the
-  * transaction is broadcast to the network.
-  */
-const sendSerializedTx = (serializedTx, options) => new Promise((resolve, reject) => {
-  const { onTxHash, onReceipt, onConfirmation, onError } = options
-  // sendSignedTransaction resolves when the tx receipt is available, which occurs after
-  // confirmation, but we need to resolve right after sending so wrapping in a new
-  // promise is necessary
-  let resolved = false
-  const sendStatus = web3.eth.sendSignedTransaction(serializedTx)
-    .once('transactionHash', (txId) => {
-      resolve(txId)
-      resolved = true
-    })
-    .once('error', (e) => {
-      if (!resolved) {
-        // Avoid rejecting after resolve was called
-        reject(e)
-      }
-    })
-  if (typeof onTxHash === 'function') sendStatus.once('transactionHash', onTxHash)
-  if (typeof onReceipt === 'function') sendStatus.once('receipt', onReceipt)
-  if (typeof onConfirmation === 'function') sendStatus.on('confirmation', onConfirmation)
-  if (typeof onError === 'function') sendStatus.on('error', onError)
-});
 
 @abstractMethod('getType', 'getTypeLabel', 'getAddress', '_signTxData')
 export default class EthereumWallet extends Wallet {
+
+  static type = 'EthereumWallet';
 
   constructor() {
     super()
@@ -84,7 +27,7 @@ export default class EthereumWallet extends Wallet {
   isSingleAddress = () => true;
 
   getFreshAddress = (assetOrSymbol) => Promise.resolve(assetOrSymbol)
-    .then(this.assertAssetSupported)
+    .then(::this.assertAssetSupported)
     .then(() => this.getAddress());
 
   isAssetSupported = (assetOrSymbol) => {
@@ -95,7 +38,7 @@ export default class EthereumWallet extends Wallet {
   getBalance = (assetOrSymbol, { web3Batch = null } = {}) => {
     const asset = this.getSupportedAsset(assetOrSymbol)
     if (!asset) {
-      return Promise.resolve(toBigNumber(0))
+      return Promise.resolve(ZERO)
     }
     const address = this.getAddress()
     let request
@@ -127,12 +70,12 @@ export default class EthereumWallet extends Wallet {
     }), {}));
 
   createTransaction = (toAddress, amount, assetOrSymbol, options = {}) => Promise.resolve(assetOrSymbol)
-    .then(this.assertAssetSupported)
+    .then(::this.assertAssetSupported)
     .then((asset) => {
       log.debug(`Create transaction sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${toAddress}`)
       let txData = {
         from: this.getAddress(),
-        value: toBigNumber(0),
+        value: ZERO,
         data: ''
       }
       if (asset.symbol === 'ETH') {
@@ -179,27 +122,31 @@ export default class EthereumWallet extends Wallet {
       .then((tx) => log.debugInline('createTransaction', tx))
     });
 
-  _sendSignedTxData = (signedTxData, options = {}) => sendSerializedTx(signedTxData.raw, options)
-    .then((txId) => ({ id: txId }));
+  _sendSignedTxData (signedTxData, options = {}) {
+    return web3SendTx(signedTxData.raw, true, options)
+      .then((txId) => ({ id: txId }));
+  }
 
   _validateTxData = (txData) => {
-    if (txData === null || txData !== 'object') {
+    if (txData === null || typeof txData !== 'object') {
       throw new Error(`Invalid ${EthereumWallet.type} txData of type ${typeof tx}`)
     }
-    const requiredProps = ['chainId', 'data', 'from', 'gasLimit', 'gasPrice', 'nonce', 'to', 'value']
-    if (!requiredProps.every(txData.hasOwnProperty.bind(txData))) {
+    const requiredProps = ['data', 'from', 'gasLimit', 'gasPrice', 'nonce', 'to', 'value']
+    const missingProps = difference(requiredProps, Object.keys(txData))
+    if (missingProps.length > 0) {
       log.debug('invalid txData', txData)
-      throw new Error(`Invalid ${EthereumWallet.type} txData - missing require props`)
+      throw new Error(`Invalid ${EthereumWallet.type} txData - missing required props ${missingProps}`)
     }
     return txData
   };
 
   _validateSignedTxData = (signedTxData) => {
-    if (signedTxData === null || signedTxData !== 'object') {
+    if (signedTxData === null || typeof signedTxData !== 'object') {
       throw new Error(`Invalid ${EthereumWallet.type} signedTxData of type ${typeof tx}`)
     }
-    if (!signedTxData.raw) {
-      throw new Error(`Invalid ${EthereumWallet.type} signedTxData - missing prop "raw"`)
+    const { raw } = signedTxData
+    if (typeof raw !== 'string') {
+      throw new Error(`Invalid ${EthereumWallet.type} signedTxData - invalid prop "raw" of type ${typeof raw}`)
     }
     return signedTxData
   }

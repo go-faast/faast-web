@@ -2,6 +2,7 @@ import web3 from 'Services/Web3'
 import log from 'Utilities/log'
 import { toChecksumAddress, toBigNumber } from 'Utilities/convert'
 
+import { web3SendTx } from './util'
 import EthereumWallet from './EthereumWallet'
 
 const checkAccountAvailable = (address) => Promise.resolve(address)
@@ -34,16 +35,29 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
 
   getAddress = () => this.address;
 
+  isSignTransactionSupported () {
+    return web3.providerName !== 'MetaMask'
+  }
+
   _checkAvailable = () => checkAccountAvailable(this.address);
 
-  _signTxData = (txData) => Promise.resolve().then(() =>
-    web3.eth.signTransaction({
-      ...txData,
-      value: toBigNumber(txData.value),
-      gas: toBigNumber(txData.gasLimit).toNumber(),
-      gasPrice: toBigNumber(txData.gasPrice),
-      nonce: toBigNumber(txData.nonce).toNumber()
-    }));
+  _signAndSendTxData (txData, options) {
+    return web3SendTx(txData, false, options)
+      .then((txId) => ({ id: txId }));
+  }
+
+  _signTxData (txData) {
+    return Promise.resolve()
+      .then(::this._assertSignTransactionSupported)
+      .then(() =>
+        web3.eth.signTransaction({
+          ...txData,
+          value: toBigNumber(txData.value),
+          gas: toBigNumber(txData.gasLimit).toNumber(),
+          gasPrice: toBigNumber(txData.gasPrice),
+          nonce: toBigNumber(txData.nonce).toNumber()
+        }));
+  }
 
   static fromDefaultAccount = () => {
     const { defaultAccount, getAccounts } = web3.eth

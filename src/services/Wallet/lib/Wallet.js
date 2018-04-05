@@ -2,8 +2,8 @@ import { abstractMethod, assertExtended } from 'Utilities/reflect'
 import log from 'Utilities/log'
 
 @abstractMethod(
-  'getId', 'getType', 'getTypeLabel', 'getBalance', 'isAssetSupported', 'isSingleAddress', 'getFreshAddress',
-  'createTransaction', '_signTxData', '_sendSignedTxData', '_validateTxData', '_validateSignedTxData')
+  'getId', 'getType', 'getTypeLabel', 'getBalance', 'getFreshAddress', 'isAssetSupported',
+  'isSingleAddress', 'createTransaction', '_signTxData', '_sendSignedTxData')
 export default class Wallet {
 
   constructor(label) {
@@ -29,6 +29,9 @@ export default class Wallet {
   setReadOnly = (readOnly) => this._readOnly = readOnly;
 
   isReadOnly = () => this._readOnly;
+
+  /* Default to true, can be overriden by subclass if unsupported */
+  isSignTransactionSupported = () => true;
 
   setAssetProvider = (assetProvider) => {
     if (typeof assetProvider !== 'function') {
@@ -62,7 +65,7 @@ export default class Wallet {
 
   getAsset = (assetOrSymbol) => this.getAllAssetsBySymbol()[this.getSymbol(assetOrSymbol)];
 
-  getSupportedAssets = () => this.getAllAssets().filter(this.isAssetSupported);
+  getSupportedAssets = () => this.getAllAssets().filter(::this.isAssetSupported);
 
   getSupportedAssetSymbols = () => this.getSupportedAssets().map(({ symbol }) => symbol);
 
@@ -82,12 +85,17 @@ export default class Wallet {
   };
 
   /** Default does nothing, should be overridden in subclass */
-  _validateTxData = (signedTxData) => signedTxData;
+  _validateTxData (txData) {
+    return txData
+  }
 
   /** Default does nothing, should be overridden in subclass */
-  _validateSignedTxData = (txData) => txData;
+  _validateSignedTxData (signedTxData) {
+    return signedTxData
+  }
 
-  _validateTx = (tx) => {
+  _validateTx (tx) {
+    log.debug('_validateTx', tx)
     if (tx === null || typeof tx !== 'object') {
       throw new Error(`Invalid tx of type ${typeof tx}`)
     }
@@ -99,45 +107,56 @@ export default class Wallet {
       this._validateSignedTxData(tx.signedTxData)
     }
     return tx
-  };
+  }
 
-  signTransaction = (tx, options = {}) => Promise.resolve(tx)
-    .then(this._validateTx)
-    .then(() => this._signTxData(tx.txData, { ...options, tx }))
-    .then((signedTxData) => log.debugInline('signTransaction', ({
-      ...tx,
-      signed: true,
-      signedTxData,
-    })));
+  _assertSignTransactionSupported () {
+    if (!this.isSignTransactionSupported()) {
+      throw new Error(`Wallet "${this.getLabel()}" does not support signTransaction`)
+    }
+  }
 
-  sendSignedTransaction = (tx, options = {}) => Promise.resolve(tx)
-    .then(this._validateTx)
-    .then(() => this._sendSignedTxData(tx.signedTxData, { ...options, tx })
-    .then((result) => ({
-      ...tx,
-      sent: true,
-      ...result,
-    })));
+  _signAndSendTxData (txData, options = {}) {
+    return this._signTxData(txData, options)
+      .then((signedTxData) => this._sendSignedTxData(signedTxData, options))
+  }
 
-  sendTransaction = (tx, options = {}) => Promise.resolve(tx)
-    .then(this._validateTx)
-    .then((tx) => this.signTransaction(tx, options))
-    .then((tx) => this.sendSignedTransaction(tx, options));
+  signTransaction (tx, options = {}) {
+    return Promise.resolve(tx)
+      .then(::this._validateTx)
+      .then(::this._assertSignTransactionSupported)
+      .then(() => this._signTxData(tx.txData, { ...options, tx }))
+      .then((signedTxData) => log.debugInline('signTransaction', ({
+        ...tx,
+        signed: true,
+        signedTxData,
+      })));
+  }
+
+  sendTransaction (tx, options = {}) {
+    return Promise.resolve(tx)
+      .then(::this._validateTx)
+      .then(() => tx.signedTxData
+        ? this._sendSignedTxData(tx.signedTxData, { ...options, tx })
+        : this._signAndSendTxData(tx.txData, { ...options, tx }))
+      .then((result) => log.debugInline('sendTransaction', ({
+        ...tx,
+        sent: true,
+        ...result,
+      })));
+  }
 
   transfer = (toAddress, amount, assetOrSymbol, options) =>
     this.createTransaction(toAddress, amount, assetOrSymbol, options)
       .then((tx) => this.sendTransaction(tx, options));
 
-  getAllBalances = (options) => {
-    return Promise.resolve(this.getSupportedAssets())
-      .then((assets) => Promise.all(assets
-        .map(({ symbol }) => this.getBalance(symbol, options)
-          .then((balance) => ({ symbol, balance })))))
-      .then((balances) => balances.reduce((result, { symbol, balance }) => ({
-        ...result,
-        [symbol]: balance
-      }), {}))
-  };
+  getAllBalances = (options) => Promise.resolve(this.getSupportedAssets())
+    .then((assets) => Promise.all(assets
+      .map(({ symbol }) => this.getBalance(symbol, options)
+        .then((balance) => ({ symbol, balance })))))
+    .then((balances) => balances.reduce((result, { symbol, balance }) => ({
+      ...result,
+      [symbol]: balance
+    }), {}));
 
   toJSON = () => ({
     type: this.getType(),
