@@ -155,7 +155,7 @@ const swapPostExchange = (swapList) => (dispatch) => {
     return Promise.all([
       sendWalletInstance.getFreshAddress(sendSymbol),
       receiveWalletInstance.getFreshAddress(receiveSymbol),
-    ]).then(([withdrawalAddress, returnAddress]) => dispatch(postExchange({
+    ]).then(([returnAddress, withdrawalAddress]) => dispatch(postExchange({
       pair,
       withdrawal: withdrawalAddress,
       returnAddress,
