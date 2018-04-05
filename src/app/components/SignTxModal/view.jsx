@@ -203,15 +203,12 @@ const SignTxForm = reduxForm({
       <ModalHeader className='text-primary'>
         Review and Sign
       </ModalHeader>
-      <ModalBody>
-        <div className='modal-text'>
-          <p>The following transactions will take place to save the changes you made to your wallet. Please review and sign them with {props.description}.</p>
-          <p>The receive amount is an estimate based on the current rate and swap fee. Actual amount may vary.</p>
-          <div className='review-list my-3'>
-            <Row className='gutter-2'>
-              {signingStatuses}
-            </Row>
-          </div>
+      <ModalBody className='modal-text'>
+        <p>The following transactions will take place to save the changes you made to your wallet. Please review and sign them with {props.description}.</p>
+        <div className='review-list my-3'>
+          <Row className='gutter-2'>
+            {signingStatuses}
+          </Row>
         </div>
         {props.passwordPrompt &&
           <Row className='justify-content-center'>
@@ -225,6 +222,7 @@ const SignTxForm = reduxForm({
             </Col>
           </Row>
         }
+        <p><small>The receive amount is an estimate based on the current rate and swap fee. Actual amount may vary.</small></p>
       </ModalBody>
       <ModalFooter className='justify-content-between'>
         <Button color='primary' outline onClick={props.handleCancel}>cancel</Button>
