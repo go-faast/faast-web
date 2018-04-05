@@ -12,8 +12,6 @@ import { getAllAssets, getCurrentPortfolio, getAllSwapsArray } from 'Selectors'
 import { sendSwapDeposits } from 'Actions/portfolio'
 import { resetSwaps } from 'Actions/swap'
 
-import Units from 'Components/Units'
-
 import SignTxModalView from './view'
 
 class SignTxModal extends Component {
@@ -111,15 +109,6 @@ class SignTxModal extends Component {
         return 'unknown error'
       }
     }
-    const displayFee = (feeAmount, feeSymbol) => {
-      if (typeof feeAmount === 'undefined') {
-        return feeAmount
-      }
-      if (feeAmount === null) {
-        return (<span><i>TBD</i> {feeSymbol}</span>)
-      }
-      return (<Units value={feeAmount} symbol={feeSymbol}/>)
-    }
 
     const swapList = swaps.map((swap) => {
       const { sendSymbol, receiveSymbol, tx } = swap
@@ -132,8 +121,7 @@ class SignTxModal extends Component {
         receiveUnits: estimateReceiveAmount(swap, receiveAsset),
         status: getStatus(swap),
         error: getError(swap),
-        displayTxFee: !tx ? null : displayFee(tx.feeAmount, tx.feeAsset),
-        displayFee: displayFee(swap.fee, receiveSymbol),
+        tx: tx || {},
       }
     })
     const readyToSignResult = readyToSign()

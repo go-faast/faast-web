@@ -1,10 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
-import { toBigNumber } from 'Utilities/convert'
-import Expandable from 'Components/Expandable'
+import { omit } from 'lodash'
 
-const numberType = PropTypes.oneOfType([PropTypes.number, PropTypes.instanceOf(BigNumber)])
+import { toBigNumber } from 'Utilities/convert'
+import { numberish } from 'Utilities/propTypes'
+import Expandable from 'Components/Expandable'
 
 class Units extends React.Component {
   render() {
@@ -27,7 +28,8 @@ class Units extends React.Component {
 }
 
 Units.propTypes = {
-  value: numberType.isRequired,
+  ...omit(Expandable.propTypes, 'shrunk', 'expanded'),
+  value: numberish.isRequired,
   symbol: PropTypes.string,
   showSymbol: PropTypes.bool,
   precision: PropTypes.number,
@@ -35,6 +37,7 @@ Units.propTypes = {
 }
 
 Units.defaultProps = {
+  ...Expandable.defaultProps,
   symbol: '',
   showSymbol: true,
   precision: 4,

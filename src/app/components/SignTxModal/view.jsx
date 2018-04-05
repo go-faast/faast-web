@@ -11,9 +11,10 @@ import { isNil } from 'lodash'
 import { getWallet } from 'Selectors'
 
 import Spinner from 'Components/Spinner'
-import Units from 'Components/Units'
 import Icon from 'Components/Icon'
 import CoinIcon from 'Components/CoinIcon'
+import Units from 'Components/Units'
+import FeeUnits from 'Components/FeeUnits'
 import ReduxFormField from 'Components/ReduxFormField'
 
 const SignTxModal = (props) => {
@@ -129,7 +130,7 @@ SwapStatusRow.defaultProps = {
 }
 
 const SigningStatusCard = ({ swap, status }) => {
-  const { sendSymbol, receiveSymbol, rate, displayFee, displayTxFee, error } = swap
+  const { sendSymbol, receiveSymbol, rate, fee, tx: { feeAmount: txFee, feeAsset: txFeeSymbol }, error } = swap
   return (
     <Card className='flat lh-0'>
       <CardBody className='py-2 px-3'>
@@ -142,12 +143,7 @@ const SigningStatusCard = ({ swap, status }) => {
         <Row className='gutter-2'>
           <Col xs='6' sm>
             <span className='mr-2'>txn fee</span>
-            {!isNil(displayTxFee)
-              ? displayTxFee
-              : (error
-                  ? (<span className='text-danger'> - </span>)
-                  : (<Spinner inline size='sm'/>))
-            }
+            <FeeUnits value={txFee} symbol={txFeeSymbol} error={error} />
           </Col>
           <Col xs='12' sm='auto' className='text-center order-3 order-sm-2'>{error
             ? (<span className='text-danger'>{error}</span>)
@@ -158,12 +154,7 @@ const SigningStatusCard = ({ swap, status }) => {
           </Col>
           <Col xs='6' sm className='text-right order-2 order-sm-3'>
             <span className='mr-2'>swap fee</span>
-            {!isNil(displayFee)
-              ? displayFee
-              : (error
-                  ? (<span className='text-danger'> - </span>)
-                  : (<Spinner inline size='sm'/>))
-            }
+            <FeeUnits value={fee} symbol={receiveSymbol} error={error} />
           </Col>
         </Row>
       </CardFooter>
