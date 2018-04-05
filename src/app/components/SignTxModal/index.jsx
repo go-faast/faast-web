@@ -30,10 +30,13 @@ class SignTxModal extends Component {
   }
 
   _handleCloseModal () {
+    const { toggleModal, resetSwaps, swaps } = this.props
     closeTrezorWindow()
     this.setState({ isSigning: false })
-    this.props.resetSwaps()
-    this.props.toggleModal()
+    toggleModal()
+    if (!swaps.some(({ tx }) => tx && tx.sent)) {
+      resetSwaps()
+    }
   }
 
   _handleSubmit (values, dispatch) {
