@@ -15,7 +15,7 @@ import {
 } from 'Services/Wallet'
 
 import { getCurrentPortfolio, getWallet } from 'Selectors'
-import { addWallet, addNestedWallet } from 'Actions/wallet'
+import { addWallet, addNestedWallet, updateWalletBalances } from 'Actions/wallet'
 import { defaultPortfolioId, setCurrentWallet, restoreSwapsForWallet } from 'Actions/portfolio'
 
 /** Add a wallet, add it to the current portfolio, and restore swap status */
@@ -40,6 +40,7 @@ export const openWallet = (walletPromise) => (dispatch, getState) => Promise.res
         if (portfolioType === MultiWallet.type && portfolioId !== defaultPortfolioId) {
           return dispatch(addNestedWallet(portfolioId, walletId))
         }
+        dispatch(updateWalletBalances(walletId))
       })
       .then(() => dispatch(setCurrentWallet(portfolioId, walletId)))
       .then(() => dispatch(restoreSwapsForWallet(walletId)))
