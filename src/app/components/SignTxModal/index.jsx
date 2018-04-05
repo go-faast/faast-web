@@ -61,14 +61,6 @@ class SignTxModal extends Component {
       const statuses = swaps.map(getSwapStatus).map(({ details }) => details)
       return !hasError && statuses.every(s => s === 'waiting for transaction to be signed')
     }
-    const estimateTxFee = ({ tx }) => {
-      if (tx) {
-        if (tx.feeAmount !== null) {
-          return tx.feeAmount
-        }
-        return `TBD ${tx.feeAsset}`
-      }
-    }
     const getStatus = (swap) => {
       const { status, details } = getSwapStatus(swap)
       if (status === 'error') {
@@ -114,18 +106,26 @@ class SignTxModal extends Component {
         return 'unknown error'
       }
     }
+    const displayFee = (feeAmount, feeSymbol) => {
+      if (feeAmount === null) {
+        return (<span><i>TBD</i> {feeSymbol}</span>)
+      }
+      return `${feeAmount} ${feeSymbol}`
+    }
+
     const swapList = swaps.map((swap) => {
-      const { sendSymbol, receiveSymbol } = swap
+      const { sendSymbol, receiveSymbol, tx } = swap
       const sendAsset = assets[sendSymbol]
       const receiveAsset = assets[receiveSymbol]
       return {
         ...swap,
         sendAsset,
         receiveAsset,
-        txFee: estimateTxFee(swap),
         receiveUnits: estimateReceiveAmount(swap, receiveAsset),
         status: getStatus(swap),
-        error: getError(swap)
+        error: getError(swap),
+        displayTxFee: !tx ? null : displayFee(tx.feeAmount, tx.feeAsset),
+        displayFee: displayFee(swap.fee, receiveSymbol),
       }
     })
     const readyToSignResult = readyToSign()
