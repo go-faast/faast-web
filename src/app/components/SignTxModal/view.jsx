@@ -1,5 +1,7 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 import { reduxForm } from 'redux-form'
+import { connect } from 'react-redux'
 import {
   Row, Col, Button, Form, Card, CardBody, CardFooter,
   Modal, ModalHeader, ModalBody, ModalFooter
@@ -7,6 +9,7 @@ import {
 import { isNil } from 'lodash'
 
 import web3 from 'Services/Web3'
+import { getWallet } from 'Selectors'
 
 import Spinner from 'Components/Spinner'
 import Units from 'Components/Units'
@@ -75,14 +78,20 @@ const SignTxModal = (props) => {
   )
 }
 
-const SwapStatusRow = ({ swap: { sendAsset, sendUnits, receiveAsset, receiveUnits }, children }) => (
+let SwapStatusRow = ({
+  swap: { sendAsset, sendUnits, receiveAsset, receiveUnits },
+  showWalletLabels, sendWallet, receiveWallet, children
+}) => (
   <Row className='gutter-0 align-items-center font-size-small text-muted'>
     <Col>
       <Row className='gutter-2 align-items-center text-center text-sm-left'>
+        {showWalletLabels && (
+          <Col xs='12' className='font-size-sm'>{sendWallet.label}</Col>
+        )}
         <Col xs='12' sm='auto'><CoinIcon symbol={sendAsset.symbol}/></Col>
         <Col xs='12' sm>
-          <Row className='gutter-0'>
-            <Col xs='12' className='order-sm-2'>{sendAsset.name}</Col>
+          <Row className='gutter-2'>
+            <Col xs='12' className='order-sm-2 font-size-sm'>{sendAsset.name}</Col>
             <Col xs='12' className='text-white'><Units value={sendUnits} symbol={sendAsset.symbol}/></Col>
           </Row>
         </Col>
@@ -93,10 +102,13 @@ const SwapStatusRow = ({ swap: { sendAsset, sendUnits, receiveAsset, receiveUnit
     </Col>
     <Col>
       <Row className='gutter-2 align-items-center text-center text-sm-right'>
+        {showWalletLabels && (
+          <Col xs='12' className='font-size-sm'>{receiveWallet.label}</Col>
+        )}
         <Col xs='12' sm='auto' className='order-sm-2'><CoinIcon symbol={receiveAsset.symbol}/></Col>
         <Col xs='12' sm>
-          <Row className='gutter-0'>
-            <Col xs='12' className='order-sm-2'>{receiveAsset.name}</Col>
+          <Row className='gutter-2'>
+            <Col xs='12' className='order-sm-2 font-size-sm'>{receiveAsset.name}</Col>
             <Col xs='12' className='text-white'>
               {!isNil(receiveUnits)
                 ? <Units value={receiveUnits} symbol={receiveAsset.symbol}/>
@@ -109,10 +121,23 @@ const SwapStatusRow = ({ swap: { sendAsset, sendUnits, receiveAsset, receiveUnit
   </Row>
 )
 
+SwapStatusRow = connect((state, props) => ({
+  sendWallet: getWallet(state, props.swap.sendWalletId),
+  receiveWallet: getWallet(state, props.swap.receiveWalletId),
+}))(SwapStatusRow)
+
+SwapStatusRow.propTypes = {
+  showWalletLabels: PropTypes.bool,
+}
+
+SwapStatusRow.defaultProps = {
+  showWalletLabels: true
+}
+
 const SigningStatusCard = ({ swap, status }) => {
   const { sendSymbol, receiveSymbol, rate, displayFee, displayTxFee, error } = swap
   return (
-    <Card className='flat'>
+    <Card className='flat lh-0'>
       <CardBody className='py-2 px-3'>
         <SwapStatusRow swap={swap}>
           <Icon tag='div' src='https://faa.st/img/right-icon.svg' size='md' className='m-auto'/>

@@ -109,6 +109,9 @@ class SignTxModal extends Component {
       }
     }
     const displayFee = (feeAmount, feeSymbol) => {
+      if (typeof feeAmount === 'undefined') {
+        return feeAmount
+      }
       if (feeAmount === null) {
         return (<span><i>TBD</i> {feeSymbol}</span>)
       }
