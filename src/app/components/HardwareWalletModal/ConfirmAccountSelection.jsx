@@ -29,7 +29,7 @@ const ConfirmAccountSelection = ({ address, balance, index, toggleAccountSelect 
 
 ConfirmAccountSelection.propTypes = {
   address: PropTypes.string,
-  balance: PropTypes.bigNumber,
+  balance: PropTypes.numberish,
   index: PropTypes.number.isRequired,
   toggleAccountSelect: PropTypes.func.isRequired,
 }
