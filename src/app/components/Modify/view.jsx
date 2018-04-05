@@ -69,13 +69,13 @@ const ModifyView = (props) => {
                   <Col xs='auto'><ArrowIcon size='md' dir={changeIconDirection} color={changeColor} /></Col>
                   <Col>
                     <div className={`h5 m-0 text-${changeColor}`}>{percentChange24}</div>
-                    <small className='text-muted font-weight-light'>24h change</small>
+                    <small className='text-muted'>24h change</small>
                   </Col>
                 </Row>
               </Col>
               <Col xs='auto'>
                 <div className='h5 m-0'>{fiatPrice}</div>
-                <small className='text-muted font-weight-light'>current price</small>
+                <small className='text-muted'>current price</small>
               </Col>
             </Row>
           </Col>
@@ -184,7 +184,7 @@ const ModifyView = (props) => {
           </CardHeader>
           {isReadOnly ? (
             <Alert color='info' className='m-0 text-center'>
-              This wallet is read-only. You need to <Link to='/connect' className='font-weight-normal alert-link'><u>connect your wallet</u></Link> in order to trade assets.
+              This wallet is read-only. You need to <Link to='/connect' className='alert-link'><u>connect your wallet</u></Link> in order to trade assets.
             </Alert>
           ) : (
             <ListGroup>
@@ -205,12 +205,12 @@ const ModifyView = (props) => {
       <Container className='d-block'>
         <Row className='px-3_4r gutter-2 gutter-md-3 justify-content-left align-items-center'>
           <Col xs='auto' className='expand-only'>
-            <SelectPortfolioDropdown togglerProps={{ color: 'link-plain', block: true, className: 'm-0 h4 font-weight-light' }} inNavbar/>
-            <div className='text-muted font-weight-light'>{display.fiat(portfolio.totalFiat)}</div>
+            <SelectPortfolioDropdown togglerProps={{ color: 'link-plain', block: true, className: 'm-0 h4 font-weight-normal' }} inNavbar/>
+            <div className='text-muted'>{display.fiat(portfolio.totalFiat)}</div>
           </Col>
           <Col xs='auto' className='text-left text-md-right mr-auto mr-md-0 ml-0 ml-md-auto'>
             <h4 className='m-0 text-primary font-weight-bold'>{display.fiat(props.allowance.fiat)} <small className='text-muted'>{display.percentage(props.allowance.weight)}</small></h4>
-            <small className='text-muted font-weight-light'>available to swap</small>
+            <small className='text-muted'>available to swap</small>
           </Col>
           <Col xs='auto'>
             <Button color='primary' onClick={handleSave} disabled={Boolean(disableSave)} className='flat'><i className='fa fa-check mr-2'/>Save Changes</Button>

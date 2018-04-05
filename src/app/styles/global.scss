@@ -16,7 +16,7 @@
 
 .beta-tag {
   font-family: 'Kaushan Script', cursive;
-  font-size: 12px;
+  font-size: $font-size-xs;
   color: $primary;
 }
 
@@ -32,7 +32,7 @@
   .rrt-middle-container {
     .rrt-title {
       font-size: $font-size-sm !important;
-      font-weight: $font-weight-light !important;
+      font-weight: $font-weight-base !important;
     }
   }
   .rrt-right-container {

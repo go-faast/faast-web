@@ -51,13 +51,12 @@ class Dashboard extends Component {
   }
 
   _orderStatus () {
-    if (!this.props.swap.length) return false
+    const { swaps } = this.props
+    if (!swaps.length) return false
 
-    const statuses = this.props.swap.reduce((a, b) => {
-      return a.concat(b.list.map(getSwapStatus).map(c => c.status))
-    }, [])
-    if (statuses.some(s => s === 'working')) return 'working'
-    if (statuses.some(s => s === 'error')) return 'error'
+    const statuses = swaps.map(getSwapStatus).map(({ status }) => status)
+    if (statuses.includes('working')) return 'working'
+    if (statuses.includes('error')) return 'error'
     return 'complete'
   }
 
@@ -117,7 +116,7 @@ Dashboard.propTypes = {
 const mapStateToProps = (state) => ({
   wallet: getCurrentWalletWithHoldings(state),
   isDefaultPortfolioEmpty: isDefaultPortfolioEmpty(state),
-  swap: getAllSwapsArray(state),
+  swaps: getAllSwapsArray(state),
   orderModal: state.orderModal,
 })
 

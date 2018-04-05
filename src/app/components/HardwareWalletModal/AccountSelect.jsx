@@ -15,7 +15,7 @@ const AccountSelect = ({
         <ListGroupButton key={address} className='px-3' onClick={() => selectIndex(index)}>
           <Row className='gutter-3 align-items-center justify-content-between'>
             <Col xs='1' className='text-center text-muted'>#{index + 1}</Col>
-            <Col className='font-weight-light'>{address}</Col>
+            <Col>{address}</Col>
             <Col xs='auto'>
               {(typeof balance !== 'undefined' &&
                 <Units value={balance} symbol='ETH'/>) ||

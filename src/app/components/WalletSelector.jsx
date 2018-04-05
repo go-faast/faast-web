@@ -11,7 +11,7 @@ import ListGroupButton from 'Components/ListGroupButton'
 
 const ListItem = ({ id, active, nested, onClick, className, ...props }) => (
   <ListGroupButton active={active} onClick={onClick} className={classNames({ 'compact': nested }, className)} {...props}>
-    <WalletSummary.Connected id={id} icon={nested} labelClass={nested ? 'font-weight-light' : 'font-weight-normal'}/>
+    <WalletSummary.Connected id={id} icon={nested} />
   </ListGroupButton>
 )
 

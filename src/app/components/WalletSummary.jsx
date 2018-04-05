@@ -10,7 +10,7 @@ import { getWalletWithHoldings } from 'Selectors'
 import display from 'Utilities/display'
 
 export const WalletSummary = ({ icon, labelClass, wallet: { id, label, typeLabel, totalFiat, iconProps, balancesLoaded } }) => (
-  <Row className='gutter-0 font-weight-light'>
+  <Row className='gutter-0'>
     <Col xs='12' className={labelClass}>{id === 'default' ? (<i>{label}</i>) : label}</Col>
     <Col>
       <IconLabel label={typeLabel} iconProps={icon && iconProps}/>

@@ -1,6 +1,6 @@
 import React from 'react'
 import {
-  Card, CardHeader, CardBody, CardTitle, CardSubtitle, CardText, Button
+  Card, CardHeader, CardBody, CardTitle, CardText, Button
 } from 'reactstrap'
 
 import Spinner from 'Components/Spinner'
@@ -30,7 +30,7 @@ const OrderInProgress = ({ status, handleViewStatus, handleForgetOrder }) => (
   <Card>
     <CardHeader><CardTitle>Order Status</CardTitle></CardHeader>
     <CardBody>
-      <div className='mb-2'><small className='font-weight-light'>{getTitle(status)}</small></div>
+      <div className='mb-2'><small>{getTitle(status)}</small></div>
       <CardText>{getDescription(status)}</CardText>
       <Button color='primary' outline size='sm' onClick={handleViewStatus}>Details</Button>
       {status === 'working' &&
