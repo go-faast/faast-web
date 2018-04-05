@@ -96,8 +96,6 @@ export const updateAllHoldings = () => (dispatch) => {
   ]).catch(log.error)
 }
 
-const getCurrentPortfolioInstance = () => (dispatch, getState) => walletService.get(getCurrentPortfolioId(getState()))
-
 const swapFinish = (type, swap, error, addition) => {
   return (dispatch) => {
     const errors = swap.errors || []
@@ -259,7 +257,7 @@ export const sendSwapDeposits = (swapList, sendOptions) => (dispatch) => {
   log.debug('sendSwapDeposits', swapList)
   return processArray(swapList, (swap) => {
     const eventListeners = dispatch(createTransferEventListeners(swap, true))
-    const walletInstance = dispatch(getCurrentPortfolioInstance())
+    const walletInstance = walletService.get(swap.sendWalletId)
     return walletInstance.sendTransaction(swap.tx, { ...eventListeners, ...sendOptions })
       .then(() => dispatch(pollOrderStatus(swap)))
   })

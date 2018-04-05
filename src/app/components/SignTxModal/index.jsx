@@ -12,6 +12,8 @@ import { getAllAssets, getCurrentPortfolio, getAllSwapsArray } from 'Selectors'
 import { sendSwapDeposits } from 'Actions/portfolio'
 import { resetSwaps } from 'Actions/swap'
 
+import Units from 'Components/Units'
+
 import SignTxModalView from './view'
 
 class SignTxModal extends Component {
@@ -110,7 +112,7 @@ class SignTxModal extends Component {
       if (feeAmount === null) {
         return (<span><i>TBD</i> {feeSymbol}</span>)
       }
-      return `${feeAmount} ${feeSymbol}`
+      return (<Units value={feeAmount} symbol={feeSymbol}/>)
     }
 
     const swapList = swaps.map((swap) => {
