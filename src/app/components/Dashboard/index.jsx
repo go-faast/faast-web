@@ -4,14 +4,11 @@ import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
 import { push } from 'react-router-redux'
 
-import toastr from 'Utilities/toastrWrapper'
 import { getSwapStatus } from 'Utilities/swap'
 
 import { getCurrentWalletWithHoldings, isDefaultPortfolioEmpty, getAllSwapsArray } from 'Selectors'
-import { clearAllIntervals, updateHoldings, removePortfolio } from 'Actions/portfolio'
-import { toggleOrderModal } from 'Actions/redux'
-import { resetSwaps } from 'Actions/swap'
-import { removeSwundle } from 'Actions/request'
+import { updateHoldings, removePortfolio } from 'Actions/portfolio'
+import { forgetCurrentOrder } from 'Actions/swap'
 
 import DashboardView from './view'
 
@@ -19,7 +16,6 @@ class Dashboard extends Component {
   constructor (props) {
     super(props)
     this._orderStatus = this._orderStatus.bind(this)
-    this._forgetOrder = this._forgetOrder.bind(this)
     this._updateHoldings = this._updateHoldings.bind(this)
     this._removeWallet = this._removeWallet.bind(this)
   }
@@ -38,8 +34,7 @@ class Dashboard extends Component {
     if (!this.props.wallet.isReadOnly) {
       const orderStatus = this._orderStatus()
       if (orderStatus === 'error' || orderStatus === 'complete') {
-        this.props.resetSwaps()
-        this.props.removeSwundle(this.props.wallet.id)
+        this.props.forgetCurrentOrder()
       }
     }
   }
@@ -57,21 +52,6 @@ class Dashboard extends Component {
     if (statuses.includes('working')) return 'working'
     if (statuses.includes('error')) return 'error'
     return 'complete'
-  }
-
-  _forgetOrder () {
-    toastr.confirm(null, {
-      component: () => (
-        <div style={{ padding: 10, color: 'black' }}>
-          Please be aware that <strong>forget</strong> does not actually cancel an order, it justs stops the browser app from tracking the status of the order. The order may still process normally. Please only proceed if you have been instructed to do so, or you understand the effects.
-        </div>
-      ),
-      onOk: () => {
-        clearAllIntervals()
-        this.props.resetSwaps()
-        this.props.removeSwundle(this.props.wallet.address)
-      }
-    })
   }
 
   _removeWallet () {
@@ -94,13 +74,12 @@ class Dashboard extends Component {
       <DashboardView
         wallet={wallet}
         showOrderModal={this.props.orderModal.show}
-        handleToggleOrderModal={this.props.toggleOrderModal}
-        handleForgetOrder={this._forgetOrder}
         handleRemove={this._removeWallet}
         orderStatus={orderStatus}
         viewOnly={isViewOnly}
         disableRemove={disableRemove}
         isDefaultPortfolioEmpty={isDefaultPortfolioEmpty}
+        {...this.props}
       />
     )
   }
@@ -122,9 +101,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   updateHoldings,
   routerPush: push,
-  toggleOrderModal,
-  resetSwaps,
-  removeSwundle,
+  forgetCurrentOrder,
   removePortfolio
 }
 

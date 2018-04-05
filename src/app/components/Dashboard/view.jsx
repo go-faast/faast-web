@@ -50,7 +50,7 @@ const DashboardView = (props) => {
             </Col>
             {Boolean(orderStatus) && (
               <Col xs='12'>
-                <OrderStatus status={orderStatus} handleViewStatus={handleToggleOrderModal} handleForgetOrder={handleForgetOrder} />
+                <OrderStatus status={orderStatus} />
               </Col>
             )}
             <Col xs='12'>

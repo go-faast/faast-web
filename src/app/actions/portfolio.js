@@ -44,13 +44,6 @@ export const removePortfolio = (id) => (dispatch) => Promise.resolve()
     return dispatch(removeWallet(id))
   })
 
-export const closeCurrentPortfolio = () => (dispatch, getState) => {
-  clearAllIntervals()
-  const currentPortfolioId = getCurrentPortfolioId(getState())
-  return dispatch(removePortfolio(currentPortfolioId))
-    .then(() => log.info('portfolio closed'))
-}
-
 export const addPortfolio = (walletInstance, setCurrent = false) => (dispatch) => Promise.resolve()
   .then(() => dispatch(addWallet(walletInstance)))
   .then((wallet) => {
@@ -399,10 +392,4 @@ const validateSwundleV2 = (swundle) => {
   if (!swundle) return false
   if (!isObject(swundle)) return false
   return swundle.version === '2'
-}
-
-export const clearAllIntervals = () => {
-  Object.keys(window.faast.intervals).forEach((key) => {
-    window.faast.intervals[key].forEach(a => window.clearInterval(a))
-  })
 }
