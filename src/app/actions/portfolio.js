@@ -26,7 +26,7 @@ import {
 } from 'Actions/wallet'
 import { retrieveAssetPrices } from 'Actions/asset'
 
-import { getCurrentPortfolioId, getAsset, getAllWalletsArray, getAllSwapsArray } from 'Selectors'
+import { getAsset, getAllWalletsArray, getAllSwapsArray } from 'Selectors'
 
 const { defaultPortfolioId } = config
 

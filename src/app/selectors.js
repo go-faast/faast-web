@@ -5,6 +5,7 @@ import { isFunction } from 'lodash'
 import config from 'Config'
 import { toBigNumber, toUnit, toPercentage } from 'Utilities/convert'
 import { fixPercentageRounding, reduceByKey } from 'Utilities/helpers'
+import { getSwapStatus } from 'Utilities/swap'
 
 const { defaultPortfolioId } = config
 
@@ -205,3 +206,13 @@ export const getAccountSearchResultWalletWithHoldings = currySelector(getWalletW
 export const getAllSwaps = getSwapState
 export const getAllSwapsArray = createSelector(getAllSwaps, Object.values)
 export const getSwap = createItemSelector(getAllSwaps, selectItemId, (allSwaps, id) => allSwaps[id])
+
+export const getCurrentSwundleStatus = createSelector(getAllSwapsArray, (allSwaps) => {
+  if (allSwaps.length === 0) {
+    return null
+  }
+  const statuses = allSwaps.map(getSwapStatus).map(({ status }) => status)
+  if (statuses.includes('working')) return 'working'
+  if (statuses.includes('error')) return 'error'
+  return 'complete'
+})

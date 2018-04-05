@@ -4,7 +4,6 @@ import {
 } from 'reactstrap'
 
 import Layout from 'Components/Layout'
-import SignTxModal from 'Components/SignTxModal'
 import BlockstackWelcome from 'Components/BlockstackWelcome'
 import WalletSelector from 'Components/WalletSelector'
 import OrderStatus from 'Components/OrderStatus'
@@ -12,9 +11,8 @@ import Balances from 'Components/Balances'
 
 const DashboardView = (props) => {
   const {
-    wallet, viewOnly, orderStatus, toggleChart, openCharts,
-    showOrderModal, handleToggleOrderModal, handleForgetOrder,
-    disableRemove, handleRemove, isDefaultPortfolioEmpty
+    wallet, viewOnly, toggleChart, openCharts,
+    showOrderStatus, disableRemove, handleRemove, isDefaultPortfolioEmpty
   } = props
 
   const { label, type } = wallet
@@ -22,9 +20,6 @@ const DashboardView = (props) => {
 
   return (
     <Layout className='pt-3'>
-      {!viewOnly &&
-        <SignTxModal showModal={showOrderModal} toggleModal={handleToggleOrderModal} view='orderStatus' />
-      }
       {!viewOnly &&
         <BlockstackWelcome />
       }
@@ -48,9 +43,9 @@ const DashboardView = (props) => {
                 </Col>
               </Row>
             </Col>
-            {Boolean(orderStatus) && (
+            {showOrderStatus && (
               <Col xs='12'>
-                <OrderStatus status={orderStatus} />
+                <OrderStatus />
               </Col>
             )}
             <Col xs='12'>

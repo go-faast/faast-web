@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Redirect } from 'react-router-dom'
-import { push } from 'react-router-redux'
+import { createStructuredSelector } from 'reselect'
 
-import { getSwapStatus } from 'Utilities/swap'
-
-import { getCurrentWalletWithHoldings, isDefaultPortfolioEmpty, getAllSwapsArray } from 'Selectors'
-import { updateHoldings, removePortfolio } from 'Actions/portfolio'
+import {
+  getCurrentWalletWithHoldings, isDefaultPortfolioEmpty,
+  getCurrentSwundleStatus
+} from 'Selectors'
+import { updateHoldings, removePortfolio, defaultPortfolioId } from 'Actions/portfolio'
 import { forgetCurrentOrder } from 'Actions/swap'
 
 import DashboardView from './view'
@@ -15,7 +15,6 @@ import DashboardView from './view'
 class Dashboard extends Component {
   constructor (props) {
     super(props)
-    this._orderStatus = this._orderStatus.bind(this)
     this._updateHoldings = this._updateHoldings.bind(this)
     this._removeWallet = this._removeWallet.bind(this)
   }
@@ -31,10 +30,10 @@ class Dashboard extends Component {
 
   componentWillUnmount () {
     window.clearInterval(this.state.balancesInterval)
-    if (!this.props.wallet.isReadOnly) {
-      const orderStatus = this._orderStatus()
+    const { wallet, forgetCurrentOrder, orderStatus } = this.props
+    if (!wallet.isReadOnly) {
       if (orderStatus === 'error' || orderStatus === 'complete') {
-        this.props.forgetCurrentOrder()
+        forgetCurrentOrder()
       }
     }
   }
@@ -44,40 +43,28 @@ class Dashboard extends Component {
     updateHoldings(wallet.id)
   }
 
-  _orderStatus () {
-    const { swaps } = this.props
-    if (!swaps.length) return false
-
-    const statuses = swaps.map(getSwapStatus).map(({ status }) => status)
-    if (statuses.includes('working')) return 'working'
-    if (statuses.includes('error')) return 'error'
-    return 'complete'
-  }
-
   _removeWallet () {
     const { wallet, removePortfolio } = this.props
     removePortfolio(wallet.id)
   }
 
   render () {
-    const orderStatus = this._orderStatus()
-
-    const { wallet, isDefaultPortfolioEmpty } = this.props
+    const { wallet, isDefaultPortfolioEmpty, orderStatus } = this.props
     const isViewOnly = wallet.isReadOnly
 
     if (isDefaultPortfolioEmpty && !isViewOnly) {
       return (<Redirect to='/connect'/>)
     }
 
-    const disableRemove = wallet.id === 'default'
+    const disableRemove = wallet.id === defaultPortfolioId
+    const showOrderStatus = Boolean(orderStatus)
     return (
       <DashboardView
         wallet={wallet}
-        showOrderModal={this.props.orderModal.show}
         handleRemove={this._removeWallet}
-        orderStatus={orderStatus}
         viewOnly={isViewOnly}
         disableRemove={disableRemove}
+        showOrderStatus={showOrderStatus}
         isDefaultPortfolioEmpty={isDefaultPortfolioEmpty}
         {...this.props}
       />
@@ -85,22 +72,14 @@ class Dashboard extends Component {
   }
 }
 
-Dashboard.propTypes = {
-  wallet: PropTypes.object.isRequired,
-  updateHoldings: PropTypes.func.isRequired,
-  routerPush: PropTypes.func.isRequired
-}
-
-const mapStateToProps = (state) => ({
-  wallet: getCurrentWalletWithHoldings(state),
-  isDefaultPortfolioEmpty: isDefaultPortfolioEmpty(state),
-  swaps: getAllSwapsArray(state),
-  orderModal: state.orderModal,
+const mapStateToProps = createStructuredSelector({
+  wallet: getCurrentWalletWithHoldings,
+  isDefaultPortfolioEmpty: isDefaultPortfolioEmpty,
+  orderStatus: getCurrentSwundleStatus,
 })
 
 const mapDispatchToProps = {
   updateHoldings,
-  routerPush: push,
   forgetCurrentOrder,
   removePortfolio
 }
