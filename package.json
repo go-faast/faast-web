@@ -19,7 +19,7 @@
     "lint": "eslint src/",
     "build:webpack": "webpack --progress",
     "build": "npm run lint && npm run build:webpack",
-    "version": "npm run build && git add -Af dist",
+    "version": "npm run build && git add -A dist",
     "postversion": "git push && git push --tags",
     "release": "git checkout master && git merge develop && git push && git checkout develop"
   },
