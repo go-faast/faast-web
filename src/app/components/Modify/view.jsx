@@ -9,6 +9,7 @@ import accounting from 'accounting'
 import { RIENumber } from 'riek'
 import { Link } from 'react-router-dom'
 
+import config from 'Config'
 import display from 'Utilities/display'
 
 import Layout from 'Components/Layout'
@@ -201,7 +202,7 @@ const ModifyView = (props) => {
     ))
 
   const secondNavbar = (
-    <Navbar color='ultra-dark' dark fixed='top' expand='md'>
+    <Navbar color='ultra-dark' dark fixed='top' expand={config.navbar.expand}>
       <Container className='d-block'>
         <Row className='px-3_4r gutter-2 gutter-md-3 justify-content-left align-items-center'>
           <Col xs='auto' className='expand-only'>

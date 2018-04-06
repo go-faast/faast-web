@@ -3,9 +3,14 @@ import PropTypes from 'prop-types'
 import { reduxForm, Field } from 'redux-form'
 import { Form, InputGroup, InputGroupAddon, Input, Button } from 'reactstrap'
 
-let AddressSearchForm = ({ handleSubmit, size, placeholder, className, formProps, inputProps, buttonProps }) => (
+const AddressSearchForm = reduxForm({
+  form: 'addressSearchForm'
+})(({
+  handleSubmit, size, placeholder, className,
+  formProps, inputProps, inputGroupProps, buttonProps
+}) => (
   <Form onSubmit={handleSubmit} className={className} {...formProps}>
-    <InputGroup>
+    <InputGroup {...inputGroupProps}>
       <Input
         tag={Field}
         component='input'
@@ -22,11 +27,7 @@ let AddressSearchForm = ({ handleSubmit, size, placeholder, className, formProps
       </InputGroupAddon>
     </InputGroup>
   </Form>
-)
-
-AddressSearchForm = reduxForm({
-  form: 'addressSearchForm'
-})(AddressSearchForm)
+))
 
 AddressSearchForm.propTypes = {
   ...AddressSearchForm.propTypes,
@@ -34,7 +35,8 @@ AddressSearchForm.propTypes = {
   placeholder: PropTypes.string,
   formProps: PropTypes.object,
   inputProps: PropTypes.object,
-  buttonProps: PropTypes.object
+  inputGroupProps: PropTypes.object,
+  buttonProps: PropTypes.object,
 }
 
 AddressSearchForm.defaultProps = {
@@ -42,7 +44,8 @@ AddressSearchForm.defaultProps = {
   placeholder: 'Search by address...',
   formProps: {},
   inputProps: {},
-  buttonProps: {}
+  inputGroupProps: {},
+  buttonProps: {},
 }
 
 export default AddressSearchForm

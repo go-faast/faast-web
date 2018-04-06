@@ -34,6 +34,9 @@ export default {
     n: 1024
   },
   defaultPortfolioId: 'default',
+  navbar: {
+    expand: 'md',
+  },
   highCharts,
   tokenFunctionSignatures
 }
