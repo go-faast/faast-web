@@ -42,27 +42,3 @@
     }
   }
 }
-
-/*review, in progress and completed swap styles starts here*/
-.review-list {
-  margin: auto;
-  margin-top: 20px;
-
-  .status {
-    @extend .font-size-sm;
-    &.done {
-      @extend .text-success;
-    }
-    &.in-progress {
-      @extend .text-primary;
-      @extend .blink;
-    }
-    &.failed {
-      @extend .text-danger;
-    }
-    &.pending {
-      @extend .text-grey;
-    }
-  }
-}
-/*review, in progress and completed swap styles ends here*/

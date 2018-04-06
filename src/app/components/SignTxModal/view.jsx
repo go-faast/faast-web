@@ -7,6 +7,7 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap'
 import { isNil } from 'lodash'
+import classNames from 'class-names'
 
 import { getWallet } from 'Selectors'
 
@@ -170,7 +171,7 @@ const SignTxForm = reduxForm({
     let status
     if (swap.tx && swap.tx.signed) {
       nextToSign += 1
-      status = (<div className='text-success'>signed</div>)
+      status = (<div className='text-success'>approved</div>)
     } else if (swap.error) {
       nextToSign += 1
       status = (<div className='text-danger'>declined</div>)
@@ -192,7 +193,7 @@ const SignTxForm = reduxForm({
         <p>
           The following swaps will take place to save the changes you made to your wallet. Please review them and click {`"${props.buttonText}"`} to proceed.
         </p>
-        <div className='review-list my-3'>
+        <div className='my-3'>
           <Row className='gutter-2'>
             {signingStatuses}
           </Row>
@@ -225,24 +226,47 @@ const SignTxForm = reduxForm({
   )
 })
 
+const statusRenderData = {
+  working: {
+    label: 'in progress',
+    labelClass: 'text-primary blink',
+  },
+  error: {
+    label: 'failed',
+    labelClass: 'text-danger',
+  },
+  complete: {
+    label: 'done',
+    labelClass: 'text-success'
+  },
+  unknown: {
+    label: 'unknown',
+    labelClass: 'text-muted',
+  }
+}
+
 const OrderStatus = ({ swapList, handleClose }) => (
   <div>
     <ModalHeader className='text-primary' toggle={handleClose}>
       Order Status
     </ModalHeader>
     <ModalBody className='text-center'>
-      <div className='review-list pb-3'>
+      <div className='mx-auto my-3'>
         <Row className='gutter-2'>
-          {swapList.map((swap) => (
-            <Col xs='12' key={swap.id}>
-              <Card body className='py-2 px-3 flat'>
-                <SwapStatusRow swap={swap}>
-                  <div className={`status mt-1 ${swap.status.cl}`}>{swap.status.text}</div>
-                  <div>{swap.status.details}</div>
-                </SwapStatusRow>
-              </Card>
-            </Col>
-          ))}
+          {swapList.map((swap) => {
+            const { id, status: { status, details } } = swap
+            const { label, labelClass } = statusRenderData[status] || statusRenderData.unknown
+            return (
+              <Col xs='12' key={id}>
+                <Card body className='py-2 px-3 flat'>
+                  <SwapStatusRow swap={swap}>
+                    <small className={classNames('mt-1', labelClass)}>{label}</small>
+                    <div>{details}</div>
+                  </SwapStatusRow>
+                </Card>
+              </Col>
+            )
+          })}
         </Row>
       </div>
       <div className='text-center'>

@@ -127,7 +127,6 @@ export default class Wallet {
       .then(() => this._signTxData(tx.txData, { ...options, tx }))
       .then((signedTxData) => log.debugInline('signTransaction', ({
         ...tx,
-        signed: true,
         signedTxData,
       })));
   }
@@ -140,8 +139,6 @@ export default class Wallet {
         : this._signAndSendTxData(tx.txData, { ...options, tx }))
       .then((result) => log.debugInline('sendTransaction', ({
         ...tx,
-        signed: true,
-        sent: true,
         ...result,
       })));
   }

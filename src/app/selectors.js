@@ -4,8 +4,8 @@ import { isFunction } from 'lodash'
 
 import config from 'Config'
 import { toBigNumber, toUnit, toPercentage } from 'Utilities/convert'
-import { fixPercentageRounding, reduceByKey } from 'Utilities/helpers'
-import { getSwapStatus } from 'Utilities/swap'
+import { fixPercentageRounding, reduceByKey, mapValues } from 'Utilities/helpers'
+import { getSwapStatus, getSwapError, estimateReceiveAmount } from 'Utilities/swap'
 
 const { defaultPortfolioId } = config
 
@@ -203,7 +203,25 @@ export const getAccountSearchResultWalletWithHoldings = currySelector(getWalletW
 
 
 // Swap selectors
-export const getAllSwaps = getSwapState
+
+const createSwapExtender = (allAssets) => (swap) => {
+  const { sendSymbol, receiveSymbol } = swap
+  const sendAsset = allAssets[sendSymbol]
+  const receiveAsset = allAssets[receiveSymbol]
+  return {
+    ...swap,
+    sendAsset,
+    receiveAsset,
+    receiveUnits: estimateReceiveAmount(swap, receiveAsset),
+    status: getSwapStatus(swap),
+    error: getSwapError(swap),
+  }
+}
+
+export const getAllSwaps = createSelector(
+  getSwapState,
+  getAllAssets,
+  (allSwaps, allAssets) => mapValues(allSwaps, createSwapExtender(allAssets)))
 export const getAllSwapsArray = createSelector(getAllSwaps, Object.values)
 export const getSwap = createItemSelector(getAllSwaps, selectItemId, (allSwaps, id) => allSwaps[id])
 

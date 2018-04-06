@@ -18,8 +18,8 @@ const swapInitialState = {
   receiveSymbol: '',
   rate: null,
   fee: null,
-  tx: null,
-  order: null,
+  tx: {},
+  order: {},
 }
 
 const upsertSwap = createUpserter('id', swapInitialState)

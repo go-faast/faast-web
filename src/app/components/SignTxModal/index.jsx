@@ -6,7 +6,6 @@ import { createStructuredSelector } from 'reselect'
 import { closeTrezorWindow } from 'Utilities/wallet'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
-import { getSwapStatus, estimateReceiveAmount } from 'Utilities/swap'
 
 import { getAllAssets, getCurrentPortfolio, getAllSwapsArray } from 'Selectors'
 import { sendSwapDeposits } from 'Actions/portfolio'
@@ -27,12 +26,12 @@ class SignTxModal extends Component {
     this._handleSubmit = this._handleSubmit.bind(this)
   }
 
-  _handleCloseModal () {
-    const { toggleModal, resetSwaps, swaps } = this.props
+  _handleCloseModal (signed = false) {
+    const { toggleModal, resetSwaps } = this.props
     closeTrezorWindow()
     this.setState({ isSigning: false })
     toggleModal()
-    if (!swaps.some(({ tx }) => tx && tx.sent)) {
+    if (!signed) {
       resetSwaps()
     }
   }
@@ -47,7 +46,7 @@ class SignTxModal extends Component {
     return dispatch(sendSwapDeposits(swaps, { password: values.password }))
       .then(() => {
         if (!this.props.showModal) throw new Error('modal closed')
-        this._handleCloseModal()
+        this._handleCloseModal(true)
         dispatch(push('/balances'))
       })
       .catch((e) => {
@@ -58,72 +57,12 @@ class SignTxModal extends Component {
   }
 
   render () {
-    const { swaps, assets } = this.props
+    const { swaps } = this.props
     const readyToSign = () => {
       const hasError = swaps.some((swap) => swap.errors && swap.errors.length)
-      const statuses = swaps.map(getSwapStatus).map(({ details }) => details)
-      return !hasError && statuses.every(s => s === 'waiting for transaction to be signed')
+      const statusDetails = swaps.map(({ status: { details } }) => details)
+      return !hasError && statusDetails.every(s => s === 'waiting for transaction to be signed')
     }
-    const getStatus = (swap) => {
-      const { status, details } = getSwapStatus(swap)
-      if (status === 'error') {
-        return {
-          cl: 'failed',
-          text: 'failed',
-          details: details
-        }
-      }
-      if (status === 'working') {
-        return {
-          cl: 'in-progress',
-          text: 'in progress',
-          details: details
-        }
-      }
-      return {
-        cl: 'done',
-        text: 'done'
-      }
-    }
-    const getError = (swap) => {
-      const { errors } = swap
-      if (errors && Array.isArray(errors) && errors.length) {
-        const eKeys = errors.map(e => Object.keys(e)[0])
-        if (eKeys.includes('swapMarketInfo')) {
-          const error = Object.values(errors.find(e => Object.keys(e)[0] === 'swapMarketInfo'))[0]
-          if (error.message && error.message.startsWith('minimum')) return error.message
-          if (error.message && error.message.startsWith('maximum')) return error.message
-        }
-        if (eKeys.includes('swapMarketInfo') || eKeys.includes('swapPostExchange')) {
-          return 'swap unavailable at this time'
-        }
-        // if (eKeys.includes('swapEstimateTxFee')) {
-        //   return 'web3 communication error'
-        // }
-        if (eKeys.includes('swapSufficientDeposit')) {
-          return 'estimated amount to receive is below 0'
-        }
-        if (eKeys.includes('swapSufficientFees')) {
-          return 'insufficient balance for txn fee'
-        }
-        return 'unknown error'
-      }
-    }
-
-    const swapList = swaps.map((swap) => {
-      const { sendSymbol, receiveSymbol, tx } = swap
-      const sendAsset = assets[sendSymbol]
-      const receiveAsset = assets[receiveSymbol]
-      return {
-        ...swap,
-        sendAsset,
-        receiveAsset,
-        receiveUnits: estimateReceiveAmount(swap, receiveAsset),
-        status: getStatus(swap),
-        error: getError(swap),
-        tx: tx || {},
-      }
-    })
     const readyToSignResult = readyToSign()
     return (
       <SignTxModalView
@@ -134,11 +73,11 @@ class SignTxModal extends Component {
           onSubmit: this._handleSubmit,
           handleCancel: this._handleCloseModal,
           isSigning: this.state.isSigning,
-          swapList: swapList,
+          swapList: swaps,
           type: this.state.view
         }}
         orderStatusProps={{
-          swapList: swapList,
+          swapList: swaps,
           handleClose: this._handleCloseModal
         }}
       />
