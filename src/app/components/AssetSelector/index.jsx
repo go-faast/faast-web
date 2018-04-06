@@ -75,7 +75,6 @@ class AssetSelector extends Component {
   }
 
   render () {
-    const { columns, supportedAssetSymbols, showBalance } = this.props
     const { assetList } = this.state
     const { handleSelect, handleSearchSubmit, handleSearchChange } = this
     return (

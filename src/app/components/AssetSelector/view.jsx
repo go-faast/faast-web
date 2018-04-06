@@ -4,9 +4,6 @@ import { reduxForm } from 'redux-form'
 import classNames from 'class-names'
 import { Row, Col, Form, Button } from 'reactstrap'
 
-import config from 'Config'
-import { shortener } from 'Utilities/helpers'
-
 import CoinIcon from 'Components/CoinIcon'
 import ReduxFormField from 'Components/ReduxFormField'
 
