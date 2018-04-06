@@ -45,7 +45,7 @@ const DashboardView = (props) => {
             </Col>
             {showOrderStatus && (
               <Col xs='12'>
-                <OrderStatus />
+                <OrderStatus/>
               </Col>
             )}
             <Col xs='12'>

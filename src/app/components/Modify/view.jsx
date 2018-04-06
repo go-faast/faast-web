@@ -248,7 +248,7 @@ const ModifyView = (props) => {
           )}
         </ModalBody>
       </Modal>
-      <SignTxModal showModal={props.showSignTxModal} toggleModal={props.handleToggleSignTxModal} />
+      <SignTxModal />
     </Layout>
   )
 }

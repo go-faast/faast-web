@@ -6,7 +6,7 @@ import { numberish } from 'Utilities/propTypes'
 import Units from 'Components/Units'
 import Spinner from 'Components/Spinner'
 
-const FeeUnits = ({ error, ...unitProps }) => {
+const UnitsLoading = ({ error, ...unitProps }) => {
   const { tag: Tag, value, symbol, showSymbol } = unitProps
   if (typeof value === 'undefined') {
     if (error) {
@@ -20,14 +20,14 @@ const FeeUnits = ({ error, ...unitProps }) => {
   return (<Units {...unitProps}/>)
 }
 
-FeeUnits.propTypes = {
+UnitsLoading.propTypes = {
   ...Units.propTypes,
   value: numberish,
   error: PropTypes.any,
 }
 
-FeeUnits.defaultProps = {
+UnitsLoading.defaultProps = {
   ...Units.defaultProps,
 }
 
-export default FeeUnits
+export default UnitsLoading

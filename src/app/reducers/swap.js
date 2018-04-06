@@ -16,8 +16,8 @@ const swapInitialState = {
   sendUnits: ZERO,
   receiveWalletId: '',
   receiveSymbol: '',
-  rate: null,
-  fee: null,
+  rate: undefined,
+  fee: undefined,
   tx: {},
   order: {},
 }

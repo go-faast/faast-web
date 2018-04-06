@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
+import { createStructuredSelector } from 'reselect'
 import BigNumber from 'bignumber.js'
 import uuid from 'uuid/v4'
 
@@ -336,7 +337,7 @@ class Modify extends Component {
   }
 
   render () {
-    const { portfolio, toggleOrderModal, orderModal } = this.props
+    const { portfolio, toggleOrderModal } = this.props
     const { holdings, assetListWalletId, allowance, isAssetListOpen } = this.state
     const adjustedPortfolio = {
       ...portfolio,
@@ -374,7 +375,6 @@ class Modify extends Component {
         allowance={allowance}
         handleFiatChange={this._handleFiatChange}
         handleWeightChange={this._handleWeightChange}
-        showSignTxModal={orderModal.show}
         handleToggleSignTxModal={toggleOrderModal}
         handleSave={this._handleSave}
         disableSave={disableSave}
@@ -383,10 +383,9 @@ class Modify extends Component {
   }
 }
 
-const mapStateToProps = (state) => ({
-  portfolio: getCurrentPortfolioWithWalletHoldings(state),
-  allAssets: getAllAssets(state),
-  orderModal: state.orderModal
+const mapStateToProps = createStructuredSelector({
+  portfolio: getCurrentPortfolioWithWalletHoldings,
+  allAssets: getAllAssets
 })
 
 const mapDispatchToProps = {

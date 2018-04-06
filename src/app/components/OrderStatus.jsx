@@ -10,15 +10,15 @@ import toastr from 'Utilities/toastrWrapper'
 
 import { getCurrentSwundleStatus } from 'Selectors'
 import { forgetCurrentOrder } from 'Actions/swap'
-import { toggleOrderModal } from 'Actions/redux'
 
+import withToggle from 'Hoc/withToggle'
 import Spinner from 'Components/Spinner'
-import SignTxModal from 'Components/SignTxModal'
+import OrderStatusModal from 'Components/OrderStatusModal'
 
 const statusRenderData = {
   working: {
-    title: (<span className='text-muted'>In Progress <Spinner inline size='sm'/></span>),
-    description: 'Your order is still in progress. You cannot modify your portfolio until your order has been fulfilled.',
+    title: (<span className='text-muted'>Processing <Spinner inline size='sm'/></span>),
+    description: 'Your order is still being processed.',
   },
   complete: {
     title: (<span className='text-success'>Complete <i className='fa fa-check-circle'/></span>),
@@ -30,9 +30,11 @@ const statusRenderData = {
   },
 }
 
+const forgetButtonText = 'Dismiss'
+
 const ForgetOrderPrompt = () => (
-  <div>
-    Please be aware that <strong>forget</strong> does not actually cancel an order,
+  <div className='p-3'>
+    Please be aware that <strong>{forgetButtonText}</strong> does not actually cancel an order,
     it justs stops the browser app from tracking the status of the order.
     The order may still process normally.
     Please only proceed if you have been instructed to do so, or you understand the effects.
@@ -43,13 +45,12 @@ export default compose(
   setDisplayName('OrderStatus'),
   connect(createStructuredSelector({
     status: getCurrentSwundleStatus,
-    showModal: ({ orderModal: { show } }) => show,
   }), {
     forgetCurrentOrder,
-    toggleModal: toggleOrderModal,
   }),
+  withToggle('modalOpen'),
   withHandlers({
-    handleForget: ({ forgetCurrentOrder }) => {
+    handleForget: ({ forgetCurrentOrder }) => () => {
       toastr.confirm(null, {
         component: ForgetOrderPrompt,
         onOk: forgetCurrentOrder
@@ -57,17 +58,15 @@ export default compose(
     },
   }),
   withProps(({ status }) => statusRenderData[status])
-)(({ status, title, description, showModal, toggleModal, handleForget }) => (
+)(({ title, description, isModalOpen, toggleModalOpen, handleForget }) => (
   <Card>
     <CardHeader><CardTitle>Order Status</CardTitle></CardHeader>
     <CardBody>
       <div className='mb-2'><small>{title}</small></div>
       <CardText>{description}</CardText>
-      <Button color='primary' outline size='sm' onClick={toggleModal}>Details</Button>
-      {status === 'working' && (
-        <Button color='link' size='sm' className='mx-3' onClick={handleForget}>Forget</Button>
-      )}
+      <Button color='primary' outline size='sm' onClick={toggleModalOpen}>Details</Button>
+      <Button color='link' size='sm' className='mx-3' onClick={handleForget}>{forgetButtonText}</Button>
     </CardBody>
-    <SignTxModal showModal={showModal} toggleModal={toggleModal} view='orderStatus' />
+    <OrderStatusModal isOpen={isModalOpen} toggle={toggleModalOpen} />
   </Card>
 ))

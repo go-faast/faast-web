@@ -89,50 +89,66 @@ export const updateAllHoldings = () => (dispatch) => {
   ]).catch(log.error)
 }
 
-const swapFinish = (type, swap, error, addition) => {
-  return (dispatch) => {
-    const errors = swap.errors || []
-    if (error) {
-      errors.push({ [type]: new Error(error) })
-      dispatch(swapUpdated({ id: swap.id, errors }))
-    }
-    return Object.assign({}, swap, addition, { errors })
+const createSwapFinish = (dispatch, type, swap, additions) => (errorMessage, moreAdditions) => {
+  const updatedFields = {}
+  if (errorMessage) {
+    updatedFields.error = errorMessage
+    updatedFields.errorType = type
   }
+  if (additions) {
+    Object.assign(updatedFields, additions)
+  }
+  if (moreAdditions) {
+    Object.assign(updatedFields, moreAdditions)
+  }
+  if (updatedFields && Object.keys(updatedFields).length > 0) {
+    dispatch(swapUpdated(swap.id, updatedFields))
+    return { ...swap, ...updatedFields }
+  }
+  return swap
 }
 
 const swapMarketInfo = (swapList) => (dispatch) => {
   log.debug('swapMarketInfo', swapList)
   return processArray(swapList, (swap) => {
-    const { id: swapId, sendSymbol, sendUnits, receiveSymbol, pair } = swap
-    const finish = (e, x) => dispatch(swapFinish('swapMarketInfo', swap, e, x))
+    if (swap.error) return swap
+    const { sendSymbol, sendUnits, receiveSymbol, pair } = swap
+    const newFields = {}
+    const finish = createSwapFinish(dispatch, 'swapMarketInfo', swap, newFields)
     if (sendSymbol === receiveSymbol) return finish('cannot swap to same asset')
 
     return dispatch(getMarketInfo(pair))
       .then((res) => {
         log.debug('marketinfo response', res)
         if (!res.pair) {
-          return finish('error getting details')
+          return finish('error getting market info')
+        }
+        if (res.hasOwnProperty('rate')) {
+          newFields.rate = toBigNumber(res.rate)
+        } else {
+          return finish('error getting market rate')
+        }
+        if (res.hasOwnProperty('outgoing_network_fee')) {
+          newFields.fee = toBigNumber(res.outgoing_network_fee)
+        } else if (res.hasOwnProperty('minerFee')) {
+          newFields.fee = toBigNumber(res.minerFee)
+        } else {
+          return finish('error getting swap fee')
         }
         if (res.hasOwnProperty('minimum') && sendUnits.lessThan(res.minimum)) {
-          return finish(`minimum amount is ${res.minimum}`)
+          return finish(`minimum amount is ${res.minimum} ${sendSymbol}`)
         }
         if (res.hasOwnProperty('min') && sendUnits.lessThan(res.min)) {
-          return finish(`minimum amount is ${res.min}`)
+          return finish(`minimum amount is ${res.min} ${sendSymbol}`)
         }
         if ((res.hasOwnProperty('limit') && sendUnits.greaterThan(res.limit)) || (res.maxLimit && sendUnits.greaterThan(res.maxLimit))) {
-          return finish(`maximum amount is ${res.limit}`)
+          return finish(`maximum amount is ${res.limit} ${sendSymbol}`)
         }
-        const fee = res.hasOwnProperty('outgoing_network_fee') ? toBigNumber(res.outgoing_network_fee) : toBigNumber(res.minerFee)
-        const rate = toBigNumber(res.rate)
-        dispatch(swapUpdated(swapId, {
-          rate,
-          fee
-        }))
-        return finish(null, { rate, fee })
+        return finish()
       })
       .catch((e) => {
         log.error(e)
-        return finish('error getting details')
+        return finish('error getting market info')
       })
   })
 }
@@ -141,31 +157,33 @@ const swapPostExchange = (swapList) => (dispatch) => {
   log.debug('swapPostExchange', swapList)
   let previousTx = null
   return processArray(swapList, (swap) => {
-    const finish = (e, x) => dispatch(swapFinish('swapPostExchange', swap, e, x))
-    const { id: swapId, sendWalletId, sendSymbol, sendUnits, receiveWalletId, receiveSymbol, pair } = swap
+    if (swap.error) return swap
+    const finish = createSwapFinish(dispatch, 'swapPostExchange', swap)
+    const finishErrorHandler = (message) => (e) => {
+      log.error(e)
+      return finish(message)
+    }
+    const { sendWalletId, sendSymbol, sendUnits, receiveWalletId, receiveSymbol, pair } = swap
     const sendWalletInstance = walletService.get(sendWalletId)
     const receiveWalletInstance = walletService.get(receiveWalletId)
     return Promise.all([
       sendWalletInstance.getFreshAddress(sendSymbol),
       receiveWalletInstance.getFreshAddress(receiveSymbol),
-    ]).then(([returnAddress, withdrawalAddress]) => dispatch(postExchange({
+    ])
+    .catch(finishErrorHandler('error retrieving wallet addresses'))
+    .then(([returnAddress, withdrawalAddress]) => dispatch(postExchange({
       pair,
       withdrawal: withdrawalAddress,
       returnAddress,
-    }))).then((order) => {
-      return sendWalletInstance.createTransaction(order.deposit, sendUnits, sendSymbol, { previousTx })
+    })))
+    .catch(finishErrorHandler('error creating swaps'))
+    .then((order) =>
+      sendWalletInstance.createTransaction(order.deposit, sendUnits, sendSymbol, { previousTx })
         .then((tx) => {
           previousTx = tx
-          dispatch(swapUpdated(swapId, {
-            order,
-            tx
-          }))
           return finish(null, { order, tx })
-        })
-    }).catch((e) => {
-      log.error(e)
-      return finish('problem generating tx')
-    })
+        }))
+    .catch(finishErrorHandler('error generating swap tx'))
   })
 }
 
@@ -173,12 +191,13 @@ const swapPostExchange = (swapList) => (dispatch) => {
 // so the expected amount ends up larger than zero
 const swapSufficientDeposit = (swapList) => (dispatch, getState) => {
   return processArray(swapList, (swap) => {
+    if (swap.error) return swap
     const { sendUnits, receiveSymbol, rate, fee } = swap
-    const finish = (e, x) => dispatch(swapFinish('swapSufficientDeposit', swap, e, x))
+    const finish = createSwapFinish(dispatch, 'swapSufficientDeposit', swap)
     const receiveAsset = getAsset(getState(), receiveSymbol)
     const expected = toPrecision(toUnit(sendUnits, rate, receiveAsset.decimals).minus(fee), receiveAsset.decimals)
     if (expected.lessThanOrEqualTo(0)) {
-      return finish('insufficient deposit for expected return')
+      return finish('Estimated amount to receive is below 0')
     }
     return finish()
   })
@@ -189,7 +208,8 @@ const swapSufficientFees = (swapList) => (dispatch, getState) => {
   let walletAdjustedBalances = getAllWalletsArray(getState())
     .reduce((byId, { id, balances }) => ({ ...byId, [id]: balances }), {})
   return processArray(swapList, (swap) => {
-    const finish = (e, x) => dispatch(swapFinish('swapSufficientFees', swap, e, x))
+    if (swap.error) return swap
+    const finish = createSwapFinish(dispatch, 'swapSufficientFees', swap)
     const { sendWalletId, sendSymbol, sendUnits, tx } = swap
     const { feeAmount, feeAsset } = tx
     const adjustedBalances = walletAdjustedBalances[sendWalletId] || {}
@@ -197,7 +217,7 @@ const swapSufficientFees = (swapList) => (dispatch, getState) => {
     if (feeAmount) {
       adjustedBalances[feeAsset] = (adjustedBalances[feeAsset] || ZERO).minus(feeAmount)
       if (adjustedBalances[feeAsset].isNegative()) {
-        return finish(`not enough ${feeAsset} for tx fee`)
+        return finish(`Not enough ${feeAsset} for tx fee`)
       }
     }
     return finish()
@@ -224,7 +244,7 @@ const createTransferEventListeners = (swap, markSigned) => (dispatch) => {
       log.info(`tx hash ${txHash} obtained for swap ${swapId}`)
       txId = txHash
       dispatch(swapTxUpdated(swapId, { id: txId }))
-      if (markSigned) dispatch(swapTxUpdated(swapId, { signed: true }))
+      if (markSigned) dispatch(swapTxUpdated(swapId, { signed: true, sent: true }))
     },
     onReceipt: (receipt) => {
       log.info(`tx receipt obtained for swap ${swapId}`)
@@ -233,14 +253,19 @@ const createTransferEventListeners = (swap, markSigned) => (dispatch) => {
     onConfirmation: (conf) => {
       dispatch(swapTxUpdated(swapId, { confirmations: conf }))
     },
-    onError: (error) => {
-      log.error(`tx error for swap ${swapId}`, error)
+    onError: (e) => {
+      log.error(`tx error for swap ${swapId}`, e)
+      const message = e.message || e
       // Don't mark the following as a tx error, start polling for receipt instead
-      if (error.message.includes('Transaction was not mined within')) {
+      if (message.includes('Transaction was not mined within')) {
         return dispatch(pollTransactionReceipt(swap, txId))
       }
-      const declined = error.message.includes('User denied transaction signature')
-      dispatch(swapUpdated(swapId, { error, declined }))
+      const declined = message.includes('User denied transaction signature')
+      dispatch(swapUpdated(swapId, {
+        declined,
+        error: message,
+        errorType: 'sendTransaction',
+      }))
     }
   }
 }

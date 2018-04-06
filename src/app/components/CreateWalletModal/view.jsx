@@ -120,8 +120,8 @@ let CreatePasswordForm = ({
       />
     </ModalBody>
     <ModalFooter className='justify-content-between'>
-      <Button outline color='primary' onClick={handleCancel}>Cancel</Button>
-      <Button color='success' type='submit' onClick={handleSubmit} disabled={submitting || invalid}>Continue</Button>
+      <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
+      <Button type='submit' color='success' disabled={submitting || invalid}>Continue</Button>
     </ModalFooter>
   </Form>
 )
@@ -155,8 +155,8 @@ let ImportWalletForm = ({
       </div>
     </ModalBody>
     <ModalFooter className='justify-content-between'>
-      <Button outline color='primary' onClick={handleCancel}>Cancel</Button>
-      <Button color='success' onClick={handleSubmit} disabled={invalid}>Continue</Button>
+      <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
+      <Button type='submit' color='success' disabled={invalid}>Continue</Button>
     </ModalFooter>
   </Form>
 )
@@ -202,8 +202,8 @@ let DownloadKeystoreForm = ({
       </div>
     </ModalBody>
     <ModalFooter className='justify-content-between'>
-      <Button outline color='primary' onClick={handleCancel}>Cancel</Button>
-      <Button color='success' onClick={handleSubmit} disabled={!(hasDownloadedFile && agreedToDisclaimer)}>Continue</Button>
+      <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
+      <Button type='submit' color='success' disabled={!(hasDownloadedFile && agreedToDisclaimer)}>Continue</Button>
     </ModalFooter>
   </Form>
 )

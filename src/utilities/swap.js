@@ -1,8 +1,11 @@
+import { isString, isObject } from 'lodash'
+
 import { toUnit, toPrecision } from 'Utilities/convert'
 
 export const getSwapStatus = (swap) => {
-  if (swap.error) {
-    if (swap.error.message && swap.error.message.startsWith('Returned error: Insufficient funds')) {
+  const { error, rate, order, tx } = swap
+  if (error) {
+    if (error.message && error.message.toLowerCase().includes('insufficient funds')) {
       return {
         status: 'error',
         details: 'insufficient funds'
@@ -13,112 +16,104 @@ export const getSwapStatus = (swap) => {
       details: 'unable to send transaction'
     }
   }
-  if (swap.fee == null) {
+  if (rate == null) {
     return {
-      status: 'working',
-      details: 'fetching swap details'
+      status: 'creating',
+      details: 'fetching market info'
     }
   }
-  if (swap.order == null) {
+  if (order == null) {
     return {
-      status: 'working',
+      status: 'creating',
       details: 'creating swap order'
     }
   }
-  if (swap.order.error) {
+  if (tx == null) {
+    return {
+      status: 'creating',
+      details: 'generating transaction'
+    }
+  }
+  if (order.error) {
     return {
       status: 'error',
       details: typeof swap.order.error === 'string' ? swap.order.error : 'swap order error'
     }
   }
-  if (swap.tx == null) {
+  if (order.status === 'complete' || order.status === 'failed') {
     return {
-      status: 'working',
-      details: 'generating transaction'
+      status: order.status,
+      details: order.status
     }
   }
-  if (!swap.tx.id) {
-    if (!swap.tx.signedTxData) {
+  if (!tx.id) {
+    if (!tx.signedTxData) {
       return {
-        status: 'working',
+        status: 'unsigned',
         details: 'waiting for transaction to be signed'
       }
     }
     return {
-      status: 'working',
+      status: 'unsent',
       details: 'sending signed transaction'
     }
   }
-  if (swap.tx.receipt == null) {
+  if (!tx.receipt) {
     return {
-      status: 'working',
+      status: 'pending_receipt',
       details: 'waiting for transaction receipt'
     }
   }
-  // number of confirmations doesn't correlate to anything here
-  // if ((swap.order.status == null || swap.order.status === 'no_deposits') && (swap.tx.confirmations == null || swap.tx.confirmations < 3)) {
-  //   return {
-  //     status: 'working',
-  //     details: 'waiting for confirmations'
-  //   }
-  // }
-  if (swap.order.status == null || swap.order.status !== 'complete') {
-    return {
-      status: 'working',
-      details: 'processing swap'
-    }
-  }
   return {
-    status: 'complete',
-    details: 'complete'
+    status: 'processing',
+    details: 'processing swap'
   }
 }
 
-export const statusAllSwaps = (swapList) => {
-  if (!swapList || !swapList.length) {
+export const statusAllSwaps = (swaps) => {
+  if (!swaps || !swaps.length) {
     return 'unavailable'
   }
-  if (swapList.some(({ tx }) => !tx)) {
-    return 'unspecified'
+  const statuses = swaps.map(getSwapStatus).map(({ status }) => status)
+  const statusPriority = [
+    'error',
+    'failed',
+    'unspecified',
+    'unsigned',
+    'unsent',
+    'pending_receipts',
+    'pending_receipts_restored'
+  ]
+  const result = statusPriority.reduce((result, status) => !result && statuses.includes(status) && status, null)
+  if (result) {
+    return result
   }
-  if (swapList.some(({ tx }) => !tx.id)) {
-    if (swapList.some(({ tx }) => !tx.signedTxData)) {
-      return 'unsigned'
-    }
-    return 'unsent'
+  if (statuses.every((status) => status === 'complete')) {
+    return 'complete'
   }
-  if (swapList.some(({ tx }) => !tx.receipt)) {
-    if (swapList.some(({ restored }) => !restored)) {
-      return 'pending_receipts'
-    }
-    return 'pending_receipts_restored'
-  }
-  if (swapList.every(({ order }) => order && (order.status === 'complete' || order.status === 'failed'))) {
-    return 'finalized'
-  }
-  return 'pending_orders'
+  return 'processing'
 }
 
-export const getSwapError = (swap) => {
-  const { errors } = swap
-  if (errors && Array.isArray(errors) && errors.length) {
-    const eKeys = errors.map(e => Object.keys(e)[0])
-    if (eKeys.includes('swapMarketInfo')) {
-      const error = Object.values(errors.find(e => Object.keys(e)[0] === 'swapMarketInfo'))[0]
-      if (error.message && error.message.startsWith('minimum')) return error.message
-      if (error.message && error.message.startsWith('maximum')) return error.message
+export const getSwapFriendlyError = (swap) => {
+  const { error } = swap
+  if (!error) return error
+  if (isString(error)) {
+    return error
+  } else if (isObject(error)) {
+    const { type, message } = error
+    const messageLower = message.toLowerCase()
+    if (type === 'swapMarketInfo'
+      && (messageLower.includes('minimum') || messageLower.includes('maximum'))) {
+      return message
     }
-    if (eKeys.includes('swapMarketInfo') || eKeys.includes('swapPostExchange')) {
+    if (type === 'swapMarketInfo' || type === 'swapPostExchange') {
       return 'swap unavailable at this time'
     }
-    // if (eKeys.includes('swapEstimateTxFee')) {
-    //   return 'web3 communication error'
-    // }
-    if (eKeys.includes('swapSufficientDeposit')) {
-      return 'estimated amount to receive is below 0'
+    if (type === 'swapSufficientFees' || type === 'swapSufficientDeposit') {
+      return message
     }
-    if (eKeys.includes('swapSufficientFees')) {
-      return 'insufficient balance for txn fee'
+    if (type === 'sendTransaction') {
+      return 'error sending deposit tx'
     }
     return 'unknown error'
   }

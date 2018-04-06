@@ -5,7 +5,7 @@ import { isFunction } from 'lodash'
 import config from 'Config'
 import { toBigNumber, toUnit, toPercentage } from 'Utilities/convert'
 import { fixPercentageRounding, reduceByKey, mapValues } from 'Utilities/helpers'
-import { getSwapStatus, getSwapError, estimateReceiveAmount } from 'Utilities/swap'
+import { getSwapStatus, getSwapFriendlyError, estimateReceiveAmount } from 'Utilities/swap'
 
 const { defaultPortfolioId } = config
 
@@ -214,7 +214,7 @@ const createSwapExtender = (allAssets) => (swap) => {
     receiveAsset,
     receiveUnits: estimateReceiveAmount(swap, receiveAsset),
     status: getSwapStatus(swap),
-    error: getSwapError(swap),
+    friendlyError: getSwapFriendlyError(swap),
   }
 }
 
@@ -233,4 +233,10 @@ export const getCurrentSwundleStatus = createSelector(getAllSwapsArray, (allSwap
   if (statuses.includes('working')) return 'working'
   if (statuses.includes('error')) return 'error'
   return 'complete'
+})
+
+export const isCurrentSwundleReadyToSign = createSelector(getAllSwapsArray, (swaps) => {
+  const hasError = swaps.some((swap) => swap.errors && swap.errors.length)
+  const statusDetails = swaps.map(({ status: { details } }) => details)
+  return !hasError && statusDetails.every(s => s === 'waiting for transaction to be signed')
 })
