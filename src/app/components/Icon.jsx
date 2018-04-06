@@ -14,7 +14,7 @@ const blockStyle = {
   display: 'block'
 }
 
-const Icon = ({ src, tag: Tag, inline, width, height, size: scale, rotate: rotation, color: fillColor, style, ...props }) => {
+const Icon = ({ src, tag: Tag, inline, block, width, height, size: scale, rotate: rotation, color: fillColor, style, ...props }) => {
   if (typeof src === 'string') {
     if (Tag === 'img') {
       props = { src, ...props }
@@ -30,6 +30,9 @@ const Icon = ({ src, tag: Tag, inline, width, height, size: scale, rotate: rotat
   } else {
     Tag = src
   }
+  if (Tag === 'span' && inline === null && block === null) {
+    inline = true
+  }
   if (scale && !(width || height)) {
     width = '1rem'
     height= '1rem'
@@ -40,7 +43,8 @@ const Icon = ({ src, tag: Tag, inline, width, height, size: scale, rotate: rotat
         resize(scale),
         rotate(rotation),
         fill(fillColor),
-        (inline ? inlineStyle : blockStyle),
+        inline && inlineStyle,
+        block && blockStyle,
         style
       )}
       {...props}
@@ -51,6 +55,7 @@ const Icon = ({ src, tag: Tag, inline, width, height, size: scale, rotate: rotat
 // Prop types that affect the appearance of the icon
 Icon.stylePropTypes = {
   inline: PropTypes.bool,
+  block: PropTypes.bool,
   width: PropTypes.string, // Valid css unit (2rem, 16px, etc)
   height: PropTypes.string, // Valid css unit (2rem, 16px, etc)
   size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]), // Width/height scale factor or abbreviation (sm, md, lg)
@@ -66,7 +71,8 @@ Icon.propTypes = {
 
 Icon.defaultProps = {
   tag: 'img',
-  inline: true,
+  inline: null,
+  block: null,
   size: null,
   width: null,
   height: null,
