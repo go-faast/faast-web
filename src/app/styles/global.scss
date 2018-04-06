@@ -26,7 +26,7 @@
     box-shadow: $component-shadow;
     &.rrt-error {
       background-color: $ultra-dark;
-      border-bottom: 5px solid $danger;
+      border-bottom: 0.25rem solid $danger;
     }
   }
   .rrt-middle-container {
@@ -38,7 +38,25 @@
   .rrt-right-container {
     .close-toastr {
       font-size: $font-size-sm !important;
-      color: $white;
+      color: $text-color;
+    }
+  }
+  .rrt-confirm-holder {
+    .shadow {
+      background-color: rgba($modal-backdrop-bg, $modal-backdrop-opacity);
+    }
+    .rrt-confirm {
+      background-color: $ultra-dark;
+      border-radius: $border-radius;
+      color: $text-color;
+      box-shadow: $component-shadow;
+      border: $component-border;
+      .rrt-buttons-holder {
+        .rrt-button {
+          @extend .btn-ultra-dark;
+          @extend .flat;
+        }
+      }
     }
   }
 }
