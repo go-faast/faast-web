@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { reduxForm } from 'redux-form'
-import classNames from 'class-names'
 import { Row, Col, Form, Button } from 'reactstrap'
 
 import CoinIcon from 'Components/CoinIcon'
@@ -20,8 +19,9 @@ const AssetSearchForm = reduxForm({
       autoFocus
       autoComplete='off'
       onChange={handleSearchChange}
+      inputClassName='border-primary'
       addonAppend={(
-        <Button color='primary' size='md' outline type='submit'>
+        <Button color='primary' size='md' type='submit'>
           <i className='fa fa-search' />
         </Button>
       )}
@@ -37,7 +37,7 @@ const AssetCol = ({
   const disabledMessage = !swapEnabled ? 'coming soon' : (!hasWalletSupport ? 'unsupported wallet' : 'unavailable')
   return (
     <Col xs='4' lg='3'>
-      <Button color='ultra-dark' size='sm' onClick={() => handleSelect(asset)} disabled={disabled}
+      <Button color='dark' size='sm' onClick={() => handleSelect(asset)} disabled={disabled}
         className={style.assetButton}>
         <CoinIcon symbol={symbol} size='lg' className={style.assetButtonIcon} />
         <div>{name}</div>
@@ -52,9 +52,11 @@ const AssetCol = ({
 const AssetSelectorView = ({ assetList, handleSearchSubmit, handleSearchChange, handleSelect }) => (
   <div>
     <AssetSearchForm onSubmit={handleSearchSubmit} handleSearchChange={handleSearchChange}/>
-    <Row className={classNames('gutter-1', style.assetButtonContainer)}>
-      {assetList.map((a) => (<AssetCol key={a.symbol} asset={a} handleSelect={handleSelect}/>))}
-    </Row>
+    <div className={style.assetButtonContainer}>
+      <Row className='gutter-1'>
+        {assetList.map((a) => (<AssetCol key={a.symbol} asset={a} handleSelect={handleSelect}/>))}
+      </Row>
+    </div>
   </div>
 )
 
