@@ -204,16 +204,16 @@ const ModifyView = (props) => {
   const secondNavbar = (
     <Navbar color='ultra-dark' dark fixed='top' expand={config.navbar.expand}>
       <Container className='d-block'>
-        <Row className='px-3_4r gutter-2 gutter-md-3 justify-content-left align-items-center'>
+        <Row className='px-3_4r gutter-2 gutter-md-3 align-items-center'>
           <Col xs='auto' className='expand-only'>
-            <SelectPortfolioDropdown togglerProps={{ color: 'link-plain', block: true, className: 'm-0 h4 font-weight-normal' }} inNavbar/>
+            <div className='m-0 h5 font-weight-normal'>{portfolio.label}</div>
             <div className='text-muted'>{display.fiat(portfolio.totalFiat)}</div>
           </Col>
-          <Col xs='auto' className='text-left text-md-right mr-auto mr-md-0 ml-0 ml-md-auto'>
+          <Col xs='auto' className='text-left text-md-right mr-auto mr-md-0 ml-md-auto'>
             <h4 className='m-0 text-primary font-weight-bold'>{display.fiat(props.allowance.fiat)} <small className='text-muted'>{display.percentage(props.allowance.weight)}</small></h4>
             <small className='text-muted'>available to swap</small>
           </Col>
-          <Col xs='auto'>
+          <Col xs='auto' className='text-right'>
             <Button color='primary' onClick={handleSave} disabled={Boolean(disableSave)} className='flat'><i className='fa fa-check mr-2'/>Save Changes</Button>
           </Col>
           {typeof disableSave === 'string' && (
