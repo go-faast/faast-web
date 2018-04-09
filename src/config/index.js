@@ -21,7 +21,7 @@ export default {
   isDev,
   isProd,
   logLevel: process.env.LOG_LEVEL || (isDev ? 'debug' : 'info'),
-  web3Provider: 'https://web3.faa.st/eth',
+  web3Provider: 'https://mainnet.infura.io/0eUbsHtOiSVZZEiR5fQX',
   bitcoreInsightApi: 'https://bitcore.faa.st/insight-api',
   siteUrl: typeof SITE_URL !== 'undefined' ? SITE_URL : 'https://faa.st',
   apiUrl: typeof API_URL !== 'undefined' ? API_URL : 'https://api.faa.st/api/v1/public',
