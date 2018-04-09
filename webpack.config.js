@@ -31,10 +31,10 @@ const nodeModules = path.join(projectRoot, 'node_modules')
 
 const publicPath = '/portfolio/'
 
-const assetOutputPath = 'asset/'
-const vendorOutputPath = 'vendor/'
-const bundleOutputPath = 'bundle/'
-const faviconOutputPath = 'favicon/'
+const assetOutputPath = 'asset'
+const vendorOutputPath = 'vendor'
+const bundleOutputPath = 'bundle'
+const faviconOutputPath = 'favicon'
 
 const vendorDeps = ['font-awesome/css/font-awesome.min.css', 'ledger.min.js', 'web3.min.js']
 
@@ -89,7 +89,7 @@ let config = {
   output: {
     path: dist,
     publicPath,
-    filename: bundleOutputPath + (isDev ? '[name].js' : '[name].[hash].js')
+    filename: bundleOutputPath + (isDev ? '/[name].js' : '/[name].[hash].js')
   },
   node: {
     fs: 'empty',
@@ -101,7 +101,7 @@ let config = {
         resourceQuery: /worker/,
         loader: 'worker-loader',
         options: {
-          name: bundleOutputPath + 'worker.[hash].js'
+          name: bundleOutputPath + '/worker.[hash].js'
         }
       }, {
         exclude: /node_modules/,
@@ -172,14 +172,14 @@ let config = {
       }
     }),
     new ExtractTextPlugin({
-      filename: bundleOutputPath + (isDev ? '[name].css' : '[name].[hash].css'),
+      filename: bundleOutputPath + (isDev ? '/[name].css' : '/[name].[hash].css'),
       ignoreOrder: true,
       disable: isDev
     }),
     new OptimizeCssAssetsPlugin(),
     new FaviconPlugin({
       logo: path.join(res, 'img', 'faast-logo.png'),
-      prefix: faviconOutputPath + '[hash:8]/',
+      prefix: faviconOutputPath + '/[hash:8]/',
       title: pkg.productName,
       description: pkg.description,
       background: '#181818',
@@ -200,7 +200,7 @@ if (!isDev) {
   config = merge(config, {
     devtool: 'source-map',
     plugins: [
-      new CleanPlugin(['*'], { root: dist, exclude: [faviconOutputPath] }),
+      new CleanPlugin(dist, { root: projectRoot, exclude: [faviconOutputPath] }),
       new UglifyJsPlugin({
         sourceMap: true,
         uglifyOptions: {
