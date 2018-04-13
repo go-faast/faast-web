@@ -12,5 +12,3 @@ export const hideOrderModal = createAction('HIDE_ORDER_MODAL')
 
 export const setSettings = createAction('SET_SETTINGS')
 
-export const setBreakpoints = createAction('SET_BREAKPOINTS')
-

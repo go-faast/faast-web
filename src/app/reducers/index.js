@@ -6,7 +6,6 @@ import assets from './assets'
 import swap from './swap'
 import orderModal from './orderModal'
 import settings from './settings'
-import mediaQueries from './mediaQueries'
 import portfolio from './portfolio'
 import wallets from './wallets'
 import app from './app'
@@ -23,6 +22,5 @@ export default combineReducers({
   settings,
   form: formReducer,
   toastr: toastrReducer,
-  mediaQueries,
   router: routerReducer
 })
