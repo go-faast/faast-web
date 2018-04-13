@@ -1,5 +1,6 @@
 import EthereumjsWallet from 'ethereumjs-wallet'
 import EthereumjsTx from 'ethereumjs-tx'
+import { isString, isObject } from 'lodash'
 
 import config from 'Config'
 import { stripHexPrefix, parseJson } from 'Utilities/helpers'
@@ -16,19 +17,32 @@ export default class EthereumWalletKeystore extends EthereumWallet {
     if (keystore instanceof EthereumjsWallet) {
       this._isEncrypted = false
     } else {
-      keystore = parseJson(keystore)
       if (!keystore) {
-        throw new Error('Invalid keystore')
+        throw new Error(`Invalid keystore "${keystore}"`)
       }
-      let version = keystore.version || keystore.Version
+      // Convert keystore to lower case to avoid ethereumjs-wallet parsing issues
+      if (isString(keystore)) {
+        keystore = parseJson(keystore.toLowerCase())
+      } else if (isObject(keystore)) {
+        keystore = Object.entries(keystore).reduce((lowerCased, [key, value]) => ({
+          ...lowerCased,
+          [key.toLowerCase()]: value
+        }), {})
+      } else {
+        throw new Error(`Keystore has invalid type ${typeof keystore}`)
+      }
+      let version = keystore.version
       if (typeof version === 'undefined') {
         throw new Error('Keystore version information missing')
       }
       if (version !== 3) {
         throw new Error(`Keystore version ${keystore.version} unsupported`)
       }
-      if (!(keystore.crypto || keystore.Crypto)) {
+      if (!keystore.crypto) {
         throw new Error('Keystore crypto information missing')
+      }
+      if (!keystore.address) {
+        throw new Error('Keystore address missing')
       }
       this._isEncrypted = true
     }
@@ -52,7 +66,7 @@ export default class EthereumWalletKeystore extends EthereumWallet {
 
   getTypeLabel = () => 'Keystore file';
 
-  getAddress = () => toChecksumAddress(this.keystore.address || this.keystore.Address || this.keystore.getAddressString());
+  getAddress = () => toChecksumAddress(this.keystore.address || this.keystore.getAddressString());
 
   isPersistAllowed = () => this._isEncrypted && this._persistAllowed;
 
