@@ -8,9 +8,8 @@ import { Provider } from 'react-redux'
 import throttle from 'lodash/throttle'
 import createHistory from 'history/createBrowserHistory'
 import { ConnectedRouter, routerMiddleware } from 'react-router-redux'
-import { Route } from 'react-router-dom'
 import ReduxToastr from 'react-redux-toastr'
-import Entry from 'Components/Entry'
+import App from 'Components/App'
 import reducers from './reducers'
 import { saveToAddress } from 'Utilities/storage'
 import { getDefaultPortfolio, isAppReady } from 'Selectors'
@@ -55,7 +54,7 @@ const Portfolio = () => {
     <Provider store={store}>
       <ConnectedRouter history={history}>
         <div>
-          <Route component={Entry} />
+          <App/>
           <ReduxToastr
             timeOut={4000}
             newestOnTop={false}
