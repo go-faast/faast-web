@@ -4,7 +4,6 @@ import { Row, Col, Button } from 'reactstrap'
 import CoinIcon from 'Components/CoinIcon'
 
 import Web3Wallet from './Web3Wallet'
-import Blockstack from './Blockstack'
 import CreateWallet from './CreateWallet'
 import ImportKeystore from './ImportKeystore'
 import HardwareWallet from './HardwareWallet'
@@ -28,7 +27,6 @@ const Access = () => (
       <TileCol><Web3Wallet type='metamask' /></TileCol>
       <TileCol><Web3Wallet type='mist' /></TileCol>
       <TileCol><Web3Wallet type='parity' /></TileCol>
-      <TileCol><Blockstack /></TileCol>
     </TileRow>
     <h4 className='text-muted'>Manual</h4>
     <TileRow>
