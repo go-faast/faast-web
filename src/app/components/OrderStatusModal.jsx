@@ -13,20 +13,16 @@ import { getAllSwapsArray } from 'Selectors'
 import SwapStatusCard from 'Components/SwapStatusCard'
 
 const statusRenderData = {
-  processing: {
-    label: 'processing',
+  pending: {
     labelClass: 'text-primary',
   },
-  error: {
-    label: 'error',
-    labelClass: 'text-danger',
+  failed: {
+    labelClass: 'text-warning',
   },
   complete: {
-    label: 'complete',
     labelClass: 'text-success'
   },
   unknown: {
-    label: null,
     labelClass: 'text-muted',
   }
 }
@@ -45,9 +41,9 @@ export default compose(
       <div className='mx-auto my-3'>
         <Row className='gutter-2'>
           {swaps.map((swap) => {
-            const { id, status: { status } } = swap
-            const { label, labelClass } = statusRenderData[status] || statusRenderData.unknown
-            const statusText = (<span className={labelClass}>{label || status}</span>)
+            const { id, status: { code, label } } = swap
+            const { labelClass } = statusRenderData[code] || statusRenderData.unknown
+            const statusText = (<span className={labelClass}>{label || code}</span>)
             return (
               <Col xs='12' key={id}>
                 <SwapStatusCard swap={swap} statusText={statusText} />

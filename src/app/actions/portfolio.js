@@ -322,9 +322,9 @@ export const restoreSwapPolling = () => (dispatch, getState) => {
   const swapList = getAllSwapsArray(getState())
   swapList.forEach((swap) => {
     const status = getSwapStatus(swap)
-    if (status.details === 'waiting for transaction receipt') {
+    if (status.detailsCode === 'pending_receipt') {
       dispatch(pollTransactionReceipt(swap))
-    } else if (status.details === 'waiting for confirmations' || status.details === 'processing swap') {
+    } else if (status.code === 'pending') {
       dispatch(pollOrderStatus(swap))
     }
   })

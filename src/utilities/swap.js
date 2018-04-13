@@ -2,96 +2,68 @@ import { isString, isObject } from 'lodash'
 
 import { toUnit, toPrecision } from 'Utilities/convert'
 
+const createStatus = (code, label) => (detailsCode, details) => ({ code, label, detailsCode, details })
+
+const statusPending = createStatus('pending', 'In progress')
+const statusFailed = createStatus('failed', 'Failed')
+const statusComplete = createStatus('complete', 'Complete')
+
 export const getSwapStatus = (swap) => {
   const { error, rate, order, tx } = swap
   if (error) {
     if (error.message && error.message.toLowerCase().includes('insufficient funds')) {
-      return {
-        status: 'error',
-        details: 'insufficient funds'
-      }
+      return statusFailed('insufficient_funds', 'insufficient funds')
     }
-    return {
-      status: 'error',
-      details: 'unable to send transaction'
-    }
-  }
-  if (rate == null) {
-    return {
-      status: 'creating',
-      details: 'fetching market info'
-    }
+    return statusFailed('client_error', 'error processing swap')
   }
   if (order == null) {
-    return {
-      status: 'creating',
-      details: 'creating swap order'
-    }
-  }
-  if (tx == null) {
-    return {
-      status: 'creating',
-      details: 'generating transaction'
-    }
+    return statusPending('creating_order', 'creating swap order')
   }
   if (order.error) {
-    return {
-      status: 'error',
-      details: typeof swap.order.error === 'string' ? swap.order.error : 'swap order error'
-    }
+    return statusFailed('order_error', isString(order.error) ? order.error : 'order error')
   }
-  if (order.status === 'complete' || order.status === 'failed') {
-    return {
-      status: order.status,
-      details: order.status
-    }
+  if (order.status === 'failed') {
+    return statusFailed('order_failed', 'order was unsuccessful')
+  }
+  if (order.status === 'cancelled') {
+    return statusFailed('order_cancelled', 'order was cancelled')
+  }
+  if (order.status === 'complete') {
+    return statusComplete('order_complete', 'order completed successfully')
+  }
+  if (rate == null) {
+    return statusPending('fetching_rate', 'fetching market info')
+  }
+  if (tx == null) {
+    return statusPending('creating_tx', 'generating transaction')
   }
   if (!tx.id) {
     if (!tx.signedTxData) {
-      return {
-        status: 'unsigned',
-        details: 'waiting for transaction to be signed'
-      }
+      return statusPending('unsigned', 'waiting for transaction to be signed')
     }
-    return {
-      status: 'unsent',
-      details: 'sending signed transaction'
-    }
+    return statusPending('unsent', 'sending signed transaction')
   }
   if (!tx.receipt) {
-    return {
-      status: 'pending_receipt',
-      details: 'waiting for transaction receipt'
-    }
+    return statusPending('pending_receipt', 'waiting for transaction receipt')
   }
-  return {
-    status: 'processing',
-    details: 'processing swap'
-  }
+  return statusPending('processing', 'processing swap')
 }
 
 export const statusAllSwaps = (swaps) => {
   if (!swaps || !swaps.length) {
-    return 'unavailable'
+    return null
   }
   const statuses = swaps.map(getSwapStatus).map(({ status }) => status)
-  const statusPriority = [
-    'error',
-    'failed',
-    'unspecified',
-    'unsigned',
-    'unsent',
-    'pending_receipts',
-    'pending_receipts_restored'
-  ]
-  const result = statusPriority.reduce((result, status) => !result && statuses.includes(status) && status, null)
-  if (result) {
-    return result
+  if (statuses.includes('failed')) {
+    return 'failed'
+  }
+  if (statuses.includes('pending')) {
+    return 'pending'
   }
   if (statuses.every((status) => status === 'complete')) {
     return 'complete'
   }
-  return 'processing'
+  return statuses[0]
 }
 
 export const getSwapFriendlyError = (swap) => {

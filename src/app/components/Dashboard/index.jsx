@@ -32,7 +32,7 @@ class Dashboard extends Component {
     window.clearInterval(this.state.balancesInterval)
     const { wallet, forgetCurrentOrder, orderStatus } = this.props
     if (!wallet.isReadOnly) {
-      if (orderStatus === 'error' || orderStatus === 'complete') {
+      if (orderStatus === 'complete') {
         forgetCurrentOrder()
       }
     }

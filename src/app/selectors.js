@@ -5,7 +5,7 @@ import { isFunction } from 'lodash'
 import config from 'Config'
 import { toBigNumber, toUnit, toPercentage } from 'Utilities/convert'
 import { fixPercentageRounding, reduceByKey, mapValues } from 'Utilities/helpers'
-import { getSwapStatus, getSwapFriendlyError, estimateReceiveAmount } from 'Utilities/swap'
+import { getSwapStatus, getSwapFriendlyError, estimateReceiveAmount, statusAllSwaps } from 'Utilities/swap'
 
 const { defaultPortfolioId } = config
 
@@ -225,15 +225,7 @@ export const getAllSwaps = createSelector(
 export const getAllSwapsArray = createSelector(getAllSwaps, Object.values)
 export const getSwap = createItemSelector(getAllSwaps, selectItemId, (allSwaps, id) => allSwaps[id])
 
-export const getCurrentSwundleStatus = createSelector(getAllSwapsArray, (allSwaps) => {
-  if (allSwaps.length === 0) {
-    return null
-  }
-  const statuses = allSwaps.map(getSwapStatus).map(({ status }) => status)
-  if (statuses.includes('working')) return 'working'
-  if (statuses.includes('error')) return 'error'
-  return 'complete'
-})
+export const getCurrentSwundleStatus = createSelector(getAllSwapsArray, statusAllSwaps)
 
 export const isCurrentSwundleReadyToSign = createSelector(getAllSwapsArray, (swaps) => {
   const hasError = swaps.some((swap) => swap.errors && swap.errors.length)

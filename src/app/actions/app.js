@@ -2,7 +2,6 @@ import { createAction } from 'redux-act'
 import queryString from 'query-string'
 import idb from 'Utilities/idb'
 import { restoreFromAddress } from 'Utilities/storage'
-import { statusAllSwaps } from 'Utilities/swap'
 import blockstack from 'Utilities/blockstack'
 import { filterUrl } from 'Utilities/helpers'
 import log from 'Utilities/log'
@@ -11,7 +10,7 @@ import { getDefaultPortfolio } from 'Selectors'
 import { retrieveAssets } from './asset'
 import { setSettings } from './redux'
 import { setSwaps } from './swap'
-import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
+import { restoreAllPortfolios, updateAllHoldings, restoreSwapPolling } from './portfolio'
 
 export const appReady = createAction('APP_READY')
 export const appError = createAction('APP_ERROR')
@@ -22,9 +21,11 @@ export const restoreState = (dispatch, getState) => Promise.resolve()
     const wallet = getDefaultPortfolio(getState())
     const addressState = restoreFromAddress(wallet && wallet.id)
     if (addressState) {
-      const status = statusAllSwaps(addressState.swap)
-      const swap = (status === 'finalized') ? [] : addressState.swap
-      dispatch(setSwaps(swap))
+      const swaps = addressState.swap
+      if (swaps.length > 0) {
+        dispatch(setSwaps(swaps))
+        dispatch(restoreSwapPolling())
+      }
       const settings = addressState.settings
       dispatch(setSettings(settings))
     }
