@@ -89,7 +89,7 @@ let config = {
   output: {
     path: dist,
     publicPath,
-    filename: bundleOutputPath + (isDev ? '[name].js' : '[name].[hash].js')
+    filename: bundleOutputPath + (isDev ? '[name].js' : '[name].[chunkhash].js')
   },
   node: {
     fs: 'empty',
@@ -172,7 +172,7 @@ let config = {
       }
     }),
     new ExtractTextPlugin({
-      filename: bundleOutputPath + (isDev ? '[name].css' : '[name].[hash].css'),
+      filename: bundleOutputPath + (isDev ? '[name].css' : '[name].[contenthash].css'),
       ignoreOrder: true,
       disable: isDev
     }),
@@ -192,7 +192,14 @@ let config = {
       assets: vendorDeps.map((vendorDep) => path.join(vendorOutputPath, vendorDep)),
       append: false,
       hash: true
-    })
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: (module) => module.context && module.context.indexOf('node_modules') >= 0
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'manifest'
+    }),
   ]
 }
 
@@ -208,7 +215,9 @@ if (!isDev) {
             reserved: ['BigInteger', 'ECPair', 'Point']
           }
         }
-      })
+      }),
+      new webpack.optimize.ModuleConcatenationPlugin(),
+      new webpack.HashedModuleIdsPlugin(),
     ]
   })
 } else {
