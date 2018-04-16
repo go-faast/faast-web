@@ -129,6 +129,7 @@ export default class EthereumWallet extends Wallet {
 
   _validateTxData = (txData) => {
     if (txData === null || typeof txData !== 'object') {
+      log.error('invalid txData', txData)
       throw new Error(`Invalid ${EthereumWallet.type} txData of type ${typeof tx}`)
     }
     const requiredProps = ['data', 'from', 'gasLimit', 'gasPrice', 'nonce', 'to', 'value']
@@ -142,10 +143,12 @@ export default class EthereumWallet extends Wallet {
 
   _validateSignedTxData = (signedTxData) => {
     if (signedTxData === null || typeof signedTxData !== 'object') {
+      log.error('invalid signedTxData', signedTxData)
       throw new Error(`Invalid ${EthereumWallet.type} signedTxData of type ${typeof tx}`)
     }
     const { raw } = signedTxData
     if (typeof raw !== 'string') {
+      log.error('invalid signedTxData', signedTxData)
       throw new Error(`Invalid ${EthereumWallet.type} signedTxData - invalid prop "raw" of type ${typeof raw}`)
     }
     return signedTxData

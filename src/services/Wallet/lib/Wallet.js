@@ -97,9 +97,11 @@ export default class Wallet {
   _validateTx (tx) {
     log.debug('_validateTx', tx)
     if (tx === null || typeof tx !== 'object') {
+      log.error('invalid tx', tx)
       throw new Error(`Invalid tx of type ${typeof tx}`)
     }
     if (tx.walletId !== this.getId()) {
+      log.error('invalid tx', tx)
       throw new Error(`Invalid tx provided to wallet ${this.getId()} with mismatched walletId ${tx.walletId}`)
     }
     this._validateTxData(tx.txData)
