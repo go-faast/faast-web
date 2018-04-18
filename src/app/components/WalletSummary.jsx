@@ -13,7 +13,7 @@ export const WalletSummary = ({ hideIcon, hideBalance, labelClass, wallet: { id,
   <Row className='gutter-0'>
     <Col xs='12' className={labelClass}>{id === 'default' ? (<i>{label}</i>) : label}</Col>
     <Col>
-      <IconLabel label={typeLabel} iconProps={!hideIcon && iconProps}/>
+      <IconLabel label={typeLabel} iconProps={!hideIcon && iconProps} className='text-muted'/>
     </Col>
     {!hideBalance && (
       <Col xs='auto'>

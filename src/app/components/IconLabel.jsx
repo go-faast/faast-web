@@ -1,13 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import classNames from 'class-names'
 
 import { tag as tagPropType } from 'Utilities/propTypes'
 
 import Icon from 'Components/Icon'
 
-const IconLabel = ({ tag: Tag, className, iconProps, label }) => (
-  <Tag className={classNames('text-muted', className)}>
+const IconLabel = ({ tag: Tag, iconProps, label, ...props }) => (
+  <Tag {...props}>
     {iconProps && iconProps.src && (<Icon height='1.25em' width='1.25em' {...iconProps} inline tag='span' className='mr-2'/>)}
     {label}
   </Tag>
