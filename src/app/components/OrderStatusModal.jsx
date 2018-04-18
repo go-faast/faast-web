@@ -8,9 +8,10 @@ import {
 } from 'reactstrap'
 import { omit } from 'lodash'
 
-import { getAllSwapsArray } from 'Selectors'
+import { getAllSwapsArray, getCurrentSwundleWalletId } from 'Selectors'
 
 import SwapStatusCard from 'Components/SwapStatusCard'
+import WalletSummary from 'Components/WalletSummary'
 
 const statusRenderData = {
   pending: {
@@ -31,13 +32,19 @@ export default compose(
   setDisplayName('OrderStatusModal'),
   connect(createStructuredSelector({
     swaps: getAllSwapsArray,
+    swundleWalletId: getCurrentSwundleWalletId,
   }))
-)(({ swaps, toggle, ...props }) => (
+)(({ swaps, toggle, swundleWalletId, ...props }) => (
   <Modal size='md' toggle={toggle} {...omit(props, 'dispatch')}>
     <ModalHeader className='text-primary' toggle={toggle}>
       Order Status
     </ModalHeader>
-    <ModalBody className='text-center'>
+    <ModalBody>
+      {swundleWalletId && (
+        <div className='mx-auto text-center'>
+          <WalletSummary.Connected id={swundleWalletId} hideBalance/>
+        </div>
+      )}
       <div className='mx-auto my-3'>
         <Row className='gutter-2'>
           {swaps.map((swap) => {
@@ -46,7 +53,7 @@ export default compose(
             const statusText = (<span className={labelClass}>{label || code}</span>)
             return (
               <Col xs='12' key={id}>
-                <SwapStatusCard swap={swap} statusText={statusText} />
+                <SwapStatusCard swap={swap} statusText={statusText} showWalletLabels={!swundleWalletId}/>
               </Col>
             )
           })}
