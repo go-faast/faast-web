@@ -11,7 +11,7 @@ import { omit } from 'lodash'
 import { getAllSwapsArray, getCurrentSwundleWalletId } from 'Selectors'
 
 import SwapStatusCard from 'Components/SwapStatusCard'
-import WalletSummary from 'Components/WalletSummary'
+import WalletLabel from 'Components/WalletLabel'
 
 const statusRenderData = {
   pending: {
@@ -42,7 +42,7 @@ export default compose(
     <ModalBody>
       {swundleWalletId && (
         <div className='mx-auto text-center'>
-          <WalletSummary.Connected id={swundleWalletId} hideBalance/>
+          <WalletLabel.Connected id={swundleWalletId}/>
         </div>
       )}
       <div className='mx-auto my-3'>

@@ -17,13 +17,13 @@ import Slider from 'Components/Slider'
 import AssetSelector from 'Components/AssetSelector'
 import SignTxModal from 'Components/SignTxModal'
 import Units from 'Components/Units'
-import SelectPortfolioDropdown from 'Components/SelectPortfolioDropdown'
 import Overlay from 'Components/Overlay'
 import ArrowIcon from 'Components/ArrowIcon'
 import ListGroupButton from 'Components/ListGroupButton'
 import CoinIcon from 'Components/CoinIcon'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import IconLabel from 'Components/IconLabel'
+import WalletLabel from 'Components/WalletLabel'
 
 import styles from './style'
 
@@ -167,39 +167,41 @@ const ModifyView = (props) => {
   })
 
   const renderHoldings = (wallets) => wallets
-    .map(({ id, label, isReadOnly, typeLabel, iconProps, balancesLoaded, assetHoldings }) => (
-      <Col xs='12' key={id}>
-        <Card>
-          <CardHeader>
-            <Row className='gutter-3 align-items-center'>
-              <Col>
-                <h4 className='m-0 lh-0'>{label}</h4>
-                <IconLabel label={typeLabel} iconProps={iconProps}/>
-              </Col>
-              <Col xs='auto'>
-                <Button color='success' size='sm' className='flat' disabled={!balancesLoaded} onClick={() => props.showAssetList(id)}>
-                  <i className='fa fa-plus'/> add asset
-                </Button>
-              </Col>
-            </Row>
-          </CardHeader>
-          {isReadOnly ? (
-            <Alert color='info' className='m-0 text-center'>
-              This wallet is read-only. You need to <Link to='/connect' className='alert-link'><u>connect your wallet</u></Link> in order to trade assets.
-            </Alert>
-          ) : (
-            <ListGroup>
-              {!balancesLoaded && (<LoadingFullscreen center/>)}
-              {renderAssetRows(assetHoldings.filter(({ shown }) => shown))}
-              <ListGroupButton action onClick={() => props.showAssetList(id)} className='text-center text-success'>
-                <i className='fa fa-plus fa-2x align-middle' />
-                <span className='pl-2 h5'>add asset</span>
-              </ListGroupButton>
-            </ListGroup>
-          )}
-        </Card>
-      </Col>
-    ))
+    .map((wallet) => {
+      const { id, isReadOnly, balancesLoaded, assetHoldings } = wallet
+      return (
+        <Col xs='12' key={id}>
+          <Card>
+            <CardHeader>
+              <Row className='gutter-3 align-items-center'>
+                <Col>
+                  <WalletLabel wallet={wallet} tag='h4'/>
+                </Col>
+                <Col xs='auto'>
+                  <Button color='success' size='sm' className='flat' disabled={!balancesLoaded} onClick={() => props.showAssetList(id)}>
+                    <i className='fa fa-plus'/> add asset
+                  </Button>
+                </Col>
+              </Row>
+            </CardHeader>
+            {isReadOnly ? (
+              <Alert color='info' className='m-0 text-center'>
+                This wallet is read-only. You need to <Link to='/connect' className='alert-link'><u>connect your wallet</u></Link> in order to trade assets.
+              </Alert>
+            ) : (
+              <ListGroup>
+                {!balancesLoaded && (<LoadingFullscreen center/>)}
+                {renderAssetRows(assetHoldings.filter(({ shown }) => shown))}
+                <ListGroupButton action onClick={() => props.showAssetList(id)} className='text-center text-success'>
+                  <i className='fa fa-plus fa-2x align-middle' />
+                  <span className='pl-2 h5'>add asset</span>
+                </ListGroupButton>
+              </ListGroup>
+            )}
+          </Card>
+        </Col>
+      )
+    })
 
   const secondNavbar = (
     <Navbar color='ultra-dark' dark fixed='top' expand={config.navbar.expand}>
