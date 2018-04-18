@@ -22,13 +22,11 @@ export const restoreState = (dispatch, getState) => Promise.resolve()
     const addressState = restoreFromAddress(wallet && wallet.id)
     if (addressState) {
       const swaps = addressState.swap
-      if (swaps.length > 0) {
-        dispatch(setSwaps(swaps))
-        dispatch(restoreSwapPolling())
-      }
+      dispatch(setSwaps(swaps))
       const settings = addressState.settings
       dispatch(setSettings(settings))
     }
+    dispatch(restoreSwapPolling())
     dispatch(updateAllHoldings())
   })
   .catch((e) => {
