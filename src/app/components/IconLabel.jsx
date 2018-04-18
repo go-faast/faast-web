@@ -8,7 +8,7 @@ import Icon from 'Components/Icon'
 const IconLabel = ({ tag: Tag, iconProps, label, ...props }) => (
   <Tag {...props}>
     {iconProps && iconProps.src && (<Icon height='1.25em' width='1.25em' {...iconProps} inline tag='span' className='mr-2'/>)}
-    {label}
+    <span className='align-middle'>{label}</span>
   </Tag>
 )
 
