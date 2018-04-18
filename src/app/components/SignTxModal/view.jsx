@@ -12,16 +12,14 @@ const submitButtonText = 'Approve & Sign'
 const SignTxForm = reduxForm({
   form: 'signTxForm'
 })(({ handleSubmit, handleCancel, swaps, isSigning, readyToSign }) => {
-  let nextToSign = 0
   const signingStatuses = swaps.map((swap, i) => {
+    console.log('swap', swap)
     let status
-    if (swap.error) {
-      nextToSign += 1
+    if (swap.error || (swap.tx && swap.tx.signingError)) {
       status = (<span className='text-danger'>declined</span>)
     } else if (swap.tx && swap.tx.signed) {
-      nextToSign += 1
       status = (<span className='text-success'>approved</span>)
-    } else if (isSigning && i === nextToSign) {
+    } else if (isSigning && swap.tx && swap.tx.signing) {
       status = (<span className='text-warning blink'>awaiting signature</span>)
     }
     return (

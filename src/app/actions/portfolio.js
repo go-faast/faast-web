@@ -19,7 +19,10 @@ import {
 } from 'Utilities/wallet'
 import walletService, { MultiWallet } from 'Services/Wallet'
 
-import { swapUpdated, swapTxUpdated, swapOrderUpdated, setSwaps } from 'Actions/swap'
+import {
+  swapUpdated, swapTxUpdated, swapOrderUpdated, setSwaps,
+  swapTxSigningStart, swapTxSigningSuccess, swapTxSigningFailed
+} from 'Actions/swap'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
 import {
   addWallet, removeWallet, addNestedWallet, restoreAllWallets, updateWalletBalances,
@@ -275,8 +278,14 @@ export const sendSwapDeposits = (swapList, sendOptions) => (dispatch) => {
   return processArray(swapList, (swap) => {
     const eventListeners = dispatch(createTransferEventListeners(swap, true))
     const walletInstance = walletService.get(swap.sendWalletId)
+    const { id } = swap
+    dispatch(swapTxSigningStart(id))
     return walletInstance.sendTransaction(swap.tx, { ...eventListeners, ...sendOptions })
-      .then(() => dispatch(pollOrderStatus(swap)))
+      .then(() => {
+        dispatch(swapTxSigningSuccess(id))
+        return dispatch(pollOrderStatus(swap))
+      })
+      .catch((e) => dispatch(swapTxSigningFailed(id, e.message)))
   })
 }
 
