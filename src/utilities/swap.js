@@ -53,17 +53,17 @@ export const statusAllSwaps = (swaps) => {
   if (!swaps || !swaps.length) {
     return null
   }
-  const statuses = swaps.map(getSwapStatus).map(({ status }) => status)
-  if (statuses.includes('failed')) {
+  const statusCodes = swaps.map(getSwapStatus).map(({ code }) => code)
+  if (statusCodes.includes('failed')) {
     return 'failed'
   }
-  if (statuses.includes('pending')) {
+  if (statusCodes.includes('pending')) {
     return 'pending'
   }
-  if (statuses.every((status) => status === 'complete')) {
+  if (statusCodes.every((status) => status === 'complete')) {
     return 'complete'
   }
-  return statuses[0]
+  return statusCodes[0]
 }
 
 export const getSwapFriendlyError = (swap) => {
