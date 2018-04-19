@@ -5,6 +5,7 @@ import { Field, reduxForm } from 'redux-form'
 import { Button } from 'reactstrap'
 
 import ReduxFormField from 'Components/ReduxFormField'
+import HiddenUsernameField from 'Components/HiddenUsernameField'
 
 const getAcks = ({ isNewWallet, walletName }) => [
   `The ${walletName} file can used to send any funds it contains.`,
@@ -81,15 +82,7 @@ let CreatePasswordForm = ({
         Enter a password for your {walletName}. Please make a note of your password. You will not be able to access the funds in your {walletName} without your password.
       </div>
 
-      {/* Provide a hidden username field as per Google's password form guide:
-        * https://goo.gl/9p2vKq
-        * Using absolute position off screen because lastpass ignores
-        * "display: none" and hidden input elements.
-        */}
-      <input type='text' name='username' autoComplete='username'
-        readOnly value={walletAddress || ''}
-        style={{ position: 'absolute', top: 100000 }}
-      />
+      <HiddenUsernameField value={walletAddress || ''}/>
 
       <ReduxFormField
         row
