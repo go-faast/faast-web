@@ -4,13 +4,13 @@ import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { omit } from 'lodash'
 
-import { tagPropType } from 'Utilities/propTypes'
+import { tag as tagPropType } from 'Utilities/propTypes'
 import { getWallet } from 'Selectors'
 
 import IconLabel from 'Components/IconLabel'
 
 export const WalletLabel = ({ hideIcon, wallet: { label, iconProps }, ...props }) => (
-  <IconLabel label={label} iconProps={!hideIcon && iconProps} {...omit(props, 'id')}/>
+  <IconLabel label={label} iconProps={!hideIcon && iconProps} {...omit(props, 'id', 'dispatch')}/>
 )
 
 WalletLabel.propTypes = {
