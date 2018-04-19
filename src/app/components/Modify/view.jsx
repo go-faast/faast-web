@@ -15,14 +15,13 @@ import display from 'Utilities/display'
 import Layout from 'Components/Layout'
 import Slider from 'Components/Slider'
 import AssetSelector from 'Components/AssetSelector'
-import SignTxModal from 'Components/SignTxModal'
+import SwapSubmitModal from 'Components/SwapSubmitModal'
 import Units from 'Components/Units'
 import Overlay from 'Components/Overlay'
 import ArrowIcon from 'Components/ArrowIcon'
 import ListGroupButton from 'Components/ListGroupButton'
 import CoinIcon from 'Components/CoinIcon'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
-import IconLabel from 'Components/IconLabel'
 import WalletLabel from 'Components/WalletLabel'
 
 import styles from './style'
@@ -251,7 +250,7 @@ const ModifyView = (props) => {
           )}
         </ModalBody>
       </Modal>
-      <SignTxModal />
+      <SwapSubmitModal />
     </Layout>
   )
 }

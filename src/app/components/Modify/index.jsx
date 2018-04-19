@@ -337,7 +337,7 @@ class Modify extends Component {
   }
 
   render () {
-    const { portfolio, toggleOrderModal } = this.props
+    const { portfolio } = this.props
     const { holdings, assetListWalletId, allowance, isAssetListOpen } = this.state
     const adjustedPortfolio = {
       ...portfolio,
@@ -375,7 +375,6 @@ class Modify extends Component {
         allowance={allowance}
         handleFiatChange={this._handleFiatChange}
         handleWeightChange={this._handleWeightChange}
-        handleToggleSignTxModal={toggleOrderModal}
         handleSave={this._handleSave}
         disableSave={disableSave}
       />

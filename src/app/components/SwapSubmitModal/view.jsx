@@ -9,8 +9,8 @@ import SwapStatusCard from 'Components/SwapStatusCard'
 
 const submitButtonText = 'Approve & Sign'
 
-const SignTxForm = reduxForm({
-  form: 'signTxForm'
+const SwapSubmitForm = reduxForm({
+  form: 'swapSubmit'
 })(({ handleSubmit, handleCancel, swaps, isSigning, readyToSign }) => {
   const signingStatuses = swaps.map((swap, i) => {
     console.log('swap', swap)
@@ -56,10 +56,10 @@ const SignTxForm = reduxForm({
   )
 })
 
-const SignTxModal = ({ isOpen, toggle, ...props }) => (
+const SwapSubmitModal = ({ isOpen, toggle, ...props }) => (
   <Modal size='lg' backdrop='static' isOpen={isOpen} toggle={toggle}>
-    {isOpen && (<SignTxForm {...props} />)}
+    {isOpen && (<SwapSubmitForm {...props} />)}
   </Modal>
 )
 
-export default SignTxModal
+export default SwapSubmitModal

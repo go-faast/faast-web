@@ -12,9 +12,9 @@ import { sendSwapDeposits } from 'Actions/swap'
 import { resetSwaps } from 'Actions/swap'
 import { toggleOrderModal } from 'Actions/redux'
 
-import SignTxModalView from './view'
+import SwapSubmitModalView from './view'
 
-class SignTxModal extends Component {
+class SwapSubmitModal extends Component {
   constructor (props) {
     super(props)
     this.state = {
@@ -58,7 +58,7 @@ class SignTxModal extends Component {
   render () {
     const { isSigning } = this.state
     return (
-      <SignTxModalView
+      <SwapSubmitModalView
         isSigning={isSigning}
         onSubmit={this.handleSubmit}
         handleCancel={this.handleCancel}
@@ -79,4 +79,4 @@ const mapDispatchToProps = {
   toggle: toggleOrderModal,
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(SignTxModal)
+export default connect(mapStateToProps, mapDispatchToProps)(SwapSubmitModal)
