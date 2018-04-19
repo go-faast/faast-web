@@ -1,6 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { compose, setDisplayName, setPropTypes, lifecycle } from 'recompose'
+import { compose, setDisplayName, lifecycle } from 'recompose'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { hot } from 'react-hot-loader'
@@ -19,10 +18,6 @@ import AppView from './view'
 
 export default compose(
   setDisplayName('App'),
-  setPropTypes({
-    ready: PropTypes.bool.isRequired,
-    error: PropTypes.string.isRequired,
-  }),
   withRouter,
   connect(createStructuredSelector({
     ready: isAppReady,
