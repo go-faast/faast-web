@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
-import { setSettings } from 'Actions/redux'
 import { getCurrentWallet } from 'Selectors'
+import { setSettings } from 'Actions/redux'
+import { removeWallet } from 'Actions/wallet'
 
 import WelcomeView from './view'
 
@@ -27,11 +28,14 @@ class Welcome extends Component {
   }
 
   render () {
+    const { wallet, settings, removeWallet } = this.props
     const modalProps = {
-      showModal: this.props.wallet.isBlockstack && !this.props.settings.walletBackedUp,
+      address: wallet.address,
+      showModal: wallet.isBlockstack && !settings.walletBackedUp,
       toggleModal: this._toggleModal,
       handleBackup: () => this.setState({ view: 'downloadKeystore' }),
-      handleContinue: this._handleContinue
+      handleClose: () => removeWallet(wallet.id),
+      handleContinue: this._handleContinue,
     }
     return (
       <WelcomeView
@@ -48,7 +52,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = {
-  setSettings
+  setSettings,
+  removeWallet
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Welcome)
