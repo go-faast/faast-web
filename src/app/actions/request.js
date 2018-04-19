@@ -1,4 +1,4 @@
-import { filterErrors, filterObj } from 'Utilities/helpers'
+import { filterErrors } from 'Utilities/helpers'
 import { clearSwap } from 'Utilities/storage'
 import log from 'Utilities/log'
 import Faast from 'Services/Faast'
@@ -16,12 +16,11 @@ export const postExchange = (info) => () =>
       throw new Error(errMsg)
     })
 
-export const getOrderStatus = ({ sendSymbol, receiveSymbol, order }) => () =>
-  Faast.getOrderStatus(sendSymbol, receiveSymbol, order.deposit, order.created)
+export const getOrderStatus = ({ order }) => () =>
+  Faast.getOrderStatus(order.orderId)
     .then((data) => {
       log.info('order status receive', data)
-      // if (data.error || !data.status) throw new Error(data.error)
-      return filterObj(['status', 'transaction', 'outgoingCoin', 'error'], data)
+      return data
     })
     .catch((err) => {
       log.error(err)

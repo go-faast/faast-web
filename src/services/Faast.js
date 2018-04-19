@@ -27,11 +27,7 @@ const getMarketInfo = (pair) => fetchGet(`${apiUrl}/marketinfo/${pair}`)
 
 const postExchange = (info) => fetchPost(`${apiUrl}/shift`, info)
 
-const getOrderStatus = (depositSymbol, receiveSymbol, address, timestamp) => {
-  let url = `${apiUrl}/txStat/${address}`
-  if (timestamp) url += `?after=${timestamp}`
-  return fetchGet(url)
-}
+const getOrderStatus = (swapOrderId) => fetchGet(`${apiUrl}/txStat/${swapOrderId}`)
 
 const getSwundle = (address) => fetchGet(`${apiUrl}/swundle/${address}`)
 
