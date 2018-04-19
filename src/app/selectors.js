@@ -23,9 +23,9 @@ const createItemSelector = (...createSelectorArgs) => createCachedSelector(...cr
 
 // Root selectors
 const getAppState = ({ app }) => app
-const getAssetState = ({ assets }) => assets
+const getAssetState = ({ asset }) => asset
 const getPortfolioState = ({ portfolio }) => portfolio
-const getWalletState = ({ wallets }) => wallets
+const getWalletState = ({ wallet }) => wallet
 const getRouterState = ({ router }) => router
 const getAccountSearchState = ({ accountSearch }) => accountSearch
 const getSwapState = ({ swap }) => swap
