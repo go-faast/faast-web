@@ -8,7 +8,7 @@ import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 
 import { getAllSwapsArray, isCurrentSwundleReadyToSign } from 'Selectors'
-import { sendSwapDeposits } from 'Actions/portfolio'
+import { sendSwapDeposits } from 'Actions/swap'
 import { resetSwaps } from 'Actions/swap'
 import { toggleOrderModal } from 'Actions/redux'
 

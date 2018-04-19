@@ -14,7 +14,7 @@ import { toBigNumber } from 'Utilities/convert'
 import { getCurrentPortfolioWithWalletHoldings, getAllAssets } from 'Selectors'
 import { toggleOrderModal, showOrderModal } from 'Actions/redux'
 import { setSwaps } from 'Actions/swap'
-import { initiateSwaps } from 'Actions/portfolio'
+import { initiateSwaps } from 'Actions/swap'
 
 import ModifyView from './view'
 
