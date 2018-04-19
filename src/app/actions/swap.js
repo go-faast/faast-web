@@ -1,5 +1,5 @@
 import { createAction } from 'redux-act'
-import { isObject, isArray } from 'lodash'
+import { isObject, isArray, isUndefined } from 'lodash'
 
 import { getCurrentWallet } from 'Selectors'
 import { removeSwundle } from 'Actions/request'
@@ -22,6 +22,7 @@ import {
 import walletService from 'Services/Wallet'
 
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
+import { getWalletPassword } from 'Actions/walletPasswordPrompt'
 
 import { getAsset, getAllWalletsArray, getAllSwapsArray } from 'Selectors'
 
@@ -31,9 +32,14 @@ export const swapUpdated = createAction('SWAP_UPDATED', (id, data) => ({ id, ...
 export const swapOrderUpdated = createAction('SWAP_ORDER_UPDATED', (id, data) => ({ id, order: data }))
 
 export const swapTxUpdated = createAction('SWAP_TX_UPDATED', (id, data) => ({ id, tx: data }))
+
 export const swapTxSigningStart = createAction('SWAP_TX_SIGNING_START', (id) => ({ id }))
-export const swapTxSigningSuccess = createAction('SWAP_TX_SIGNING_SUCCESS', (id) => ({ id }))
+export const swapTxSigningSuccess = createAction('SWAP_TX_SIGNING_SUCCESS', (id, updatedTx) => ({ id, tx: updatedTx }))
 export const swapTxSigningFailed = createAction('SWAP_TX_SIGNING_FAILED', (id, errorMessage) => ({ id, signingError: errorMessage }))
+
+export const swapTxSendingStart = createAction('SWAP_TX_SENDING_START', (id) => ({ id }))
+export const swapTxSendingSuccess = createAction('SWAP_TX_SENDING_SUCCESS', (id, updatedTx) => ({ id, tx: updatedTx }))
+export const swapTxSendingFailed = createAction('SWAP_TX_SENDING_FAILED', (id, errorMessage) => ({ id, sendingError: errorMessage }))
 
 const clearAllIntervals = () => {
   Object.keys(window.faast.intervals).forEach((key) => {
@@ -115,7 +121,7 @@ const swapMarketInfo = (swapList) => (dispatch) => {
 
 const swapPostExchange = (swapList) => (dispatch) => {
   log.debug('swapPostExchange', swapList)
-  let previousTx = null
+  const walletPreviousTx = {}
   return processArray(swapList, (swap) => {
     if (swap.error) return swap
     const finish = createSwapFinish(dispatch, 'swapPostExchange', swap)
@@ -138,9 +144,9 @@ const swapPostExchange = (swapList) => (dispatch) => {
     })))
     .catch(finishErrorHandler('error creating swaps'))
     .then((order) =>
-      sendWalletInstance.createTransaction(order.deposit, sendUnits, sendSymbol, { previousTx })
+      sendWalletInstance.createTransaction(order.deposit, sendUnits, sendSymbol, { previousTx: walletPreviousTx[sendWalletId] })
         .then((tx) => {
-          previousTx = tx
+          walletPreviousTx[sendWalletId] = tx
           return finish(null, { order, tx })
         }))
     .catch(finishErrorHandler('error generating swap tx'))
@@ -230,19 +236,57 @@ const createTransferEventListeners = (swap, markSigned) => (dispatch) => {
   }
 }
 
-export const sendSwapDeposits = (swapList, sendOptions) => (dispatch) => {
-  log.debug('sendSwapDeposits', swapList)
+export const signSwapTxs = (swapList) => (dispatch) => {
+  log.debug('signSwapTxs', swapList)
+  const passwordCache = {}
   return processArray(swapList, (swap) => {
-    const eventListeners = dispatch(createTransferEventListeners(swap, true))
-    const walletInstance = walletService.get(swap.sendWalletId)
-    const { id } = swap
+    const { id, tx, sendWalletId } = swap
+    const walletInstance = walletService.get(sendWalletId)
+    if (!walletInstance.isSignTransactionSupported()) {
+      return
+    }
     dispatch(swapTxSigningStart(id))
-    return walletInstance.sendTransaction(swap.tx, { ...eventListeners, ...sendOptions })
+
+    const passwordPromise = (isUndefined(passwordCache[sendWalletId]) && walletInstance.isPasswordProtected())
+      ? dispatch(getWalletPassword(sendWalletId))
+      : Promise.resolve(passwordCache[sendWalletId])
+
+    return passwordPromise
+      .then((password) => {
+        passwordCache[sendWalletId] = password
+        return walletInstance.signTransaction(tx, { password })
+      })
+      .then((signedTx) => dispatch(swapTxSigningSuccess(id, signedTx)))
+      .catch((e) => {
+        log.error(`signSwapTxs error for wallet ${id}`, e)
+        let message = e.message
+        if (message.includes('wrong passphrase')) {
+          message = 'Incorrect password'
+        } else {
+          message = 'Error signing transaction'
+        }
+        dispatch(swapTxSigningFailed(id, message))
+      })
+  })
+}
+
+export const sendSwapTxs = (swapList, sendOptions) => (dispatch) => {
+  log.debug('sendSwapTxs', swapList)
+  return processArray(swapList, (swap) => {
+    const { id, tx, sendWalletId } = swap
+    const eventListeners = dispatch(createTransferEventListeners(swap, true))
+    const walletInstance = walletService.get(sendWalletId)
+    dispatch(swapTxSendingStart(id))
+
+    return walletInstance.sendTransaction(tx, { ...eventListeners, ...sendOptions })
       .then(() => {
-        dispatch(swapTxSigningSuccess(id))
+        dispatch(swapTxSendingSuccess(id))
         return dispatch(pollOrderStatus(swap))
       })
-      .catch((e) => dispatch(swapTxSigningFailed(id, e.message)))
+      .catch((e) => {
+        log.error(`sendSwapTxs error for wallet ${id}`, e)
+        dispatch(swapTxSendingFailed(id, 'Error sending swap transaction'))
+      })
   })
 }
 

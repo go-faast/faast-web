@@ -30,6 +30,10 @@ export default class Wallet {
 
   isReadOnly = () => this._readOnly;
 
+  isPasswordProtected() { return false }
+
+  checkPasswordCorrect() { return true }
+
   /* Default to true, can be overriden by subclass if unsupported */
   isSignTransactionSupported = () => true;
 
@@ -130,6 +134,7 @@ export default class Wallet {
       .then((signedTxData) => log.debugInline('signTransaction', ({
         ...tx,
         signedTxData,
+        signed: true,
       })));
   }
 
@@ -142,6 +147,8 @@ export default class Wallet {
       .then((result) => log.debugInline('sendTransaction', ({
         ...tx,
         ...result,
+        signed: true,
+        sent: true,
       })));
   }
 

@@ -23,6 +23,7 @@ import ListGroupButton from 'Components/ListGroupButton'
 import CoinIcon from 'Components/CoinIcon'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import WalletLabel from 'Components/WalletLabel'
+import WalletPasswordPrompt from 'Components/WalletPasswordPrompt'
 
 import styles from './style'
 
@@ -251,6 +252,7 @@ const ModifyView = (props) => {
         </ModalBody>
       </Modal>
       <SwapSubmitModal />
+      <WalletPasswordPrompt />
     </Layout>
   )
 }

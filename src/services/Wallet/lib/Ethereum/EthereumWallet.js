@@ -92,7 +92,7 @@ export default class EthereumWallet extends Wallet {
 
       const previousTx = options.previousTx
       let customNonce = options.nonce
-      if (!customNonce && previousTx && previousTx.txData.from === txData.from) {
+      if (!customNonce && previousTx && previousTx.txData.from.toLowerCase() == txData.from.toLowerCase()) {
         customNonce = toBigNumber(previousTx.txData.nonce).plus(1).toNumber()
       }
       const customGasPrice = options.gasPrice

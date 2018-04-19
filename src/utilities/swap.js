@@ -2,11 +2,11 @@ import { isString, isObject } from 'lodash'
 
 import { toUnit, toPrecision } from 'Utilities/convert'
 
-const createStatus = (code, label) => (detailsCode, details) => ({ code, label, detailsCode, details })
+const createStatus = (code, label, labelClassName) => (detailsCode, details) => ({ code, label, labelClassName, detailsCode, details })
 
-const statusPending = createStatus('pending', 'In progress')
-const statusFailed = createStatus('failed', 'Failed')
-const statusComplete = createStatus('complete', 'Complete')
+const statusPending = createStatus('pending', 'Processing', 'text-primary')
+const statusFailed = createStatus('failed', 'Failed', 'text-warning')
+const statusComplete = createStatus('complete', 'Complete', 'text-success')
 
 export const getSwapStatus = (swap) => {
   const { error, rate, order, tx } = swap
@@ -37,14 +37,26 @@ export const getSwapStatus = (swap) => {
   if (tx == null) {
     return statusPending('creating_tx', 'generating transaction')
   }
-  if (!tx.id) {
-    if (!tx.signedTxData) {
-      return statusPending('unsigned', 'waiting for transaction to be signed')
-    }
-    return statusPending('unsent', 'sending signed transaction')
-  }
   if (!tx.receipt) {
-    return statusPending('pending_receipt', 'waiting for transaction receipt')
+    if (tx.sendingError) {
+      return statusFailed('send_tx_error', tx.sendingError)
+    }
+    if (tx.sending) {
+      return statusPending('sending', 'sending transaction')
+    }
+    if (tx.sent) {
+      return statusPending('pending_receipt', 'waiting for transaction receipt')
+    }
+    if (tx.signingError) {
+      return statusFailed('sign_tx_error', tx.signingError)
+    }
+    if (tx.signing) {
+      return statusPending('signing', 'awaiting signature')
+    }
+    if (tx.signed) {
+      return statusPending('signed', 'signed')
+    }
+    return statusPending('unsigned', 'unsigned')
   }
   return statusPending('processing', 'processing swap')
 }

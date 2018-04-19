@@ -8,7 +8,7 @@ import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 
 import { getAllSwapsArray, isCurrentSwundleReadyToSign } from 'Selectors'
-import { sendSwapDeposits } from 'Actions/swap'
+import { signSwapTxs, sendSwapTxs } from 'Actions/swap'
 import { resetSwaps } from 'Actions/swap'
 import { toggleOrderModal } from 'Actions/redux'
 
@@ -18,49 +18,59 @@ class SwapSubmitModal extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      isSigning: false
+      startedSigning: false
     }
-    this.handleDone = this.handleDone.bind(this)
     this.handleCancel = this.handleCancel.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-  }
-
-  handleDone (success = false) {
-    const { toggle, resetSwaps } = this.props
-    closeTrezorWindow()
-    this.setState({ isSigning: false })
-    toggle()
-    if (!success) {
-      resetSwaps()
-    }
+    this.handleSignTxs = this.handleSignTxs.bind(this)
+    this.handleSendTxs = this.handleSendTxs.bind(this)
   }
 
   handleCancel () {
-    this.handleDone(false)
+    const { toggle, resetSwaps } = this.props
+    closeTrezorWindow()
+    toggle()
+    resetSwaps()
   }
 
-  handleSubmit (values, dispatch) {
-    this.setState({ isSigning: true })
+  handleSignTxs () {
+    const { swaps, signSwapTxs } = this.props
+    this.setState({ startedSigning: true })
+    signSwapTxs(swaps)
+      .catch((e) => {
+        toastr.error(e.message || e)
+        log.error(e)
+        closeTrezorWindow()
+      })
+  }
 
-    const { swaps } = this.props
-    return dispatch(sendSwapDeposits(swaps))
-      .then(() => {
-        this.handleDone(true)
-        dispatch(push('/dashboard'))
+  handleSendTxs () {
+    const { swaps, sendSwapTxs, toggle, routerPush } = this.props
+    sendSwapTxs(swaps)
+      .then((updatedSwaps) => {
+        if (updatedSwaps.every((swap) => swap.tx.sent)) {
+          toggle()
+          routerPush('/dashboard')
+        }
       })
       .catch((e) => {
         toastr.error(e.message || e)
         log.error(e)
-        this.handleDone(false)
       })
   }
 
   render () {
-    const { isSigning } = this.state
+    const { swaps } = this.props
+    const { startedSigning } = this.state
+    const disableStartSigning = swaps.some((swap) => swap.status.detailsCode !== 'unsigned')
+    const disableStartSending = swaps.some((swap) => swap.status.detailsCode !== 'signed')
+    const continueDisabled = startedSigning ? disableStartSending : disableStartSigning
+    const continueHandler = startedSigning ? this.handleSendTxs : this.handleSignTxs
+    const continueText = startedSigning ? 'Submit all' : 'Begin signing'
     return (
       <SwapSubmitModalView
-        isSigning={isSigning}
-        onSubmit={this.handleSubmit}
+        continueDisabled={continueDisabled}
+        continueText={continueText}
+        handleContinue={continueHandler}
         handleCancel={this.handleCancel}
         {...this.props}
       />
@@ -77,6 +87,9 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = {
   resetSwaps,
   toggle: toggleOrderModal,
+  signSwapTxs,
+  sendSwapTxs,
+  routerPush: push,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SwapSubmitModal)

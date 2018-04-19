@@ -10,6 +10,7 @@ import portfolio from './portfolio'
 import wallet from './wallet'
 import app from './app'
 import accountSearch from './accountSearch'
+import walletPasswordPrompt from './walletPasswordPrompt'
 
 export default combineReducers({
   app,
@@ -20,6 +21,7 @@ export default combineReducers({
   swap,
   orderModal,
   settings,
+  walletPasswordPrompt,
   form: formReducer,
   toastr: toastrReducer,
   router: routerReducer

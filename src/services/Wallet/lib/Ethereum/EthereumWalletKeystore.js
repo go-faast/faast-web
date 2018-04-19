@@ -1,6 +1,6 @@
 import EthereumjsWallet from 'ethereumjs-wallet'
 import EthereumjsTx from 'ethereumjs-tx'
-import { isString, isObject } from 'lodash'
+import { isString, isObject, isUndefined } from 'lodash'
 
 import config from 'Config'
 import { stripHexPrefix, parseJson } from 'Utilities/helpers'
@@ -70,6 +70,20 @@ export default class EthereumWalletKeystore extends EthereumWallet {
 
   isPersistAllowed = () => this._isEncrypted && this._persistAllowed;
 
+  isPasswordProtected() { return this._isEncrypted }
+
+  checkPasswordCorrect(password) {
+    if (!isString(password)) {
+      return false
+    }
+    try {
+      this.decrypt(password)
+      return true
+    } catch(e) {
+      return false
+    }
+  }
+
   encrypt = (password = '') => {
     if (this._isEncrypted) {
       return this
@@ -81,11 +95,11 @@ export default class EthereumWalletKeystore extends EthereumWallet {
     if (!this._isEncrypted) {
       return this
     }
-    if (typeof password === 'undefined' || password === null) {
+    if (isUndefined(password)) {
       password = window.prompt(`Enter password for Ethereum account ${this.getId()}`)
     }
-    if (typeof password !== 'string') {
-      throw new Error('Password is required')
+    if (!isString(password)) {
+      throw new Error(`Invalid password of type ${typeof password}`)
     }
     return new EthereumWalletKeystore(EthereumjsWallet.fromV3(this.keystore, password, true))
   };

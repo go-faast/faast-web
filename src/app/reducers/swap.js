@@ -7,7 +7,8 @@ import { ZERO } from 'Utilities/convert'
 import { resetAll } from 'Actions/redux'
 import {
   resetSwaps, setSwaps, swapUpdated, swapTxUpdated, swapOrderUpdated,
-  swapTxSigningStart, swapTxSigningSuccess, swapTxSigningFailed
+  swapTxSigningStart, swapTxSigningSuccess, swapTxSigningFailed,
+  swapTxSendingStart, swapTxSendingSuccess, swapTxSendingFailed,
 } from 'Actions/swap'
 
 const initialState = {}
@@ -46,6 +47,9 @@ export default createReducer({
   [swapTxUpdated]: updateSwapFields,
   [swapOrderUpdated]: updateSwapFields,
   [swapTxSigningStart]: (state, { id }) => updateSwapFields(state, { id, tx: { signing: true } }),
-  [swapTxSigningSuccess]: (state, { id }) => updateSwapFields(state, { id, tx: { signing: false } }),
+  [swapTxSigningSuccess]: (state, { id, tx }) => updateSwapFields(state, { id, tx: { ...tx, signing: false } }),
   [swapTxSigningFailed]: (state, { id, signingError }) => updateSwapFields(state, { id, tx: { signing: false, signingError } }),
+  [swapTxSendingStart]: (state, { id }) => updateSwapFields(state, { id, tx: { sending: true } }),
+  [swapTxSendingSuccess]: (state, { id, tx }) => updateSwapFields(state, { id, tx: { ...tx, sending: false } }),
+  [swapTxSendingFailed]: (state, { id, sendingError }) => updateSwapFields(state, { id, tx: { sending: false, sendingError } }),
 }, initialState)

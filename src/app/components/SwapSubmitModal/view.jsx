@@ -1,26 +1,21 @@
 import React from 'react'
-import { reduxForm } from 'redux-form'
 import {
-  Row, Col, Button, Form,
+  Row, Col, Button,
   Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap'
 
 import SwapStatusCard from 'Components/SwapStatusCard'
 
-const submitButtonText = 'Approve & Sign'
-
-const SwapSubmitForm = reduxForm({
-  form: 'swapSubmit'
-})(({ handleSubmit, handleCancel, swaps, isSigning, readyToSign }) => {
+const SwapSubmitModal = ({ isOpen, swaps, continueText, continueDisabled, handleContinue, handleCancel }) => {
   const signingStatuses = swaps.map((swap, i) => {
     console.log('swap', swap)
     let status
-    if (swap.error || (swap.tx && swap.tx.signingError)) {
-      status = (<span className='text-danger'>declined</span>)
-    } else if (swap.tx && swap.tx.signed) {
-      status = (<span className='text-success'>approved</span>)
-    } else if (isSigning && swap.tx && swap.tx.signing) {
-      status = (<span className='text-warning blink'>awaiting signature</span>)
+    if (swap.status.detailsCode === 'signed') {
+      status = (<span className='text-success'>Signed</span>)
+    } else if (swap.status.detailsCode === 'signing') {
+      status = (<span className='text-warning blink'>Awaiting signature</span>)
+    } else if (swap.tx.sent) {
+      status = (<span className={swap.status.labelClassName}>{swap.status.label}</span>)
     }
     return (
       <Col xs='12' key={i}>
@@ -29,13 +24,13 @@ const SwapSubmitForm = reduxForm({
     )
   })
   return (
-    <Form onSubmit={handleSubmit}>
-      <ModalHeader className='text-primary'>
+    <Modal size='lg' backdrop='static' isOpen={isOpen} toggle={handleCancel}>
+      <ModalHeader className='text-primary' toggle={handleCancel}>
         Review and Sign
       </ModalHeader>
       <ModalBody className='modal-text'>
         <p>
-          The following swaps will take place to save the changes you made to your wallet. Please review them and click {`"${submitButtonText}"`} to proceed.
+          The following swaps will take place to save the changes you made to your wallet. Please review them and click {`"${continueText}"`} to proceed.
         </p>
         <div className='my-3'>
           <Row className='gutter-2'>
@@ -47,19 +42,11 @@ const SwapSubmitForm = reduxForm({
         </small></p>
       </ModalBody>
       <ModalFooter className='justify-content-between'>
-        <Button type='button' color='primary' outline onClick={handleCancel}>cancel</Button>
-        <Button type='submit' color='primary' disabled={!readyToSign || isSigning}>
-          {submitButtonText}
-        </Button>
+        <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
+        <Button type='submit' color='primary' disabled={continueDisabled} onClick={handleContinue}>{continueText}</Button>
       </ModalFooter>
-    </Form>
+    </Modal>
   )
-})
-
-const SwapSubmitModal = ({ isOpen, toggle, ...props }) => (
-  <Modal size='lg' backdrop='static' isOpen={isOpen} toggle={toggle}>
-    {isOpen && (<SwapSubmitForm {...props} />)}
-  </Modal>
-)
+}
 
 export default SwapSubmitModal
