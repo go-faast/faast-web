@@ -10,7 +10,8 @@ import { getDefaultPortfolio } from 'Selectors'
 import { retrieveAssets } from './asset'
 import { setSettings } from './redux'
 import { setSwaps } from './swap'
-import { restoreAllPortfolios, updateAllHoldings, restoreSwapPolling } from './portfolio'
+import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
+import { restoreSwapPolling } from './swap'
 
 export const appReady = createAction('APP_READY')
 export const appError = createAction('APP_ERROR')
