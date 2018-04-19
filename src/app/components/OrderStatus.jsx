@@ -50,11 +50,15 @@ export default compose(
   }),
   withToggle('modalOpen'),
   withHandlers({
-    handleForget: ({ forgetCurrentOrder }) => () => {
-      toastr.confirm(null, {
-        component: ForgetOrderPrompt,
-        onOk: forgetCurrentOrder
-      })
+    handleForget: ({ status, forgetCurrentOrder }) => () => {
+      if (status === 'pending') {
+        toastr.confirm(null, {
+          component: ForgetOrderPrompt,
+          onOk: forgetCurrentOrder
+        })
+      } else {
+        forgetCurrentOrder()
+      }
     },
   }),
   withProps(({ status }) => statusRenderData[status])
