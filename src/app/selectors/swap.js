@@ -10,10 +10,13 @@ import { getAllWallets } from './wallet'
 export const getSwapState = ({ swap }) => swap
 
 const createSwapExtender = (allAssets, allWallets) => (swap) => {
-  const { sendWalletId, sendSymbol, receiveSymbol, fee, tx } = swap
-  const { receipt } = (tx || {})
+  const { sendWalletId, sendSymbol, receiveSymbol, fee } = swap
+  const tx = swap.tx || {}
+  const { receipt, feeSymbol: txFeeSymbol, feeAmount: txFeeAmount } = tx
   const sendAsset = allAssets[sendSymbol]
   const receiveAsset = allAssets[receiveSymbol]
+  const txFeeAsset = allAssets[txFeeSymbol]
+  const txFeeFiat = txFeeAsset && txFeeAmount ? txFeeAsset.price.times(txFeeAmount) : undefined
   return {
     ...swap,
     sendAsset,
@@ -26,7 +29,9 @@ const createSwapExtender = (allAssets, allWallets) => (swap) => {
       ...tx,
       signingSupported: (allWallets[sendWalletId] || {}).isSignTxSupported,
       confirmed: Boolean(receipt),
-      succeeded: receipt && (receipt.status === true || receipt.status === '0x1')
+      succeeded: receipt && (receipt.status === true || receipt.status === '0x1'),
+      feeAsset: txFeeAsset,
+      feeFiat: txFeeFiat,
     }
   }
 }

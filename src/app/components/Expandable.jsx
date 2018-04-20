@@ -16,12 +16,12 @@ class Expandable extends Component {
     const id = propId || this.state.id
     return (
       <Tag {...props}>
-        <span id={id}>{shrunk}</span>
-        {shrunk !== expanded && (
-          <UncontrolledTooltip target={id} autohide={false}>
+        {shrunk !== expanded ? ([
+          <span key='shrunk' id={id}>{shrunk}</span>,
+          <UncontrolledTooltip key='expanded' target={id} autohide={false}>
             {expanded}
           </UncontrolledTooltip>
-        )}
+        ]) : shrunk}
       </Tag>
     )
   }

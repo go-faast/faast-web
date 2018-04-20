@@ -4,12 +4,12 @@ import BigNumber from 'bignumber.js'
 import { omit } from 'lodash'
 
 import { toBigNumber } from 'Utilities/convert'
-import { numberish } from 'Utilities/propTypes'
+import { tag as tagPropType, numberish } from 'Utilities/propTypes'
 import Expandable from 'Components/Expandable'
 
 class Units extends React.Component {
   render() {
-    const { value: propValue, symbol, showSymbol, precision, maxDigits, prefix, ...props } = this.props
+    const { tag: Tag, value: propValue, symbol, showSymbol, precision, maxDigits, prefix, suffix, ...props } = this.props
     const value = toBigNumber(propValue)
     let expanded = value.toFormat()
     let shrunk = expanded
@@ -26,30 +26,35 @@ class Units extends React.Component {
         shrunk = `${shrunk} ${symbol}`
       }
     }
-    if (prefix) {
-      shrunk = prefix + shrunk
+    const expandable = (<Expandable tag={Tag} shrunk={shrunk} expanded={expanded} {...props}/>)
+    if (prefix || suffix) {
+      return (<Tag>{prefix}{expandable}{suffix}</Tag>)
     }
-    return (<Expandable shrunk={shrunk} expanded={expanded} {...props}/>)
+    return expandable
   }
 }
 
 Units.propTypes = {
-  ...omit(Expandable.propTypes, 'shrunk', 'expanded'),
+  ...omit(Expandable.propTypes, 'tag', 'shrunk', 'expanded'),
+  tag: tagPropType,
   value: numberish.isRequired,
   symbol: PropTypes.string,
   showSymbol: PropTypes.bool,
   precision: PropTypes.number,
   maxDigits: PropTypes.number,
-  prefix: PropTypes.string,
+  prefix: PropTypes.node,
+  suffix: PropTypes.node,
 }
 
 Units.defaultProps = {
   ...Expandable.defaultProps,
+  tag: 'span',
   symbol: '',
   showSymbol: true,
   precision: 4,
   maxDigits: 10,
   prefix: '',
+  suffix: '',
 }
 
 export default Units

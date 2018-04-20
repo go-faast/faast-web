@@ -11,3 +11,4 @@ export const getAssetPricesError = createSelector(getAssetState, ({ loadingError
 export const getAllAssets = createSelector(getAssetState, ({ data }) => data)
 export const getAllAssetsArray = createSelector(getAllAssets, Object.values)
 export const getAsset = createItemSelector(getAllAssets, selectItemId, (allAssets, id) => allAssets[id])
+export const getAssetPrice = createItemSelector(getAsset, (asset) => asset ? asset.price : null)

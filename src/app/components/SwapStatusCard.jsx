@@ -104,7 +104,9 @@ export default compose(
             </tr>
             <tr>
               <td><b>Network fee:</b></td>
-              <td colSpan='2' className='px-2'><UnitsLoading value={txFee} symbol={txFeeSymbol} error={error} precision={null} /></td>
+              <td colSpan='2' className='px-2'>
+                <UnitsLoading value={txFee} symbol={txFeeSymbol} error={error} precision={null} showFiat/>
+              </td>
             </tr>
             {hasSwapFee && (
               <tr>
