@@ -1,3 +1,5 @@
+import { isString, isObject, omitBy, isFunction } from 'lodash'
+
 import idb from './idb'
 import { dateNowString } from './helpers'
 import config from 'Config'
@@ -16,7 +18,13 @@ const log = (level) => (text, ...data) => {
   const appLogLevel = window.faast.log_level || config.logLevel
   if (logLevels[level] >= logLevels[appLogLevel]) {
     console[level](text, ...data)
-    if (text instanceof Error) text = text.message
+    if (text instanceof Error) {
+      text = text.toString()
+    }
+    if (!isString(text)) {
+      data = [text, ...data]
+      text = ''
+    }
     const now = dateNowString()
     const payload = {
       level,
@@ -24,7 +32,15 @@ const log = (level) => (text, ...data) => {
       message: text
     }
     if (data && data.length > 0) {
-      data = data.map((item) => item instanceof Error ? item.toString() : item)
+      data = data.map((item) => {
+        if (item instanceof Error) {
+          return item.toString()
+        }
+        if (isObject(item)) {
+          return omitBy(item, isFunction)
+        }
+        return item
+      })
       if (data.length === 1) {
         data = data[0]
       }
