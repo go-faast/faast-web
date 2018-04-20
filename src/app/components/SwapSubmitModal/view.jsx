@@ -5,9 +5,8 @@ import {
 } from 'reactstrap'
 
 import SwapStatusCard from 'Components/SwapStatusCard'
-import WalletLabel from 'Components/WalletLabel'
 
-const SwapSubmitModal = ({ isOpen, swaps, headerText, continueText, continueDisabled, handleContinue, handleCancel, swundleWalletId }) => {
+const SwapSubmitModal = ({ isOpen, swaps, headerText, continueText, continueDisabled, handleContinue, handleCancel }) => {
   const signingStatuses = swaps.map((swap, i) => {
     const { tx, status: { detailsCode, labelClass, label } } = swap
     let statusText
@@ -24,7 +23,7 @@ const SwapSubmitModal = ({ isOpen, swaps, headerText, continueText, continueDisa
     }
     return (
       <Col xs='12' key={i}>
-        <SwapStatusCard swap={swap} statusText={statusText} showWalletLabels={!swundleWalletId}/>
+        <SwapStatusCard swap={swap} statusText={statusText}/>
       </Col>
     )
   })
@@ -37,18 +36,15 @@ const SwapSubmitModal = ({ isOpen, swaps, headerText, continueText, continueDisa
         <p>
           The following swaps will take place to save the changes you made to your wallet. Please review them and click {`"${continueText}"`} to proceed.
         </p>
-        {swundleWalletId && (
-          <div className='mx-auto text-center'>
-            <WalletLabel.Connected id={swundleWalletId}/>
-          </div>
-        )}
         <div className='my-3'>
           <Row className='gutter-2'>
             {signingStatuses}
           </Row>
         </div>
         <p><small className='text-muted'>
-          * The receive amount is an estimate based on the current Faast market rate and swap fee. Actual amount may vary. Additional transaction fees may apply depending on your wallet and input asset.
+          {'* The receive amount is an estimate based on the current Faast market rate. '
+          + 'Actual amount may vary. Additional transaction fees may apply depending on '
+          + 'the asset being sent and the wallet you\'re using.'}
         </small></p>
       </ModalBody>
       <ModalFooter className='justify-content-between'>

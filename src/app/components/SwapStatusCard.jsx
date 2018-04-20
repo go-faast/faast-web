@@ -36,7 +36,7 @@ export default compose(
   swap: {
     sendWalletId, sendSymbol, sendAsset, sendUnits,
     receiveWalletId, receiveSymbol, receiveAsset, receiveUnits,
-    error, friendlyError, rate, fee: swapFee,
+    error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee,
     order: { orderId },
     tx: { id: txId, feeAmount: txFee, feeAsset: txFeeSymbol, confirmed, succeeded },
     status: { details },
@@ -112,10 +112,12 @@ export default compose(
               <td><b>Network fee:</b></td>
               <td colSpan='2' className='px-2'><UnitsLoading value={txFee} symbol={txFeeSymbol} error={error} precision={null} /></td>
             </tr>
-            <tr>
-              <td><b>Swap fee:</b></td>
-              <td colSpan='2' className='px-2'><UnitsLoading value={swapFee} symbol={receiveSymbol} error={error} precision={null}/></td>
-            </tr>
+            {hasSwapFee && (
+              <tr>
+                <td><b>Swap fee:</b></td>
+                <td colSpan='2' className='px-2'><UnitsLoading value={swapFee} symbol={receiveSymbol} error={error} precision={null}/></td>
+              </tr>
+            )}
             {txId && (
               <tr>
                 <td><b>Sent txn:</b></td>

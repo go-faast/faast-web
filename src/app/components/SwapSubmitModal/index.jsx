@@ -8,9 +8,8 @@ import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 
 import {
-  getAllSwapsArray, getCurrentSwundleWalletId,
+  getAllSwapsArray, doesCurrentSwundleRequireSigning,
   isCurrentSwundleReadyToSign, isCurrentSwundleReadyToSend,
-  doesCurrentSwundleRequireSigning
 } from 'Selectors'
 import { signSwapTxs, sendSwapTxs } from 'Actions/swap'
 import { resetSwaps } from 'Actions/swap'
@@ -91,8 +90,7 @@ const mapStateToProps = createStructuredSelector({
   requiresSigning: doesCurrentSwundleRequireSigning,
   readyToSign: isCurrentSwundleReadyToSign,
   readyToSend: isCurrentSwundleReadyToSend,
-  isOpen: ({ orderModal: { show } }) => show,
-  swundleWalletId: getCurrentSwundleWalletId,
+  isOpen: ({ orderModal: { show } }) => show
 })
 
 const mapDispatchToProps = {

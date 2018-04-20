@@ -2,30 +2,33 @@ import { createSelector } from 'reselect'
 import { mapValues } from 'Utilities/helpers'
 import { getSwapStatus, getSwapFriendlyError, estimateReceiveAmount, statusAllSwaps } from 'Utilities/swap'
 import { createItemSelector, selectItemId } from 'Utilities/selector'
+import { toBigNumber } from 'Utilities/convert'
 
 import { getAllAssets } from './asset'
 import { getAllWallets } from './wallet'
-import log from 'Utilities/log'
+
 const getSwapState = ({ swap }) => swap
 
 const createSwapExtender = (allAssets, allWallets) => (swap) => {
-  const { sendWalletId, sendSymbol, receiveSymbol } = swap
+  const { sendWalletId, sendSymbol, receiveSymbol, fee, tx } = swap
+  const { receipt } = (tx || {})
   const sendAsset = allAssets[sendSymbol]
   const receiveAsset = allAssets[receiveSymbol]
-  return log.debugInline(swap.id, {
+  return {
     ...swap,
     sendAsset,
     receiveAsset,
     receiveUnits: estimateReceiveAmount(swap, receiveAsset),
     status: getSwapStatus(swap),
     friendlyError: getSwapFriendlyError(swap),
+    hasFee: fee && toBigNumber(fee).gt(0),
     tx: {
-      ...swap.tx,
+      ...tx,
       signingSupported: (allWallets[sendWalletId] || {}).isSignTxSupported,
-      confirmed: swap.tx.receipt,
-      succeeded: swap.tx.receipt && (swap.tx.receipt.status === true || swap.tx.receipt.status === '0x1')
+      confirmed: receipt,
+      succeeded: receipt && (receipt.status === true || receipt.status === '0x1')
     }
-  })
+  }
 }
 
 export const getAllSwaps = createSelector(
