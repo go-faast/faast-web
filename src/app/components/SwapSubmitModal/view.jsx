@@ -6,7 +6,7 @@ import {
 
 import SwapStatusCard from 'Components/SwapStatusCard'
 
-const SwapSubmitModal = ({ isOpen, swaps, headerText, continueText, continueDisabled, handleContinue, handleCancel }) => {
+const SwapSubmitModal = ({ isOpen, swaps, headerText, continueText, continueDisabled, continueLoading, handleContinue, handleCancel }) => {
   const signingStatuses = swaps.map((swap, i) => {
     const { tx, status: { detailsCode, labelClass, label } } = swap
     let statusText
@@ -49,7 +49,10 @@ const SwapSubmitModal = ({ isOpen, swaps, headerText, continueText, continueDisa
       </ModalBody>
       <ModalFooter className='justify-content-between'>
         <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
-        <Button type='submit' color='primary' disabled={continueDisabled} onClick={handleContinue}>{continueText}</Button>
+        <Button type='submit' color='primary' disabled={continueDisabled} onClick={handleContinue}>
+          {continueText}
+          {continueLoading && (<i className='fa fa-spinner fa-pulse ml-2'/>)}
+        </Button>
       </ModalFooter>
     </Modal>
   )

@@ -21,7 +21,8 @@ class SwapSubmitModal extends Component {
   constructor (props) {
     super(props)
     this.state = {
-      startedSigning: false
+      startedSigning: false,
+      startedSending: false,
     }
     this.handleCancel = this.handleCancel.bind(this)
     this.handleSignTxs = this.handleSignTxs.bind(this)
@@ -51,6 +52,7 @@ class SwapSubmitModal extends Component {
 
   handleSendTxs () {
     const { swaps, sendSwapTxs, toggle, routerPush } = this.props
+    this.setState({ startedSending: true })
     sendSwapTxs(swaps)
       .then((updatedSwaps) => {
         if (updatedSwaps.every((swap) => swap.tx.sent)) {
@@ -66,9 +68,11 @@ class SwapSubmitModal extends Component {
 
   render () {
     const { requiresSigning, readyToSign, readyToSend } = this.props
-    const { startedSigning } = this.state
-    const showSubmit = !requiresSigning || startedSigning
-    const continueDisabled = showSubmit ? !readyToSend : !readyToSign
+    const { startedSigning, startedSending } = this.state
+    log.debug({ ...this.props, ...this.state })
+    const showSubmit = !requiresSigning || startedSigning // True if continue button triggers tx sending, false for signing
+    const continueDisabled = showSubmit ? (!readyToSend || startedSending) : (!readyToSign || startedSigning)
+    const continueLoading = showSubmit ? startedSending : startedSigning
     const continueHandler = showSubmit ? this.handleSendTxs : this.handleSignTxs
     const continueText = showSubmit ? 'Submit all' : 'Begin signing'
     const headerText = showSubmit ? 'Confirm and Submit' : 'Review and Sign'
@@ -76,6 +80,7 @@ class SwapSubmitModal extends Component {
       <SwapSubmitModalView
         headerText={headerText}
         continueDisabled={continueDisabled}
+        continueLoading={continueLoading}
         continueText={continueText}
         handleContinue={continueHandler}
         handleCancel={this.handleCancel}

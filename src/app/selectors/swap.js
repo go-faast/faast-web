@@ -46,10 +46,10 @@ export const doesCurrentSwundleRequireSigning = createSelector(getCurrentSwundle
   (swaps) => swaps.some(({ tx }) => tx && tx.signingSupported && !tx.signed))
 
 export const isCurrentSwundleReadyToSign = createSelector(getCurrentSwundle,
-  (swaps) => swaps.every(({ tx }) => tx))
+  (swaps) => swaps.every(({ status }) => ['sign_tx_error', 'signing_unsupported', 'unsigned'].includes(status.detailsCode)))
 
 export const isCurrentSwundleReadyToSend = createSelector(getCurrentSwundle,
-  (swaps) => swaps.every(({ tx }) => tx && (!tx.signingSupported || tx.signed)))
+  (swaps) => swaps.every(({ status }) => ['send_tx_error', 'signing_unsupported', 'signed'].includes(status.detailsCode)))
 
 /** Returns an Array of all walletIds used by swaps in the current swundle */
 export const getCurrentSwundleWalletIds = createSelector(getCurrentSwundle, (swaps) => 
