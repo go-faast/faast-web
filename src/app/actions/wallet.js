@@ -17,6 +17,7 @@ const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   iconProps: getWalletIconProps(wallet),
   isBlockstack: wallet.getType() === BlockstackWallet.type,
   isReadOnly: wallet.isReadOnly(),
+  isSignTxSupported: wallet.isSignTransactionSupported(),
   supportedAssets: wallet.getSupportedAssetSymbols(),
   nestedWalletIds: wallet.getType() === MultiWallet.type ? wallet.wallets.map((w) => w.getId()) : [],
 }) : wallet

@@ -7,7 +7,11 @@ import { closeTrezorWindow } from 'Utilities/wallet'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 
-import { getAllSwapsArray, isCurrentSwundleReadyToSign } from 'Selectors'
+import {
+  getAllSwapsArray, getCurrentSwundleWalletId,
+  isCurrentSwundleReadyToSign, isCurrentSwundleReadyToSend,
+  doesCurrentSwundleRequireSigning
+} from 'Selectors'
 import { signSwapTxs, sendSwapTxs } from 'Actions/swap'
 import { resetSwaps } from 'Actions/swap'
 import { toggleOrderModal } from 'Actions/redux'
@@ -27,6 +31,9 @@ class SwapSubmitModal extends Component {
 
   handleCancel () {
     const { toggle, resetSwaps } = this.props
+    this.setState({
+      startedSigning: false
+    })
     closeTrezorWindow()
     toggle()
     resetSwaps()
@@ -59,15 +66,16 @@ class SwapSubmitModal extends Component {
   }
 
   render () {
-    const { swaps } = this.props
+    const { requiresSigning, readyToSign, readyToSend } = this.props
     const { startedSigning } = this.state
-    const disableStartSigning = swaps.some((swap) => swap.status.detailsCode !== 'unsigned')
-    const disableStartSending = swaps.some((swap) => swap.status.detailsCode !== 'signed')
-    const continueDisabled = startedSigning ? disableStartSending : disableStartSigning
-    const continueHandler = startedSigning ? this.handleSendTxs : this.handleSignTxs
-    const continueText = startedSigning ? 'Submit all' : 'Begin signing'
+    const showSubmit = !requiresSigning || startedSigning
+    const continueDisabled = showSubmit ? !readyToSend : !readyToSign
+    const continueHandler = showSubmit ? this.handleSendTxs : this.handleSignTxs
+    const continueText = showSubmit ? 'Submit all' : 'Begin signing'
+    const headerText = showSubmit ? 'Confirm and Submit' : 'Review and Sign'
     return (
       <SwapSubmitModalView
+        headerText={headerText}
         continueDisabled={continueDisabled}
         continueText={continueText}
         handleContinue={continueHandler}
@@ -80,8 +88,11 @@ class SwapSubmitModal extends Component {
 
 const mapStateToProps = createStructuredSelector({
   swaps: getAllSwapsArray,
+  requiresSigning: doesCurrentSwundleRequireSigning,
   readyToSign: isCurrentSwundleReadyToSign,
+  readyToSend: isCurrentSwundleReadyToSend,
   isOpen: ({ orderModal: { show } }) => show,
+  swundleWalletId: getCurrentSwundleWalletId,
 })
 
 const mapDispatchToProps = {

@@ -4,11 +4,12 @@ import { getSwapStatus, getSwapFriendlyError, estimateReceiveAmount, statusAllSw
 import { createItemSelector, selectItemId } from 'Utilities/selector'
 
 import { getAllAssets } from './asset'
+import { getAllWallets } from './wallet'
 
 const getSwapState = ({ swap }) => swap
 
-const createSwapExtender = (allAssets) => (swap) => {
-  const { sendSymbol, receiveSymbol } = swap
+const createSwapExtender = (allAssets, allWallets) => (swap) => {
+  const { sendWalletId, sendSymbol, receiveSymbol } = swap
   const sendAsset = allAssets[sendSymbol]
   const receiveAsset = allAssets[receiveSymbol]
   return {
@@ -18,24 +19,32 @@ const createSwapExtender = (allAssets) => (swap) => {
     receiveUnits: estimateReceiveAmount(swap, receiveAsset),
     status: getSwapStatus(swap),
     friendlyError: getSwapFriendlyError(swap),
+    tx: {
+      ...swap.tx,
+      signingSupported: (allWallets[sendWalletId] || {}).isSignTxSupported
+    }
   }
 }
 
 export const getAllSwaps = createSelector(
   getSwapState,
   getAllAssets,
-  (allSwaps, allAssets) => mapValues(allSwaps, createSwapExtender(allAssets)))
+  getAllWallets,
+  (allSwaps, allAssets, allWallets) => mapValues(allSwaps, createSwapExtender(allAssets, allWallets)))
 export const getAllSwapsArray = createSelector(getAllSwaps, Object.values)
 export const getSwap = createItemSelector(getAllSwaps, selectItemId, (allSwaps, id) => allSwaps[id])
 
 export const getCurrentSwundle = getAllSwapsArray
 export const getCurrentSwundleStatus = createSelector(getCurrentSwundle, statusAllSwaps)
 
-export const isCurrentSwundleReadyToSign = createSelector(getCurrentSwundle, (swaps) => {
-  const hasError = swaps.some((swap) => swap.errors && swap.errors.length)
-  const statusDetails = swaps.map(({ status: { details } }) => details)
-  return !hasError && statusDetails.every(s => s === 'waiting for transaction to be signed')
-})
+export const doesCurrentSwundleRequireSigning = createSelector(getCurrentSwundle,
+  (swaps) => swaps.some(({ tx }) => tx && tx.signingSupported && !tx.signed))
+
+export const isCurrentSwundleReadyToSign = createSelector(getCurrentSwundle,
+  (swaps) => swaps.every(({ tx }) => tx))
+
+export const isCurrentSwundleReadyToSend = createSelector(getCurrentSwundle,
+  (swaps) => swaps.every(({ tx }) => tx && (!tx.signingSupported || tx.signed)))
 
 /** Returns an Array of all walletIds used by swaps in the current swundle */
 export const getCurrentSwundleWalletIds = createSelector(getCurrentSwundle, (swaps) => 

@@ -11,7 +11,7 @@ import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
 import { toBigNumber } from 'Utilities/convert'
 
-import { getCurrentPortfolioWithWalletHoldings, getAllAssets } from 'Selectors'
+import { getCurrentPortfolioWithWalletHoldings, getAllAssets, getAllSwapsArray } from 'Selectors'
 import { toggleOrderModal, showOrderModal } from 'Actions/redux'
 import { setSwaps } from 'Actions/swap'
 import { initiateSwaps } from 'Actions/swap'
@@ -90,6 +90,12 @@ class Modify extends Component {
     if (currentPortfolio.id !== nextPortfolio.id
       || countLoadedWallets(currentPortfolio) !== countLoadedWallets(nextPortfolio)) {
       this.setState(this.getInitialState(nextProps, this.state))
+    }
+  }
+
+  componentWillMount () {
+    if (this.props.swaps.some((swap) => !swap.tx.sent)) {
+      this.props.showOrderModal()
     }
   }
 
@@ -384,7 +390,8 @@ class Modify extends Component {
 
 const mapStateToProps = createStructuredSelector({
   portfolio: getCurrentPortfolioWithWalletHoldings,
-  allAssets: getAllAssets
+  allAssets: getAllAssets,
+  swaps: getAllSwapsArray,
 })
 
 const mapDispatchToProps = {

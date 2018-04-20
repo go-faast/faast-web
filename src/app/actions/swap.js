@@ -256,7 +256,7 @@ export const signSwapTxs = (swapList) => (dispatch) => {
         passwordCache[sendWalletId] = password
         return walletInstance.signTransaction(tx, { password })
       })
-      .then((signedTx) => dispatch(swapTxSigningSuccess(id, signedTx)))
+      .then((signedTx) => dispatch(swapTxSigningSuccess(id, signedTx)).payload)
       .catch((e) => {
         log.error(`signSwapTxs error for wallet ${id}`, e)
         let message = e.message
@@ -266,6 +266,7 @@ export const signSwapTxs = (swapList) => (dispatch) => {
           message = 'Error signing transaction'
         }
         dispatch(swapTxSigningFailed(id, message))
+        return swap
       })
   })
 }
@@ -279,13 +280,14 @@ export const sendSwapTxs = (swapList, sendOptions) => (dispatch) => {
     dispatch(swapTxSendingStart(id))
 
     return walletInstance.sendTransaction(tx, { ...eventListeners, ...sendOptions })
-      .then(() => {
-        dispatch(swapTxSendingSuccess(id))
-        return dispatch(pollOrderStatus(swap))
+      .then((sentTx) => {
+        dispatch(pollOrderStatus(swap))
+        return dispatch(swapTxSendingSuccess(id, sentTx)).payload
       })
       .catch((e) => {
         log.error(`sendSwapTxs error for wallet ${id}`, e)
         dispatch(swapTxSendingFailed(id, 'Error sending swap transaction'))
+        return swap
       })
   })
 }

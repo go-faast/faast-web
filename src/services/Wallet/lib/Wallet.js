@@ -35,7 +35,7 @@ export default class Wallet {
   checkPasswordCorrect() { return true }
 
   /* Default to true, can be overriden by subclass if unsupported */
-  isSignTransactionSupported = () => true;
+  isSignTransactionSupported () { return true }
 
   setAssetProvider = (assetProvider) => {
     if (typeof assetProvider !== 'function') {

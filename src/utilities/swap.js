@@ -2,7 +2,7 @@ import { isString, isObject } from 'lodash'
 
 import { toUnit, toPrecision } from 'Utilities/convert'
 
-const createStatus = (code, label, labelClassName) => (detailsCode, details) => ({ code, label, labelClassName, detailsCode, details })
+const createStatus = (code, label, labelClass) => (detailsCode, details) => ({ code, label, labelClass, detailsCode, details })
 
 const statusPending = createStatus('pending', 'Processing', 'text-primary')
 const statusFailed = createStatus('failed', 'Failed', 'text-warning')
@@ -14,7 +14,7 @@ export const getSwapStatus = (swap) => {
     if (error.message && error.message.toLowerCase().includes('insufficient funds')) {
       return statusFailed('insufficient_funds', 'insufficient funds')
     }
-    return statusFailed('client_error', 'error processing swap')
+    return statusFailed('error', getSwapFriendlyError(swap))
   }
   if (order == null) {
     return statusPending('creating_order', 'creating swap order')
@@ -55,6 +55,9 @@ export const getSwapStatus = (swap) => {
     }
     if (tx.signed) {
       return statusPending('signed', 'signed')
+    }
+    if (!tx.signingSupported) {
+      return statusPending('signing_unsupported', 'wallet cannot sign')
     }
     return statusPending('unsigned', 'unsigned')
   }

@@ -16,6 +16,7 @@ const walletInitialState = {
   address: '',
   isBlockstack: false,
   isReadOnly: false,
+  isSignTxSupported: false,
   supportedAssets: [],
   nestedWalletIds: [],
   balances: {},
