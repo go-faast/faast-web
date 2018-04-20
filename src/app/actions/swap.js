@@ -291,26 +291,27 @@ export const sendSwapTxs = (swapList, sendOptions) => (dispatch) => {
 }
 
 const updateOrderStatus = (swap) => (dispatch) => {
-  if (!swap.order.orderId) {
-    log.info(`getOrderStatus: swap ${swap.id} has no orderId`)
+  const { id, orderId } = swap
+  if (!orderId) {
+    log.info(`updateOrderStatus: swap ${id} has no orderId`)
     return
   }
-  return dispatch(getOrderStatus(swap))
+  return dispatch(getOrderStatus(orderId))
     .then((order) => {
-      dispatch(swapOrderUpdated(swap.id, order))
+      dispatch(swapOrderUpdated(id, order))
       return order
     })
     .catch(log.error)
 }
 
 export const pollOrderStatus = (swap) => (dispatch) => {
-  const { order: { orderId } } = swap
+  const { id, orderId } = swap
   if (!orderId) {
-    log.info(`pollOrderStatus: swap ${swap.id} has no orderId`)
+    log.info(`pollOrderStatus: swap ${id} has no orderId`)
     return
   }
   const orderStatusInterval = window.setInterval(() => {
-    dispatch(getOrderStatus(swap))
+    dispatch(updateOrderStatus(swap))
       .then((order) => {
         if (order && (order.status === 'complete' || order.status === 'failed')) {
           clearInterval(orderStatusInterval)
@@ -324,7 +325,7 @@ export const pollOrderStatus = (swap) => (dispatch) => {
 const updateSwapTxReceipt = (swap) => (dispatch) => {
   const { tx: { id: txId } } = swap
   if (!txId) {
-    log.info(`getSwapTxReceipt: swap ${swap.id} has no txId`)
+    log.info(`updateSwapTxReceipt: swap ${swap.id} has no txId`)
     return
   }
   return getTransactionReceipt(txId)
@@ -345,7 +346,7 @@ export const pollTransactionReceipt = (swap) => (dispatch) => {
     return
   }
   const receiptInterval = window.setInterval(() => {
-    dispatch(updateSwapTxReceipt)
+    dispatch(updateSwapTxReceipt(swap))
       .then((receipt) => {
         if (receipt) {
           clearInterval(receiptInterval)
@@ -436,7 +437,7 @@ const validateSwundleV1 = (swundle) => {
       if (!receive.symbol) return false
       if (receiveSymbols.includes(receive.symbol)) return false
       if (toBigNumber(receive.unit).lessThanOrEqualTo(0)) return false
-      if (!receive.order || !receive.order.deposit || !receive.order.orderId) return false
+      if (!receive.order) return false
       return true
     })
   })

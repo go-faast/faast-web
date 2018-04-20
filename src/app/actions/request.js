@@ -14,8 +14,8 @@ export const postExchange = (info) => () =>
       throw new Error(errMsg)
     })
 
-export const getOrderStatus = ({ order }) => () =>
-  Faast.getOrderStatus(order.orderId)
+export const getOrderStatus = (orderId) => () =>
+  Faast.getOrderStatus(orderId)
     .then((data) => {
       log.info('order status receive', data)
       return data

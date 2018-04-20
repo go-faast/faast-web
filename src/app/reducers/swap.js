@@ -1,5 +1,5 @@
 import { createReducer } from 'redux-act'
-import { isArray, isObject } from 'lodash'
+import { omit, isObject } from 'lodash'
 
 import { createUpdater, createUpserter } from 'Utilities/helpers'
 import { ZERO } from 'Utilities/convert'
@@ -20,8 +20,9 @@ const swapInitialState = {
   receiveSymbol: '',
   rate: undefined,
   fee: undefined,
-  tx: {},
+  orderId: '',
   order: {},
+  tx: {},
 }
 
 const upsertSwap = createUpserter('id', swapInitialState)
@@ -37,15 +38,24 @@ const updateSwapFields = (state, { id, ...nested }) => updateSwap(state, {
   }), {})
 })
 
+const normalize = (swap) => !(swap.order && swap.order.orderId) ? swap : ({
+  ...swap,
+  orderId: swap.order.orderId,
+  order: {
+    ...omit(swap.order, 'orderId'),
+    id: swap.order.orderId,
+  }
+})
+
 export default createReducer({
   [resetAll]: () => initialState,
   [resetSwaps]: () => initialState,
-  [setSwaps]: (state, swaps) => isArray(swaps)
-    ? swaps.reduce(upsertSwap, {})
-    : swaps,
-  [swapUpdated]: updateSwap,
+  [setSwaps]: (state, swaps) => (isObject(swaps) ? Object.values(swaps) : swaps)
+    .map(normalize)
+    .reduce(upsertSwap, {}),
+  [swapUpdated]: (state, swap) => updateSwap(state, normalize(swap)),
   [swapTxUpdated]: updateSwapFields,
-  [swapOrderUpdated]: updateSwapFields,
+  [swapOrderUpdated]: (state, { id, order }) => updateSwapFields(state, normalize({ id, order })),
   [swapTxSigningStart]: (state, { id }) => updateSwapFields(state, { id, tx: { signing: true } }),
   [swapTxSigningSuccess]: (state, { id, tx }) => updateSwapFields(state, { id, tx: { ...tx, signing: false } }),
   [swapTxSigningFailed]: (state, { id, signingError }) => updateSwapFields(state, { id, tx: { signing: false, signingError } }),

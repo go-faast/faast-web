@@ -7,7 +7,7 @@ import { toBigNumber } from 'Utilities/convert'
 import { getAllAssets } from './asset'
 import { getAllWallets } from './wallet'
 
-const getSwapState = ({ swap }) => swap
+export const getSwapState = ({ swap }) => swap
 
 const createSwapExtender = (allAssets, allWallets) => (swap) => {
   const { sendWalletId, sendSymbol, receiveSymbol, fee, tx } = swap
@@ -25,7 +25,7 @@ const createSwapExtender = (allAssets, allWallets) => (swap) => {
     tx: {
       ...tx,
       signingSupported: (allWallets[sendWalletId] || {}).isSignTxSupported,
-      confirmed: receipt,
+      confirmed: Boolean(receipt),
       succeeded: receipt && (receipt.status === true || receipt.status === '0x1')
     }
   }
