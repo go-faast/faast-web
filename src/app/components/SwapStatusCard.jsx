@@ -38,7 +38,7 @@ export default compose(
     receiveWalletId, receiveSymbol, receiveAsset, receiveUnits,
     error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee,
     order: { orderId },
-    tx: { id: txId, feeAmount: txFee, feeAsset: txFeeSymbol, confirmed, succeeded },
+    tx: { id: txId, feeAmount: txFee, feeSymbol: txFeeSymbol, confirmed, succeeded },
     status: { code, details },
   },
   statusText, showDetails, isExpanded, toggleExpanded

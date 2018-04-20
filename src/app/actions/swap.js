@@ -175,13 +175,13 @@ const swapSufficientFees = (swapList) => (dispatch, getState) => {
     if (swap.error) return swap
     const finish = createSwapFinish(dispatch, 'swapSufficientFees', swap)
     const { sendWalletId, sendSymbol, sendUnits, tx } = swap
-    const { feeAmount, feeAsset } = tx
+    const { feeAmount, feeSymbol } = tx
     const adjustedBalances = walletAdjustedBalances[sendWalletId] || {}
     adjustedBalances[sendSymbol] = (adjustedBalances[sendSymbol] || ZERO).minus(sendUnits)
     if (feeAmount) {
-      adjustedBalances[feeAsset] = (adjustedBalances[feeAsset] || ZERO).minus(feeAmount)
-      if (adjustedBalances[feeAsset].isNegative()) {
-        return finish(`Not enough ${feeAsset} for tx fee`)
+      adjustedBalances[feeSymbol] = (adjustedBalances[feeSymbol] || ZERO).minus(feeAmount)
+      if (adjustedBalances[feeSymbol].isNegative()) {
+        return finish(`Not enough ${feeSymbol} for tx fee`)
       }
     }
     return finish()

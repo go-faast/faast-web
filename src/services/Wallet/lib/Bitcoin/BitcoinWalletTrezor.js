@@ -48,14 +48,16 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
       walletId: this.getId(),
       toAddress,
       amount,
-      asset,
-      signed: false,
+      assetSymbol: asset.symbol,
       feeAmount: null,
-      feeAsset: 'BTC',
+      feeSymbol: 'BTC',
+      signed: false,
+      sent: false,
       txData: [{
         address: toAddress,
         amount: toSmallestDenomination(amount, asset.decimals).toNumber(),
-      }]
+      }],
+      signedTxData: null,
     }));
 
   _signTxData = (txData) => Trezor.composeAndSignTx(txData)
