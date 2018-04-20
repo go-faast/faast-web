@@ -40,14 +40,14 @@ const AppNavbar = ({ disablePortfolioLinks, routerPush, children, ...props }) =>
               <i className='nav-link-icon fa fa-exchange'/>
               <span className='nav-link-label d-none d-sm-inline'>Swap</span>
             </NavLink>
+          </NavItem>,
+          <NavItem key='connect'>
+            <NavLink tag={RouterNavLink} to='/connect'>
+              <i className='nav-link-icon fa fa-plus'/>
+              <span className='nav-link-label d-none d-sm-inline'>Add wallet</span>
+            </NavLink>
           </NavItem>
         ])}
-        <NavItem>
-          <NavLink tag={RouterNavLink} to='/connect'>
-            <i className='nav-link-icon fa fa-plus'/>
-            <span className='nav-link-label d-none d-sm-inline'>Add wallet</span>
-          </NavLink>
-        </NavItem>
       </Nav>
       <AddressSearchForm
         className='d-none d-lg-inline mx-3_4r' size='md' formProps={{ inline: true }} inputGroupProps={{ className: 'flat' }}
