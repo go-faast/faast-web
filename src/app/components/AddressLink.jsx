@@ -5,10 +5,10 @@ import classNames from 'class-names'
 import { tag as tagPropType } from 'Utilities/propTypes'
 
 
-const AddressLink = ({ tag: Tag, address, className, ...props }) => (
+const AddressLink = ({ tag: Tag, address, className, children, ...props }) => (
   <Tag href={`https://etherscan.io/address/${address}`} target='_blank' rel='noopener'
     className={classNames('word-break-all', className)} {...props}>
-    {address}
+    {children || address}
   </Tag>
 )
 
