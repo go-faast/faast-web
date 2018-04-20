@@ -12,56 +12,53 @@ export const getSwapStatus = (swap) => {
   const { error, rate, order, tx } = swap
   if (error) {
     if (isString(error) && error.toLowerCase().includes('insufficient funds')) {
-      return statusFailed('insufficient_funds', 'insufficient funds')
+      return statusFailed('insufficient_funds', 'Insufficient funds')
     }
     return statusFailed('error', getSwapFriendlyError(swap))
   }
   if (order == null) {
-    return statusPending('creating_order', 'creating swap order')
+    return statusPending('creating_order', 'Creating order')
   }
   if (order.error) {
-    return statusFailed('order_error', isString(order.error) ? order.error : 'order error')
+    return statusFailed('order_error', 'An error occured with this order, please contact support@faa.st')
   }
-  if (order.status === 'failed') {
-    return statusFailed('order_failed', 'order was unsuccessful')
-  }
-  if (order.status === 'cancelled') {
-    return statusFailed('order_cancelled', 'order was cancelled')
+  if (order.status === 'failed' || order.status === 'cancelled') {
+    return statusFailed(`order_${order.status}`, 'Order was unsuccessful, please contact support@faa.st')
   }
   if (order.status === 'complete') {
-    return statusComplete('order_complete', 'order completed successfully')
+    return statusComplete('order_complete', 'Order completed successfully')
   }
   if (rate == null) {
-    return statusPending('fetching_rate', 'fetching market info')
+    return statusPending('fetching_rate', 'Fetching market info')
   }
   if (tx == null) {
-    return statusPending('creating_tx', 'generating transaction')
+    return statusPending('creating_tx', 'Generating deposit transaction')
   }
   if (!tx.receipt) {
     if (tx.sendingError) {
-      return statusFailed('send_tx_error', tx.sendingError)
+      return statusFailed('send_tx_error', 'Failed to send deposit transaction, please try again')
     }
     if (tx.sending) {
-      return statusPending('sending', 'sending transaction')
+      return statusPending('sending', 'Sending deposit transaction')
     }
     if (tx.sent) {
-      return statusPending('pending_receipt', 'waiting for transaction receipt')
+      return statusPending('pending_receipt', 'Waiting for transaction confirmation')
     }
     if (tx.signingError) {
-      return statusFailed('sign_tx_error', tx.signingError)
+      return statusFailed('sign_tx_error', 'Failed to sign deposit transaction, please try again')
     }
     if (tx.signing) {
-      return statusPending('signing', 'awaiting signature')
+      return statusPending('signing', 'Awaiting signature')
     }
     if (tx.signed) {
-      return statusPending('signed', 'signed')
+      return statusPending('signed', 'Ready to send')
     }
     if (!tx.signingSupported) {
-      return statusPending('signing_unsupported', 'wallet cannot sign')
+      return statusPending('signing_unsupported', 'Ready to send')
     }
-    return statusPending('unsigned', 'unsigned')
+    return statusPending('unsigned', 'Ready to sign')
   }
-  return statusPending('processing', 'processing swap')
+  return statusPending('processing', 'Processing swap')
 }
 
 export const statusAllSwaps = (swaps) => {

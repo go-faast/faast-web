@@ -39,7 +39,7 @@ export default compose(
     error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee,
     order: { orderId },
     tx: { id: txId, feeAmount: txFee, feeAsset: txFeeSymbol, confirmed, succeeded },
-    status: { details },
+    status: { code, details },
   },
   statusText, showDetails, isExpanded, toggleExpanded
 }) => (
@@ -91,18 +91,13 @@ export default compose(
         <table style={{ lineHeight: 1.25 }}>
           <tbody>
             <tr>
-              <td><b>Order ID:</b></td>
-              <td colSpan='2' className='px-2'>{orderId ? orderId : (<Spinner inline size='sm'/>)}</td>
-            </tr>
-            <tr>
-              <td><b>Sending:</b></td>
-              <td className='px-2'><UnitsLoading value={sendUnits} symbol={sendSymbol} error={error} precision={null}/></td>
-              <td><i>using wallet</i> <WalletLabel.Connected id={sendWalletId} tag='span' hideIcon/></td>
-            </tr>
-            <tr>
-              <td><b>Receiving:</b></td>
-              <td className='px-2'><UnitsLoading value={receiveUnits} symbol={receiveSymbol} error={error} precision={null}/></td>
-              <td><i>using wallet</i> <WalletLabel.Connected id={receiveWalletId} tag='span' hideIcon/></td>
+              <td><b>Status:</b></td>
+              <td colSpan='2' className={classNames('px-2', {
+                'text-success': code === 'complete',
+                'text-warning': code === 'failed'
+              })}>
+                {details}
+              </td>
             </tr>
             <tr>
               <td><b>Rate:</b></td>
@@ -118,6 +113,20 @@ export default compose(
                 <td colSpan='2' className='px-2'><UnitsLoading value={swapFee} symbol={receiveSymbol} error={error} precision={null}/></td>
               </tr>
             )}
+            <tr>
+              <td><b>Sending:</b></td>
+              <td className='px-2'><UnitsLoading value={sendUnits} symbol={sendSymbol} error={error} precision={null}/></td>
+              <td><i>using wallet</i> <WalletLabel.Connected id={sendWalletId} tag='span' hideIcon/></td>
+            </tr>
+            <tr>
+              <td><b>Receiving:</b></td>
+              <td className='px-2'><UnitsLoading value={receiveUnits} symbol={receiveSymbol} error={error} precision={null}/></td>
+              <td><i>using wallet</i> <WalletLabel.Connected id={receiveWalletId} tag='span' hideIcon/></td>
+            </tr>
+            <tr>
+              <td><b>Order ID:</b></td>
+              <td colSpan='2' className='px-2'>{orderId ? orderId : (<Spinner inline size='sm'/>)}</td>
+            </tr>
             {txId && (
               <tr>
                 <td><b>Sent txn:</b></td>
