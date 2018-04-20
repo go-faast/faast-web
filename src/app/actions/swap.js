@@ -5,7 +5,7 @@ import { getCurrentWallet } from 'Selectors'
 import { removeSwundle } from 'Actions/request'
 
 import { processArray } from 'Utilities/helpers'
-import { getSwapStatus, statusAllSwaps } from 'Utilities/swap'
+import { getSwapStatus } from 'Utilities/swap'
 import { restoreFromAddress } from 'Utilities/storage'
 import log from 'Utilities/log'
 import {
@@ -290,39 +290,68 @@ export const sendSwapTxs = (swapList, sendOptions) => (dispatch) => {
   })
 }
 
+const updateOrderStatus = (swap) => (dispatch) => {
+  if (!swap.order.orderId) {
+    log.info(`getOrderStatus: swap ${swap.id} has no orderId`)
+    return
+  }
+  return dispatch(getOrderStatus(swap))
+    .then((order) => {
+      dispatch(swapOrderUpdated(swap.id, order))
+      return order
+    })
+    .catch(log.error)
+}
+
 export const pollOrderStatus = (swap) => (dispatch) => {
+  const { order: { orderId } } = swap
+  if (!orderId) {
+    log.info(`pollOrderStatus: swap ${swap.id} has no orderId`)
+    return
+  }
   const orderStatusInterval = window.setInterval(() => {
     dispatch(getOrderStatus(swap))
       .then((order) => {
-        dispatch(swapOrderUpdated(swap.id, order))
         if (order && (order.status === 'complete' || order.status === 'failed')) {
-          return window.clearInterval(orderStatusInterval)
+          clearInterval(orderStatusInterval)
         }
       })
-      .catch(log.error)
   }, 10000)
 
   window.faast.intervals.orderStatus.push(orderStatusInterval)
 }
 
+const updateSwapTxReceipt = (swap) => (dispatch) => {
+  const { tx: { id: txId } } = swap
+  if (!txId) {
+    log.info(`getSwapTxReceipt: swap ${swap.id} has no txId`)
+    return
+  }
+  return getTransactionReceipt(txId)
+    .then((receipt) => {
+      if (receipt) {
+        log.info('tx receipt obtained')
+        dispatch(swapTxUpdated(swap.id, { receipt }))
+      }
+      return receipt
+    })
+    .catch(log.error)
+}
+
 export const pollTransactionReceipt = (swap) => (dispatch) => {
   const { id: swapId, tx: { id: txId } } = swap
   if (!txId) {
-    const error = 'txId is missing, unable to poll for receipt'
-    log.error(error)
-    return dispatch(swapUpdated(swapId, { error, errorType: 'pollTransactionReceipt' }))
+    log.info(`pollTransactionReceipt: swap ${swapId} has no txId`)
+    return
   }
   const receiptInterval = window.setInterval(() => {
-    getTransactionReceipt(txId)
-    .then((receipt) => {
-      if (receipt) {
-        window.clearInterval(receiptInterval)
-        log.info('tx receipt obtained')
-        dispatch(swapTxUpdated(swapId, { receipt }))
-        dispatch(pollOrderStatus(swap))
-      }
-    })
-    .catch(log.error)
+    dispatch(updateSwapTxReceipt)
+      .then((receipt) => {
+        if (receipt) {
+          clearInterval(receiptInterval)
+          dispatch(pollOrderStatus(swap))
+        }
+      })
   }, 5000)
 
   window.faast.intervals.txReceipt.push(receiptInterval)
@@ -331,19 +360,25 @@ export const pollTransactionReceipt = (swap) => (dispatch) => {
 export const restoreSwapPolling = () => (dispatch, getState) => {
   const swapList = getAllSwapsArray(getState())
   swapList.forEach((swap) => {
-    const status = getSwapStatus(swap)
-    if (status.detailsCode === 'pending_receipt') {
-      dispatch(pollTransactionReceipt(swap))
-    } else if (status.code === 'pending') {
-      dispatch(pollOrderStatus(swap))
-    }
+    Promise.all([
+      updateSwapTxReceipt(swap),
+      updateOrderStatus(swap)
+    ]).then(() => {
+      const status = getSwapStatus(swap)
+      if (status.detailsCode === 'pending_receipt') {
+        dispatch(pollTransactionReceipt(swap))
+      } else if (status.code === 'pending') {
+        dispatch(pollOrderStatus(swap))
+      }
+    })
   })
 }
 
 export const restoreSwundle = (swundle) => (dispatch) => {
   let swapList
   if (validateSwundleV2(swundle)) {
-    swapList = swundle.swaps.map((swap) => ({
+    swapList = Array.isArray(swundle.swap) ? swundle.swap : Object.values(swundle.swap)
+    swapList = swapList.map((swap) => ({
       ...swap,
       restored: true
     }))
@@ -376,19 +411,13 @@ export const restoreSwundle = (swundle) => (dispatch) => {
 export const restoreSwapsForWallet = (walletId) => (dispatch) => {
   const state = restoreFromAddress(walletId)
 
-  if (state && state.swap && state.swap.length) {
-    const status = statusAllSwaps(state.swap)
-    const swapState = (status === 'unavailable' || status === 'unsigned' || status === 'unsent') ? undefined : state.swap
-
-    if (swapState) {
-      dispatch(setSwaps(swapState))
-      dispatch(restoreSwapPolling())
-    }
+  if (state) {
+    dispatch(restoreSwundle(state))
   } else {
     dispatch(getSwundle(walletId))
       .then((data) => {
-        if (data.result && data.result.swap) {
-          dispatch(restoreSwundle(data.result.swap, walletId))
+        if (data && data.result) {
+          dispatch(restoreSwundle(data.result))
         }
       })
   }
@@ -416,5 +445,6 @@ const validateSwundleV1 = (swundle) => {
 const validateSwundleV2 = (swundle) => {
   if (!swundle) return false
   if (!isObject(swundle)) return false
-  return swundle.version === '2'
+  const { swap } = swundle
+  return swap !== null && (isArray(swap) || isObject(swap))
 }

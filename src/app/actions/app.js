@@ -9,9 +9,8 @@ import { getDefaultPortfolio } from 'Selectors'
 
 import { retrieveAssets } from './asset'
 import { setSettings } from './redux'
-import { setSwaps } from './swap'
 import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
-import { restoreSwapPolling } from './swap'
+import { restoreSwundle } from './swap'
 
 export const appReady = createAction('APP_READY')
 export const appError = createAction('APP_ERROR')
@@ -22,12 +21,10 @@ export const restoreState = (dispatch, getState) => Promise.resolve()
     const wallet = getDefaultPortfolio(getState())
     const addressState = restoreFromAddress(wallet && wallet.id)
     if (addressState) {
-      const swaps = addressState.swap
-      dispatch(setSwaps(swaps))
+      dispatch(restoreSwundle(addressState))
       const settings = addressState.settings
       dispatch(setSettings(settings))
     }
-    dispatch(restoreSwapPolling())
     dispatch(updateAllHoldings())
   })
   .catch((e) => {
