@@ -10,6 +10,7 @@ import CoinIcon from 'Components/CoinIcon'
 import Units from 'Components/Units'
 import UnitsLoading from 'Components/UnitsLoading'
 import WalletLabel from 'Components/WalletLabel'
+import Spinner from 'Components/Spinner'
 
 const StatusFooter = ({ className, children, ...props }) => (
   <CardFooter className={classNames('font-size-xs py-2 px-3', className)} {...props}>
@@ -35,7 +36,9 @@ export default compose(
   swap: {
     sendWalletId, sendSymbol, sendAsset, sendUnits,
     receiveWalletId, receiveSymbol, receiveAsset, receiveUnits,
-    error, friendlyError, rate, fee: swapFee, tx: { feeAmount: txFee, feeAsset: txFeeSymbol, },
+    error, friendlyError, rate, fee: swapFee,
+    order: { orderId },
+    tx: { id: txId, feeAmount: txFee, feeAsset: txFeeSymbol, confirmed, succeeded },
     status: { details },
   },
   statusText, showDetails, isExpanded, toggleExpanded
@@ -78,10 +81,19 @@ export default compose(
         </Col>
       </Row>
     </CardBody>
+    {error 
+      ? (<StatusFooter tag={Alert} color='danger' className='m-0 text-center'>{friendlyError || error}</StatusFooter>)
+      : (showDetails && details && (
+          <StatusFooter className='text-center text-muted'>{details}</StatusFooter>
+        ))}
     <Collapse isOpen={isExpanded}>
       <StatusFooter>
         <table style={{ lineHeight: 1.25 }}>
           <tbody>
+            <tr>
+              <td><b>Order ID:</b></td>
+              <td colSpan='2' className='px-2'>{orderId ? orderId : (<Spinner inline size='sm'/>)}</td>
+            </tr>
             <tr>
               <td><b>Sending:</b></td>
               <td className='px-2'><UnitsLoading value={sendUnits} symbol={sendSymbol} error={error} precision={null}/></td>
@@ -104,14 +116,24 @@ export default compose(
               <td><b>Swap fee:</b></td>
               <td colSpan='2' className='px-2'><UnitsLoading value={swapFee} symbol={receiveSymbol} error={error} precision={null}/></td>
             </tr>
+            {txId && (
+              <tr>
+                <td><b>Sent txn:</b></td>
+                <td colSpan='2' className='px-2'>
+                  <a href={`https://etherscan.com/tx/${txId}`} target='_blank' rel='noopener' className='word-break-all mr-2'>{txId}</a> 
+                  {!confirmed ? (
+                    <i className='fa fa-spinner fa-pulse'/>
+                  ) : (succeeded ? (
+                    <i className='fa fa-check-circle-o text-success'/>
+                  ) : (
+                    <i className='fa fa-exclamation-circle text-danger'/>
+                  ))}
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </StatusFooter>
     </Collapse>
-    {error 
-      ? (<StatusFooter tag={Alert} color='danger' className='m-0 text-center'>{friendlyError || error}</StatusFooter>)
-      : (showDetails && details && (
-          <StatusFooter className='text-center text-muted'>{details}</StatusFooter>
-        ))}
   </Card>
 ))
