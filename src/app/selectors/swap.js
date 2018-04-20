@@ -5,14 +5,14 @@ import { createItemSelector, selectItemId } from 'Utilities/selector'
 
 import { getAllAssets } from './asset'
 import { getAllWallets } from './wallet'
-
+import log from 'Utilities/log'
 const getSwapState = ({ swap }) => swap
 
 const createSwapExtender = (allAssets, allWallets) => (swap) => {
   const { sendWalletId, sendSymbol, receiveSymbol } = swap
   const sendAsset = allAssets[sendSymbol]
   const receiveAsset = allAssets[receiveSymbol]
-  return {
+  return log.debugInline(swap.id, {
     ...swap,
     sendAsset,
     receiveAsset,
@@ -21,9 +21,11 @@ const createSwapExtender = (allAssets, allWallets) => (swap) => {
     friendlyError: getSwapFriendlyError(swap),
     tx: {
       ...swap.tx,
-      signingSupported: (allWallets[sendWalletId] || {}).isSignTxSupported
+      signingSupported: (allWallets[sendWalletId] || {}).isSignTxSupported,
+      confirmed: swap.tx.receipt,
+      succeeded: swap.tx.receipt && (swap.tx.receipt.status === true || swap.tx.receipt.status === '0x1')
     }
-  }
+  })
 }
 
 export const getAllSwaps = createSelector(

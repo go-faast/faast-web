@@ -1,4 +1,4 @@
-import { isString, isObject } from 'lodash'
+import { isString } from 'lodash'
 
 import { toUnit, toPrecision } from 'Utilities/convert'
 
@@ -11,7 +11,7 @@ const statusComplete = createStatus('complete', 'Complete', 'text-success')
 export const getSwapStatus = (swap) => {
   const { error, rate, order, tx } = swap
   if (error) {
-    if (error.message && error.message.toLowerCase().includes('insufficient funds')) {
+    if (isString(error) && error.toLowerCase().includes('insufficient funds')) {
       return statusFailed('insufficient_funds', 'insufficient funds')
     }
     return statusFailed('error', getSwapFriendlyError(swap))
@@ -82,28 +82,20 @@ export const statusAllSwaps = (swaps) => {
 }
 
 export const getSwapFriendlyError = (swap) => {
-  const { error } = swap
+  const { error, errorType } = swap
   if (!error) return error
   if (isString(error)) {
-    return error
-  } else if (isObject(error)) {
-    const { type, message } = error
-    const messageLower = message.toLowerCase()
-    if (type === 'swapMarketInfo'
-      && (messageLower.includes('minimum') || messageLower.includes('maximum'))) {
-      return message
+    if (errorType === 'pollTransactionReceipt') {
+      return 'Failed to check deposit txn status'
     }
-    if (type === 'swapMarketInfo' || type === 'swapPostExchange') {
-      return 'swap unavailable at this time'
+    if (errorType === 'sendTransaction') {
+      return 'Error sending deposit txn'
     }
-    if (type === 'swapSufficientFees' || type === 'swapSufficientDeposit') {
-      return message
+    if (isString(errorType)) {
+      return error
     }
-    if (type === 'sendTransaction') {
-      return 'error sending deposit tx'
-    }
-    return 'unknown error'
   }
+  return 'Unknown error'
 }
 
 export const estimateReceiveAmount = (swap, asset) => {

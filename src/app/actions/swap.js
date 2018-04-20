@@ -10,14 +10,12 @@ import { restoreFromAddress } from 'Utilities/storage'
 import log from 'Utilities/log'
 import {
   toBigNumber,
-  toHex,
   toPrecision,
   toUnit,
   ZERO
 } from 'Utilities/convert'
 import {
   getTransactionReceipt,
-  getTransaction
 } from 'Utilities/wallet'
 import walletService from 'Services/Wallet'
 
@@ -87,34 +85,34 @@ const swapMarketInfo = (swapList) => (dispatch) => {
       .then((res) => {
         log.debug('marketinfo response', res)
         if (!res.pair) {
-          return finish('error getting market info')
+          return finish('Error getting market info')
         }
         if (res.hasOwnProperty('rate')) {
           newFields.rate = toBigNumber(res.rate)
         } else {
-          return finish('error getting market rate')
+          return finish('Error getting market rate')
         }
         if (res.hasOwnProperty('outgoing_network_fee')) {
           newFields.fee = toBigNumber(res.outgoing_network_fee)
         } else if (res.hasOwnProperty('minerFee')) {
           newFields.fee = toBigNumber(res.minerFee)
         } else {
-          return finish('error getting swap fee')
+          return finish('Error getting swap fee')
         }
         if (res.hasOwnProperty('minimum') && sendUnits.lessThan(res.minimum)) {
-          return finish(`minimum amount is ${res.minimum} ${sendSymbol}`)
+          return finish(`Minimum amount is ${res.minimum} ${sendSymbol}`)
         }
         if (res.hasOwnProperty('min') && sendUnits.lessThan(res.min)) {
-          return finish(`minimum amount is ${res.min} ${sendSymbol}`)
+          return finish(`Minimum amount is ${res.min} ${sendSymbol}`)
         }
         if ((res.hasOwnProperty('limit') && sendUnits.greaterThan(res.limit)) || (res.maxLimit && sendUnits.greaterThan(res.maxLimit))) {
-          return finish(`maximum amount is ${res.limit} ${sendSymbol}`)
+          return finish(`Maximum amount is ${res.limit} ${sendSymbol}`)
         }
         return finish()
       })
       .catch((e) => {
         log.error(e)
-        return finish('error getting market info')
+        return finish('Error getting market info')
       })
   })
 }
@@ -136,20 +134,20 @@ const swapPostExchange = (swapList) => (dispatch) => {
       sendWalletInstance.getFreshAddress(sendSymbol),
       receiveWalletInstance.getFreshAddress(receiveSymbol),
     ])
-    .catch(finishErrorHandler('error retrieving wallet addresses'))
+    .catch(finishErrorHandler('Error retrieving wallet addresses'))
     .then(([returnAddress, withdrawalAddress]) => dispatch(postExchange({
       pair,
       withdrawal: withdrawalAddress,
       returnAddress,
     })))
-    .catch(finishErrorHandler('error creating swaps'))
+    .catch(finishErrorHandler('Error creating swap orders'))
     .then((order) =>
       sendWalletInstance.createTransaction(order.deposit, sendUnits, sendSymbol, { previousTx: walletPreviousTx[sendWalletId] })
         .then((tx) => {
           walletPreviousTx[sendWalletId] = tx
           return finish(null, { order, tx })
         }))
-    .catch(finishErrorHandler('error generating swap tx'))
+    .catch(finishErrorHandler('Error generating deposit txn'))
   })
 }
 
@@ -310,9 +308,9 @@ export const pollOrderStatus = (swap) => (dispatch) => {
 export const pollTransactionReceipt = (swap) => (dispatch) => {
   const { id: swapId, tx: { id: txId } } = swap
   if (!txId) {
-    const error = new Error('txId is missing, unable to poll for receipt')
+    const error = 'txId is missing, unable to poll for receipt'
     log.error(error)
-    return dispatch(swapUpdated(swapId, { error }))
+    return dispatch(swapUpdated(swapId, { error, errorType: 'pollTransactionReceipt' }))
   }
   const receiptInterval = window.setInterval(() => {
     getTransactionReceipt(txId)
@@ -371,21 +369,7 @@ export const restoreSwundle = (swundle) => (dispatch) => {
   }
   if (swapList) {
     dispatch(setSwaps(swapList))
-    processArray(swundle, (swap) =>
-      getTransaction(swap.tx.id)
-        .then((tx) => {
-          dispatch(swapTxUpdated(swap.id, {
-            gasPrice: toHex(tx.gasPrice),
-            signed: true,
-            sent: true,
-          }))
-        })
-        .catch(log.error))
-    // .then(() => {
-      // receipt polling restoration is done in App component
-      // when statusAllSwaps changes to pending_receipts_restored
-    // })
-    .catch(log.error)
+    dispatch(restoreSwapPolling())
   }
 }
 
