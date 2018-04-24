@@ -11,6 +11,7 @@ import wallet from './wallet'
 import app from './app'
 import accountSearch from './accountSearch'
 import walletPasswordPrompt from './walletPasswordPrompt'
+import connectHardwareWallet from './connectHardwareWallet'
 
 export default combineReducers({
   app,
@@ -22,6 +23,7 @@ export default combineReducers({
   orderModal,
   settings,
   walletPasswordPrompt,
+  connectHardwareWallet,
   form: formReducer,
   toastr: toastrReducer,
   router: routerReducer

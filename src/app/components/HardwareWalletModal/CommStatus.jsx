@@ -68,12 +68,9 @@ const CommStatus = ({ status, className, ...props }) => {
   }
   const { color, icon, component: StatusComponent } = renderData
   return (
-    <div className={classNames(className, 'text-center')}>
-      <h6>STATUS</h6>
-      <div className={`text-${color}`}>
-        <i className={classNames('mb-2 fa fa-4x', icon)}/>
-        {StatusComponent && <StatusComponent status={status} {...props}/>}
-      </div>
+    <div className={classNames(className, 'text-center', `text-${color}`)}>
+      <i className={classNames('mb-2 fa fa-4x', icon)}/>
+      {StatusComponent && <StatusComponent status={status} {...props}/>}
     </div>
   )
 }

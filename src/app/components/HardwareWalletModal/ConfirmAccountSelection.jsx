@@ -6,18 +6,18 @@ import Units from 'Components/Units'
 import Spinner from 'Components/Spinner'
 import AddressLink from 'Components/AddressLink'
 
-const ConfirmAccountSelection = ({ address, balance, index, toggleAccountSelect }) => (
+const ConfirmAccountSelection = ({ account: { index, id, balance }, toggleAccountSelect }) => (
   <Row className='gutter-3 justify-content-center'>
     <Col xs='auto'>
       <Card body color='ultra-dark' className='text-left flat'>
         <h5>Account #{index + 1}
-          <span className='float-right text-muted'>
+          <span className='float-right text-muted ml-3'>
             {typeof balance !== 'undefined'
               ? (<Units value={balance} symbol='ETH'/>)
               : (<Spinner inline size='sm'/>)}
           </span>
         </h5>
-        {address && (<AddressLink address={address} className='mt-2'/>)}
+        {id && (<AddressLink address={id} className='mt-2'/>)}
       </Card>
     </Col>
     <div className='w-100'/>
@@ -28,9 +28,7 @@ const ConfirmAccountSelection = ({ address, balance, index, toggleAccountSelect 
 )
 
 ConfirmAccountSelection.propTypes = {
-  address: PropTypes.string,
-  balance: PropTypes.numberish,
-  index: PropTypes.number.isRequired,
+  account: PropTypes.object.isRequired,
   toggleAccountSelect: PropTypes.func.isRequired,
 }
 

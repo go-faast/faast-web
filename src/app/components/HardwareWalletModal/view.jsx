@@ -8,29 +8,27 @@ import ConfirmAccountSelection from './ConfirmAccountSelection'
 import AccountSelect from './AccountSelect'
 
 const HardwareWalletModalView = ({
-  type, name, isOpen, handleToggle, handleClose, commStatus,
+  isOpen, toggle, type, name, commStatus,
   showAccountSelect, onConfirm, disableConfirm, toggleAccountSelect,
   commStatusProps, accountSelectProps, confirmAccountSelectionProps
 }) => (
-  <Modal size='lg' className='text-center' isOpen={isOpen} toggle={handleToggle}>
-    <ModalHeader tag='h3' className='text-primary' cssModule={{ 'modal-title': 'modal-title mx-auto' }} toggle={handleToggle}>
+  <Modal size='md' className='text-center' backdrop='static' isOpen={isOpen} toggle={toggle}>
+    <ModalHeader tag='h3' className='text-primary' toggle={toggle}>
       Adding {name}
     </ModalHeader>
     <ModalBody className='flex-col-center'>
-      <div className='modal-text flex-col-center py-4'>
-        <CommStatus className='mb-3' {...commStatusProps}/>
-        {(commStatus !== 'connected'
-          ? (<ConnectionInstructions type={type}/>)
-          : (showAccountSelect
-            ? (<AccountSelect {...accountSelectProps} />)
-            : (<ConfirmAccountSelection {...confirmAccountSelectionProps}/>)))
-        }
-      </div>
+      <CommStatus className='mb-3' {...commStatusProps}/>
+      {(commStatus !== 'connected'
+        ? (<ConnectionInstructions type={type}/>)
+        : (showAccountSelect
+          ? (<AccountSelect {...accountSelectProps} />)
+          : (<ConfirmAccountSelection {...confirmAccountSelectionProps}/>)))
+      }
     </ModalBody>
     <ModalFooter className='justify-content-between'>
       {showAccountSelect
         ? (<Button outline color='primary' onClick={toggleAccountSelect}>back</Button>)
-        : (<Button outline color='primary' onClick={handleClose}>cancel</Button>)}
+        : (<Button outline color='primary' onClick={toggle}>cancel</Button>)}
       {commStatus === 'connected' && !showAccountSelect && (
         <Button color='success' onClick={onConfirm} disabled={disableConfirm}>Confirm</Button>
       )}

@@ -1,26 +1,31 @@
 import React from 'react'
 import Units from 'Components/Units'
 import { Row, Col, Button, ListGroup } from 'reactstrap'
+import { isUndefined } from 'lodash'
+
 import Spinner from 'Components/Spinner'
 import ListGroupButton from 'Components/ListGroupButton'
 import DerivationPathChanger from 'Components/DerivationPathChanger'
 
 const AccountSelect = ({
-  accounts, page, startIndex, endIndex, derivationPath, selectIndex, changePage, changePath
+  startIndex, endIndex, accounts, page, derivationPath, selectIndex, changePage, changePath
 }) => (
   <div className='my-3 w-100 text-center'>
     <h5 className='text-primary'>Select an account</h5>
     <ListGroup>
-      {accounts.map(({ index, address, balance }) => (
-        <ListGroupButton key={address} className='px-3' onClick={() => selectIndex(index)}>
-          <Row className='gutter-3 align-items-center justify-content-between'>
-            <Col xs='1' className='text-center text-muted'>#{index + 1}</Col>
-            <Col>{address}</Col>
-            <Col xs='auto'>
-              {(typeof balance !== 'undefined' &&
-                <Units value={balance} symbol='ETH'/>) ||
-                <Spinner size='sm' className='m2-t float-right' />
-              }
+      {accounts.map(({ index, id, balance }) => (
+        <ListGroupButton key={index} className='px-3' onClick={() => selectIndex(index)} disabled={isUndefined(id)}>
+          <Row className='gutter-3 align-items-center'>
+            <Col xs='1' className='text-muted'>#{index + 1}</Col>
+            <Col className='text-left'>
+              {!isUndefined(id)
+                ? id
+                : (<Spinner size='sm' inline/>)}
+            </Col>
+            <Col xs='auto' className='ml-auto'>
+              {!isUndefined(balance)
+                ? (<Units value={balance} symbol='ETH'/>)
+                : (<Spinner size='sm' inline/>)}
             </Col>
           </Row>
         </ListGroupButton>
@@ -28,7 +33,7 @@ const AccountSelect = ({
     </ListGroup>
     <Row className='gutter-2 justify-content-between align-items-center'>
       <Col xs='3' className='text-left'>
-        <Button color='link' onClick={() => changePage(page -1)} disabled={page <= 0}><i className='fa fa-long-arrow-left'/> previous</Button>
+        <Button color='link' onClick={() => changePage(page - 1)} disabled={page <= 0}><i className='fa fa-long-arrow-left'/> previous</Button>
       </Col>
       <Col className='text-muted'>
         showing accounts {startIndex + 1} - {endIndex + 1}

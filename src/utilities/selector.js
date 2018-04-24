@@ -1,5 +1,8 @@
+import { createSelector } from 'reselect'
 import createCachedSelector from 're-reselect'
 import { isFunction } from 'lodash'
+
+export { createSelector, createCachedSelector }
 
 /** Creates a new selector by passing state and args into originalSelector */
 export const currySelector = (originalSelector, ...args) => (state) => 

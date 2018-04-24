@@ -3,6 +3,9 @@ import highCharts from './highCharts'
 import tokenFunctionSignatures from './tokenFunctionSignatures'
 import BigNumber from 'bignumber.js'
 
+import ledgerLogo from 'Img/wallet/ledger-logo.png'
+import trezorLogo from 'Img/wallet/trezor-logo.png'
+
 BigNumber.config({ FORMAT: {
   decimalSeparator: '.',
   groupSeparator: ',',
@@ -36,6 +39,18 @@ export default {
   defaultPortfolioId: 'default',
   navbar: {
     expand: 'md',
+  },
+  walletTypes: {
+    ledger: {
+      name: 'Ledger Wallet',
+      icon: ledgerLogo,
+      assets: ['ETH']
+    },
+    trezor: {
+      name: 'TREZOR',
+      icon: trezorLogo,
+      assets: ['BTC', 'ETH']
+    }
   },
   highCharts,
   tokenFunctionSignatures

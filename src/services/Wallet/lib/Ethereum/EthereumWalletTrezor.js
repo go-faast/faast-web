@@ -9,6 +9,12 @@ import Trezor from 'Services/Trezor'
 
 import EthereumWallet from './EthereumWallet'
 
+const createAddressGetter = (hdKey) => (index) => {
+  const derivedKey = hdKey.derive(`m/${index}`)
+  const address = EthereumJsUtil.publicToAddress(derivedKey.publicKey, true).toString('hex')
+  return Promise.resolve(`0x${address}`)
+}
+
 export default class EthereumWalletTrezor extends EthereumWallet {
 
   static type = 'EthereumWalletTrezor';
@@ -26,20 +32,19 @@ export default class EthereumWalletTrezor extends EthereumWallet {
 
   static connect = (derivationPath = 'm/44\'/60\'/0\'/0') =>
     Trezor.getXPubKey(derivationPath)
-      .then((result) => {
-        log.info('Trezor xPubKey success')
+      .then(({ publicKey, chainCode }) => {
+        log.info('Trezor getXPubKey success')
         const hdKey = new HDKey()
-        hdKey.publicKey = Buffer.from(result.publicKey, 'hex')
-        hdKey.chainCode = Buffer.from(result.chainCode, 'hex')
-        return {
+        hdKey.publicKey = Buffer.from(publicKey, 'hex')
+        hdKey.chainCode = Buffer.from(chainCode, 'hex')
+        return createAddressGetter(hdKey)
+      })
+      .then((getAddressIndex) => getAddressIndex(0)
+        .then((address) => ({
           derivationPath,
-          getAddress: (index) => {
-            const derivedKey = hdKey.derive(`m/${index}`)
-            const address = EthereumJsUtil.publicToAddress(derivedKey.publicKey, true).toString('hex')
-            return Promise.resolve(`0x${address}`)
-          }
-        }
-      });
+          getAddress: getAddressIndex,
+          firstAddress: address
+        })))
 
   getAddress = () => this.address;
 
