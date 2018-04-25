@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
-import { Row, Col, Card } from 'reactstrap'
 
 const instructions = {
   ledger: [
@@ -28,7 +27,7 @@ const instructions = {
       text: 'Connect your TREZOR to begin'
     },
     {
-      icon: 'fa-external-link-square',
+      icon: 'fa-window-restore',
       text: (<span>When the popop asks if you want to export the public key, select <b>Export</b></span>)
     },
     {
@@ -39,16 +38,20 @@ const instructions = {
 }
 
 const ConnectionInstructions = ({ type }) => (
-  <Row className='gutter-2 text-muted'>
-    {instructions[type].map(({ icon, text }, i) => (
-      <Col key={i} xs='12' md={(i === instructions[type].length - 1) ? true : '6'}>
-        <Card body className='h-100 flex-col-center flat'>
-          <i className={classNames('mb-2 fa fa-2x', icon)} />
-          <div>{text}</div>
-        </Card>
-      </Col>
-    ))}
-  </Row>
+  <table className='mx-0 mx-md-5'>
+    <tbody>
+      {instructions[type].map(({ icon, text }) => (
+        <tr key={text}>
+          <td className='text-center'>
+            <i className={classNames('fa fa-2x', icon)} />
+          </td>
+          <td className='text-left p-3'>
+            {text}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
 )
 
 ConnectionInstructions.propTypes = {

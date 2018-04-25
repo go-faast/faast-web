@@ -83,12 +83,12 @@ class HardwareWalletModal extends Component {
 
   render () {
     const {
-      commStatus, retrySeconds, derivationPath, changeAccountPage, toggleAccountSelect,
+      type, commStatus, retrySeconds, derivationPath, changeAccountPage, toggleAccountSelect,
       selectedAccount, selectedPageAccounts, selectedPageIndex, selectedPageStartIndex, selectedPageEndIndex
     } = this.props
     const { id: selectedAccountId } = selectedAccount || {}
     const viewProps = {
-      name: config.walletTypes.name,
+      name: config.walletTypes[type].name,
       confirmAccountSelection: this.handleConfirmAccountSelection,
       onConfirm: this.handleConfirmAccountSelection,
       disableConfirm: typeof selectedAccountId === 'undefined' || selectedAccountId === null,
