@@ -1,25 +1,39 @@
 import { createReducer } from 'redux-act'
+import { omit } from 'lodash'
 
 import {
-  stateReset, derivationPathChanged,
+  stateReset, accountAdded, accountRemoved, connectAssetReset, derivationPathChanged, 
   connectTimeoutStarted, connectTimeoutCleared, retryTimerStarted, retryTimerTicked, retryTimerCleared,
   setStatusWaiting, setStatusConnecting, setStatusConnected, setStatusCancelled, setStatusError,
-  selectedAccountIndexChanged, resetAccountState, setShowAccountSelect,
-  accountPageChanged, accountPageSizeChanged, accountLoadStart, accountLoadEnd,
+  selectedAccountChanged, accountSelectReset, connectBatchStarted, connectBatchPopped, connectBatchReset,
+  accountPageChanged, accountPageSizeChanged, accountLoadStart, accountLoadSuccess, accountLoadError
 } from 'Actions/connectHardwareWallet'
 
-const initialState = {
+const initialConnectAssetState = {
+  assetSymbol: '',
   status: '',
-  derivationPath: null,
+  derivationPath: undefined,
   connectTimeoutId: null,
   retryTimerId: null,
   retryTimerSeconds: 0,
+}
+
+const initialAccountSelectState = {
   accountRetriever: () => Promise.resolve(),
-  showAccountSelect: false,
+  accountSelectEnabled: false,
   accounts: [],
   accountPageSize: 5,
   selectedPageIndex: 0,
   selectedAccountIndex: 0,
+}
+
+const initialState = {
+  walletId: '',
+  walletType: '',
+  connectedAccountIds: {}, // Map of assetSymbol to added account walletId
+  connectBatchQueue: null,
+  ...initialConnectAssetState,
+  ...initialAccountSelectState,
 }
 
 const merge = (state, payload) => ({ ...state, ...payload })
@@ -35,6 +49,31 @@ const mergeAccount = (state, { index, ...payload }) => {
 
 export default createReducer({
   [stateReset]: () => initialState,
+  [connectBatchStarted]: merge,
+  [connectBatchPopped]: (state) => ({
+    ...state,
+    connectBatchQueue: [...state.connectBatchQueue.slice(1)]
+  }),
+  [connectBatchReset]: (state) => ({
+    ...state,
+    connectBatchQueue: initialState.connectBatchQueue
+  }),
+  [accountAdded]: (state, { assetSymbol, accountId }) => ({
+    ...state,
+    connectedAccountIds: {
+      ...state.connectedAccountIds,
+      [assetSymbol]: accountId,
+    }
+  }),
+  [accountRemoved]: (state, { assetSymbol }) => ({
+    ...state,
+    connectedAccountIds: omit(state.connectedAccountIds, assetSymbol)
+  }),
+  [connectAssetReset]: (state) => ({
+    ...state,
+    ...initialConnectAssetState,
+    ...initialAccountSelectState,
+  }),
   [derivationPathChanged]: merge,
   [connectTimeoutStarted]: merge,
   [connectTimeoutCleared]: (state) => ({
@@ -48,18 +87,21 @@ export default createReducer({
     retryTimerId: initialState.retryTimerId,
     retryTimerSeconds: initialState.retryTimerSeconds
   }),
+  [setStatusConnecting]: (state, { walletType, assetSymbol }) => ({
+    ...state,
+    status: 'connecting',
+    walletType,
+    assetSymbol
+  }),
   [setStatusWaiting]: (state) => ({
     ...state,
     status: 'waiting'
   }),
-  [setStatusConnecting]: (state) => ({
-    ...state,
-    status: 'connecting'
-  }),
-  [setStatusConnected]: (state, { accountRetriever }) => ({
+  [setStatusConnected]: (state, { accountRetriever, accountSelectEnabled }) => ({
     ...state,
     status: 'connected',
-    accountRetriever
+    accountRetriever,
+    accountSelectEnabled
   }),
   [setStatusCancelled]: (state) => ({
     ...state,
@@ -70,17 +112,14 @@ export default createReducer({
     status: 'error',
     error
   }),
-  [resetAccountState]: (state) => ({
+  [accountSelectReset]: (state) => ({
     ...state,
-    accounts: initialState.accounts,
-    accountPageSize: initialState.accountPageSize,
-    selectedPageIndex: initialState.selectedPageIndex,
-    selectedAccountIndex: initialState.selectedAccountIndex,
+    ...initialAccountSelectState,
   }),
-  [setShowAccountSelect]: merge,
-  [selectedAccountIndexChanged]: merge,
+  [selectedAccountChanged]: merge,
   [accountPageChanged]: merge,
   [accountPageSizeChanged]: merge,
   [accountLoadStart]: mergeAccount,
-  [accountLoadEnd]: mergeAccount,
+  [accountLoadSuccess]: mergeAccount,
+  [accountLoadError]: mergeAccount,
 }, initialState)

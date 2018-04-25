@@ -11,12 +11,17 @@ export default compose(
   setPropTypes({
     type: PropTypes.oneOf(Object.keys(config.walletTypes)).isRequired,
   }),
-  withProps(({ type }) => ({
-    ...config.walletTypes[type],
-    tag: Link,
-    to: `/connect/${type}`,
-    color: 'primary',
-    outline: true,
-  })),
+  withProps(({ type }) => {
+    const { name, icon, supportedAssets } = config.walletTypes[type]
+    return ({
+      name,
+      icon,
+      assets: Object.keys(supportedAssets),
+      tag: Link,
+      to: `/connect/hw/${type}`,
+      color: 'primary',
+      outline: true,
+    })
+  }),
 )(AccessTile)
       

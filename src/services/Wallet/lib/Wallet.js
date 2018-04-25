@@ -49,7 +49,7 @@ export default class Wallet {
     if (typeof assets === 'object') {
       return Object.values(assets)
     }
-    return assets
+    return assets || []
   };
 
   getAllAssetsBySymbol = () => {
@@ -57,7 +57,7 @@ export default class Wallet {
     if (Array.isArray(assets)) {
       return assets.reduce((mapped, asset) => ({ ...mapped, [asset.symbol]: asset }), {})
     }
-    return assets
+    return assets || {}
   };
 
   getSymbol = (assetOrSymbol) => {
@@ -67,7 +67,7 @@ export default class Wallet {
     return assetOrSymbol
   };
 
-  getAsset = (assetOrSymbol) => this.getAllAssetsBySymbol()[this.getSymbol(assetOrSymbol)];
+  getAsset = (assetOrSymbol) => this.getAllAssetsBySymbol()[this.getSymbol(assetOrSymbol)] || assetOrSymbol;
 
   getSupportedAssets = () => this.getAllAssets().filter(::this.isAssetSupported);
 

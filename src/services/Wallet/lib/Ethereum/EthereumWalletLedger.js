@@ -6,19 +6,20 @@ import { addHexPrefix } from 'Utilities/helpers'
 
 import EthereumWallet from './EthereumWallet'
 
-const createAddressGetter = (derivationPath) => (index) =>
-  window.faast.hw.ledger.getAddress_async(`${derivationPath}/${index}`)
-    .then(({ address }) => address)
+const createAccountGetter = (baseDerivationPath) => (index) => {
+  const fullDerivationPath = `${baseDerivationPath}/${index}`
+  return window.faast.hw.ledger.getAddress_async(fullDerivationPath)
+    .then(({ address }) => new EthereumWalletLedger(address, fullDerivationPath))
+}
 
 export default class EthereumWalletLedger extends EthereumWallet {
 
   static type = 'EthereumWalletLedger';
 
-  constructor(address, derivationPath, isMocking) {
+  constructor(address, derivationPath) {
     super()
     this.address = address
     this.derivationPath = derivationPath // Expects full path to `address`
-    this._isMocking = isMocking
   }
 
   getType = () => EthereumWalletLedger.type;
@@ -29,13 +30,12 @@ export default class EthereumWalletLedger extends EthereumWallet {
     return window.faast.hw.ledger.getAppConfiguration_async()
       .then((data) => {
         log.info(`Ledger connected, version ${data.version}`)
-        return createAddressGetter(derivationPath)
+        return createAccountGetter(derivationPath)
       })
-      .then((getAddressIndex) => getAddressIndex(0)
-        .then((address) => ({
+      .then((getAccount) => getAccount(0)
+        .then(() => ({
           derivationPath,
-          getAddress: getAddressIndex,
-          firstAddress: address
+          getAccount
         })))
   }
 

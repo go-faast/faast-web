@@ -28,10 +28,6 @@ export default {
   bitcoreInsightApi: 'https://bitcore.faa.st/insight-api',
   siteUrl: typeof SITE_URL !== 'undefined' ? SITE_URL : 'https://faa.st',
   apiUrl: typeof API_URL !== 'undefined' ? API_URL : 'https://api.faa.st/api/v1/public',
-  hdDerivationPath: {
-    ledger: 'm/44\'/60\'/0\'',
-    trezor: 'm/44\'/60\'/0\'/0'
-  },
   encrOpts: {
     kdf: 'scrypt',
     n: 1024
@@ -44,12 +40,23 @@ export default {
     ledger: {
       name: 'Ledger Wallet',
       icon: ledgerLogo,
-      assets: ['ETH']
+      supportedAssets: {
+        ETH: {
+          derivationPath: 'm/44\'/60\'/0\''
+        }
+      }
     },
     trezor: {
       name: 'TREZOR',
       icon: trezorLogo,
-      assets: ['BTC', 'ETH']
+      supportedAssets: {
+        ETH: {
+          derivationPath: 'm/44\'/60\'/0\'/0'
+        },
+        BTC: {
+          derivationPath: null,
+        }
+      }
     }
   },
   highCharts,

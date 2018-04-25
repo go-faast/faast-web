@@ -149,7 +149,8 @@ let config = {
       Styles: 'App/styles',
       Actions: 'App/actions',
       Hoc: 'App/hoc',
-      Selectors: 'App/selectors'
+      Selectors: 'App/selectors',
+      Routes: 'App/routes',
     },
     extensions: ['.js', '.jsx', '.json', '.scss', '.css']
   },
