@@ -12,7 +12,7 @@ import { EthereumWalletLedger, EthereumWalletTrezor } from 'Services/Wallet'
 
 import {
   getConnectTimeoutId, getRetryTimerId, getDerivationPath, getAccountRetriever,
-  getAccountPageSize, getShowAccountSelect, getSelectedPageIndex
+  getAccountPageSize, getShowAccountSelect, getSelectedPageIndex, isReset,
 } from 'Selectors/connectHardwareWallet'
 
 const CONNECT_RETRY_SECONDS = 10
@@ -116,9 +116,23 @@ export const changeAccountPage = (page = 0) => (dispatch) => {
   dispatch(loadAccountPage(page))
 }
 
-const handleEthereumConnected = ({ getAddress }) => (dispatch) => {
-  dispatch(setStatusConnected(getAddress))
-  dispatch(loadAccountBalance(0))
+const startConnectingEthereum = (WalletType, derivationPath, errorHandler) => (dispatch, getState) => {
+  dispatch(setStatusConnecting())
+
+  return WalletType.connect(derivationPath)
+    .then(({ getAddress }) => {
+      if (isReset(getState())) {
+        return
+      }
+      dispatch(setStatusConnected(getAddress))
+      dispatch(loadAccountBalance(0))
+    })
+    .catch((e) => {
+      if (isReset(getState())) {
+        return
+      }
+      return errorHandler(e)
+    })
 }
 
 export const connectLedgerEthereum = (derivationPath) => (dispatch) => {
@@ -133,20 +147,15 @@ export const connectLedgerEthereum = (derivationPath) => (dispatch) => {
     dispatch(setStatusWaiting())
   }
 
-  const ledgerError = (e) => {
+  const handleLedgerError = (e) => {
     log.error(e)
     dispatch(clearConnectTimeout())
     const connectTimeoutId = window.setTimeout(retryConnect, 1000)
     dispatch(connectTimeoutStarted(connectTimeoutId))
   }
 
-  const tryConnect = () => {
-    dispatch(setStatusConnecting())
+  const tryConnect = () => dispatch(startConnectingEthereum(EthereumWalletLedger, derivationPath, handleLedgerError))
 
-    return EthereumWalletLedger.connect(derivationPath)
-      .then((result) => dispatch(handleEthereumConnected(result)))
-      .catch(ledgerError)
-  }
   tryConnect()
 }
 
@@ -155,7 +164,7 @@ export const connectTrezorEthereum = (derivationPath) => (dispatch) => {
     return toastr.error('Error: Trezor Connect unavailable')
   }
 
-  const trezorError = (e) => {
+  const handleTrezorError = (e) => {
     const message = e.message
     if (['cancelled', 'window closed'].includes(message.toLowerCase())) {
       dispatch(setStatusCancelled())
@@ -166,14 +175,7 @@ export const connectTrezorEthereum = (derivationPath) => (dispatch) => {
     }
   }
 
-  const tryConnect = () => {
-    dispatch(setStatusConnecting())
-
-    return EthereumWalletTrezor.connect(derivationPath)
-      .then((result) => dispatch(handleEthereumConnected(result)))
-      .catch(trezorError)
-  }
-  tryConnect()
+  dispatch(startConnectingEthereum(EthereumWalletTrezor, derivationPath, handleTrezorError))
 }
 
 export const connectEthereum = (type) => (dispatch, getState) => {

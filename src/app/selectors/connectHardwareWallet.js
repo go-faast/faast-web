@@ -14,6 +14,8 @@ export const getSelectedAccountIndex = createSelector(getBaseState, ({ selectedA
 export const getAccounts = createSelector(getBaseState, ({ accounts }) => accounts.map((a, i) => ({ index: i, ...a })))
 export const getAccountPageSize = createSelector(getBaseState, ({ accountPageSize }) => accountPageSize)
 
+export const isReset = createSelector(getStatus, (status) => !status)
+
 export const getAccountPageStartIndex = createSelector(
   getSelectedPageIndex,
   getAccountPageSize,
