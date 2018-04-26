@@ -8,7 +8,7 @@ import { timer } from 'Utilities/helpers'
 import log from 'Utilities/log'
 
 import Trezor from 'Services/Trezor'
-import { EthereumWalletLedger, EthereumWalletTrezor, BitcoinWalletTrezor } from 'Services/Wallet'
+import { Wallet, EthereumWalletLedger, EthereumWalletTrezor, BitcoinWalletTrezor } from 'Services/Wallet'
 
 import { getAsset } from 'Selectors'
 import {
@@ -132,35 +132,21 @@ export const changeAccountPage = (page = 0) => (dispatch) => {
   dispatch(loadAccountPage(page))
 }
 
-const createStartConnectingEthereum = (WalletType) => (walletType, assetSymbol, errorHandler) => (dispatch, getState) => {
+const createStartConnecting = (walletConnect) => (walletType, assetSymbol, errorHandler) => (dispatch, getState) => {
   dispatch(setStatusConnecting(walletType, assetSymbol))
   const derivationPath = getDerivationPath(getState())
-  return WalletType.connect(derivationPath)
-    .then(({ getAccount }) => {
+  return walletConnect(derivationPath)
+    .then((result) => {
       if (isStatusReset(getState())) {
         return
       }
-      dispatch(setStatusConnected(getAccount, true))
-      dispatch(loadAccountBalance())
-      dispatch(routerPush(routes.connectHwWalletAssetConfirm(walletType, assetSymbol)))
-    })
-    .catch((e) => {
-      if (isStatusReset(getState())) {
-        return
+      if (result instanceof Wallet) {
+        dispatch(setStatusConnected(() => Promise.resolve(result), false))
+      } else if (result.getAccount) {
+        dispatch(setStatusConnected(result.getAccount, true))
+      } else {
+        throw new Error(`Invalid walletConnect result of type ${typeof result}`)
       }
-      return errorHandler(e)
-    })
-}
-
-const createStartConnectingBitcoin = (WalletType) => (walletType, assetSymbol, errorHandler) => (dispatch, getState) => {
-  dispatch(setStatusConnecting(walletType, assetSymbol))
-  const derivationPath = getDerivationPath(getState())
-  return WalletType.fromPath(derivationPath)
-    .then((walletInstance) => {
-      if (isStatusReset(getState())) {
-        return
-      }
-      dispatch(setStatusConnected(() => Promise.resolve(walletInstance), false))
       dispatch(loadAccountBalance())
       dispatch(routerPush(routes.connectHwWalletAssetConfirm(walletType, assetSymbol)))
     })
@@ -217,11 +203,11 @@ export const createConnectTrezor = (startConnecting) => (walletType, assetSymbol
 
 const connectActions = {
   ledger: {
-    ETH: createConnectLedger(createStartConnectingEthereum(EthereumWalletLedger)),
+    ETH: createConnectLedger(createStartConnecting(EthereumWalletLedger.connect)),
   },
   trezor: {
-    ETH: createConnectTrezor(createStartConnectingEthereum(EthereumWalletTrezor)),
-    BTC: createConnectTrezor(createStartConnectingBitcoin(BitcoinWalletTrezor)),
+    ETH: createConnectTrezor(createStartConnecting(EthereumWalletTrezor.connect)),
+    BTC: createConnectTrezor(createStartConnecting(BitcoinWalletTrezor.fromPath)),
   },
 }
 
