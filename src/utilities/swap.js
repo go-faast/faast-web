@@ -95,10 +95,10 @@ export const getSwapFriendlyError = (swap) => {
   return 'Unknown error'
 }
 
-export const estimateReceiveAmount = (swap, asset) => {
-  const { fee, rate, sendUnits } = (swap || {})
+export const estimateReceiveAmount = (swap) => {
+  const { fee, rate, sendUnits, receiveAsset } = (swap || {})
   if (fee && rate && sendUnits) {
-    const converted = toUnit(sendUnits, rate, asset.decimals)
-    return toPrecision(converted.minus(fee), asset.decimals)
+    const converted = toUnit(sendUnits, rate, receiveAsset.decimals)
+    return toPrecision(converted.minus(fee), receiveAsset.decimals)
   }
 }

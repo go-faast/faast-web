@@ -17,13 +17,10 @@ const createSwapExtender = (allAssets, allWallets) => (swap) => {
   const receiveAsset = allAssets[receiveSymbol]
   const txFeeAsset = allAssets[txFeeSymbol]
   const txFeeFiat = txFeeAsset && txFeeAmount ? txFeeAsset.price.times(txFeeAmount) : undefined
-  return {
+  swap = {
     ...swap,
     sendAsset,
     receiveAsset,
-    receiveUnits: estimateReceiveAmount(swap, receiveAsset),
-    status: getSwapStatus(swap),
-    friendlyError: getSwapFriendlyError(swap),
     hasFee: fee && toBigNumber(fee).gt(0),
     tx: {
       ...tx,
@@ -33,6 +30,12 @@ const createSwapExtender = (allAssets, allWallets) => (swap) => {
       feeAsset: txFeeAsset,
       feeFiat: txFeeFiat,
     }
+  }
+  return {
+    ...swap,
+    receiveUnits: estimateReceiveAmount(swap),
+    status: getSwapStatus(swap),
+    friendlyError: getSwapFriendlyError(swap),
   }
 }
 
