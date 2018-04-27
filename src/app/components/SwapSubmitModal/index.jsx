@@ -69,7 +69,6 @@ class SwapSubmitModal extends Component {
   render () {
     const { requiresSigning, readyToSign, readyToSend } = this.props
     const { startedSigning, startedSending } = this.state
-    log.debug({ ...this.props, ...this.state })
     const showSubmit = !requiresSigning || startedSigning // True if continue button triggers tx sending, false for signing
     const continueDisabled = showSubmit ? (!readyToSend || startedSending) : (!readyToSign || startedSigning)
     const continueLoading = showSubmit ? startedSending : startedSigning
