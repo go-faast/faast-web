@@ -12,7 +12,12 @@
 <body>
   <div id="root"></div>
   <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
-  <script>window.TREZOR_POPUP_ORIGIN = 'https://connect.trezor.io';</script>
+  <script>
+    // Fixes Trezor Connect during local development
+    window.TREZOR_POPUP_ORIGIN = 'https://connect.trezor.io';
+    // Workaround for bitcore version guard. Some browser extensions use bitcore which breaks this app entirely.
+    delete window._bitcore
+  </script>
   <script src="https://connect.trezor.io/4/connect.js"></script>
 </body>
 </html>
