@@ -1,4 +1,4 @@
-import { createAction } from 'redux-act'
+import { newScopedCreateAction } from 'Utilities/action'
 import { replace as routerReplace, push as routerPush } from 'react-router-redux'
 
 import routes from 'Routes'
@@ -22,40 +22,39 @@ import { removeWallet } from 'Actions/wallet'
 
 const CONNECT_RETRY_SECONDS = 10
 
-const ACTION_TYPE_PREFIX = 'CONNECT_HARDWARE_WALLET'
-const createPrefixedAction = (type, ...args) => createAction(`${ACTION_TYPE_PREFIX}/${type}`, ...args)
+const createAction = newScopedCreateAction(__filename)
 
-export const stateReset = createPrefixedAction('RESET')
+export const stateReset = createAction('RESET')
 
-export const accountAdded = createPrefixedAction('ACCOUNT_ADDED', (assetSymbol, accountId) => ({ assetSymbol, accountId }))
-export const accountRemoved = createPrefixedAction('ACCOUNT_REMOVED', (assetSymbol, accountId) => ({ assetSymbol, accountId }))
-export const connectBatchStarted = createPrefixedAction('CONNECT_BATCH_STARTED', (walletType, assetSymbols) => ({ walletType, connectBatchQueue: assetSymbols }))
-export const connectBatchPopped = createPrefixedAction('CONNECT_BATCH_POP')
-export const connectBatchReset = createPrefixedAction('CONNECT_BATCH_RESET')
+export const accountAdded = createAction('ACCOUNT_ADDED', (assetSymbol, accountId) => ({ assetSymbol, accountId }))
+export const accountRemoved = createAction('ACCOUNT_REMOVED', (assetSymbol, accountId) => ({ assetSymbol, accountId }))
+export const connectBatchStarted = createAction('CONNECT_BATCH_STARTED', (walletType, assetSymbols) => ({ walletType, connectBatchQueue: assetSymbols }))
+export const connectBatchPopped = createAction('CONNECT_BATCH_POP')
+export const connectBatchReset = createAction('CONNECT_BATCH_RESET')
 
-export const connectAssetReset = createPrefixedAction('CONNECT_ASSET_RESET')
-export const derivationPathChanged = createPrefixedAction('DERIVATION_PATH_CHANGED', (derivationPath) => ({ derivationPath }))
+export const connectAssetReset = createAction('CONNECT_ASSET_RESET')
+export const derivationPathChanged = createAction('DERIVATION_PATH_CHANGED', (derivationPath) => ({ derivationPath }))
 
-export const connectTimeoutStarted = createPrefixedAction('CONNECT_TIMEOUT_STARTED', (id) => ({ connectTimeoutId: id }))
-export const connectTimeoutCleared = createPrefixedAction('CONNECT_TIMEOUT_CLEARED')
+export const connectTimeoutStarted = createAction('CONNECT_TIMEOUT_STARTED', (id) => ({ connectTimeoutId: id }))
+export const connectTimeoutCleared = createAction('CONNECT_TIMEOUT_CLEARED')
 
-export const retryTimerStarted = createPrefixedAction('RETRY_TIMER_STARTED', (id, seconds) => ({ retryTimerId: id, retryTimerSeconds: seconds }))
-export const retryTimerTicked = createPrefixedAction('RETRY_TIMER_TICKED', (seconds) => ({ retryTimerSeconds: seconds }))
-export const retryTimerCleared = createPrefixedAction('RETRY_TIMER_CLEARED')
+export const retryTimerStarted = createAction('RETRY_TIMER_STARTED', (id, seconds) => ({ retryTimerId: id, retryTimerSeconds: seconds }))
+export const retryTimerTicked = createAction('RETRY_TIMER_TICKED', (seconds) => ({ retryTimerSeconds: seconds }))
+export const retryTimerCleared = createAction('RETRY_TIMER_CLEARED')
 
-export const setStatusConnecting = createPrefixedAction('SET_STATUS_CONNECTING', (walletType, assetSymbol) => ({ walletType, assetSymbol }))
-export const setStatusWaiting = createPrefixedAction('SET_STATUS_WAITING')
-export const setStatusConnected = createPrefixedAction('SET_STATUS_CONNECTED', (accountRetriever, accountSelectEnabled) => ({ accountRetriever, accountSelectEnabled }))
-export const setStatusCancelled = createPrefixedAction('SET_STATUS_CANCELLED')
-export const setStatusError = createPrefixedAction('SET_STATUS_ERROR', (message) => ({ error: message }))
+export const setStatusConnecting = createAction('SET_STATUS_CONNECTING', (walletType, assetSymbol) => ({ walletType, assetSymbol }))
+export const setStatusWaiting = createAction('SET_STATUS_WAITING')
+export const setStatusConnected = createAction('SET_STATUS_CONNECTED', (accountRetriever, accountSelectEnabled) => ({ accountRetriever, accountSelectEnabled }))
+export const setStatusCancelled = createAction('SET_STATUS_CANCELLED')
+export const setStatusError = createAction('SET_STATUS_ERROR', (message) => ({ error: message }))
 
-export const accountSelectReset = createPrefixedAction('ASSET_SELECT_RESET')
-export const selectedAccountChanged = createPrefixedAction('SELECTED_ACCOUNT_CHANGED', (selectedAccountIndex) => ({ selectedAccountIndex }))
-export const accountPageChanged = createPrefixedAction('ACCOUNT_PAGE_CHANGED', (selectedPageIndex) => ({ selectedPageIndex }))
-export const accountPageSizeChanged = createPrefixedAction('ACCOUNT_PAGE_SIZE_CHANGED', (accountPageSize) => ({ accountPageSize }))
-export const accountLoadStart = createPrefixedAction('ACCOUNT_LOAD_START', (index, label, address) => ({ index, label, address }))
-export const accountLoadSuccess = createPrefixedAction('ACCOUNT_LOAD_SUCCESS', (index, balance) => ({ index, balance }))
-export const accountLoadError = createPrefixedAction('ACCOUNT_LOAD_ERROR', (index, error) => ({ index, error }))
+export const accountSelectReset = createAction('ASSET_SELECT_RESET')
+export const selectedAccountChanged = createAction('SELECTED_ACCOUNT_CHANGED', (selectedAccountIndex) => ({ selectedAccountIndex }))
+export const accountPageChanged = createAction('ACCOUNT_PAGE_CHANGED', (selectedPageIndex) => ({ selectedPageIndex }))
+export const accountPageSizeChanged = createAction('ACCOUNT_PAGE_SIZE_CHANGED', (accountPageSize) => ({ accountPageSize }))
+export const accountLoadStart = createAction('ACCOUNT_LOAD_START', (index, label, address) => ({ index, label, address }))
+export const accountLoadSuccess = createAction('ACCOUNT_LOAD_SUCCESS', (index, balance) => ({ index, balance }))
+export const accountLoadError = createAction('ACCOUNT_LOAD_ERROR', (index, error) => ({ index, error }))
 
 const clearConnectTimeout = () => (dispatch, getState) => {
   window.clearTimeout(getConnectTimeoutId(getState()))

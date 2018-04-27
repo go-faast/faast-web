@@ -1,4 +1,4 @@
-import { createAction } from 'redux-act'
+import { newScopedCreateAction } from 'Utilities/action'
 import sha256 from 'hash.js/lib/hash/sha/256'
 
 import blockstack from 'Utilities/blockstack'
@@ -6,6 +6,8 @@ import log from 'Utilities/log'
 import walletService, { Wallet, MultiWallet, BlockstackWallet } from 'Services/Wallet'
 import { getAllAssets, getWalletParents } from 'Selectors'
 import { getWalletIconProps } from 'Utilities/walletIcon'
+
+const createAction = newScopedCreateAction(__filename)
 
 const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   id: wallet.getId(),
@@ -22,19 +24,19 @@ const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   nestedWalletIds: wallet.getType() === MultiWallet.type ? wallet.wallets.map((w) => w.getId()) : [],
 }) : wallet
 
-export const walletAdded = createAction('WALLET_ADDED', convertWalletInstance)
-export const walletUpdated = createAction('WALLET_UPDATED', convertWalletInstance)
-export const walletRemoved = createAction('WALLET_REMOVED', convertWalletInstance)
+export const walletAdded = createAction('ADDED', convertWalletInstance)
+export const walletUpdated = createAction('UPDATED', convertWalletInstance)
+export const walletRemoved = createAction('REMOVED', convertWalletInstance)
 
-export const allWalletsUpdated = createAction('ALL_WALLETS_UPDATED', (...walletInstances) => walletInstances.map(convertWalletInstance))
-export const allWalletsRemoved = createAction('ALL_WALLETS_REMOVED')
+export const allWalletsUpdated = createAction('ALL_UPDATED', (...walletInstances) => walletInstances.map(convertWalletInstance))
+export const allWalletsRemoved = createAction('ALL_REMOVED')
 
-export const walletBalancesUpdating = createAction('WALLET_BALANCES_UPDATING', (walletId) => ({ id: walletId }))
-export const walletBalancesUpdated = createAction('WALLET_BALANCES_UPDATED', (walletId, balancesByAsset) => ({
+export const walletBalancesUpdating = createAction('BALANCES_UPDATING', (walletId) => ({ id: walletId }))
+export const walletBalancesUpdated = createAction('BALANCES_UPDATED', (walletId, balancesByAsset) => ({
   id: walletId,
   balances: balancesByAsset
 }))
-export const walletBalancesError = createAction('WALLET_BALANCES_ERROR', (walletId, error) => ({
+export const walletBalancesError = createAction('BALANCES_ERROR', (walletId, error) => ({
   id: walletId,
   error: error.message || error,
 }))

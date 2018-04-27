@@ -1,4 +1,4 @@
-import { createAction } from 'redux-act'
+import { newScopedCreateAction } from 'Utilities/action'
 
 import config from 'Config'
 import log from 'Utilities/log'
@@ -8,6 +8,8 @@ import {
   addWallet, removeWallet, addNestedWallet, restoreAllWallets, updateWalletBalances,
 } from 'Actions/wallet'
 import { retrieveAssetPrices } from 'Actions/asset'
+
+const createAction = newScopedCreateAction(__filename)
 
 const { defaultPortfolioId } = config
 

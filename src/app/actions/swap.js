@@ -1,4 +1,4 @@
-import { createAction } from 'redux-act'
+import { newScopedCreateAction } from 'Utilities/action'
 import { isObject, isArray, isUndefined } from 'lodash'
 
 import { getCurrentWallet } from 'Selectors'
@@ -24,20 +24,22 @@ import { getWalletPassword } from 'Actions/walletPasswordPrompt'
 
 import { getAsset, getAllWalletsArray, getAllSwapsArray } from 'Selectors'
 
-export const setSwaps = createAction('SET_SWAPS')
-export const resetSwaps = createAction('RESET_SWAPS')
-export const swapUpdated = createAction('SWAP_UPDATED', (id, data) => ({ id, ...data }))
-export const swapOrderUpdated = createAction('SWAP_ORDER_UPDATED', (id, data) => ({ id, order: data }))
+const createAction = newScopedCreateAction(__filename)
 
-export const swapTxUpdated = createAction('SWAP_TX_UPDATED', (id, data) => ({ id, tx: data }))
+export const setSwaps = createAction('SET_ALL')
+export const resetSwaps = createAction('RESET_ALL')
+export const swapUpdated = createAction('UPDATED', (id, data) => ({ id, ...data }))
+export const swapOrderUpdated = createAction('ORDER_UPDATED', (id, data) => ({ id, order: data }))
 
-export const swapTxSigningStart = createAction('SWAP_TX_SIGNING_START', (id) => ({ id }))
-export const swapTxSigningSuccess = createAction('SWAP_TX_SIGNING_SUCCESS', (id, updatedTx) => ({ id, tx: updatedTx }))
-export const swapTxSigningFailed = createAction('SWAP_TX_SIGNING_FAILED', (id, errorMessage) => ({ id, signingError: errorMessage }))
+export const swapTxUpdated = createAction('TX_UPDATED', (id, data) => ({ id, tx: data }))
 
-export const swapTxSendingStart = createAction('SWAP_TX_SENDING_START', (id) => ({ id }))
-export const swapTxSendingSuccess = createAction('SWAP_TX_SENDING_SUCCESS', (id, updatedTx) => ({ id, tx: updatedTx }))
-export const swapTxSendingFailed = createAction('SWAP_TX_SENDING_FAILED', (id, errorMessage) => ({ id, sendingError: errorMessage }))
+export const swapTxSigningStart = createAction('TX_SIGNING_START', (id) => ({ id }))
+export const swapTxSigningSuccess = createAction('TX_SIGNING_SUCCESS', (id, updatedTx) => ({ id, tx: updatedTx }))
+export const swapTxSigningFailed = createAction('TX_SIGNING_FAILED', (id, errorMessage) => ({ id, signingError: errorMessage }))
+
+export const swapTxSendingStart = createAction('TX_SENDING_START', (id) => ({ id }))
+export const swapTxSendingSuccess = createAction('TX_SENDING_SUCCESS', (id, updatedTx) => ({ id, tx: updatedTx }))
+export const swapTxSendingFailed = createAction('TX_SENDING_FAILED', (id, errorMessage) => ({ id, sendingError: errorMessage }))
 
 const clearAllIntervals = () => {
   Object.keys(window.faast.intervals).forEach((key) => {

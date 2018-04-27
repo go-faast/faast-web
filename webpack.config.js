@@ -93,6 +93,7 @@ let config = {
   },
   node: {
     fs: 'empty',
+    __filename: true,
   },
   module: {
     rules: [{

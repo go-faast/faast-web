@@ -1,4 +1,6 @@
-import { createAction } from 'redux-act'
+import { newScopedCreateAction } from 'Utilities/action'
+
+const createAction = newScopedCreateAction(__filename)
 
 export const resetAll = createAction('RESET_ALL')
 

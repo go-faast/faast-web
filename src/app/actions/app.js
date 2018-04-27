@@ -1,4 +1,4 @@
-import { createAction } from 'redux-act'
+import { newScopedCreateAction } from 'Utilities/action'
 import queryString from 'query-string'
 import idb from 'Utilities/idb'
 import { restoreFromAddress } from 'Utilities/storage'
@@ -12,8 +12,10 @@ import { setSettings } from './redux'
 import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
 import { restoreSwundle } from './swap'
 
-export const appReady = createAction('APP_READY')
-export const appError = createAction('APP_ERROR')
+const createAction = newScopedCreateAction(__filename)
+
+export const appReady = createAction('READY')
+export const appError = createAction('ERROR')
 
 export const restoreState = (dispatch, getState) => Promise.resolve()
   .then(() => dispatch(restoreAllPortfolios()))

@@ -1,15 +1,17 @@
-import { createAction } from 'redux-act'
+import { newScopedCreateAction } from 'Utilities/action'
 import log from 'Utilities/log'
 import Faast from 'Services/Faast'
 
-export const assetsAdded = createAction('ASSETS_UPDATED')
-export const assetsLoadingError = createAction('ASSETS_LOADING_ERROR')
+const createAction = newScopedCreateAction(__filename)
 
-export const assetPriceUpdated = createAction('ASSET_PRICE_UPDATED')
-export const assetPriceError = createAction('ASSET_PRICE_ERROR', (symbol, priceError) => ({ symbol, priceError }))
+export const assetsAdded = createAction('ADDED')
+export const assetsLoadingError = createAction('LOADING_ERROR')
 
-export const assetPricesUpdated = createAction('ASSET_PRICES_UPDATED')
-export const assetPricesError = createAction('ASSET_PRICES_ERROR')
+export const assetPriceUpdated = createAction('PRICE_UPDATED')
+export const assetPriceError = createAction('PRICE_ERROR', (symbol, priceError) => ({ symbol, priceError }))
+
+export const assetPricesUpdated = createAction('PRICES_UPDATED')
+export const assetPricesError = createAction('PRICES_ERROR')
 
 export const retrieveAssets = () => (dispatch) =>
   Faast.getAssets()

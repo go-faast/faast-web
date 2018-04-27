@@ -1,4 +1,4 @@
-import { createAction } from 'redux-act'
+import { newScopedCreateAction } from 'Utilities/action'
 import { isString } from 'lodash'
 
 import walletService, { EthereumWalletViewOnly } from 'Services/Wallet'
@@ -9,9 +9,11 @@ import { getWallet, getAccountSearchResultId } from 'Selectors'
 import { addWallet, updateWalletBalances } from 'Actions/wallet'
 import { openWalletAndRedirect } from 'Actions/access'
 
-export const setAccountSearchQuery = createAction('SET_ACCOUNT_SEARCH_QUERY')
-export const setAccountSearchError = createAction('SET_ACCOUNT_SEARCH_ERROR')
-export const setAccountSearchResult = createAction('SET_ACCOUNT_SEARCH_RESULT')
+const createAction = newScopedCreateAction(__filename)
+
+export const setAccountSearchQuery = createAction('SET_QUERY')
+export const setAccountSearchError = createAction('SET_ERROR')
+export const setAccountSearchResult = createAction('SET_RESULT')
 
 /** Open a temporary view only wallet for an address */
 export const searchAddress = (addressPromise) => (dispatch, getState) => Promise.resolve(addressPromise)

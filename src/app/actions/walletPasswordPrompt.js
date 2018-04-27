@@ -1,4 +1,4 @@
-import { createAction } from 'redux-act'
+import { newScopedCreateAction } from 'Utilities/action'
 
 import {
   isPasswordPromptOpen, getPasswordPromptWalletId,
@@ -7,8 +7,10 @@ import {
 import walletService from 'Services/Wallet'
 import toastr from 'Utilities/toastrWrapper'
 
-export const passwordPromptOpen = createAction('PASSWORD_PROMPT_OPEN', (walletId, resolve, reject) => ({ walletId, resolve, reject }))
-export const passwordPromptClose = createAction('PASSWORD_PROMPT_CLOSE')
+const createAction = newScopedCreateAction(__filename)
+
+export const passwordPromptOpen = createAction('OPEN', (walletId, resolve, reject) => ({ walletId, resolve, reject }))
+export const passwordPromptClose = createAction('CLOSE')
 
 export const getWalletPassword = (walletId) => (dispatch, getState) => new Promise((resolve, reject) => {
   const isOpen = isPasswordPromptOpen(getState())
