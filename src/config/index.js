@@ -36,6 +36,10 @@ export default {
   navbar: {
     expand: 'md',
   },
+  explorerUrls: {
+    BTC: 'https://blockchain.info',
+    ETH: 'https://etherscan.io',
+  },
   walletTypes: {
     ledger: {
       name: 'Ledger Wallet',

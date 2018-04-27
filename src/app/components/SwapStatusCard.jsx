@@ -4,6 +4,8 @@ import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
 import { Row, Col, Card, CardBody, CardFooter, Alert, Collapse, Button } from 'reactstrap'
 import classNames from 'class-names'
 
+import config from 'Config'
+
 import withToggle from 'Hoc/withToggle'
 import ArrowIcon from 'Components/ArrowIcon'
 import CoinIcon from 'Components/CoinIcon'
@@ -132,7 +134,7 @@ export default compose(
               <tr>
                 <td><b>Sent txn:</b></td>
                 <td colSpan='2' className='px-2'>
-                  <a href={`https://etherscan.com/tx/${txId}`} target='_blank' rel='noopener' className='word-break-all mr-2'>{txId}</a> 
+                  <a href={`${config.explorerUrls[txFeeSymbol]}/tx/${txId}`} target='_blank' rel='noopener' className='word-break-all mr-2'>{txId}</a> 
                   {!confirmed ? (
                     <i className='fa fa-spinner fa-pulse'/>
                   ) : (succeeded ? (
