@@ -34,7 +34,7 @@ const SwapSubmitModal = ({ isOpen, swaps, headerText, continueText, continueDisa
       </ModalHeader>
       <ModalBody className='modal-text'>
         <p>
-          The following swaps will take place to save the changes you made to your wallet. Please review them and click {`"${continueText}"`} to proceed.
+          The following swaps will take place to save the changes you made to your portfolio. Please review them and click {`"${continueText}"`} to proceed.
         </p>
         <div className='my-3'>
           <Row className='gutter-2'>
