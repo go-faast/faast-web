@@ -60,16 +60,21 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
       signedTxData: null,
     }));
 
-  _signTxData = (txData) => Trezor.composeAndSignTx(txData)
+  _signTx = (tx) => Trezor.composeAndSignTx(tx.txData)
     .then((result) => {
       log.info('Transaction composed and signed:', result)
-      return result.serialized_tx
+      const { serialized_tx: signedTxData } = result
+      return {
+        signedTxData
+      }
     });
 
-  _sendSignedTxData = (signedTxData) => Trezor.pushTransaction(signedTxData)
+  _sendSignedTx = (tx) => Trezor.pushTransaction(tx.signedTxData)
     .then((result) => {
       log.info('Transaction pushed:', result)
-      return result.txid
+      return {
+        id: result.txid
+      }
     });
 
   _validateTxData = (txData) => {

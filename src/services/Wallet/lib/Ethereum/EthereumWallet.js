@@ -10,7 +10,7 @@ import log from 'Utilities/log'
 import { batchRequest, tokenBalanceData, tokenSendData, web3SendTx } from './util'
 import Wallet from '../Wallet'
 
-@abstractMethod('getType', 'getTypeLabel', 'getAddress', '_signTxData')
+@abstractMethod('getType', 'getTypeLabel', 'getAddress', '_signTx')
 export default class EthereumWallet extends Wallet {
 
   static type = 'EthereumWallet';
@@ -122,8 +122,8 @@ export default class EthereumWallet extends Wallet {
       .then((tx) => log.debugInline('createTransaction', tx))
     });
 
-  _sendSignedTxData (signedTxData, options = {}) {
-    return web3SendTx(signedTxData.raw, true, options)
+  _sendSignedTx (tx, options = {}) {
+    return web3SendTx(tx.signedTxData.raw, true, options)
       .then((txId) => ({ id: txId }));
   }
 

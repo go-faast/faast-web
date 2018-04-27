@@ -47,8 +47,9 @@ export default class EthereumWalletTrezor extends EthereumWallet {
 
   getAddress = () => this.address;
 
-  _signTxData = (txData) => Promise.resolve().then(() => {
+  _signTx = (tx) => Promise.resolve().then(() => {
     Trezor.closeAfterSuccess(false)
+    const { txData } = tx
     const { nonce, gasPrice, gasLimit, to, value, data, chainId } = txData
     return Trezor.signEthereumTx(
       this.derivationPath,
@@ -61,12 +62,14 @@ export default class EthereumWalletTrezor extends EthereumWallet {
       chainId
     ).then((result) => {
       log.info('trezor signed tx', result)
-      return this._signedEthJsTxToObject(new EthereumjsTx({
-        ...txData,
-        r: addHexPrefix(result.r),
-        s: addHexPrefix(result.s),
-        v: toHex(result.v)
-      }))
+      return {
+        signedTxData: this._signedEthJsTxToObject(new EthereumjsTx({
+          ...txData,
+          r: addHexPrefix(result.r),
+          s: addHexPrefix(result.s),
+          v: toHex(result.v)
+        }))
+      }
     }).catch((e) => {
       if (e.message === 'Action cancelled by user') {
         throw new Error('Transaction was denied')

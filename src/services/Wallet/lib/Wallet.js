@@ -3,7 +3,7 @@ import log from 'Utilities/log'
 
 @abstractMethod(
   'getId', 'getType', 'getTypeLabel', 'getBalance', 'getFreshAddress', 'isAssetSupported',
-  'isSingleAddress', 'createTransaction', '_signTxData', '_sendSignedTxData')
+  'isSingleAddress', 'createTransaction', '_signTx', '_sendSignedTx')
 export default class Wallet {
 
   constructor(label) {
@@ -121,19 +121,19 @@ export default class Wallet {
     }
   }
 
-  _signAndSendTxData (txData, options = {}) {
-    return this._signTxData(txData, options)
-      .then((signedTxData) => this._sendSignedTxData(signedTxData, options))
+  _signAndSendTx (tx, options = {}) {
+    return this._signTx(tx, options)
+      .then((signedTx) => this._sendSignedTx(signedTx, options))
   }
 
   signTransaction (tx, options = {}) {
     return Promise.resolve(tx)
       .then(::this._validateTx)
       .then(::this._assertSignTransactionSupported)
-      .then(() => this._signTxData(tx.txData, { ...options, tx }))
-      .then((signedTxData) => log.debugInline('signTransaction', ({
+      .then(() => this._signTx(tx, options))
+      .then((result) => log.debugInline('signTransaction', ({
         ...tx,
-        signedTxData,
+        ...result,
         signed: true,
       })));
   }
@@ -141,9 +141,9 @@ export default class Wallet {
   sendTransaction (tx, options = {}) {
     return Promise.resolve(tx)
       .then(::this._validateTx)
-      .then(() => tx.signedTxData
-        ? this._sendSignedTxData(tx.signedTxData, { ...options, tx })
-        : this._signAndSendTxData(tx.txData, { ...options, tx }))
+      .then(() => tx.signed
+        ? this._sendSignedTx(tx, options)
+        : this._signAndSendTx(tx, options))
       .then((result) => log.debugInline('sendTransaction', ({
         ...tx,
         ...result,

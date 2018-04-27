@@ -8,7 +8,7 @@ import Wallet from '../Wallet'
 
 const supportedAssets = ['BTC']
 
-@abstractMethod('getTypeLabel', 'createTransaction', '_signTxData', '_sendSignedTxData', '_validateTxData', '_validateSignedTxData')
+@abstractMethod('getTypeLabel', 'createTransaction', '_signTx', '_sendSignedTx', '_validateTxData', '_validateSignedTxData')
 export default class BitcoinWallet extends Wallet {
 
   static type = 'BitcoinWallet';

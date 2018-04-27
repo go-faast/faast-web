@@ -141,13 +141,13 @@ export default class MultiWallet extends Wallet {
   };
 
   _callWalletTxFn = (fnName) => (tx, options) => Promise.resolve().then(() => {
-    const wallet = this.getWallet(options.tx.walletId)
+    const wallet = this.getWallet(tx.walletId)
     return wallet[fnName](tx, options)
   });
 
-  _signTxData = this._callWalletTxFn('_signTxData');
+  _signTx = this._callWalletTxFn('_signTx');
 
-  _sendSignedTxData = this._callWalletTxFn('_sendSignedTxData');
+  _sendSignedTx = this._callWalletTxFn('_sendSignedTx');
 
   getBalance = (assetOrSymbol, options = {}) => {
     const balancePromises = this._getWalletsForAsset(assetOrSymbol)

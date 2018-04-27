@@ -41,26 +41,29 @@ export default class EthereumWalletLedger extends EthereumWallet {
 
   getAddress = () => this.address;
 
-  _signTxData = (txData) => Promise.resolve().then(() => {
-    let tx
+  _signTx = (tx) => Promise.resolve().then(() => {
+    const { txData } = tx
+    let ethJsTx
     try {
-      tx = new EthereumjsTx(txData)
-      tx.raw[6] = Buffer.from([txData.chainId])
-      tx.raw[7] = 0
-      tx.raw[8] = 0
+      ethJsTx = new EthereumjsTx(txData)
+      ethJsTx.raw[6] = Buffer.from([txData.chainId])
+      ethJsTx.raw[7] = 0
+      ethJsTx.raw[8] = 0
     } catch (e) {
       return Promise.reject(e)
     }
 
-    return window.faast.hw.ledger.signTransaction_async(this.derivationPath, RLP.encode(tx.raw))
+    return window.faast.hw.ledger.signTransaction_async(this.derivationPath, RLP.encode(ethJsTx.raw))
       .then((result) => {
         log.info('ledger wallet signed tx', result)
-        return this._signedEthJsTxToObject(new EthereumjsTx({
-          ...txData,
-          r: addHexPrefix(result.r),
-          s: addHexPrefix(result.s),
-          v: addHexPrefix(result.v)
-        }))
+        return {
+          signedTxData: this._signedEthJsTxToObject(new EthereumjsTx({
+            ...txData,
+            r: addHexPrefix(result.r),
+            s: addHexPrefix(result.s),
+            v: addHexPrefix(result.v)
+          }))
+        }
       })
       .fail((ex) => {
         if (ex === 'Invalid status 6a80') {
