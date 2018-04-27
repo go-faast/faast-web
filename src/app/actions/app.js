@@ -8,7 +8,7 @@ import log from 'Utilities/log'
 import { getDefaultPortfolio } from 'Selectors'
 
 import { retrieveAssets } from './asset'
-import { setSettings } from './redux'
+import { setSettings } from './settings'
 import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
 import { restoreSwundle } from './swap'
 
@@ -16,6 +16,7 @@ const createAction = newScopedCreateAction(__filename)
 
 export const appReady = createAction('READY')
 export const appError = createAction('ERROR')
+export const resetAll = createAction('RESET_ALL')
 
 export const restoreState = (dispatch, getState) => Promise.resolve()
   .then(() => dispatch(restoreAllPortfolios()))

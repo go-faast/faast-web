@@ -1,5 +1,5 @@
 import { createReducer } from 'redux-act'
-import { resetAll } from 'Actions/redux'
+import { resetAll } from 'Actions/app'
 import {
   walletAdded, walletUpdated, walletRemoved, allWalletsRemoved, 
   walletBalancesUpdating, walletBalancesUpdated, walletBalancesError

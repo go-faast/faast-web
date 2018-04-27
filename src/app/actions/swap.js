@@ -1,9 +1,6 @@
-import { newScopedCreateAction } from 'Utilities/action'
 import { isObject, isArray, isUndefined } from 'lodash'
 
-import { getCurrentWallet } from 'Selectors'
-import { removeSwundle } from 'Actions/request'
-
+import { newScopedCreateAction } from 'Utilities/action'
 import { processArray } from 'Utilities/helpers'
 import { getSwapStatus } from 'Utilities/swap'
 import { restoreFromAddress } from 'Utilities/storage'
@@ -19,10 +16,10 @@ import {
 } from 'Utilities/wallet'
 import walletService from 'Services/Wallet'
 
-import { getMarketInfo, postExchange, getOrderStatus, getSwundle } from 'Actions/request'
+import { getMarketInfo, postExchange, getOrderStatus, getSwundle, removeSwundle } from 'Actions/request'
 import { getWalletPassword } from 'Actions/walletPasswordPrompt'
 
-import { getAsset, getAllWalletsArray, getAllSwapsArray } from 'Selectors'
+import { getAsset, getCurrentWallet, getAllWalletsArray, getAllSwapsArray } from 'Selectors'
 
 const createAction = newScopedCreateAction(__filename)
 

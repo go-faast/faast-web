@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import queryString from 'query-string'
-import { setMock } from 'Actions/redux'
 import { uppercase, lowercase } from 'Utilities/helpers'
 import { getAllAssetsArray } from 'Selectors'
 import config from 'Config'
@@ -47,9 +46,9 @@ const withMockHandling = (Wrapped) => {
     assets: getAllAssetsArray(state),
   })
 
-  const mapDispatchToProps = (dispatch) => ({
+  const mapDispatchToProps = () => ({
     setMock: (mock) => {
-      dispatch(setMock(mock))
+      console.log('setMock', mock)
     }
   })
 

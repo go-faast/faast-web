@@ -1,6 +1,6 @@
-import { newScopedCreateAction } from 'Utilities/action'
 import sha256 from 'hash.js/lib/hash/sha/256'
 
+import { newScopedCreateAction } from 'Utilities/action'
 import blockstack from 'Utilities/blockstack'
 import log from 'Utilities/log'
 import walletService, { Wallet, MultiWallet, BlockstackWallet } from 'Services/Wallet'

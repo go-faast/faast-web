@@ -12,7 +12,7 @@ import toastr from 'Utilities/toastrWrapper'
 import { toBigNumber } from 'Utilities/convert'
 
 import { getCurrentPortfolioWithWalletHoldings, getAllAssets, getAllSwapsArray } from 'Selectors'
-import { toggleOrderModal, showOrderModal } from 'Actions/redux'
+import { toggleOrderModal, showOrderModal } from 'Actions/orderModal'
 import { setSwaps } from 'Actions/swap'
 import { initiateSwaps } from 'Actions/swap'
 

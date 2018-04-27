@@ -1,9 +1,9 @@
-import { newScopedCreateAction } from 'Utilities/action'
 import { isString } from 'lodash'
 
-import walletService, { EthereumWalletViewOnly } from 'Services/Wallet'
+import { newScopedCreateAction } from 'Utilities/action'
 import { isValidAddress } from 'Utilities/wallet'
 import { toChecksumAddress } from 'Utilities/convert'
+import walletService, { EthereumWalletViewOnly } from 'Services/Wallet'
 
 import { getWallet, getAccountSearchResultId } from 'Selectors'
 import { addWallet, updateWalletBalances } from 'Actions/wallet'

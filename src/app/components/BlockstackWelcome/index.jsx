@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 
 import { getCurrentWallet } from 'Selectors'
-import { setSettings } from 'Actions/redux'
+import { setSettings } from 'Actions/settings'
 import { removeWallet } from 'Actions/wallet'
 
 import WelcomeView from './view'

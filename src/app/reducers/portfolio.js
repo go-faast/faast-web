@@ -1,5 +1,5 @@
 import { createReducer } from 'redux-act'
-import { resetAll } from 'Actions/redux'
+import { resetAll } from 'Actions/app'
 import { walletRemoved } from 'Actions/wallet'
 import { setCurrentPortfolio, setCurrentWallet, portfolioAdded } from 'Actions/portfolio'
 import { merge } from 'Utilities/helpers'

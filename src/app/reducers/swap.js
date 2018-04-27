@@ -4,7 +4,7 @@ import { omit, isObject } from 'lodash'
 import { createUpdater, createUpserter } from 'Utilities/helpers'
 import { ZERO } from 'Utilities/convert'
 
-import { resetAll } from 'Actions/redux'
+import { resetAll } from 'Actions/app'
 import {
   resetSwaps, setSwaps, swapUpdated, swapTxUpdated, swapOrderUpdated,
   swapTxSigningStart, swapTxSigningSuccess, swapTxSigningFailed,

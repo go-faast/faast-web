@@ -1,12 +1,11 @@
+import { createReducer } from 'redux-act'
+
+import { resetAll } from 'Actions/app'
+import { setSettings } from 'Actions/settings'
+
 const initialState = {}
 
-export default (state = initialState, action) => {
-  switch (action.type) {
-    case 'RESET_ALL':
-      return initialState
-    case 'SET_SETTINGS':
-      return Object.assign({}, state, action.payload || {})
-    default:
-      return state
-  }
-}
+export default createReducer({
+  [resetAll]: () => initialState,
+  [setSettings]: (state, payload) => ({ ...state, ...(payload || {}) }),
+}, initialState)

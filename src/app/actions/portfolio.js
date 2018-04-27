@@ -1,8 +1,7 @@
 import { newScopedCreateAction } from 'Utilities/action'
-
-import config from 'Config'
 import log from 'Utilities/log'
 import { MultiWallet } from 'Services/Wallet'
+import config from 'Config'
 
 import {
   addWallet, removeWallet, addNestedWallet, restoreAllWallets, updateWalletBalances,

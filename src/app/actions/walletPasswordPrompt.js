@@ -1,11 +1,11 @@
 import { newScopedCreateAction } from 'Utilities/action'
+import toastr from 'Utilities/toastrWrapper'
+import walletService from 'Services/Wallet'
 
 import {
   isPasswordPromptOpen, getPasswordPromptWalletId,
   getPasswordPromptResolve, getPasswordPromptReject
 } from 'Selectors'
-import walletService from 'Services/Wallet'
-import toastr from 'Utilities/toastrWrapper'
 
 const createAction = newScopedCreateAction(__filename)
 

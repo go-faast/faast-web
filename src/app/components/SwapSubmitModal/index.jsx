@@ -13,7 +13,7 @@ import {
 } from 'Selectors'
 import { signSwapTxs, sendSwapTxs } from 'Actions/swap'
 import { resetSwaps } from 'Actions/swap'
-import { toggleOrderModal } from 'Actions/redux'
+import { toggleOrderModal } from 'Actions/orderModal'
 
 import SwapSubmitModalView from './view'
 

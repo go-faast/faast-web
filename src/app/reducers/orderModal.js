@@ -1,18 +1,15 @@
+import { createReducer } from 'redux-act'
+
+import { resetAll } from 'Actions/app'
+import { toggleOrderModal, showOrderModal, hideOrderModal } from 'Actions/orderModal'
+
 const initialState = {
   show: false
 }
 
-export default (state = initialState, action) => {
-  switch (action.type) {
-    case 'RESET_ALL':
-      return initialState
-    case 'TOGGLE_ORDER_MODAL':
-      return { show: !state.show }
-    case 'SHOW_ORDER_MODAL':
-      return { show: true }
-    case 'HIDE_ORDER_MODAL':
-      return { show: false }
-    default:
-      return state
-  }
-}
+export default createReducer({
+  [resetAll]: () => initialState,
+  [toggleOrderModal]: (state) => ({ ...state, show: !state.show }),
+  [showOrderModal]: (state) => ({ ...state, show: true }),
+  [hideOrderModal]: (state) => ({ ...state, show: false }),
+}, initialState)
