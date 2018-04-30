@@ -275,6 +275,7 @@ export const sendSwapTxs = (swapList, sendOptions) => (dispatch) => {
 
     return walletInstance.sendTransaction(tx, { ...eventListeners, ...sendOptions })
       .then((sentTx) => {
+        dispatch(pollTransactionReceipt(swap))
         dispatch(pollOrderStatus(swap))
         return dispatch(swapTxSendingSuccess(id, sentTx)).payload
       })
@@ -345,9 +346,8 @@ export const pollTransactionReceipt = (swap) => (dispatch) => {
   const receiptInterval = window.setInterval(() => {
     dispatch(updateSwapTxReceipt(swap))
       .then((receipt) => {
-        if (receipt) {
+        if (receipt && receipt.confirmed) {
           clearInterval(receiptInterval)
-          dispatch(pollOrderStatus(swap))
         }
       })
   }, 5000)
@@ -365,9 +365,8 @@ export const restoreSwapPolling = () => (dispatch, getState) => {
       const status = getSwapStatus(swap)
       if (status.detailsCode === 'pending_receipt') {
         dispatch(pollTransactionReceipt(swap))
-      } else if (status.code === 'pending') {
-        dispatch(pollOrderStatus(swap))
       }
+      dispatch(pollOrderStatus(swap))
     })
   })
 }
