@@ -62,4 +62,14 @@ export default class BitcoinWallet extends Wallet {
         .then(({ balance }) => toMainDenomination(balance, asset.decimals))
     });
 
+  _getTransactionReceipt (txId) {
+    return Bitcore.getTransaction('BTC', txId)
+      .then((result) => !result ? null : ({
+        confirmed: result.height > 0,
+        succeeded: result.height > 0,
+        blockNumber: result.height,
+        raw: result
+      }))
+  }
+
 }

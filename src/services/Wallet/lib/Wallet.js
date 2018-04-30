@@ -3,7 +3,7 @@ import log from 'Utilities/log'
 
 @abstractMethod(
   'getId', 'getType', 'getTypeLabel', 'getBalance', 'getFreshAddress', 'isAssetSupported',
-  'isSingleAddress', 'createTransaction', '_signTx', '_sendSignedTx')
+  'isSingleAddress', 'createTransaction', '_signTx', '_sendSignedTx', '_getTransactionReceipt')
 export default class Wallet {
 
   constructor(label) {
@@ -150,6 +150,21 @@ export default class Wallet {
         signed: true,
         sent: true,
       })));
+  }
+
+  getTransactionReceipt (txOrId) {
+    return Promise.resolve(txOrId)
+      .then((txOrId) => {
+        let id = txOrId
+        if (txOrId && typeof txOrId === 'object') {
+          this._validateTx(txOrId)
+          id = txOrId.id
+        }
+        if (typeof id !== 'string') {
+          return null
+        }
+        return this._getTransactionReceipt(id)
+      })
   }
 
   transfer = (toAddress, amount, assetOrSymbol, options) =>

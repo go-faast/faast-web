@@ -1,6 +1,4 @@
 import { networks } from 'bitcoinjs-lib-zcash'
-import { ypubToXpub } from 'Utilities/bitcoin'
-
 import { WorkerDiscovery, BitcoreBlockchain } from 'hd-wallet'
 
 import xpubWasmFile from 'hd-wallet/lib/fastxpub/fastxpub.wasm?file'
@@ -8,6 +6,8 @@ import xpubWasmFile from 'hd-wallet/lib/fastxpub/fastxpub.wasm?file'
 import XpubWorker from 'hd-wallet/lib/fastxpub/fastxpub?worker'
 import SocketWorker from 'hd-wallet/lib/socketio-worker/inside?worker'
 import DiscoveryWorker from 'hd-wallet/lib/discovery/worker/inside?worker'
+
+import { ypubToXpub } from 'Utilities/bitcoin'
 
 // setting up workers
 const xpubWorker = new XpubWorker()
@@ -38,6 +38,8 @@ class Bitcore {
       }
       return process.ending
     })
+
+  getTransaction = (txId) => this.blockchain.lookupTransaction(txId)
 }
 
 const assetToBitcore = {
@@ -45,15 +47,22 @@ const assetToBitcore = {
   LTC: new Bitcore(networks.litecoin, ['https://ltc-bitcore3.trezor.io']),
 }
 
-const discover = (asset, xpub, onUpdate) => Promise.resolve()
+const getBitcoreForAsset = (asset) => Promise.resolve()
   .then(() => {
     const bitcore = assetToBitcore[asset]
     if (!bitcore) {
       throw new Error(`Asset ${asset} has no Bitcore configuration`)
     }
-    return bitcore.discoverAccount(xpub, onUpdate)
+    return bitcore
   })
+
+const discover = (asset, xpub, onUpdate) => getBitcoreForAsset(asset)
+  .then((bitcore) => bitcore.discoverAccount(xpub, onUpdate))
+
+const getTransaction = (asset, txId) => getBitcoreForAsset(asset)
+  .then((bitcore) => bitcore.getTransaction(txId))
 
 export default {
   discover,
+  getTransaction
 }

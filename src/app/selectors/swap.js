@@ -25,8 +25,8 @@ const createSwapExtender = (allAssets, allWallets) => (swap) => {
     tx: {
       ...tx,
       signingSupported: (allWallets[sendWalletId] || {}).isSignTxSupported,
-      confirmed: Boolean(receipt),
-      succeeded: receipt && (receipt.status === true || receipt.status === '0x1'),
+      confirmed: receipt && receipt.confirmed,
+      succeeded: receipt && receipt.succeeded,
       feeAsset: txFeeAsset,
       feeFiat: txFeeFiat,
     }

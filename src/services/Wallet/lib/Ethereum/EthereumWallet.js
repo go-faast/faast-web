@@ -122,6 +122,16 @@ export default class EthereumWallet extends Wallet {
       .then((tx) => log.debugInline('createTransaction', tx))
     });
 
+  _getTransactionReceipt (txId) {
+    return web3.eth.getTransactionReceipt(txId)
+      .then((receipt) => !receipt ? null : ({
+        confirmed: receipt.blockNumber && receipt.blockNumber > 0,
+        succeeded: receipt.status === true || receipt.status === '0x1',
+        blockNumber: receipt.blockNumber,
+        raw: receipt
+      }))
+  }
+
   _sendSignedTx (tx, options = {}) {
     return web3SendTx(tx.signedTxData.raw, true, options)
       .then((txId) => ({ id: txId }));

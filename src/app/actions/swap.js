@@ -11,9 +11,6 @@ import {
   toUnit,
   ZERO
 } from 'Utilities/convert'
-import {
-  getTransactionReceipt,
-} from 'Utilities/wallet'
 import walletService from 'Services/Wallet'
 
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle, removeSwundle } from 'Actions/request'
@@ -322,20 +319,21 @@ export const pollOrderStatus = (swap) => (dispatch) => {
 }
 
 const updateSwapTxReceipt = (swap) => (dispatch) => {
-  const { tx: { id: txId } } = swap
-  if (!txId) {
-    log.info(`updateSwapTxReceipt: swap ${swap.id} has no txId`)
+  const { id, tx, sendWalletId } = swap
+  const walletInstance = walletService.get(sendWalletId)
+  if (!walletInstance) {
+    log.error(`Failed to get swap sendWallet ${sendWalletId}`)
     return
   }
-  return getTransactionReceipt(txId)
+  return walletInstance.getTransactionReceipt(tx)
     .then((receipt) => {
       if (receipt) {
         log.info('tx receipt obtained')
-        dispatch(swapTxUpdated(swap.id, { receipt }))
+        dispatch(swapTxUpdated(id, { receipt }))
       }
       return receipt
     })
-    .catch(log.error)
+    .catch((e) => log.error(`failed to get swap ${id} transaction receipt`, e))
 }
 
 export const pollTransactionReceipt = (swap) => (dispatch) => {
