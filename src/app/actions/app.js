@@ -1,6 +1,4 @@
 import { newScopedCreateAction } from 'Utilities/action'
-import queryString from 'query-string'
-import idb from 'Utilities/idb'
 import { restoreFromAddress } from 'Utilities/storage'
 import blockstack from 'Utilities/blockstack'
 import { filterUrl } from 'Utilities/helpers'
@@ -33,24 +31,6 @@ export const restoreState = (dispatch, getState) => Promise.resolve()
   .catch((e) => {
     log.error(e)
     throw new Error('Failed to restore app state')
-  })
-
-export const setupLogger = () => Promise.resolve()
-  .then(() => {
-    const query = queryString.parse(window.location.search)
-    if (query.log_level) window.faast.log_level = query.log_level
-
-    return idb.setup(['logging'])
-      .then(() => {
-        log.info('idb set up')
-        if (query.export) {
-          return idb.exportDb(query.export)
-        }
-      })
-      .then(() => idb.removeOld('logging'))
-  })
-  .catch((e) => {
-    log.error('Failed to setup logger', e)
   })
 
 export const setupBlockstack = (dispatch) => Promise.resolve()
@@ -86,7 +66,6 @@ export const setupLedger = () => Promise.resolve()
   })
 
 export const init = () => (dispatch) => Promise.resolve()
-  .then(() => dispatch(setupLogger))
   .then(() => dispatch(retrieveAssets())) // asset list required to restore wallets
   .then(() => dispatch(restoreState))
   .then(() => dispatch(setupBlockstack))

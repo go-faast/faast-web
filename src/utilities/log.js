@@ -1,8 +1,34 @@
 import { isString, isObject, omitBy, isFunction } from 'lodash'
+import queryString from 'query-string'
 
 import idb from './idb'
 import { dateNowString } from './helpers'
 import config from 'Config'
+
+const storeName = 'logging'
+
+const query = queryString.parse(window.location.search)
+if (query.log_level) window.faast.log_level = query.log_level
+
+let idbNotReadyQueue = []
+
+idb.setup([storeName])
+  .then(() => {
+    console.log('idb set up')
+    if (query.export) {
+      return idb.exportDb(query.export)
+    }
+  })
+  .then(() => idb.removeOld(storeName))
+  // Push any log messages that occurred while setting up store
+  .then(() => idbNotReadyQueue.reduce(
+      (prev, message) => prev.then(() => idb.put(storeName, message)),
+      Promise.resolve())
+    .then(() => {
+      console.log(`Pushed ${idbNotReadyQueue.length} log messages to IDB`)
+      idbNotReadyQueue = []
+    })
+    .catch(() => false)) // Do nothing
 
 const logger = {}
 
@@ -46,10 +72,16 @@ const log = (level) => (text, ...data) => {
       }
       payload.data = data
     }
-    idb.put('logging', payload)
-    .catch((err) => {
-      console.error('Error writing to indexedDB -', err.message)
-    })
+    idb.put(storeName, payload)
+      .catch((err) => {
+        const { message } = err
+        if (message.includes('store not ready')) {
+          // Save any failed log messages until store is ready
+          idbNotReadyQueue.push(payload)
+        } else {
+          console.error('Error writing to indexedDB -', err.message)
+        }
+      })
   }
 }
 
