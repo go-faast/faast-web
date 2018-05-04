@@ -46,10 +46,24 @@ export const getWalletParents = createItemSelector(
     [])
 )
 
+export const areWalletHoldingsLoaded = createItemSelector(
+  getWallet,
+  areAssetPricesLoaded,
+  (wallet, assetPricesLoaded) => wallet.balancesLoaded && assetPricesLoaded
+)
+
+export const getWalletHoldingsError = createItemSelector(
+  getWallet,
+  getAssetPricesError,
+  (wallet, assetPricesError) => wallet.balancesError || assetPricesError
+)
+
 export const getWalletWithHoldings = createItemSelector(
   getWallet,
   getAllAssets,
-  (wallet, assets) => {
+  areWalletHoldingsLoaded,
+  getWalletHoldingsError,
+  (wallet, assets, holdingsLoaded, holdingsError) => {
     if (!wallet) return null
     let totalFiat = toBigNumber(0)
     let totalFiat24hAgo = toBigNumber(0)
@@ -88,19 +102,9 @@ export const getWalletWithHoldings = createItemSelector(
       totalFiat24hAgo,
       totalChange,
       assetHoldings,
+      holdingsLoaded,
+      holdingsError,
     }
     return result
   }
-)
-
-export const areWalletHoldingsLoaded = createItemSelector(
-  getWallet,
-  areAssetPricesLoaded,
-  (wallet, assetPricesLoaded) => wallet.balancesLoaded && assetPricesLoaded
-)
-
-export const getWalletHoldingsError = createItemSelector(
-  getWallet,
-  getAssetPricesError,
-  (wallet, assetPricesError) => wallet.balancesError || assetPricesError
 )

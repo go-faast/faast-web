@@ -20,7 +20,7 @@ import { statLabel } from './style'
 const Balances = ({ wallet }) => {
   const {
     address, assetHoldings,
-    totalFiat, totalFiat24hAgo, totalChange, balancesLoaded, balancesError
+    totalFiat, totalFiat24hAgo, totalChange, holdingsLoaded, holdingsError
   } = wallet
 
   const assetRows = assetHoldings.filter(({ shown }) => shown)
@@ -49,7 +49,7 @@ const Balances = ({ wallet }) => {
 
   return (
     <Card>
-      {!balancesLoaded && (<LoadingFullscreen center error={balancesError}/>)}
+      {!holdingsLoaded && (<LoadingFullscreen center error={holdingsError}/>)}
       <CardHeader className='grid-group'>
         <Row className='gutter-3'>
           {stats.map(({ title, value, colClass }, i) => (

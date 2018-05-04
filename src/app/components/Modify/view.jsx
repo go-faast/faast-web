@@ -168,7 +168,7 @@ const ModifyView = (props) => {
 
   const renderHoldings = (wallets) => wallets
     .map((wallet) => {
-      const { id, isReadOnly, balancesLoaded, assetHoldings } = wallet
+      const { id, isReadOnly, holdingsLoaded, assetHoldings } = wallet
       return (
         <Col xs='12' key={id}>
           <Card>
@@ -178,7 +178,7 @@ const ModifyView = (props) => {
                   <WalletLabel wallet={wallet} tag='h4'/>
                 </Col>
                 <Col xs='auto'>
-                  <Button color='success' size='sm' className='flat' disabled={!balancesLoaded} onClick={() => props.showAssetList(id)}>
+                  <Button color='success' size='sm' className='flat' disabled={!holdingsLoaded} onClick={() => props.showAssetList(id)}>
                     <i className='fa fa-plus'/> add asset
                   </Button>
                 </Col>
@@ -190,7 +190,7 @@ const ModifyView = (props) => {
               </Alert>
             ) : (
               <ListGroup>
-                {!balancesLoaded && (<LoadingFullscreen center/>)}
+                {!holdingsLoaded && (<LoadingFullscreen center/>)}
                 {renderAssetRows(assetHoldings.filter(({ shown }) => shown))}
                 <ListGroupButton action onClick={() => props.showAssetList(id)} className='text-center text-success'>
                   <i className='fa fa-plus fa-2x align-middle' />

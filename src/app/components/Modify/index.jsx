@@ -20,8 +20,8 @@ import ModifyView from './view'
 
 const ZERO = new BigNumber(0)
 
-const filterAdjustedHoldings = (holdingsByWalletId) => {
-  return Object.entries(holdingsByWalletId).reduce((filteredResult, [walletId, holdings]) => {
+const filterAdjustedHoldings = (walletHoldings) => {
+  return Object.entries(walletHoldings).reduce((filteredResult, [walletId, holdings]) => {
     const filteredHoldings = holdings.map((a) => {
       if (!a.fiat.adjusted.equals(a.fiat.original)) {
         const fiatToSwap = a.fiat.original.minus(a.fiat.adjusted)
@@ -38,7 +38,7 @@ const filterAdjustedHoldings = (holdingsByWalletId) => {
 const flatten = (arrays) => arrays.reduce((flat, array) => flat.concat(array), [])
 
 const countLoadedWallets = (portfolio) => portfolio.nestedWallets
-  .reduce((total, { balancesLoaded }) => balancesLoaded ? total + 1 : total, 0)
+  .reduce((total, { holdingsLoaded }) => holdingsLoaded ? total + 1 : total, 0)
 
 const initialState = {
   allowance: {
@@ -47,8 +47,8 @@ const initialState = {
   },
   isAssetListOpen: false,
   assetListWalletId: '',
-  walletBalancesLoaded: {}, // By walletId
-  holdings: {}, // By walletId
+  walletHoldingsLoaded: {}, // By walletId
+  walletHoldings: {}, // By walletId
 }
 
 class Modify extends Component {
@@ -69,19 +69,19 @@ class Modify extends Component {
 
   getInitialState = (props, state) => {
     const { portfolio } = props
-    const walletHoldings = { ...state.holdings }
-    const walletBalancesLoaded = { ...state.walletBalancesLoaded }
-    portfolio.nestedWallets.forEach(({ id, balancesLoaded, assetHoldings }) => {
-      const alreadyLoaded = walletBalancesLoaded[id]
+    const walletHoldings = { ...state.walletHoldings }
+    const walletHoldingsLoaded = { ...state.walletHoldingsLoaded }
+    portfolio.nestedWallets.forEach(({ id, holdingsLoaded, assetHoldings }) => {
+      const alreadyLoaded = walletHoldingsLoaded[id]
       if (!alreadyLoaded) {
         // Only update holdings if balances weren't already loaded to avoid overwriting existing adjustments
         walletHoldings[id] = assetHoldings
           .filter(({ shown }) => shown)
           .map((asset) => this._assetItem(id, asset))
-        walletBalancesLoaded[id] = balancesLoaded
+        walletHoldingsLoaded[id] = holdingsLoaded
       }
     })
-    return { ...state, holdings: walletHoldings, walletBalancesLoaded }
+    return { ...state, walletHoldings, walletHoldingsLoaded }
   }
 
   componentWillReceiveProps (nextProps) {
@@ -126,10 +126,10 @@ class Modify extends Component {
 
   _handleSlider (walletId, symbol, value, type = 'fiat') {
     const { portfolio } = this.props
-    const { holdings } = this.state
-    const walletHoldings = holdings[walletId]
-    const assetIx = walletHoldings.findIndex(a => a.symbol === symbol)
-    const asset = walletHoldings[assetIx]
+    const { walletHoldings } = this.state
+    const holdings = walletHoldings[walletId]
+    const assetIx = holdings.findIndex(a => a.symbol === symbol)
+    const asset = holdings[assetIx]
     value = toBigNumber(value)
 
     if (value.lt(0)) {
@@ -172,9 +172,9 @@ class Modify extends Component {
         // allowanceWeight = percentage(allowanceFiat, portfolio.totalFiat)
     }
     const updatedState = {
-      holdings: {
-        ...holdings,
-        [walletId]: updateObjectInArray(walletHoldings, {
+      walletHoldings: {
+        ...walletHoldings,
+        [walletId]: updateObjectInArray(holdings, {
           index: assetIx,
           item: {
             ...asset,
@@ -205,11 +205,11 @@ class Modify extends Component {
 
   _handleSave () {
     log.info('modify save')
-    const { allowance, holdings } = this.state
+    const { allowance, walletHoldings } = this.state
     
     if (allowance.fiat.greaterThan(0)) return toastr.error('Amounts remain to move')
 
-    const filteredHoldingsByWalletId = filterAdjustedHoldings(holdings)
+    const filteredHoldingsByWalletId = filterAdjustedHoldings(walletHoldings)
     const adjustedWalletIds = Object.keys(filteredHoldingsByWalletId)
     if (adjustedWalletIds.length === 0) return toastr.error('Nothing to swap')
 
@@ -261,7 +261,7 @@ class Modify extends Component {
       const { walletId: fromWalletId, symbol: fromSymbol, emptyAsset, toReceive } = s
       if (emptyAsset) {
         const sendUnitsTotal = toReceive.reduce((sum, { sendUnits }) => sum.plus(sendUnits), ZERO)
-        const assetHolding = holdings[fromWalletId].find(({ symbol }) => symbol === fromSymbol)
+        const assetHolding = walletHoldings[fromWalletId].find(({ symbol }) => symbol === fromSymbol)
         const difference = assetHolding.balance.minus(sendUnitsTotal)
         const last = toReceive[toReceive.length - 1]
         const newSendUnits = last.sendUnits.plus(difference)
@@ -307,23 +307,23 @@ class Modify extends Component {
 
   _handleSelectAsset ({ symbol }) {
     const { allAssets } = this.props
-    let { holdings, assetListWalletId: walletId } = this.state
-    let walletHoldings = holdings[walletId]
+    let { walletHoldings, assetListWalletId: walletId } = this.state
+    let holdings = walletHoldings[walletId]
     let selectedHolding
-    let existingHoldingIndex = walletHoldings.findIndex((a) => a.symbol === symbol)
+    let existingHoldingIndex = holdings.findIndex((a) => a.symbol === symbol)
     if (existingHoldingIndex >= 0) {
       selectedHolding = {
-        ...walletHoldings[existingHoldingIndex],
+        ...holdings[existingHoldingIndex],
         shown: true
       }
-      walletHoldings = splice(walletHoldings, existingHoldingIndex, 1)
+      walletHoldings = splice(holdings, existingHoldingIndex, 1)
     } else {
       selectedHolding = this._assetItem(walletId, allAssets[symbol])
     }
     this.setState({
-      holdings: {
-        ...holdings,
-        [walletId]: walletHoldings.concat([selectedHolding])
+      walletHoldings: {
+        ...walletHoldings,
+        [walletId]: holdings.concat([selectedHolding])
       }
     })
     this._hideAssetList()
@@ -331,25 +331,25 @@ class Modify extends Component {
 
   _handleRemoveAsset (walletId, symbol) {
     const updatedState = this._handleFiatChange(walletId, symbol, 0)
-    const { holdings } = updatedState
-    const walletHoldings = holdings[walletId]
-    const selectedAssetIx = walletHoldings.findIndex((a) => a.symbol === symbol)
+    const { walletHoldings } = updatedState
+    const holdings = walletHoldings[walletId]
+    const selectedAssetIx = holdings.findIndex((a) => a.symbol === symbol)
     this.setState({
-      holdings: {
-        ...holdings,
-        [walletId]: splice(walletHoldings, selectedAssetIx, 1, { ...walletHoldings[selectedAssetIx], shown: false })
+      walletHoldings: {
+        ...walletHoldings,
+        [walletId]: splice(holdings, selectedAssetIx, 1, { ...holdings[selectedAssetIx], shown: false })
       }
     })
   }
 
   render () {
     const { portfolio } = this.props
-    const { holdings, assetListWalletId, allowance, isAssetListOpen } = this.state
+    const { walletHoldings, assetListWalletId, allowance, isAssetListOpen } = this.state
     const adjustedPortfolio = {
       ...portfolio,
       nestedWallets: portfolio.nestedWallets.map((nestedWallet) => ({
         ...nestedWallet,
-        assetHoldings: holdings[nestedWallet.id] || []
+        assetHoldings: walletHoldings[nestedWallet.id] || []
       }))
     }
     const sliderProps = {
@@ -359,12 +359,12 @@ class Modify extends Component {
     }
     const assetListProps = {
       supportedAssetSymbols: ((portfolio.nestedWallets.find(({ id }) => id === assetListWalletId) || {}).supportedAssets || []),
-      hiddenAssetSymbols: (holdings[assetListWalletId] || []).filter(({ shown }) => shown).map(({ symbol }) => symbol),
+      hiddenAssetSymbols: (walletHoldings[assetListWalletId] || []).filter(({ shown }) => shown).map(({ symbol }) => symbol),
       selectAsset: this._handleSelectAsset,
       ignoreUnavailable: false
     }
     let disableSave
-    const adjustedHoldings = filterAdjustedHoldings(holdings)
+    const adjustedHoldings = filterAdjustedHoldings(walletHoldings)
     if (Object.keys(adjustedHoldings).length === 0 || allowance.fiat.greaterThan(0)) {
       disableSave = true
     }
