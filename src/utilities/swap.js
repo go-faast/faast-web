@@ -9,14 +9,14 @@ const statusFailed = createStatus('failed', 'Failed', 'text-warning')
 const statusComplete = createStatus('complete', 'Complete', 'text-success')
 
 export const getSwapStatus = (swap) => {
-  const { error, rate, order, tx } = swap
+  const { error, rate, orderId, order, tx } = swap
   if (error) {
     if (isString(error) && error.toLowerCase().includes('insufficient funds')) {
       return statusFailed('insufficient_funds', 'Insufficient funds')
     }
     return statusFailed('error', getSwapFriendlyError(swap))
   }
-  if (order == null) {
+  if (!(order && orderId)) {
     return statusPending('creating_order', 'Creating order')
   }
   if (order.error) {
@@ -28,10 +28,10 @@ export const getSwapStatus = (swap) => {
   if (order.status === 'complete') {
     return statusComplete('order_complete', 'Order completed successfully')
   }
-  if (rate == null) {
+  if (!rate) {
     return statusPending('fetching_rate', 'Fetching market info')
   }
-  if (tx == null) {
+  if (!(tx && tx.walletId)) {
     return statusPending('creating_tx', 'Generating deposit transaction')
   }
   if (!tx.receipt) {
