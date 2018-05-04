@@ -252,7 +252,7 @@ export const signSwapTxs = (swapList) => (dispatch) => {
       })
       .then((signedTx) => dispatch(swapTxSigningSuccess(id, signedTx)).payload)
       .catch((e) => {
-        log.error(`signSwapTxs error for wallet ${id}`, e)
+        log.error(`signSwapTxs error for swap ${id}`, e)
         let message = e.message
         if (message.includes('wrong passphrase')) {
           message = 'Incorrect password'
@@ -280,7 +280,7 @@ export const sendSwapTxs = (swapList, sendOptions) => (dispatch) => {
         return dispatch(swapTxSendingSuccess(id, sentTx)).payload
       })
       .catch((e) => {
-        log.error(`sendSwapTxs error for wallet ${id}`, e)
+        log.error(`sendSwapTxs error for swap ${id}`, e)
         dispatch(swapTxSendingFailed(id, 'Error sending swap transaction'))
         return swap
       })
