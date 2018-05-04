@@ -20,15 +20,15 @@ export default class BitcoinWallet extends Wallet {
     this._latestDiscoveryResults = {}
   }
 
-  getId = () => this.xpub;
+  getId() { return this.xpub }
 
-  getLabel = () => this.label || `Bitcoin ${ellipsize(this.xpub, 8, 4)}`;
+  getLabel() { return this.label || `Bitcoin ${ellipsize(this.xpub, 8, 4)}` }
 
-  isAssetSupported = (assetOrSymbol) => supportedAssets.includes(this.getSymbol(assetOrSymbol));
+  isAssetSupported(assetOrSymbol) { return supportedAssets.includes(this.getSymbol(assetOrSymbol)) }
 
-  isSingleAddress = () => false;
+  isSingleAddress() { return false }
 
-  _performDiscovery = (symbol) => {
+  _performDiscovery(symbol) {
     const discoveryPromise = Bitcore.discover(symbol, this.xpub)
       .then((result) => {
         log.debug(`bitcore result for ${symbol}`, result)
@@ -37,30 +37,36 @@ export default class BitcoinWallet extends Wallet {
       });
     this._latestDiscoveryResults[symbol] = discoveryPromise
     return discoveryPromise
-  };
+  }
 
-  _getDiscoveryResult = (symbol) => Promise.resolve(this._latestDiscoveryResults[symbol])
-    .then((result) => {
-      if (!result) {
-        return this._performDiscovery(symbol)
-      }
-      return result
-    });
+  _getDiscoveryResult(symbol) {
+    return Promise.resolve(this._latestDiscoveryResults[symbol])
+      .then((result) => {
+        if (!result) {
+          return this._performDiscovery(symbol)
+        }
+        return result
+      })
+  }
 
-  getFreshAddress = (assetOrSymbol, { index = 0 } = {}) => Promise.resolve(assetOrSymbol)
-    .then(::this.assertAssetSupported)
-    .then((asset) => this._getDiscoveryResult(asset.symbol))
-    .then(({ unusedAddresses }) => unusedAddresses[index]);
+  getFreshAddress(assetOrSymbol, { index = 0 } = {}) {
+    return Promise.resolve(assetOrSymbol)
+      .then(::this.assertAssetSupported)
+      .then((asset) => this._getDiscoveryResult(asset.symbol))
+      .then(({ unusedAddresses }) => unusedAddresses[index])
+  }
 
-  getBalance = (assetOrSymbol) => Promise.resolve(assetOrSymbol)
-    .then(::this.getSupportedAsset)
-    .then((asset) => {
-      if (!asset) {
-        return toBigNumber(0)
-      }
-      return this._performDiscovery(asset.symbol)
-        .then(({ balance }) => toMainDenomination(balance, asset.decimals))
-    });
+  getBalance(assetOrSymbol) {
+    return Promise.resolve(assetOrSymbol)
+      .then(::this.getSupportedAsset)
+      .then((asset) => {
+        if (!asset) {
+          return toBigNumber(0)
+        }
+        return this._performDiscovery(asset.symbol)
+          .then(({ balance }) => toMainDenomination(balance, asset.decimals))
+      })
+  }
 
   _getTransactionReceipt (txId) {
     return Bitcore.getTransaction('BTC', txId)

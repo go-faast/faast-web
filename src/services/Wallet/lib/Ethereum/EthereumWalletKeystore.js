@@ -49,26 +49,26 @@ export default class EthereumWalletKeystore extends EthereumWallet {
     this.keystore = keystore
   }
 
-  static generate = () => {
+  static generate() {
     return new EthereumWalletKeystore(EthereumjsWallet.generate())
-  };
+  }
 
-  static fromPrivateKey = (privateKey) => {
+  static fromPrivateKey(privateKey) {
     const pk = Buffer.from(stripHexPrefix(privateKey.trim()), 'hex')
     return new EthereumWalletKeystore(EthereumjsWallet.fromPrivateKey(pk))
-  };
+  }
 
-  static fromJson = (jsonKeystore) => {
+  static fromJson(jsonKeystore) {
     return new EthereumWalletKeystore(jsonKeystore)
-  };
+  }
 
-  getType = () => EthereumWalletKeystore.type;
+  getType() { return EthereumWalletKeystore.type }
 
-  getTypeLabel = () => 'Keystore file';
+  getTypeLabel() { return 'Keystore file' }
 
-  getAddress = () => toChecksumAddress(this.keystore.address || this.keystore.getAddressString());
+  getAddress() { return toChecksumAddress(this.keystore.address || this.keystore.getAddressString()) }
 
-  isPersistAllowed = () => this._isEncrypted && this._persistAllowed;
+  isPersistAllowed() { return this._isEncrypted && this._persistAllowed }
 
   isPasswordProtected() { return this._isEncrypted }
 
@@ -84,14 +84,14 @@ export default class EthereumWalletKeystore extends EthereumWallet {
     }
   }
 
-  encrypt = (password = '') => {
+  encrypt(password = '') {
     if (this._isEncrypted) {
       return this
     }
     return new EthereumWalletKeystore(this.keystore.toV3(password, config.encrOpts))
-  };
+  }
 
-  decrypt = (password) => {
+  decrypt(password) {
     if (!this._isEncrypted) {
       return this
     }
@@ -102,27 +102,29 @@ export default class EthereumWalletKeystore extends EthereumWallet {
       throw new Error(`Invalid password of type ${typeof password}`)
     }
     return new EthereumWalletKeystore(EthereumjsWallet.fromV3(this.keystore, password, true))
-  };
+  }
 
-  _signTx = (tx, { password }) => Promise.resolve().then(() => {
-    let keystore = this.keystore
-    if (this._isEncrypted) {
-      keystore = this.decrypt(password).keystore
-    }
-    const signedTx = new EthereumjsTx({ ...tx.txData, chainId: 1 })
-    signedTx.sign(keystore.getPrivateKey())
-    return {
-      signedTxData: this._signedEthJsTxToObject(signedTx)
-    }
-  });
+  _signTx(tx, { password }) {
+    return Promise.resolve().then(() => {
+      let keystore = this.keystore
+      if (this._isEncrypted) {
+        keystore = this.decrypt(password).keystore
+      }
+      const signedTx = new EthereumjsTx({ ...tx.txData, chainId: 1 })
+      signedTx.sign(keystore.getPrivateKey())
+      return {
+        signedTxData: this._signedEthJsTxToObject(signedTx)
+      }
+    })
+  }
 
-  getFileName = (password) => {
+  getFileName(password) {
     return Promise.resolve(this.decrypt(password).keystore.getV3Filename())
-  };
+  }
 
-  getPrivateKeyString = (password, mock) => {
+  getPrivateKeyString(password, mock) {
     if (mock) return Promise.resolve('mock_pk_123')
     return Promise.resolve(this.decrypt(password).keystore.getPrivateKeyString())
-  };
+  }
 
 }

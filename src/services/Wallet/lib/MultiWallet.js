@@ -25,111 +25,121 @@ export default class MultiWallet extends Wallet {
     this.wallets = Array.isArray(wallets) ? wallets : []
   }
 
-  shallowClone = () => {
+  shallowClone() {
     const clone = new MultiWallet(this.getId(), this.wallets)
     clone.setLabel(this.getLabel())
     return clone
-  };
+  }
 
-  getId = () => this.id;
+  getId() { return this.id }
 
-  getType = () => MultiWallet.type;
+  getType() { return MultiWallet.type }
 
-  getTypeLabel = () => {
+  getTypeLabel() {
     const walletCount = this.wallets.length
     if (walletCount === 0) return 'Empty'
     if (walletCount === 1) return '1 wallet'
     return `${walletCount} wallets`
-  };
+  }
 
-  getLabel = () => this.label || `Portfolio ${this.id.slice(0, 8)}`;
+  getLabel() { return this.label || `Portfolio ${this.id.slice(0, 8)}` }
 
-  isSingleAddress = () => false;
+  isSingleAddress() { return false }
 
-  setAssetProvider = (assetProvider) => {
+  setAssetProvider(assetProvider) {
     this._assetProvider = assetProvider
     this.wallets.forEach((wallet) => wallet.setAssetProvider(assetProvider))
-  };
+  }
 
   /**
     * @param {(Object|String)} walletOrId - Wallet instance or wallet ID
     * @return {Number} Wallet index, or -1 if not found
     */
-  _getWalletIndex = (walletOrId) => {
+  _getWalletIndex(walletOrId) {
     const id = resolveId(walletOrId)
     return this.wallets.findIndex((w) => w.getId() === id)
-  };
+  }
 
   /**
     * @param {(Object|String)} walletOrId - Wallet instance or wallet ID
     * @return {Object} Wallet instance, or undefined if not found
     */
-  getWallet = (walletOrId) => this.wallets[this._getWalletIndex(walletOrId)];
+  getWallet(walletOrId) { return this.wallets[this._getWalletIndex(walletOrId)] }
 
-  hasWallet = (walletOrId) => Boolean(this.getWallet(walletOrId));
+  hasWallet(walletOrId) { return Boolean(this.getWallet(walletOrId)) }
 
   /**
     * @param {Object} wallet - Wallet instance
     * @return {Boolean} True if wallet was added, false if already added
     */
-  addWallet = (wallet) => {
+  addWallet(wallet) {
     if (this.hasWallet(wallet)) {
       return false
     }
     this.wallets.push(wallet)
     wallet.setAssetProvider(this._assetProvider)
     return true
-  };
+  }
 
   /**
     * @param {(Object|String)} walletOrId - Wallet instance or wallet ID
     * @return {Object} The removed wallet, or undefined if nothing removed
     */
-  removeWallet = (walletOrId) => {
+  removeWallet(walletOrId) {
     const walletIndex = this._getWalletIndex(walletOrId)
     if (walletIndex >= 0) {
       return this.wallets.splice(walletIndex, 1)[0]
     }
     return undefined
-  };
+  }
 
-  _getWalletsForAsset = (assetOrSymbol) => this.wallets.filter((wallet) => wallet.isAssetSupported(assetOrSymbol));
+  _getWalletsForAsset(assetOrSymbol) { return this.wallets.filter((wallet) => wallet.isAssetSupported(assetOrSymbol)) }
 
-  isAssetSupported = (assetOrSymbol) => this.wallets.some((wallet) => wallet.isAssetSupported(assetOrSymbol));
+  isAssetSupported(assetOrSymbol) { return this.wallets.some((wallet) => wallet.isAssetSupported(assetOrSymbol)) }
 
-  _chooseWallet = (assetOrSymbol, options, applyToWallet) => Promise.resolve().then(() => {
-    options = {
-      selectWalletCallback: selectFirst,
-      ...(options || {})
-    }
-    const walletsForAsset = this._getWalletsForAsset(assetOrSymbol)
-    if (walletsForAsset.length === 0) {
-      throw new Error(`Failed to find wallet supporting ${this.getSymbol(assetOrSymbol)}`)
-    }
-    let selectedWallet
-    if (walletsForAsset.length === 1) {
-      selectedWallet = walletsForAsset[0]
-    } else {
-      selectedWallet = options.selectWalletCallback(walletsForAsset)
-    }
-    if (selectedWallet && typeof selectedWallet.then === 'function') {
-      return selectedWallet.then(applyToWallet)
-    }
-    return applyToWallet(selectedWallet)
-  });
+  _chooseWallet(assetOrSymbol, options, applyToWallet) {
+    return Promise.resolve().then(() => {
+      options = {
+        selectWalletCallback: selectFirst,
+        ...(options || {})
+      }
+      const walletsForAsset = this._getWalletsForAsset(assetOrSymbol)
+      if (walletsForAsset.length === 0) {
+        throw new Error(`Failed to find wallet supporting ${this.getSymbol(assetOrSymbol)}`)
+      }
+      let selectedWallet
+      if (walletsForAsset.length === 1) {
+        selectedWallet = walletsForAsset[0]
+      } else {
+        selectedWallet = options.selectWalletCallback(walletsForAsset)
+      }
+      if (selectedWallet && typeof selectedWallet.then === 'function') {
+        return selectedWallet.then(applyToWallet)
+      }
+      return applyToWallet(selectedWallet)
+    })
+  }
   
-  getFreshAddress = (assetOrSymbol, options = {}) => Promise.resolve().then(() => {
-    if (!assetOrSymbol) {
-      return null
-    }
-    return this._chooseWallet(assetOrSymbol, options, (wallet) => wallet.getFreshAddress(assetOrSymbol, options))
-  });
+  getFreshAddress(assetOrSymbol, options = {}) {
+    return Promise.resolve().then(() => {
+      if (!assetOrSymbol) {
+        return null
+      }
+      return this._chooseWallet(
+        assetOrSymbol,
+        options,
+        (wallet) => wallet.getFreshAddress(assetOrSymbol, options))
+    })
+  }
 
-  createTransaction = (toAddress, amount, assetOrSymbol, options = {}) => {
-    return this._chooseWallet(assetOrSymbol, options, (wallet) => wallet.createTransaction(toAddress, amount, assetOrSymbol, options))
-  };
+  createTransaction(toAddress, amount, assetOrSymbol, options = {}) {
+    return this._chooseWallet(
+      assetOrSymbol,
+      options,
+      (wallet) => wallet.createTransaction(toAddress, amount, assetOrSymbol, options))
+  }
 
-  _validateTx = (tx) => {
+  _validateTx(tx) {
     if (tx === null || typeof tx !== 'object') {
       throw new Error(`Invalid tx of type ${typeof tx}`)
     }
@@ -138,25 +148,31 @@ export default class MultiWallet extends Wallet {
       throw new Error(`Invalid tx provided to ${this.getType()} ${this.getId()} with invalid walletId ${tx.walletId}`)
     }
     return tx
-  };
+  }
 
-  _callWalletTxFn = (fnName) => (tx, options) => Promise.resolve().then(() => {
-    const wallet = this.getWallet(tx.walletId)
-    return wallet[fnName](tx, options)
-  });
+  _callWalletTxFn(fnName, tx, options) {
+    return Promise.resolve().then(() => {
+      const wallet = this.getWallet(tx.walletId)
+      return wallet[fnName](tx, options)
+    })
+  }
 
-  _signTx = this._callWalletTxFn('_signTx');
+  _signTx(tx, options) {
+    return this._callWalletTxFn('_signTx', tx, options)
+  }
 
-  _sendSignedTx = this._callWalletTxFn('_sendSignedTx');
+  _sendSignedTx(tx, options) {
+    return this._callWalletTxFn('_sendSignedTx', tx, options)
+  }
 
-  getBalance = (assetOrSymbol, options = {}) => {
+  getBalance(assetOrSymbol, options = {}) {
     const balancePromises = this._getWalletsForAsset(assetOrSymbol)
       .map((wallet) => wallet.getBalance(assetOrSymbol, options))
     return Promise.all(balancePromises).then((balances) => balances.reduce(plus, ZERO))
-  };
+  }
 
-  getAllBalances = (options = {}) => {
+  getAllBalances(options = {}) {
     return Promise.all(this.wallets.map((wallet) => wallet.getAllBalances(options)))
       .then((walletBalances) => reduceByKey(walletBalances, plus, ZERO))
-  };
+  }
 }

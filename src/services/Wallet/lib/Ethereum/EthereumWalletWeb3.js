@@ -29,24 +29,22 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
     this.providerName = providerName || web3.providerName
   }
 
-  getType = () => EthereumWalletWeb3.type;
+  getType() { return EthereumWalletWeb3.type }
 
-  getTypeLabel = () => this.providerName === 'faast' ? 'Web3 Wallet' : this.providerName;
+  getTypeLabel() { return this.providerName === 'faast' ? 'Web3 Wallet' : this.providerName }
 
-  getAddress = () => this.address;
+  getAddress() { return this.address }
 
-  isSignTransactionSupported () {
-    return web3.providerName !== 'MetaMask'
-  }
+  isSignTransactionSupported() { return web3.providerName !== 'MetaMask' }
 
-  _checkAvailable = () => checkAccountAvailable(this.address);
+  _checkAvailable() { return checkAccountAvailable(this.address) }
 
-  _signAndSendTx (tx, options) {
+  _signAndSendTx(tx, options) {
     return web3SendTx(tx.txData, false, options)
       .then((txId) => ({ id: txId }));
   }
 
-  _signTx (tx) {
+  _signTx(tx) {
     const { txData } = tx
     const { value, gasLimit, gasPrice, nonce } = txData
     return web3.eth.signTransaction({
@@ -58,7 +56,7 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
     })
   }
 
-  static fromDefaultAccount = () => {
+  static fromDefaultAccount() {
     const { defaultAccount, getAccounts } = web3.eth
     let addressPromise
     if (defaultAccount) {
@@ -77,6 +75,6 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
         })
     }
     return addressPromise.then((address) => new EthereumWalletWeb3(address))
-  };
+  }
 
 }

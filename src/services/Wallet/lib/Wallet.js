@@ -16,89 +16,88 @@ export default class Wallet {
 
   get type() { return this.getType() }
 
-  getLabel = () => this.label || this.getType();
+  getLabel() { this.label || this.getType() }
+  setLabel(label) { this.label = label }
 
-  setLabel = (label) => {
-    this.label = label;
-  };
+  isPersistAllowed() { this._persistAllowed }
+  setPersistAllowed(persistAllowed) { this._persistAllowed = persistAllowed }
 
-  setPersistAllowed = (persistAllowed) => this._persistAllowed = persistAllowed;
-
-  isPersistAllowed = () => this._persistAllowed;
-
-  setReadOnly = (readOnly) => this._readOnly = readOnly;
-
-  isReadOnly = () => this._readOnly;
+  isReadOnly() { this._readOnly }
+  setReadOnly(readOnly) { this._readOnly = readOnly }
 
   isPasswordProtected() { return false }
 
   checkPasswordCorrect() { return true }
 
   /* Default to true, can be overriden by subclass if unsupported */
-  isSignTransactionSupported () { return true }
+  isSignTransactionSupported() { return true }
 
-  setAssetProvider = (assetProvider) => {
+  setAssetProvider(assetProvider) {
     if (typeof assetProvider !== 'function') {
       throw new Error(`Expected assetProvider to be a function, got ${typeof assetProvider}`)
     }
     this._assetProvider = assetProvider
-  };
+  }
 
-  getAllAssets = () => {
+  getAllAssets() {
     const assets = this._assetProvider()
     if (typeof assets === 'object') {
       return Object.values(assets)
     }
     return assets || []
-  };
+  }
 
-  getAllAssetsBySymbol = () => {
+  getAllAssetsBySymbol() {
     const assets = this._assetProvider()
     if (Array.isArray(assets)) {
       return assets.reduce((mapped, asset) => ({ ...mapped, [asset.symbol]: asset }), {})
     }
     return assets || {}
-  };
+  }
 
-  getSymbol = (assetOrSymbol) => {
+  getSymbol(assetOrSymbol) {
     if (typeof assetOrSymbol === 'object' && assetOrSymbol !== null) {
       return assetOrSymbol.symbol
     }
     return assetOrSymbol
-  };
+  }
 
-  getAsset = (assetOrSymbol) => this.getAllAssetsBySymbol()[this.getSymbol(assetOrSymbol)] || assetOrSymbol;
+  getAsset(assetOrSymbol) { return this.getAllAssetsBySymbol()[this.getSymbol(assetOrSymbol)] || assetOrSymbol }
 
-  getSupportedAssets = () => this.getAllAssets().filter(::this.isAssetSupported);
+  getSupportedAssets() { return this.getAllAssets().filter(::this.isAssetSupported) }
 
-  getSupportedAssetSymbols = () => this.getSupportedAssets().map(({ symbol }) => symbol);
+  getSupportedAssetSymbols() {
+    return this.getSupportedAssets().map(({ symbol }) => symbol)
+  }
 
-  getSupportedAssetsBySymbol = () => this.getSupportedAssets().reduce((bySymbol, asset) => ({ ...bySymbol, [asset.symbol]: asset }));
+  getSupportedAssetsBySymbol() {
+    return this.getSupportedAssets().reduce((bySymbol, asset) => ({ ...bySymbol, [asset.symbol]: asset }))
+  }
 
-  getSupportedAsset = (assetOrSymbol) => {
+  getSupportedAsset(assetOrSymbol) {
     const asset = this.getAsset(assetOrSymbol)
     return (asset && this.isAssetSupported(asset)) ? asset : null
-  };
+  }
 
-  assertAssetSupported = (assetOrSymbol) => {
+  assertAssetSupported(assetOrSymbol) {
     const asset = this.getSupportedAsset(assetOrSymbol)
     if (!asset) {
       throw new Error(`Asset ${this.getSymbol(assetOrSymbol)} not supported by ${this.type}`)
     }
     return asset
-  };
+  }
 
   /** Default does nothing, should be overridden in subclass */
-  _validateTxData (txData) {
+  _validateTxData(txData) {
     return txData
   }
 
   /** Default does nothing, should be overridden in subclass */
-  _validateSignedTxData (signedTxData) {
+  _validateSignedTxData(signedTxData) {
     return signedTxData
   }
 
-  _validateTx (tx) {
+  _validateTx(tx) {
     if (tx === null || typeof tx !== 'object') {
       log.error('invalid tx', tx)
       throw new Error(`Invalid tx of type ${typeof tx}`)
@@ -114,18 +113,18 @@ export default class Wallet {
     return tx
   }
 
-  _assertSignTransactionSupported () {
+  _assertSignTransactionSupported() {
     if (!this.isSignTransactionSupported()) {
       throw new Error(`Wallet "${this.getLabel()}" does not support signTransaction`)
     }
   }
 
-  _signAndSendTx (tx, options = {}) {
+  _signAndSendTx(tx, options = {}) {
     return this._signTx(tx, options)
       .then((signedTx) => this._sendSignedTx(signedTx, options))
   }
 
-  signTransaction (tx, options = {}) {
+  signTransaction(tx, options = {}) {
     return Promise.resolve(tx)
       .then(::this._validateTx)
       .then(::this._assertSignTransactionSupported)
@@ -137,7 +136,7 @@ export default class Wallet {
       })));
   }
 
-  sendTransaction (tx, options = {}) {
+  sendTransaction(tx, options = {}) {
     return Promise.resolve(tx)
       .then(::this._validateTx)
       .then(() => tx.signed
@@ -151,7 +150,7 @@ export default class Wallet {
       })));
   }
 
-  getTransactionReceipt (txOrId) {
+  getTransactionReceipt(txOrId) {
     return Promise.resolve(txOrId)
       .then((txOrId) => {
         let id = txOrId
@@ -166,22 +165,27 @@ export default class Wallet {
       })
   }
 
-  transfer = (toAddress, amount, assetOrSymbol, options) =>
-    this.createTransaction(toAddress, amount, assetOrSymbol, options)
-      .then((tx) => this.sendTransaction(tx, options));
+  send(toAddress, amount, assetOrSymbol, options) {
+    return this.createTransaction(toAddress, amount, assetOrSymbol, options)
+      .then((tx) => this.sendTransaction(tx, options))
+  }
 
-  getAllBalances = (options) => Promise.resolve(this.getSupportedAssets())
-    .then((assets) => Promise.all(assets
-      .map(({ symbol }) => this.getBalance(symbol, options)
-        .then((balance) => ({ symbol, balance })))))
-    .then((balances) => balances.reduce((result, { symbol, balance }) => ({
-      ...result,
-      [symbol]: balance
-    }), {}));
+  getAllBalances(options) {
+    return Promise.resolve(this.getSupportedAssets())
+      .then((assets) => Promise.all(assets
+        .map(({ symbol }) => this.getBalance(symbol, options)
+          .then((balance) => ({ symbol, balance })))))
+      .then((balances) => balances.reduce((result, { symbol, balance }) => ({
+        ...result,
+        [symbol]: balance
+      }), {}))
+  }
 
-  toJSON = () => ({
-    type: this.getType(),
-    ...this
-  })
+  toJSON() {
+    return {
+      type: this.getType(),
+      ...this
+    }
+  }
 
 }

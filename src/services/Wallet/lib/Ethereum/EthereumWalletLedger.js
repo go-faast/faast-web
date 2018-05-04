@@ -22,9 +22,9 @@ export default class EthereumWalletLedger extends EthereumWallet {
     this.derivationPath = derivationPath // Expects full path to `address`
   }
 
-  getType = () => EthereumWalletLedger.type;
+  getType() { return EthereumWalletLedger.type }
 
-  getTypeLabel = () => 'Ledger Wallet';
+  getTypeLabel() { return 'Ledger Wallet' }
 
   static connect = (derivationPath = 'm/44\'/60\'/0\'') => {
     return window.faast.hw.ledger.getAppConfiguration_async()
@@ -39,19 +39,20 @@ export default class EthereumWalletLedger extends EthereumWallet {
         })))
   }
 
-  getAddress = () => this.address;
+  getAddress() { return this.address }
 
-  _signTx = (tx) => Promise.resolve().then(() => {
-    const { txData } = tx
-    let ethJsTx
-    try {
-      ethJsTx = new EthereumjsTx(txData)
-      ethJsTx.raw[6] = Buffer.from([txData.chainId])
-      ethJsTx.raw[7] = 0
-      ethJsTx.raw[8] = 0
-    } catch (e) {
-      return Promise.reject(e)
-    }
+  _signTx(tx) {
+    return Promise.resolve().then(() => {
+      const { txData } = tx
+      let ethJsTx
+      try {
+        ethJsTx = new EthereumjsTx(txData)
+        ethJsTx.raw[6] = Buffer.from([txData.chainId])
+        ethJsTx.raw[7] = 0
+        ethJsTx.raw[8] = 0
+      } catch (e) {
+        return Promise.reject(e)
+      }
 
     return window.faast.hw.ledger.signTransaction_async(this.derivationPath, RLP.encode(ethJsTx.raw))
       .then((result) => {

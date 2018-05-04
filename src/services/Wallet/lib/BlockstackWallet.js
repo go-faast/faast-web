@@ -14,9 +14,9 @@ export default class BlockstackWallet extends EthereumWalletKeystore {
     this.setPersistAllowed(false)
   }
 
-  static create = () => new BlockstackWallet(loadUserData().appPrivateKey);
+  static create() { return new BlockstackWallet(loadUserData().appPrivateKey) }
 
-  getType = () => BlockstackWallet.type;
+  getType() { return BlockstackWallet.type }
 
-  getTypeLabel = () => 'Blockstack';
+  getTypeLabel() { return 'Blockstack' }
 }

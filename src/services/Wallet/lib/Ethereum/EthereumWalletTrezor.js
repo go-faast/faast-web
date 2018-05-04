@@ -26,12 +26,14 @@ export default class EthereumWalletTrezor extends EthereumWallet {
     this.derivationPath = derivationPath // Expects full path to `address`
   }
 
-  getType = () => EthereumWalletTrezor.type;
+  getType() { return EthereumWalletTrezor.type }
 
-  getTypeLabel = () => 'TREZOR';
+  getTypeLabel() { return 'TREZOR' }
 
-  static connect = (derivationPath = 'm/44\'/60\'/0\'/0') =>
-    Trezor.getXPubKey(derivationPath)
+  getAddress() { return this.address }
+
+  static connect(derivationPath = 'm/44\'/60\'/0\'/0') {
+    return Trezor.getXPubKey(derivationPath)
       .then(({ publicKey, chainCode }) => {
         log.info('Trezor getXPubKey success')
         const hdKey = new HDKey()
@@ -44,38 +46,39 @@ export default class EthereumWalletTrezor extends EthereumWallet {
           derivationPath,
           getAccount
         })))
+  }
 
-  getAddress = () => this.address;
-
-  _signTx = (tx) => Promise.resolve().then(() => {
-    Trezor.closeAfterSuccess(false)
-    const { txData } = tx
-    const { nonce, gasPrice, gasLimit, to, value, data, chainId } = txData
-    return Trezor.signEthereumTx(
-      this.derivationPath,
-      stripHexPrefix(nonce),
-      stripHexPrefix(gasPrice),
-      stripHexPrefix(gasLimit),
-      stripHexPrefix(to),
-      stripHexPrefix(value),
-      stripHexPrefix(data) || null,
-      chainId
-    ).then((result) => {
-      log.info('trezor signed tx', result)
-      return {
-        signedTxData: this._signedEthJsTxToObject(new EthereumjsTx({
-          ...txData,
-          r: addHexPrefix(result.r),
-          s: addHexPrefix(result.s),
-          v: toHex(result.v)
-        }))
-      }
-    }).catch((e) => {
-      if (e.message === 'Action cancelled by user') {
-        throw new Error('Transaction was denied')
-      } else {
-        throw new Error(`Error from Trezor - ${e.message}`)
-      }
+  _signTx(tx) {
+    return Promise.resolve().then(() => {
+      Trezor.closeAfterSuccess(false)
+      const { txData } = tx
+      const { nonce, gasPrice, gasLimit, to, value, data, chainId } = txData
+      return Trezor.signEthereumTx(
+        this.derivationPath,
+        stripHexPrefix(nonce),
+        stripHexPrefix(gasPrice),
+        stripHexPrefix(gasLimit),
+        stripHexPrefix(to),
+        stripHexPrefix(value),
+        stripHexPrefix(data) || null,
+        chainId
+      ).then((result) => {
+        log.info('trezor signed tx', result)
+        return {
+          signedTxData: this._signedEthJsTxToObject(new EthereumjsTx({
+            ...txData,
+            r: addHexPrefix(result.r),
+            s: addHexPrefix(result.s),
+            v: toHex(result.v)
+          }))
+        }
+      }).catch((e) => {
+        if (e.message === 'Action cancelled by user') {
+          throw new Error('Transaction was denied')
+        } else {
+          throw new Error(`Error from Trezor - ${e.message}`)
+        }
+      })
     })
-  });
+  }
 }

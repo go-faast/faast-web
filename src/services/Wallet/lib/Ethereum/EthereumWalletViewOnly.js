@@ -10,8 +10,8 @@ export default class EthereumWalletViewOnly extends EthereumWalletWeb3 {
     this.setReadOnly(true)
   }
 
-  getType = () => EthereumWalletViewOnly.type;
+  getType() { return EthereumWalletViewOnly.type }
 
-  getTypeLabel = () => 'View only';
+  getTypeLabel() { return 'View only' }
 
 }
