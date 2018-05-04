@@ -16,13 +16,13 @@ export default class Wallet {
 
   get type() { return this.getType() }
 
-  getLabel() { this.label || this.getType() }
+  getLabel() { return this.label || this.getType() }
   setLabel(label) { this.label = label }
 
-  isPersistAllowed() { this._persistAllowed }
+  isPersistAllowed() { return this._persistAllowed }
   setPersistAllowed(persistAllowed) { this._persistAllowed = persistAllowed }
 
-  isReadOnly() { this._readOnly }
+  isReadOnly() { return this._readOnly }
   setReadOnly(readOnly) { this._readOnly = readOnly }
 
   isPasswordProtected() { return false }
