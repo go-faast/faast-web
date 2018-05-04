@@ -5,21 +5,26 @@ import {
 } from 'reactstrap'
 
 import SwapStatusCard from 'Components/SwapStatusCard'
+import Spinner from 'Components/Spinner'
 
 const SwapSubmitModal = ({ isOpen, swaps, headerText, continueText, continueDisabled, continueLoading, handleContinue, handleCancel }) => {
   const signingStatuses = swaps.map((swap, i) => {
-    const { tx, status: { detailsCode, labelClass, label } } = swap
+    const { tx, status: { code, detailsCode, labelClass, label } } = swap
     let statusText
     if (detailsCode === 'signed') {
       statusText = (<span className='text-success'>Signed</span>)
+    } else if (detailsCode === 'signing_unsupported') {
+      statusText = (<span className='text-success'>Ready</span>)
     } else if (detailsCode === 'signing') {
       statusText = (<span className='text-warning blink'>Awaiting signature</span>)
     } else if (detailsCode.includes('error')) {
       statusText = (<span className='text-danger'>Failed</span>)
     } else if (detailsCode === 'sending') {
       statusText = (<span className='text-primary'>Sending</span>)
-    } else if (tx && tx.sent) {
+    } else if ((tx && tx.sent) || code === 'failed') {
       statusText = (<span className={labelClass}>{label}</span>)
+    } else {
+      statusText = (<Spinner size='sm' inline/>)
     }
     return (
       <Col xs='12' key={i}>
