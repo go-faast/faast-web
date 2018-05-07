@@ -5,7 +5,7 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import logger from 'redux-logger'
 import { Provider } from 'react-redux'
-import { throttle, omit } from 'lodash'
+import { throttle } from 'lodash'
 import createHistory from 'history/createBrowserHistory'
 import { ConnectedRouter, routerMiddleware } from 'react-router-redux'
 import ReduxToastr from 'react-redux-toastr'
@@ -45,11 +45,7 @@ store.subscribe(throttle(() => {
       const { settings } = state
       const swaps = getSwapState(state)
       saveToAddress(wallet.id, {
-        swap: Object.values(swaps).map((swap) => ({
-          ...swap,
-          order: {},
-          tx: omit(swap.tx, 'receipt')
-        })),
+        swap: swaps,
         settings: settings
       })
     }
