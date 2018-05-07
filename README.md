@@ -51,7 +51,7 @@ The faast Portfolio is a React app that is bundled with Webpack. For easier deve
 npm run dev
 ```
 
-Once compiled, open [http://localhost:8080](http://localhost:8080) in your browser.
+Once compiled, open [https://localhost:8080/portfolio](https://localhost:8080/portfolio) in your browser.
 
 ### Branches
 
