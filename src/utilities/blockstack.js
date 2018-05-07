@@ -9,9 +9,9 @@ import {
   loadUserData
 } from 'blockstack'
 import log from 'Utilities/log'
-import { BlockstackWallet } from 'Services/Wallet'
+import { EthereumWalletBlockstack } from 'Services/Wallet'
 
-const createWallet = () => BlockstackWallet.create()
+const createWallet = () => EthereumWalletBlockstack.create()
 
 const restoreWallet = () => {
   if (isUserSignedIn()) {

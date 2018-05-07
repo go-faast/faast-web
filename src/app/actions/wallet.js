@@ -3,7 +3,7 @@ import sha256 from 'hash.js/lib/hash/sha/256'
 import { newScopedCreateAction } from 'Utilities/action'
 import blockstack from 'Utilities/blockstack'
 import log from 'Utilities/log'
-import walletService, { Wallet, MultiWallet, BlockstackWallet } from 'Services/Wallet'
+import walletService, { Wallet, MultiWallet, EthereumWalletBlockstack } from 'Services/Wallet'
 import { getAllAssets, getWalletParents } from 'Selectors'
 import { getWalletIconProps } from 'Utilities/walletIcon'
 
@@ -17,7 +17,7 @@ const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   typeLabel: wallet.getTypeLabel(),
   address: wallet.isSingleAddress() ? wallet.getAddress() : '',
   iconProps: getWalletIconProps(wallet),
-  isBlockstack: wallet.getType() === BlockstackWallet.type,
+  isBlockstack: wallet.getType() === EthereumWalletBlockstack.type,
   isReadOnly: wallet.isReadOnly(),
   isSignTxSupported: wallet.isSignTransactionSupported(),
   supportedAssets: wallet.getSupportedAssetSymbols(),
@@ -60,7 +60,7 @@ export const removeWallet = (id) => (dispatch, getState) => Promise.resolve()
     return Promise.all(parents.map((parent) => dispatch(updateWallet(parent.id))))
       .then(() => {
         dispatch(walletRemoved(wallet))
-        if (wallet.type === BlockstackWallet.type) {
+        if (wallet.type === EthereumWalletBlockstack.type) {
           blockstack.signUserOut()
         }
         return wallet
