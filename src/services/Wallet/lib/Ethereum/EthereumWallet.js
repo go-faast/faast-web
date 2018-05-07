@@ -7,7 +7,7 @@ import { abstractMethod, assertExtended } from 'Utilities/reflect'
 import { ellipsize } from 'Utilities/display'
 import log from 'Utilities/log'
 
-import { batchRequest, tokenBalanceData, tokenSendData, web3SendTx } from './util'
+import { batchRequest, tokenBalanceData, tokenSendData, web3SendTx, toUniversalReceipt } from './util'
 import Wallet from '../Wallet'
 
 @abstractMethod('getType', 'getTypeLabel', 'getAddress', '_signTx')
@@ -130,12 +130,7 @@ export default class EthereumWallet extends Wallet {
 
   _getTransactionReceipt(txId) {
     return web3.eth.getTransactionReceipt(txId)
-      .then((receipt) => !receipt ? null : ({
-        confirmed: receipt.blockNumber && receipt.blockNumber > 0,
-        succeeded: receipt.status === true || receipt.status === '0x1',
-        blockNumber: receipt.blockNumber,
-        raw: receipt
-      }))
+      .then(toUniversalReceipt)
   }
 
   _sendSignedTx(tx, options = {}) {

@@ -37,6 +37,14 @@ export const batchRequest = (batch, batchableFn, ...fnArgs) => {
   return batchableFn(...fnArgs)
 }
 
+/** Convert a web3 tx receipt to a universal receipt format */
+export const toUniversalReceipt = (receipt) => !receipt ? null : ({
+  confirmed: receipt.blockNumber && receipt.blockNumber > 0,
+  succeeded: receipt.status === true || receipt.status === '0x1',
+  blockNumber: receipt.blockNumber,
+  raw: receipt
+})
+
 /** Send the transaction and return a promise that resolves to the txId after the
   * transaction is broadcast to the network.
   */
@@ -59,7 +67,7 @@ export const web3SendTx = (txData, signed, options) => new Promise((resolve, rej
       }
     })
   if (typeof onTxHash === 'function') sendStatus.once('transactionHash', onTxHash)
-  if (typeof onReceipt === 'function') sendStatus.once('receipt', onReceipt)
+  if (typeof onReceipt === 'function') sendStatus.once('receipt', (r) => onReceipt(toUniversalReceipt(r)))
   if (typeof onConfirmation === 'function') sendStatus.on('confirmation', onConfirmation)
   if (typeof onError === 'function') sendStatus.on('error', onError)
 });

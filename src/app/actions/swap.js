@@ -196,7 +196,7 @@ export const initiateSwaps = (swapList) => (dispatch) => {
     .then((a) => dispatch(swapSufficientFees(a)))
 }
 
-const createTransferEventListeners = (swap, markSigned) => (dispatch) => {
+const createTransferEventListeners = (swap) => (dispatch) => {
   const { id: swapId } = swap
   let txId
   return {
@@ -204,7 +204,6 @@ const createTransferEventListeners = (swap, markSigned) => (dispatch) => {
       log.info(`tx hash ${txHash} obtained for swap ${swapId}`)
       txId = txHash
       dispatch(swapTxUpdated(swapId, { id: txId }))
-      if (markSigned) dispatch(swapTxUpdated(swapId, { signed: true, sent: true }))
     },
     onReceipt: (receipt) => {
       log.info(`tx receipt obtained for swap ${swapId}`)
@@ -269,7 +268,7 @@ export const sendSwapTxs = (swapList, sendOptions) => (dispatch) => {
   log.debug('sendSwapTxs', swapList)
   return processArray(swapList, (swap) => {
     const { id, tx, sendWalletId } = swap
-    const eventListeners = dispatch(createTransferEventListeners(swap, true))
+    const eventListeners = dispatch(createTransferEventListeners(swap))
     const walletInstance = walletService.get(sendWalletId)
     dispatch(swapTxSendingStart(id))
 
