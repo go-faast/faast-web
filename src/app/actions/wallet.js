@@ -17,11 +17,11 @@ const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   typeLabel: wallet.getTypeLabel(),
   address: wallet.isSingleAddress() ? wallet.getAddress() : '',
   iconProps: getWalletIconProps(wallet),
-  isBlockstack: wallet.getType() === EthereumWalletBlockstack.type,
+  isBlockstack: wallet instanceof EthereumWalletBlockstack,
   isReadOnly: wallet.isReadOnly(),
   isSignTxSupported: wallet.isSignTransactionSupported(),
   supportedAssets: wallet.getSupportedAssetSymbols(),
-  nestedWalletIds: wallet.getType() === MultiWallet.type ? wallet.wallets.map((w) => w.getId()) : [],
+  nestedWalletIds: wallet instanceof MultiWallet ? wallet.wallets.map((w) => w.getId()) : [],
 }) : wallet
 
 export const walletAdded = createAction('ADDED', convertWalletInstance)
@@ -60,7 +60,7 @@ export const removeWallet = (id) => (dispatch, getState) => Promise.resolve()
     return Promise.all(parents.map((parent) => dispatch(updateWallet(parent.id))))
       .then(() => {
         dispatch(walletRemoved(wallet))
-        if (wallet.type === EthereumWalletBlockstack.type) {
+        if (wallet instanceof EthereumWalletBlockstack) {
           blockstack.signUserOut()
         }
         return wallet
@@ -82,7 +82,7 @@ export const updateWalletBalances = (walletId) => (dispatch) => Promise.resolve(
     if (!walletInstance) {
       throw new Error(`Could not find wallet with id ${walletId}`)
     }
-    if (walletInstance.getType() === MultiWallet.type) {
+    if (walletInstance instanceof MultiWallet) {
       return Promise.all(walletInstance.wallets.map((nested) => dispatch(updateWalletBalances(nested.getId()))))
     }
     dispatch(walletBalancesUpdating(walletId))
@@ -110,10 +110,10 @@ const doForNestedWallets = (cb) => (multiWalletId, ...nestedWalletIds) => (dispa
     walletService.get(multiWalletId),
     ...nestedWalletIds.map((nestedWalletId) => walletService.get(nestedWalletId)),
   ]).then(([multiWallet, ...nestedWallets]) => {
-    if (multiWallet.getType() !== MultiWallet.type) {
+    if (!(multiWallet instanceof MultiWallet)) {
       throw new Error(`Wallet ${multiWalletId} is not a ${MultiWallet.type}`)
     }
-    return Promise.all(nestedWallets.map((nestedWallet) => Promise.resolve(cb(multiWallet, nestedWallet))))
+    return Promise.all(nestedWallets.map((nestedWallet) => cb(multiWallet, nestedWallet)))
       .then(() => dispatch(updateWallet(multiWalletId)))
   })
 

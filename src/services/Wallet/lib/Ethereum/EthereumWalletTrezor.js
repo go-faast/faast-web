@@ -2,12 +2,15 @@ import EthereumjsTx from 'ethereumjs-tx'
 import EthereumJsUtil from 'ethereumjs-util'
 import HDKey from 'hdkey'
 
+import config from 'Config'
 import log from 'Utilities/log'
 import { stripHexPrefix, addHexPrefix } from 'Utilities/helpers'
 import { toHex } from 'Utilities/convert'
 import Trezor from 'Services/Trezor'
 
 import EthereumWallet from './EthereumWallet'
+
+const typeLabel = config.walletTypes.trezor.name
 
 const createAccountGetter = (baseDerivationPath, hdKey) => (index) => {
   const derivedKey = hdKey.derive(`m/${index}`)
@@ -28,7 +31,7 @@ export default class EthereumWalletTrezor extends EthereumWallet {
 
   getType() { return EthereumWalletTrezor.type }
 
-  getTypeLabel() { return 'TREZOR' }
+  getTypeLabel() { return typeLabel }
 
   getAddress() { return this.address }
 
@@ -76,7 +79,7 @@ export default class EthereumWalletTrezor extends EthereumWallet {
         if (e.message === 'Action cancelled by user') {
           throw new Error('Transaction was denied')
         } else {
-          throw new Error(`Error from Trezor - ${e.message}`)
+          throw new Error(`Error from ${typeLabel} - ${e.message}`)
         }
       })
     })

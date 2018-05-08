@@ -1,9 +1,12 @@
+import config from 'Config'
 import log from 'Utilities/log'
 import { toSmallestDenomination } from 'Utilities/convert'
 import { xpubToYpub } from 'Utilities/bitcoin'
 import Trezor from 'Services/Trezor'
 
 import BitcoinWallet from './BitcoinWallet'
+
+const typeLabel = config.walletTypes.trezor.name
 
 export default class BitcoinWalletTrezor extends BitcoinWallet {
 
@@ -16,7 +19,7 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
 
   getType() { return BitcoinWalletTrezor.type }
 
-  getTypeLabel() { return 'TREZOR' }
+  getTypeLabel() { return typeLabel }
 
   isLegacyAccount() { return this.derivationPath.startsWith('m/44') }
 

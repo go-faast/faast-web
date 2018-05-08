@@ -1,10 +1,13 @@
 import RLP from 'rlp'
 import EthereumjsTx from 'ethereumjs-tx'
 
+import config from 'Config'
 import log from 'Utilities/log'
 import { addHexPrefix } from 'Utilities/helpers'
 
 import EthereumWallet from './EthereumWallet'
+
+const typeLabel = config.walletTypes.ledger.name
 
 const createAccountGetter = (baseDerivationPath) => (index) => {
   const fullDerivationPath = `${baseDerivationPath}/${index}`
@@ -24,7 +27,7 @@ export default class EthereumWalletLedger extends EthereumWallet {
 
   getType() { return EthereumWalletLedger.type }
 
-  getTypeLabel() { return 'Ledger Wallet' }
+  getTypeLabel() { return typeLabel }
 
   static connect = (derivationPath = 'm/44\'/60\'/0\'') => {
     return window.faast.hw.ledger.getAppConfiguration_async()
@@ -68,7 +71,7 @@ export default class EthereumWalletLedger extends EthereumWallet {
           } else if (ex === 'Invalid status 6985') {
             throw new Error('Transaction was denied')
           } else if (typeof ex === 'string') {
-            throw new Error(`Error from Ledger Wallet - ${ex}`)
+            throw new Error(`Error from ${typeLabel} - ${ex}`)
           } else if (ex.errorCode != null && ex.errorCode === 5) {
             throw new Error('Transaction timed out, please try again')
           }
