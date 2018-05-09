@@ -28,7 +28,7 @@ const renderAssetRows = ({ assetRows, openCharts, toggleChart }) => {
     return ([
       <tr key={symbol} onClick={() => toggleChart(symbol)} tabIndex='0'>
         <td>
-          <CoinIcon symbol={symbol} width='1.5em' height='1.5em' size={1}/>
+          <CoinIcon symbol={symbol} width='1.5em' height='1.5em' size={1} inline/>
           <span className='mx-2 text-truncate'>{displayName}</span>
         </td>
         <td>

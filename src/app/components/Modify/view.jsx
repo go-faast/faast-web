@@ -60,7 +60,7 @@ const ModifyView = (props) => {
           <Col xs lg='4' xl='5' className='order-1'>
             <Row className='gutter-3 align-items-center'>
               <Col xs='auto' className='text-right'>
-                <CoinIcon size='md' symbol={symbol} />
+                <CoinIcon size='md' symbol={symbol} inline/>
               </Col>
               <Col xs='auto'><h5 className='m-0'>{name}</h5></Col>
             </Row>
