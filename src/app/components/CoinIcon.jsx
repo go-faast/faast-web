@@ -1,30 +1,32 @@
-import React from 'react'
 import PropTypes from 'prop-types'
+import { compose, setDisplayName, setPropTypes, defaultProps, mapProps } from 'recompose'
+import { connect } from 'react-redux'
+import { omit } from 'lodash'
 
-import config from 'Config'
+import { getAssetIconUrl } from 'Selectors'
 import Icon from 'Components/Icon'
 
 import Erc20Svg from 'Img/coin/ERC20.svg?inline'
 
-const getPropsForSymbol = (symbol) => {
-  symbol = symbol.toUpperCase()
-  if (symbol === 'ERC20') {
-    return { src: Erc20Svg, fill: '#fff' }
-  }
-  return { src: `${config.siteUrl}/img/coins/coin_${symbol}.png` }
-}
-
-const CoinIcon = ({ symbol, ...props }) => (
-  <Icon {...getPropsForSymbol(symbol)} {...props}/>
-)
-
-CoinIcon.propTypes = {
-  symbol: PropTypes.string.isRequired, // Coin symbol (e.g. ETH, BTC)
-  ...Icon.stylePropTypes
-}
-
-CoinIcon.defaultProps = {
-  size: 'md'
-}
-
-export default CoinIcon
+export default compose(
+  setDisplayName('CoinIcon'),
+  setPropTypes({
+    symbol: PropTypes.string.isRequired, // Coin symbol (e.g. ETH, BTC)
+    ...Icon.stylePropTypes
+  }),
+  defaultProps({
+    size: 'md'
+  }),
+  connect((state, props) => {
+    const symbol = props.symbol.toUpperCase()
+    if (symbol === 'ERC20') {
+      return { src: Erc20Svg, fill: '#fff' }
+    }
+    let iconSrc = getAssetIconUrl(state, symbol)
+    if (!iconSrc) {
+      iconSrc = `https://faa.st/img/coins/coin_${symbol}.png`
+    }
+    return { src: iconSrc }
+  }),
+  mapProps((props) => omit(props, 'symbol', 'dispatch'))
+)(Icon)

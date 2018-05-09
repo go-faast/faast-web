@@ -19,6 +19,7 @@ const assetInitialState = {
   name: '',
   walletUrl: '',
   infoUrl: '',
+  iconUrl: '',
   decimals: 0,
   deposit: false,
   receive: false,
