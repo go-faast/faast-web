@@ -7,6 +7,7 @@ import { getAssetIconUrl } from 'Selectors'
 import Icon from 'Components/Icon'
 
 import Erc20Svg from 'Img/coin/ERC20.svg?inline'
+import QuestionMarkSvg from 'Img/question-mark-white.svg?inline'
 
 export default compose(
   setDisplayName('CoinIcon'),
@@ -24,7 +25,7 @@ export default compose(
     }
     let iconSrc = getAssetIconUrl(state, symbol)
     if (!iconSrc) {
-      iconSrc = `https://faa.st/img/coins/coin_${symbol}.png`
+      iconSrc = QuestionMarkSvg
     }
     return { src: iconSrc }
   }),
