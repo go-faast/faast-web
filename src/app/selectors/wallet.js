@@ -49,13 +49,13 @@ export const getWalletParents = createItemSelector(
 export const areWalletHoldingsLoaded = createItemSelector(
   getWallet,
   areAssetPricesLoaded,
-  (wallet, assetPricesLoaded) => wallet.balancesLoaded && assetPricesLoaded
+  (wallet, assetPricesLoaded) => wallet && wallet.balancesLoaded && assetPricesLoaded
 )
 
 export const getWalletHoldingsError = createItemSelector(
   getWallet,
   getAssetPricesError,
-  (wallet, assetPricesError) => wallet.balancesError || assetPricesError
+  (wallet, assetPricesError) => wallet && wallet.balancesError || assetPricesError
 )
 
 export const getWalletWithHoldings = createItemSelector(
