@@ -2,7 +2,6 @@ import { isObject, isArray, isUndefined } from 'lodash'
 
 import { newScopedCreateAction } from 'Utilities/action'
 import { processArray } from 'Utilities/helpers'
-import { getSwapStatus } from 'Utilities/swap'
 import { restoreFromAddress } from 'Utilities/storage'
 import log from 'Utilities/log'
 import {
@@ -16,7 +15,7 @@ import walletService from 'Services/Wallet'
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle, removeSwundle } from 'Actions/request'
 import { getWalletPassword } from 'Actions/walletPasswordPrompt'
 
-import { getAsset, getCurrentWallet, getAllWalletsArray, getAllSwapsArray } from 'Selectors'
+import { getAsset, getCurrentWallet, getAllWalletsArray, getAllSwapsArray, getSwap } from 'Selectors'
 
 const createAction = newScopedCreateAction(__filename)
 
@@ -300,6 +299,8 @@ const updateOrderStatus = (swap) => (dispatch) => {
     .catch(log.error)
 }
 
+const isOrderFinalized = (order) => order && (order.status === 'complete' || order.status === 'failed')
+
 export const pollOrderStatus = (swap) => (dispatch) => {
   const { id, orderId } = swap
   if (!orderId) {
@@ -309,7 +310,7 @@ export const pollOrderStatus = (swap) => (dispatch) => {
   const orderStatusInterval = window.setInterval(() => {
     dispatch(updateOrderStatus(swap))
       .then((order) => {
-        if (order && (order.status === 'complete' || order.status === 'failed')) {
+        if (isOrderFinalized(order)) {
           clearInterval(orderStatusInterval)
         }
       })
@@ -361,11 +362,14 @@ export const restoreSwapPolling = () => (dispatch, getState) => {
       updateSwapTxReceipt(swap),
       updateOrderStatus(swap)
     ]).then(() => {
-      const status = getSwapStatus(swap)
+      swap = getSwap(getState(), swap.id)
+      const { status, order } = swap
       if (status.detailsCode === 'pending_receipt') {
         dispatch(pollTransactionReceipt(swap))
       }
-      dispatch(pollOrderStatus(swap))
+      if (!isOrderFinalized(order)) {
+        dispatch(pollOrderStatus(swap))
+      }
     })
   })
 }

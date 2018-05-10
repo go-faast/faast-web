@@ -47,6 +47,8 @@ export const getAllSwaps = createSelector(
 export const getAllSwapsArray = createSelector(getAllSwaps, Object.values)
 export const getSwap = createItemSelector(getAllSwaps, selectItemId, (allSwaps, id) => allSwaps[id])
 
+export const getSwapOrder = createItemSelector(getSwap, (swap) => swap ? swap.order : null)
+
 export const getCurrentSwundle = getAllSwapsArray
 export const getCurrentSwundleStatus = createSelector(getCurrentSwundle, statusAllSwaps)
 
