@@ -4,7 +4,7 @@ import config from 'Config'
 
 const { siteUrl, apiUrl } = config
 
-const getAssets = () => fetchGet(`${siteUrl}/app/assets`)
+const getAssets = () => fetchGet(`${apiUrl}/currencies`)
   .then((assets) => assets.filter((asset) => {
     if (!asset.symbol) {
       log.warn('omitting asset without symbol', asset)
