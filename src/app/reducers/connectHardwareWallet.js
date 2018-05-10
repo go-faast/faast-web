@@ -2,7 +2,7 @@ import { createReducer } from 'redux-act'
 import { omit } from 'lodash'
 
 import {
-  stateReset, accountAdded, accountRemoved, connectAssetReset, derivationPathChanged, 
+  stateReset, accountAdded, accountRemoved, connectAssetReset, derivationPathChanged, setWalletId,
   connectTimeoutStarted, connectTimeoutCleared, retryTimerStarted, retryTimerTicked, retryTimerCleared,
   setStatusWaiting, setStatusConnecting, setStatusConnected, setStatusCancelled, setStatusError,
   selectedAccountChanged, accountSelectReset, connectBatchStarted, connectBatchPopped, connectBatchReset,
@@ -28,8 +28,8 @@ const initialAccountSelectState = {
 }
 
 const initialState = {
-  walletId: '',
-  walletType: '',
+  walletId: '', // ID of MultiWallet containing all added account wallets
+  walletType: '', // One of config.walletTypes
   connectedAccountIds: {}, // Map of assetSymbol to added account walletId
   connectBatchQueue: null,
   ...initialConnectAssetState,
@@ -58,6 +58,7 @@ export default createReducer({
     ...state,
     connectBatchQueue: initialState.connectBatchQueue
   }),
+  [setWalletId]: merge,
   [accountAdded]: (state, { assetSymbol, accountId }) => ({
     ...state,
     connectedAccountIds: {

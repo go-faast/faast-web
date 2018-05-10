@@ -4,6 +4,7 @@ import { getAsset } from 'Selectors'
 
 export const getBaseState = ({ connectHardwareWallet }) => connectHardwareWallet
 
+export const getWalletId = createSelector(getBaseState, ({ walletId }) => walletId)
 export const getWalletType = createSelector(getBaseState, ({ walletType }) => walletType)
 export const getAssetSymbol = createSelector(getBaseState, ({ assetSymbol }) => assetSymbol)
 export const getStatus = createSelector(getBaseState, ({ status }) => status)

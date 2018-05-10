@@ -8,17 +8,21 @@ import { timer } from 'Utilities/helpers'
 import log from 'Utilities/log'
 
 import Trezor from 'Services/Trezor'
-import { Wallet, EthereumWalletLedger, EthereumWalletTrezor, BitcoinWalletTrezor } from 'Services/Wallet'
+import {
+  walletService, Wallet, MultiWallet, MultiWalletLedger, MultiWalletTrezor,
+  EthereumWalletLedger, EthereumWalletTrezor,
+  BitcoinWalletTrezor
+} from 'Services/Wallet'
 
 import { getAsset } from 'Selectors'
 import {
   getConnectTimeoutId, getRetryTimerId, getDerivationPath, getAccountRetriever, getSelectedAccountIndex,
-  getAccountPageSize, getSelectedPageIndex, isStatusReset, getAssetSymbol, getWalletType,
+  getAccountPageSize, getSelectedPageIndex, isStatusReset, getAssetSymbol, getWalletType, getWalletId,
   getConnectedAccountIds, getConnectBatchQueue
 } from 'Selectors/connectHardwareWallet'
 
 import { openWallet } from 'Actions/access'
-import { removeWallet } from 'Actions/wallet'
+import { addWallet, removeWallet, addNestedWallets, updateWallet } from 'Actions/wallet'
 
 const CONNECT_RETRY_SECONDS = 10
 
@@ -26,6 +30,7 @@ const createAction = newScopedCreateAction(__filename)
 
 export const stateReset = createAction('RESET')
 
+export const setWalletId = createAction('SET_WALLET_ID', (walletId) => ({ walletId }))
 export const accountAdded = createAction('ACCOUNT_ADDED', (assetSymbol, accountId) => ({ assetSymbol, accountId }))
 export const accountRemoved = createAction('ACCOUNT_REMOVED', (assetSymbol, accountId) => ({ assetSymbol, accountId }))
 export const connectBatchStarted = createAction('CONNECT_BATCH_STARTED', (walletType, assetSymbols) => ({ walletType, connectBatchQueue: assetSymbols }))
@@ -131,10 +136,10 @@ export const changeAccountPage = (page = 0) => (dispatch) => {
   dispatch(loadAccountPage(page))
 }
 
-const createStartConnecting = (walletConnect) => (walletType, assetSymbol, errorHandler) => (dispatch, getState) => {
+const createStartConnecting = (walletFactory) => (walletType, assetSymbol, errorHandler) => (dispatch, getState) => {
   dispatch(setStatusConnecting(walletType, assetSymbol))
   const derivationPath = getDerivationPath(getState())
-  return walletConnect(derivationPath)
+  return walletFactory(derivationPath)
     .then((result) => {
       if (isStatusReset(getState())) {
         return
@@ -144,7 +149,7 @@ const createStartConnecting = (walletConnect) => (walletType, assetSymbol, error
       } else if (result.getAccount) {
         dispatch(setStatusConnected(result.getAccount, true))
       } else {
-        throw new Error(`Invalid walletConnect result of type ${typeof result}`)
+        throw new Error(`Invalid walletFactory result of type ${typeof result}`)
       }
       dispatch(loadAccountBalance())
       dispatch(routerPush(routes.connectHwWalletAssetConfirm(walletType, assetSymbol)))
@@ -286,7 +291,8 @@ export const confirmAccountSelection = () => (dispatch, getState) => {
   const selectedAccountIndex = getSelectedAccountIndex(getState())
   const accountRetriever = getAccountRetriever(getState())
   accountRetriever(selectedAccountIndex).then((walletInstance) => {
-    dispatch(openWallet(walletInstance))
+    walletInstance.setPersistEnabled(false)
+    dispatch(addWallet(walletInstance))
     dispatch(accountAdded(assetSymbol, walletInstance.getId()))
     dispatch(connectNext())
   })
@@ -301,4 +307,43 @@ export const removeConnectedAccount = (assetSymbol) => (dispatch, getState) => {
   }
   dispatch(removeWallet(accountId))
   dispatch(accountRemoved(assetSymbol))
+}
+
+const multiWalletTypes = {
+  ledger: MultiWalletLedger,
+  trezor: MultiWalletTrezor,
+}
+
+export const saveConnectedAccounts = () => (dispatch, getState) => {
+  const connectedAccountIds = getConnectedAccountIds(getState())
+  if (connectedAccountIds.length === 0) {
+    return toastr.error('No accounts are connected')
+  }
+  let multiWalletId = getWalletId(getState())
+  let multiWallet
+  if (multiWalletId) {
+    multiWallet = walletService.get(multiWalletId)
+    if (!multiWallet) {
+      return toastr.error(`Unknown wallet ${multiWalletId}`)
+    }
+    if (!(multiWallet instanceof MultiWallet)) {
+      return toastr.error(`Not a MultiWallet ${multiWalletId}`)
+    }
+  } else {
+    const walletType = getWalletType(getState())
+    const MultiWalletType = multiWalletTypes[walletType]
+    if (!MultiWalletType) {
+      return toastr.error(`Missing save configuration for ${walletType}`)
+    }
+    multiWallet = new MultiWalletType()
+    multiWalletId = multiWallet.getId()
+    dispatch(openWallet(multiWallet))
+  }
+  dispatch(addNestedWallets(multiWalletId, connectedAccountIds))
+  connectedAccountIds.forEach((connectedAccountId) => {
+    const walletInstance = walletService.get(connectedAccountId)
+    walletInstance.setPersistEnabled(true)
+    dispatch(updateWallet(connectedAccountId))
+  })
+  dispatch(routes.dashboard())
 }

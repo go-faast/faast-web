@@ -9,7 +9,7 @@ import { difference } from 'lodash'
 
 import routes from 'Routes'
 import { getConnectedAccountSymbols } from 'Selectors/connectHardwareWallet'
-import { removeConnectedAccount, startConnectBatch } from 'Actions/connectHardwareWallet'
+import { removeConnectedAccount, startConnectBatch, saveConnectedAccounts } from 'Actions/connectHardwareWallet'
 
 import BackButton from './BackButton'
 import ConnectAssetButton from './ConnectAssetButton'
@@ -27,7 +27,8 @@ export default compose(
     connectedAccountSymbols: getConnectedAccountSymbols,
   }), {
     removeAccount: removeConnectedAccount,
-    startBatch: startConnectBatch
+    startBatch: startConnectBatch,
+    handleDone: saveConnectedAccounts
   }),
   withProps(({ assetSymbols, connectedAccountSymbols }) => ({
     isDoneDisabled: connectedAccountSymbols.length === 0,
