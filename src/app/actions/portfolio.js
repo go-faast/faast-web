@@ -1,12 +1,15 @@
+import { flatten, difference } from 'lodash'
+
 import { newScopedCreateAction } from 'Utilities/action'
 import log from 'Utilities/log'
 import { MultiWallet } from 'Services/Wallet'
 import config from 'Config'
 
 import {
-  addWallet, removeWallet, addNestedWallet, restoreAllWallets, updateWalletBalances,
+  addWallet, removeWallet, restoreAllWallets, updateWalletBalances, addNestedWallets
 } from 'Actions/wallet'
 import { retrieveAssetPrices } from 'Actions/asset'
+import { getDefaultPortfolio } from 'Selectors'
 
 const createAction = newScopedCreateAction(__filename)
 
@@ -39,23 +42,38 @@ export const addPortfolio = (walletInstance, setCurrent = false) => (dispatch) =
 export const createNewPortfolio = (setCurrent = false) => (dispatch) => Promise.resolve()
   .then(() => dispatch(addPortfolio(new MultiWallet(), setCurrent)))
 
-const createDefaultPortfolio = () => (dispatch) => Promise.resolve()
+const createDefaultPortfolio = () => (dispatch, getState) => Promise.resolve()
   .then(() => {
-    const wallet = new MultiWallet(defaultPortfolioId)
-    wallet.setPersistAllowed(false)
-    wallet.setLabel('My Portfolio')
-    return dispatch(addPortfolio(wallet, false))
+    const defaultPortfolio = getDefaultPortfolio(getState())
+    if (!defaultPortfolio) {
+      const wallet = new MultiWallet(defaultPortfolioId)
+      wallet.setLabel('My Portfolio')
+      return dispatch(addPortfolio(wallet, false))
+    }
   })
+
+const getReachableWalletIds = (walletsById, startingWalletIds = []) => {
+  return flatten(startingWalletIds.map((startingId) => {
+    const wallet = walletsById[startingId]
+    if (!wallet) {
+      return []
+    }
+    return [wallet.id, ...getReachableWalletIds(walletsById, wallet.nestedWalletIds)]
+  }))
+}
 
 export const restoreAllPortfolios = () => (dispatch) => dispatch(restoreAllWallets())
   .then((plainWallets) => dispatch(createDefaultPortfolio())
-    .then(() => Promise.all(plainWallets.map(({ id, type }) => {
-      if (type === MultiWallet.type) {
-        dispatch(portfolioAdded(id))
-      } else {
-        return dispatch(addNestedWallet(defaultPortfolioId, id))
-      }
-    }))))
+    .then(() => {
+      const plainWalletsById = plainWallets.reduce((byId, plainWallet) => ({ ...byId, [plainWallet.id]: plainWallet }), {})
+      const portfolios = plainWallets.filter(({ type }) => type === MultiWallet.type)
+      const allWalletIds = plainWallets.map(({ id }) => id)
+      const portfolioWalletIds = portfolios.map(({ id }) => id)
+      const reachableWalletIds = getReachableWalletIds(plainWalletsById, portfolioWalletIds)
+      const orphanedWalletIds = difference(allWalletIds, reachableWalletIds)
+      portfolioWalletIds.forEach((id) => dispatch(portfolioAdded(id)))
+      dispatch(addNestedWallets(defaultPortfolioId, ...orphanedWalletIds))
+    }))
 
 export const updateHoldings = (walletId) => (dispatch) => {
   return Promise.all([

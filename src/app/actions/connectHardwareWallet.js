@@ -8,8 +8,8 @@ import { timer } from 'Utilities/helpers'
 import log from 'Utilities/log'
 
 import Trezor from 'Services/Trezor'
-import {
-  walletService, Wallet, MultiWallet, MultiWalletLedger, MultiWalletTrezor,
+import walletService, {
+  Wallet, MultiWallet, MultiWalletLedger, MultiWalletTrezor,
   EthereumWalletLedger, EthereumWalletTrezor,
   BitcoinWalletTrezor
 } from 'Services/Wallet'
@@ -270,7 +270,7 @@ export const connectNext = () => (dispatch, getState) => {
       dispatch(connectBatchPopped())
       dispatch(startConnect(walletType, nextSymbol))
     } else {
-      dispatch(routerPush(routes.dashboard()))
+      dispatch(saveConnectedAccounts())
     }
   } else {
     dispatch(routerPush(routes.connectHwWallet(walletType)))
@@ -291,7 +291,7 @@ export const confirmAccountSelection = () => (dispatch, getState) => {
   const selectedAccountIndex = getSelectedAccountIndex(getState())
   const accountRetriever = getAccountRetriever(getState())
   accountRetriever(selectedAccountIndex).then((walletInstance) => {
-    walletInstance.setPersistEnabled(false)
+    walletInstance.setPersistAllowed(false)
     dispatch(addWallet(walletInstance))
     dispatch(accountAdded(assetSymbol, walletInstance.getId()))
     dispatch(connectNext())
@@ -315,35 +315,39 @@ const multiWalletTypes = {
 }
 
 export const saveConnectedAccounts = () => (dispatch, getState) => {
-  const connectedAccountIds = getConnectedAccountIds(getState())
-  if (connectedAccountIds.length === 0) {
+  const connectedAccountIds = Object.values(getConnectedAccountIds(getState()))
+  if (!connectedAccountIds.length) {
     return toastr.error('No accounts are connected')
   }
   let multiWalletId = getWalletId(getState())
-  let multiWallet
+  let multiWalletPromise
   if (multiWalletId) {
-    multiWallet = walletService.get(multiWalletId)
+    const multiWallet = walletService.get(multiWalletId)
     if (!multiWallet) {
       return toastr.error(`Unknown wallet ${multiWalletId}`)
     }
     if (!(multiWallet instanceof MultiWallet)) {
       return toastr.error(`Not a MultiWallet ${multiWalletId}`)
     }
+    multiWalletPromise = Promise.resolve(multiWallet)
   } else {
     const walletType = getWalletType(getState())
     const MultiWalletType = multiWalletTypes[walletType]
     if (!MultiWalletType) {
       return toastr.error(`Missing save configuration for ${walletType}`)
     }
-    multiWallet = new MultiWalletType()
+    const multiWallet = new MultiWalletType()
     multiWalletId = multiWallet.getId()
-    dispatch(openWallet(multiWallet))
+    multiWalletPromise = dispatch(openWallet(multiWallet)).then(() => multiWallet)
   }
-  dispatch(addNestedWallets(multiWalletId, connectedAccountIds))
-  connectedAccountIds.forEach((connectedAccountId) => {
-    const walletInstance = walletService.get(connectedAccountId)
-    walletInstance.setPersistEnabled(true)
-    dispatch(updateWallet(connectedAccountId))
-  })
-  dispatch(routes.dashboard())
+  return multiWalletPromise
+    .then(() => Promise.all(
+      connectedAccountIds.map((connectedAccountId) => {
+        const walletInstance = walletService.get(connectedAccountId)
+        walletInstance.setPersistAllowed(true)
+        return dispatch(updateWallet(connectedAccountId))
+      })
+    ))
+    .then(() => dispatch(addNestedWallets(multiWalletId, ...connectedAccountIds)))
+    .then(() => dispatch(routerPush(routes.dashboard())))
 }

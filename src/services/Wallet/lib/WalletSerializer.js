@@ -1,9 +1,11 @@
 import log from 'Utilities/log'
 import Wallet from './Wallet'
 import MultiWallet from './MultiWallet'
+import MultiWalletTrezor from './MultiWalletTrezor'
+import MultiWalletLedger from './MultiWalletLedger'
 import {
   EthereumWalletWeb3, EthereumWalletTrezor, EthereumWalletLedger,
-  EthereumWalletKeystore, EthereumWalletViewOnly
+  EthereumWalletKeystore, EthereumWalletViewOnly, EthereumWalletBlockstack
 } from './Ethereum'
 import { BitcoinWalletTrezor } from './Bitcoin'
 
@@ -26,7 +28,10 @@ export const parse = (wallet) => {
         case 'ledger': return new EthereumWalletLedger(wallet.address, wallet.data.derivationPath)
         // New formats
         case 'MultiWallet': return new MultiWallet(wallet.id, wallet.wallets)
+        case 'MultiWalletTrezor': return new MultiWalletTrezor(wallet.id, wallet.wallets)
+        case 'MultiWalletLedger': return new MultiWalletLedger(wallet.id, wallet.wallets)
         case 'EthereumWalletKeystore': return new EthereumWalletKeystore(wallet.keystore)
+        case 'EthereumWalletBlockstack': return new EthereumWalletBlockstack(wallet.keystore)
         case 'EthereumWalletWeb3': return new EthereumWalletWeb3(wallet.address, wallet.providerName)
         case 'EthereumWalletViewOnly': return new EthereumWalletViewOnly(wallet.address)
         case 'EthereumWalletTrezor': return new EthereumWalletTrezor(wallet.address, wallet.derivationPath)

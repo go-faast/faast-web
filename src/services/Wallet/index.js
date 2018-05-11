@@ -111,12 +111,14 @@ export function WalletService() {
     }
   }
 
+  const clone = (wallet) => Object.assign(Object.create(Object.getPrototypeOf(wallet)), wallet)
+
   /** Save the provided wallet to session storage */
   const saveToStorage = (wallet) => {
     if (wallet && wallet.isPersistAllowed()) {
       const id = wallet.getId()
       if (wallet instanceof MultiWallet) {
-        wallet = wallet.shallowClone()
+        wallet = clone(wallet)
         wallet.wallets = wallet.wallets.filter((nested) => nested.isPersistAllowed())
       }
       sessionStorageSet(storageKey(id), WalletSerializer.stringify(wallet))

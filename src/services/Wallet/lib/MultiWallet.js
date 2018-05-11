@@ -25,12 +25,6 @@ export default class MultiWallet extends Wallet {
     this.wallets = Array.isArray(wallets) ? wallets : []
   }
 
-  shallowClone() {
-    const clone = new MultiWallet(this.getId(), this.wallets)
-    clone.setLabel(this.getLabel())
-    return clone
-  }
-
   getId() { return this.id }
 
   getType() { return MultiWallet.type }

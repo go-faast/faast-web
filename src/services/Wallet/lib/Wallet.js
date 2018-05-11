@@ -14,8 +14,6 @@ export default class Wallet {
     this._assetProvider = () => {}
   }
 
-  get type() { return this.getType() }
-
   getLabel() { return this.label || this.getType() }
   setLabel(label) { this.label = label }
 

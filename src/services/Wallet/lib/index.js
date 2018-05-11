@@ -1,5 +1,7 @@
 export { default as WalletSerializer } from './WalletSerializer'
-export { default as MultiWallet } from './MultiWallet'
 export { default as Wallet } from './Wallet'
+export { default as MultiWallet } from './MultiWallet'
+export { default as MultiWalletTrezor } from './MultiWalletTrezor'
+export { default as MultiWalletLedger } from './MultiWalletLedger'
 export * from './Ethereum'
 export * from './Bitcoin'

@@ -4,10 +4,8 @@ import { compose, setDisplayName, setPropTypes, withProps, withHandlers } from '
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { Row, Col, Button, ModalBody, ModalFooter } from 'reactstrap'
-import { Link } from 'react-router-dom'
 import { difference } from 'lodash'
 
-import routes from 'Routes'
 import { getConnectedAccountSymbols } from 'Selectors/connectHardwareWallet'
 import { removeConnectedAccount, startConnectBatch, saveConnectedAccounts } from 'Actions/connectHardwareWallet'
 
@@ -43,10 +41,10 @@ export default compose(
       startBatch(walletType, difference(assetSymbols, connectedAccountSymbols))
     }
   })
-)(({ walletType, assetSymbols, handleCancel, handleConnectAll, isConnectAllDisabled, isDoneDisabled }) => (
+)(({ walletType, assetSymbols, handleCancel, handleDone, handleConnectAll, isConnectAllDisabled, isDoneDisabled }) => (
   <div>
     <ModalBody className='py-4'>
-      <h5 className='mb-3'>For an express setup click "{ADD_ALL_TEXT}"</h5>
+      <h5 className='mb-3'>{`For an express setup click "${ADD_ALL_TEXT}"`}</h5>
       <Button color='primary' size='lg' className='text-center' disabled={isConnectAllDisabled} onClick={handleConnectAll}>
         {ADD_ALL_TEXT}
       </Button>
@@ -61,7 +59,7 @@ export default compose(
     </ModalBody>
     <ModalFooter>
       <BackButton onClick={handleCancel}>Cancel</BackButton>
-      <Button color='success' tag={Link} to={routes.dashboard()} disabled={isDoneDisabled}>Done</Button>
+      <Button color='success' onClick={handleDone} disabled={isDoneDisabled}>Done</Button>
     </ModalFooter>
   </div>
 ))
