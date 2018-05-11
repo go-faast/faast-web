@@ -10,7 +10,6 @@ export default class Wallet {
     assertExtended(this, Wallet)
     this.label = label
     this._persistAllowed = true
-    this._readOnly = false
     this._assetProvider = () => {}
   }
 
@@ -20,14 +19,10 @@ export default class Wallet {
   isPersistAllowed() { return this._persistAllowed }
   setPersistAllowed(persistAllowed) { this._persistAllowed = persistAllowed }
 
-  isReadOnly() { return this._readOnly }
-  setReadOnly(readOnly) { this._readOnly = readOnly }
-
+  /* The following methods return default values and can be overriden by subclass where applicable */
+  isReadOnly() { return false }
   isPasswordProtected() { return false }
-
   checkPasswordCorrect() { return true }
-
-  /* Default to true, can be overriden by subclass if unsupported */
   isSignTransactionSupported() { return true }
 
   setAssetProvider(assetProvider) {
