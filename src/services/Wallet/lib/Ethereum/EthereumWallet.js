@@ -67,10 +67,11 @@ export default class EthereumWallet extends Wallet {
           batch.execute()
         }
         return Promise.all(balanceRequests)
-      }).then((balances) => balances.reduce((result, { symbol, balance }) => ({
-        ...result,
-        [symbol]: balance
-      }), {}))
+      }).then((balances) => balances.reduce(
+        (result, { symbol, balance }) => (balance.gt(ZERO) || symbol === 'ETH')
+          ? ({ ...result, [symbol]: balance })
+          : result,
+        {}))
   }
 
   createTransaction(toAddress, amount, assetOrSymbol, options = {}) {

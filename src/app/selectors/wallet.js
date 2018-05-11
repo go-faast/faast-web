@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import { union } from 'lodash'
 
 import { ZERO, toUnit, toPercentage } from 'Utilities/convert'
 import { fixPercentageRounding, reduceByKey } from 'Utilities/helpers'
@@ -18,13 +19,14 @@ const doGetWallet = (allWallets, id) => {
     return wallet
   }
   const nestedWallets = wallet.nestedWalletIds.map((nestedWalletId) => doGetWallet(allWallets, nestedWalletId)).filter(Boolean)
-  let { balances, balancesLoaded, balancesUpdating, balancesError } = wallet
+  let { balances, balancesLoaded, balancesUpdating, balancesError, supportedAssets } = wallet
   if (wallet.type.includes(MultiWallet.type)) {
     if (nestedWallets.length) {
       balances = reduceByKey(nestedWallets.map((w) => w.balances), (x, y) => x.plus(y), ZERO)
       balancesLoaded = nestedWallets.every((w) => w.balancesLoaded)
       balancesUpdating = nestedWallets.some((w) => w.balancesUpdating)
       balancesError = nestedWallets.map((w) => w.balancesError).find(Boolean) || ''
+      supportedAssets = union(...nestedWallets.map((w) => w.supportedAssets))
     } else {
       balancesLoaded = true
     }
@@ -35,7 +37,8 @@ const doGetWallet = (allWallets, id) => {
     balances,
     balancesLoaded,
     balancesUpdating,
-    balancesError
+    balancesError,
+    supportedAssets
   }
 }
 
