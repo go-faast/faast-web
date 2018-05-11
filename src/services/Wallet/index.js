@@ -1,6 +1,7 @@
 export * from './lib'
 
 import queryString from 'query-string'
+import { isObject, isString } from 'lodash'
 import log from 'Utilities/log'
 import blockstack from 'Utilities/blockstack'
 import { sessionStorageGet, sessionStorageSet, sessionStorageRemove, sessionStorageForEach } from 'Utilities/storage'
@@ -8,8 +9,17 @@ import { Wallet, WalletSerializer, MultiWallet } from './lib'
 
 
 const legacyStorageKey = 'wallet'
-const storageKeyPrefix = 'faast-wallet-'
-const storageKey = (id) => `${storageKeyPrefix}${id}`
+const walletStorageKeyPrefix = 'faast-wallet-'
+const multiWalletStorageKeyPrefix = 'faast-multiwallet-'
+
+const walletStorageKey = (id) => `${walletStorageKeyPrefix}${id}`
+const multiWalletStorageKey = (id) => `${multiWalletStorageKeyPrefix}${id}`
+
+const getStorageKey = (wallet) => wallet instanceof MultiWallet
+  ? multiWalletStorageKey(wallet.getId())
+  : walletStorageKey(wallet.getId())
+
+const clone = (o) => Object.assign(Object.create(Object.getPrototypeOf(o)), o)
 
 const defaultWalletService = new WalletService()
 
@@ -29,13 +39,16 @@ export function WalletService() {
   }
 
   const getStoredWalletKeys = () => {
-    const keys = []
+    const walletKeys = []
+    const multiWalletKeys = []
     sessionStorageForEach((key) => {
-      if (key.startsWith(storageKeyPrefix)) {
-        keys.push(key)
+      if (key.startsWith(walletStorageKeyPrefix)) {
+        walletKeys.push(key)
+      } else if (key.startsWith(multiWalletStorageKeyPrefix)) {
+        multiWalletKeys.push(key)
       }
     })
-    return keys
+    return [...walletKeys, ...multiWalletKeys] // Order matters
   }
 
   const put = (wallet) => {
@@ -57,15 +70,19 @@ export function WalletService() {
     if (walletOrId instanceof Wallet) {
       return walletOrId
     }
-    let wallet = activeWallets[walletOrId]
+    const id = walletOrId
+    let wallet = activeWallets[id]
     if (wallet) {
       return wallet
     }
-    wallet = loadFromStorage(walletOrId)
+    wallet = loadFromStorage(walletStorageKey(id))
+    if (!wallet) {
+      wallet = loadFromStorage(multiWalletStorageKey(id))
+    }
     if (wallet) {
       put(wallet)
     } else {
-      log.debug('could not get wallet', walletOrId)
+      log.debug('could not get wallet', id)
     }
     return wallet
   }
@@ -101,7 +118,13 @@ export function WalletService() {
   const loadFromStorage = (storageKey) => {
     const walletString = sessionStorageGet(storageKey)
     if (walletString) {
-      const wallet = WalletSerializer.parse(walletString)
+      const walletObject = JSON.parse(walletString)
+      if (walletObject && Array.isArray(walletObject.wallets)) {
+        walletObject.wallets = walletObject.wallets
+          .map((w) => isString(w) ? activeWallets[w] : w)
+          .filter(isObject)
+      }
+      const wallet = WalletSerializer.parse(walletObject)
       if (wallet) {
         log.debug('wallet loaded from session', wallet.getId())
       } else {
@@ -111,17 +134,18 @@ export function WalletService() {
     }
   }
 
-  const clone = (wallet) => Object.assign(Object.create(Object.getPrototypeOf(wallet)), wallet)
-
   /** Save the provided wallet to session storage */
   const saveToStorage = (wallet) => {
     if (wallet && wallet.isPersistAllowed()) {
       const id = wallet.getId()
+      const storageKey = getStorageKey(wallet)
       if (wallet instanceof MultiWallet) {
         wallet = clone(wallet)
-        wallet.wallets = wallet.wallets.filter((nested) => nested.isPersistAllowed())
+        wallet.wallets = wallet.wallets
+          .filter((nested) => nested.isPersistAllowed())
+          .map((nested) => nested.getId())
       }
-      sessionStorageSet(storageKey(id), WalletSerializer.stringify(wallet))
+      sessionStorageSet(storageKey, WalletSerializer.stringify(wallet))
       log.debug('wallet saved to session', id)
     }
     return wallet
@@ -130,7 +154,7 @@ export function WalletService() {
   const deleteFromStorage = (wallet) => {
     if (wallet) {
       const id = wallet.getId()
-      const key = storageKey(id)
+      const key = getStorageKey(wallet)
       if (sessionStorageGet(key)) {
         sessionStorageRemove(key)
         log.debug('wallet deleted from session', id)
@@ -140,7 +164,12 @@ export function WalletService() {
   }
 
   /** Restore all wallets stored in session */
-  const restoreSessionStorage = () => getStoredWalletKeys().map(loadFromStorage)
+  const restoreSessionStorage = () => getStoredWalletKeys().map((key) => {
+    const wallet = loadFromStorage(key)
+    if (wallet) {
+      put(wallet)
+    }
+  })
 
   /** Convert legacy wallet to new storage format, store in the new format and return the wallet */
   const restoreLegacy = () => {
@@ -148,6 +177,7 @@ export function WalletService() {
     if (legacyWallet) {
       log.debug('restored legacy wallet', legacyWallet.getId())
       saveToStorage(legacyWallet)
+      put(legacyWallet)
     }
     sessionStorageRemove(legacyStorageKey)
     return legacyWallet
@@ -162,6 +192,7 @@ export function WalletService() {
       if (wallet) {
         log.debug('restored querystring wallet', wallet.getId())
         saveToStorage(wallet)
+        put(wallet)
         return wallet
       }
     }
@@ -171,6 +202,7 @@ export function WalletService() {
     const wallet = blockstack.restoreWallet()
     if (wallet) {
       log.debug('restored blockstack wallet', wallet.getId())
+      put(wallet)
       return wallet
     }
   }
@@ -192,15 +224,10 @@ export function WalletService() {
   const update = add
 
   const restoreAll = () => {
-    const restoredWallets = [
-      restoreSessionStorage(),
-      restoreLegacy(),
-      restoreQueryString(),
-      restoreBlockstack()
-    ]
-    restoredWallets.reduce((flattened, wallet) => [...flattened, ...(Array.isArray(wallet) ? wallet : [wallet])], [])
-      .filter((wallet) => wallet instanceof Wallet)
-      .forEach(put)
+    restoreSessionStorage()
+    restoreLegacy()
+    restoreQueryString()
+    restoreBlockstack()
     log.debug('wallets restored', Object.keys(activeWallets))
     return Object.values(activeWallets)
   }
