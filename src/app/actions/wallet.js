@@ -4,7 +4,7 @@ import { newScopedCreateAction } from 'Utilities/action'
 import blockstack from 'Utilities/blockstack'
 import log from 'Utilities/log'
 import walletService, { Wallet, MultiWallet, EthereumWalletBlockstack } from 'Services/Wallet'
-import { getAllAssets, getWalletParents } from 'Selectors'
+import { getAllAssets, getWalletParents, areWalletBalancesUpdating } from 'Selectors'
 import { getWalletIconProps } from 'Utilities/walletIcon'
 
 const createAction = newScopedCreateAction(__filename)
@@ -86,8 +86,11 @@ export const restoreAllWallets = () => (dispatch, getState) => Promise.resolve()
   .then(() => walletService.restoreAll())
   .then((walletInstances) => walletInstances.map((w) => dispatch(walletAdded(w)).payload))
 
-export const updateWalletBalances = (walletId) => (dispatch) => Promise.resolve()
+export const updateWalletBalances = (walletId) => (dispatch, getState) => Promise.resolve()
   .then(() => {
+    if (areWalletBalancesUpdating(getState(), walletId)) {
+      return
+    }
     const walletInstance = walletService.get(walletId)
     if (!walletInstance) {
       throw new Error(`Could not find wallet with id ${walletId}`)

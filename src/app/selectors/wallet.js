@@ -56,6 +56,11 @@ export const getWalletParents = createItemSelector(
     [])
 )
 
+export const areWalletBalancesUpdating = createItemSelector(
+  getWallet,
+  ({ balancesUpdating }) => balancesUpdating
+)
+
 export const areWalletHoldingsLoaded = createItemSelector(
   getWallet,
   areAssetPricesLoaded,

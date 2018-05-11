@@ -1,15 +1,17 @@
 import { createReducer } from 'redux-act'
 import {
-  assetsAdded, assetsLoadingError,
-  assetPriceUpdated, assetPricesUpdated,
-  assetPriceError, assetPricesError,
+  assetsLoading, assetsAdded, assetsLoadingError,
+  assetPriceLoading, assetPriceUpdated, assetPriceError,
+  assetPricesLoading, assetPricesUpdated, assetPricesError,
 } from 'Actions/asset'
 import { toBigNumber, ZERO } from 'Utilities/convert'
 import { createUpserter, createUpdater } from 'Utilities/helpers'
 
 const initialState = {
+  loading: false,
   loaded: false,
   loadingError: '',
+  pricesLoading: false,
   pricesLoaded: false,
   pricesError: '',
   data: {},
@@ -31,6 +33,8 @@ const assetInitialState = {
   marketCap: ZERO,
   availableSupply: ZERO,
   lastUpdatedPrice: null,
+  priceLoading: false,
+  priceLoaded: false,
   priceError: '',
 }
 
@@ -54,32 +58,48 @@ const upsertAsset = createUpserter('symbol', assetInitialState)
 const updateAsset = createUpdater('symbol')
 
 export default createReducer({
+  [assetsLoading]: (state) => ({
+    ...state,
+    loading: true,
+  }),
   [assetsAdded]: (state, assetArray) => ({
     ...state,
     data: assetArray.reduce((allAssets, asset) => upsertAsset(allAssets, {
       ...asset,
       swapEnabled: asset.deposit && asset.receive
     }), state.data),
+    loading: false,
     loaded: true,
     loadingError: initialState.loadingError,
   }),
-  [assetsLoadingError]: (state, loadingError) => ({ ...state, loadingError }),
+  [assetsLoadingError]: (state, loadingError) => ({ ...state, loading: false, loadingError }),
+  [assetPriceLoading]: (state, { symbol }) => ({
+    ...state,
+    data: updateAsset(state.data, { symbol, priceLoading: true })
+  }),
   [assetPriceUpdated]: (state, priceData) => ({
     ...state,
     data: updateAsset(state.data, {
       ...priceDataToAsset(priceData),
+      priceLoading: false,
+      priceLoaded: true,
       priceError: assetInitialState.priceError,
     }),
   }),
   [assetPriceError]: (state, { symbol, priceError }) => ({
     ...state,
-    data: updateAsset(state.data, { symbol, priceError }),
+    data: updateAsset(state.data, { symbol, priceLoading: false, priceError }),
+  }),
+  [assetPricesLoading]: (state) => ({
+    ...state,
+    pricesLoading: true,
   }),
   [assetPricesUpdated]: (state, priceDataArray) => ({
     ...state,
     data: priceDataArray.reduce((allAssets, priceData) => updateAsset(allAssets, priceDataToAsset(priceData)), state.data),
+    pricesLoading: false,
     pricesLoaded: true,
     pricesError: initialState.pricesError,
   }),
-  [assetPricesError]: (state, pricesError) => ({ ...state, pricesError })
+  [assetPricesError]: (state, pricesError) => ({ ...state, pricesLoading: false, pricesError })
 }, initialState)
