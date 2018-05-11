@@ -14,7 +14,7 @@ import reducers from './reducers'
 import { saveToAddress } from 'Utilities/storage'
 import { getDefaultPortfolio, isAppReady } from 'Selectors'
 import config from 'Config'
-import { getSwapState } from 'Selectors'
+import { getSwapState, getAssetState } from 'Selectors'
 
 const history = createHistory({ basename: process.env.ROUTER_BASE_NAME })
 const middleware = [
@@ -36,6 +36,8 @@ window.faast.intervals = {
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const store = createStore(reducers, composeEnhancers(applyMiddleware(...middleware)))
 
+let cachedAssets
+
 store.subscribe(throttle(() => {
   const state = store.getState()
   const appReady = isAppReady(state)
@@ -48,6 +50,11 @@ store.subscribe(throttle(() => {
         swap: swaps,
         settings: settings
       })
+      const assets = getAssetState(state)
+      if (assets !== cachedAssets) {
+        saveToAddress('cache:asset', assets)
+        cachedAssets = assets
+      }
     }
   }
 }, 1000))

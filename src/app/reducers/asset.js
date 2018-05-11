@@ -1,5 +1,6 @@
 import { createReducer } from 'redux-act'
 import {
+  setAllAssets,
   assetsLoading, assetsAdded, assetsLoadingError,
   assetPriceLoading, assetPriceUpdated, assetPriceError,
   assetPricesLoading, assetPricesUpdated, assetPricesError,
@@ -39,18 +40,18 @@ const assetInitialState = {
 }
 
 const priceDataToAsset = (priceData) => {
-  const change24 = toBigNumber(priceData.percent_change_24h || 0)
+  const change24 = priceData.percent_change_24h || 0
   return {
     symbol: priceData.symbol,
     change24,
-    change24decrease: change24.isNegative(),
-    price: toBigNumber(priceData.price_usd || 0),
-    change1: toBigNumber(priceData.percent_change_1h || 0),
-    change7d: toBigNumber(priceData.percent_change_7d || 0),
-    volume24: toBigNumber(priceData['24h_volume_usd'] || 0),
-    marketCap: toBigNumber(priceData.market_cap_usd || 0),
-    availableSupply: toBigNumber(priceData.available_supply || 0),
-    lastUpdatedPrice: new Date(Number.parseInt(priceData.last_updated || '0') * 1000),
+    change24decrease: toBigNumber(change24).isNegative(),
+    price: priceData.price_usd || 0,
+    change1: priceData.percent_change_1h || 0,
+    change7d: priceData.percent_change_7d || 0,
+    volume24: priceData['24h_volume_usd'] || 0,
+    marketCap: priceData.market_cap_usd || 0,
+    availableSupply: priceData.available_supply || 0,
+    lastUpdatedPrice: priceData.last_updated || 0,
   }
 }
 
@@ -58,6 +59,7 @@ const upsertAsset = createUpserter('symbol', assetInitialState)
 const updateAsset = createUpdater('symbol')
 
 export default createReducer({
+  [setAllAssets]: (state, assets) => assets,
   [assetsLoading]: (state) => ({
     ...state,
     loading: true,

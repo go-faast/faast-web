@@ -6,6 +6,8 @@ import { isAssetPriceLoading, areAssetsLoading, areAssetPricesLoading } from 'Se
 
 const createAction = newScopedCreateAction(__filename)
 
+export const setAllAssets = createAction('SET_ALL')
+
 export const assetsLoading = createAction('ASSETS_LOADING')
 export const assetsAdded = createAction('ASSETS_ADDED')
 export const assetsLoadingError = createAction('ASSETS_ERROR')
@@ -17,6 +19,10 @@ export const assetPriceError = createAction('PRICE_ERROR', (symbol, priceError) 
 export const assetPricesLoading = createAction('PRICES_LOADING')
 export const assetPricesUpdated = createAction('PRICES_UPDATED')
 export const assetPricesError = createAction('PRICES_ERROR')
+
+export const restoreAssets = (assets) => (dispatch) => {
+  dispatch(setAllAssets(assets))
+}
 
 export const retrieveAssets = () => (dispatch, getState) => {
   if (areAssetsLoading(getState())) {

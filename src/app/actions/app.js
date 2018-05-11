@@ -5,7 +5,7 @@ import { filterUrl } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import { getDefaultPortfolio } from 'Selectors'
 
-import { retrieveAssets } from './asset'
+import { retrieveAssets, restoreAssets } from './asset'
 import { setSettings } from './settings'
 import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
 import { restoreSwundle } from './swap'
@@ -17,6 +17,15 @@ export const appError = createAction('ERROR')
 export const resetAll = createAction('RESET_ALL')
 
 export const restoreState = (dispatch, getState) => Promise.resolve()
+  .then(() => {
+    const assetCache = restoreFromAddress('cache:asset')
+    if (assetCache) {
+      dispatch(restoreAssets(assetCache))
+      dispatch(retrieveAssets())
+    } else {
+      return dispatch(retrieveAssets()) // asset list required to restore wallets
+    }
+  })
   .then(() => dispatch(restoreAllPortfolios()))
   .then(() => {
     const wallet = getDefaultPortfolio(getState())
@@ -66,7 +75,6 @@ export const setupLedger = () => Promise.resolve()
   })
 
 export const init = () => (dispatch) => Promise.resolve()
-  .then(() => dispatch(retrieveAssets())) // asset list required to restore wallets
   .then(() => dispatch(restoreState))
   .then(() => dispatch(setupBlockstack))
   .then(() => dispatch(setupLedger))
