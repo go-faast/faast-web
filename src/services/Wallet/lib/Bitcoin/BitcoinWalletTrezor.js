@@ -12,8 +12,8 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
 
   static type = 'BitcoinWalletTrezor';
 
-  constructor(xpub, derivationPath) {
-    super(xpub)
+  constructor(xpub, derivationPath, label) {
+    super(xpub, label)
     this.derivationPath = derivationPath
   }
 

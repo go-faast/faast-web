@@ -9,8 +9,8 @@ export default class EthereumWalletBlockstack extends EthereumWalletKeystore {
 
   static type = 'EthereumWalletBlockstack';
 
-  constructor(appPrivateKey) {
-    super(privateKeyToKeystore(appPrivateKey))
+  constructor(appPrivateKey, label) {
+    super(privateKeyToKeystore(appPrivateKey), label)
     this.setPersistAllowed(false)
   }
 

@@ -22,23 +22,24 @@ const parseWalletObject = (wallet) => {
   if (wallet.data && wallet.data.type) {
     walletType = wallet.data.type
   }
+  const { label } = wallet
   switch(walletType) {
     // Legacy formats
-    case 'keystore': return new EthereumWalletKeystore(wallet.data)
-    case 'metamask': return new EthereumWalletWeb3(wallet.address, 'MetaMask')
-    case 'trezor': return new EthereumWalletTrezor(wallet.address, wallet.data.derivationPath)
-    case 'ledger': return new EthereumWalletLedger(wallet.address, wallet.data.derivationPath)
+    case 'keystore': return new EthereumWalletKeystore(wallet.data, label)
+    case 'metamask': return new EthereumWalletWeb3(wallet.address, 'MetaMask', label)
+    case 'trezor': return new EthereumWalletTrezor(wallet.address, wallet.data.derivationPath, label)
+    case 'ledger': return new EthereumWalletLedger(wallet.address, wallet.data.derivationPath, label)
     // New formats
-    case 'MultiWallet': return new MultiWallet(wallet.id, parseNested(wallet.wallets))
-    case 'MultiWalletTrezor': return new MultiWalletTrezor(wallet.id, parseNested(wallet.wallets))
-    case 'MultiWalletLedger': return new MultiWalletLedger(wallet.id, parseNested(wallet.wallets))
-    case 'EthereumWalletKeystore': return new EthereumWalletKeystore(wallet.keystore)
-    case 'EthereumWalletBlockstack': return new EthereumWalletBlockstack(wallet.keystore)
-    case 'EthereumWalletWeb3': return new EthereumWalletWeb3(wallet.address, wallet.providerName)
-    case 'EthereumWalletViewOnly': return new EthereumWalletViewOnly(wallet.address)
-    case 'EthereumWalletTrezor': return new EthereumWalletTrezor(wallet.address, wallet.derivationPath)
-    case 'EthereumWalletLedger': return new EthereumWalletLedger(wallet.address, wallet.derivationPath)
-    case 'BitcoinWalletTrezor': return new BitcoinWalletTrezor(wallet.xpub, wallet.derivationPath)
+    case 'MultiWallet': return new MultiWallet(wallet.id, parseNested(wallet.wallets), label)
+    case 'MultiWalletTrezor': return new MultiWalletTrezor(wallet.id, parseNested(wallet.wallets), label)
+    case 'MultiWalletLedger': return new MultiWalletLedger(wallet.id, parseNested(wallet.wallets), label)
+    case 'EthereumWalletKeystore': return new EthereumWalletKeystore(wallet.keystore, label)
+    case 'EthereumWalletBlockstack': return new EthereumWalletBlockstack(wallet.keystore, label)
+    case 'EthereumWalletWeb3': return new EthereumWalletWeb3(wallet.address, wallet.providerName, label)
+    case 'EthereumWalletViewOnly': return new EthereumWalletViewOnly(wallet.address, label)
+    case 'EthereumWalletTrezor': return new EthereumWalletTrezor(wallet.address, wallet.derivationPath, label)
+    case 'EthereumWalletLedger': return new EthereumWalletLedger(wallet.address, wallet.derivationPath, label)
+    case 'BitcoinWalletTrezor': return new BitcoinWalletTrezor(wallet.xpub, wallet.derivationPath, label)
     default: log.error(`Cannot parse wallet: invalid type '${walletType}'`, wallet)
   }
 }

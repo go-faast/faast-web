@@ -19,8 +19,8 @@ export default class EthereumWalletLedger extends EthereumWallet {
 
   static type = 'EthereumWalletLedger';
 
-  constructor(address, derivationPath) {
-    super()
+  constructor(address, derivationPath, label) {
+    super(label)
     this.address = address
     this.derivationPath = derivationPath // Expects full path to `address`
   }

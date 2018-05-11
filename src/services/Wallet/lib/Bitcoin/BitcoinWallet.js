@@ -13,8 +13,8 @@ export default class BitcoinWallet extends Wallet {
 
   static type = 'BitcoinWallet';
 
-  constructor(xpub) {
-    super()
+  constructor(xpub, label) {
+    super(label)
     assertExtended(this, BitcoinWallet)
     this.xpub = xpub
     this._latestDiscoveryResults = {}

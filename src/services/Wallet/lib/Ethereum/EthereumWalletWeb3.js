@@ -20,8 +20,8 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
 
   static type = 'EthereumWalletWeb3';
 
-  constructor(address, providerName) {
-    super()
+  constructor(address, providerName, label) {
+    super(label)
     if (!address) {
       throw new Error('Wallet address must be provided')
     }

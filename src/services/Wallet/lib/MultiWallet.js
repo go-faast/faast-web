@@ -16,8 +16,8 @@ export default class MultiWallet extends Wallet {
 
   static type = 'MultiWallet';
 
-  constructor(id, wallets) {
-    super()
+  constructor(id, wallets, label) {
+    super(label)
     if (Array.isArray(id)) {
       wallets = id
     }

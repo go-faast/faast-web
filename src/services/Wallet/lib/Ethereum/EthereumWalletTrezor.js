@@ -23,8 +23,8 @@ export default class EthereumWalletTrezor extends EthereumWallet {
 
   static type = 'EthereumWalletTrezor';
 
-  constructor(address, derivationPath) {
-    super()
+  constructor(address, derivationPath, label) {
+    super(label)
     this.address = address
     this.derivationPath = derivationPath // Expects full path to `address`
   }

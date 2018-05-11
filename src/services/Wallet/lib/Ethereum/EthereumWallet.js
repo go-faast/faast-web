@@ -15,8 +15,8 @@ export default class EthereumWallet extends Wallet {
 
   static type = 'EthereumWallet';
 
-  constructor() {
-    super()
+  constructor(label) {
+    super(label)
     assertExtended(this, EthereumWallet)
   }
 
