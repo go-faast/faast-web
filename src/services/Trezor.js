@@ -57,7 +57,4 @@ function PromisifiedTrezorConnect(trezorConnectInstance) {
 const { TrezorConnect } = window
 const trezor = !TrezorConnect ? TrezorConnect : new PromisifiedTrezorConnect(TrezorConnect)
 
-window.faast = window.faast || {}
-window.faast.hw = window.faast.hw || {}
-window.faast.hw.trezor = trezor
 export default trezor

@@ -4,6 +4,7 @@ import EthereumjsTx from 'ethereumjs-tx'
 import config from 'Config'
 import log from 'Utilities/log'
 import { addHexPrefix } from 'Utilities/helpers'
+import Ledger from 'Services/Ledger'
 
 import EthereumWallet from './EthereumWallet'
 
@@ -11,7 +12,7 @@ const typeLabel = config.walletTypes.ledger.name
 
 const createAccountGetter = (baseDerivationPath) => (index) => {
   const fullDerivationPath = `${baseDerivationPath}/${index}`
-  return window.faast.hw.ledger.getAddress_async(fullDerivationPath)
+  return Ledger.eth.getAddress(fullDerivationPath)
     .then(({ address }) => new EthereumWalletLedger(address, fullDerivationPath))
 }
 
@@ -30,7 +31,7 @@ export default class EthereumWalletLedger extends EthereumWallet {
   getTypeLabel() { return typeLabel }
 
   static connect = (derivationPath = 'm/44\'/60\'/0\'') => {
-    return window.faast.hw.ledger.getAppConfiguration_async()
+    return Ledger.eth.getAppConfiguration()
       .then((data) => {
         log.info(`Ledger connected, version ${data.version}`)
         return createAccountGetter(derivationPath)
@@ -53,7 +54,7 @@ export default class EthereumWalletLedger extends EthereumWallet {
       ethJsTx.raw[7] = 0
       ethJsTx.raw[8] = 0
 
-      return window.faast.hw.ledger.signTransaction_async(this.derivationPath, RLP.encode(ethJsTx.raw))
+      return Ledger.eth.signTransaction(this.derivationPath, RLP.encode(ethJsTx.raw))
         .then((result) => {
           log.info('ledger wallet signed tx', result)
           return {

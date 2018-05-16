@@ -8,6 +8,7 @@ import { timer } from 'Utilities/helpers'
 import log from 'Utilities/log'
 
 import Trezor from 'Services/Trezor'
+import Ledger from 'Services/Ledger'
 import walletService, {
   Wallet, MultiWallet, MultiWalletLedger, MultiWalletTrezor,
   EthereumWalletLedger, EthereumWalletTrezor,
@@ -163,8 +164,8 @@ const createStartConnecting = (walletFactory) => (walletType, assetSymbol, error
 }
 
 export const createConnectLedger = (startConnecting) => (walletType, assetSymbol) => (dispatch) => {
-  if (!window.faast.hw.ledger) {
-    return toastr.error('Error: Ledger comm unavailable')
+  if (!Ledger) {
+    return toastr.error('Error: Ledger service unavailable')
   }
 
   const retryConnect = () => {
@@ -217,9 +218,6 @@ const connectActions = {
 
 export const startConnect = (walletType, assetSymbol) => (dispatch) => {
   log.debug('startConnect', walletType, assetSymbol)
-  if (!window.faast || !window.faast.hw) {
-    return toastr.error('Error: hardware wallet support unavailable')
-  }
   const walletConfig = config.walletTypes[walletType]
   const connectWalletActions = connectActions[walletType]
   if (!(walletConfig && connectWalletActions)) {

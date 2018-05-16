@@ -60,24 +60,9 @@ export const setupBlockstack = (dispatch) => Promise.resolve()
     log.error('Failed to setup Blockstack', e)
   })
 
-export const setupLedger = () => Promise.resolve()
-  .then(() => {
-    window.faast.hw = window.faast.hw || {}
-    if (window.ledger) {
-      return window.ledger.comm_u2f.create_async()
-        .then((comm) => {
-          window.faast.hw.ledger = new window.ledger.eth(comm)
-        })
-    }
-  })
-  .catch((e) => {
-    log.error('Failed to setup Ledger', e)
-  })
-
 export const init = () => (dispatch) => Promise.resolve()
   .then(() => dispatch(restoreState))
   .then(() => dispatch(setupBlockstack))
-  .then(() => dispatch(setupLedger))
   .then(() => dispatch(appReady()))
   .catch((e) => {
     log.error(e)
