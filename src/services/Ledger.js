@@ -32,10 +32,8 @@ const serviceConfig = {
 let service = null
 
 if (window.ledger) {
-  const transportPromise = window.ledger.comm_u2f.create_async()
-
   service = Object.entries(serviceConfig).reduce((apps, [appName, { App, methodNames }]) => {
-    const appPromise = transportPromise.then((transport) => new App(transport))
+    const appPromise = window.ledger.comm_u2f.create_async().then((comm) => new App(comm))
     return {
       ...apps,
       [appName]: methodNames.reduce((methods, methodName) => ({
