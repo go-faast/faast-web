@@ -44,9 +44,9 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
       })
   }
 
-  isReadOnly() {
-    return true
-  }
+  _canSendAsset() { return false }
+
+  isReadOnly() { return true }
 
   createTransaction() {
     throw new Error('Unsupported operation')

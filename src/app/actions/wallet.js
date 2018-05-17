@@ -21,6 +21,7 @@ const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   isReadOnly: wallet.isReadOnly(),
   isSignTxSupported: wallet.isSignTransactionSupported(),
   supportedAssets: wallet.getSupportedAssetSymbols(),
+  unsendableAssets: wallet.getUnsendableAssetSymbols(),
   nestedWalletIds: wallet instanceof MultiWallet ? wallet.wallets.map((w) => w.getId()) : [],
 }) : wallet
 

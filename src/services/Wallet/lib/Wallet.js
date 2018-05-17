@@ -80,6 +80,16 @@ export default class Wallet {
     return asset
   }
 
+  /** Default behaviour, should be overriden in subclass if applicable */
+  canSendAsset(assetOrSymbol) {
+    const asset = this.getSupportedAsset(assetOrSymbol)
+    return asset && !this.isReadOnly()
+  }
+
+  getUnsendableAssets() { return this.getSupportedAssets().filter((asset) => !this.canSendAsset(asset)) }
+
+  getUnsendableAssetSymbols() { return this.getUnsendableAssets().map(({ symbol }) => symbol) }
+
   /** Default does nothing, should be overridden in subclass */
   _validateTxData(txData) {
     return txData

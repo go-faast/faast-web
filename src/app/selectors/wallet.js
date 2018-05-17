@@ -19,7 +19,7 @@ const doGetWallet = (allWallets, id) => {
     return wallet
   }
   const nestedWallets = wallet.nestedWalletIds.map((nestedWalletId) => doGetWallet(allWallets, nestedWalletId)).filter(Boolean)
-  let { balances, balancesLoaded, balancesUpdating, balancesError, supportedAssets } = wallet
+  let { balances, balancesLoaded, balancesUpdating, balancesError, supportedAssets, unsendableAssets } = wallet
   if (wallet.type.includes(MultiWallet.type)) {
     if (nestedWallets.length) {
       balances = reduceByKey(nestedWallets.map((w) => w.balances), (x, y) => x.plus(y), ZERO)
@@ -27,6 +27,7 @@ const doGetWallet = (allWallets, id) => {
       balancesUpdating = nestedWallets.some((w) => w.balancesUpdating)
       balancesError = nestedWallets.map((w) => w.balancesError).find(Boolean) || ''
       supportedAssets = union(...nestedWallets.map((w) => w.supportedAssets))
+      unsendableAssets = union(...nestedWallets.map((w) => w.unsendableAssets))
     } else {
       balancesLoaded = true
     }
@@ -38,7 +39,8 @@ const doGetWallet = (allWallets, id) => {
     balancesLoaded,
     balancesUpdating,
     balancesError,
-    supportedAssets
+    supportedAssets,
+    unsendableAssets,
   }
 }
 

@@ -32,7 +32,15 @@ const ModifyView = (props) => {
 
   const renderAssetRows = (assetHoldings) => assetHoldings.map((a) => {
     const { walletId, symbol, name, change24, price, units, fiat, weight, swapEnabled, priceDecrease } = a
-    const disabled = !swapEnabled
+    const unsendable = portfolio.unsendableAssets.includes(symbol)
+    let disabledMessage
+    if (!swapEnabled) {
+      disabledMessage = `Swapping ${name} is currently unavailable`
+    } else if (unsendable) {
+      disabledMessage = `Sending ${name} from this wallet currently unsupported`
+    }
+    const disabled = Boolean(disabledMessage)
+
     const changeIconDirection = priceDecrease ? 'down' : 'up'
     const changeColor = priceDecrease ? 'danger' : 'success'
     const fiatPrice = display.fiat(price)
@@ -52,7 +60,7 @@ const ModifyView = (props) => {
         {disabled && (
           <Overlay className='justify-content-end'>
             <Alert color='info' className='m-1'>
-              Swapping {name} is currently unavailable
+              {disabledMessage}
             </Alert>
           </Overlay>
         )}
