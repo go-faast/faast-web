@@ -12,7 +12,7 @@ import Ledger from 'Services/Ledger'
 import walletService, {
   Wallet, MultiWallet, MultiWalletLedger, MultiWalletTrezor,
   EthereumWalletLedger, EthereumWalletTrezor,
-  BitcoinWalletTrezor
+  BitcoinWalletLedger, BitcoinWalletTrezor,
 } from 'Services/Wallet'
 
 import { getAsset } from 'Selectors'
@@ -209,6 +209,7 @@ export const createConnectTrezor = (startConnecting) => (walletType, assetSymbol
 const connectActions = {
   ledger: {
     ETH: createConnectLedger(createStartConnecting(EthereumWalletLedger.connect)),
+    BTC: createConnectLedger(createStartConnecting(BitcoinWalletLedger.fromPath)),
   },
   trezor: {
     ETH: createConnectTrezor(createStartConnecting(EthereumWalletTrezor.connect)),

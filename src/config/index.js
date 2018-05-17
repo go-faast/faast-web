@@ -47,6 +47,9 @@ export default {
       supportedAssets: {
         ETH: {
           derivationPath: 'm/44\'/60\'/0\''
+        },
+        BTC: {
+          derivationPath: 'm/49\'/0\'/0\''
         }
       }
     },
