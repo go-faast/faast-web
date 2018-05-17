@@ -56,12 +56,12 @@ export default compose(
     }
   })
 )(({
-  walletType, handleBack, continuePath, isConnected, derivationPath, handleChangeDerivationPath,
+  walletType, assetSymbol, handleBack, continuePath, isConnected, derivationPath, handleChangeDerivationPath,
 }) => (
   <div>
     <ModalBody className='py-4'>
       <ConnectionStatus />
-      <ConnectionInstructions type={walletType}/>
+      <ConnectionInstructions type={walletType} symbol={assetSymbol}/>
       <div className='my-3 w-50 mx-auto'>
         <DerivationPathChanger onChange={handleChangeDerivationPath} path={derivationPath}/>
       </div>
