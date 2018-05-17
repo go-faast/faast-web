@@ -7,7 +7,7 @@ import {
   EthereumWalletWeb3, EthereumWalletTrezor, EthereumWalletLedger,
   EthereumWalletKeystore, EthereumWalletViewOnly, EthereumWalletBlockstack
 } from './Ethereum'
-import { BitcoinWalletTrezor } from './Bitcoin'
+import { BitcoinWalletTrezor, BitcoinWalletLedger } from './Bitcoin'
 
 const parseWalletObject = (wallet) => {
   const parseNested = (wallets) => !Array.isArray(wallets) ? wallets : wallets.map(parseWalletObject).filter(Boolean)
@@ -40,6 +40,7 @@ const parseWalletObject = (wallet) => {
     case 'EthereumWalletTrezor': return new EthereumWalletTrezor(wallet.address, wallet.derivationPath, label)
     case 'EthereumWalletLedger': return new EthereumWalletLedger(wallet.address, wallet.derivationPath, label)
     case 'BitcoinWalletTrezor': return new BitcoinWalletTrezor(wallet.xpub, wallet.derivationPath, label)
+    case 'BitcoinWalletLedger': return new BitcoinWalletLedger(wallet.xpub, wallet.derivationPath, label)
     default: log.error(`Cannot parse wallet: invalid type '${walletType}'`, wallet)
   }
 }
