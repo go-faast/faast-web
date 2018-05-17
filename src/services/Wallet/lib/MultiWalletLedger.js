@@ -1,7 +1,7 @@
 import config from 'Config'
 import MultiWallet from './MultiWallet'
 
-const typeLabel = config.walletTypes.trezor.name
+const typeLabel = config.walletTypes.ledger.name
 
 export default class MultiWalletLedger extends MultiWallet {
 
