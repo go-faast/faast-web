@@ -3,7 +3,7 @@ import {
   Container, Row, Col, Button, Alert,
   Modal, ModalHeader, ModalBody,
   Card, CardHeader, ListGroup, ListGroupItem,
-  Navbar,
+  Navbar
 } from 'reactstrap'
 import accounting from 'accounting'
 import { RIENumber } from 'riek'
@@ -47,10 +47,10 @@ const ModifyView = (props) => {
     const percentChange24 = display.percentage(change24, true)
     const originalFiat = display.fiat(fiat.original)
     const originalWeight = display.percentage(a.weight.original)
-    const originalUnits = (<Units value={units.original} symbol={symbol} precision={6}/>)
+    const originalUnits = (<Units value={units.original} symbol={symbol} precision={6} />)
     const adjustedFiat = accounting.toFixed(fiat.adjusted, 2)
     const adjustedWeight = accounting.toFixed(weight.adjusted, 2)
-    const adjustedUnits = (<Units value={units.adjusted} symbol={symbol} precision={6}/>)
+    const adjustedUnits = (<Units value={units.adjusted} symbol={symbol} precision={6} />)
 
     let fiatInput
     let weightInput
@@ -68,7 +68,7 @@ const ModifyView = (props) => {
           <Col xs lg='4' xl='5' className='order-1'>
             <Row className='gutter-3 align-items-center'>
               <Col xs='auto' className='text-right'>
-                <CoinIcon size='md' symbol={symbol} inline/>
+                <CoinIcon size='md' symbol={symbol} inline />
               </Col>
               <Col xs='auto'><h5 className='m-0'>{name}</h5></Col>
             </Row>
@@ -122,7 +122,7 @@ const ModifyView = (props) => {
                 </Row>
               </Col>
               <Col xs='12' sm='3' lg>
-                <Row className="gutter-3 flex-sm-column">
+                <Row className='gutter-3 flex-sm-column'>
                   <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>Weight</Col>
                   <Col xs='4' sm='12'>{originalWeight}</Col>
                   <Col xs='5' sm='12'>
@@ -147,7 +147,7 @@ const ModifyView = (props) => {
                 </Row>
               </Col>
               <Col xs='12' sm>
-                <Row className="gutter-3 flex-sm-column">
+                <Row className='gutter-3 flex-sm-column'>
                   <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>Units</Col>
                   <Col xs='4' sm='12'>{originalUnits}</Col>
                   <Col xs='5' sm='12'>{adjustedUnits}</Col>
@@ -157,11 +157,11 @@ const ModifyView = (props) => {
           </Col>
           <Col xs='auto' className='align-self-start order-2 order-lg-3'>
             <Button color='danger' size='sm' disabled={disabled} className='flat' onClick={() => props.handleRemove(walletId, symbol)}>
-              <i className='fa fa-times'/> remove
+              <i className='fa fa-times' /> remove
             </Button>
           </Col>
         </Row>
-        
+
         <div className='pt-3'>
           <Slider
             asset={a}
@@ -183,12 +183,12 @@ const ModifyView = (props) => {
             <CardHeader>
               <Row className='gutter-3 align-items-center'>
                 <Col>
-                  <WalletLabel wallet={wallet} tag='h4'/>
+                  <WalletLabel wallet={wallet} tag='h4' />
                 </Col>
                 <Col xs='auto'>
-                  <Button color='success' size='sm' className='flat' disabled={!holdingsLoaded} onClick={() => props.showAssetList(id)}>
+                  {/* <Button color='success' size='sm' className='flat' disabled={!holdingsLoaded} onClick={() => props.showAssetList(id)}>
                     <i className='fa fa-plus'/> add asset
-                  </Button>
+                  </Button> */}
                 </Col>
               </Row>
             </CardHeader>
@@ -198,12 +198,12 @@ const ModifyView = (props) => {
               </Alert>
             ) : (
               <ListGroup>
-                {!holdingsLoaded && (<LoadingFullscreen center/>)}
+                {!holdingsLoaded && (<LoadingFullscreen center />)}
                 {renderAssetRows(assetHoldings.filter(({ shown }) => shown))}
-                <ListGroupButton action onClick={() => props.showAssetList(id)} className='text-center text-success'>
+                {/* <ListGroupButton action onClick={() => props.showAssetList(id)} className='text-center text-success'>
                   <i className='fa fa-plus fa-2x align-middle' />
                   <span className='pl-2 h5'>add asset</span>
-                </ListGroupButton>
+                </ListGroupButton> */}
               </ListGroup>
             )}
           </Card>
@@ -224,12 +224,12 @@ const ModifyView = (props) => {
             <small className='text-muted'>available to swap</small>
           </Col>
           <Col xs='auto' className='text-right'>
-            <Button color='primary' onClick={handleSave} disabled={Boolean(disableSave)} className='flat'><i className='fa fa-check mr-2'/>Save Changes</Button>
+            <Button color='primary' onClick={handleSave} disabled={Boolean(disableSave)} className='flat'><i className='fa fa-check mr-2' />Save Changes</Button>
           </Col>
           {typeof disableSave === 'string' && (
             <Col xs='12'>
               <Alert color='danger' className='m-0 w-100 text-center'>
-                <i className='fa fa-exclamation-triangle mr-2'/>{disableSave}
+                <i className='fa fa-exclamation-triangle mr-2' />{disableSave}
               </Alert>
             </Col>
           )}
@@ -254,7 +254,7 @@ const ModifyView = (props) => {
           Add Asset
         </ModalHeader>
         <ModalBody>
-          {props.isAssetListOpen && /* Reactstrap + redux-forms workaround https://github.com/reactstrap/reactstrap/issues/820 */ ( 
+          {props.isAssetListOpen && /* Reactstrap + redux-forms workaround https://github.com/reactstrap/reactstrap/issues/820 */ (
             <AssetSelector {...props.assetListProps} />
           )}
         </ModalBody>
