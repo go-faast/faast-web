@@ -57,7 +57,7 @@
     "ethereumjs-util": "^5.1.2",
     "ethereumjs-wallet": "^0.6.0",
     "extract-text-webpack-plugin": "^3.0.2",
-    "faast-ui": "github:go-faast/faast-ui",
+    "faast-ui": "github:go-faast/faast-ui#v1.0.3",
     "favicons-webpack-plugin": "0.0.7",
     "file-loader": "^1.1.6",
     "fuse.js": "^3.1.0",
