@@ -43,7 +43,7 @@ class Bitcore {
 }
 
 const assetToBitcore = {
-  BTC: new Bitcore(networks.bitcoin, ['https://bitcore1.trezor.io', 'https://bitcore3.trezor.io']),
+  BTC: new Bitcore(networks.bitcoin, ['https://blockexplorer.com', 'https://bitcore1.trezor.io', 'https://bitcore3.trezor.io']),
   LTC: new Bitcore(networks.litecoin, ['https://ltc-bitcore3.trezor.io']),
 }
 
