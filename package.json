@@ -123,5 +123,7 @@
     "worker-loader": "^1.1.0",
     "ws": "^5.1.0"
   },
-  "dependencies": {}
+  "dependencies": {
+    "bitcoinjs-lib": "^3.3.2"
+  }
 }
