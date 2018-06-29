@@ -30,6 +30,9 @@
     ]
   },
   "devDependencies": {
+    "@ledgerhq/hw-app-btc": "^4.15.0",
+    "@ledgerhq/hw-app-eth": "^4.15.0",
+    "@ledgerhq/hw-transport-u2f": "^4.15.0",
     "accounting": "^0.4.1",
     "autoprefixer": "^7.2.4",
     "babel-core": "^6.26.0",
