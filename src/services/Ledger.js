@@ -4,10 +4,13 @@
   * Ledger.eth.getAddress("m/44'/0'/0'/0")
   */
 
+import Transport from '@ledgerhq/hw-transport-u2f'
+import AppEth from '@ledgerhq/hw-app-eth'
+import AppBtc from '@ledgerhq/hw-app-btc'
 
 const serviceConfig = {
   eth: {
-    App: window.ledger.eth,
+    App: AppEth,
     methodNames: [
       'getAddress',
       'signTransaction',
@@ -16,7 +19,7 @@ const serviceConfig = {
     ]
   },
   btc: {
-    App: window.ledger.btc,
+    App: AppBtc,
     methodNames: [
       'getWalletPublicKey',
       'signMessageNew',
@@ -25,6 +28,7 @@ const serviceConfig = {
       'splitTransaction',
       'serializeTransactionOutputs',
       'serializeTransaction',
+      'displayTransactionDebug'
     ]
   }
 }
@@ -33,15 +37,15 @@ let service = null
 
 if (window.ledger) {
   service = Object.entries(serviceConfig).reduce((apps, [appName, { App, methodNames }]) => {
-    const appPromise = window.ledger.comm_u2f.create_async().then((comm) => new App(comm))
+    const appPromise = Transport.create().then((comm) => new App(comm))
     return {
       ...apps,
       [appName]: methodNames.reduce((methods, methodName) => ({
         ...methods,
         [methodName]: (...args) => appPromise.then((app) => {
-          let fn = app[`${methodName}_async`]
+          let fn = app[methodName]
           if (typeof fn !== 'function') {
-            fn = app[methodName]
+            throw new Error(`Function ${methodName} is not a method of ledger ${appName} app`)
           }
           return fn.call(app, ...args)
         })
