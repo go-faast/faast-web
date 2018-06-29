@@ -36,7 +36,7 @@ const vendorOutputPath = 'vendor/'
 const bundleOutputPath = 'bundle/'
 const faviconOutputPath = 'favicon/'
 
-const vendorDeps = ['font-awesome/css/font-awesome.min.css', 'ledger.min.js', 'web3.min.js']
+const vendorDeps = ['font-awesome/css/font-awesome.min.css', 'web3.min.js']
 
 const cssLoader = ({ sourceMap = true, modules = true } = {}) => ExtractTextPlugin.extract({
   fallback: 'style-loader',
