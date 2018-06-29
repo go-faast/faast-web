@@ -19,7 +19,7 @@ export default compose(
     size: 'md'
   }),
   connect((state, props) => {
-    const symbol = props.symbol.toUpperCase()
+    const symbol = props.symbol
     if (symbol === 'ERC20') {
       return { src: Erc20Svg, fill: '#fff' }
     }

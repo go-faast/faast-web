@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 
 import { toBigNumber } from 'Utilities/convert'
 import { mapValues } from 'Utilities/helpers'
-import { createItemSelector, selectItemId } from 'Utilities/selector'
+import { createItemSelector, selectItemId, fieldSelector } from 'Utilities/selector'
 
 export const getAssetState = ({ asset }) => asset
 
@@ -31,7 +31,7 @@ export const areAssetPricesLoaded = createSelector(getAssetState, ({ loaded, pri
 export const getAssetPricesError = createSelector(getAssetState, ({ loadingError, pricesError }) => loadingError || pricesError)
 
 export const getAsset = createItemSelector(getAllAssets, selectItemId, (allAssets, id) => allAssets[id])
-export const getAssetPrice = createItemSelector(getAsset, (asset) => asset ? asset.price : null)
-export const getAssetIconUrl = createItemSelector(getAsset, ({ iconUrl }) => iconUrl)
-export const isAssetPriceLoading = createItemSelector(getAsset, (asset) => asset && asset.priceLoading)
-export const isAssetPriceLoaded = createItemSelector(getAsset, (asset) => asset && asset.priceLoaded)
+export const getAssetPrice = createItemSelector(getAsset, fieldSelector('price'))
+export const getAssetIconUrl = createItemSelector(getAsset, fieldSelector('iconUrl'))
+export const isAssetPriceLoading = createItemSelector(getAsset, fieldSelector('priceLoading'))
+export const isAssetPriceLoaded = createItemSelector(getAsset, fieldSelector('priceLoaded'))

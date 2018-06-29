@@ -14,3 +14,6 @@ export const selectItemId = (state, id) => id
 
 /** Creates a cached selector that accepts an item ID as an arg */
 export const createItemSelector = (...createSelectorArgs) => createCachedSelector(...createSelectorArgs)(selectItemId)
+
+export const fieldSelector = (fieldName, fallbackValue = null) => (o) =>
+  typeof o === 'object' && o !== null ? o[fieldName] : fallbackValue
