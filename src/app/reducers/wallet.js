@@ -1,4 +1,6 @@
 import { createReducer } from 'redux-act'
+import { omit } from 'lodash'
+
 import { resetAll } from 'Actions/app'
 import {
   walletAdded, walletUpdated, walletRemoved, allWalletsRemoved, 
@@ -36,10 +38,7 @@ export default createReducer({
     ...wallet,
     balancesLoaded: false,
   }),
-  [walletRemoved]: (state, { id }) => ({
-    ...state,
-    [id]: undefined
-  }),
+  [walletRemoved]: (state, { id }) => omit(state, id),
   [walletBalancesUpdating]: (state, { id }) => updateWallet(state, {
     id,
     balancesUpdating: true,
