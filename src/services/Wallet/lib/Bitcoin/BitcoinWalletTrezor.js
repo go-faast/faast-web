@@ -44,25 +44,15 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
       })
   }
 
-  createTransaction(toAddress, amount, assetOrSymbol) {
-    return Promise.resolve(assetOrSymbol)
-      .then(::this.assertAssetSupported)
-      .then(::this.getAsset)
-      .then((asset) => ({
-        walletId: this.getId(),
-        toAddress,
-        amount,
-        assetSymbol: asset.symbol,
-        feeAmount: null,
-        feeSymbol: 'BTC',
-        signed: false,
-        sent: false,
-        txData: [{
-          address: toAddress,
-          amount: toSmallestDenomination(amount, asset.decimals).toNumber(),
-        }],
-        signedTxData: null,
-      }))
+  _createTransaction(toAddress, amount, asset) {
+    return Promise.resolve().then(() => ({
+      feeAmount: null,
+      feeSymbol: 'BTC',
+      txData: [{
+        address: toAddress,
+        amount: toSmallestDenomination(amount, asset.decimals).toNumber(),
+      }],
+    }))
   }
 
 
@@ -77,27 +67,10 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
       })
   }
 
-  _sendSignedTx(tx) {
-    return Trezor.pushTransaction(tx.signedTxData)
-      .then((result) => {
-        log.info('Transaction pushed:', result)
-        return {
-          id: result.txid
-        }
-      })
-  }
-
   _validateTxData(txData) {
     if (txData === null || !Array.isArray(txData)) {
       throw new Error(`Invalid ${this.getType()} txData of type ${typeof txData}`)
     }
     return txData
-  }
-
-  _validateSignedTxData(signedTxData) {
-    if (typeof signedTxData !== 'string') {
-      throw new Error(`Invalid ${this.getType()} signedTxData of type ${typeof signedTxData}`)
-    }
-    return signedTxData
   }
 }

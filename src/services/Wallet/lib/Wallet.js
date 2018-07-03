@@ -127,6 +127,22 @@ export default class Wallet {
       .then((signedTx) => this._sendSignedTx(signedTx, options))
   }
 
+  createTransaction(toAddress, amount, assetOrSymbol, options) {
+    return Promise.resolve(assetOrSymbol)
+      .then(::this.assertAssetSupported)
+      .then((asset) => this._createTransaction(toAddress, amount, asset, options)
+        .then((result) => ({
+          walletId: this.getId(),
+          toAddress,
+          amount,
+          assetSymbol: asset.symbol,
+          signed: false,
+          sent: false,
+          signedTxData: null,
+          ...result,
+        })))
+  }
+
   signTransaction(tx, options = {}) {
     return Promise.resolve(tx)
       .then(::this._validateTx)

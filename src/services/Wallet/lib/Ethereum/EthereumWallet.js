@@ -74,59 +74,50 @@ export default class EthereumWallet extends Wallet {
         {}))
   }
 
-  createTransaction(toAddress, amount, assetOrSymbol, options = {}) {
-    return Promise.resolve(assetOrSymbol)
-      .then(::this.assertAssetSupported)
-      .then((asset) => {
-        log.debug(`Create transaction sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${toAddress}`)
-        let txData = {
-          from: this.getAddress(),
-          value: ZERO,
-          data: ''
-        }
-        if (asset.symbol === 'ETH') {
-          txData.to = toAddress
-          txData.value = toSmallestDenomination(amount, asset.decimals)
-        } else if (asset.ERC20) {
-          // Handle ERC20
-          txData.to = asset.contractAddress,
-          txData.data = tokenSendData(toAddress, amount, asset.decimals)
-        } else {
-          throw new Error(`Unsupported asset ${asset.symbol || asset} provided to EthereumWallet`)
-        }
-        txData.value = toHex(txData.value)
+  _createTransaction(toAddress, amount, asset, options = {}) {
+    return Promise.resolve().then(() => {
+      log.debug(`Create transaction sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${toAddress}`)
+      let txData = {
+        from: this.getAddress(),
+        value: ZERO,
+        data: ''
+      }
+      if (asset.symbol === 'ETH') {
+        txData.to = toAddress
+        txData.value = toSmallestDenomination(amount, asset.decimals)
+      } else if (asset.ERC20) {
+        // Handle ERC20
+        txData.to = asset.contractAddress,
+        txData.data = tokenSendData(toAddress, amount, asset.decimals)
+      } else {
+        throw new Error(`Unsupported asset ${asset.symbol || asset} provided to EthereumWallet`)
+      }
+      txData.value = toHex(txData.value)
 
-        const previousTx = options.previousTx
-        let customNonce = options.nonce
-        if (!customNonce && previousTx && previousTx.txData.from.toLowerCase() == txData.from.toLowerCase()) {
-          customNonce = toBigNumber(previousTx.txData.nonce).plus(1).toNumber()
-        }
-        const customGasPrice = options.gasPrice
-        const customGasLimit = options.gasLimit || options.gas
+      const previousTx = options.previousTx
+      let customNonce = options.nonce
+      if (!customNonce && previousTx && previousTx.txData.from.toLowerCase() == txData.from.toLowerCase()) {
+        customNonce = toBigNumber(previousTx.txData.nonce).plus(1).toNumber()
+      }
+      const customGasPrice = options.gasPrice
+      const customGasLimit = options.gasLimit || options.gas
 
-        return Promise.all([
-          customGasPrice || web3.eth.getGasPrice(),
-          customGasLimit || web3.eth.estimateGas(txData),
-          customNonce || web3.eth.getTransactionCount(txData.from)
-        ]).then(([gasPrice, gasLimit, nonce]) => ({
-          walletId: this.getId(),
-          toAddress,
-          amount,
-          assetSymbol: asset.symbol,
-          feeAmount: toTxFee(gasLimit, gasPrice),
-          feeSymbol: 'ETH',
-          signed: false,
-          sent: false,
-          txData: {
-            ...txData,
-            gasPrice: toHex(gasPrice),
-            gasLimit: toHex(gasLimit),
-            nonce: toHex(nonce)
-          },
-          signedTxData: null
-        }))
-        .then((tx) => log.debugInline('createTransaction', tx))
-      })
+      return Promise.all([
+        customGasPrice || web3.eth.getGasPrice(),
+        customGasLimit || web3.eth.estimateGas(txData),
+        customNonce || web3.eth.getTransactionCount(txData.from)
+      ]).then(([gasPrice, gasLimit, nonce]) => ({
+        feeAmount: toTxFee(gasLimit, gasPrice),
+        feeSymbol: 'ETH',
+        txData: {
+          ...txData,
+          gasPrice: toHex(gasPrice),
+          gasLimit: toHex(gasLimit),
+          nonce: toHex(nonce)
+        },
+      }))
+      .then((tx) => log.debugInline('createTransaction', tx))
+    })
   }
 
   _getTransactionReceipt(txId) {

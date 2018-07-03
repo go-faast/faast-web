@@ -16,8 +16,10 @@ export default class BitcoinWallet extends Wallet {
   constructor(xpub, label) {
     super(label)
     assertExtended(this, BitcoinWallet)
+    this.assetSymbol = 'BTC'
     this.xpub = xpub
-    this._latestDiscoveryResults = {}
+    this.bitcore = Bitcore.getNetwork(this.assetSymbol)
+    this._latestDiscoveryResult = null
   }
 
   getId() { return this.xpub }
@@ -28,22 +30,22 @@ export default class BitcoinWallet extends Wallet {
 
   isSingleAddress() { return false }
 
-  _performDiscovery(symbol) {
-    const discoveryPromise = Bitcore.discover(symbol, this.xpub)
+  _performDiscovery() {
+    const discoveryPromise = this.bitcore.discoverAccount(this.xpub)
       .then((result) => {
-        log.debug(`bitcore result for ${symbol}`, result)
-        this._latestDiscoveryResults[symbol] = result
+        log.debug(`bitcore result for ${this.assetSymbol}`, result)
+        this._latestDiscoveryResult = result
         return result
       });
-    this._latestDiscoveryResults[symbol] = discoveryPromise
+    this._latestDiscoveryResult = discoveryPromise
     return discoveryPromise
   }
 
-  _getDiscoveryResult(symbol) {
-    return Promise.resolve(this._latestDiscoveryResults[symbol])
+  _getDiscoveryResult() {
+    return Promise.resolve(this._latestDiscoveryResult)
       .then((result) => {
         if (!result) {
-          return this._performDiscovery(symbol)
+          return this._performDiscovery()
         }
         return result
       })
@@ -52,7 +54,7 @@ export default class BitcoinWallet extends Wallet {
   getFreshAddress(assetOrSymbol, { index = 0 } = {}) {
     return Promise.resolve(assetOrSymbol)
       .then(::this.assertAssetSupported)
-      .then((asset) => this._getDiscoveryResult(asset.symbol))
+      .then(() => this._getDiscoveryResult())
       .then(({ unusedAddresses }) => unusedAddresses[index])
   }
 
@@ -69,13 +71,27 @@ export default class BitcoinWallet extends Wallet {
   }
 
   _getTransactionReceipt (txId) {
-    return Bitcore.getTransaction('BTC', txId)
+    return this.bitcore.lookupTransaction(txId)
       .then((result) => !result ? null : ({
         confirmed: result.height > 0,
         succeeded: result.height > 0,
         blockNumber: result.height,
         raw: result
       }))
+  }
+
+  _sendSignedTx(tx) {
+    return this.bitcore.sendTransaction(tx.signedTxData)
+      .then((txId) => ({
+        id: txId,
+      }))
+  }
+
+  _validateSignedTxData(signedTxData) {
+    if (typeof signedTxData !== 'string') {
+      throw new Error(`Invalid ${this.getType()} signedTxData of type ${typeof signedTxData}`)
+    }
+    return signedTxData
   }
 
 }
