@@ -23,7 +23,7 @@ const SwapSubmitModal = ({ isOpen, swaps, headerText, continueText, continueDisa
       statusText = (<span className='text-primary'>Sending</span>)
     } else if ((tx && tx.sent) || code === 'failed') {
       statusText = (<span className={labelClass}>{label}</span>)
-    } else {
+    } else if (detailsCode !== 'unsigned') {
       statusText = (<Spinner size='sm' inline/>)
     }
     return (
