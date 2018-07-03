@@ -17,13 +17,15 @@ import { toggleOrderModal } from 'Actions/orderModal'
 
 import SwapSubmitModalView from './view'
 
+const initialState = {
+  startedSigning: false,
+  startedSending: false,
+}
+
 class SwapSubmitModal extends Component {
   constructor (props) {
     super(props)
-    this.state = {
-      startedSigning: false,
-      startedSending: false,
-    }
+    this.state = initialState
     this.handleCancel = this.handleCancel.bind(this)
     this.handleSignTxs = this.handleSignTxs.bind(this)
     this.handleSendTxs = this.handleSendTxs.bind(this)
@@ -31,9 +33,7 @@ class SwapSubmitModal extends Component {
 
   handleCancel () {
     const { toggle, resetSwaps } = this.props
-    this.setState({
-      startedSigning: false
-    })
+    this.setState(initialState)
     closeTrezorWindow()
     toggle()
     resetSwaps()
