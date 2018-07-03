@@ -63,7 +63,7 @@ const log = (level) => (text, ...data) => {
           return item.toString()
         }
         if (isObject(item)) {
-          return omitBy(item, isFunction)
+          return JSON.stringify(item)
         }
         return item
       })
