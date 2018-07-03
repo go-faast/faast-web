@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 import { union } from 'lodash'
 
 import { ZERO, toUnit, toPercentage } from 'Utilities/convert'
-import { fixPercentageRounding, reduceByKey } from 'Utilities/helpers'
+import { fixPercentageRounding, reduceByKey, mapValues } from 'Utilities/helpers'
 import { createItemSelector, selectItemId } from 'Utilities/selector'
 
 import { MultiWallet } from 'Services/Wallet'
@@ -10,15 +10,12 @@ import { getAllAssets, areAssetPricesLoaded, getAssetPricesError } from './asset
 
 const getWalletState = ({ wallet }) => wallet
 
-export const getAllWallets = getWalletState
-export const getAllWalletsArray = createSelector(getAllWallets, Object.values)
-
-const doGetWallet = (allWallets, id) => {
-  const wallet = allWallets[id]
+const doGetWallet = (walletState, id) => {
+  const wallet = walletState[id]
   if (!wallet) {
     return wallet
   }
-  const nestedWallets = wallet.nestedWalletIds.map((nestedWalletId) => doGetWallet(allWallets, nestedWalletId)).filter(Boolean)
+  const nestedWallets = wallet.nestedWalletIds.map((nestedWalletId) => doGetWallet(walletState, nestedWalletId)).filter(Boolean)
   let { balances, balancesLoaded, balancesUpdating, balancesError, supportedAssets, unsendableAssets } = wallet
   if (wallet.type.includes(MultiWallet.type)) {
     if (nestedWallets.length) {
@@ -45,10 +42,14 @@ const doGetWallet = (allWallets, id) => {
 }
 
 export const getWallet = createItemSelector(
-  getAllWallets,
+  getWalletState,
   selectItemId,
   doGetWallet
 )
+
+export const getAllWallets = (state) => mapValues(getWalletState(state), (_, id) => getWallet(state, id))
+export const getAllWalletsArray = createSelector(getAllWallets, Object.values)
+export const getAllWalletIds = createSelector(getAllWallets, Object.keys)
 
 export const getWalletParents = createItemSelector(
   getAllWallets,

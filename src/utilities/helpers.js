@@ -224,7 +224,7 @@ export const stringifyJson = (obj) => {
 export const makeEnum = (fields) => Object.freeze(fields.reduce((o, f) => ({ ...o, [f]: Symbol(f) })))
 
 export const mapValues = (obj, valueMapper) => Object.entries(obj).reduce((result, [key, val]) => {
-  result[key] = valueMapper(val)
+  result[key] = valueMapper(val, key)
   return result
 }, {})
 
