@@ -1,13 +1,13 @@
 import React from 'react'
 import {
-  Row, Col, Button,
+  Row, Col, Button, Alert,
   Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap'
 
 import SwapStatusCard from 'Components/SwapStatusCard'
 import Spinner from 'Components/Spinner'
 
-const SwapSubmitModal = ({ isOpen, swaps, headerText, continueText, continueDisabled, continueLoading, handleContinue, handleCancel }) => {
+const SwapSubmitModal = ({ isOpen, swaps, headerText, continueText, continueDisabled, continueLoading, errorMessage, handleContinue, handleCancel }) => {
   const signingStatuses = swaps.map((swap, i) => {
     const { tx, status: { code, detailsCode, labelClass, label } } = swap
     let statusText
@@ -38,6 +38,9 @@ const SwapSubmitModal = ({ isOpen, swaps, headerText, continueText, continueDisa
         {headerText}
       </ModalHeader>
       <ModalBody className='modal-text'>
+        {errorMessage && (
+          <Alert color='danger'>{errorMessage}</Alert>
+        )}
         <p>
           The following swaps will take place to save the changes you made to your portfolio. Please review them and click {`"${continueText}"`} to proceed.
         </p>

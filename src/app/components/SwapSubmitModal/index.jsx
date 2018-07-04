@@ -67,10 +67,16 @@ class SwapSubmitModal extends Component {
   }
 
   render () {
-    const { requiresSigning, readyToSign, readyToSend } = this.props
+    const { requiresSigning, readyToSign, readyToSend, swaps } = this.props
     const { startedSigning, startedSending } = this.state
+
+    let errorMessage
+    if (swaps.length > 1 && swaps.reduce((btcSwapCount, swap) => btcSwapCount + (swap.sendSymbol === 'BTC' ? 1 : 0), 0) > 1) {
+      errorMessage = 'Swapping bitcoin to multiple assets at once is currently unsupported. Please try again with a single asset.'
+    }
+    
     const showSubmit = !requiresSigning || startedSigning // True if continue button triggers tx sending, false for signing
-    const continueDisabled = showSubmit ? (!readyToSend || startedSending) : (!readyToSign || startedSigning)
+    const continueDisabled = errorMessage || (showSubmit ? (!readyToSend || startedSending) : (!readyToSign || startedSigning))
     const continueLoading = showSubmit ? startedSending : startedSigning
     const continueHandler = showSubmit ? this.handleSendTxs : this.handleSignTxs
     const continueText = showSubmit ? 'Submit all' : 'Begin signing'
@@ -83,6 +89,7 @@ class SwapSubmitModal extends Component {
         continueText={continueText}
         handleContinue={continueHandler}
         handleCancel={this.handleCancel}
+        errorMessage={errorMessage}
         {...this.props}
       />
     )
