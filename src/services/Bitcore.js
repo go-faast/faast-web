@@ -10,6 +10,7 @@ import XpubWorker from 'hd-wallet/lib/fastxpub/fastxpub?worker'
 import SocketWorker from 'hd-wallet/lib/socketio-worker/inside?worker'
 import DiscoveryWorker from 'hd-wallet/lib/discovery/worker/inside?worker'
 
+import log from 'Utilities/log'
 import { ypubToXpub, estimateTxFee } from 'Utilities/bitcoin'
 
 // setting up workers
@@ -79,15 +80,18 @@ class Bitcore extends BitcoreBlockchain {
 
   /**
   * Build a simple payment transaction.
+  * Note: fee will be subtracted from amount when attempting to send entire account balance
   *
   * @param {(String|Object)} account - An xpub to pass to discoverAccount or the result of calling discoverAccount
   * @param {String} toAddress - address to send to
   * @param {Number} amount - amount to send (unit: satoshi)
   * @param {Number} feeRate - desired fee (unit: satoshi per byte)
   * @param {Boolean} [isSegwit=true] - True if this is a segwit transaction
+  * @param {Number} [dustThreshold=546] - A change output will only be included when greater than this value.
+  *   Otherwise it will be included as a fee instead (unit: satoshi)
   * @returns {Object}
   */
-  buildPaymentTx(account, toAddress, amount, feeRate, isSegwit = true) {
+  buildPaymentTx(account, toAddress, amount, feeRate, isSegwit = true, dustThreshold = 546) {
     let discoverResult = account
     if (isString(account)) {
       discoverResult = this.discoverAccount(account)
@@ -108,10 +112,17 @@ class Bitcore extends BitcoreBlockchain {
       let utxo = sortedUtxos[i]
       inputTotal = inputTotal.plus(utxo.value)
       inputUtxos.push(utxo)
-      if (inputTotal.greaterThanOrEqualTo(amountWithFee)) break
+      if (inputTotal.gte(amountWithFee)) break
     }
-    if (amountWithFee.greaterThan(inputTotal)) {
-      throw new Error(`You do not have enough UTXOs to send ${amount.times(1e-8)} ${this.assetSymbol} with ${feeRate} sat/byte fee`)
+    if (amountWithFee.gt(inputTotal)) {
+      const amountWithSymbol = `${amount.times(1e-8)} ${this.assetSymbol}`
+      if (amount.eq(inputTotal)) {
+        log.debug(`Attempting to send entire ${amountWithSymbol} balance. Subtracting fee of ${feeRate} sat/byte from amount instead of adding it.`)
+        amountWithFee = amount
+        amount = amount.minus(fee)
+      } else {
+        throw new Error(`You do not have enough UTXOs to send ${amountWithSymbol} with ${feeRate} sat/byte fee`)
+      }
     }
 
     /* Build outputs */
@@ -119,10 +130,14 @@ class Bitcore extends BitcoreBlockchain {
     const outputs = [{
       address: toAddress,
       value: amount.toNumber()
-    }, {
-      address: changeAddress,
-      value: change.toNumber()
     }]
+    if (change.gt(dustThreshold)) {
+      // Avoid creating dust outputs
+      outputs.push({
+        address: changeAddress,
+        value: change.toNumber()
+      })
+    }
     const outputBuilder = new TransactionBuilder(this.network)
     outputs.forEach(({ value, address }) => outputBuilder.addOutput(address, value))
     const outputScript = outputBuilder.buildIncomplete().toHex().slice(10, -8) // required by ledgerjs api

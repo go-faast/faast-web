@@ -10,6 +10,7 @@ import {
   toUnit,
   ZERO
 } from 'Utilities/convert'
+import toastr from 'Utilities/toastrWrapper'
 import walletService from 'Services/Wallet'
 
 import { getMarketInfo, postExchange, getOrderStatus, getSwundle, removeSwundle } from 'Actions/request'
@@ -140,7 +141,7 @@ const swapPostExchange = (swapList) => (dispatch) => {
       sendWalletInstance.createTransaction(order.deposit, sendUnits, sendSymbol, { previousTx: walletPreviousTx[sendWalletId] })
         .then((tx) => {
           walletPreviousTx[sendWalletId] = tx
-          return finish(null, { order, tx })
+          return finish(null, { sendUnits: tx.amount, order, tx })
         }))
     .catch(finishErrorHandler('Error generating deposit txn'))
   })
@@ -162,17 +163,17 @@ const swapSufficientDeposit = (swapList) => (dispatch, getState) => {
   })
 }
 
-// Checks to see if there will be enough Ether if the full gas amount is paid
+// Checks to see if there will be enough balance to pay tx fees
 const swapSufficientFees = (swapList) => (dispatch, getState) => {
-  let walletAdjustedBalances = getAllWalletsArray(getState())
-    .reduce((byId, { id, balances }) => ({ ...byId, [id]: balances }), {})
+  const walletAdjustedBalances = getAllWalletsArray(getState())
+    .reduce((byId, { id, balances }) => ({ ...byId, [id]: { ...balances } }), {})
   return processArray(swapList, (swap) => {
     if (swap.error) return swap
     const finish = createSwapFinish(dispatch, 'swapSufficientFees', swap)
-    const { sendWalletId, sendSymbol, sendUnits, tx } = swap
-    const { feeAmount, feeSymbol } = tx
+    const { sendWalletId, sendSymbol, tx } = swap
+    const { amount, feeAmount, feeSymbol } = tx
     const adjustedBalances = walletAdjustedBalances[sendWalletId] || {}
-    adjustedBalances[sendSymbol] = (adjustedBalances[sendSymbol] || ZERO).minus(sendUnits)
+    adjustedBalances[sendSymbol] = (adjustedBalances[sendSymbol] || ZERO).minus(amount)
     if (feeAmount) {
       adjustedBalances[feeSymbol] = (adjustedBalances[feeSymbol] || ZERO).minus(feeAmount)
       if (adjustedBalances[feeSymbol].isNegative()) {
@@ -254,9 +255,10 @@ export const signSwapTxs = (swapList) => (dispatch) => {
         let message = e.message
         if (message.includes('wrong passphrase')) {
           message = 'Incorrect password'
-        } else {
+        } else if (!message.includes('Ledger device')) {
           message = 'Error signing transaction'
         }
+        toastr.error(message)
         dispatch(swapTxSigningFailed(id, message))
         return swap
       })
