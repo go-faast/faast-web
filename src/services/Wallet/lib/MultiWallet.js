@@ -159,6 +159,10 @@ export default class MultiWallet extends Wallet {
     return this._callWalletTxFn('_sendSignedTx', tx, options)
   }
 
+  getTransactionReceipt(tx) {
+    return this._callWalletTxFn('getTransactionReceipt', tx)
+  }
+
   getBalance(assetOrSymbol, options = {}) {
     const balancePromises = this._getWalletsForAsset(assetOrSymbol)
       .map((wallet) => wallet.getBalance(assetOrSymbol, options))

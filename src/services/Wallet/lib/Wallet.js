@@ -169,19 +169,11 @@ export default class Wallet {
       })));
   }
 
-  getTransactionReceipt(txOrId) {
-    return Promise.resolve(txOrId)
-      .then((txOrId) => {
-        let id = txOrId
-        if (txOrId && typeof txOrId === 'object') {
-          this._validateTx(txOrId)
-          id = txOrId.id
-        }
-        if (typeof id !== 'string') {
-          return null
-        }
-        return this._getTransactionReceipt(id)
-      })
+  getTransactionReceipt(tx) {
+    return Promise.resolve(tx)
+      .then(::this._validateTx)
+      .then(() => this._getTransactionReceipt(tx.id))
+      .then((result) => log.debugInline('getTransactionReceipt', result))
   }
 
   send(toAddress, amount, assetOrSymbol, options) {
