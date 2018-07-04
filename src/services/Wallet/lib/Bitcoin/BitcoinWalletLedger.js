@@ -55,12 +55,14 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
     return this._getDiscoveryResult().then((discoverResult) => {
       const feeRate = options.feeRate || DEFAULT_FEE
       const isSegwit = !this.isLegacyAccount()
-      return this.bitcore.buildPaymentTx(discoverResult, toAddress, toSmallestDenomination(amount, asset.decimals), feeRate, isSegwit)
+      return this._bitcore.buildPaymentTx(discoverResult, toAddress, toSmallestDenomination(amount, asset.decimals), feeRate, isSegwit)
     })
     .then((txData) => {
       return {
         feeAmount: toMainDenomination(txData.fee, asset.decimals),
         feeSymbol: 'BTC',
+        // buildPaymentTx will decrease amount to accomodate fee when sending entire balance
+        amount: toMainDenomination(txData.amount, asset.decimals),
         txData,
       }
     })
@@ -72,7 +74,7 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
   _signTx(tx) {
     const { txData } = tx
     return Promise.all(txData.inputUtxos.map((utxo) =>
-      this.bitcore.lookupTransaction(utxo.transactionHash)
+      this._bitcore.lookupTransaction(utxo.transactionHash)
         .then((txInfo) => Ledger.btc.splitTransaction(txInfo.hex, true, false))
         .then((splitTx) => ({
           ...utxo,

@@ -18,7 +18,7 @@ export default class BitcoinWallet extends Wallet {
     assertExtended(this, BitcoinWallet)
     this.assetSymbol = 'BTC'
     this.xpub = xpub
-    this.bitcore = Bitcore.getNetwork(this.assetSymbol)
+    this._bitcore = Bitcore.getNetwork(this.assetSymbol)
     this._latestDiscoveryResult = null
   }
 
@@ -31,7 +31,7 @@ export default class BitcoinWallet extends Wallet {
   isSingleAddress() { return false }
 
   _performDiscovery() {
-    const discoveryPromise = this.bitcore.discoverAccount(this.xpub)
+    const discoveryPromise = this._bitcore.discoverAccount(this.xpub)
       .then((result) => {
         log.debug(`bitcore result for ${this.assetSymbol}`, result)
         this._latestDiscoveryResult = result
@@ -71,7 +71,7 @@ export default class BitcoinWallet extends Wallet {
   }
 
   _getTransactionReceipt (txId) {
-    return this.bitcore.lookupTransaction(txId)
+    return this._bitcore.lookupTransaction(txId)
       .then((result) => !result ? null : ({
         confirmed: result.height > 0,
         succeeded: result.height > 0,
@@ -81,10 +81,13 @@ export default class BitcoinWallet extends Wallet {
   }
 
   _sendSignedTx(tx) {
-    return this.bitcore.sendTransaction(tx.signedTxData)
-      .then((txId) => ({
-        id: txId,
-      }))
+    return this._bitcore.sendTransaction(tx.signedTxData)
+      .then((txId) => {
+        this._latestDiscoveryResult = null // Clear discovery cache to avoid double spending utxos
+        return {
+          id: txId,
+        }
+      })
   }
 
   _validateSignedTxData(signedTxData) {
