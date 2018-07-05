@@ -1,9 +1,12 @@
 import pad from 'pad-left'
 import queryString from 'query-string'
-import mergeWith from 'lodash.mergewith'
-import union from 'lodash.union'
-import without from 'lodash.without'
-import omit from 'lodash.omit'
+import { mergeWith, union, without, omit } from 'lodash'
+import sha256 from 'hash.js/lib/hash/sha/256'
+import baseX from 'base-x'
+
+export const bs62 = baseX('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
+
+export const toHashId = (s) => bs62.encode(Buffer.from(sha256().update(s).digest().slice(0, 16)))
 
 export const splice = (arr, ...args) => {
   const spliced = [...arr]

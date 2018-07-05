@@ -8,14 +8,16 @@ import { toChecksumAddress } from 'Utilities/convert'
 
 import EthereumWallet from './EthereumWallet'
 
+const getKeystoreAddress = (keystore) => toChecksumAddress(keystore.address || keystore.getAddressString())
+
 export default class EthereumWalletKeystore extends EthereumWallet {
 
   static type = 'EthereumWalletKeystore';
 
   constructor(keystore, label) {
-    super(label)
+    let isEncrypted
     if (keystore instanceof EthereumjsWallet) {
-      this._isEncrypted = false
+      isEncrypted = false
     } else {
       if (!keystore) {
         throw new Error(`Invalid keystore "${keystore}"`)
@@ -44,9 +46,11 @@ export default class EthereumWalletKeystore extends EthereumWallet {
       if (!keystore.address) {
         throw new Error('Keystore address missing')
       }
-      this._isEncrypted = true
+      isEncrypted = true
     }
+    super(getKeystoreAddress(keystore), label)
     this.keystore = keystore
+    this._isEncrypted = isEncrypted
   }
 
   static generate() {
@@ -65,8 +69,6 @@ export default class EthereumWalletKeystore extends EthereumWallet {
   getType() { return EthereumWalletKeystore.type }
 
   getTypeLabel() { return 'Keystore file' }
-
-  getAddress() { return toChecksumAddress(this.keystore.address || this.keystore.getAddressString()) }
 
   isPersistAllowed() { return this._isEncrypted && this._persistAllowed }
 

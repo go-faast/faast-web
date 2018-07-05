@@ -24,16 +24,13 @@ export default class EthereumWalletTrezor extends EthereumWallet {
   static type = 'EthereumWalletTrezor';
 
   constructor(address, derivationPath, label) {
-    super(label)
-    this.address = address
+    super(address, label)
     this.derivationPath = derivationPath // Expects full path to `address`
   }
 
   getType() { return EthereumWalletTrezor.type }
 
   getTypeLabel() { return typeLabel }
-
-  getAddress() { return this.address }
 
   static connect(derivationPath = 'm/44\'/60\'/0\'/0') {
     return Trezor.getXPubKey(derivationPath)

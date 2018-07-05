@@ -140,6 +140,12 @@ export function WalletService() {
   const restoreSessionStorage = () => getStoredWalletKeys().map((key) => {
     const wallet = loadFromStorage(key)
     if (wallet) {
+      const newStorageKey = getStorageKey(wallet)
+      if (key !== newStorageKey) {
+        sessionStorageRemove(key)
+        saveToStorage(wallet)
+        log.debug(`migrated wallet from session key ${key} to ${newStorageKey}`)
+      }
       put(wallet)
     }
   })

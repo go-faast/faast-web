@@ -1,7 +1,7 @@
 import { difference } from 'lodash'
 
 import web3 from 'Services/Web3'
-import { addHexPrefix } from 'Utilities/helpers'
+import { addHexPrefix, toHashId } from 'Utilities/helpers'
 import { ZERO, toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee } from 'Utilities/convert'
 import { abstractMethod, assertExtended } from 'Utilities/reflect'
 import { ellipsize } from 'Utilities/display'
@@ -15,14 +15,15 @@ export default class EthereumWallet extends Wallet {
 
   static type = 'EthereumWallet';
 
-  constructor(label) {
-    super(label)
+  constructor(address, label) {
+    super(toHashId(address.toLowerCase()), label)
     assertExtended(this, EthereumWallet)
+    this.address = address
   }
 
-  getId() { return this.getAddress().toLowerCase() }
-
   getLabel() { return this.label || `Ethereum ${ellipsize(this.getAddress(), 6, 4)}` }
+
+  getAddress() { return this.address }
 
   isSingleAddress() { return true }
 

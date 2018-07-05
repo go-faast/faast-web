@@ -2,17 +2,20 @@ import { abstractMethod, assertExtended } from 'Utilities/reflect'
 import log from 'Utilities/log'
 
 @abstractMethod(
-  'getId', 'getType', 'getTypeLabel', 'getBalance', 'getFreshAddress', 'isAssetSupported',
+  '_getId', 'getType', 'getTypeLabel', 'getBalance', 'getFreshAddress', 'isAssetSupported',
   'isSingleAddress', 'createTransaction', '_signTx', '_sendSignedTx', '_getTransactionReceipt')
 export default class Wallet {
 
-  constructor(label) {
+  constructor(id, label) {
     assertExtended(this, Wallet)
+    this.id = id
     this.label = label
     this._persistAllowed = true
     this._assetProvider = () => {}
     this._walletGetter = () => {}
   }
+
+  getId() { return this.id }
 
   getLabel() { return this.label || this.getType() }
   setLabel(label) { this.label = label }

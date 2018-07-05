@@ -21,19 +21,16 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
   static type = 'EthereumWalletWeb3';
 
   constructor(address, providerName, label) {
-    super(label)
     if (!address) {
       throw new Error('Wallet address must be provided')
     }
-    this.address = address
+    super(address, label)
     this.providerName = providerName || web3.providerName
   }
 
   getType() { return EthereumWalletWeb3.type }
 
   getTypeLabel() { return this.providerName === 'faast' ? 'Web3 Wallet' : this.providerName }
-
-  getAddress() { return this.address }
 
   isSignTransactionSupported() { return web3.providerName !== 'MetaMask' }
 

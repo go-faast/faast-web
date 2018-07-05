@@ -21,8 +21,7 @@ export default class EthereumWalletLedger extends EthereumWallet {
   static type = 'EthereumWalletLedger';
 
   constructor(address, derivationPath, label) {
-    super(label)
-    this.address = address
+    super(address, label)
     this.derivationPath = derivationPath // Expects full path to `address`
   }
 
@@ -42,8 +41,6 @@ export default class EthereumWalletLedger extends EthereumWallet {
           getAccount
         })))
   }
-
-  getAddress() { return this.address }
 
   _signTx(tx) {
     return Promise.resolve().then(() => {

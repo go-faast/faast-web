@@ -1,4 +1,5 @@
 import log from 'Utilities/log'
+import { toHashId } from 'Utilities/helpers'
 import { toBigNumber, toMainDenomination } from 'Utilities/convert'
 import { abstractMethod, assertExtended } from 'Utilities/reflect'
 import { ellipsize } from 'Utilities/display'
@@ -14,15 +15,13 @@ export default class BitcoinWallet extends Wallet {
   static type = 'BitcoinWallet';
 
   constructor(xpub, label) {
-    super(label)
+    super(toHashId(xpub), label)
     assertExtended(this, BitcoinWallet)
     this.assetSymbol = 'BTC'
     this.xpub = xpub
     this._bitcore = Bitcore.getNetwork(this.assetSymbol)
     this._latestDiscoveryResult = null
   }
-
-  getId() { return this.xpub }
 
   getLabel() { return this.label || `Bitcoin ${ellipsize(this.xpub, 8, 4)}` }
 

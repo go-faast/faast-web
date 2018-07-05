@@ -1,6 +1,6 @@
 import uuid from 'uuid/v4'
 import { toBigNumber } from 'Utilities/convert'
-import { reduceByKey } from 'Utilities/helpers'
+import { reduceByKey, toHashId } from 'Utilities/helpers'
 
 import Wallet from './Wallet'
 
@@ -19,15 +19,14 @@ export default class MultiWallet extends Wallet {
   static type = 'MultiWallet';
 
   constructor(id, walletIds, label) {
-    super(label)
     if (isList(id)) {
+      label = walletIds
       walletIds = id
     }
-    this.id = typeof id === 'string' ? id : uuid()
+    id = typeof id === 'string' ? id : toHashId(uuid())
+    super(id, label)
     this.walletIds = new Set(isList(walletIds) ? walletIds : [])
   }
-
-  getId() { return this.id }
 
   getType() { return MultiWallet.type }
 

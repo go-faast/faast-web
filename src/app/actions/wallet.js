@@ -1,5 +1,3 @@
-import sha256 from 'hash.js/lib/hash/sha/256'
-
 import { newScopedCreateAction } from 'Utilities/action'
 import blockstack from 'Utilities/blockstack'
 import log from 'Utilities/log'
@@ -11,7 +9,6 @@ const createAction = newScopedCreateAction(__filename)
 
 const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   id: wallet.getId(),
-  hashId: sha256().update(wallet.getId()).digest('hex').slice(0, 10),
   label: wallet.getLabel(),
   type: wallet.getType(),
   typeLabel: wallet.getTypeLabel(),
@@ -85,7 +82,7 @@ export const removeAllWallets = () => (dispatch) => Promise.resolve()
 export const restoreAllWallets = () => (dispatch, getState) => Promise.resolve()
   .then(() => walletService.setAssetProvider(() => getAllAssets(getState())))
   .then(() => walletService.restoreAll())
-  .then((walletInstances) => walletInstances.map((w) => dispatch(walletAdded(log.debugInline(w))).payload))
+  .then((walletInstances) => walletInstances.map((w) => dispatch(walletAdded(w)).payload))
 
 export const updateWalletBalances = (walletId) => (dispatch, getState) => Promise.resolve()
   .then(() => {
