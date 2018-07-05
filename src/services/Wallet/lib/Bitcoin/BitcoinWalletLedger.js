@@ -106,7 +106,7 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
   }
 
   _validateTxData(txData) {
-    if (txData === null || typeof txData === 'object') {
+    if (txData === null || typeof txData !== 'object') {
       throw new Error(`Invalid ${this.getType()} txData of type ${typeof txData}`)
     }
     return txData
