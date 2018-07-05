@@ -2,7 +2,7 @@ import { networks } from 'bitcoinjs-lib-zcash'
 import { WorkerDiscovery, BitcoreBlockchain } from 'hd-wallet'
 import { TransactionBuilder } from 'bitcoinjs-lib'
 import BigNumber from 'bignumber.js'
-import { isString } from 'lodash'
+import { isString, omit } from 'lodash'
 
 import xpubWasmFile from 'hd-wallet/lib/fastxpub/fastxpub.wasm?file'
 
@@ -47,6 +47,13 @@ class Bitcore extends BitcoreBlockchain {
     this.assetSymbol = assetSymbol
     this.network = networkConfig
     this.discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubWasmFilePromise, this)
+  }
+
+  toJSON() {
+    return {
+      ...this,
+      discovery: omit(this.discovery, 'chain') // Avoid circular reference
+    }
   }
 
   /**

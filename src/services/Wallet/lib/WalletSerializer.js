@@ -10,8 +10,6 @@ import {
 import { BitcoinWalletTrezor, BitcoinWalletLedger } from './Bitcoin'
 
 const parseWalletObject = (wallet) => {
-  const parseNested = (wallets) => !Array.isArray(wallets) ? wallets : wallets.map(parseWalletObject).filter(Boolean)
-
   if (!wallet || typeof wallet !== 'object') {
     return null
   }
@@ -30,9 +28,9 @@ const parseWalletObject = (wallet) => {
     case 'trezor': return new EthereumWalletTrezor(wallet.address, wallet.data.derivationPath, label)
     case 'ledger': return new EthereumWalletLedger(wallet.address, wallet.data.derivationPath, label)
     // New formats
-    case 'MultiWallet': return new MultiWallet(wallet.id, parseNested(wallet.wallets), label)
-    case 'MultiWalletTrezor': return new MultiWalletTrezor(wallet.id, parseNested(wallet.wallets), label)
-    case 'MultiWalletLedger': return new MultiWalletLedger(wallet.id, parseNested(wallet.wallets), label)
+    case 'MultiWallet': return new MultiWallet(wallet.id, wallet.walletIds || wallet.wallets, label)
+    case 'MultiWalletTrezor': return new MultiWalletTrezor(wallet.id, wallet.walletIds || wallet.wallets, label)
+    case 'MultiWalletLedger': return new MultiWalletLedger(wallet.id, wallet.walletIds || wallet.wallets, label)
     case 'EthereumWalletKeystore': return new EthereumWalletKeystore(wallet.keystore, label)
     case 'EthereumWalletBlockstack': return new EthereumWalletBlockstack(wallet.keystore, label)
     case 'EthereumWalletWeb3': return new EthereumWalletWeb3(wallet.address, wallet.providerName, label)
@@ -75,6 +73,9 @@ export const stringify = (wallet) => {
   }
   return JSON.stringify(wallet, (key, val) => {
     if (!key.startsWith('_')) {
+      if (val instanceof Set) {
+        return Array.from(val)
+      }
       return val
     }
   })

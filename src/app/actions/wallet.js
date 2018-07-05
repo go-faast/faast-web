@@ -22,7 +22,7 @@ const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   isSignTxSupported: wallet.isSignTransactionSupported(),
   supportedAssets: wallet.getSupportedAssetSymbols(),
   unsendableAssets: wallet.getUnsendableAssetSymbols(),
-  nestedWalletIds: wallet instanceof MultiWallet ? wallet.wallets.map((w) => w.getId()) : [],
+  nestedWalletIds: wallet instanceof MultiWallet ? wallet.getWalletIds() : [],
 }) : wallet
 
 export const walletAdded = createAction('ADDED', convertWalletInstance)
@@ -65,13 +65,13 @@ export const removeWallet = (id) => (dispatch, getState) => Promise.resolve()
     if (walletInstance instanceof EthereumWalletBlockstack) {
       blockstack.signUserOut()
     } else if (walletInstance instanceof MultiWallet) {
-      return Promise.all(walletInstance.wallets.map((child) => dispatch(removeWallet(child.getId()))))
+      return Promise.all(walletInstance.getWalletIds().map((nestedId) => dispatch(removeWallet(nestedId))))
         .then(() => walletInstance)
     }
   })
   .then((walletInstance) => {
     const parents = getWalletParents(getState(), id)
-    return Promise.all(parents.map((parent) => dispatch(updateWallet(parent.id))))
+    return Promise.all(parents.map((parent) => dispatch(removeNestedWallet(parent.id, id))))
       .then(() => {
         dispatch(walletRemoved(id))
         return convertWalletInstance(walletInstance)
@@ -85,7 +85,7 @@ export const removeAllWallets = () => (dispatch) => Promise.resolve()
 export const restoreAllWallets = () => (dispatch, getState) => Promise.resolve()
   .then(() => walletService.setAssetProvider(() => getAllAssets(getState())))
   .then(() => walletService.restoreAll())
-  .then((walletInstances) => walletInstances.map((w) => dispatch(walletAdded(w)).payload))
+  .then((walletInstances) => walletInstances.map((w) => dispatch(walletAdded(log.debugInline(w))).payload))
 
 export const updateWalletBalances = (walletId) => (dispatch, getState) => Promise.resolve()
   .then(() => {
@@ -97,7 +97,7 @@ export const updateWalletBalances = (walletId) => (dispatch, getState) => Promis
       throw new Error(`Could not find wallet with id ${walletId}`)
     }
     if (walletInstance instanceof MultiWallet) {
-      return Promise.all(walletInstance.wallets.map((nested) => dispatch(updateWalletBalances(nested.getId()))))
+      return Promise.all(walletInstance.getWalletIds().map((nestedId) => dispatch(updateWalletBalances(nestedId))))
     }
     dispatch(walletBalancesUpdating(walletId))
     return walletInstance.getAllBalances()

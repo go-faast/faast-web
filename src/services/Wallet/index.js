@@ -1,7 +1,6 @@
 export * from './lib'
 
 import queryString from 'query-string'
-import { isObject, isString } from 'lodash'
 import log from 'Utilities/log'
 import blockstack from 'Utilities/blockstack'
 import { sessionStorageGet, sessionStorageSet, sessionStorageRemove, sessionStorageForEach } from 'Utilities/storage'
@@ -10,16 +9,11 @@ import { Wallet, WalletSerializer, MultiWallet } from './lib'
 
 const legacyStorageKey = 'wallet'
 const walletStorageKeyPrefix = 'faast-wallet-'
-const multiWalletStorageKeyPrefix = 'faast-multiwallet-'
+const multiWalletStorageKeyPrefix = 'faast-multiwallet-' // Deprecated
 
 const walletStorageKey = (id) => `${walletStorageKeyPrefix}${id}`
-const multiWalletStorageKey = (id) => `${multiWalletStorageKeyPrefix}${id}`
 
-const getStorageKey = (wallet) => wallet instanceof MultiWallet
-  ? multiWalletStorageKey(wallet.getId())
-  : walletStorageKey(wallet.getId())
-
-const clone = (o) => Object.assign(Object.create(Object.getPrototypeOf(o)), o)
+const getStorageKey = (wallet) => walletStorageKey(wallet.getId())
 
 const defaultWalletService = new WalletService()
 
@@ -48,12 +42,21 @@ export function WalletService() {
         multiWalletKeys.push(key)
       }
     })
-    return [...walletKeys, ...multiWalletKeys] // Order matters
+    // Migrate deprecated multiwallet keys
+    multiWalletKeys.forEach((key) => {
+      const newKey = key.replace(multiWalletStorageKeyPrefix, walletStorageKeyPrefix)
+      const data = sessionStorageGet(key)
+      sessionStorageRemove(key)
+      sessionStorageSet(newKey, data)
+      walletKeys.push(newKey)
+    })
+    return walletKeys
   }
 
   const put = (wallet) => {
     if (wallet) {
       wallet.setAssetProvider(walletAssetProvider)
+      wallet.setWalletGetter(get)
       activeWallets[wallet.getId()] = wallet
     }
     return wallet
@@ -72,18 +75,6 @@ export function WalletService() {
     }
     const id = walletOrId
     let wallet = activeWallets[id]
-    if (wallet) {
-      return wallet
-    }
-    wallet = loadFromStorage(walletStorageKey(id))
-    if (!wallet) {
-      wallet = loadFromStorage(multiWalletStorageKey(id))
-    }
-    if (wallet) {
-      put(wallet)
-    } else {
-      log.debug('could not get wallet', id)
-    }
     return wallet
   }
 
@@ -98,12 +89,6 @@ export function WalletService() {
       delete activeWallets[id]
       log.debug('removed wallet', id)
       deleteFromStorage(removedWallet)
-      Object.values(activeWallets).forEach((activeWallet) => {
-        if (activeWallet instanceof MultiWallet && activeWallet.removeWallet(removedWallet)) {
-          log.debug(`removed wallet ${id} from MultiWallet ${activeWallet.getId()}`)
-          saveToStorage(activeWallet)
-        }
-      })
     }
     return removedWallet
   }
@@ -118,13 +103,7 @@ export function WalletService() {
   const loadFromStorage = (storageKey) => {
     const walletString = sessionStorageGet(storageKey)
     if (walletString) {
-      const walletObject = JSON.parse(walletString)
-      if (walletObject && Array.isArray(walletObject.wallets)) {
-        walletObject.wallets = walletObject.wallets
-          .map((w) => isString(w) ? activeWallets[w] : w)
-          .filter(isObject)
-      }
-      const wallet = WalletSerializer.parse(walletObject)
+      const wallet = WalletSerializer.parse(walletString)
       if (wallet) {
         log.debug('wallet loaded from session', wallet.getId())
       } else {
@@ -139,12 +118,6 @@ export function WalletService() {
     if (wallet && wallet.isPersistAllowed()) {
       const id = wallet.getId()
       const storageKey = getStorageKey(wallet)
-      if (wallet instanceof MultiWallet) {
-        wallet = clone(wallet)
-        wallet.wallets = wallet.wallets
-          .filter((nested) => nested.isPersistAllowed())
-          .map((nested) => nested.getId())
-      }
       sessionStorageSet(storageKey, WalletSerializer.stringify(wallet))
       log.debug('wallet saved to session', id)
     }
@@ -228,8 +201,16 @@ export function WalletService() {
     restoreLegacy()
     restoreQueryString()
     restoreBlockstack()
-    log.debug('wallets restored', Object.keys(activeWallets))
-    return Object.values(activeWallets)
+    // Filter invalid wallet references
+    const activeWalletIds = new Set(Object.keys(activeWallets))
+    const activeWalletsList = Object.values(activeWallets)
+    activeWalletsList.forEach((wallet) => {
+      if (wallet instanceof MultiWallet) {
+        wallet.walletIds = new Set(Array.from(wallet.walletIds).filter((walletId) => activeWalletIds.has(walletId)))
+      }
+    })
+    log.debug('wallets restored', activeWalletsList)
+    return activeWalletsList
   }
 
   return {

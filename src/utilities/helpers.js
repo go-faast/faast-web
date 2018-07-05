@@ -314,3 +314,5 @@ export const reduceByKey = (objects, reduce, defaultValue) => {
   })
   return result
 }
+
+export const isIterable = (o) => o != null && typeof o[Symbol.iterator] === 'function'

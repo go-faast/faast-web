@@ -11,6 +11,7 @@ export default class Wallet {
     this.label = label
     this._persistAllowed = true
     this._assetProvider = () => {}
+    this._walletGetter = () => {}
   }
 
   getLabel() { return this.label || this.getType() }
@@ -30,6 +31,13 @@ export default class Wallet {
       throw new Error(`Expected assetProvider to be a function, got ${typeof assetProvider}`)
     }
     this._assetProvider = assetProvider
+  }
+
+  setWalletGetter(walletGetter) {
+    if (typeof walletGetter !== 'function') {
+      throw new Error(`Expected walletGetter to be a function, got ${typeof walletGetter}`)
+    }
+    this._walletGetter = walletGetter
   }
 
   getAllAssets() {

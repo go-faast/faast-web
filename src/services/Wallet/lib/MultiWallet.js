@@ -12,17 +12,19 @@ const ZERO = toBigNumber(0)
 
 const plus = (x, y) => x.plus(y)
 
+const isList = (x) => Array.isArray(x) || x instanceof Set
+
 export default class MultiWallet extends Wallet {
 
   static type = 'MultiWallet';
 
-  constructor(id, wallets, label) {
+  constructor(id, walletIds, label) {
     super(label)
-    if (Array.isArray(id)) {
-      wallets = id
+    if (isList(id)) {
+      walletIds = id
     }
     this.id = typeof id === 'string' ? id : uuid()
-    this.wallets = Array.isArray(wallets) ? wallets : []
+    this.walletIds = new Set(isList(walletIds) ? walletIds : [])
   }
 
   getId() { return this.id }
@@ -30,7 +32,7 @@ export default class MultiWallet extends Wallet {
   getType() { return MultiWallet.type }
 
   getTypeLabel() {
-    const walletCount = this.wallets.length
+    const walletCount = this.walletIds.size
     if (walletCount === 0) return 'Empty'
     if (walletCount === 1) return '1 wallet'
     return `${walletCount} wallets`
@@ -40,27 +42,25 @@ export default class MultiWallet extends Wallet {
 
   isSingleAddress() { return false }
 
-  setAssetProvider(assetProvider) {
-    this._assetProvider = assetProvider
-    this.wallets.forEach((wallet) => wallet.setAssetProvider(assetProvider))
+  hasWallet(walletOrId) {
+    return this.walletIds.has(resolveId(walletOrId))
   }
 
-  /**
-    * @param {(Object|String)} walletOrId - Wallet instance or wallet ID
-    * @return {Number} Wallet index, or -1 if not found
-    */
-  _getWalletIndex(walletOrId) {
-    const id = resolveId(walletOrId)
-    return this.wallets.findIndex((w) => w.getId() === id)
+  getWallets() {
+    return Array.from(this.walletIds).map(::this._walletGetter).filter((x) => x != null)
+  }
+
+  getWalletIds() {
+    return this.getWallets().map((w) => w.getId())
   }
 
   /**
     * @param {(Object|String)} walletOrId - Wallet instance or wallet ID
     * @return {Object} Wallet instance, or undefined if not found
     */
-  getWallet(walletOrId) { return this.wallets[this._getWalletIndex(walletOrId)] }
-
-  hasWallet(walletOrId) { return Boolean(this.getWallet(walletOrId)) }
+  getWallet(walletOrId) {
+    return this.hasWallet(walletOrId) ? this._walletGetter(resolveId(walletOrId)) : undefined
+  }
 
   /**
     * @param {Object} wallet - Wallet instance
@@ -70,8 +70,9 @@ export default class MultiWallet extends Wallet {
     if (this.hasWallet(wallet)) {
       return false
     }
-    this.wallets.push(wallet)
+    this.walletIds.add(wallet.getId())
     wallet.setAssetProvider(this._assetProvider)
+    wallet.setWalletGetter(this._walletGetter)
     return true
   }
 
@@ -80,16 +81,18 @@ export default class MultiWallet extends Wallet {
     * @return {Object} The removed wallet, or undefined if nothing removed
     */
   removeWallet(walletOrId) {
-    const walletIndex = this._getWalletIndex(walletOrId)
-    if (walletIndex >= 0) {
-      return this.wallets.splice(walletIndex, 1)[0]
-    }
-    return undefined
+    const removedId = resolveId(walletOrId)
+    const removed = this.walletIds.delete(removedId)
+    return removed ? this._walletGetter(removedId) : undefined
   }
 
-  _getWalletsForAsset(assetOrSymbol) { return this.wallets.filter((wallet) => wallet.isAssetSupported(assetOrSymbol)) }
+  _getWalletsForAsset(assetOrSymbol) {
+    return this.getWallets().filter((wallet) => wallet.isAssetSupported(assetOrSymbol))
+  }
 
-  isAssetSupported(assetOrSymbol) { return this.wallets.some((wallet) => wallet.isAssetSupported(assetOrSymbol)) }
+  isAssetSupported(assetOrSymbol) {
+    return this.getWallets().some((wallet) => wallet.isAssetSupported(assetOrSymbol))
+  }
 
   _chooseWallet(assetOrSymbol, options, applyToWallet) {
     return Promise.resolve().then(() => {
@@ -170,7 +173,7 @@ export default class MultiWallet extends Wallet {
   }
 
   getAllBalances(options = {}) {
-    return Promise.all(this.wallets.map((wallet) => wallet.getAllBalances(options)))
+    return Promise.all(this.getWallets().map((wallet) => wallet.getAllBalances(options)))
       .then((walletBalances) => reduceByKey(walletBalances, plus, ZERO))
   }
 }

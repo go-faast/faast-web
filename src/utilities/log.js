@@ -1,4 +1,4 @@
-import { isString, isObject, omitBy, isFunction } from 'lodash'
+import { isString, isObject } from 'lodash'
 import queryString from 'query-string'
 
 import idb from './idb'
