@@ -44,6 +44,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
+    "base-x": "^3.0.4",
     "bignumber.js": "^4.0.4",
     "bitcore-lib": "^0.15.0",
     "blockstack": "^0.14.0",
