@@ -5,21 +5,26 @@ import { connect } from 'react-redux'
 import { omit } from 'lodash'
 
 import { tag as tagPropType } from 'Utilities/propTypes'
+import { ellipsize } from 'Utilities/display'
 import { getWallet } from 'Selectors'
 
 import IconLabel from 'Components/IconLabel'
 
-export const WalletLabel = ({ hideIcon, wallet: { label, iconProps }, ...props }) => (
-  <IconLabel label={label} iconProps={!hideIcon && iconProps} {...omit(props, 'id', 'dispatch')}/>
+export const WalletLabel = ({ hideIcon, wallet, id, ...props }) => (
+  <IconLabel
+    label={wallet ? wallet.label : ellipsize(id, 8, 6)}
+    iconProps={!hideIcon && wallet && wallet.iconProps}
+    {...omit(props, 'id', 'dispatch')}/>
 )
 
 WalletLabel.propTypes = {
-  wallet: PropTypes.object.isRequired,
+  wallet: PropTypes.object,
   hideIcon: PropTypes.bool,
   tag: tagPropType,
 }
 
 WalletLabel.defaultProps = {
+  wallet: null,
   hideIcon: false,
   tag: 'div',
 }

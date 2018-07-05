@@ -11,11 +11,14 @@ export const percentage = (value, showPositive, decimalPlaces = 2) => {
   return `${rounded}%`
 }
 
-export const ellipsize = (str, maxStartChars, maxEndChars) => {
+export const ellipsize = (str, maxStartChars = 0, maxEndChars = 0) => {
+  if (maxStartChars === 0 && maxEndChars === 0) {
+    return str
+  }
   if (str.length <= maxStartChars + maxEndChars) {
     return str
   }
-  return `${str.slice(0, maxStartChars)}…${str.slice(-maxEndChars)}`
+  return `${str.slice(0, maxStartChars)}…${str.slice(str.length - maxEndChars)}`
 }
 
 export default {
