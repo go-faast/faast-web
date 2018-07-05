@@ -6,7 +6,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button, Form, Card } from '
 import { reduxForm } from 'redux-form'
 
 import {
-  isPasswordPromptOpen, getPasswordPromptWalletId
+  isPasswordPromptOpen, getPasswordPromptWalletId, getPasswordPromptUsername
 } from 'Selectors'
 import {
   handlePasswordPromptSubmit, handlePasswordPromptCancel, passwordPromptSubmitValidator
@@ -21,6 +21,7 @@ export default compose(
   connect(createStructuredSelector({
     isOpen: isPasswordPromptOpen,
     walletId: getPasswordPromptWalletId,
+    username: getPasswordPromptUsername,
   }), {
     onSubmit: handlePasswordPromptSubmit,
     handleCancel: handlePasswordPromptCancel,
@@ -32,7 +33,7 @@ export default compose(
       password: '',
     }
   })
-)(({ isOpen, handleSubmit, handleCancel, submitting, invalid, walletId }) => (
+)(({ isOpen, handleSubmit, handleCancel, submitting, invalid, walletId, username }) => (
   <Modal isOpen={isOpen} toggle={handleCancel} backdrop='static'>
     {isOpen && (
       <Form onSubmit={handleSubmit}>
@@ -50,7 +51,7 @@ export default compose(
             </Card>
           )}
 
-          <HiddenUsernameField value={walletId}/>
+          <HiddenUsernameField value={username}/>
 
           <ReduxFormField
             name='password'
