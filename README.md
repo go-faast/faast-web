@@ -2,11 +2,6 @@
 
 The open-source portfolio application featured on https://faa.st
 
-## Getting Started
-
-To run the application from your machine, download and open the **dist/index.html** file.
-You may also serve the file to your local network, instructions follow below:
-
 ## Production/Building/Development
 
 ### Prerequisites
