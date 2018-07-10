@@ -137,6 +137,7 @@ let config = {
   },
   resolve: {
     alias: {
+      Pkg: path.join(projectRoot, 'package.json'),
       Src: src,
       Res: res,
       Test: test,
