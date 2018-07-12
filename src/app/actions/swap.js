@@ -1,4 +1,4 @@
-import { isObject, isArray, isUndefined } from 'lodash'
+import { isObject, isArray, isUndefined, mergeWith } from 'lodash'
 
 import { newScopedCreateAction } from 'Utilities/action'
 import { processArray } from 'Utilities/helpers'
@@ -8,7 +8,8 @@ import {
   toBigNumber,
   toPrecision,
   toUnit,
-  ZERO
+  ZERO,
+  BigNumber
 } from 'Utilities/convert'
 import toastr from 'Utilities/toastrWrapper'
 import walletService from 'Services/Wallet'
@@ -163,22 +164,50 @@ const swapSufficientDeposit = (swapList) => (dispatch, getState) => {
   })
 }
 
+const mergeSum = (...args) => mergeWith(...args, (a, b) => {
+  if (a instanceof BigNumber) {
+    return a.plus(b)
+  }
+})
+
 // Checks to see if there will be enough balance to pay tx fees
 const swapSufficientFees = (swapList) => (dispatch, getState) => {
-  const walletAdjustedBalances = getAllWalletsArray(getState())
+  const walletBalances = getAllWalletsArray(getState())
     .reduce((byId, { id, balances }) => ({ ...byId, [id]: { ...balances } }), {})
+  // Calculate the total amount and feeAmount by wallet and asset symbol
+  const walletSendTotals = {}
+  swapList.forEach((swap) => {
+    if (swap.error) return
+    const { sendWalletId, sendSymbol, tx } = swap
+    const { amount, feeAmount, feeSymbol } = tx
+    mergeSum(walletSendTotals, { [sendWalletId]: { [sendSymbol]: { amount: amount } } })
+    if (feeAmount) {
+      mergeSum(walletSendTotals, { [sendWalletId]: { [feeSymbol]: { feeAmount: feeAmount } } })
+    }
+  }, {})
+  // Log all insufficient balances for debugging purposes
+  Object.entries(walletSendTotals).forEach(([walletId, sendTotals]) => {
+    Object.entries(sendTotals).forEach(([symbol, { amount: totalAmount, feeAmount: totalFee }]) => {
+      totalAmount = totalAmount || ZERO
+      totalFee = totalFee || ZERO
+      const balance = (walletBalances[walletId] || {})[symbol] || ZERO
+      if (balance.minus(totalAmount).minus(totalFee).isNegative()) {
+        log.debug(`Insufficient ${symbol} balance in wallet ${walletId}. ` +
+          `balance=${balance}, totalAmount=${totalAmount}, totalFee=${totalFee}`)
+      }
+    })
+  })
   return processArray(swapList, (swap) => {
     if (swap.error) return swap
     const finish = createSwapFinish(dispatch, 'swapSufficientFees', swap)
-    const { sendWalletId, sendSymbol, tx } = swap
-    const { amount, feeAmount, feeSymbol } = tx
-    const adjustedBalances = walletAdjustedBalances[sendWalletId] || {}
-    adjustedBalances[sendSymbol] = (adjustedBalances[sendSymbol] || ZERO).minus(amount)
-    if (feeAmount) {
-      adjustedBalances[feeSymbol] = (adjustedBalances[feeSymbol] || ZERO).minus(feeAmount)
-      if (adjustedBalances[feeSymbol].isNegative()) {
-        return finish(`Not enough ${feeSymbol} for tx fee`)
-      }
+    const { sendWalletId, tx } = swap
+    const { feeSymbol } = tx
+    const balance = walletBalances[sendWalletId][feeSymbol]
+    const { amount: totalAmount, feeAmount: totalFee } = walletSendTotals[sendWalletId][feeSymbol]
+    const requiredBalance = totalAmount.plus(totalFee)
+    const leftOverBalance = balance.minus(requiredBalance)
+    if (leftOverBalance.isNegative()) {
+      return finish(`Not enough ${feeSymbol} for tx fee`)
     }
     return finish()
   })
