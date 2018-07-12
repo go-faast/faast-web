@@ -8,6 +8,8 @@ import Transport from '@ledgerhq/hw-transport-u2f'
 import AppEth from '@ledgerhq/hw-app-eth'
 import AppBtc from '@ledgerhq/hw-app-btc'
 
+const EXCHANGE_TIMEOUT = 120000 // ms user has to approve/deny transaction
+
 const serviceConfig = {
   eth: {
     App: AppEth,
@@ -34,7 +36,10 @@ const serviceConfig = {
 }
 
 export default Object.entries(serviceConfig).reduce((apps, [appName, { App, methodNames }]) => {
-  const appPromise = Transport.create().then((comm) => new App(comm))
+  const appPromise = Transport.create().then((comm) => {
+    comm.setExchangeTimeout(EXCHANGE_TIMEOUT)
+    return new App(comm)
+  })
   return {
     ...apps,
     [appName]: methodNames.reduce((methods, methodName) => ({
