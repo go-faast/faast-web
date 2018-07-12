@@ -53,26 +53,51 @@ export const updateWallet = (id) => (dispatch) => Promise.resolve()
     return dispatch(walletUpdated(walletInstance)).payload
   })
 
-export const removeWallet = (id) => (dispatch, getState) => Promise.resolve()
-  .then(() => walletService.remove(id))
+/** Remove all wallets that would be orphaned if walletInstance were removed */
+const removeWalletOrphans = (walletInstance) => (dispatch, getState) => {
+  const id = walletInstance.getId()
+  log.debug('removeWalletOrphans', id)
+  if (walletInstance instanceof MultiWallet) {
+    return Promise.all(walletInstance.getWalletIds().map((nestedId) => {
+      const parents = getWalletParents(getState(), nestedId)
+      log.debug('removeWalletOrphans parents', nestedId, parents)
+      const otherParents = parents.filter((parent) => parent.id !== id)
+      if (otherParents.length === 0) {
+        return dispatch(removeWallet(nestedId))
+      }
+    }))
+  }
+  return Promise.resolve()
+}
+
+/** Remove walletId from all parent MultiWallets */
+const disownWallet = (walletId) => (dispatch, getState) => {
+  log.debug('disownWallet', walletId)
+  const parents = getWalletParents(getState(), walletId)
+  log.debug('disownWallet parents', parents)
+  return Promise.all(parents.map((parent) => dispatch(removeNestedWallet(parent.id, walletId))))
+}
+
+export const removeWallet = (id) => (dispatch) => Promise.resolve()
+  .then(() => {
+    log.debug('removeWallet', id)
+    return walletService.get(id)
+  })
   .then((walletInstance) => {
     if (!walletInstance) {
       return
     }
     if (walletInstance instanceof EthereumWalletBlockstack) {
       blockstack.signUserOut()
-    } else if (walletInstance instanceof MultiWallet) {
-      return Promise.all(walletInstance.getWalletIds().map((nestedId) => dispatch(removeWallet(nestedId))))
-        .then(() => walletInstance)
     }
-  })
-  .then((walletInstance) => {
-    const parents = getWalletParents(getState(), id)
-    return Promise.all(parents.map((parent) => dispatch(removeNestedWallet(parent.id, id))))
-      .then(() => {
-        dispatch(walletRemoved(id))
-        return convertWalletInstance(walletInstance)
-      })
+    return Promise.all([
+      dispatch(removeWalletOrphans(walletInstance)),
+      dispatch(disownWallet(id))
+    ]).then(() => {
+      walletService.remove(id)
+      dispatch(walletRemoved(id))
+      return convertWalletInstance(walletInstance)
+    })
   })
 
 export const removeAllWallets = () => (dispatch) => Promise.resolve()
@@ -91,6 +116,8 @@ export const updateWalletBalances = (walletId) => (dispatch, getState) => Promis
     }
     const walletInstance = walletService.get(walletId)
     if (!walletInstance) {
+      dispatch(disownWallet(walletId))
+      dispatch(walletRemoved(walletId))
       throw new Error(`Could not find wallet with id ${walletId}`)
     }
     if (walletInstance instanceof MultiWallet) {
