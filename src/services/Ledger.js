@@ -36,15 +36,15 @@ const serviceConfig = {
 }
 
 export default Object.entries(serviceConfig).reduce((apps, [appName, { App, methodNames }]) => {
-  const appPromise = Transport.create().then((comm) => {
-    comm.setExchangeTimeout(EXCHANGE_TIMEOUT)
-    return new App(comm)
+  const getApp = () => Transport.create().then((transport) => {
+    transport.setExchangeTimeout(EXCHANGE_TIMEOUT)
+    return new App(transport)
   })
   return {
     ...apps,
     [appName]: methodNames.reduce((methods, methodName) => ({
       ...methods,
-      [methodName]: (...args) => appPromise.then((app) => {
+      [methodName]: (...args) => getApp().then((app) => {
         let fn = app[methodName]
         if (typeof fn !== 'function') {
           throw new Error(`Function ${methodName} is not a method of ledger ${appName} app`)
