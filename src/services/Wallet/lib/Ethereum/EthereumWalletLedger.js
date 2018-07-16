@@ -63,16 +63,17 @@ export default class EthereumWalletLedger extends EthereumWallet {
             }))
           }
         })
-        .fail((ex) => {
-          if (ex === 'Invalid status 6a80') {
+        .catch((ex) => {
+          log.error('Ledger.eth.signTransaction error', Object.assign({}, ex))
+          const message = ex.message.toLowerCase()
+          if (ex.statusCode === 0x6a80) {
             throw new Error('Please enable "Contract data" in the Settings of the Ethereum Application and try again')
-          } else if (ex === 'Invalid status 6985') {
-            throw new Error('Transaction was denied')
-          } else if (typeof ex === 'string') {
-            throw new Error(`Error from ${typeLabel} - ${ex}`)
-          } else if (ex.errorCode != null && ex.errorCode === 5) {
-            throw new Error('Transaction timed out, please try again')
+          } else if (ex.statusCode === 0x6985) {
+            throw new Error('Transaction was rejected')
+          } else if (message.includes('u2f timeout')) {
+            throw new Error('Took too long to sign transaction, please try again')
           }
+          throw ex
         })
     })
   }
