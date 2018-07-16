@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { compose, setDisplayName, setPropTypes, withProps, withHandlers, lifecycle } from 'recompose'
+import { compose, setDisplayName, setPropTypes, withProps, lifecycle } from 'recompose'
 import { Button, ModalBody, ModalFooter } from 'reactstrap'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
@@ -13,8 +13,7 @@ import {
   startConnect, retryConnect, cancelConnect, changeDerivationPath,
 } from 'Actions/connectHardwareWallet'
 
-import DerivationPathChanger from 'Components/DerivationPathChanger'
-
+import DerivationPathChanger from './DerivationPathChanger'
 import BackButton from './BackButton'
 import ConnectionStatus from './ConnectionStatus'
 import ConnectionInstructions from './ConnectionInstructions'
@@ -39,14 +38,6 @@ export default compose(
   withProps(({ walletType, assetSymbol }) => ({
     continuePath: routes.connectHwWalletAssetConfirm(walletType, assetSymbol),
   })),
-  withHandlers({
-    handleChangeDerivationPath: ({ derivationPath, changeDerivationPath, retry }) => (path) => {
-      if (derivationPath !== path) {
-        changeDerivationPath(path)
-        retry()
-      }
-    },
-  }),
   lifecycle({
     componentWillMount() {
       const { isReset, start, walletType, assetSymbol } = this.props
@@ -56,14 +47,14 @@ export default compose(
     }
   })
 )(({
-  walletType, assetSymbol, handleBack, continuePath, isConnected, derivationPath, handleChangeDerivationPath,
+  walletType, assetSymbol, handleBack, continuePath, isConnected, derivationPath, changeDerivationPath,
 }) => (
   <div>
     <ModalBody className='py-4'>
       <ConnectionStatus />
       <ConnectionInstructions type={walletType} symbol={assetSymbol}/>
       <div className='my-3 w-50 mx-auto'>
-        <DerivationPathChanger onChange={handleChangeDerivationPath} path={derivationPath}/>
+        <DerivationPathChanger onChange={changeDerivationPath} path={derivationPath}/>
       </div>
     </ModalBody>
     <ModalFooter>

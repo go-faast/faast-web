@@ -90,6 +90,7 @@ export const resetConnectAsset = () => (dispatch) => {
 export const changeDerivationPath = (path) => (dispatch) => {
   dispatch(derivationPathChanged(path))
   dispatch(accountSelectReset())
+  dispatch(retryConnect())
 }
 
 const loadAccountBalance = (index = 0) => (dispatch, getState) => {
