@@ -8,9 +8,9 @@ import { Link } from 'react-router-dom'
 import { push } from 'react-router-redux'
 
 import routes from 'Routes'
-import { isStatusConnected, getDerivationPath, isStatusReset } from 'Selectors/connectHardwareWallet'
+import { isStatusConnected, isStatusReset } from 'Selectors/connectHardwareWallet'
 import {
-  startConnect, retryConnect, cancelConnect, changeDerivationPath,
+  startConnect, retryConnect, cancelConnect,
 } from 'Actions/connectHardwareWallet'
 
 import DerivationPathChanger from './DerivationPathChanger'
@@ -25,13 +25,11 @@ export default compose(
     assetSymbol: PropTypes.string.isRequired,
   }),
   connect(createStructuredSelector({
-    derivationPath: getDerivationPath,
     isConnected: isStatusConnected,
     isReset: isStatusReset
   }), {
     start: startConnect,
     retry: retryConnect,
-    changeDerivationPath,
     routerPush: push,
     handleBack: cancelConnect,
   }),
@@ -47,14 +45,14 @@ export default compose(
     }
   })
 )(({
-  walletType, assetSymbol, handleBack, continuePath, isConnected, derivationPath, changeDerivationPath,
+  walletType, assetSymbol, handleBack, continuePath, isConnected,
 }) => (
   <div>
     <ModalBody className='py-4'>
       <ConnectionStatus />
       <ConnectionInstructions type={walletType} symbol={assetSymbol}/>
       <div className='my-3 w-50 mx-auto'>
-        <DerivationPathChanger onChange={changeDerivationPath} path={derivationPath}/>
+        <DerivationPathChanger />
       </div>
     </ModalBody>
     <ModalFooter>

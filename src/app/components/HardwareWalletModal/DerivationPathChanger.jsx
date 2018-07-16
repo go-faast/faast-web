@@ -1,6 +1,12 @@
-import React, { Component } from 'react'
+import React from 'react'
+import { compose, setDisplayName, withState, withHandlers } from 'recompose'
 import { Form, Button } from 'reactstrap'
 import { reduxForm } from 'redux-form'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
+
+import { changeDerivationPath } from 'Actions/connectHardwareWallet'
+import { getDerivationPath } from 'Selectors/connectHardwareWallet'
 
 import ReduxFormField from 'Components/ReduxFormField'
 
@@ -34,41 +40,31 @@ const DerivationPathForm = reduxForm({
   </Form>
 ))
 
-class DerivationPathChanger extends Component {
-  constructor () {
-    super()
-    this.state = {
-      showForm: false
+export default compose(
+  setDisplayName('DerivationPathChanger'),
+  connect(createStructuredSelector({
+    derivationPath: getDerivationPath
+  }), {
+    changeDerivationPath,
+  }),
+  withState('showForm', 'setShowForm', false),
+  withHandlers({
+    toggleShowForm: ({ showForm, setShowForm }) => () => {
+      setShowForm(!showForm)
+    },
+    handleSubmit: ({ derivationPath, changeDerivationPath, setShowForm }) => (values) => {
+      const { derivationPath: newPath } = values
+      setShowForm(false)
+      if (newPath !== derivationPath) {
+        changeDerivationPath(newPath)
+      }
     }
-    this.toggleShowForm = this.toggleShowForm.bind(this)
-    this.handleSubmit = this.handleSubmit.bind(this)
-  }
-
-  toggleShowForm () {
-    this.setState({ showForm: !this.state.showForm })
-  }
-
-  handleSubmit (values) {
-    const { onChange, path } = this.props
-    const { derivationPath: newPath } = values
-    this.setState({ showForm: false })
-    if (newPath !== path) {
-      onChange(values.derivationPath)
-    }
-  }
-
-  render () {
-    const { path } = this.props
-    const { showForm } = this.state
-    const { toggleShowForm, handleSubmit } = this
-    return showForm
-      ? (<DerivationPathForm
-          onSubmit={handleSubmit}
-          initialValues={{ derivationPath: path }}/>)
-      : (<Button color='link' className='mx-auto' onClick={toggleShowForm}>
-          Change derivation path
-        </Button>)
-  }
-}
-
-export default DerivationPathChanger
+  })
+)(({ derivationPath, showForm, toggleShowForm, handleSubmit }) => showForm
+  ? (<DerivationPathForm
+      onSubmit={handleSubmit}
+      initialValues={{ derivationPath }}/>)
+  : (<Button color='link' className='mx-auto' onClick={toggleShowForm}>
+      Change derivation path
+    </Button>)
+)
