@@ -64,7 +64,7 @@ export default compose(
   ? (<DerivationPathForm
       onSubmit={handleSubmit}
       initialValues={{ derivationPath }}/>)
-  : (<Button color='link' className='mx-auto' onClick={toggleShowForm}>
+  : (<Button color='dark' className='mx-auto' onClick={toggleShowForm}>
       Change derivation path
     </Button>)
 )

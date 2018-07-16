@@ -49,7 +49,9 @@ export default {
           derivationPath: 'm/44\'/60\'/0\''
         },
         BTC: {
-          derivationPath: 'm/49\'/0\'/0\''
+          derivationPath: 'm/49\'/0\'/0\'',
+          segwitPrefix: 'm/49',
+          legacyPrefix: 'm/44',
         }
       }
     },
@@ -61,7 +63,7 @@ export default {
           derivationPath: 'm/44\'/60\'/0\'/0'
         },
         BTC: {
-          derivationPath: null,
+          derivationPath: null
         }
       }
     }

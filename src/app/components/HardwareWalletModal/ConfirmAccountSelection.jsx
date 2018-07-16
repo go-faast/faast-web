@@ -6,6 +6,7 @@ import { createStructuredSelector } from 'reselect'
 import { Row, Col, Button, Card, CardBody, CardFooter, Alert, ModalBody, ModalFooter } from 'reactstrap'
 import { Link } from 'react-router-dom'
 
+import config from 'Config'
 import routes from 'Routes'
 
 import {
@@ -19,6 +20,8 @@ import AddressLink from 'Components/AddressLink'
 import BackButton from './BackButton'
 import ConnectionStatus from './ConnectionStatus'
 import redirectNotConnected from './redirectNotConnected'
+import ToggleSegwitButton from './ToggleSegwitButton'
+import DerivationPathChanger from './DerivationPathChanger'
 
 export default compose(
   setDisplayName('ConfirmAccountSelection'),
@@ -36,9 +39,10 @@ export default compose(
   withProps(({ walletType, assetSymbol, account }) => ({
     disableConfirm: !account.label,
     backPath: routes.connectHwWalletAsset(walletType, assetSymbol),
+    assetConfig: ((config.walletTypes[walletType] || {}).supportedAssets || {})[assetSymbol] || {}
   }))
 )(({
-  account: { index, label, address, balance, error },
+  account: { index, label, address, balance, error }, assetConfig: { segwitPrefix, legacyPrefix },
   walletType, assetSymbol, accountSelectEnabled, backPath, handleConfirm, disableConfirm,
 }) => (
   <div>
@@ -47,7 +51,7 @@ export default compose(
       <h5 className='mb-3'>{'Please confirm that you\'d like to add the following account.'}</h5>
       <Row className='gutter-3 justify-content-center'>
         <Col xs='auto'>
-          <Card color='ultra-dark' className='text-left flat'>
+          <Card color='ultra-dark' className='text-left flat mb-4'>
             <CardBody>
               <h5 className='m-0'>
                 <span className='font-weight-bold'>{address ? `Account #${index + 1}` : label}</span>
@@ -70,6 +74,16 @@ export default compose(
             <Button tag={Link} to={routes.connectHwWalletAssetAccounts(walletType, assetSymbol)} color='primary'>Change account</Button>
           </Col>
         )}
+        <div className='w-100'/>
+        {segwitPrefix && legacyPrefix && (
+          <Col xs='auto'>
+            <ToggleSegwitButton segwitPrefix={segwitPrefix} legacyPrefix={legacyPrefix}/>
+          </Col>
+        )}
+        <div className='w-100'/>
+        <Col xs='auto'>
+          <DerivationPathChanger />
+        </Col>
       </Row>
     </ModalBody>
     <ModalFooter>
