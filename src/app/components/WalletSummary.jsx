@@ -6,10 +6,15 @@ import { connect } from 'react-redux'
 
 import IconLabel from 'Components/IconLabel'
 import Spinner from 'Components/Spinner'
+import Expandable from 'Components/Expandable'
+
 import { getWallet, getWalletWithHoldings } from 'Selectors'
 import display from 'Utilities/display'
 
-export const WalletSummary = ({ hideIcon, hideBalance, labelClass, wallet: { id, label, typeLabel, totalFiat, iconProps, holdingsLoaded } }) => (
+export const WalletSummary = ({
+  hideIcon, hideBalance, labelClass,
+  wallet: { id, label, typeLabel, totalFiat, iconProps, holdingsLoaded, holdingsError }
+}) => (
   <Row className='gutter-0'>
     <Col xs='12' className={labelClass}>{id === 'default' ? (<i>{label}</i>) : label}</Col>
     <Col>
@@ -17,8 +22,15 @@ export const WalletSummary = ({ hideIcon, hideBalance, labelClass, wallet: { id,
     </Col>
     {!hideBalance && (
       <Col xs='auto'>
-        {holdingsLoaded
-          ? display.fiat(totalFiat)
+        {(holdingsLoaded || holdingsError)
+          ? (<span>
+              {holdingsError && (
+                <Expandable
+                  shrunk={<i className='fa fa-exclamation-triangle text-danger mr-2'/>}
+                  expanded={holdingsError}/>
+              )}
+              {display.fiat(totalFiat)}
+            </span>)
           : (<Spinner size='sm'/>)}
       </Col>
     )}
