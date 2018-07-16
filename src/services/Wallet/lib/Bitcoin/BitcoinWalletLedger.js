@@ -27,7 +27,7 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
 
   getAccountNumber() { return Number.parseInt(this.derivationPath.match(/(\d+)'$/)[1]) + 1 }
 
-  getLabel() { return this.label || `Bitcoin${this.isLegacyAccount() ? 'legacy ' : ''} account #${this.getAccountNumber()}` }
+  getLabel() { return this.label || `Bitcoin${this.isLegacyAccount() ? ' legacy' : ''} account #${this.getAccountNumber()}` }
 
   static fromPath(derivationPath) {
     return Ledger.btc.getWalletPublicKey(derivationPath)
