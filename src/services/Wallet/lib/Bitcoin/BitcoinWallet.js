@@ -1,13 +1,16 @@
 import log from 'Utilities/log'
 import { toHashId } from 'Utilities/helpers'
-import { toBigNumber, toMainDenomination } from 'Utilities/convert'
+import { toMainDenomination } from 'Utilities/convert'
 import { abstractMethod, assertExtended } from 'Utilities/reflect'
 import { ellipsize } from 'Utilities/display'
+import { fetchGet } from 'Utilities/fetch'
 import Bitcore from 'Services/Bitcore'
 
 import Wallet from '../Wallet'
 
 const supportedAssets = ['BTC']
+
+const DEFAULT_FEE_PER_BYTE = 10
 
 @abstractMethod('getTypeLabel', 'createTransaction', '_signTx', '_sendSignedTx', '_validateTxData', '_validateSignedTxData')
 export default class BitcoinWallet extends Wallet {
@@ -57,16 +60,26 @@ export default class BitcoinWallet extends Wallet {
       .then(({ unusedAddresses }) => unusedAddresses[index])
   }
 
-  getBalance(assetOrSymbol) {
-    return Promise.resolve(assetOrSymbol)
-      .then(::this.getSupportedAsset)
-      .then((asset) => {
-        if (!asset) {
-          return toBigNumber(0)
-        }
-        return this._performDiscovery(asset.symbol)
-          .then(({ balance }) => toMainDenomination(balance, asset.decimals))
+  _getDefaultFeeRate(asset, options = {}) {
+    return fetchGet('https://api.blockcypher.com/v1/btc/main')
+      .then((result) => {
+        const level = options.level || 'medium' // high, medium, low
+        const feePerKb = result[`${level}_fee_per_kb`] || (DEFAULT_FEE_PER_BYTE * 1000)
+        return feePerKb / 1000
       })
+      .catch((e) => {
+        log.error('Failed to get bitcoin dynamic fee, using default', e)
+        return DEFAULT_FEE_PER_BYTE
+      })
+      .then((feePerByte) => ({
+        rate: feePerByte,
+        unit: 'sat/byte'
+      }))
+  }
+
+  _getBalance(asset) {
+    return this._performDiscovery(asset.symbol)
+      .then(({ balance }) => toMainDenomination(balance, asset.decimals))
   }
 
   _getTransactionReceipt (txId) {

@@ -95,6 +95,9 @@ export default class MultiWallet extends Wallet {
 
   _chooseWallet(assetOrSymbol, options, applyToWallet) {
     return Promise.resolve().then(() => {
+      if (!assetOrSymbol) {
+        return null
+      }
       options = {
         selectWalletCallback: selectFirst,
         ...(options || {})
@@ -117,15 +120,17 @@ export default class MultiWallet extends Wallet {
   }
   
   getFreshAddress(assetOrSymbol, options = {}) {
-    return Promise.resolve().then(() => {
-      if (!assetOrSymbol) {
-        return null
-      }
-      return this._chooseWallet(
-        assetOrSymbol,
-        options,
-        (wallet) => wallet.getFreshAddress(assetOrSymbol, options))
-    })
+    return this._chooseWallet(
+      assetOrSymbol,
+      options,
+      (wallet) => wallet.getFreshAddress(assetOrSymbol, options))
+  }
+  
+  _getDefaultFeeRate(asset, options = {}) {
+    return this._chooseWallet(
+      asset,
+      options,
+      (wallet) => wallet._getDefaultFeeRate(asset, options))
   }
 
   createTransaction(toAddress, amount, assetOrSymbol, options = {}) {
@@ -165,9 +170,9 @@ export default class MultiWallet extends Wallet {
     return this._callWalletTxFn('getTransactionReceipt', tx)
   }
 
-  getBalance(assetOrSymbol, options = {}) {
-    const balancePromises = this._getWalletsForAsset(assetOrSymbol)
-      .map((wallet) => wallet.getBalance(assetOrSymbol, options))
+  _getBalance(asset, options = {}) {
+    const balancePromises = this._getWalletsForAsset(asset)
+      .map((wallet) => wallet._getBalance(asset, options))
     return Promise.all(balancePromises).then((balances) => balances.reduce(plus, ZERO))
   }
 

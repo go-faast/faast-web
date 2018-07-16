@@ -10,6 +10,8 @@ import log from 'Utilities/log'
 import { batchRequest, tokenBalanceData, tokenSendData, web3SendTx, toUniversalReceipt } from './util'
 import Wallet from '../Wallet'
 
+const DEFAULT_GAS_PRICE = 21e9 // 21 Gwei
+
 @abstractMethod('getType', 'getTypeLabel', 'getAddress', '_signTx')
 export default class EthereumWallet extends Wallet {
 
@@ -38,11 +40,19 @@ export default class EthereumWallet extends Wallet {
     return asset && (asset.symbol === 'ETH' || asset.ERC20)
   }
 
-  getBalance(assetOrSymbol, { web3Batch = null } = {}) {
-    const asset = this.getSupportedAsset(assetOrSymbol)
-    if (!asset) {
-      return Promise.resolve(ZERO)
-    }
+  _getDefaultFeeRate() {
+    return web3.eth.getGasPrice()
+      .catch((e) => {
+        log.error('Failed to get ethereum dynamic fee, using default', e)
+        return DEFAULT_GAS_PRICE
+      })
+      .then((gasPrice) => ({
+        rate: gasPrice,
+        unit: 'wei/gas'
+      }))
+  }
+
+  _getBalance(asset, { web3Batch = null } = {}) {
     const address = this.getAddress()
     let request
     if (asset.symbol === 'ETH') {
@@ -60,9 +70,9 @@ export default class EthereumWallet extends Wallet {
     return Promise.resolve(this.getSupportedAssets())
       .then((assets) => {
         const batch = web3Batch || new web3.BatchRequest()
-        const balanceRequests = assets.map(({ symbol }) =>
-          this.getBalance(symbol, { web3Batch: batch })
-            .then((balance) => ({ symbol, balance })))
+        const balanceRequests = assets.map((asset) =>
+          this._getBalance(asset, { web3Batch: batch })
+            .then((balance) => ({ symbol: asset.symbol, balance })))
         if (!web3Batch) {
           // Don't execute batch if passed in as option
           batch.execute()
@@ -91,7 +101,7 @@ export default class EthereumWallet extends Wallet {
         txData.to = asset.contractAddress,
         txData.data = tokenSendData(toAddress, amount, asset.decimals)
       } else {
-        throw new Error(`Unsupported asset ${asset.symbol || asset} provided to EthereumWallet`)
+        throw new Error(`Unsupported asset ${asset.symbol || asset} provided to EthereumWallet.createTransaction`)
       }
       txData.value = toHex(txData.value)
 
@@ -104,7 +114,7 @@ export default class EthereumWallet extends Wallet {
       const customGasLimit = options.gasLimit || options.gas
 
       return Promise.all([
-        customGasPrice || web3.eth.getGasPrice(),
+        customGasPrice || this._getDefaultFeeRate(asset).then(({ rate }) => rate),
         customGasLimit || web3.eth.estimateGas(txData),
         customNonce || web3.eth.getTransactionCount(txData.from)
       ]).then(([gasPrice, gasLimit, nonce]) => ({

@@ -1,9 +1,11 @@
 import { abstractMethod, assertExtended } from 'Utilities/reflect'
+import { ZERO } from 'Utilities/convert'
 import log from 'Utilities/log'
 
 @abstractMethod(
   '_getId', 'getType', 'getTypeLabel', 'getBalance', 'getFreshAddress', 'isAssetSupported',
-  'isSingleAddress', 'createTransaction', '_signTx', '_sendSignedTx', '_getTransactionReceipt')
+  'isSingleAddress', 'createTransaction', '_signTx', '_sendSignedTx', '_getTransactionReceipt',
+  '_getDefaultFeeRate')
 export default class Wallet {
 
   constructor(id, label) {
@@ -138,6 +140,23 @@ export default class Wallet {
       .then((signedTx) => this._sendSignedTx(signedTx, options))
   }
 
+  getDefaultFeeRate(assetOrSymbol, options) {
+    return Promise.resolve(assetOrSymbol)
+      .then(::this.assertAssetSupported)
+      .then((asset) => this._getDefaultFeeRate(asset, options))
+  }
+
+  getBalance(assetOrSymbol, options) {
+    return Promise.resolve(assetOrSymbol)
+      .then(::this.getSupportedAsset)
+      .then((asset) => {
+        if (asset) {
+          return this._getBalance(asset, options)
+        }
+        return ZERO
+      })
+  }
+
   createTransaction(toAddress, amount, assetOrSymbol, options) {
     return Promise.resolve(assetOrSymbol)
       .then(::this.assertAssetSupported)
@@ -195,8 +214,8 @@ export default class Wallet {
   getAllBalances(options) {
     return Promise.resolve(this.getSupportedAssets())
       .then((assets) => Promise.all(assets
-        .map(({ symbol }) => this.getBalance(symbol, options)
-          .then((balance) => ({ symbol, balance })))))
+        .map((asset) => this._getBalance(asset, options)
+          .then((balance) => ({ symbol: asset.symbol, balance })))))
       .then((balances) => balances.reduce((result, { symbol, balance }) => ({
         ...result,
         [symbol]: balance

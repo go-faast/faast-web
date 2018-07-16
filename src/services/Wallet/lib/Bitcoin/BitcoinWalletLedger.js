@@ -10,8 +10,6 @@ import BitcoinWallet from './BitcoinWallet'
 
 const typeLabel = config.walletTypes.ledger.name
 
-const DEFAULT_FEE = 10 // Sat/byte
-
 export default class BitcoinWalletLedger extends BitcoinWallet {
 
   static type = 'BitcoinWalletLedger';
@@ -52,8 +50,10 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
   isReadOnly() { return false }
 
   _createTransaction(toAddress, amount, asset, options = {}) {
-    return this._getDiscoveryResult().then((discoverResult) => {
-      const feeRate = options.feeRate || DEFAULT_FEE
+    return Promise.all([
+      this._getDiscoveryResult(),
+      options.feeRate || this._getDefaultFeeRate(asset).then(({ rate }) => rate),
+    ]).then(([discoverResult, feeRate]) => {
       const isSegwit = !this.isLegacyAccount()
       return this._bitcore.buildPaymentTx(discoverResult, toAddress, toSmallestDenomination(amount, asset.decimals), feeRate, isSegwit)
     })
