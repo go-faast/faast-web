@@ -203,7 +203,9 @@ const swapSufficientFees = (swapList) => (dispatch, getState) => {
     const { sendWalletId, tx } = swap
     const { feeSymbol } = tx
     const balance = walletBalances[sendWalletId][feeSymbol]
-    const { amount: totalAmount, feeAmount: totalFee } = walletSendTotals[sendWalletId][feeSymbol]
+    let { amount: totalAmount, feeAmount: totalFee } = walletSendTotals[sendWalletId][feeSymbol]
+    totalAmount = totalAmount || ZERO
+    totalFee = totalFee || ZERO
     const requiredBalance = totalAmount.plus(totalFee)
     const leftOverBalance = balance.minus(requiredBalance)
     if (leftOverBalance.isNegative()) {
