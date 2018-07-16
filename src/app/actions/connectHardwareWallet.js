@@ -256,6 +256,7 @@ export const cancelConnect = () => (dispatch, getState) => {
   if (walletType === 'trezor') {
     Trezor.close()
   }
+  dispatch(clearAsync())
   dispatch(resetConnectBatch())
   dispatch(routerPush(routes.connectHwWallet(walletType)))
 }
