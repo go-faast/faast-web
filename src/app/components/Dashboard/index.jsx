@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
 
 import {
-  getCurrentWalletWithHoldings, isDefaultPortfolioEmpty,
+  getDefaultPortfolioWithHoldings, isDefaultPortfolioEmpty,
   getCurrentSwundleStatus
 } from 'Selectors'
 import { updateHoldings, removePortfolio, defaultPortfolioId } from 'Actions/portfolio'
@@ -73,7 +73,7 @@ class Dashboard extends Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  wallet: getCurrentWalletWithHoldings,
+  wallet: getDefaultPortfolioWithHoldings,
   isDefaultPortfolioEmpty: isDefaultPortfolioEmpty,
   orderStatus: getCurrentSwundleStatus,
 })
