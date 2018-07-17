@@ -24,7 +24,7 @@ export const WalletSummary = ({
       <Col xs='auto'>
         {(holdingsLoaded || holdingsError)
           ? (<span>
-              {holdingsError && (
+              {!holdingsLoaded && holdingsError && (
                 <Expandable
                   shrunk={<i className='fa fa-exclamation-triangle text-danger mr-2'/>}
                   expanded={holdingsError}/>
