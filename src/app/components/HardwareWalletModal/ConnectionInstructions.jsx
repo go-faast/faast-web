@@ -50,7 +50,7 @@ const instructions = {
     BTC: [
       ...trezorInstructions(),
       {
-        icon: 'th-list',
+        icon: 'fa-th-list',
         text: 'When shown a list of accounts, select the one you want to use',
       }
     ]
