@@ -4,10 +4,10 @@ import { Redirect } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
 
 import {
-  getDefaultPortfolioWithHoldings, isDefaultPortfolioEmpty,
+  getCurrentWalletWithHoldings, isDefaultPortfolioEmpty,
   getCurrentSwundleStatus
 } from 'Selectors'
-import { updateHoldings, removePortfolio, defaultPortfolioId } from 'Actions/portfolio'
+import { updateAllHoldings, removePortfolio, defaultPortfolioId } from 'Actions/portfolio'
 import { forgetCurrentOrder } from 'Actions/swap'
 
 import DashboardView from './view'
@@ -15,16 +15,16 @@ import DashboardView from './view'
 class Dashboard extends Component {
   constructor (props) {
     super(props)
-    this._updateHoldings = this._updateHoldings.bind(this)
     this._removeWallet = this._removeWallet.bind(this)
   }
 
   componentWillMount () {
-    const balancesInterval = window.setInterval(this._updateHoldings, 30000)
+    const { updateAllHoldings } = this.props
+    const balancesInterval = window.setInterval(updateAllHoldings, 30000)
     this.setState({ balancesInterval })
     const { wallet } = this.props
     if (!(wallet.balancesLoaded && wallet.balancesUpdating)) {
-      this._updateHoldings()
+      updateAllHoldings()
     }
   }
 
@@ -36,11 +36,6 @@ class Dashboard extends Component {
         forgetCurrentOrder()
       }
     }
-  }
-
-  _updateHoldings () {
-    const { updateHoldings, wallet } = this.props
-    updateHoldings(wallet.id)
   }
 
   _removeWallet () {
@@ -73,13 +68,13 @@ class Dashboard extends Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  wallet: getDefaultPortfolioWithHoldings,
+  wallet: getCurrentWalletWithHoldings,
   isDefaultPortfolioEmpty: isDefaultPortfolioEmpty,
   orderStatus: getCurrentSwundleStatus,
 })
 
 const mapDispatchToProps = {
-  updateHoldings,
+  updateAllHoldings,
   forgetCurrentOrder,
   removePortfolio
 }
