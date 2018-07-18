@@ -8,13 +8,9 @@ const trezorInstructions = () => [
     text: 'Connect your TREZOR to begin'
   },
   {
-    icon: 'fa-window-restore',
-    text: (<span>When the popop asks if you want to export the public key, select <b>Export</b></span>)
-  },
-  {
     icon: 'fa-unlock',
     text: 'If required, enter your pin or password to unlock the TREZOR'
-  }
+  },
 ]
 
 const ledgerInstructions = (assetName) => [
@@ -26,24 +22,38 @@ const ledgerInstructions = (assetName) => [
     icon: 'fa-mobile',
     text: `Open the ${assetName} app on the Ledger Wallet`
   },
-  {
-    icon: 'fa-cogs',
-    text: 'Ensure that Browser Support is enabled in Settings'
-  },
-  {
-    icon: 'fa-download',
-    text: 'You may need to update the firmware if Browser Support is not available'
-  }
 ]
 
 const instructions = {
   ledger: {
-    ETH: ledgerInstructions('Ethereum'),
+    ETH: [
+      ...ledgerInstructions('Ethereum'),
+      {
+        icon: 'fa-cogs',
+        text: 'Ensure that Browser Support is enabled in Settings'
+      },
+      {
+        icon: 'fa-download',
+        text: 'You may need to update the firmware if Browser Support is not available'
+      },
+    ],
     BTC: ledgerInstructions('Bitcoin'),
   },
   trezor: {
-    ETH: trezorInstructions(),
-    BTC: trezorInstructions(),
+    ETH: [
+      ...trezorInstructions(),
+      {
+        icon: 'fa-window-restore',
+        text: (<span>When asked if you want to export the public key, select <b>Export</b></span>)
+      },
+    ],
+    BTC: [
+      ...trezorInstructions(),
+      {
+        icon: 'th-list',
+        text: 'When shown a list of accounts, select the one you want to use',
+      }
+    ]
   }
 }
 
