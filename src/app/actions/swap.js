@@ -283,12 +283,7 @@ export const signSwapTxs = (swapList) => (dispatch) => {
       .then((signedTx) => dispatch(swapTxSigningSuccess(id, signedTx)).payload)
       .catch((e) => {
         log.error(`signSwapTxs error for swap ${id}`, e)
-        let message = e.message
-        if (message.includes('wrong passphrase')) {
-          message = 'Incorrect password'
-        } else if (!message.includes('Ledger device')) {
-          message = 'Error signing transaction'
-        }
+        const message = e.message
         toastr.error(message)
         dispatch(swapTxSigningFailed(id, message))
         return swap

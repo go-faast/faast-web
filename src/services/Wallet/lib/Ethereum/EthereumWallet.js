@@ -173,7 +173,7 @@ export default class EthereumWallet extends Wallet {
   _signedEthJsTxToObject(ethJsTx) {
     const validationError = ethJsTx.validate(true)
     if (validationError) {
-      throw new Error('Invalid signature: ' + validationError)
+      throw new Error(validationError)
     }
     return {
       raw: addHexPrefix(ethJsTx.serialize().toString('hex')),
