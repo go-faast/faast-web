@@ -21,7 +21,7 @@ export const restoreState = (dispatch, getState) => Promise.resolve()
     const assetCache = restoreFromAddress('cache:asset')
     if (assetCache) {
       dispatch(restoreAssets(assetCache))
-      dispatch(retrieveAssets())
+      dispatch(retrieveAssets()) // Retrieve updated assets in background
     } else {
       return dispatch(retrieveAssets()) // asset list required to restore wallets
     }

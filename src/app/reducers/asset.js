@@ -1,12 +1,12 @@
 import { createReducer } from 'redux-act'
 import {
-  setAllAssets,
+  assetsRestored,
   assetsLoading, assetsAdded, assetsLoadingError,
   assetPriceLoading, assetPriceUpdated, assetPriceError,
   assetPricesLoading, assetPricesUpdated, assetPricesError,
 } from 'Actions/asset'
 import { toBigNumber, ZERO } from 'Utilities/convert'
-import { createUpserter, createUpdater } from 'Utilities/helpers'
+import { createUpserter, createUpdater, mapValues } from 'Utilities/helpers'
 
 const initialState = {
   loading: false,
@@ -52,6 +52,9 @@ const priceDataToAsset = (priceData) => {
     marketCap: priceData.market_cap_usd || 0,
     availableSupply: priceData.available_supply || 0,
     lastUpdatedPrice: priceData.last_updated || 0,
+    priceLoading: false,
+    priceLoaded: true,
+    priceError: assetInitialState.priceError
   }
 }
 
@@ -59,7 +62,15 @@ const upsertAsset = createUpserter('symbol', assetInitialState)
 const updateAsset = createUpdater('symbol')
 
 export default createReducer({
-  [setAllAssets]: (state, assets) => assets,
+  [assetsRestored]: (state, restoredState) => ({
+    ...restoredState,
+    loading: false,
+    pricesLoading: false,
+    data: mapValues(restoredState.data, (asset) => ({
+      ...asset,
+      priceLoading: false,
+    })),
+  }),
   [assetsLoading]: (state) => ({
     ...state,
     loading: true,
@@ -81,12 +92,7 @@ export default createReducer({
   }),
   [assetPriceUpdated]: (state, priceData) => ({
     ...state,
-    data: updateAsset(state.data, {
-      ...priceDataToAsset(priceData),
-      priceLoading: false,
-      priceLoaded: true,
-      priceError: assetInitialState.priceError,
-    }),
+    data: updateAsset(state.data, priceDataToAsset(priceData)),
   }),
   [assetPriceError]: (state, { symbol, priceError }) => ({
     ...state,
