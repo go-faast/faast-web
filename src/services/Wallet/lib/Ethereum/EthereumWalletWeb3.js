@@ -1,3 +1,5 @@
+import { omit } from 'lodash'
+
 import web3 from 'Services/Web3'
 import log from 'Utilities/log'
 import { toChecksumAddress, toBigNumber } from 'Utilities/convert'
@@ -45,7 +47,7 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
     const { txData } = tx
     const { value, gasLimit, gasPrice, nonce } = txData
     return web3.eth.signTransaction({
-      ...txData,
+      ...omit(txData, 'chainId'),
       value: toBigNumber(value),
       gas: toBigNumber(gasLimit).toNumber(),
       gasPrice: toBigNumber(gasPrice),

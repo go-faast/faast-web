@@ -1,5 +1,6 @@
 import { difference } from 'lodash'
 
+import config from 'Config'
 import web3 from 'Services/Web3'
 import { addHexPrefix, toHashId } from 'Utilities/helpers'
 import { ZERO, toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee } from 'Utilities/convert'
@@ -89,6 +90,7 @@ export default class EthereumWallet extends Wallet {
     return Promise.resolve().then(() => {
       log.debug(`Create transaction sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${toAddress}`)
       let txData = {
+        chainId: config.ethereumChainId,
         from: this.getAddress(),
         value: ZERO,
         data: ''
@@ -169,7 +171,10 @@ export default class EthereumWallet extends Wallet {
   }
 
   _signedEthJsTxToObject(ethJsTx) {
-    ethJsTx.validate('Invalid ethJsTx signature')
+    const validationError = ethJsTx.validate(true)
+    if (validationError) {
+      throw new Error('Invalid signature: ' + validationError)
+    }
     return {
       raw: addHexPrefix(ethJsTx.serialize().toString('hex')),
       tx: ethJsTx
