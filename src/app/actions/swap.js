@@ -116,7 +116,7 @@ const swapMarketInfo = (swapList) => (dispatch) => {
 
 const swapPostExchange = (swapList) => (dispatch) => {
   log.debug('swapPostExchange', swapList)
-  const walletPreviousTx = {}
+  const walletPreviousEthTx = {}
   return processArray(swapList, (swap) => {
     if (swap.error) return swap
     const finish = createSwapFinish(dispatch, 'swapPostExchange', swap)
@@ -139,9 +139,11 @@ const swapPostExchange = (swapList) => (dispatch) => {
     })))
     .catch(finishErrorHandler('Error creating swap orders'))
     .then((order) =>
-      sendWalletInstance.createTransaction(order.deposit, sendUnits, sendSymbol, { previousTx: walletPreviousTx[sendWalletId] })
+      sendWalletInstance.createTransaction(order.deposit, sendUnits, sendSymbol, { previousTx: walletPreviousEthTx[sendWalletId] })
         .then((tx) => {
-          walletPreviousTx[sendWalletId] = tx
+          if (tx.feeSymbol === 'ETH') {
+            walletPreviousEthTx[sendWalletId] = tx
+          }
           return finish(null, { sendUnits: tx.amount, order, tx })
         }))
     .catch(finishErrorHandler('Error generating deposit txn'))
