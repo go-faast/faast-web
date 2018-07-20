@@ -153,6 +153,7 @@ let config = {
       Hoc: 'App/hoc',
       Selectors: 'App/selectors',
       Routes: 'App/routes',
+      Log: 'Utilities/log',
     },
     extensions: ['.js', '.jsx', '.json', '.scss', '.css']
   },
