@@ -8,8 +8,8 @@ import {
 
 import toastr from 'Utilities/toastrWrapper'
 
-import { getCurrentSwundleStatus } from 'Selectors'
-import { forgetCurrentOrder } from 'Actions/swap'
+import { getLatestSwundle } from 'Selectors'
+import { dismissLatestSwundle } from 'Actions/swundle'
 
 import withToggle from 'Hoc/withToggle'
 import Spinner from 'Components/Spinner'
@@ -34,7 +34,7 @@ const forgetButtonText = 'Dismiss'
 
 const ForgetOrderPrompt = () => (
   <div className='p-3'>
-    Please be aware that <strong>{forgetButtonText}</strong> does not actually cancel an order,
+    Please be aware that <strong>{forgetButtonText}</strong> does not cancel an order,
     it justs stops the browser app from tracking the status of the order.
     The order may still process normally.
     Please only proceed if you have been instructed to do so, or you understand the effects.
@@ -44,25 +44,25 @@ const ForgetOrderPrompt = () => (
 export default compose(
   setDisplayName('OrderStatus'),
   connect(createStructuredSelector({
-    status: getCurrentSwundleStatus,
+    swundle: getLatestSwundle,
   }), {
-    forgetCurrentOrder,
+    dismissLatestSwundle,
   }),
   withToggle('modalOpen'),
   withHandlers({
-    handleForget: ({ status, forgetCurrentOrder }) => () => {
-      if (status === 'pending') {
+    handleForget: ({ swundle, dismissLatestSwundle }) => () => {
+      if (swundle.status === 'pending') {
         toastr.confirm(null, {
           component: ForgetOrderPrompt,
-          onOk: forgetCurrentOrder
+          onOk: dismissLatestSwundle
         })
       } else {
-        forgetCurrentOrder()
+        dismissLatestSwundle()
       }
     },
   }),
-  withProps(({ status }) => statusRenderData[status])
-)(({ title, description, isModalOpen, toggleModalOpen, handleForget }) => (
+  withProps(({ swundle }) => statusRenderData[swundle.status])
+)(({ swundle, title, description, isModalOpen, toggleModalOpen, handleForget }) => (
   <Card>
     <CardHeader><CardTitle>Order Status</CardTitle></CardHeader>
     <CardBody>
@@ -71,6 +71,6 @@ export default compose(
       <Button color='primary' outline size='sm' onClick={toggleModalOpen}>Details</Button>
       <Button color='link' size='sm' className='mx-3' onClick={handleForget}>{forgetButtonText}</Button>
     </CardBody>
-    <OrderStatusModal isOpen={isModalOpen} toggle={toggleModalOpen} />
+    <OrderStatusModal isOpen={isModalOpen} toggle={toggleModalOpen} swundle={swundle}/>
   </Card>
 ))

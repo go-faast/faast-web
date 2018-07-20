@@ -9,7 +9,11 @@ const statusFailed = createStatus('failed', 'Failed', 'text-warning')
 const statusComplete = createStatus('complete', 'Complete', 'text-success')
 
 export const getSwapStatus = (swap) => {
-  const { error, rate, orderId, order, tx } = swap
+  const {
+    error, rate, orderId, order, tx,
+    txSigning, txSigned, txSigningError,
+    txSending, txSent, txSendingError,
+  } = swap
   if (error) {
     if (isString(error) && error.toLowerCase().includes('insufficient funds')) {
       return statusFailed('insufficient_funds', 'Insufficient funds')
@@ -35,22 +39,22 @@ export const getSwapStatus = (swap) => {
     return statusPending('creating_tx', 'Generating deposit transaction')
   }
   if (!tx.receipt) {
-    if (tx.sendingError) {
+    if (txSendingError) {
       return statusFailed('send_tx_error', 'Failed to send deposit transaction, please try again')
     }
-    if (tx.sending) {
+    if (txSending) {
       return statusPending('sending', 'Sending deposit transaction')
     }
-    if (tx.sent) {
+    if (txSent) {
       return statusPending('pending_receipt', 'Waiting for transaction confirmation')
     }
-    if (tx.signingError) {
+    if (txSigningError) {
       return statusFailed('sign_tx_error', 'Failed to sign deposit transaction, please try again')
     }
-    if (tx.signing) {
+    if (txSigning) {
       return statusPending('signing', 'Awaiting signature')
     }
-    if (tx.signed) {
+    if (txSigned) {
       return statusPending('signed', 'Ready to send')
     }
     if (!tx.signingSupported) {
@@ -83,10 +87,10 @@ export const getSwapFriendlyError = (swap) => {
   if (!error) return error
   if (isString(error)) {
     if (errorType === 'pollTransactionReceipt') {
-      return 'Failed to check deposit txn status'
+      return 'Failed to check deposit transaction status'
     }
     if (errorType === 'sendTransaction') {
-      return 'Error sending deposit txn'
+      return 'Error sending deposit transaction'
     }
     if (isString(errorType)) {
       return error

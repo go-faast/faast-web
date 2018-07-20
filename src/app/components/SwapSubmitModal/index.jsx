@@ -8,41 +8,34 @@ import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 
 import {
-  getAllSwapsArray, doesCurrentSwundleRequireSigning,
+  getCurrentSwundle, 
   isCurrentSwundleReadyToSign, isCurrentSwundleReadyToSend,
+  isCurrentSwundleSigning, isCurrentSwundleSending,
+  doesCurrentSwundleRequireSigning,
 } from 'Selectors'
-import { signSwapTxs, sendSwapTxs } from 'Actions/swap'
-import { resetSwaps } from 'Actions/swap'
+import { signSwundle, sendSwundle, removeSwundle } from 'Actions/swundle'
 import { toggleOrderModal } from 'Actions/orderModal'
 
 import SwapSubmitModalView from './view'
 
-const initialState = {
-  startedSigning: false,
-  startedSending: false,
-}
-
 class SwapSubmitModal extends Component {
   constructor (props) {
     super(props)
-    this.state = initialState
     this.handleCancel = this.handleCancel.bind(this)
     this.handleSignTxs = this.handleSignTxs.bind(this)
     this.handleSendTxs = this.handleSendTxs.bind(this)
   }
 
   handleCancel () {
-    const { toggle, resetSwaps } = this.props
-    this.setState(initialState)
+    const { swundle, toggle, removeSwundle } = this.props
     closeTrezorWindow()
     toggle()
-    resetSwaps()
+    removeSwundle(swundle)
   }
 
   handleSignTxs () {
-    const { swaps, signSwapTxs } = this.props
-    this.setState({ startedSigning: true })
-    signSwapTxs(swaps)
+    const { swundle, signSwundle } = this.props
+    signSwundle(swundle)
       .catch((e) => {
         toastr.error(e.message || e)
         log.error(e)
@@ -51,11 +44,10 @@ class SwapSubmitModal extends Component {
   }
 
   handleSendTxs () {
-    const { swaps, sendSwapTxs, toggle, routerPush } = this.props
-    this.setState({ startedSending: true })
-    sendSwapTxs(swaps)
-      .then((updatedSwaps) => {
-        if (updatedSwaps.every((swap) => swap.tx.sent)) {
+    const { swundle, sendSwundle, toggle, routerPush } = this.props
+    sendSwundle(swundle)
+      .then((updatedSwundle) => {
+        if (updatedSwundle.swaps.every((swap) => swap.tx.sent)) {
           toggle()
           routerPush('/dashboard')
         }
@@ -67,11 +59,16 @@ class SwapSubmitModal extends Component {
   }
 
   render () {
-    const { requiresSigning, readyToSign, readyToSend, swaps } = this.props
-    const { startedSigning, startedSending } = this.state
+    const {
+      swundle, requiresSigning, readyToSign, readyToSend, startedSigning, startedSending
+    } = this.props
+    if (!swundle) {
+      return null
+    }
 
     let errorMessage
-    if (swaps.length > 1 && swaps.reduce((btcSwapCount, swap) => btcSwapCount + (swap.sendSymbol === 'BTC' ? 1 : 0), 0) > 1) {
+    if (swundle.swaps.length > 1
+        && swundle.swaps.reduce((btcSwapCount, swap) => btcSwapCount + (swap.sendSymbol === 'BTC' ? 1 : 0), 0) > 1) {
       errorMessage = 'Swapping bitcoin to multiple assets at once is currently unsupported. Please try again with a single asset.'
     }
     
@@ -97,18 +94,20 @@ class SwapSubmitModal extends Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  swaps: getAllSwapsArray,
+  swundle: getCurrentSwundle,
   requiresSigning: doesCurrentSwundleRequireSigning,
   readyToSign: isCurrentSwundleReadyToSign,
   readyToSend: isCurrentSwundleReadyToSend,
+  startedSigning: isCurrentSwundleSigning,
+  startedSending: isCurrentSwundleSending,
   isOpen: ({ orderModal: { show } }) => show
 })
 
 const mapDispatchToProps = {
-  resetSwaps,
   toggle: toggleOrderModal,
-  signSwapTxs,
-  sendSwapTxs,
+  removeSwundle,
+  signSwundle,
+  sendSwundle,
   routerPush: push,
 }
 

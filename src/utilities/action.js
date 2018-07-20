@@ -7,3 +7,5 @@ export const newScopedCreateAction = (scopeOrFileName) => {
     .replace(/\.\w+$/, '') // Strip file extension
   return (type, ...args) => createAction(`@${scope}/${type}`, ...args)
 }
+
+export const idPayload = (id) => ({ id })

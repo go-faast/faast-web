@@ -8,7 +8,7 @@ import { getDefaultPortfolio } from 'Selectors'
 import { retrieveAssets, restoreAssets } from './asset'
 import { setSettings } from './settings'
 import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
-import { restoreSwundle } from './swap'
+import { restoreSwundles } from './swundle'
 
 const createAction = newScopedCreateAction(__filename)
 
@@ -31,7 +31,7 @@ export const restoreState = (dispatch, getState) => Promise.resolve()
     const wallet = getDefaultPortfolio(getState())
     const addressState = restoreFromAddress(wallet && wallet.id)
     if (addressState) {
-      dispatch(restoreSwundle(addressState))
+      dispatch(restoreSwundles(addressState))
       const settings = addressState.settings
       dispatch(setSettings(settings))
     }

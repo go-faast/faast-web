@@ -4,6 +4,7 @@ import { reducer as toastrReducer } from 'react-redux-toastr'
 import { routerReducer } from 'react-router-redux'
 import asset from './asset'
 import swap from './swap'
+import swundle from './swundle'
 import orderModal from './orderModal'
 import settings from './settings'
 import portfolio from './portfolio'
@@ -20,6 +21,7 @@ export default combineReducers({
   wallet,
   asset,
   swap,
+  swundle,
   orderModal,
   settings,
   walletPasswordPrompt,

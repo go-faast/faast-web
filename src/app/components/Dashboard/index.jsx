@@ -5,10 +5,9 @@ import { createStructuredSelector } from 'reselect'
 
 import {
   getCurrentWalletWithHoldings, isDefaultPortfolioEmpty,
-  getCurrentSwundleStatus
+  isLatestSwundleSummaryShowing
 } from 'Selectors'
 import { updateAllHoldings, removePortfolio, defaultPortfolioId } from 'Actions/portfolio'
-import { forgetCurrentOrder } from 'Actions/swap'
 
 import DashboardView from './view'
 
@@ -30,12 +29,6 @@ class Dashboard extends Component {
 
   componentWillUnmount () {
     window.clearInterval(this.state.balancesInterval)
-    const { wallet, forgetCurrentOrder, orderStatus } = this.props
-    if (!wallet.isReadOnly) {
-      if (orderStatus === 'complete') {
-        forgetCurrentOrder()
-      }
-    }
   }
 
   _removeWallet () {
@@ -44,7 +37,7 @@ class Dashboard extends Component {
   }
 
   render () {
-    const { wallet, isDefaultPortfolioEmpty, orderStatus } = this.props
+    const { wallet, isDefaultPortfolioEmpty } = this.props
     const isViewOnly = wallet.isReadOnly
 
     if (isDefaultPortfolioEmpty && !isViewOnly) {
@@ -52,14 +45,12 @@ class Dashboard extends Component {
     }
 
     const disableRemove = wallet.id === defaultPortfolioId
-    const showOrderStatus = Boolean(orderStatus)
     return (
       <DashboardView
         wallet={wallet}
         handleRemove={this._removeWallet}
         viewOnly={isViewOnly}
         disableRemove={disableRemove}
-        showOrderStatus={showOrderStatus}
         isDefaultPortfolioEmpty={isDefaultPortfolioEmpty}
         {...this.props}
       />
@@ -70,12 +61,11 @@ class Dashboard extends Component {
 const mapStateToProps = createStructuredSelector({
   wallet: getCurrentWalletWithHoldings,
   isDefaultPortfolioEmpty: isDefaultPortfolioEmpty,
-  orderStatus: getCurrentSwundleStatus,
+  showOrderStatus: isLatestSwundleSummaryShowing,
 })
 
 const mapDispatchToProps = {
   updateAllHoldings,
-  forgetCurrentOrder,
   removePortfolio
 }
 
