@@ -21,7 +21,7 @@ export default compose(
     ...extraPropTypes,
   }),
   withProps((props) => ({
-    buttonProps: omit(props, Object.keys(extraPropTypes)),
+    buttonProps: omit(props, ...Object.keys(extraPropTypes)),
   })),
   connect(createStructuredSelector({
     derivationPath: getDerivationPath

@@ -16,11 +16,15 @@ const trezorInstructions = () => [
 const ledgerInstructions = (assetName) => [
   {
     icon: 'fa-usb',
-    text: 'Connect your Ledger Wallet to begin'
+    text: 'Connect your Ledger device to begin'
+  },
+  {
+    icon: 'fa-unlock',
+    text: 'Enter your pin to unlock the Ledger'
   },
   {
     icon: 'fa-mobile',
-    text: `Open the ${assetName} app on the Ledger Wallet`
+    text: `Open the ${assetName} app on your Ledger`
   },
 ]
 
