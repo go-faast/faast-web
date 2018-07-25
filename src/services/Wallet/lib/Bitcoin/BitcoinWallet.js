@@ -82,8 +82,8 @@ export default class BitcoinWallet extends Wallet {
       .then(({ balance }) => toMainDenomination(balance, asset.decimals))
   }
 
-  _getTransactionReceipt (txId) {
-    return this._bitcore.lookupTransaction(txId)
+  _getTransactionReceipt (txHash) {
+    return this._bitcore.lookupTransaction(txHash)
       .then((result) => !result ? null : ({
         confirmed: result.height > 0,
         succeeded: result.height > 0,
@@ -94,10 +94,10 @@ export default class BitcoinWallet extends Wallet {
 
   _sendSignedTx(tx) {
     return this._bitcore.sendTransaction(tx.signedTxData)
-      .then((txId) => {
+      .then((txHash) => {
         this._latestDiscoveryResult = null // Clear discovery cache to avoid double spending utxos
         return {
-          id: txId,
+          hash: txHash,
         }
       })
   }

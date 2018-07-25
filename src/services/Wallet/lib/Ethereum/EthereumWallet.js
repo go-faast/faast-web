@@ -133,14 +133,14 @@ export default class EthereumWallet extends Wallet {
     })
   }
 
-  _getTransactionReceipt(txId) {
-    return web3.eth.getTransactionReceipt(txId)
+  _getTransactionReceipt(txHash) {
+    return web3.eth.getTransactionReceipt(txHash)
       .then(toUniversalReceipt)
   }
 
   _sendSignedTx(tx, options = {}) {
     return web3SendTx(tx.signedTxData.raw, true, options)
-      .then((txId) => ({ id: txId }))
+      .then((txHash) => ({ hash: txHash }))
   }
 
   _validateTxData(txData) {

@@ -45,7 +45,7 @@ export const toUniversalReceipt = (receipt) => !receipt ? null : ({
   raw: receipt
 })
 
-/** Send the transaction and return a promise that resolves to the txId after the
+/** Send the transaction and return a promise that resolves to the txHash after the
   * transaction is broadcast to the network.
   */
 export const web3SendTx = (txData, signed, options) => new Promise((resolve, reject) => {
@@ -56,8 +56,8 @@ export const web3SendTx = (txData, signed, options) => new Promise((resolve, rej
   let resolved = false
   const sendFnName = signed ? 'sendSignedTransaction' : 'sendTransaction'
   const sendStatus = web3.eth[sendFnName](txData)
-    .once('transactionHash', (txId) => {
-      resolve(txId)
+    .once('transactionHash', (txHash) => {
+      resolve(txHash)
       resolved = true
     })
     .once('error', (e) => {

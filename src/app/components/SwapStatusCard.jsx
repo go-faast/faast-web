@@ -39,7 +39,7 @@ export default compose(
     sendWalletId, sendSymbol, sendAsset, sendUnits,
     receiveWalletId, receiveSymbol, receiveAsset, receiveUnits,
     error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee,
-    tx: { id: txId, feeAmount: txFee, feeSymbol: txFeeSymbol, confirmed, succeeded },
+    tx: { hash: txHash, feeAmount: txFee, feeSymbol: txFeeSymbol, confirmed, succeeded },
     status: { code, details }, orderId
   },
   statusText, showDetails, isExpanded, toggleExpanded
@@ -130,11 +130,11 @@ export default compose(
               <td><b>Order ID:</b></td>
               <td colSpan='2' className='px-2'>{orderId ? orderId : (<Spinner inline size='sm'/>)}</td>
             </tr>
-            {txId && (
+            {txHash && (
               <tr>
                 <td><b>Sent txn:</b></td>
                 <td colSpan='2' className='px-2'>
-                  <a href={`${config.explorerUrls[txFeeSymbol]}/tx/${txId}`} target='_blank' rel='noopener' className='word-break-all mr-2'>{txId}</a> 
+                  <a href={`${config.explorerUrls[txFeeSymbol]}/tx/${txHash}`} target='_blank' rel='noopener' className='word-break-all mr-2'>{txHash}</a> 
                   {!confirmed ? (
                     <i className='fa fa-spinner fa-pulse'/>
                   ) : (succeeded ? (

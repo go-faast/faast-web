@@ -40,7 +40,7 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
 
   _signAndSendTx(tx, options) {
     return web3SendTx(tx.txData, false, options)
-      .then((txId) => ({ id: txId }));
+      .then((txHash) => ({ hash: txHash }));
   }
 
   _signTx(tx) {

@@ -146,12 +146,10 @@ export const createOrder = (swap) => (dispatch) => {
 
 const createTransferEventListeners = (swap) => (dispatch) => {
   const { id: swapId } = swap
-  let txId
   return {
-    onTxHash: (txHash) => {
-      log.info(`tx hash ${txHash} obtained for swap ${swapId}`)
-      txId = txHash
-      dispatch(swapTxUpdated(swapId, { id: txId }))
+    onTxHash: (hash) => {
+      log.info(`tx hash ${hash} obtained for swap ${swapId}`)
+      dispatch(swapTxUpdated(swapId, { hash }))
     },
     onReceipt: (receipt) => {
       log.info(`tx receipt obtained for swap ${swapId}`)
@@ -300,9 +298,9 @@ const updateSwapTxReceipt = (swap) => (dispatch) => {
 }
 
 export const pollTransactionReceipt = (swap) => (dispatch) => {
-  const { id: swapId, tx: { id: txId } } = swap
-  if (!txId) {
-    log.info(`pollTransactionReceipt: swap ${swapId} has no txId`)
+  const { id: swapId, tx: { hash: txHash } } = swap
+  if (!txHash) {
+    log.info(`pollTransactionReceipt: swap ${swapId} has no txHash`)
     return
   }
   const receiptInterval = window.setInterval(() => {
