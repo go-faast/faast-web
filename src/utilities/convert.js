@@ -21,10 +21,23 @@ export const toBigNumber = (value = 0) => {
       const bn = new BigNumber(String(value))
       return bn
     } catch (e) {
-      return new BigNumber(0)
+      return ZERO
     }
   }
   return value
+}
+
+export const toNumber = (value = 0) => {
+  if (typeof value === 'number') {
+    return value
+  }
+  if (typeof value === 'string') {
+    value = toBigNumber(value)
+  }
+  if (value instanceof BigNumber) {
+    return value.toNumber()
+  }
+  return 0
 }
 
 export const toMainDenomination = (value, decimals) => {
