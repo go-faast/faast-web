@@ -55,14 +55,18 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
       options.feeRate || this._getDefaultFeeRate(asset).then(({ rate }) => rate),
     ]).then(([discoverResult, feeRate]) => {
       const isSegwit = !this.isLegacyAccount()
-      return this._bitcore.buildPaymentTx(discoverResult, toAddress, toSmallestDenomination(amount, asset.decimals), feeRate, isSegwit)
+      const outputs = [{
+        address: toAddress,
+        amount: toSmallestDenomination(amount, asset.decimals).toNumber(),
+      }]
+      return this._bitcore.buildPaymentTx(discoverResult, outputs, feeRate, isSegwit)
     })
     .then((txData) => {
       return {
         feeAmount: toMainDenomination(txData.fee, asset.decimals),
         feeSymbol: 'BTC',
         // buildPaymentTx will decrease amount to accomodate fee when sending entire balance
-        amount: toMainDenomination(txData.amount, asset.decimals),
+        amount: toMainDenomination(txData.outputs[0].amount, asset.decimals),
         txData,
       }
     })
@@ -83,6 +87,7 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
       .then((inputUtxos) => {
         log.info('inputUtxos', inputUtxos)
 
+        const { changePath, outputScript, isSegwit } = txData
         const inputs = []
         const paths = []
         inputUtxos.forEach((utxo) => {
@@ -90,15 +95,15 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
           paths.push(joinDerivationPath(this.derivationPath, utxo.addressPath))
         })
 
-        const changePath = joinDerivationPath(this.derivationPath, txData.changePath)
+        const changePathString = changePath ? joinDerivationPath(this.derivationPath, changePath) : undefined
         return Ledger.btc.createPaymentTransactionNew(
           inputs,
           paths,
-          changePath,
-          txData.outputScript,
+          changePathString,
+          outputScript,
           undefined, // lockTime, default (0)
           undefined, // sigHashType, default (all)
-          txData.isSegwit)
+          isSegwit)
       })
       .then((signedTxHex) => ({
         signedTxData: signedTxHex
