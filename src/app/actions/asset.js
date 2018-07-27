@@ -9,7 +9,7 @@ const createAction = newScopedCreateAction(__filename)
 export const assetsRestored = createAction('RESTORE_ALL')
 
 export const assetsLoading = createAction('ASSETS_LOADING')
-export const assetsAdded = createAction('ASSETS_ADDED')
+export const assetsLoaded = createAction('ASSETS_LOADED')
 export const assetsLoadingError = createAction('ASSETS_ERROR')
 
 export const assetPriceLoading = createAction('PRICE_LOADING', (symbol) => ({ symbol }))
@@ -30,7 +30,7 @@ export const retrieveAssets = () => (dispatch, getState) => {
   }
   dispatch(assetsLoading())
   return Faast.getAssets()
-    .then((assets) => dispatch(assetsAdded(assets)))
+    .then((assets) => dispatch(assetsLoaded(assets)))
     .catch((e) => {
       log.error(e)
       const message = 'Failed to load asset list'

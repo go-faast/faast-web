@@ -1,7 +1,8 @@
 import { createReducer } from 'redux-act'
+import { pick } from 'lodash'
 import {
   assetsRestored,
-  assetsLoading, assetsAdded, assetsLoadingError,
+  assetsLoading, assetsLoaded, assetsLoadingError,
   assetPriceLoading, assetPriceUpdated, assetPriceError,
   assetPricesLoading, assetPricesUpdated, assetPricesError,
 } from 'Actions/asset'
@@ -75,12 +76,12 @@ export default createReducer({
     ...state,
     loading: true,
   }),
-  [assetsAdded]: (state, assetArray) => ({
+  [assetsLoaded]: (state, assetArray) => ({
     ...state,
     data: assetArray.reduce((allAssets, asset) => upsertAsset(allAssets, {
       ...asset,
       swapEnabled: asset.deposit && asset.receive
-    }), state.data),
+    }), pick(state.data, assetArray.map(({ symbol }) => symbol))), // Removes any old assets not included in new assetArray
     loading: false,
     loaded: true,
     loadingError: initialState.loadingError,
