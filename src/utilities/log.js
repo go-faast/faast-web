@@ -75,7 +75,7 @@ const log = (level) => (text, ...data) => {
     idb.put(storeName, payload)
       .catch((err) => {
         const { message } = err
-        if (message.includes('store not ready')) {
+        if (message && message.includes('store not ready')) {
           // Save any failed log messages until store is ready
           idbNotReadyQueue.push(payload)
         } else {
