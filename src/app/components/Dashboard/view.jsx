@@ -1,26 +1,22 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 import {
   Row, Col, Button,
 } from 'reactstrap'
 
-import routes from 'Routes'
 import Layout from 'Components/Layout'
 import BlockstackWelcome from 'Components/BlockstackWelcome'
 import WalletSelector from 'Components/WalletSelector'
 import OrderStatus from 'Components/OrderStatus'
 import Balances from 'Components/Balances'
-import ModalRoute from 'Components/ModalRoute'
+import ShareButton from 'Components/ShareButton'
 
-import ShareModal from './ShareModal'
-import log from 'Log'
 const DashboardView = (props) => {
   const {
     wallet, viewOnly, toggleChart, openCharts,
     showOrderStatus, disableRemove, handleRemove, isDefaultPortfolioEmpty
   } = props
 
-  const { label, type, address } = wallet
+  const { label, type } = wallet
   const isPortfolio = type === 'MultiWallet'
 
   return (
@@ -42,9 +38,7 @@ const DashboardView = (props) => {
                   <h4 className='m-0 text-primary'>{label}</h4>
                 </Col>
                 <Col xs='auto'>
-                  <Button tag={Link} color='light' size='sm' to={routes.dashboardShare()} disabled={!address}>
-                    <i className='fa fa-share'/> share
-                  </Button>
+                  <ShareButton wallet={wallet}/>
                 </Col>
                 <Col xs='auto'>
                   <Button color='danger' size='sm' onClick={handleRemove} disabled={disableRemove}>
@@ -64,13 +58,6 @@ const DashboardView = (props) => {
           </Row>
         </Col>
       </Row>
-      <ModalRoute
-        path={routes.dashboardShare.path}
-        closePath={routes.dashboard.path}
-        render={(renderProps) => (
-          <ShareModal wallet={wallet} {...renderProps}/>
-        )}
-      />
     </Layout>
   )
 }

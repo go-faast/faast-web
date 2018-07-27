@@ -14,6 +14,7 @@ import { searchAddress, viewInPortfolio, addToPortfolio } from 'Actions/accountS
 import Layout from 'Components/Layout'
 import Balances from 'Components/Balances'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
+import ShareButton from 'Components/ShareButton'
 
 const getQuery = ({ match }) => match.params.addressQuery
 
@@ -52,6 +53,9 @@ export default compose(
       <Row className='gutter-3 align-items-end'>
         <Col>
           <h4 className='m-0 text-primary'>{wallet.label}</h4>
+        </Col>
+        <Col xs='auto'>
+          <ShareButton wallet={wallet}/>
         </Col>
         <Col xs='auto'>
           {isAlreadyInPortfolio ? (

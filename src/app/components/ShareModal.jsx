@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { compose, setDisplayName, setPropTypes, lifecycle, withHandlers } from 'recompose'
+import { compose, setDisplayName, setPropTypes, lifecycle, withHandlers, withProps } from 'recompose'
 import { Modal, ModalHeader, ModalBody, Card, CardBody, Input, Button, Row, Col } from 'reactstrap'
 import { pick } from 'lodash'
 
@@ -44,21 +44,28 @@ export default compose(
         next.toggle()
       }
     }
-  })
-)(({ wallet, toggle, handleRef, handleFocus, handleCopy, ...props }) => (
+  }),
+  withProps(({ wallet }) => {
+    const walletUri = routerPathToUri(routes.viewOnlyAddress(wallet.address))
+    return {
+      walletUri,
+      showDirectLink: walletUri !== window.location.href,
+    }
+  }),
+)(({ wallet, walletUri, showDirectLink, toggle, handleRef, handleFocus, handleCopy, ...props }) => (
   <Modal size='sm' toggle={toggle} {...pick(props, Object.keys(Modal.propTypes))}>
     <ModalHeader tag='h3' className='text-primary' toggle={toggle}>
       Share Portfolio
     </ModalHeader>
     <ModalBody>
       <Card tag={CardBody} color='ultra-dark' className='flat mb-3'>
-        <WalletSummary wallet={wallet}/>
+        <WalletSummary wallet={wallet} showLink={showDirectLink}/>
       </Card>
       <p className='mb-2'>Permalink:</p>
       <Row className='gutter-2'>
         <Col>
           <Input type='text' autoFocus readOnly onFocus={handleFocus} innerRef={handleRef}
-            value={routerPathToUri(routes.viewOnlyAddress(wallet.address))}/>
+            value={walletUri}/>
         </Col>
         <Col xs='auto'>
           <Button color='link' className='p-2' onClick={handleCopy}>

@@ -30,7 +30,6 @@ const createPath = (...paths) => {
 
 export const root = createPath('/')
 export const dashboard = createPath('/dashboard')
-export const dashboardShare = createPath(dashboard, '/share')
 export const swap = createPath('/swap')
 export const viewOnlyAddress = createPath('/address/:addressQuery')
 
@@ -43,7 +42,6 @@ export const connectHwWalletAssetAccounts = createPath(connectHwWalletAsset, '/a
 export default {
   root,
   dashboard,
-  dashboardShare,
   swap,
   connect,
   connectHwWallet,
