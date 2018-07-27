@@ -6,9 +6,10 @@ import { compose, setDisplayName, setPropTypes, lifecycle } from 'recompose'
 import { Row, Col, Button } from 'reactstrap'
 
 import {
-  getAccountSearchError, getAccountSearchPending, getAccountSearchResultWalletWithHoldings
+  getAccountSearchError, getAccountSearchPending, getAccountSearchResultWalletWithHoldings,
+  isAccountSearchResultWalletInPortfolio,
 } from 'Selectors'
-import { searchAddress, addToPortfolio } from 'Actions/accountSearch'
+import { searchAddress, viewInPortfolio, addToPortfolio } from 'Actions/accountSearch'
 
 import Layout from 'Components/Layout'
 import Balances from 'Components/Balances'
@@ -24,10 +25,12 @@ export default compose(
   connect(createStructuredSelector({
     error: getAccountSearchError,
     pending: getAccountSearchPending,
-    wallet: getAccountSearchResultWalletWithHoldings
+    wallet: getAccountSearchResultWalletWithHoldings,
+    isAlreadyInPortfolio: isAccountSearchResultWalletInPortfolio,
   }), {
     search: searchAddress,
-    handleAddToPortfolio: addToPortfolio
+    handleAddToPortfolio: addToPortfolio,
+    handleViewInPortfolio: viewInPortfolio,
   }),
   lifecycle({
     componentWillMount () {
@@ -41,7 +44,7 @@ export default compose(
       }
     }
   })
-)(({ pending, error, wallet, handleAddToPortfolio }) => (
+)(({ pending, error, wallet, handleViewInPortfolio, handleAddToPortfolio, isAlreadyInPortfolio }) => (
   <Layout className='pt-3'>
     {(pending || error || !wallet) ? (
       <LoadingFullscreen center error={error}/>
@@ -51,9 +54,15 @@ export default compose(
           <h4 className='m-0 text-primary'>{wallet.label}</h4>
         </Col>
         <Col xs='auto'>
-          <Button size='sm' color='primary' onClick={handleAddToPortfolio}>
-            Add to portfolio
-          </Button>
+          {isAlreadyInPortfolio ? (
+            <Button size='sm' color='primary' onClick={handleViewInPortfolio}>
+              View in portfolio
+            </Button>
+          ) : (
+            <Button size='sm' color='primary' onClick={handleAddToPortfolio}>
+              Add to portfolio
+            </Button>
+          )}
         </Col>
         <Col xs='12'>
           <Balances wallet={wallet} />

@@ -1,13 +1,16 @@
 import { isString } from 'lodash'
+import { push } from 'react-router-redux'
+
+import routes from 'Routes'
 
 import { newScopedCreateAction } from 'Utilities/action'
 import { isValidAddress } from 'Utilities/wallet'
-import { toChecksumAddress } from 'Utilities/convert'
 import walletService, { EthereumWalletViewOnly } from 'Services/Wallet'
 
 import { getWallet, getAccountSearchResultId } from 'Selectors'
 import { addWallet, updateWalletBalances } from 'Actions/wallet'
 import { openWalletAndRedirect } from 'Actions/access'
+import { setCurrentWallet } from 'Actions/portfolio'
 
 const createAction = newScopedCreateAction(__filename)
 
@@ -22,13 +25,12 @@ export const searchAddress = (addressPromise) => (dispatch, getState) => Promise
     if (!(address && isValidAddress(address))) {
       return dispatch(setAccountSearchError('Invalid address'))
     }
-    const wallet = getWallet(getState(), address.toLowerCase())
+    const walletInstance = new EthereumWalletViewOnly(address)
+    walletInstance.setPersistAllowed(false)
+    const wallet = getWallet(getState(), walletInstance.getId())
     if (wallet) {
       return wallet
     }
-    address = toChecksumAddress(address)
-    const walletInstance = new EthereumWalletViewOnly(address)
-    walletInstance.setPersistAllowed(false)
     return dispatch(addWallet(walletInstance))
   })
   .then(({ id }) => {
@@ -36,6 +38,12 @@ export const searchAddress = (addressPromise) => (dispatch, getState) => Promise
     return dispatch(updateWalletBalances(id))
   })
   .catch((e) => dispatch(setAccountSearchError(isString(e) ? e : e.message)))
+
+export const viewInPortfolio = () => (dispatch, getState) => Promise.resolve().then(() => {
+  const resultId = getAccountSearchResultId(getState())
+  dispatch(setCurrentWallet(resultId))
+  dispatch(push(routes.dashboard()))
+})
 
 export const addToPortfolio = () => (dispatch, getState) => Promise.resolve().then(() => {
   const resultId = getAccountSearchResultId(getState())

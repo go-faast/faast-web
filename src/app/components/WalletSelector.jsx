@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { ListGroup, ListGroupItem, Row, Col, Button, Card } from 'reactstrap'
 import classNames from 'class-names'
-import { setCurrentWallet } from 'Actions/portfolio'
+import { setCurrentPortfolioAndWallet } from 'Actions/portfolio'
 import { getCurrentPortfolioWalletIds, getCurrentWalletId, getCurrentPortfolioId } from 'Selectors'
 import WalletSummary from 'Components/WalletSummary'
 import ListGroupButton from 'Components/ListGroupButton'
@@ -16,7 +16,7 @@ const WalletListButton = ({ id, active, nested, onClick, className, ...props }) 
 )
 
 const WalletSelector = ({
-  portfolioId, portfolioWalletIds, currentWalletId, setCurrentWallet
+  portfolioId, portfolioWalletIds, currentWalletId, setCurrentPortfolioAndWallet
 }) => (
   <Row className='gutter-3 align-items-end'>
     <Col>
@@ -30,13 +30,13 @@ const WalletSelector = ({
         <ListGroup>
           <WalletListButton id={portfolioId}
             active={currentWalletId === portfolioId}
-            onClick={() => setCurrentWallet(portfolioId, portfolioId)}/>
+            onClick={() => setCurrentPortfolioAndWallet(portfolioId, portfolioId)}/>
           <ListGroupItem className='p-1'/>
           {portfolioWalletIds.length > 0
             ? portfolioWalletIds.map((walletId) => (
                 <WalletListButton key={walletId} id={walletId} nested
                   active={currentWalletId === walletId}
-                  onClick={() => setCurrentWallet(portfolioId, walletId)}/>
+                  onClick={() => setCurrentPortfolioAndWallet(portfolioId, walletId)}/>
               ))
             : (<ListGroupItem><i className='text-muted'>No wallets in this portfolio</i></ListGroupItem>)}
         </ListGroup>
@@ -52,7 +52,7 @@ const mapStateToProps = createStructuredSelector({
 })
 
 const mapDispatchToProps = {
-  setCurrentWallet,
+  setCurrentPortfolioAndWallet,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(WalletSelector)

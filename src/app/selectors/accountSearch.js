@@ -2,6 +2,7 @@ import { createSelector } from 'reselect'
 import { currySelector } from 'Utilities/selector'
 
 import { getWallet, getWalletWithHoldings } from './wallet'
+import { getDefaultPortfolioWalletIds } from './portfolio'
 
 const getAccountSearchState = ({ accountSearch }) => accountSearch
 
@@ -10,3 +11,7 @@ export const getAccountSearchError = createSelector(getAccountSearchState, ({ er
 export const getAccountSearchResultId = createSelector(getAccountSearchState, ({ resultId }) => resultId)
 export const getAccountSearchResultWallet = currySelector(getWallet, getAccountSearchResultId)
 export const getAccountSearchResultWalletWithHoldings = currySelector(getWalletWithHoldings, getAccountSearchResultId)
+export const isAccountSearchResultWalletInPortfolio = createSelector(
+  getAccountSearchResultId,
+  getDefaultPortfolioWalletIds,
+  (resultWalletId, defaultPortfolioIds) => defaultPortfolioIds.includes(resultWalletId))

@@ -18,7 +18,8 @@ const { defaultPortfolioId } = config
 export { defaultPortfolioId }
 
 export const setCurrentPortfolio = createAction('SET_CURRENT_PORTFOLIO', (portfolioId) => ({ portfolioId }))
-export const setCurrentWallet = createAction('SET_CURRENT_WALLET', (portfolioId, walletId) => ({ portfolioId, walletId }))
+export const setCurrentWallet = createAction('SET_CURRENT_PORTFOLIO_WALLET', (walletId) => ({ walletId }))
+export const setCurrentPortfolioAndWallet = createAction('SET_CURRENT_WALLET', (portfolioId, walletId) => ({ portfolioId, walletId }))
 export const portfolioAdded = createAction('PORTFOLIO_ADDED')
 
 export const removePortfolio = (id) => (dispatch) => Promise.resolve()

@@ -1,7 +1,7 @@
 import { networks } from 'bitcoinjs-lib-zcash'
 import { WorkerDiscovery, BitcoreBlockchain } from 'hd-wallet'
 import { TransactionBuilder } from 'bitcoinjs-lib'
-import { isString, omit } from 'lodash'
+import { omit } from 'lodash'
 
 import xpubWasmFile from 'hd-wallet/lib/fastxpub/fastxpub.wasm?file'
 

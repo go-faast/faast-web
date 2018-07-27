@@ -3,10 +3,13 @@ import queryString from 'query-string'
 import { mergeWith, union, without, omit } from 'lodash'
 import sha256 from 'hash.js/lib/hash/sha/256'
 import baseX from 'base-x'
+import urlJoin from 'url-join'
 
 export const bs62 = baseX('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
 
 export const toHashId = (s) => bs62.encode(Buffer.from(sha256().update(s).digest().slice(0, 16)))
+
+export const routerPathToUri = (routerPath) => urlJoin(window.location.origin, process.env.ROUTER_BASE_NAME, routerPath)
 
 export const splice = (arr, ...args) => {
   const spliced = [...arr]

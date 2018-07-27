@@ -28,8 +28,12 @@ const createPath = (...paths) => {
   return subPathParams
 }
 
+export const root = createPath('/')
 export const dashboard = createPath('/dashboard')
+export const dashboardShare = createPath(dashboard, '/share')
 export const swap = createPath('/swap')
+export const viewOnlyAddress = createPath('/address/:addressQuery')
+
 export const connect = createPath('/connect')
 export const connectHwWallet = createPath(connect, '/hw/:walletType')
 export const connectHwWalletAsset = createPath(connectHwWallet, '/:assetSymbol')
@@ -37,11 +41,14 @@ export const connectHwWalletAssetConfirm = createPath(connectHwWalletAsset, '/co
 export const connectHwWalletAssetAccounts = createPath(connectHwWalletAsset, '/accounts')
 
 export default {
+  root,
   dashboard,
+  dashboardShare,
   swap,
   connect,
   connectHwWallet,
   connectHwWalletAsset,
   connectHwWalletAssetConfirm,
   connectHwWalletAssetAccounts,
+  viewOnlyAddress,
 }

@@ -13,13 +13,19 @@ import Wallet from '../Wallet'
 
 const DEFAULT_GAS_PRICE = 21e9 // 21 Gwei
 
+function addressToId(address) {
+  return toHashId(address.toLowerCase())
+}
+
 @abstractMethod('getType', 'getTypeLabel', 'getAddress', '_signTx')
 export default class EthereumWallet extends Wallet {
 
   static type = 'EthereumWallet';
 
+  static addressToId = addressToId;
+
   constructor(address, label) {
-    super(toHashId(address.toLowerCase()), label)
+    super(addressToId(address), label)
     assertExtended(this, EthereumWallet)
     this.address = address
   }

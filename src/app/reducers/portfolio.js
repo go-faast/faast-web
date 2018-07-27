@@ -1,7 +1,7 @@
 import { createReducer } from 'redux-act'
 import { resetAll } from 'Actions/app'
 import { walletRemoved } from 'Actions/wallet'
-import { setCurrentPortfolio, setCurrentWallet, portfolioAdded } from 'Actions/portfolio'
+import { setCurrentPortfolio, setCurrentWallet, setCurrentPortfolioAndWallet, portfolioAdded } from 'Actions/portfolio'
 import { merge } from 'Utilities/helpers'
 
 const defaultPortfolioId = 'default'
@@ -15,7 +15,8 @@ const initialState = {
 export default createReducer({
   [resetAll]: () => initialState,
   [setCurrentPortfolio]: (state, { portfolioId }) => ({ ...state, currentId: portfolioId, currentWalletId: portfolioId }),
-  [setCurrentWallet]: (state, { portfolioId, walletId }) => ({ ...state, currentId: portfolioId, currentWalletId: walletId }),
+  [setCurrentWallet]: (state, { walletId }) => ({ ...state, currentWalletId: walletId }),
+  [setCurrentPortfolioAndWallet]: (state, { portfolioId, walletId }) => ({ ...state, currentId: portfolioId, currentWalletId: walletId }),
   [portfolioAdded]: (state, walletId) => merge(state, {
     portfolioIds: { $union: [walletId] }
   }),
