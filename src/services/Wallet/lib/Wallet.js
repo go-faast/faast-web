@@ -163,6 +163,7 @@ export default class Wallet {
       .then((asset) => this._createTransaction(toAddress, amount, asset, options)
         .then((result) => ({
           walletId: this.getId(),
+          type: this.getType(),
           toAddress,
           amount,
           assetSymbol: asset.symbol,
