@@ -155,29 +155,37 @@ export const signSwundle = (swundle) => (dispatch) => {
   log.debug('signSwundle', swundle.id)
   const passwordCache = {}
   dispatch(signStarted(swundle.id))
-  return forEachSwap(swundle, (swap) => dispatch(signSwap(swap, passwordCache)))
-    .then((result) => {
-      dispatch(signSuccess(swundle.id))
-      return result
-    })
-    .catch((e) => {
-      dispatch(signFailed(swundle.id, e.message))
-      throw e
-    })
+  return forEachSwap(swundle, (swap) => {
+    if (swap.txSigned) {
+      return swap
+    }
+    return dispatch(signSwap(swap, passwordCache))
+  }).then((result) => {
+    dispatch(signSuccess(swundle.id))
+    return result
+  })
+  .catch((e) => {
+    dispatch(signFailed(swundle.id, e.message))
+    throw e
+  })
 }
 
 export const sendSwundle = (swundle, sendOptions) => (dispatch) => {
   log.debug('sendSwundle', swundle.id)
   dispatch(sendStarted(swundle.id))
-  return forEachSwap(swundle, (swap) => dispatch(sendSwap(swap, sendOptions)))
-    .then((result) => {
-      dispatch(sendSuccess(swundle.id))
-      return result
-    })
-    .catch((e) => {
-      dispatch(sendFailed(swundle.id, e.message))
-      throw e
-    })
+  return forEachSwap(swundle, (swap) => {
+    if (swap.txSent) {
+      return swap
+    }
+    return dispatch(sendSwap(swap, sendOptions))
+  }).then((result) => {
+    dispatch(sendSuccess(swundle.id))
+    return result
+  })
+  .catch((e) => {
+    dispatch(sendFailed(swundle.id, e.message))
+    throw e
+  })
 }
 
 export const restoreLatestSwundlePolling = () => (dispatch, getState) => {
