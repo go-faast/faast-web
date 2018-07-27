@@ -71,7 +71,7 @@ class SwapSubmitModal extends Component {
         && swundle.swaps.reduce((btcSwapCount, swap) => btcSwapCount + (swap.sendSymbol === 'BTC' ? 1 : 0), 0) > 1) {
       errorMessage = 'Swapping bitcoin to multiple assets at once is currently unsupported. Please try again with a single asset.'
     }
-    
+    const currentSwap = swundle.swaps.find(({ status: { detailsCode } }) => detailsCode === 'signing' || detailsCode === 'sending')
     const showSubmit = !requiresSigning || startedSigning // True if continue button triggers tx sending, false for signing
     const continueDisabled = errorMessage || (showSubmit ? (!readyToSend || startedSending) : (!readyToSign || startedSigning))
     const continueLoading = showSubmit ? startedSending : startedSigning
@@ -87,6 +87,7 @@ class SwapSubmitModal extends Component {
         handleContinue={continueHandler}
         handleCancel={this.handleCancel}
         errorMessage={errorMessage}
+        currentSwap={currentSwap}
         {...this.props}
       />
     )
