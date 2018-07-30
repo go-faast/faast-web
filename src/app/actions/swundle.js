@@ -149,6 +149,9 @@ export const createSwundle = (newSwaps) => (dispatch, getState) => {
       return getSwundle(getState(), id)
     })
     .then((swundle) => dispatch(initSwundle(swundle)))
+    .catch((e) => {
+      log.error('createSwundle error', e)
+    })
 }
 
 export const signSwundle = (swundle) => (dispatch) => {

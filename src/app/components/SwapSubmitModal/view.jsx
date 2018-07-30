@@ -6,7 +6,7 @@ import {
 
 import SwapStatusCard from 'Components/SwapStatusCard'
 import Spinner from 'Components/Spinner'
-import ConfirmTransactionModal from './ConfirmTransactionModal'
+import ConfirmTransactionModal from 'Components/ConfirmTransactionModal'
 
 const SwapSubmitModal = ({
   isOpen, swundle, headerText, continueText, continueDisabled, continueLoading,
@@ -66,7 +66,7 @@ const SwapSubmitModal = ({
         </Button>
       </ModalFooter>
     </Modal>
-    <ConfirmTransactionModal swap={currentSwap}/>
+    <ConfirmTransactionModal swap={currentSwap} handleCancel={handleCancel}/>
   </div>
 )
 

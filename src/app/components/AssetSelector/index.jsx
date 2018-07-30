@@ -87,11 +87,8 @@ class AssetSelector extends Component {
 
   handleSelect (asset) {
     const { selectAsset } = this.props
-    if (!asset.swapEnabled) {
-      return toastr.warning('COMING SOON', `${asset.name} is not available yet`)
-    }
-    if (!asset.hasWalletSupport) {
-      return toastr.warning('UNSUPPORTED WALLET', `Please connect a wallet that supports ${asset.name}`)
+    if (asset.disabled) {
+      return toastr.warning('INVALID', `Cannot add ${asset.name}: ${asset.disabledMessage}`)
     }
     selectAsset(asset)
   }
