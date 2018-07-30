@@ -21,7 +21,8 @@
     "build": "npm run lint && npm run build:webpack",
     "version": "npm run build && git add -A dist",
     "postversion": "git push && git push --tags",
-    "release": "git checkout master && git merge develop && git push && git checkout develop"
+    "release": "git checkout master && git merge develop && git push && git checkout develop",
+    "flow": "flow"
   },
   "standard": {
     "ignore": [
@@ -43,6 +44,7 @@
     "babel-plugin-transform-function-bind": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "babel-preset-flow": "^6.23.0",
     "babel-preset-react": "^6.24.1",
     "base-x": "^3.0.4",
     "bignumber.js": "^4.0.4",
@@ -64,6 +66,7 @@
     "faast-ui": "github:go-faast/faast-ui#v1.0.3",
     "favicons-webpack-plugin": "0.0.7",
     "file-loader": "^1.1.6",
+    "flow-bin": "^0.77.0",
     "fuse.js": "^3.1.0",
     "hash.js": "^1.1.3",
     "hd-wallet": "^7.11.2",
