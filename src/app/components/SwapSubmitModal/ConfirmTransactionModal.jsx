@@ -24,8 +24,6 @@ const LedgerEthInstructions = ({ swap: { tx: { amount, assetSymbol, toAddress, f
     <LedgerScreen title='Address' value={toAddress}/>
     <LedgerScreen title='Maximum fees' value={<Units value={feeAmount} symbol={feeSymbol} precision={null} prefixSymbol/>}/>
 
-    <p>Time left: <b>120s</b></p>
-
     <p><small>
       {'Tip: If you don\'t see the transaction on your device, ensure you\'ve unlocked '
       + `it using your PIN and have opened the ${feeAsset.name} app.`}
