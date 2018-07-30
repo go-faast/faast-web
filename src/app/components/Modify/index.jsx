@@ -349,7 +349,7 @@ class Modify extends Component {
     }
     const assetListProps = {
       supportedAssetSymbols: ((portfolio.nestedWallets.find(({ id }) => id === assetListWalletId) || {}).supportedAssets || []),
-      hiddenAssetSymbols: (walletHoldings[assetListWalletId] || []).filter(({ shown }) => shown).map(({ symbol }) => symbol),
+      portfolioSymbols: (walletHoldings[assetListWalletId] || []).filter(({ shown }) => shown).map(({ symbol }) => symbol),
       selectAsset: this._handleSelectAsset,
       ignoreUnavailable: false
     }

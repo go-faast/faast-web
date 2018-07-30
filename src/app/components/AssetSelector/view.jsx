@@ -32,9 +32,7 @@ const AssetSearchForm = reduxForm({
 const AssetCol = ({
   asset, handleSelect
 }) => {
-  const { symbol, name, swapEnabled, hasWalletSupport } = asset
-  const disabled = !(swapEnabled && hasWalletSupport)
-  const disabledMessage = !swapEnabled ? 'coming soon' : (!hasWalletSupport ? 'unsupported wallet' : 'unavailable')
+  const { symbol, name, disabled, disabledMessage } = asset
   return (
     <Col xs='4' lg='3'>
       <Button color='dark' size='sm' onClick={() => handleSelect(asset)} disabled={disabled}

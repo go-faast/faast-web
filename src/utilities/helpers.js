@@ -147,7 +147,7 @@ export const sortByProperty = (arr, prop, ...moreProps) => {
   if (moreProps.length > 0) {
     pass = sortByProperty(pass, ...moreProps)
   }
-  return pass.concat(fail)
+  return fail.concat(pass)
 }
 
 export const chunkify = (arr, size) => {

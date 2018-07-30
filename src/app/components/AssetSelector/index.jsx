@@ -8,21 +8,42 @@ import AssetSelectorView from './view'
 import { sortByProperty } from 'Utilities/helpers'
 import { getAllAssetsArray } from 'Selectors'
 
+function applySortOrder (list) {
+  return sortByProperty(list, 'disabled')
+}
+
 function getInitState (props) {
-  const { assets, supportedAssetSymbols, hiddenAssetSymbols } = props
+  const { assets, supportedAssetSymbols, portfolioSymbols } = props
   let assetList = [...assets]
-    .filter((a) => !hiddenAssetSymbols.includes(a.symbol))
-    .map((a) => ({
-      ...a,
-      hasWalletSupport: supportedAssetSymbols.includes(a.symbol)
-    }))
+    .map((a) => {
+      const unsupportedWallet = !supportedAssetSymbols.includes(a.symbol)
+      const alreadyInPortfolio = portfolioSymbols.includes(a.symbol)
+      const swapDisabled = !a.swapEnabled
+      const disabled = swapDisabled || unsupportedWallet || alreadyInPortfolio
+      const disabledMessage = swapDisabled
+        ? 'coming soon'
+        : (unsupportedWallet
+          ? 'unsupported wallet'
+          : (alreadyInPortfolio
+            ? 'already added'
+            : 'unavailable'))
+      return {
+        ...a,
+        disabled,
+        disabledMessage,
+        swapDisabled,
+        unsupportedWallet,
+        alreadyInPortfolio,
+      }
+    })
     .sort((a, b) => b.marketCap.cmp(a.marketCap))
-  assetList = sortByProperty(assetList, 'swapEnabled', 'hasWalletSupport')
+  assetList = applySortOrder(assetList)
   const fuse = new Fuse(assetList, {
     shouldSort: true,
     threshold: 0.6,
     location: 0,
     distance: 100,
+    minMatchCharLength: 2,
     keys: ['symbol', 'name']
   })
   return {
@@ -49,6 +70,7 @@ class AssetSelector extends Component {
       results = this.state.assetListOriginal
     } else {
       results = this.state.fuse.search(query)
+      results = applySortOrder(results)
     }
     this.setState({
       searchQuery: query,
@@ -92,12 +114,12 @@ AssetSelector.propTypes = {
   assets: PropTypes.array.isRequired,
   selectAsset: PropTypes.func.isRequired,
   supportedAssetSymbols: PropTypes.arrayOf(PropTypes.string),
-  hiddenAssetSymbols: PropTypes.arrayOf(PropTypes.string),
+  portfolioSymbols: PropTypes.arrayOf(PropTypes.string),
 }
 
 AssetSelector.defaultProps = {
   supportedAssetSymbols: [],
-  hiddenAssetSymbols: [],
+  portfolioSymbols: [],
 }
 
 export default connect(createStructuredSelector({
