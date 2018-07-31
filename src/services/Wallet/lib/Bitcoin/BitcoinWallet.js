@@ -58,6 +58,9 @@ export default class BitcoinWallet extends Wallet {
       .then(::this.assertAssetSupported)
       .then(() => this._getDiscoveryResult())
       .then(({ unusedAddresses }) => unusedAddresses[index])
+      .catch((e) => {
+        throw new Error(`Failed to get fresh bitcoin address: ${e.message}`)
+      })
   }
 
   _getDefaultFeeRate(asset, options = {}) {

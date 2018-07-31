@@ -40,6 +40,9 @@ export default class EthereumWallet extends Wallet {
     return Promise.resolve(assetOrSymbol)
       .then(::this.assertAssetSupported)
       .then(() => this.getAddress())
+      .catch((e) => {
+        throw new Error(`Failed to get ethereum address: ${e.message}`)
+      })
   }
 
   isAssetSupported(assetOrSymbol) {
