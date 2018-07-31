@@ -5,7 +5,7 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap'
 
 import {
   EthereumWalletLedger, EthereumWalletTrezor,
-  BitcoinWalletLedger, BitcoinWalletTrezor,
+  BitcoinWalletLedger, BitcoinWalletTrezor, EthereumWalletWeb3
 } from 'Services/Wallet'
 
 import LedgerEthInstructions from './LedgerEthInstructions'
@@ -14,6 +14,7 @@ import LedgerBtcInstructions from './LedgerBtcInstructions'
 const supportedTypes = {
   [EthereumWalletLedger.type]: LedgerEthInstructions,
   [BitcoinWalletLedger.type]: LedgerBtcInstructions,
+  [EthereumWalletWeb3.type]: LedgerEthInstructions,
 }
 
 export default compose(
@@ -28,7 +29,7 @@ export default compose(
     const InstructionComponent = swap && swap.tx && swap.tx.type && supportedTypes[swap.tx.type]
     return {
       InstructionComponent,
-      isOpen: Boolean(swap && swap.txSigning && InstructionComponent),
+      isOpen: Boolean(swap && InstructionComponent),
     }
   })
 )(({ swap, InstructionComponent, handleCancel, isOpen }) => (
