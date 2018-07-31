@@ -123,10 +123,6 @@ export const checkSufficientDeposit = (swap) => (dispatch, getState) => {
 export const createOrder = (swap) => (dispatch) => {
   if (swap.error) return swap
   const finish = createSwapFinish(dispatch, 'createOrder', swap)
-  const finishErrorHandler = (message) => (e) => {
-    log.error(e)
-    return finish(message)
-  }
   const { sendWalletId, sendSymbol, receiveWalletId, receiveSymbol, pair } = swap
   const sendWalletInstance = walletService.get(sendWalletId)
   const receiveWalletInstance = walletService.get(receiveWalletId)
@@ -134,14 +130,16 @@ export const createOrder = (swap) => (dispatch) => {
     sendWalletInstance.getFreshAddress(sendSymbol),
     receiveWalletInstance.getFreshAddress(receiveSymbol),
   ])
-  .catch(finishErrorHandler('Error retrieving wallet addresses'))
   .then(([returnAddress, withdrawalAddress]) => dispatch(postExchange({
     pair,
     withdrawal: withdrawalAddress,
     returnAddress,
   })))
-  .catch(finishErrorHandler('Error creating swap orders'))
   .then((order) => finish(null, { order }))
+  .catch((e) => {
+    log.error('createOrder', e)
+    return finish('Error creating swap order')
+  })
 }
 
 const createTransferEventListeners = (swap) => (dispatch) => {
@@ -177,7 +175,7 @@ export const createSwapTx = (swap, walletPreviousEthTx = {}) => (dispatch) => {
       return finish(null, { sendUnits: tx.amount, tx })
     })
   .catch((e) => {
-    log.error(e)
+    log.error('createSwapTx',e)
     return finish('Error generating deposit txn')
   })
 }
@@ -238,7 +236,7 @@ export const sendSwap = (swap, sendOptions) => (dispatch) => {
       return dispatch(swapTxSendingSuccess(id, sentTx)).payload
     })
     .catch(createSwapErrorHandler(dispatch, swap, 'sendSwap', swapTxSendingFailed, (message) => {
-      if (message.includes('User denied transaction signature')) {
+      if (message.includes('User denied transaction signature') || message.includes('denied by the user')) {
         return 'Transaction was rejected'
       }
       return message.replace('Returned error: ', '')
