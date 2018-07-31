@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { compose, setDisplayName, withProps, withHandlers } from 'recompose'
+import { compose, setDisplayName, withProps, withHandlers, branch, renderNothing } from 'recompose'
 import { createStructuredSelector } from 'reselect'
 import {
   Card, CardHeader, CardBody, CardTitle, CardText, Button
@@ -61,7 +61,11 @@ export default compose(
       }
     },
   }),
-  withProps(({ swundle }) => statusRenderData[swundle.status])
+  withProps(({ swundle }) => statusRenderData[swundle.status]),
+  branch(
+    ({ title, description }) => !(title && description),
+    renderNothing
+  )
 )(({ swundle, title, description, isModalOpen, toggleModalOpen, handleForget }) => (
   <Card>
     <CardHeader><CardTitle>Order Status</CardTitle></CardHeader>
