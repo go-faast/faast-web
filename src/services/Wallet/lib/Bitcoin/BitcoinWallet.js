@@ -12,7 +12,7 @@ const supportedAssets = ['BTC']
 
 const DEFAULT_FEE_PER_BYTE = 10
 
-@abstractMethod('getTypeLabel', 'createTransaction', '_signTx', '_sendSignedTx', '_validateTxData', '_validateSignedTxData')
+@abstractMethod('getTypeLabel', '_createAggregateTransaction', '_signTx', '_sendSignedTx', '_validateTxData', '_validateSignedTxData')
 export default class BitcoinWallet extends Wallet {
 
   static type = 'BitcoinWallet';
@@ -31,6 +31,8 @@ export default class BitcoinWallet extends Wallet {
   isAssetSupported(assetOrSymbol) { return supportedAssets.includes(this.getSymbol(assetOrSymbol)) }
 
   isSingleAddress() { return false }
+
+  isAggregateTransactionSupported() { return true }
 
   _performDiscovery() {
     const discoveryPromise = this._bitcore.discoverAccount(this.xpub)
@@ -78,6 +80,10 @@ export default class BitcoinWallet extends Wallet {
         rate: feePerByte,
         unit: 'sat/byte'
       }))
+  }
+
+  _createTransaction(address, amount, asset, options) {
+    return this._createAggregateTransaction([{ address, amount }], asset, options)
   }
 
   _getBalance(asset) {

@@ -44,14 +44,14 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
       })
   }
 
-  _createTransaction(toAddress, amount, asset) {
+  _createAggregateTransaction(outputs, asset) {
     return Promise.resolve().then(() => ({
       feeAmount: null,
       feeSymbol: 'BTC',
-      txData: [{
-        address: toAddress,
+      txData: outputs.map(({ address, amount }) => ({
+        address,
         amount: toSmallestDenomination(amount, asset.decimals).toNumber(),
-      }],
+      })),
     }))
   }
 

@@ -172,7 +172,7 @@ export const createSwapTx = (swap, walletPreviousEthTx = {}) => (dispatch) => {
       if (tx.feeSymbol === 'ETH') {
         walletPreviousEthTx[sendWalletId] = tx
       }
-      return finish(null, { sendUnits: tx.amount, tx })
+      return finish(null, { sendUnits: tx.outputs[0].amount, tx })
     })
   .catch((e) => {
     log.error('createSwapTx',e)

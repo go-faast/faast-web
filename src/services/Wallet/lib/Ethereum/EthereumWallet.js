@@ -138,7 +138,6 @@ export default class EthereumWallet extends Wallet {
           nonce: toHex(nonce)
         },
       }))
-      .then((tx) => log.debugInline('createTransaction', tx))
     })
   }
 

@@ -3,8 +3,8 @@ import { ZERO } from 'Utilities/convert'
 import log from 'Utilities/log'
 
 @abstractMethod(
-  '_getId', 'getType', 'getTypeLabel', 'getBalance', 'getFreshAddress', 'isAssetSupported',
-  'isSingleAddress', 'createTransaction', '_signTx', '_sendSignedTx', '_getTransactionReceipt',
+  'getType', 'getTypeLabel', 'getFreshAddress', 'isAssetSupported', 'isSingleAddress',
+  '_getBalance', '_createTransaction', '_signTx', '_sendSignedTx', '_getTransactionReceipt',
   '_getDefaultFeeRate')
 export default class Wallet {
 
@@ -30,6 +30,7 @@ export default class Wallet {
   isPasswordProtected() { return false }
   checkPasswordCorrect() { return true }
   isSignTransactionSupported() { return true }
+  isAggregateTransactionSupported() { return false }
 
   setAssetProvider(assetProvider) {
     if (typeof assetProvider !== 'function') {
@@ -135,18 +136,24 @@ export default class Wallet {
     }
   }
 
+  _assertAggregateTransactionSupported() {
+    if (!this.isAggregateTransactionSupported()) {
+      throw new Error(`Wallet "${this.getLabel()}" does not support createAggregateTransaction`)
+    }
+  }
+
   _signAndSendTx(tx, options = {}) {
     return this._signTx(tx, options)
       .then((signedTx) => this._sendSignedTx(signedTx, options))
   }
 
-  getDefaultFeeRate(assetOrSymbol, options) {
+  getDefaultFeeRate(assetOrSymbol, options = {}) {
     return Promise.resolve(assetOrSymbol)
       .then(::this.assertAssetSupported)
       .then((asset) => this._getDefaultFeeRate(asset, options))
   }
 
-  getBalance(assetOrSymbol, options) {
+  getBalance(assetOrSymbol, options = {}) {
     return Promise.resolve(assetOrSymbol)
       .then(::this.getSupportedAsset)
       .then((asset) => {
@@ -157,21 +164,56 @@ export default class Wallet {
       })
   }
 
-  createTransaction(toAddress, amount, assetOrSymbol, options) {
+  /** Unsupported by default, can be overriden in subclass */
+  _createAggregateTransaction() {
+    throw new Error('Unsupported method _createAggregateTransaction')
+  }
+
+  _newTransaction(asset, outputs, result) {
+    return {
+      walletId: this.getId(),
+      type: this.getType(),
+      outputs,
+      assetSymbol: asset.symbol,
+      signed: false,
+      sent: false,
+      signedTxData: null,
+      ...result
+    }
+  }
+
+  /**
+    * @param {String} address - recipient
+    * @param {(Number|BigNumber|String)} amount - amount to send in main denomination (e.g. 0.001 BTC)
+    * @param {(Object|String)} assetOrSymbol - asset being sent
+    * @param {Object} options
+    */
+  createTransaction(address, amount, assetOrSymbol, options = {}) {
     return Promise.resolve(assetOrSymbol)
       .then(::this.assertAssetSupported)
-      .then((asset) => this._createTransaction(toAddress, amount, asset, options)
-        .then((result) => ({
-          walletId: this.getId(),
-          type: this.getType(),
-          toAddress,
-          amount,
-          assetSymbol: asset.symbol,
-          signed: false,
-          sent: false,
-          signedTxData: null,
-          ...result,
-        })))
+      .then((asset) => this._createTransaction(address, amount, asset, options)
+        .then((result) => log.debugInline(
+          'createTransaction',
+          this._newTransaction(asset, [{ address, amount }], result)
+        )))
+  }
+
+  /**
+   * @param {Object[]} outputs - outputs of tx
+   * @param {String} outputs[].address - recipient
+   * @param {(Number|BigNumber|String)} outputs[].amount - amount to send in main denomination (e.g. 0.001 BTC)
+   * @param {(Object|String)} assetOrSymbol - asset being sent
+   * @param {Object} [options]
+   */
+  createAggregateTransaction(outputs, assetOrSymbol, options = {}) {
+    return Promise.resolve()
+      .then(::this._assertAggregateTransactionSupported)
+      .then(() => this.assertAssetSupported(assetOrSymbol))
+      .then((asset) => this._createAggregateTransaction(outputs, asset, options)
+        .then((result) => log.debugInline(
+          'createAggregateTransaction',
+          this._newTransaction(asset, outputs, result)
+        )))
   }
 
   signTransaction(tx, options = {}) {

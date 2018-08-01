@@ -49,24 +49,27 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
 
   isReadOnly() { return false }
 
-  _createTransaction(toAddress, amount, asset, options = {}) {
+  _createAggregateTransaction(outputs, asset, options = {}) {
     return Promise.all([
       this._getDiscoveryResult(),
       options.feeRate || this._getDefaultFeeRate(asset).then(({ rate }) => rate),
     ]).then(([discoverResult, feeRate]) => {
       const isSegwit = !this.isLegacyAccount()
-      const outputs = [{
-        address: toAddress,
+      outputs = outputs.map(({ address, amount }) => ({
+        address,
         amount: toSmallestDenomination(amount, asset.decimals).toNumber(),
-      }]
+      }))
       return this._bitcore.buildPaymentTx(discoverResult, outputs, feeRate, isSegwit)
     })
     .then((txData) => {
       return {
         feeAmount: toMainDenomination(txData.fee, asset.decimals),
         feeSymbol: 'BTC',
-        // buildPaymentTx will decrease amount to accomodate fee when sending entire balance
-        amount: toMainDenomination(txData.outputs[0].amount, asset.decimals),
+        // buildPaymentTx can adjust output amounts in some situations
+        outputs: txData.outputs.map(({ address, amount }) => ({
+          address,
+          amount: toMainDenomination(amount, asset.decimals),
+        })),
         txData,
       }
     })
