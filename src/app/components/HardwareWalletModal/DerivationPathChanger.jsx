@@ -27,9 +27,9 @@ const DerivationPathForm = reduxForm({
       placeholder='Derivation path'
       type='text'
       bsSize='md'
-      autoCorrect={false}
-      autoCapitalize={false}
-      spellCheck={false}
+      autoCorrect='false'
+      autoCapitalize='false'
+      spellCheck='false'
       validate={validateDerivationPath}
       addonAppend={({ invalid }) => (
         <Button color='primary' size='md' outline type='submit' disabled={invalid}>

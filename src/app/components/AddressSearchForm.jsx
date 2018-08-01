@@ -16,9 +16,9 @@ const AddressSearchForm = reduxForm({
         component='input'
         name='address'
         type='search'
-        autoCorrect={false}
-        autoCapitalize={false}
-        spellCheck={false}
+        autoCorrect='false'
+        autoCapitalize='false'
+        spellCheck='false'
         placeholder={placeholder}
         {...inputProps}
       />
