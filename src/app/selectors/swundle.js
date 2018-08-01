@@ -47,7 +47,7 @@ export const isLatestSwundleDismissed = createSelector(getLatestSwundle, (swundl
 export const isLatestSwundleSummaryShowing = createSelector(
   getLatestSwundle,
   isLatestSwundleDismissed,
-  (latestSwundle, isDismissed) => Boolean(latestSwundle) && !isDismissed
+  (latestSwundle, isDismissed) => Boolean(latestSwundle) && !isDismissed && latestSwundle.swaps.some((swap) => swap.tx.sent)
 )
 
 export const doesCurrentSwundleRequireSigning = createSelector(getCurrentSwundleSwaps,

@@ -245,7 +245,7 @@ export default class Wallet {
   getTransactionReceipt(tx) {
     return Promise.resolve(tx)
       .then(::this._validateTx)
-      .then(() => this._getTransactionReceipt(tx.id))
+      .then(() => tx.hash ? this._getTransactionReceipt(tx.hash) : null)
       .then((result) => log.debugInline('getTransactionReceipt', result))
   }
 

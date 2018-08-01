@@ -14,7 +14,7 @@ import reducers from './reducers'
 import { saveToAddress } from 'Utilities/storage'
 import { getDefaultPortfolio, isAppReady } from 'Selectors'
 import config from 'Config'
-import { getLatestSwundleId, getSwundleState, getSwapState, getAssetState } from 'Selectors'
+import { getLatestSwundleId, getSwundleState, getSwapState, getAssetState, getTxState } from 'Selectors'
 
 const history = createHistory({ basename: process.env.ROUTER_BASE_NAME })
 const middleware = [
@@ -47,11 +47,16 @@ store.subscribe(throttle(() => {
       const { settings } = state
       const allSwundles = getSwundleState(state)
       const allSwaps = getSwapState(state)
+      const allTxs = getTxState(state)
       const latestSwundleId = getLatestSwundleId(state)
       const latestSwapIds = (allSwundles[latestSwundleId] || {}).swaps || []
+      const latestSwaps = pick(allSwaps, latestSwapIds)
+      const latestTxIds = Object.values(latestSwaps)
+        .map(({ txId }) => txId)
       saveToAddress(wallet.id, {
         swundle: pick(allSwundles, latestSwundleId),
-        swap: pick(allSwaps, latestSwapIds),
+        swap: latestSwaps,
+        tx: pick(allTxs, latestTxIds),
         settings: settings
       })
       const assets = getAssetState(state)

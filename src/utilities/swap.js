@@ -10,9 +10,7 @@ const statusComplete = createStatus('complete', 'Complete', 'text-success')
 
 export const getSwapStatus = (swap) => {
   const {
-    error, rate, orderId, order, tx,
-    txSigning, txSigned, txSigningError,
-    txSending, txSent, txSendingError,
+    error, rate, orderId, order, tx
   } = swap
   if (error) {
     if (isString(error) && error.toLowerCase().includes('insufficient funds')) {
@@ -39,22 +37,22 @@ export const getSwapStatus = (swap) => {
     return statusPending('creating_tx', 'Generating deposit transaction')
   }
   if (!tx.receipt) {
-    if (txSendingError) {
+    if (tx.sendingError) {
       return statusFailed('send_tx_error', 'Failed to send deposit transaction, please try again')
     }
-    if (txSending) {
+    if (tx.sending) {
       return statusPending('sending', 'Sending deposit transaction')
     }
-    if (txSent) {
+    if (tx.sent) {
       return statusPending('pending_receipt', 'Waiting for transaction confirmation')
     }
-    if (txSigningError) {
+    if (tx.signingError) {
       return statusFailed('sign_tx_error', 'Failed to sign deposit transaction, please try again')
     }
-    if (txSigning) {
+    if (tx.signing) {
       return statusPending('signing', 'Awaiting signature')
     }
-    if (txSigned) {
+    if (tx.signed) {
       return statusPending('signed', 'Ready to send')
     }
     if (!tx.signingSupported) {

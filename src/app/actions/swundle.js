@@ -12,6 +12,7 @@ import {
   updateMarketInfo, checkSufficientDeposit, createOrder,
   createSwapTx, signSwap, sendSwap,
 } from 'Actions/swap'
+import { setTxs, txAdded } from 'Actions/tx'
 import { getAllWallets, getSwundle, getCurrentSwundle, getLatestSwundle } from 'Selectors'
 
 const createAction = newScopedCreateAction(__filename)
@@ -113,7 +114,7 @@ const checkSufficientBalances = (swundle) => (dispatch, getState) => {
 const createSwundleTxs = (swundle) => (dispatch) => {
   log.debug('createSwundleTxs', swundle.id)
   const walletPreviousEthTx = {}
-  return forEachSwap(swundle, (swap) => dispatch(createSwapTx(swap, walletPreviousEthTx)))
+  return forEachSwap(swundle, (swap) => dispatch(createSwapTx(swap, { walletPreviousEthTx })))
 }
 
 export const initSwundle = (swundle) => (dispatch) => Promise.resolve().then(() => {
@@ -154,7 +155,7 @@ export const createSwundle = (newSwaps) => (dispatch, getState) => {
     })
 }
 
-export const signSwundle = (swundle) => (dispatch) => {
+export const signSwundle = (swundle) => (dispatch, getState) => {
   log.debug('signSwundle', swundle.id)
   const passwordCache = {}
   dispatch(signStarted(swundle.id))
@@ -163,9 +164,9 @@ export const signSwundle = (swundle) => (dispatch) => {
       return swap
     }
     return dispatch(signSwap(swap, passwordCache))
-  }).then((result) => {
+  }).then(() => {
     dispatch(signSuccess(swundle.id))
-    return result
+    return getSwundle(getState(), swundle.id)
   })
   .catch((e) => {
     dispatch(signFailed(swundle.id, e.message))
@@ -173,7 +174,7 @@ export const signSwundle = (swundle) => (dispatch) => {
   })
 }
 
-export const sendSwundle = (swundle, sendOptions) => (dispatch) => {
+export const sendSwundle = (swundle, sendOptions) => (dispatch, getState) => {
   log.debug('sendSwundle', swundle.id)
   dispatch(sendStarted(swundle.id))
   return forEachSwap(swundle, (swap) => {
@@ -181,9 +182,9 @@ export const sendSwundle = (swundle, sendOptions) => (dispatch) => {
       return swap
     }
     return dispatch(sendSwap(swap, sendOptions))
-  }).then((result) => {
+  }).then(() => {
     dispatch(sendSuccess(swundle.id))
-    return result
+    return getSwundle(getState(), swundle.id)
   })
   .catch((e) => {
     dispatch(sendFailed(swundle.id, e.message))
@@ -204,6 +205,18 @@ export const restoreSwundles = (state) => (dispatch) => {
   let hasSwundle = false
   if (validateSwundleV2(state)) {
     swapList = Array.isArray(state.swap) ? state.swap : Object.values(state.swap)
+    if (state.tx) {
+      dispatch(setTxs(state.tx))
+    }
+    swapList.forEach(({ tx }, i) => {
+      if (tx) {
+        if (!tx.id) {
+          tx.id = uuid()
+          swapList[i].txId = tx.id
+        }
+        dispatch(txAdded(tx))
+      }
+    })
     dispatch(setSwaps(swapList))
     if (state.swundle) {
       hasSwundle = true
