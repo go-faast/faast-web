@@ -36,6 +36,7 @@ class SwapSubmitModal extends Component {
   handleSignTxs () {
     const { swundle, signSwundle } = this.props
     signSwundle(swundle)
+      .then(() => closeTrezorWindow())
       .catch((e) => {
         toastr.error(e.message || e)
         log.error(e)
