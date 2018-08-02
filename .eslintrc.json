@@ -38,6 +38,15 @@
         "react/prop-types": "off",
         "no-console": "off",
         "react/no-find-dom-node": "off",
-        "no-case-declarations": "off"
+        "no-case-declarations": "off",
+        "space-before-blocks": ["error", "always"],
+        "space-infix-ops": "error",
+        "arrow-spacing": ["error", { "before": true, "after": true }],
+        "keyword-spacing": ["error", { "before": true, "after": true }],
+        "func-call-spacing": ["error", "never"],
+        "space-in-parens": ["error", "never"],
+        "object-curly-spacing": ["error", "always"],
+        "array-bracket-spacing": ["error", "never"],
+        "computed-property-spacing": ["error", "never"]
     }
 }
