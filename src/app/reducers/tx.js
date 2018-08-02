@@ -63,10 +63,36 @@ export default createReducer({
   [txHashUpdated]: updateTx,
   [txReceiptUpdated]: updateTx,
   [txConfirmationsUpdated]: updateTx,
-  [txSigningStart]: (state, { id }) => updateTx(state, { id, signing: true, signingError: '' }),
-  [txSigningSuccess]: (state, updatedTx) => updateTx(state, normalize({ ...updatedTx, signing: false, signed: true })),
-  [txSigningFailed]: (state, { id, signingError }) => updateTx(state, { id, signing: false, signingError: signingError }),
-  [txSendingStart]: (state, { id }) => updateTx(state, { id, sending: true, sendingError: '' }),
-  [txSendingSuccess]: (state, updatedTx) => updateTx(state, normalize({ ...updatedTx, sending: false, sent: true })),
-  [txSendingFailed]: (state, { id, sendingError }) => updateTx(state, { id, sending: false, sendingError: sendingError }),
+  [txSigningStart]: (state, { id }) => updateTx(state, {
+    id,
+    signing: true,
+    signingError: txInitialState.signingError,
+  }),
+  [txSigningSuccess]: (state, updatedTx) => updateTx(state, normalize({
+    ...updatedTx,
+    signing: false,
+    signed: true,
+    signingError: txInitialState.signingError,
+  })),
+  [txSigningFailed]: (state, { id, signingError }) => updateTx(state, {
+    id,
+    signing: false,
+    signingError: signingError,
+  }),
+  [txSendingStart]: (state, { id }) => updateTx(state, {
+    id,
+    sending: true,
+    sendingError: txInitialState.sendingError,
+  }),
+  [txSendingSuccess]: (state, updatedTx) => updateTx(state, normalize({
+    ...updatedTx,
+    sending: false,
+    sent: true,
+    sendingError: txInitialState.sendingError,
+  })),
+  [txSendingFailed]: (state, { id, sendingError }) => updateTx(state, {
+    id,
+    sending: false,
+    sendingError: sendingError
+  }),
 }, initialState)
