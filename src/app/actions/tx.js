@@ -26,14 +26,6 @@ export const txSendingStart = createAction('TX_SENDING_START', (id) => ({ id }))
 export const txSendingSuccess = createAction('TX_SENDING_SUCCESS', (updatedTx) => updatedTx)
 export const txSendingFailed = createAction('TX_SENDING_FAILED', (id, errorMessage) => ({ id, sendingError: errorMessage }))
 
-const getTxOrThrow = (state, txId) => {
-  const tx = getTx(state, txId)
-  if (!tx) {
-    throw new Error(`No tx with id ${txId}`)
-  }
-  return tx
-}
-
 const newTxErrorHandler = (dispatch, tx, methodName, failureAction, filterMessage = identity) => (e) => {
   log.error(`${methodName} error for tx ${tx.id}`, e)
   const message = filterMessage(e.message)
@@ -47,30 +39,36 @@ const newTxErrorHandler = (dispatch, tx, methodName, failureAction, filterMessag
   throw e
 }
 
-export const createTx = (walletId, address, amount, assetSymbol, options = {}) => (dispatch) => Promise.resolve().then(() => {
+export const addTx = (tx) => (dispatch) => {
+  tx.id = tx.id || uuid()
+  return dispatch(txAdded(tx)).payload
+}
+
+export const createAggregateTx = (walletId, outputs, assetSymbol, options) => (dispatch) => Promise.resolve().then(() => {
   const walletInstance = walletService.get(walletId)
   if (!walletInstance) {
     throw new Error(`Cannot get wallet ${walletId}`)
   }
-  const walletPreviousEthTx = options.walletPreviousEthTx || {}
-  return walletInstance.createTransaction(address, amount, assetSymbol, { previousTx: walletPreviousEthTx[walletId] })
-    .then((tx) => {
-      if (tx.feeSymbol === 'ETH' && walletPreviousEthTx) {
-        walletPreviousEthTx[walletId] = tx
-      }
-      tx.id = tx.id || uuid()
-      return dispatch(txAdded(tx)).payload
-    })
+  return walletInstance.createAggregateTransaction(outputs, assetSymbol, options)
+    .then((tx) => dispatch(addTx(tx)))
 })
 
-export const signTx = (txId, passwordCache) => (dispatch, getState) => Promise.resolve().then(() => {
-  const tx = getTxOrThrow(getState(), txId)
+export const createTx = (walletId, address, amount, assetSymbol, options) => (dispatch) => Promise.resolve().then(() => {
+  const walletInstance = walletService.get(walletId)
+  if (!walletInstance) {
+    throw new Error(`Cannot get wallet ${walletId}`)
+  }
+  return walletInstance.createTransaction(address, amount, assetSymbol, options)
+    .then((tx) => dispatch(addTx(tx)))
+})
+
+export const signTx = (tx, passwordCache) => (dispatch) => Promise.resolve().then(() => {
   const { walletId } = tx
   const walletInstance = walletService.get(walletId)
   if (!walletInstance.isSignTransactionSupported()) {
     return
   }
-  dispatch(txSigningStart(txId))
+  dispatch(txSigningStart(tx.id))
 
   const passwordPromise = (isUndefined(passwordCache[walletId]) && walletInstance.isPasswordProtected())
     ? dispatch(getWalletPassword(walletId))
@@ -99,16 +97,15 @@ const newSendTxEventListeners = (txId) => (dispatch) => ({
   }
 })
 
-export const sendTx = (txId, sendOptions) => (dispatch, getState) => Promise.resolve().then(() => {
-  const tx = getTxOrThrow(getState(), txId)
+export const sendTx = (tx, sendOptions) => (dispatch) => Promise.resolve().then(() => {
   const { walletId } = tx
-  const eventListeners = dispatch(newSendTxEventListeners(txId))
+  const eventListeners = dispatch(newSendTxEventListeners(tx.id))
   const walletInstance = walletService.get(walletId)
-  dispatch(txSendingStart(txId))
+  dispatch(txSendingStart(tx.id))
 
   return walletInstance.sendTransaction(tx, { ...eventListeners, ...sendOptions })
     .then((sentTx) => {
-      dispatch(pollTxReceipt(txId))
+      dispatch(pollTxReceipt(tx.id))
       return dispatch(txSendingSuccess(sentTx)).payload
     })
     .catch(newTxErrorHandler(dispatch, tx, 'sendTx', txSendingFailed, (message) => {

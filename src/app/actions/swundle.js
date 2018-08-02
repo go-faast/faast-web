@@ -1,5 +1,5 @@
 import uuid from 'uuid/v4'
-import { isObject, isArray, mergeWith } from 'lodash'
+import { isObject, isArray, mergeWith, groupBy } from 'lodash'
 
 import log from 'Utilities/log'
 import { restoreFromAddress } from 'Utilities/storage'
@@ -12,8 +12,9 @@ import {
   updateMarketInfo, checkSufficientDeposit, createOrder,
   createSwapTx, signSwap, sendSwap,
 } from 'Actions/swap'
-import { setTxs, txAdded } from 'Actions/tx'
+import { setTxs, txAdded, setSwapTx, createAggregateTx } from 'Actions/tx'
 import { getAllWallets, getSwundle, getCurrentSwundle, getLatestSwundle } from 'Selectors'
+import walletService from 'Services/Wallet'
 
 const createAction = newScopedCreateAction(__filename)
 
@@ -111,10 +112,33 @@ const checkSufficientBalances = (swundle) => (dispatch, getState) => {
   return swundle
 }
 
-const createSwundleTxs = (swundle) => (dispatch) => {
+const createSwundleTxs = (swundle, options) => (dispatch, getState) => {
   log.debug('createSwundleTxs', swundle.id)
-  const walletPreviousEthTx = {}
-  return forEachSwap(swundle, (swap) => dispatch(createSwapTx(swap, { walletPreviousEthTx })))
+  const swapsByWallet = groupBy(swundle.swaps, 'sendWalletId')
+
+  return Promise.all(Object.entries(swapsByWallet).map(([walletId, walletSwaps]) => {
+    const walletInstance = walletService.getOrThrow(walletId)
+    const swapsByAsset = groupBy(walletSwaps, 'sendSymbol')
+
+    return Promise.all(Object.entries(swapsByAsset).map(([symbol, swaps]) => {
+      if (walletInstance.isAggregateTransactionSupported(symbol)) {
+        // Create a single aggregate transaction for multiple swaps (e.g. bitcoin, litecoin)
+        const outputs = swaps.map(({ sendUnits, order }) => ({
+          address: order.deposit,
+          amount: sendUnits,
+        }))
+        return dispatch(createAggregateTx(walletId, outputs, symbol, options))
+          .then((tx) => Promise.all(swaps.map((swap, i) => dispatch(setSwapTx(swap.id, tx, i)))))
+      } else {
+        // Create a transaction for each swap (e.g. ethereum)
+        let previousTx
+        return processArray(walletSwaps, (swap) => dispatch(createSwapTx(swap, { ...options, previousTx })))
+          .then((tx) => {
+            previousTx = tx
+          })
+      }
+    }))
+  })).then(() => getSwundle(getState(), swundle.id))
 }
 
 export const initSwundle = (swundle) => (dispatch) => Promise.resolve().then(() => {
@@ -159,37 +183,29 @@ export const signSwundle = (swundle) => (dispatch, getState) => {
   log.debug('signSwundle', swundle.id)
   const passwordCache = {}
   dispatch(signStarted(swundle.id))
-  return forEachSwap(swundle, (swap) => {
-    if (swap.txSigned) {
-      return swap
-    }
-    return dispatch(signSwap(swap, passwordCache))
-  }).then(() => {
-    dispatch(signSuccess(swundle.id))
-    return getSwundle(getState(), swundle.id)
-  })
-  .catch((e) => {
-    dispatch(signFailed(swundle.id, e.message))
-    throw e
-  })
+  return forEachSwap(swundle, (swap) => dispatch(signSwap(swap, passwordCache)))
+    .then(() => {
+      dispatch(signSuccess(swundle.id))
+      return getSwundle(getState(), swundle.id)
+    })
+    .catch((e) => {
+      dispatch(signFailed(swundle.id, e.message))
+      throw e
+    })
 }
 
 export const sendSwundle = (swundle, sendOptions) => (dispatch, getState) => {
   log.debug('sendSwundle', swundle.id)
   dispatch(sendStarted(swundle.id))
-  return forEachSwap(swundle, (swap) => {
-    if (swap.txSent) {
-      return swap
-    }
-    return dispatch(sendSwap(swap, sendOptions))
-  }).then(() => {
-    dispatch(sendSuccess(swundle.id))
-    return getSwundle(getState(), swundle.id)
-  })
-  .catch((e) => {
-    dispatch(sendFailed(swundle.id, e.message))
-    throw e
-  })
+  return forEachSwap(swundle, (swap) => dispatch(sendSwap(swap, sendOptions)))
+    .then(() => {
+      dispatch(sendSuccess(swundle.id))
+      return getSwundle(getState(), swundle.id)
+    })
+    .catch((e) => {
+      dispatch(sendFailed(swundle.id, e.message))
+      throw e
+    })
 }
 
 export const restoreLatestSwundlePolling = () => (dispatch, getState) => {
