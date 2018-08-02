@@ -9,22 +9,22 @@ import log from 'Log'
 
 const createAction = newScopedCreateAction(__filename)
 
-export const setTxs = createAction('SET_TXS')
-export const txAdded = createAction('TX_ADDED')
-export const txRemoved = createAction('TX_REMOVED')
-export const txUpdated = createAction('TX_UPDATED', (id, data) => ({ id, ...data }))
+export const txsRestored = createAction('RESTORED')
+export const txAdded = createAction('ADDED')
+export const txRemoved = createAction('REMOVED')
+export const txUpdated = createAction('UPDATED', (id, data) => ({ id, ...data }))
 
-export const txHashUpdated = createAction('TX_HASH_UPDATED', (id, hash) => ({ id, hash }))
-export const txReceiptUpdated = createAction('TX_RECEIPT_UPDATED', (id, receipt) => ({ id, receipt }))
-export const txConfirmationsUpdated = createAction('TX_CONFIRMATIONS_UPDATED', (id, confirmations) => ({ id, confirmations }))
+export const txHashUpdated = createAction('HASH_UPDATED', (id, hash) => ({ id, hash }))
+export const txReceiptUpdated = createAction('RECEIPT_UPDATED', (id, receipt) => ({ id, receipt }))
+export const txConfirmationsUpdated = createAction('CONFIRMATIONS_UPDATED', (id, confirmations) => ({ id, confirmations }))
 
-export const txSigningStart = createAction('TX_SIGNING_START', (id) => ({ id }))
-export const txSigningSuccess = createAction('TX_SIGNING_SUCCESS', (updatedTx) => updatedTx)
-export const txSigningFailed = createAction('TX_SIGNING_FAILED', (id, errorMessage) => ({ id, signingError: errorMessage }))
+export const txSigningStart = createAction('SIGNING_START', (id) => ({ id }))
+export const txSigningSuccess = createAction('SIGNING_SUCCESS', (updatedTx) => updatedTx)
+export const txSigningFailed = createAction('SIGNING_FAILED', (id, errorMessage) => ({ id, signingError: errorMessage }))
 
-export const txSendingStart = createAction('TX_SENDING_START', (id) => ({ id }))
-export const txSendingSuccess = createAction('TX_SENDING_SUCCESS', (updatedTx) => updatedTx)
-export const txSendingFailed = createAction('TX_SENDING_FAILED', (id, errorMessage) => ({ id, sendingError: errorMessage }))
+export const txSendingStart = createAction('SENDING_START', (id) => ({ id }))
+export const txSendingSuccess = createAction('SENDING_SUCCESS', (updatedTx) => updatedTx)
+export const txSendingFailed = createAction('SENDING_FAILED', (id, errorMessage) => ({ id, sendingError: errorMessage }))
 
 const newTxErrorHandler = (dispatch, tx, methodName, failureAction, filterMessage = identity) => (e) => {
   log.error(`${methodName} error for tx ${tx.id}`, e)

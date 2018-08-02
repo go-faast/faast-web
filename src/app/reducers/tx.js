@@ -4,7 +4,8 @@ import { omit, pick, isObject } from 'lodash'
 import { createUpdater, createUpserter } from 'Utilities/helpers'
 import { resetAll } from 'Actions/app'
 import {
-  setTxs,
+  txsRestored,
+  txRestored,
   txAdded,
   txUpdated,
   txRemoved,
@@ -20,6 +21,13 @@ import {
 } from 'Actions/tx'
 
 const initialState = {}
+const txUnpersistedInitialState = {
+  signing: false,
+  signingError: '',
+  sending: false,
+  sendingError: '',
+  receipt: null,
+}
 const txInitialState = {
   id: '',
   walletId: '',
@@ -31,25 +39,24 @@ const txInitialState = {
   txData: null,
   signedTxData: null,
   hash: null,
-  signing: false,
   signed: false,
-  signingError: '',
-  sending: false,
   sent: false,
-  sendingError: '',
-  receipt: null,
+  ...txUnpersistedInitialState
 }
 
 const normalize = (tx) => pick(tx, Object.keys(txInitialState))
+const prune = (tx) => omit(tx, Object.keys(txUnpersistedInitialState))
 
 const upsertTx = createUpserter('id', txInitialState)
 const updateTx = createUpdater('id')
 
 export default createReducer({
   [resetAll]: () => initialState,
-  [setTxs]: (state, txs) => (isObject(txs) ? Object.values(txs) : txs)
+  [txsRestored]: (state, txs) => (isObject(txs) ? Object.values(txs) : txs)
+    .map(prune)
     .map(normalize)
     .reduce(upsertTx, {}),
+  [txRestored]: (state, tx) => upsertTx(state, normalize(prune(tx))),
   [txAdded]: (state, tx) => upsertTx(state, normalize(tx)),
   [txUpdated]: (state, tx) => updateTx(state, normalize(tx)),
   [txRemoved]: (state, { id }) => omit(state, id),

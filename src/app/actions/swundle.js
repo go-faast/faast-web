@@ -8,17 +8,17 @@ import { processArray } from 'Utilities/helpers'
 import { ZERO, BigNumber, toBigNumber } from 'Utilities/convert'
 
 import {
-  setSwaps, addSwap, removeSwap, restoreSwapPolling,
+  swapsRestored, addSwap, removeSwap, restoreSwapPolling,
   updateMarketInfo, checkSufficientDeposit, createOrder,
   createSwapTx, signSwap, sendSwap, setSwapTx,
 } from 'Actions/swap'
-import { setTxs, txAdded, createAggregateTx } from 'Actions/tx'
+import { txsRestored, txRestored, createAggregateTx } from 'Actions/tx'
 import { getAllWallets, getSwundle, getCurrentSwundle, getLatestSwundle } from 'Selectors'
 import walletService from 'Services/Wallet'
 
 const createAction = newScopedCreateAction(__filename)
 
-export const setSwundles = createAction('SET_ALL')
+export const swundlesRestored = createAction('SET_ALL')
 export const swundleAdded = createAction('ADDED', (swundle) => ({
   ...swundle,
   swaps: swundle.swaps.map((swap) => typeof swap === 'string' ? swap : swap.id)
@@ -224,7 +224,7 @@ export const restoreSwundles = (state) => (dispatch) => {
   if (validateSwundleV2(state)) {
     swapList = Array.isArray(state.swap) ? state.swap : Object.values(state.swap)
     if (state.tx) {
-      dispatch(setTxs(state.tx))
+      dispatch(txsRestored(state.tx))
     }
     swapList.forEach(({ tx }, i) => {
       if (tx) {
@@ -232,13 +232,13 @@ export const restoreSwundles = (state) => (dispatch) => {
           tx.id = uuid()
           swapList[i].txId = tx.id
         }
-        dispatch(txAdded(tx))
+        dispatch(txRestored(tx))
       }
     })
-    dispatch(setSwaps(swapList))
+    dispatch(swapsRestored(swapList))
     if (state.swundle) {
       hasSwundle = true
-      dispatch(setSwundles(state.swundle))
+      dispatch(swundlesRestored(state.swundle))
     }
   } else if (validateSwundleV1(state)) {
     swapList = state.reduce((swapList, send) => [
@@ -258,7 +258,7 @@ export const restoreSwundles = (state) => (dispatch) => {
         }
       })),
     ], [])
-    dispatch(setSwaps(swapList))
+    dispatch(swapsRestored(swapList))
   }
   if (swapList && !hasSwundle) {
     const createdDate = ((swapList[0] || {}).order || {}).created || Date.now()

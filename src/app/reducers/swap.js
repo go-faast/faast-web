@@ -6,7 +6,7 @@ import { ZERO } from 'Utilities/convert'
 
 import { resetAll } from 'Actions/app'
 import {
-  resetSwaps, setSwaps, swapAdded, swapUpdated, swapRemoved,
+  resetSwaps, swapsRestored, swapAdded, swapUpdated, swapRemoved,
   swapOrderUpdated,
 } from 'Actions/swap'
 
@@ -49,7 +49,7 @@ const normalize = (swap) => ({
 export default createReducer({
   [resetAll]: () => initialState,
   [resetSwaps]: () => initialState,
-  [setSwaps]: (state, swaps) => (isObject(swaps) ? Object.values(swaps) : swaps)
+  [swapsRestored]: (state, swaps) => (isObject(swaps) ? Object.values(swaps) : swaps)
     .map(normalize)
     .reduce(upsertSwap, {}),
   [swapAdded]: (state, swap) => upsertSwap(state, normalize(swap)),

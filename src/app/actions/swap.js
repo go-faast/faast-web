@@ -14,7 +14,7 @@ import { getAsset, getSwap, getTx } from 'Selectors'
 
 const createAction = newScopedCreateAction(__filename)
 
-export const setSwaps = createAction('SET_ALL')
+export const swapsRestored = createAction('RESTORED')
 export const resetSwaps = createAction('RESET_ALL')
 export const swapAdded = createAction('ADDED')
 export const swapRemoved = createAction('REMOVED', (id) => ({ id }))

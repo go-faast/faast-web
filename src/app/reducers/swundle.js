@@ -1,38 +1,47 @@
 import { createReducer } from 'redux-act'
-import { omit } from 'lodash'
+import { isObject, omit, pick } from 'lodash'
 
 import { createUpdater, createUpserter } from 'Utilities/helpers'
 
 import { resetAll } from 'Actions/app'
 
 import {
-  setSwundles, swundleAdded, swundleRemoved, swundleDismissed,
+  swundlesRestored, swundleAdded, swundleRemoved, swundleDismissed,
   initStarted, initSuccess, initFailed,
   signStarted, signSuccess, signFailed,
   sendStarted, sendSuccess, sendFailed,
 } from 'Actions/swundle'
 
 const initialState = {}
+
+const swundleUnpersistedInitialState = {
+  initializing: false,
+  signing: false,
+  sending: false,
+  error: '',
+}
 const swundleInitialState = {
   id: '',
-  dismissed: false,
-  initializing: false,
-  initialized: false,
-  signing: false,
-  signed: false,
-  sending: false,
-  sent: false,
-  error: '',
   createdDate: 0,
   swaps: [],
+  dismissed: false,
+  initialized: false,
+  signed: false,
+  sent: false,
+  ...swundleUnpersistedInitialState
 }
+
+const normalize = (swundle) => pick(swundle, Object.keys(swundleInitialState))
 
 const upsert = createUpserter('id', swundleInitialState)
 const update = createUpdater('id')
 
 export default createReducer({
   [resetAll]: () => initialState,
-  [setSwundles]: (state, swundles) => swundles,
+  [swundlesRestored]: (state, swundles) => (isObject(swundles) ? Object.values(swundles) : swundles)
+    .map((swundle) => omit(swundle, Object.keys(swundleUnpersistedInitialState)))
+    .map(normalize)
+    .reduce(upsert, {}),
   [swundleAdded]: upsert,
   [swundleRemoved]: (state, { id }) => omit(state, id),
   [swundleDismissed]: (state, { id }) => update(state, { id, dismissed: true }),
