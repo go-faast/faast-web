@@ -57,9 +57,9 @@ export default createReducer({
   [txReceiptUpdated]: updateTx,
   [txConfirmationsUpdated]: updateTx,
   [txSigningStart]: (state, { id }) => updateTx(state, { id, signing: true, signingError: '' }),
-  [txSigningSuccess]: (state, updatedTx) => updateTx(state, { ...updatedTx, signing: false, signed: true }),
+  [txSigningSuccess]: (state, updatedTx) => updateTx(state, normalize({ ...updatedTx, signing: false, signed: true })),
   [txSigningFailed]: (state, { id, signingError }) => updateTx(state, { id, signing: false, signingError: signingError }),
   [txSendingStart]: (state, { id }) => updateTx(state, { id, sending: true, sendingError: '' }),
-  [txSendingSuccess]: (state, updatedTx) => updateTx(state, { ...updatedTx, sending: false, sent: true }),
+  [txSendingSuccess]: (state, updatedTx) => updateTx(state, normalize({ ...updatedTx, sending: false, sent: true })),
   [txSendingFailed]: (state, { id, sendingError }) => updateTx(state, { id, sending: false, sendingError: sendingError }),
 }, initialState)
