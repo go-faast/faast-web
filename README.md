@@ -48,6 +48,17 @@ npm run dev
 
 Once compiled, open [https://localhost:8080/portfolio](https://localhost:8080/portfolio) in your browser.
 
+To resolve the SSL warning follow you have the following options:
+###### On MacOS
+1. Go to `Applications -> Keychain Access`
+2. `File -> Import Items`
+3. Import `faast-portfolio -> node_modules -> webpack-dev-server -> ssl -> server.pem`
+4. Double click newly imported item in Keychain Access (most likely named 'localhost') to open options
+5. `Trust -> Set: When using this certificate to 'Always Trust'`
+
+###### On Google Chrome Browser
+1. Visit [chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost) and set the property to `Enabled`.
+
 ### Branches
 
 The [OneFlow](http://endoflineblog.com/oneflow-a-git-branching-model-and-workflow) model will be followed as best as possible, with **develop** being the working branch and **master** pointing to the latest release tag.

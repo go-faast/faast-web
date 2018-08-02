@@ -90,9 +90,9 @@ export const getWalletWithHoldings = createItemSelector(
       .map((symbol) => assets[symbol])
       .filter((asset) => typeof asset === 'object' && asset !== null)
       .map((asset) => {
-        const { symbol, ERC20, price = ZERO, change24 = ZERO } = asset
+        const { symbol, price = ZERO, change24 = ZERO } = asset
         const balance = balances[symbol] || ZERO
-        const shown = balance.greaterThan(0) || !ERC20
+        const shown = balance.greaterThan(0)
         const fiat = toUnit(balance, price, 2)
         const price24hAgo = price.div(change24.plus(100).div(100))
         const fiat24hAgo = toUnit(balance, price24hAgo, 2)
