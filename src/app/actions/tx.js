@@ -45,10 +45,7 @@ export const addTx = (tx) => (dispatch) => {
 }
 
 export const createAggregateTx = (walletId, outputs, assetSymbol, options) => (dispatch) => Promise.resolve().then(() => {
-  const walletInstance = walletService.get(walletId)
-  if (!walletInstance) {
-    throw new Error(`Cannot get wallet ${walletId}`)
-  }
+  const walletInstance = walletService.getOrThrow(walletId)
   return walletInstance.createAggregateTransaction(outputs, assetSymbol, options)
     .then((tx) => dispatch(addTx(tx)))
 })
@@ -63,8 +60,9 @@ export const createTx = (walletId, address, amount, assetSymbol, options) => (di
 })
 
 export const signTx = (tx, passwordCache) => (dispatch) => Promise.resolve().then(() => {
+  log.debug('signTx', tx)
   const { walletId } = tx
-  const walletInstance = walletService.get(walletId)
+  const walletInstance = walletService.getOrThrow(walletId)
   if (!walletInstance.isSignTransactionSupported()) {
     return
   }
@@ -98,9 +96,10 @@ const newSendTxEventListeners = (txId) => (dispatch) => ({
 })
 
 export const sendTx = (tx, sendOptions) => (dispatch) => Promise.resolve().then(() => {
+  log.debug('sendTx', tx, sendOptions)
   const { walletId } = tx
   const eventListeners = dispatch(newSendTxEventListeners(tx.id))
-  const walletInstance = walletService.get(walletId)
+  const walletInstance = walletService.getOrThrow(walletId)
   dispatch(txSendingStart(tx.id))
 
   return walletInstance.sendTransaction(tx, { ...eventListeners, ...sendOptions })

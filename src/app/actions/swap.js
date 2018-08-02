@@ -162,7 +162,7 @@ export const signSwap = (swap, passwordCache = {}) => (dispatch, getState) => Pr
     if (tx.signed) {
       return
     }
-    return dispatch(signTx(txId, passwordCache))
+    return dispatch(signTx(tx, passwordCache))
   })
 
 export const sendSwap = (swap, sendOptions) => (dispatch, getState) => Promise.resolve()

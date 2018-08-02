@@ -70,7 +70,7 @@ class SwapSubmitModal extends Component {
     let errorMessage = swundle.error
     const currentSwap = swundle.swaps.find(({ txSigning }) => txSigning)
     const showSubmit = !requiresSigning || startedSigning // True if continue button triggers tx sending, false for signing
-    const continueDisabled = Boolean(errorMessage) || (showSubmit ? (!readyToSend || startedSending) : (!readyToSign || startedSigning))
+    const continueDisabled = showSubmit ? (!readyToSend || startedSending) : (!readyToSign || startedSigning)
     const continueLoading = showSubmit ? startedSending : startedSigning
     const continueHandler = showSubmit ? this.handleSendTxs : this.handleSignTxs
     const continueText = showSubmit ? 'Submit all' : 'Begin signing'

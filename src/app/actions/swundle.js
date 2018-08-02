@@ -113,12 +113,14 @@ const checkSufficientBalances = (swundle) => (dispatch, getState) => {
 }
 
 const createSwundleTxs = (swundle, options) => (dispatch, getState) => {
-  log.debug('createSwundleTxs', swundle.id)
+  log.debug('createSwundleTxs', swundle)
   const swapsByWallet = groupBy(swundle.swaps, 'sendWalletId')
+  log.debug('swapsByWallet', swapsByWallet)
 
   return Promise.all(Object.entries(swapsByWallet).map(([walletId, walletSwaps]) => {
     const walletInstance = walletService.getOrThrow(walletId)
     const swapsByAsset = groupBy(walletSwaps, 'sendSymbol')
+    log.debug('swapsByAsset', swapsByAsset)
 
     return Promise.all(Object.entries(swapsByAsset).map(([symbol, swaps]) => {
       if (walletInstance.isAggregateTransactionSupported(symbol)) {
@@ -132,7 +134,7 @@ const createSwundleTxs = (swundle, options) => (dispatch, getState) => {
       } else {
         // Create a transaction for each swap (e.g. ethereum)
         let previousTx
-        return processArray(walletSwaps, (swap) => dispatch(createSwapTx(swap, { ...options, previousTx })))
+        return processArray(swaps, (swap) => dispatch(createSwapTx(swap, { ...options, previousTx })))
           .then((tx) => {
             previousTx = tx
           })
