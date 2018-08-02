@@ -21,7 +21,7 @@ const parseWalletObject = (wallet) => {
     walletType = wallet.data.type
   }
   const { label } = wallet
-  switch(walletType) {
+  switch (walletType) {
     // Legacy formats
     case 'keystore': return new EthereumWalletKeystore(wallet.data, label)
     case 'metamask': return new EthereumWalletWeb3(wallet.address, 'MetaMask', label)

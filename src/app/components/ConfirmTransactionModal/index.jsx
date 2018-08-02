@@ -9,8 +9,11 @@ import {
 } from 'Services/Wallet'
 
 import LedgerEthInstructions from './LedgerEthInstructions'
+import LedgerBtcInstructions from './LedgerBtcInstructions'
 
 const supportedTypes = {
+  [EthereumWalletLedger.type]: LedgerEthInstructions,
+  [BitcoinWalletLedger.type]: LedgerBtcInstructions,
   [EthereumWalletWeb3.type]: LedgerEthInstructions,
 }
 
@@ -36,7 +39,7 @@ export default compose(
     </ModalHeader>
     <ModalBody>
       {InstructionComponent && (
-        <InstructionComponent swap={swap}/>
+        <InstructionComponent tx={swap.tx}/>
       )}
     </ModalBody>
     <ModalFooter className='justify-content-between'>

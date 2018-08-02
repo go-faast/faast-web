@@ -1,7 +1,6 @@
 import config from 'Config'
 import log from 'Utilities/log'
-import { toSmallestDenomination } from 'Utilities/convert'
-import { xpubToYpub } from 'Utilities/bitcoin'
+import { xpubToYpub, derivationPathStringToArray } from 'Utilities/bitcoin'
 import Trezor from 'Services/Trezor'
 
 import BitcoinWallet from './BitcoinWallet'
@@ -44,33 +43,38 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
       })
   }
 
-  _createTransaction(toAddress, amount, asset) {
-    return Promise.resolve().then(() => ({
-      feeAmount: null,
-      feeSymbol: 'BTC',
-      txData: [{
-        address: toAddress,
-        amount: toSmallestDenomination(amount, asset.decimals).toNumber(),
-      }],
-    }))
-  }
-
-
   _signTx(tx) {
-    return Trezor.composeAndSignTx(tx.txData)
+    const { txData: { inputUtxos, outputs, change, changePath } } = tx
+    const baseDerivationPathArray = derivationPathStringToArray(this.derivationPath)
+    const trezorInputs = inputUtxos.map(({ addressPath, transactionHash, index, value }) => ({
+      address_n: baseDerivationPathArray.concat(addressPath),
+      prev_hash: transactionHash,
+      prev_index: index,
+      ...(this.isLegacyAccount() ? {} : {
+        amount: value,
+        script_type: 'SPENDP2SHWITNESS',
+      }),
+    }))
+    const trezorOutputs = outputs.map(({ address, amount }) => ({
+      address,
+      amount,
+      script_type: 'PAYTOADDRESS',
+    }))
+    if (change > 0) {
+      trezorOutputs.push({
+        address_n: baseDerivationPathArray.concat(changePath),
+        amount: change,
+        script_type: this.isLegacyAccount() ? 'PAYTOADDRESS' : 'PAYTOP2SHWITNESS',
+      })
+    }
+    log.debug('_signTx inputs outputs', trezorInputs, trezorOutputs)
+    return Trezor.signTx(trezorInputs, trezorOutputs)
       .then((result) => {
-        log.info('Transaction composed and signed:', result)
+        log.info('Transaction signed:', result)
         const { serialized_tx: signedTxData } = result
         return {
-          signedTxData
+          signedTxData,
         }
       })
-  }
-
-  _validateTxData(txData) {
-    if (txData === null || !Array.isArray(txData)) {
-      throw new Error(`Invalid ${this.getType()} txData of type ${typeof txData}`)
-    }
-    return txData
   }
 }

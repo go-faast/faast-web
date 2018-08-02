@@ -6,30 +6,28 @@ import { toBigNumber } from 'Utilities/convert'
 
 import { getAllAssets } from './asset'
 import { getAllWallets } from './wallet'
+import { getAllTxs } from './tx'
 
 export const getSwapState = ({ swap }) => swap
 
-const createSwapExtender = (allAssets, allWallets) => (swap) => {
-  const { sendWalletId, sendSymbol, receiveSymbol, fee } = swap
-  const tx = swap.tx || {}
-  const { receipt, feeSymbol: txFeeSymbol, feeAmount: txFeeAmount } = tx
+const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
+  const { sendSymbol, receiveSymbol, fee, txId } = swap
   const sendAsset = allAssets[sendSymbol]
   const receiveAsset = allAssets[receiveSymbol]
-  const txFeeAsset = allAssets[txFeeSymbol]
-  const txFeeFiat = txFeeAsset && txFeeAmount ? txFeeAsset.price.times(txFeeAmount) : undefined
+  const tx = allTxs[txId] || {}
   swap = {
     ...swap,
+    pair: `${sendSymbol}_${receiveSymbol}`.toLowerCase(),
     sendAsset,
     receiveAsset,
     hasFee: fee && toBigNumber(fee).gt(0),
-    tx: {
-      ...tx,
-      signingSupported: (allWallets[sendWalletId] || {}).isSignTxSupported,
-      confirmed: receipt && receipt.confirmed,
-      succeeded: receipt && receipt.succeeded,
-      feeAsset: txFeeAsset,
-      feeFiat: txFeeFiat,
-    }
+    tx,
+    txSigning: tx.signing,
+    txSigned: tx.signed,
+    txSigningError: tx.signingError,
+    txSending: tx.sending,
+    txSent: tx.sent,
+    txSendingError: tx.sendingError,
   }
   return {
     ...swap,
@@ -43,7 +41,8 @@ export const getAllSwaps = createSelector(
   getSwapState,
   getAllAssets,
   getAllWallets,
-  (allSwaps, allAssets, allWallets) => mapValues(allSwaps, createSwapExtender(allAssets, allWallets)))
+  getAllTxs,
+  (allSwaps, allAssets, allWallets, allTxs) => mapValues(allSwaps, createSwapExtender(allAssets, allWallets, allTxs)))
 export const getAllSwapsArray = createSelector(getAllSwaps, Object.values)
 export const getSwap = createItemSelector(getAllSwaps, selectItemId, (allSwaps, id) => allSwaps[id])
 

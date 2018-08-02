@@ -3,7 +3,6 @@ import HDKey from 'hdkey'
 import config from 'Config'
 import log from 'Utilities/log'
 import { xpubToYpub, joinDerivationPath } from 'Utilities/bitcoin'
-import { toMainDenomination, toSmallestDenomination } from 'Utilities/convert'
 import Ledger from 'Services/Ledger'
 
 import BitcoinWallet from './BitcoinWallet'
@@ -49,29 +48,6 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
 
   isReadOnly() { return false }
 
-  _createTransaction(toAddress, amount, asset, options = {}) {
-    return Promise.all([
-      this._getDiscoveryResult(),
-      options.feeRate || this._getDefaultFeeRate(asset).then(({ rate }) => rate),
-    ]).then(([discoverResult, feeRate]) => {
-      const isSegwit = !this.isLegacyAccount()
-      const outputs = [{
-        address: toAddress,
-        amount: toSmallestDenomination(amount, asset.decimals).toNumber(),
-      }]
-      return this._bitcore.buildPaymentTx(discoverResult, outputs, feeRate, isSegwit)
-    })
-    .then((txData) => {
-      return {
-        feeAmount: toMainDenomination(txData.fee, asset.decimals),
-        feeSymbol: 'BTC',
-        // buildPaymentTx will decrease amount to accomodate fee when sending entire balance
-        amount: toMainDenomination(txData.outputs[0].amount, asset.decimals),
-        txData,
-      }
-    })
-  }
-
   /**
   * Sign a transaction using ledgerjs api
   */
@@ -108,12 +84,5 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
       .then((signedTxHex) => ({
         signedTxData: signedTxHex
       }))
-  }
-
-  _validateTxData(txData) {
-    if (txData === null || typeof txData !== 'object') {
-      throw new Error(`Invalid ${this.getType()} txData of type ${typeof txData}`)
-    }
-    return txData
   }
 }

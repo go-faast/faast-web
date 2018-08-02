@@ -1,6 +1,6 @@
 import log from 'Utilities/log'
 import { toHashId } from 'Utilities/helpers'
-import { toMainDenomination } from 'Utilities/convert'
+import { toMainDenomination, toSmallestDenomination } from 'Utilities/convert'
 import { abstractMethod, assertExtended } from 'Utilities/reflect'
 import { ellipsize } from 'Utilities/display'
 import { fetchGet } from 'Utilities/fetch'
@@ -12,7 +12,7 @@ const supportedAssets = ['BTC']
 
 const DEFAULT_FEE_PER_BYTE = 10
 
-@abstractMethod('getTypeLabel', 'createTransaction', '_signTx', '_sendSignedTx', '_validateTxData', '_validateSignedTxData')
+@abstractMethod('getTypeLabel', '_createAggregateTransaction', '_signTx', '_sendSignedTx', '_validateTxData', '_validateSignedTxData')
 export default class BitcoinWallet extends Wallet {
 
   static type = 'BitcoinWallet';
@@ -31,6 +31,8 @@ export default class BitcoinWallet extends Wallet {
   isAssetSupported(assetOrSymbol) { return supportedAssets.includes(this.getSymbol(assetOrSymbol)) }
 
   isSingleAddress() { return false }
+
+  isAggregateTransactionSupported(assetOrSymbol) { return this.isAssetSupported(assetOrSymbol) }
 
   _performDiscovery() {
     const discoveryPromise = this._bitcore.discoverAccount(this.xpub)
@@ -80,6 +82,36 @@ export default class BitcoinWallet extends Wallet {
       }))
   }
 
+  _createAggregateTransaction(outputs, asset, options = {}) {
+    return Promise.all([
+      this._getDiscoveryResult(),
+      options.feeRate || this._getDefaultFeeRate(asset).then(({ rate }) => rate),
+    ]).then(([discoverResult, feeRate]) => {
+      const isSegwit = !this.isLegacyAccount()
+      outputs = outputs.map(({ address, amount }) => ({
+        address,
+        amount: toSmallestDenomination(amount, asset.decimals).toNumber(),
+      }))
+      return this._bitcore.buildPaymentTx(discoverResult, outputs, feeRate, isSegwit)
+    })
+    .then((txData) => {
+      return {
+        feeAmount: toMainDenomination(txData.fee, asset.decimals),
+        feeSymbol: 'BTC',
+        // buildPaymentTx can adjust output amounts in some situations
+        outputs: txData.outputs.map(({ address, amount }) => ({
+          address,
+          amount: toMainDenomination(amount, asset.decimals),
+        })),
+        txData,
+      }
+    })
+  }
+
+  _createTransaction(address, amount, asset, options) {
+    return this._createAggregateTransaction([{ address, amount }], asset, options)
+  }
+
   _getBalance(asset) {
     return this._performDiscovery(asset.symbol)
       .then(({ balance }) => toMainDenomination(balance, asset.decimals))
@@ -103,6 +135,13 @@ export default class BitcoinWallet extends Wallet {
           hash: txHash,
         }
       })
+  }
+
+  _validateTxData(txData) {
+    if (txData === null || typeof txData !== 'object') {
+      throw new Error(`Invalid ${this.getType()} txData of type ${typeof txData}`)
+    }
+    return txData
   }
 
   _validateSignedTxData(signedTxData) {

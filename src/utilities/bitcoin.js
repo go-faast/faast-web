@@ -83,6 +83,15 @@ export function joinDerivationPath(basePathString, subPath) {
   return `${basePathString}/${subPath.join('/')}`
 }
 
+export function derivationPathStringToArray(derivationPathString) {
+  return derivationPathString
+    .replace('m/', '')
+    .split('/')
+    .map((index) => index.endsWith('\'')
+      ? Number.parseInt(index.substring(0, index.length - 1)) | 0x80000000
+      : Number.parseInt(index))
+}
+
 export default {
   magicNumber,
   ypubToXpub,
