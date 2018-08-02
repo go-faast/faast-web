@@ -13,7 +13,7 @@ BigNumber.config({ FORMAT: {
   secondaryGroupSize: 0,
   fractionGroupSeparator: ' ',
   fractionGroupSize: 0
-}})
+} })
 
 const nodeEnv = process.env.NODE_ENV
 const isDev = nodeEnv === 'development'
