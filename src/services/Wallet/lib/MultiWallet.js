@@ -93,6 +93,10 @@ export default class MultiWallet extends Wallet {
     return this.getWallets().some((wallet) => wallet.isAssetSupported(assetOrSymbol))
   }
 
+  isAggregateTransactionSupported(assetOrSymbol) {
+    return this.getWallets().some((wallet) => wallet.isAggregateTransactionSupported(assetOrSymbol))
+  }
+
   _chooseWallet(assetOrSymbol, options, applyToWallet) {
     return Promise.resolve().then(() => {
       if (!assetOrSymbol) {
@@ -138,6 +142,14 @@ export default class MultiWallet extends Wallet {
       assetOrSymbol,
       options,
       (wallet) => wallet.createTransaction(toAddress, amount, assetOrSymbol, options))
+  }
+
+  createAggregateTransaction(outputs, assetOrSymbol, options = {}) {
+    return this._chooseWallet(
+      assetOrSymbol,
+      options,
+      (wallet) => wallet.createAggregateTransaction(outputs, assetOrSymbol, options)
+    )
   }
 
   _validateTx(tx) {

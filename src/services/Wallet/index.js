@@ -78,6 +78,14 @@ export function WalletService() {
     return wallet
   }
 
+  const getOrThrow = (id, errorMessage) => {
+    const wallet = get(id)
+    if (!wallet) {
+      throw new Error(errorMessage || `Cannot get wallet with id ${id}`)
+    }
+    return wallet
+  }
+
   /** Remove the provided Wallet or Wallet with specified ID and delete from session */
   const remove = (walletOrId) => {
     let id = walletOrId
@@ -223,6 +231,7 @@ export function WalletService() {
     _activeWallets: activeWallets,
     setAssetProvider,
     get,
+    getOrThrow,
     getAll,
     getAllById,
     remove,

@@ -10,11 +10,11 @@ import walletService from 'Services/Wallet'
 import { getMarketInfo, postExchange, getOrderStatus } from 'Actions/request'
 import { createTx, signTx, sendTx, updateTxReceipt, pollTxReceipt } from 'Actions/tx'
 
-import { getAsset, getSwap } from 'Selectors'
+import { getAsset, getSwap, getTx } from 'Selectors'
 
 const createAction = newScopedCreateAction(__filename)
 
-export const setSwaps = createAction('SET_ALL')
+export const swapsRestored = createAction('RESTORED')
 export const resetSwaps = createAction('RESET_ALL')
 export const swapAdded = createAction('ADDED')
 export const swapRemoved = createAction('REMOVED', (id) => ({ id }))
@@ -127,13 +127,18 @@ export const createOrder = (swap) => (dispatch) => {
   })
 }
 
+export const setSwapTx = (swapId, tx, outputIndex = 0) => (dispatch) => {
+  dispatch(swapUpdated(swapId, { sendUnits: tx.outputs[outputIndex].amount, txId: tx.id }))
+}
+
 export const createSwapTx = (swap, options) => (dispatch) => {
   log.debug('createSwapTx', swap)
   const { order, sendUnits, sendSymbol, sendWalletId } = swap
   const finish = createSwapFinish(dispatch, 'createSwapTx', swap)
   return dispatch(createTx(sendWalletId, order.deposit, sendUnits, sendSymbol, options))
     .then((tx) => {
-      return finish(null, { sendUnits: tx.outputs[0].amount, txId: tx.id })
+      dispatch(setSwapTx(swap.id, tx))
+      return tx
     })
     .catch((e) => {
       log.error('createSwapTx', e)
@@ -141,27 +146,36 @@ export const createSwapTx = (swap, options) => (dispatch) => {
     })
 }
 
-export const initiateSwap = (swap) => (dispatch) => {
+export const initiateSwap = (swap) => (dispatch, getState) => {
   return dispatch(updateMarketInfo(swap))
     .then((s) => dispatch(checkSufficientDeposit(s)))
     .then((s) => dispatch(createOrder(s)))
     .then((s) => dispatch(createSwapTx(s)))
+    .then(() => getSwap(getState(), swap.id))
 }
 
-export const signSwap = (swap, passwordCache = {}) => (dispatch) => {
-  log.debug('signSwap', swap)
-  const { txId } = swap
-  return dispatch(signTx(txId, passwordCache))
-}
+export const signSwap = (swap, passwordCache = {}) => (dispatch, getState) => Promise.resolve()
+  .then(() => {
+    log.debug('signSwap', swap)
+    const { txId } = swap
+    const tx = getTx(getState(), txId)
+    if (tx.signed) {
+      return
+    }
+    return dispatch(signTx(tx, passwordCache))
+  })
 
-export const sendSwap = (swap, sendOptions) => (dispatch) => {
-  log.debug('sendSwap', swap)
-  const { txId } = swap
-  return dispatch(sendTx(txId, sendOptions))
-    .then(() => {
-      dispatch(pollOrderStatus(swap))
-    })
-}
+export const sendSwap = (swap, sendOptions) => (dispatch, getState) => Promise.resolve()
+  .then(() => {
+    log.debug('sendSwap', swap)
+    const { txId } = swap
+    const tx = getTx(getState(), txId)
+    if (tx.sent) {
+      return
+    }
+    return dispatch(sendTx(tx, sendOptions))
+  })
+  .then(() => dispatch(pollOrderStatus(swap)))
 
 const updateOrderStatus = (swap) => (dispatch) => {
   const { id, orderId } = swap

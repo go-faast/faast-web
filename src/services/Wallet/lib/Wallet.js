@@ -30,7 +30,7 @@ export default class Wallet {
   isPasswordProtected() { return false }
   checkPasswordCorrect() { return true }
   isSignTransactionSupported() { return true }
-  isAggregateTransactionSupported() { return false }
+  isAggregateTransactionSupported(/* assetOrSymbol */) { return false }
 
   setAssetProvider(assetProvider) {
     if (typeof assetProvider !== 'function') {
@@ -132,14 +132,15 @@ export default class Wallet {
 
   _assertSignTransactionSupported() {
     if (!this.isSignTransactionSupported()) {
-      throw new Error(`Wallet "${this.getLabel()}" does not support signTransaction`)
+      throw new Error(`Wallet ${this.getId()} does not support signTransaction`)
     }
   }
 
-  _assertAggregateTransactionSupported() {
-    if (!this.isAggregateTransactionSupported()) {
-      throw new Error(`Wallet "${this.getLabel()}" does not support createAggregateTransaction`)
+  _assertAggregateTransactionSupported(assetOrSymbol) {
+    if (!this.isAggregateTransactionSupported(assetOrSymbol)) {
+      throw new Error(`Wallet ${this.getId()} does not support createAggregateTransaction`)
     }
+    return assetOrSymbol
   }
 
   _signAndSendTx(tx, options = {}) {
@@ -162,11 +163,6 @@ export default class Wallet {
         }
         return ZERO
       })
-  }
-
-  /** Unsupported by default, can be overriden in subclass */
-  _createAggregateTransaction() {
-    throw new Error('Unsupported method _createAggregateTransaction')
   }
 
   _newTransaction(asset, outputs, result) {
@@ -198,6 +194,11 @@ export default class Wallet {
         )))
   }
 
+  /** Unsupported by default, can be overriden in subclass */
+  _createAggregateTransaction() {
+    throw new Error('Unsupported method _createAggregateTransaction')
+  }
+
   /**
    * @param {Object[]} outputs - outputs of tx
    * @param {String} outputs[].address - recipient
@@ -206,9 +207,9 @@ export default class Wallet {
    * @param {Object} [options]
    */
   createAggregateTransaction(outputs, assetOrSymbol, options = {}) {
-    return Promise.resolve()
+    return Promise.resolve(assetOrSymbol)
+      .then(::this.assertAssetSupported)
       .then(::this._assertAggregateTransactionSupported)
-      .then(() => this.assertAssetSupported(assetOrSymbol))
       .then((asset) => this._createAggregateTransaction(outputs, asset, options)
         .then((result) => log.debugInline(
           'createAggregateTransaction',

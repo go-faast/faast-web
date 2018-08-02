@@ -81,7 +81,7 @@ export default class EthereumWalletKeystore extends EthereumWallet {
     try {
       this.decrypt(password)
       return true
-    } catch(e) {
+    } catch (e) {
       return false
     }
   }
