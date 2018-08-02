@@ -10,9 +10,9 @@ import { ZERO, BigNumber, toBigNumber } from 'Utilities/convert'
 import {
   setSwaps, addSwap, removeSwap, restoreSwapPolling,
   updateMarketInfo, checkSufficientDeposit, createOrder,
-  createSwapTx, signSwap, sendSwap,
+  createSwapTx, signSwap, sendSwap, setSwapTx,
 } from 'Actions/swap'
-import { setTxs, txAdded, setSwapTx, createAggregateTx } from 'Actions/tx'
+import { setTxs, txAdded, createAggregateTx } from 'Actions/tx'
 import { getAllWallets, getSwundle, getCurrentSwundle, getLatestSwundle } from 'Selectors'
 import walletService from 'Services/Wallet'
 
