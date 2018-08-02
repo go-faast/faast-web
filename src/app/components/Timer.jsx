@@ -3,8 +3,8 @@ import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withHan
 import { secondsToTime } from 'Utilities/convert'
 import PropTypes from 'prop-types'
 
-const TimerComponent = ({ timerCount, label }) => {
-  var { hours, minutes, seconds } = secondsToTime(timerCount)
+const TimerComponent = ({ secondsLeft, label }) => {
+  var { hours, minutes, seconds } = secondsToTime(secondsLeft)
   //if hours == 0 don't show
   var hourSection = hours == 0 ? '' : `${hours}:`
   return (
@@ -15,44 +15,50 @@ const TimerComponent = ({ timerCount, label }) => {
 export default compose(
     setDisplayName('Timer'),
     setPropTypes({
-      secondsInput: PropTypes.number,
-      label: PropTypes.string,
-      onTimerEnd: PropTypes.func
+      seconds: PropTypes.number, // timer starting seconds
+      label: PropTypes.node, // something to place before timer text
+      onTimerEnd: PropTypes.func // callback to call when timer reaches 0
     }),
-    withState('timerCount', 'setSecondsLeft', ({ secondsInput }) => secondsInput),
+    defaultProps({
+      seconds: 0,
+      label: '',
+      onTimerEnd: () => {}
+    }),
+    withState('secondsLeft', 'setSecondsLeft', ({ seconds }) => seconds),
     withState('timer', 'setTimer', null),
     withHandlers({
-      countDown: ({ timerCount, setSecondsLeft }) => () => {
-        let secondsRemaining = timerCount - 1
-        setSecondsLeft(secondsRemaining)
+      /** Decrement the timer */
+      countDown: ({ secondsLeft, setSecondsLeft, onTimerEnd, timer }) => () => {
+        if (secondsLeft > 0) {
+          setSecondsLeft(secondsLeft - 1)
+        } else {
+          clearInterval(timer)
+          onTimerEnd()
+        }
       }
     }),
-    //second withHandlers gives access to countDown through props
+    // second withHandlers gives access to countDown through props
     withHandlers({
-      startTimer: ({ countDown, timerCount, onTimerEnd, setTimer, timer }) => () => {
+      /** Reset the timer to seconds */
+      startTimer: ({ setSecondsLeft, countDown, onTimerEnd, setTimer, timer }) => (seconds) => {
         clearInterval(timer)
-        if (timerCount > 0) {
+        if (seconds > 0) {
+          setSecondsLeft(seconds)
           setTimer(setInterval(countDown, 1000))
         } else {
           onTimerEnd()
         }
       }
     }),
-    defaultProps({
-      secondsInput: 0,
-      label: '',
-      onTimerEnd: () => {}
-    }),
     lifecycle({
       componentDidMount() {
-        var { secondsInput, setSecondsLeft, startTimer } = this.props
-        setSecondsLeft(secondsInput)
-        startTimer()
+        var { seconds, startTimer } = this.props
+        startTimer(seconds)
       },
       componentWillReceiveProps(nextProps) {
-        var { timerCount, startTimer } = this.props
-        if (timerCount !== nextProps.timerCount) {
-          startTimer()
+        var { seconds, startTimer } = this.props
+        if (seconds !== nextProps.seconds) {
+          startTimer(nextProps.seconds)
         }
       }
     }),
