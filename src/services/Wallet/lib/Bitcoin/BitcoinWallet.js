@@ -32,7 +32,7 @@ export default class BitcoinWallet extends Wallet {
 
   isSingleAddress() { return false }
 
-  isAggregateTransactionSupported() { return true }
+  isAggregateTransactionSupported(assetOrSymbol) { return this.isAssetSupported(assetOrSymbol) }
 
   _performDiscovery() {
     const discoveryPromise = this._bitcore.discoverAccount(this.xpub)
