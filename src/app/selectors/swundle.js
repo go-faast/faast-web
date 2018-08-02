@@ -1,9 +1,11 @@
 import { createSelector } from 'reselect'
+import { uniq, map } from 'lodash'
 
 import { createItemSelector, selectItemId } from 'Utilities/selector'
 import { mapValues } from 'Utilities/helpers'
 import { statusAllSwaps } from 'Utilities/swap'
-
+import { ZERO } from 'Utilities/convert'
+import log from 'Log'
 import { getAllSwaps } from './swap'
 
 export const getSwundleState = ({ swundle }) => swundle
@@ -14,6 +16,8 @@ const createSwundleExtender = (allSwaps) => (swundle) => {
     ...swundle,
     swaps,
     status: statusAllSwaps(swaps),
+    totalTxFee: uniq(map(swaps, 'tx'), 'id')
+      .reduce((total, tx) => total && tx && tx.feeFiat ? total.plus(tx.feeFiat) : null, ZERO)
   }
 }
 
