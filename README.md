@@ -48,7 +48,7 @@ npm run dev
 
 Once compiled, open [https://localhost:8080/portfolio](https://localhost:8080/portfolio) in your browser.
 
-To resolve the SSL warning follow you have the following options:
+To resolve the SSL warning you have the following options:
 ###### On MacOS
 1. Go to `Applications -> Keychain Access`
 2. `File -> Import Items`
