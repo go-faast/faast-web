@@ -89,3 +89,20 @@ export const toHex = (value) => {
 export const toChecksumAddress = (address) => {
   return EthereumjsUtil.toChecksumAddress(address)
 }
+
+export const secondsToTime = (secs) => {
+  let hours = Math.floor(secs / (60 * 60)).pad()
+  let divisor_for_minutes = secs % (60 * 60);
+  let minutes = Math.floor(divisor_for_minutes / 60).pad()
+  let divisor_for_seconds = divisor_for_minutes % 60
+  let seconds = Math.ceil(divisor_for_seconds).pad()
+  let timeObj = { hours, minutes, seconds }
+  return timeObj
+}
+
+Number.prototype.pad = function(size) {
+  var s = String(this)
+  //if single digit add 0 to front
+  while (s.length < (size || 2)) { s = '0' + s }
+  return s
+}

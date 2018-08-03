@@ -13,7 +13,6 @@ export default compose(
   })
 )(({ tx: { outputs: [{ amount, address }], assetSymbol, feeAmount, feeSymbol, feeAsset } }) => (
   <LedgerInstructions appName={feeAsset.name} screens={[
-    { top: 'Confirm', bottom: 'transaction' },
     { top: 'Amount', bottom: (<b><Units value={amount} symbol={assetSymbol} precision={null} prefixSymbol/></b>) },
     { top: 'Address', bottom: (<b>{address}</b>) },
     { top: 'Maximum fees', bottom: (<b><Units value={feeAmount} symbol={feeSymbol} precision={null} prefixSymbol/></b>) },

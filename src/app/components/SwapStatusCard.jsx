@@ -48,7 +48,7 @@ export default compose(
     <CardBody className='py-2 pr-3 pl-2 border-0 lh-0' tag={Button} color='ultra-dark' onClick={toggleExpanded} style={{ minHeight: '4rem' }}>
       <Row className='gutter-0 align-items-center font-size-small text-muted'>
         <Col xs='auto'>
-          <i className={classNames('fa fa-chevron-circle-down text-primary px-2 mr-2', { ['fa-rotate-180']: isExpanded })}/>
+          <i style={{ transition: 'all .15s ease-in-out' }} className={classNames('fa fa-chevron-circle-down text-primary px-2 mr-2', { ['fa-rotate-180']: isExpanded })}/>
         </Col>
         <Col>
           <Row className='gutter-2 align-items-center text-center text-sm-left'>

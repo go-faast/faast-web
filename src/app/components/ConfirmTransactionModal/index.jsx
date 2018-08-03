@@ -10,11 +10,15 @@ import {
 
 import LedgerEthInstructions from './LedgerEthInstructions'
 import LedgerBtcInstructions from './LedgerBtcInstructions'
+import TrezorEthInstructions from './TrezorEthInstructions'
+import TrezorBtcInstruction from './TrezorBtcInstructions'
 
 const supportedTypes = {
   [EthereumWalletLedger.type]: LedgerEthInstructions,
   [BitcoinWalletLedger.type]: LedgerBtcInstructions,
-  [EthereumWalletWeb3.type]: LedgerEthInstructions,
+  [EthereumWalletWeb3.type]: TrezorBtcInstruction,
+  [EthereumWalletTrezor.type]: TrezorEthInstructions,
+  [BitcoinWalletTrezor.type]: TrezorBtcInstruction
 }
 
 export default compose(
