@@ -8,6 +8,8 @@ import { Provider } from 'react-redux'
 import { throttle, pick } from 'lodash'
 import { ConnectedRouter, routerMiddleware } from 'react-router-redux'
 import ReduxToastr from 'react-redux-toastr'
+import { createHashHistory, createBrowserHistory } from 'history'
+
 import App from 'Components/App'
 import reducers from './reducers'
 import { saveToAddress } from 'Utilities/storage'
@@ -16,7 +18,7 @@ import config from 'Config'
 import { getLatestSwundleId, getSwundleState, getSwapState, getAssetState, getTxState } from 'Selectors'
 
 const { isDev, isIpfs } = config
-const createHistory = isIpfs ? require('history/createHashHistory') : require('history/createBrowserHistory')
+const createHistory = isIpfs ? createHashHistory : createBrowserHistory
 
 const history = createHistory({ basename: process.env.ROUTER_BASE_NAME })
 const middleware = [
