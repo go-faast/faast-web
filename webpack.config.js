@@ -19,17 +19,18 @@ if (!NODE_ENV) {
   NODE_ENV = DEFAULT_NODE_ENV
 }
 const isDev = NODE_ENV === 'development'
+const isIpfs = IPFS === 'true'
 
 const isMocking = Boolean(process.env.MOCK)
 
 const projectRoot = path.resolve(__dirname)
-const dist = path.join(projectRoot, isDev ? 'dist-dev' : 'dist')
+const dist = path.join(projectRoot, isDev ? 'dist-dev' : isIpfs ? 'dist-ipfs' : 'dist')
 const src = path.join(projectRoot, 'src')
 const res = path.join(projectRoot, 'res')
 const test = path.join(projectRoot, 'test')
 const nodeModules = path.join(projectRoot, 'node_modules')
 
-const publicPath = '/portfolio/'
+const publicPath = isIpfs ? './' : '/portfolio/'
 
 const assetOutputPath = 'asset/'
 const vendorOutputPath = 'vendor/'
@@ -160,7 +161,8 @@ let config = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
-      'process.env.ROUTER_BASE_NAME': JSON.stringify(publicPath)
+      'process.env.ROUTER_BASE_NAME': JSON.stringify(publicPath),
+      'process.env.IPFS': JSON.stringify(isIpfs),
     }),
     new HtmlPlugin({
       template: path.join(src, 'index.html'),
