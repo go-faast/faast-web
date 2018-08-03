@@ -27,11 +27,6 @@ export default compose(
   </div>
 ))
 
-const timerStyle = {
-  color: '#c3c26d',
-  fontSize: '80%'
-}
-
 const instructionsContainerStyle = {
   position: 'relative', 
   background: '#000', 
