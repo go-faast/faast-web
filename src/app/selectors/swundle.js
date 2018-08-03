@@ -5,7 +5,7 @@ import { createItemSelector, selectItemId } from 'Utilities/selector'
 import { mapValues } from 'Utilities/helpers'
 import { statusAllSwaps } from 'Utilities/swap'
 import { ZERO } from 'Utilities/convert'
-import log from 'Log'
+
 import { getAllSwaps } from './swap'
 
 export const getSwundleState = ({ swundle }) => swundle
