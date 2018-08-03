@@ -19,7 +19,7 @@ if (!NODE_ENV) {
   NODE_ENV = DEFAULT_NODE_ENV
 }
 const isDev = NODE_ENV === 'development'
-const isIpfs = IPFS === 'true'
+const isIpfs = process.env.IPFS === 'true'
 
 const isMocking = Boolean(process.env.MOCK)
 
