@@ -13,7 +13,7 @@ export default compose(
   })
 )(({ tx: { outputs: [{ amount, address }], assetSymbol, feeAmount, feeSymbol, feeAsset } }) => (
   <TrezorInstructions appName={feeAsset.name} screens={[
-    { content: <span>Send <br></br><b><Units value={amount} symbol={assetSymbol} precision={null}/></b><br></br> to <b dangerouslySetInnerHTML={sliceWalletAddress(address, 3)}></b>?</span> },
+    { content: <span>Send <br/><b><Units value={amount} symbol={assetSymbol} precision={null}/></b><br/> to <b dangerouslySetInnerHTML={sliceWalletAddress(address, 3)}></b>?</span> },
     { content: <span>Really send token paying up to <b><Units value={feeAmount} symbol={feeSymbol} precision={null}/></b> for gas?</span> }
   ]}/>
 ))
