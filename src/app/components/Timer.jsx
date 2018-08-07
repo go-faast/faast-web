@@ -3,12 +3,12 @@ import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withHan
 import { secondsToTime } from 'Utilities/convert'
 import PropTypes from 'prop-types'
 
-const TimerComponent = ({ secondsLeft, label, timerStyle }) => {
+const TimerComponent = ({ secondsLeft, label, style }) => {
   var { hours, minutes, seconds } = secondsToTime(secondsLeft)
   //if hours == 0 don't show
   var hourSection = hours == 0 ? '' : `${hours}:`
   return (
-    <span style={timerStyle}>{label} {hourSection}{minutes}:{seconds}</span>
+    <span style={style}>{label} {hourSection}{minutes}:{seconds}</span>
   )
 }
 
@@ -18,13 +18,11 @@ export default compose(
       seconds: PropTypes.number, // timer starting seconds
       label: PropTypes.node, // something to place before timer text
       onTimerEnd: PropTypes.func, // callback to call when timer reaches 0
-      timerStyle: PropTypes.object //style input
     }),
     defaultProps({
       seconds: 0,
       label: '',
       onTimerEnd: () => {},
-      timerStyle: {}
     }),
     withState('secondsLeft', 'setSecondsLeft', ({ seconds }) => seconds),
     withState('timer', 'setTimer', null),

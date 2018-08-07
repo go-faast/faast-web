@@ -20,39 +20,6 @@
   color: $primary;
 }
 
-.small {
-  font-size: 80%;
-}
-
-/*octagon in trezor instructions component*/
-.outer-octagon{
-  width: 28px;
-  height: 28px;
-  position: absolute;
-  overflow: hidden;
-  top: 6px;
-  left: 6px;
-}
-.octagon {
-  position: absolute;
-  top: 0; 
-  right: 0; 
-  bottom: 0; 
-  left: 0;
-  overflow: hidden;
-  transform: rotate(45deg);
-  background: #fff;
-  color:#000;
-}
-.octagon:before {
-  content: '?';
-  position: absolute;
-  transform: rotate(-45deg);
-  left: 9px;
-  top: 0px;
-  font-size: 18px;
-}
-
 .redux-toastr {
   .toastr {
     border-radius: $border-radius;
