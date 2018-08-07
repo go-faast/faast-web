@@ -219,7 +219,10 @@ class Modify extends Component {
         if (rAcc.toSwap.greaterThan(0) && rVal.fiatToSwap.lessThan(0)) {
           remaining = rAcc.toSwap.plus(rVal.fiatToSwap)
           spent = remaining.lessThan(0) ? rAcc.toSwap : rAcc.toSwap.minus(remaining)
-          const sendUnits = toUnit(spent, sVal.price, sVal.decimals, true)
+          let sendUnits = toUnit(spent, sVal.price, sVal.decimals, true)
+          // Round to a reasonable number of decimal places to improve readability on hardware wallet
+          // screens. 8 decimals is more than enough to accurately represent $0.01 of any asset
+          sendUnits = sendUnits.round(8)
           toReceive = rAcc.toReceive.concat({
             walletId: rVal.walletId,
             symbol: rVal.symbol,
