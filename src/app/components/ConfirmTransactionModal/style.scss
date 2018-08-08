@@ -1,32 +1,40 @@
-.small {
-    font-size: 80%;
-  }
-  
-  /*octagon in trezor instructions component*/
-  .outerOctagon{
-    width: 22px;
-    height: 22px;
-    position: absolute;
-    overflow: hidden;
-    top: 14px;
-    left: 12px;
-  }
-  .octagon {
-    position: absolute;
-    top: 0; 
-    right: 0; 
-    bottom: 0; 
-    left: 0;
-    overflow: hidden;
-    transform: rotate(45deg);
-    background: #fff;
-    color:#000;
-  }
-  .octagon:before {
-    content: '?';
-    position: absolute;
-    transform: rotate(-45deg);
-    left: 8px;
-    top: 0px;
-    font-size: 14px;
-  }
+
+.trezorContainer {
+  position: relative;
+  width: 300px;
+  padding: 10px 12px 10px 45px;
+  background-color: #000;
+  color: #FFFFFF;
+  border-radius: 8px
+}
+.wordBreak {
+  word-break: break-all;
+}
+/*octagon in trezor instructions component*/
+.outerOctagon{
+  width: 22px;
+  height: 22px;
+  position: absolute;
+  overflow: hidden;
+  top: 14px;
+  left: 12px;
+}
+.octagon {
+  position: absolute;
+  top: 0; 
+  right: 0; 
+  bottom: 0; 
+  left: 0;
+  overflow: hidden;
+  transform: rotate(45deg);
+  background: #fff;
+  color:#000;
+}
+.octagon:before {
+  content: '?';
+  position: absolute;
+  transform: rotate(-45deg);
+  left: 8px;
+  top: 0px;
+  font-size: 14px;
+}

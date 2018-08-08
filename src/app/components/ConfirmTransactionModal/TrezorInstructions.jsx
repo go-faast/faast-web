@@ -15,8 +15,8 @@ export default compose(
   <div>
     <p>Please confirm the transaction on your device. You should see the following information on screen.</p>
     <div className='pt-1 pb-1'>
-      {screens.map(({ content }, i) => (
-      <TrezorScreen key={i} index={i} content={content}/>
+      {screens.map(({ ...props }, i) => (
+      <TrezorScreen key={i} content={props}/>
       ))}
     </div>
   </div>
