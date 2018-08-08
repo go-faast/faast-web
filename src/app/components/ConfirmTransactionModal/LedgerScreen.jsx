@@ -1,6 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { compose, setDisplayName, setPropTypes } from 'recompose'
+import classNames from 'class-names'
+
+import style from './style'
 
 export default compose(
   setDisplayName('LedgerScreen'),
@@ -9,8 +12,8 @@ export default compose(
     bottom: PropTypes.node,
   })
 )(({ top, bottom }) => (
-  <div className='text-center my-2' style={{ backgroundColor: '#000', color: '#00FFFF' }}>
-    <p className='mb-0'>{top}</p>
-    <p>{bottom}</p>
+  <div className={classNames('text-center my-2', style.ledgerScreen)} >
+    {top}<br/>
+    {bottom}
   </div>
 ))

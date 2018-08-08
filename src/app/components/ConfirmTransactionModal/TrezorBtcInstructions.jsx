@@ -10,9 +10,22 @@ export default compose(
   setPropTypes({
     tx: PropTypes.object.isRequired,
   })
-)(({ tx: { outputs: [{ amount, address }], assetSymbol, feeAmount, feeSymbol, feeAsset } }) => (
+)(({ tx: { outputs, totalSent, assetSymbol, feeAmount, feeSymbol, feeAsset } }) => (
   <TrezorInstructions appName={feeAsset.name} screens={[
-    (<span key="1">Confirm sending <br/><b><Units value={amount} symbol={assetSymbol} precision={null}/></b><br/> to <b className="wordBreak">{address}</b>?</span>),
-    (<span key="2">Really send <br/> <b><Units value={amount} symbol={assetSymbol} precision={null}/></b> <br/>from your wallet? <br/>Fee included: <br/><b><Units value={feeAmount} symbol={feeSymbol} precision={null}/></b></span>)
-  ]}/>
+    ...outputs.map(({ amount, address }, i) => (
+      <span key={`output-${i}`}>
+        Confirm sending <br/>
+        <Units value={amount} symbol={assetSymbol} precision={null}/> to<br/>
+        {address.slice(0, 17)}<br/>
+        {address.slice(17)}?
+      </span>
+    )), (
+    <span key='fee'>
+      Really send <br/>
+      <Units value={totalSent} symbol={assetSymbol} precision={null}/> <br/>
+      from your wallet? <br/>
+      Fee included: <br/>
+      <Units value={feeAmount} symbol={feeSymbol} precision={null}/>
+    </span>
+  )]}/>
 ))

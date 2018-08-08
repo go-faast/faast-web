@@ -10,22 +10,22 @@ export default compose(
   setPropTypes({
     tx: PropTypes.object.isRequired,
   })
-)(({ tx: { outputs: [{ amount, address }], assetSymbol, feeAmount, feeSymbol, feeAsset } }) => (
-  <TrezorInstructions appName={feeAsset.name} screens={[
-    (<span key="1">Send <br/><b><Units value={amount} symbol={assetSymbol} precision={null}/></b><br/> to <b>{splitWalletAddress(address)}</b>?</span>),
-    (<span key="2">Really send <br/> token <br/> paying up to <br/> <b><Units value={feeAmount} symbol={feeSymbol} precision={null}/></b><br/>for gas?</span>)
-  ]}/>
-))
-
-const splitWalletAddress = (address) => {
-  const line1 = address.slice(0,12)
-  const line2 = address.slice(12,27)
-  const line3 = address.slice(27, address.length)
-  return (
-    <span>
-      {line1}<br/>
-      {line2}<br/>
-      {line3}
+)(({ tx: { outputs: [{ amount, address }], asset: { symbol, ERC20 }, feeAmount, feeSymbol, feeAsset } }) => (
+  <TrezorInstructions appName={feeAsset.name} screens={[(
+    <span key='1'>
+      Send <br/>
+      <Units value={amount} symbol={symbol} precision={null}/><br/>
+      to {address.slice(0,12)}<br/>
+      {address.slice(12,27)}<br/>
+      {address.slice(27)}?
     </span>
-  )
-}
+  ), (
+    <span key='2'>
+      Really send <br/>
+      {ERC20 ? 'token' : (<Units value={amount} symbol={symbol} precision={null}/>)} <br/>
+      paying up to <br/>
+      <Units value={feeAmount} symbol={feeSymbol} precision={null}/><br/>
+      for gas?
+    </span>
+  )]}/>
+))

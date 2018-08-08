@@ -3,12 +3,12 @@ import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withHan
 import { secondsToTime } from 'Utilities/convert'
 import PropTypes from 'prop-types'
 
-const TimerComponent = ({ secondsLeft, label, style }) => {
+const TimerComponent = ({ secondsLeft, label, className, style }) => {
   var { hours, minutes, seconds } = secondsToTime(secondsLeft)
   //if hours == 0 don't show
   var hourSection = hours == 0 ? '' : `${hours}:`
   return (
-    <span style={style}>{label} {hourSection}{minutes}:{seconds}</span>
+    <span className={className} style={style}>{label} {hourSection}{minutes}:{seconds}</span>
   )
 }
 

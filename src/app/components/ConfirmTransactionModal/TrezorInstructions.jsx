@@ -7,16 +7,14 @@ export default compose(
   setDisplayName('TrezorInstructions'),
   setPropTypes({
     appName: PropTypes.string.isRequired,
-    screens: PropTypes.arrayOf(PropTypes.shape({
-      content: PropTypes.node,
-    }))
+    screens: PropTypes.arrayOf(PropTypes.node)
   })
 )(({ screens }) => (
   <div>
     <p>Please confirm the transaction on your device. You should see the following information on screen.</p>
     <div className='pt-1 pb-1'>
-      {screens.map(({ ...props }, i) => (
-      <TrezorScreen key={i} content={props}/>
+      {screens.map((content, i) => (
+        <TrezorScreen key={i}>{content}</TrezorScreen>
       ))}
     </div>
   </div>

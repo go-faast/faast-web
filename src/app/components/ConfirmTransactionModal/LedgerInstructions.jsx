@@ -20,14 +20,9 @@ export default compose(
       {'Tip: If you don\'t see the transaction on your device, ensure you\'ve unlocked '
       + `it using your PIN and have opened the ${appName} app.`}
     </small></p>
-    <Timer style={timerStyle} seconds={120} label={'Please confirm within:'}/>
+    <small><Timer className='text-warning' seconds={120} label={'Please confirm within:'}/></small>
     {screens.map(({ top, bottom }, i) => (
       <LedgerScreen key={i} top={top} bottom={bottom}/>
     ))}
   </div>
 ))
-
-const timerStyle = {
-  color: '#c3c26d',
-  fontSize: '80%'
-}
