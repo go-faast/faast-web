@@ -18,11 +18,13 @@ BigNumber.config({ FORMAT: {
 const nodeEnv = process.env.NODE_ENV
 const isDev = nodeEnv === 'development'
 const isProd = nodeEnv === 'production'
+const isIpfs = Boolean(process.env.IPFS)
 
 export default {
   nodeEnv,
   isDev,
   isProd,
+  isIpfs,
   logLevel: process.env.LOG_LEVEL || (isDev ? 'debug' : 'info'),
   web3Provider: 'https://mainnet.infura.io/0eUbsHtOiSVZZEiR5fQX',
   bitcoreInsightApi: 'https://bitcore.faa.st/insight-api',

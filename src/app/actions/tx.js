@@ -9,7 +9,8 @@ import log from 'Log'
 
 const createAction = newScopedCreateAction(__filename)
 
-export const txsRestored = createAction('RESTORED')
+export const txsRestored = createAction('ALL_RESTORED')
+export const txRestored = createAction('RESTORED')
 export const txAdded = createAction('ADDED')
 export const txRemoved = createAction('REMOVED')
 export const txUpdated = createAction('UPDATED', (id, data) => ({ id, ...data }))

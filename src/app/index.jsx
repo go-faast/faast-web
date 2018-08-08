@@ -6,9 +6,10 @@ import thunk from 'redux-thunk'
 import logger from 'redux-logger'
 import { Provider } from 'react-redux'
 import { throttle, pick } from 'lodash'
-import createHistory from 'history/createBrowserHistory'
 import { ConnectedRouter, routerMiddleware } from 'react-router-redux'
 import ReduxToastr from 'react-redux-toastr'
+import { createHashHistory, createBrowserHistory } from 'history'
+
 import App from 'Components/App'
 import reducers from './reducers'
 import { saveToAddress } from 'Utilities/storage'
@@ -16,19 +17,24 @@ import { getDefaultPortfolio, isAppReady } from 'Selectors'
 import config from 'Config'
 import { getLatestSwundleId, getSwundleState, getSwapState, getAssetState, getTxState } from 'Selectors'
 
+const { isDev, isIpfs } = config
+const createHistory = isIpfs ? createHashHistory : createBrowserHistory
+
 const history = createHistory({ basename: process.env.ROUTER_BASE_NAME })
 const middleware = [
   thunk,
   routerMiddleware(history)
 ]
 
-// Redirect legacy hash routes
-if ((window.location.hash || '').startsWith('#/')) {
-  history.replace(window.location.hash.slice(1))
+if (!isIpfs) {
+  // Redirect legacy hash routes
+  if ((window.location.hash || '').startsWith('#/')) {
+    history.replace(window.location.hash.slice(1))
+  }
 }
 
 if (!window.faast) window.faast = {}
-if (config.isDev && !window.__REDUX_DEVTOOLS_EXTENSION__) middleware.push(logger)
+if (isDev && !window.__REDUX_DEVTOOLS_EXTENSION__) middleware.push(logger)
 window.faast.intervals = {
   orderStatus: [],
   txReceipt: []

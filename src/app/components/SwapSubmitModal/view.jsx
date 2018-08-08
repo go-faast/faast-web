@@ -4,6 +4,8 @@ import {
   Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap'
 
+import display from 'Utilities/display'
+
 import SwapStatusCard from 'Components/SwapStatusCard'
 import Spinner from 'Components/Spinner'
 import ConfirmTransactionModal from 'Components/ConfirmTransactionModal'
@@ -52,9 +54,13 @@ const SwapSubmitModal = ({
             })}
           </Row>
         </div>
+        <p>Total network fee: {swundle.totalTxFee
+          ? display.fiat(swundle.totalTxFee)
+          : <Spinner inline size='sm'/>}
+        </p>
         <p><small className='text-muted'>
           {'* The receive amount is an estimate based on the current Faast market rate. '
-          + 'Actual amount may vary. Additional transaction fees may apply depending on '
+          + 'Actual amount may vary. Additional fees may apply depending on '
           + 'the asset being sent and the wallet you\'re using.'}
         </small></p>
       </ModalBody>

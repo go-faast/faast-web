@@ -224,7 +224,7 @@ export const restoreSwapPolling = (swap) => (dispatch, getState) => {
     if (status.detailsCode === 'pending_receipt') {
       dispatch(pollTxReceipt(swap.txId))
     }
-    if (!isOrderFinalized(order)) {
+    if (!isOrderFinalized(order) && swap.tx.sent) {
       dispatch(pollOrderStatus(swap))
     }
   })
