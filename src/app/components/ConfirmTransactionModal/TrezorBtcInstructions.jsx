@@ -16,14 +16,3 @@ export default compose(
     (<span key="2">Really send <br/> <b><Units value={amount} symbol={assetSymbol} precision={null}/></b> <br/>from your wallet? <br/>Fee included: <br/><b><Units value={feeAmount} symbol={feeSymbol} precision={null}/></b></span>)
   ]}/>
 ))
-
-const splitWalletAddress = (address) => {
-  const line1 = address.slice(0, 21)
-  const line2 = address.slice(21, address.length)
-  return (
-    <span>
-      {line1}<br/>
-      {line2}
-    </span>
-  )
-}
