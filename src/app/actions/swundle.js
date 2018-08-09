@@ -159,7 +159,7 @@ export const initSwundle = (swundle) => (dispatch) => Promise.resolve().then(() 
     })
     .catch((e) => {
       log.error('initSwundle error', e)
-      dispatch(initFailed(swundle.id, e.message))
+      dispatch(initFailed(swundle.id, e.message || e))
     })
 })
 
