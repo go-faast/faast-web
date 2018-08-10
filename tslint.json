@@ -12,6 +12,7 @@
       "interface-name": [true, "never-prefix"],
       "interface-over-type-literal": false,
       "member-ordering": false,
+      "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
       "new-parens": true,
       "no-arg": true,
       "no-bitwise": true,
