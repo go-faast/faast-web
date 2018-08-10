@@ -1,4 +1,6 @@
+// @ts-ignore
 import { BigNumber, ZERO } from 'Utilities/convert'
+// @ts-ignore
 import log from 'Utilities/log'
 
 type AssetSymbol = string
@@ -15,7 +17,6 @@ interface Transaction {
   outputs: TransactionOutput[]
   assetSymbol: AssetSymbol
   hash: string | null
-  signingSupported: boolean
   signed: boolean
   sent: boolean
   txData: object | null
@@ -30,7 +31,7 @@ interface TransactionOutput {
 type Balance = BigNumber
 
 interface Balances {
-  [symbol: AssetSymbol]: Balance,
+  [symbol: string]: Balance,
 }
 
 interface FeeRate {
@@ -38,8 +39,12 @@ interface FeeRate {
   unit: string
 }
 
-type AssetProvider = () => Asset[] | { [symbol: AssetSymbol]: Asset }
+type AssetProvider = () => Asset[] | { [symbol: string]: Asset }
 type WalletGetter = (id: string) => Wallet | null
+
+function isAssetSymbol(aos: AssetOrSymbol): aos is AssetSymbol {
+  return typeof aos === 'string'
+}
 
 export default abstract class Wallet {
 
@@ -70,7 +75,7 @@ export default abstract class Wallet {
   ): Promise<Transaction>
   protected abstract _signTx(tx: Transaction, options?: object): Promise<Transaction>
   protected abstract _sendSignedTx(tx: Transaction, options?: object): Promise<Transaction>
-  protected abstract _getTransactionReceipt(tx: Transaction, options?: object): Promise<object>
+  protected abstract _getTransactionReceipt(txHash: string, options?: object): Promise<object>
   protected abstract _getDefaultFeeRate(asset: Asset, options?: object): Promise<FeeRate>
 
   /** The ID of this wallet */
@@ -120,14 +125,14 @@ export default abstract class Wallet {
   }
 
   public getSymbol(aos: AssetOrSymbol): AssetSymbol {
-    if (typeof aos === 'object' && aos !== null) {
-      return aos.symbol
+    if (isAssetSymbol(aos)) {
+      return aos
     }
-    return aos
+    return aos.symbol
   }
 
   public getAsset(aos: AssetOrSymbol): Asset {
-    return this.getAllAssetsBySymbol()[this.getSymbol(aos)] || aos
+    return this.getAllAssetsBySymbol()[this.getSymbol(aos)]
   }
 
   public getSupportedAssets(): Asset[] {
@@ -138,16 +143,16 @@ export default abstract class Wallet {
     return this.getSupportedAssets().map(({ symbol }) => symbol)
   }
 
-  public getSupportedAssetsBySymbol() {
-    return this.getSupportedAssets().reduce((bySymbol, asset) => ({ ...bySymbol, [asset.symbol]: asset }))
+  public getSupportedAssetsBySymbol(): { [symbol: string]: Asset } {
+    return this.getSupportedAssets().reduce((bySymbol, asset) => ({ ...bySymbol, [asset.symbol]: asset }), {})
   }
 
-  public getSupportedAsset(aos: AssetOrSymbol) {
+  public getSupportedAsset(aos: AssetOrSymbol): Asset {
     const asset = this.getAsset(aos)
     return (asset && this.isAssetSupported(asset)) ? asset : null
   }
 
-  public assertAssetSupported(aos: AssetOrSymbol) {
+  public assertAssetSupported(aos: AssetOrSymbol): Asset {
     const asset = this.getSupportedAsset(aos)
     if (!asset) {
       throw new Error(`Asset ${this.getSymbol(aos)} not supported by ${this.getType()}`)
@@ -170,32 +175,33 @@ export default abstract class Wallet {
   }
 
   public getDefaultFeeRate(aos: AssetOrSymbol, options: object = {}): Promise<FeeRate> {
-    return Promise.resolve(aos)
-      .then(this.assertAssetSupported.bind(this))
-      .then((asset) => this._getDefaultFeeRate(asset, options))
+    return Promise.resolve().then(() => {
+      const asset = this.assertAssetSupported(aos)
+      return this._getDefaultFeeRate(asset, options)
+    })
   }
 
   public getBalance(aos: AssetOrSymbol, options: object = {}): Promise<Balance> {
-    return Promise.resolve(aos)
-      .then(this.getSupportedAsset.bind(this))
-      .then((asset) => {
-        if (asset) {
-          return this._getBalance(asset, options)
-        }
-        return ZERO
-      })
+    return Promise.resolve().then(() => {
+      const asset = this.getSupportedAsset(aos)
+      if (asset) {
+        return this._getBalance(asset, options)
+      }
+      return ZERO
+    })
   }
 
   public createTransaction(
     address: string, amount: BigNumber, aos: AssetOrSymbol, options: object = {},
   ): Promise<Transaction> {
-    return Promise.resolve(aos)
-      .then(this.assertAssetSupported.bind(this))
-      .then((asset) => this._createTransaction(address, amount, asset, options)
+    return Promise.resolve().then(() => {
+      const asset = this.assertAssetSupported(aos)
+      return this._createTransaction(address, amount, asset, options)
         .then((result) => log.debugInline(
           'createTransaction',
           this._newTransaction(asset, [{ address, amount }], result),
-        )))
+        ))
+    })
   }
 
   public createAggregateTransaction(
@@ -203,47 +209,48 @@ export default abstract class Wallet {
     aos: AssetOrSymbol,
     options: object = {},
   ): Promise<Transaction> {
-    return Promise.resolve(aos)
-      .then(this.assertAssetSupported.bind(this))
-      .then(this._assertAggregateTransactionSupported.bind(this))
-      .then((asset) => this._createAggregateTransaction(outputs, asset, options)
+    return Promise.resolve().then(() => {
+      const asset = this.assertAssetSupported(aos)
+      this._assertAggregateTransactionSupported(asset)
+      return this._createAggregateTransaction(outputs, asset, options)
         .then((result) => log.debugInline(
           'createAggregateTransaction',
           this._newTransaction(asset, outputs, result),
-        )))
+        ))
+    })
   }
 
   public signTransaction(tx: Transaction, options: object = {}): Promise<Transaction> {
-    return Promise.resolve(tx)
-      .then(this._validateTx.bind(this))
-      .then(this._assertSignTransactionSupported.bind(this))
-      .then(() => this._signTx(tx, options))
-      .then((result) => log.debugInline('signTransaction', ({
-        ...tx,
-        ...result,
-        signed: true,
-      })));
+    return Promise.resolve().then(() => {
+      this._validateTx(tx)
+      this._assertSignTransactionSupported()
+      return this._signTx(tx, options)
+    }).then((result) => log.debugInline('signTransaction', ({
+      ...tx,
+      ...result,
+      signed: true,
+    })))
   }
 
   public sendTransaction(tx: Transaction, options: object = {}): Promise<Transaction> {
-    return Promise.resolve(tx)
-      .then(this._validateTx.bind(this))
-      .then(() => tx.signed
+    return Promise.resolve().then(() => {
+      this._validateTx(tx)
+      return tx.signed
         ? this._sendSignedTx(tx, options)
-        : this._signAndSendTx(tx, options))
-      .then((result) => log.debugInline('sendTransaction', ({
-        ...tx,
-        ...result,
-        signed: true,
-        sent: true,
-      })));
+        : this._signAndSendTx(tx, options)
+    }).then((result) => log.debugInline('sendTransaction', ({
+      ...tx,
+      ...result,
+      signed: true,
+      sent: true,
+    })))
   }
 
   public getTransactionReceipt(tx: Transaction): Promise<object> {
-    return Promise.resolve(tx)
-      .then(this._validateTx.bind(this))
-      .then(() => tx.hash ? this._getTransactionReceipt(tx.hash) : null)
-      .then((result) => log.debugInline('getTransactionReceipt', result))
+    return Promise.resolve().then(() => {
+      this._validateTx(tx)
+      return tx.hash ? this._getTransactionReceipt(tx.hash) : null
+    }).then((result) => log.debugInline('getTransactionReceipt', result))
   }
 
   public send(address: string, amount: BigNumber, aos: AssetOrSymbol, options: object): Promise<Transaction> {
@@ -263,10 +270,9 @@ export default abstract class Wallet {
   }
 
   public toJSON(): object {
-    return {
+    return Object.assign({
       type: this.getType(),
-      ...this,
-    }
+    }, this)
   }
 
   /** Unsupported by default, can be overriden in subclass */
@@ -303,7 +309,7 @@ export default abstract class Wallet {
       throw new Error(`Invalid tx provided to wallet ${this.getId()} with mismatched walletId ${tx.walletId}`)
     }
     this._validateTxData(tx.txData)
-    if (tx.signed && tx.signingSupported) {
+    if (tx.signed && this.isSignTransactionSupported()) {
       this._validateSignedTxData(tx.signedTxData)
     }
     return tx
@@ -328,8 +334,10 @@ export default abstract class Wallet {
       type: this.getType(),
       outputs,
       assetSymbol: asset.symbol,
+      hash: null,
       signed: false,
       sent: false,
+      txData: null,
       signedTxData: null,
       ...result,
     }
