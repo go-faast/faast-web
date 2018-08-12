@@ -1,5 +1,5 @@
 import React from 'react'
-import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withHandlers } from 'recompose'
+import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers } from 'recompose'
 import PropTypes from 'prop-types'
 import CoinIcon from 'Components/CoinIcon'
 import { Table } from 'reactstrap'
@@ -30,7 +30,7 @@ const TradeTable = ({ swaps, handleClick }) => {
         {swaps.length === 0 ? (
         <tr className='text-center'>
           <td colSpan='10'>
-            <i>No assets to show</i>
+            <i>No previous trades to show</i>
           </td>
         </tr>
       ) : createTableRow(swaps, handleClick)}
@@ -47,7 +47,7 @@ const createTableRow = (swaps, handleClick) => {
     } = swap
     const inverseRate = (1 / rate)
     const totalPrice = parseFloat((inverseRate * receiveUnits) + feeAmount)
-    var tableRow = detailsCode == ('order_complete' || 'signed' || 'processing') ?
+    var tableRow = detailsCode == ('order_complete' || 'processing') ?
      (
       <tr key={id} onClick={() => handleClick(id)}>
         <td>{createStatusLabel(detailsCode)}</td>
@@ -70,7 +70,7 @@ const createStatusLabel = (status) => {
   ) : (
     <i className={classNames('fa fa-refresh', exclamationIcon)}></i>
   )
-  return <Expandable shrunk={icon} expanded={status}></Expandable>
+  return <Expandable shrunk={icon} expanded={status.replace('_',' ')}></Expandable>
 }
 
 export default compose(
@@ -86,9 +86,5 @@ export default compose(
     }),
     withHandlers({
       handleClick: ({ push }) => (orderId) => push(routes.tradeDetail(orderId))
-    }),
-    lifecycle({
-      componentDidMount() {
-      }
-    }),
+    })
   )(TradeTable)

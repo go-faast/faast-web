@@ -1,5 +1,5 @@
 import React from 'react'
-import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withHandlers } from 'recompose'
+import { compose, setDisplayName } from 'recompose'
 import { getAllSwapsArray } from 'Selectors/swap'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
@@ -22,15 +22,5 @@ export default compose(
     connect(createStructuredSelector({
       allSwapsArray: getAllSwapsArray
     }), {
-    }),
-    setPropTypes({
-    }),
-    defaultProps({
-    }),
-    withHandlers({
-    }),
-    lifecycle({
-      componentDidMount() {
-      }
-    }),
+    })
   )(TradeHistory)
