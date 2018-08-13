@@ -10,7 +10,7 @@ export default class MultiWalletTrezor extends MultiWallet {
   getType() { return MultiWalletTrezor.type }
 
   getTypeLabel() { return typeLabel }
-  
+
   getLabel() { return this.label || `${typeLabel} ${this.getId().slice(0, 8)}` }
 
 }

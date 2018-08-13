@@ -5,32 +5,35 @@ import MultiWalletTrezor from './MultiWalletTrezor'
 import MultiWalletLedger from './MultiWalletLedger'
 import {
   EthereumWalletWeb3, EthereumWalletTrezor, EthereumWalletLedger,
-  EthereumWalletKeystore, EthereumWalletViewOnly, EthereumWalletBlockstack
+  EthereumWalletKeystore, EthereumWalletViewOnly, EthereumWalletBlockstack,
 } from './Ethereum'
 import { BitcoinWalletTrezor, BitcoinWalletLedger } from './Bitcoin'
 
-const parseWalletObject = (wallet) => {
+interface SerializedWallet {
+  id: string,
+  label: string,
+  type: string,
+  address?: string,
+  derivationPath?: string,
+  walletIds?: string[],
+  providerName?: string,
+  xpub?: string,
+  keystore?: object,
+}
+
+const parseWalletObject = (wallet: Wallet | SerializedWallet): Wallet | null => {
   if (!wallet || typeof wallet !== 'object') {
     return null
   }
   if (wallet instanceof Wallet) {
     return wallet
   }
-  let walletType = wallet.type
-  if (wallet.data && wallet.data.type) {
-    walletType = wallet.data.type
-  }
-  const { label } = wallet
-  switch (walletType) {
-    // Legacy formats
-    case 'keystore': return new EthereumWalletKeystore(wallet.data, label)
-    case 'metamask': return new EthereumWalletWeb3(wallet.address, 'MetaMask', label)
-    case 'trezor': return new EthereumWalletTrezor(wallet.address, wallet.data.derivationPath, label)
-    case 'ledger': return new EthereumWalletLedger(wallet.address, wallet.data.derivationPath, label)
+  const { type, label } = wallet
+  switch (type) {
     // New formats
-    case 'MultiWallet': return new MultiWallet(wallet.id, wallet.walletIds || wallet.wallets, label)
-    case 'MultiWalletTrezor': return new MultiWalletTrezor(wallet.id, wallet.walletIds || wallet.wallets, label)
-    case 'MultiWalletLedger': return new MultiWalletLedger(wallet.id, wallet.walletIds || wallet.wallets, label)
+    case 'MultiWallet': return new MultiWallet(wallet.id, wallet.walletIds, label)
+    case 'MultiWalletTrezor': return new MultiWalletTrezor(wallet.id, wallet.walletIds, label)
+    case 'MultiWalletLedger': return new MultiWalletLedger(wallet.id, wallet.walletIds, label)
     case 'EthereumWalletKeystore': return new EthereumWalletKeystore(wallet.keystore, label)
     case 'EthereumWalletBlockstack': return new EthereumWalletBlockstack(wallet.keystore, label)
     case 'EthereumWalletWeb3': return new EthereumWalletWeb3(wallet.address, wallet.providerName, label)
@@ -39,11 +42,12 @@ const parseWalletObject = (wallet) => {
     case 'EthereumWalletLedger': return new EthereumWalletLedger(wallet.address, wallet.derivationPath, label)
     case 'BitcoinWalletTrezor': return new BitcoinWalletTrezor(wallet.xpub, wallet.derivationPath, label)
     case 'BitcoinWalletLedger': return new BitcoinWalletLedger(wallet.xpub, wallet.derivationPath, label)
-    default: log.error(`Cannot parse wallet: invalid type '${walletType}'`, wallet)
+    default: log.error(`Cannot parse wallet: invalid type '${type}'`, wallet)
   }
+  return null
 }
 
-export const parse = (wallet) => {
+export const parse = (wallet: Wallet | SerializedWallet | string | null): Wallet | null => {
   if (!wallet) {
     return null
   }
@@ -58,13 +62,13 @@ export const parse = (wallet) => {
       return val
     })
   }
-  if (!(wallet instanceof Wallet)) {
-    return null
+  if (wallet instanceof Wallet) {
+    return wallet
   }
-  return wallet
+  return null
 }
 
-export const stringify = (wallet) => {
+export const stringify = (wallet: Wallet | null): string => {
   if (!wallet) {
     return null
   }
@@ -83,5 +87,5 @@ export const stringify = (wallet) => {
 
 export default {
   parse,
-  stringify
+  stringify,
 }
