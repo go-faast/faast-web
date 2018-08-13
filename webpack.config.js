@@ -37,7 +37,7 @@ const vendorOutputPath = 'vendor/'
 const bundleOutputPath = 'bundle/'
 const faviconOutputPath = 'favicon/'
 
-const vendorDeps = ['font-awesome/css/font-awesome.min.css', 'web3.min.js']
+const vendorDeps = ['font-awesome/css/font-awesome.min.css']
 
 const jsLoader = {
   loader: 'babel-loader',

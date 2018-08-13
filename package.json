@@ -129,6 +129,7 @@
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-join": "^4.0.0",
     "uuid": "^3.2.1",
+    "web3": "^1.0.0-beta.31",
     "webpack": "^3.5.5",
     "webpack-dev-server": "^2.7.1",
     "webpack-merge": "^4.1.2",
