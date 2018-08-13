@@ -68,7 +68,7 @@ const createStatusLabel = (status) => {
   const icon = status == 'order_complete' ? (
     <i style={{ fontSize: '18px' }} className='text-success fa fa-check-circle'></i>
   ) : (
-    <i className={classNames('fa fa-refresh', exclamationIcon)}></i>
+    <i className='fa fa-spinner fa-pulse'/>
   )
   return <Expandable shrunk={icon} expanded={status.replace('_',' ')}></Expandable>
 }
