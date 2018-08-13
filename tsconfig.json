@@ -8,8 +8,8 @@
         "es2017"
     ],
     "jsx": "preserve",
-    "target": "es6",
-    "module": "es2015",
+    "target": "es5",
+    "allowJs": true,
     "sourceMap": true,
     "noImplicitAny": true
   },
