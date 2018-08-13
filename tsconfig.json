@@ -11,7 +11,8 @@
     "target": "es5",
     "allowJs": true,
     "sourceMap": true,
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "noErrorTruncation": true
   },
   "exclude": [
     "node_modules"
