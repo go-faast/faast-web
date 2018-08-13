@@ -38,7 +38,7 @@ export default class EthereumWalletLedger extends EthereumWallet {
       .then((getAccount) => getAccount(0)
         .then(() => ({
           derivationPath,
-          getAccount
+          getAccount,
         })))
   }
 
@@ -59,8 +59,8 @@ export default class EthereumWalletLedger extends EthereumWallet {
               ...txData,
               r: addHexPrefix(result.r),
               s: addHexPrefix(result.s),
-              v: addHexPrefix(result.v)
-            }))
+              v: addHexPrefix(result.v),
+            })),
           }
         })
         .catch((ex) => {

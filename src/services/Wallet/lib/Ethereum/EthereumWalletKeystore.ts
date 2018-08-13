@@ -28,12 +28,12 @@ export default class EthereumWalletKeystore extends EthereumWallet {
       } else if (isObject(keystore)) {
         keystore = Object.entries(keystore).reduce((lowerCased, [key, value]) => ({
           ...lowerCased,
-          [key.toLowerCase()]: value
+          [key.toLowerCase()]: value,
         }), {})
       } else {
         throw new Error(`Keystore has invalid type ${typeof keystore}`)
       }
-      let version = keystore.version
+      const version = keystore.version
       if (typeof version === 'undefined') {
         throw new Error('Keystore version information missing')
       }
@@ -115,7 +115,7 @@ export default class EthereumWalletKeystore extends EthereumWallet {
       const signedTx = new EthereumjsTx(tx.txData)
       signedTx.sign(keystore.getPrivateKey())
       return {
-        signedTxData: this._signedEthJsTxToObject(signedTx)
+        signedTxData: this._signedEthJsTxToObject(signedTx),
       }
     })
   }
@@ -124,8 +124,7 @@ export default class EthereumWalletKeystore extends EthereumWallet {
     return Promise.resolve(this.decrypt(password).keystore.getV3Filename())
   }
 
-  getPrivateKeyString(password, mock) {
-    if (mock) return Promise.resolve('mock_pk_123')
+  getPrivateKeyString(password) {
     return Promise.resolve(this.decrypt(password).keystore.getPrivateKeyString())
   }
 

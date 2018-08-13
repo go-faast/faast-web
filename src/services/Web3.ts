@@ -1,7 +1,18 @@
 import config from 'Config'
-const { Web3 } = window // Global via script tag
+import Web3 from 'web3'
 
-let faastWeb3
+declare global {
+  interface Window {
+    web3?: any
+  }
+}
+
+interface FaastWeb3 extends Web3 {
+  providerType?: string
+  providerName?: string
+}
+
+let faastWeb3: FaastWeb3
 let providerType
 let providerName = 'Web3'
 if (typeof window.web3 !== 'undefined' && typeof window.web3.currentProvider !== 'undefined') {
@@ -22,6 +33,4 @@ if (typeof window.web3 !== 'undefined' && typeof window.web3.currentProvider !==
 }
 faastWeb3.providerType = providerType
 faastWeb3.providerName = providerName
-window.faast = window.faast || {}
-window.faast.web3 = faastWeb3
 export default faastWeb3

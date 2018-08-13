@@ -3,6 +3,10 @@ import BigNumber from 'bignumber.js'
 
 export interface Asset {
   symbol: string
+  name: string
+  decimals: number
+  contractAddress?: string
+  ERC20?: boolean
 }
 
 export interface Transaction {
@@ -13,8 +17,8 @@ export interface Transaction {
   hash: string | null
   signed: boolean
   sent: boolean
-  txData: object | null
-  signedTxData: any
+  txData?: object | null
+  signedTxData?: any
 }
 
 export type Amount = BigNumber
@@ -35,3 +39,15 @@ export interface FeeRate {
 
 export type AssetProvider = () => Asset[] | { [symbol: string]: Asset }
 export type WalletGetter = (id: string) => Wallet | null
+
+export interface Web3Receipt {
+  blockNumber: number,
+  status: boolean | number | string,
+}
+
+export interface Receipt {
+  confirmed: boolean,
+  succeeded: boolean,
+  blockNumber: number,
+  raw: object,
+}

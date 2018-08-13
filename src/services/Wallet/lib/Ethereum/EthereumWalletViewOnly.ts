@@ -5,7 +5,7 @@ export default class EthereumWalletViewOnly extends EthereumWalletWeb3 {
 
   static type = 'EthereumWalletViewOnly';
 
-  constructor(address) {
+  constructor(address: string) {
     super(address)
   }
 

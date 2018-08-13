@@ -1,8 +1,8 @@
 /**
-  * Exports an interface for interacting with Ledger hardware wallets. Example usage:
-  * import Ledger from 'Services/Ledger'
-  * Ledger.eth.getAddress("m/44'/0'/0'/0")
-  */
+ * Exports an interface for interacting with Ledger hardware wallets. Example usage:
+ * import Ledger from 'Services/Ledger'
+ * Ledger.eth.getAddress("m/44'/0'/0'/0")
+ */
 
 import Transport from '@ledgerhq/hw-transport-u2f'
 import AppEth from '@ledgerhq/hw-app-eth'

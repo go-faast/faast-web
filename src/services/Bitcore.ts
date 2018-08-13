@@ -15,14 +15,14 @@ import { ypubToXpub, estimateTxFee } from 'Utilities/bitcoin'
 // setting up workers
 const xpubWorker = new XpubWorker()
 const xpubWasmFilePromise = fetch(xpubWasmFile)
-    .then(response => response.ok ? response.arrayBuffer() : Promise.reject('failed to load fastxpub.wasm'))
+    .then((response) => response.ok ? response.arrayBuffer() : Promise.reject('failed to load fastxpub.wasm'))
 
 const socketWorkerFactory = () => new SocketWorker()
 const discoveryWorkerFactory = () => new DiscoveryWorker()
 
 /**
  * Sort the utxos for input selection
- * 
+ *
  * @param {Object[]} utxoList
  * @param {Number} utxoList[].value
  * @param {Number} utxoList[].confirmations
@@ -54,7 +54,7 @@ class Bitcore extends BitcoreBlockchain {
   toJSON() {
     return {
       ...this,
-      discovery: omit(this.discovery, 'chain') // Avoid circular reference
+      discovery: omit(this.discovery, 'chain'), // Avoid circular reference
     }
   }
 
@@ -81,34 +81,34 @@ class Bitcore extends BitcoreBlockchain {
           ...result,
           utxos: result.utxos.map((utxo) => ({
             ...utxo,
-            confirmations: utxo.height ? result.lastBlock.height - utxo.height : 0
-          }))
+            confirmations: utxo.height ? result.lastBlock.height - utxo.height : 0,
+          })),
         }))
       })
   }
 
   /**
-  * Build a simple payment transaction.
-  * Note: fee will be subtracted from first output when attempting to send entire account balance
-  *
-  * @param {Object} account - The result of calling discoverAccount
-  * @param {Number} account.changeIndex - The index of the next unused changeAddress
-  * @param {String[]} account.changeAddresses - An array of all change addresses
-  * @param {Object[]} account.utxos - The unspent transaction outputs for the account
-  * @param {Number} account.utxos[].value - The value of the utxo (unit: satoshi)
-  * @param {Number} account.utxos[].confirmations - The confirmations of the utxo
-  * @param {String} account.utxos[].transactionHash - The hash of the transaction this utxo is in
-  * @param {Number} account.utxos[].index - The index of this utxo in the transaction
-  * @param {Number[]} account.utxos[].addressPath - The bip44 address path of the utxo
-  * @param {Object[]} desiredOutputs - Outputs for the transaction (excluding change)
-  * @param {String} desiredOutputs[].address - address to send to
-  * @param {Number} desiredOutputs[].amount - amount to send (unit: satoshi)
-  * @param {Number} feeRate - desired fee (unit: satoshi per byte)
-  * @param {Boolean} [isSegwit=true] - True if this is a segwit transaction
-  * @param {Number} [dustThreshold=546] - A change output will only be included when greater than this value.
-  *   Otherwise it will be included as a fee instead (unit: satoshi)
-  * @returns {Object}
-  */
+   * Build a simple payment transaction.
+   * Note: fee will be subtracted from first output when attempting to send entire account balance
+   *
+   * @param {Object} account - The result of calling discoverAccount
+   * @param {Number} account.changeIndex - The index of the next unused changeAddress
+   * @param {String[]} account.changeAddresses - An array of all change addresses
+   * @param {Object[]} account.utxos - The unspent transaction outputs for the account
+   * @param {Number} account.utxos[].value - The value of the utxo (unit: satoshi)
+   * @param {Number} account.utxos[].confirmations - The confirmations of the utxo
+   * @param {String} account.utxos[].transactionHash - The hash of the transaction this utxo is in
+   * @param {Number} account.utxos[].index - The index of this utxo in the transaction
+   * @param {Number[]} account.utxos[].addressPath - The bip44 address path of the utxo
+   * @param {Object[]} desiredOutputs - Outputs for the transaction (excluding change)
+   * @param {String} desiredOutputs[].address - address to send to
+   * @param {Number} desiredOutputs[].amount - amount to send (unit: satoshi)
+   * @param {Number} feeRate - desired fee (unit: satoshi per byte)
+   * @param {Boolean} [isSegwit=true] - True if this is a segwit transaction
+   * @param {Number} [dustThreshold=546] - A change output will only be included when greater than this value.
+   *   Otherwise it will be included as a fee instead (unit: satoshi)
+   * @returns {Object}
+   */
   buildPaymentTx(account, desiredOutputs, feeRate, isSegwit = true, dustThreshold = 546) {
     const { utxos, changeIndex, changeAddresses } = account
     let changeAddress = changeAddresses[changeIndex]
@@ -121,15 +121,16 @@ class Bitcore extends BitcoreBlockchain {
     /* Select inputs and calculate appropriate fee */
     let fee = 0 // Total fee is recalculated when adding each input
     let amountWithFee = outputTotal + fee
-    let inputUtxos = []
+    const inputUtxos = []
     let inputTotal = 0
-    for (let i = 0; i < sortedUtxos.length; i++) {
+    for (const utxo of sortedUtxos) {
       fee = estimateTxFee(feeRate, inputUtxos.length + 1, outputCount, isSegwit)
       amountWithFee = outputTotal + fee
-      let utxo = sortedUtxos[i]
       inputTotal = inputTotal + utxo.value
       inputUtxos.push(utxo)
-      if (inputTotal >= amountWithFee) break
+      if (inputTotal >= amountWithFee) {
+        break
+      }
     }
 
     if (amountWithFee > inputTotal) {
@@ -178,13 +179,15 @@ class Bitcore extends BitcoreBlockchain {
   }
 }
 
-const assetToBitcore = {
-  BTC: new Bitcore('BTC', networks.bitcoin, ['https://blockexplorer.com', 'https://bitcore1.trezor.io', 'https://bitcore3.trezor.io']),
+const assetToBitcore: { [symbol: string]: Bitcore } = {
+  BTC: new Bitcore('BTC', networks.bitcoin, [
+    'https://blockexplorer.com', 'https://bitcore1.trezor.io', 'https://bitcore3.trezor.io',
+  ]),
   LTC: new Bitcore('LTC', networks.litecoin, ['https://ltc-bitcore3.trezor.io']),
 }
 
 /** Get the Bitcore service for the specified asset */
-function getNetwork (assetSymbol) {
+function getNetwork(assetSymbol: string): Bitcore {
   const bitcore = assetToBitcore[assetSymbol]
   if (!bitcore) {
     throw new Error(`Asset ${assetSymbol} has no Bitcore configuration`)
@@ -192,7 +195,7 @@ function getNetwork (assetSymbol) {
   return bitcore
 }
 
-const wrapBitcoreFn = (fnName) => (assetSymbol, ...args) => getNetwork(assetSymbol)
+const wrapBitcoreFn = (fnName: string) => (assetSymbol, ...args) => getNetwork(assetSymbol)
   .then((bitcore) => bitcore[fnName](...args))
 
 export default {

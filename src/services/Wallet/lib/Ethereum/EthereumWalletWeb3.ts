@@ -7,7 +7,7 @@ import { toChecksumAddress, toBigNumber } from 'Utilities/convert'
 import { web3SendTx } from './util'
 import EthereumWallet from './EthereumWallet'
 
-const checkAccountAvailable = (address) => Promise.resolve(address)
+const checkAccountAvailable = (address: string) => Promise.resolve(address)
   .then((resolvedAddress) => web3.eth.getAccounts()
     .then((accounts) => accounts
       .map((account) => account.toLowerCase())
@@ -22,12 +22,8 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
 
   static type = 'EthereumWalletWeb3';
 
-  constructor(address, providerName, label) {
-    if (!address) {
-      throw new Error('Wallet address must be provided')
-    }
+  constructor(address: string, public providerName: string = web3.providerName, label?: string) {
     super(address, label)
-    this.providerName = providerName || web3.providerName
   }
 
   getType() { return EthereumWalletWeb3.type }
@@ -39,7 +35,7 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
   _checkAvailable() { return checkAccountAvailable(this.address) }
 
   _signAndSendTx(tx, options) {
-    return web3SendTx(tx.txData, false, options)
+    return web3SendTx(tx.txData, options)
       .then((txHash) => ({ hash: txHash }));
   }
 

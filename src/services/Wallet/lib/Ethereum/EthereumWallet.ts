@@ -1,33 +1,35 @@
 import { difference } from 'lodash'
+import { BatchRequest } from 'web3/eth/types'
+import EthJsTx from 'ethereumjs-tx'
 
 import config from 'Config'
 import web3 from 'Services/Web3'
 import { addHexPrefix, toHashId } from 'Utilities/helpers'
-import { ZERO, toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee } from 'Utilities/convert'
-import { abstractMethod, assertExtended } from 'Utilities/reflect'
+import {
+  ZERO, Numerical, toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee,
+} from 'Utilities/convert'
 import { ellipsize } from 'Utilities/display'
 import log from 'Utilities/log'
 
 import { batchRequest, tokenBalanceData, tokenSendData, web3SendTx, toUniversalReceipt } from './util'
 import Wallet from '../Wallet'
+import { EthTransaction, TxData, SignedTxData } from './types'
+import { Asset, Amount, Balances, Transaction, Receipt } from '../types'
 
 const DEFAULT_GAS_PRICE = 21e9 // 21 Gwei
 
-function addressToId(address) {
+function addressToId(address: string): string {
   return toHashId(address.toLowerCase())
 }
 
-@abstractMethod('getType', 'getTypeLabel', 'getAddress', '_signTx')
-export default class EthereumWallet extends Wallet {
+export default abstract class EthereumWallet extends Wallet {
 
   static type = 'EthereumWallet';
 
   static addressToId = addressToId;
 
-  constructor(address, label) {
+  constructor(public address: string, label?: string) {
     super(addressToId(address), label)
-    assertExtended(this, EthereumWallet)
-    this.address = address
   }
 
   getLabel() { return this.label || `Ethereum ${ellipsize(this.getAddress(), 6, 4)}` }
@@ -36,16 +38,11 @@ export default class EthereumWallet extends Wallet {
 
   isSingleAddress() { return true }
 
-  getFreshAddress(assetOrSymbol) {
-    return Promise.resolve(assetOrSymbol)
-      .then(::this.assertAssetSupported)
-      .then(() => this.getAddress())
-      .catch((e) => {
-        throw new Error(`Failed to get ethereum address: ${e.message}`)
-      })
+  _getFreshAddress(asset: Asset): Promise<string> {
+    return Promise.resolve(this.getAddress())
   }
 
-  isAssetSupported(assetOrSymbol) {
+  isAssetSupported(assetOrSymbol: Asset | string) {
     const asset = this.getAsset(assetOrSymbol)
     return asset && (asset.symbol === 'ETH' || asset.ERC20)
   }
@@ -58,25 +55,25 @@ export default class EthereumWallet extends Wallet {
       })
       .then((gasPrice) => ({
         rate: gasPrice,
-        unit: 'wei/gas'
+        unit: 'wei/gas',
       }))
   }
 
-  _getBalance(asset, { web3Batch = null } = {}) {
+  _getBalance(asset: Asset, { web3Batch = null }: { web3Batch: BatchRequest }): Promise<Amount> {
     const address = this.getAddress()
-    let request
+    let request: Promise<Numerical>
     if (asset.symbol === 'ETH') {
       request = batchRequest(web3Batch, web3.eth.getBalance, address, 'latest')
     } else { // Handle ERC20
       request = batchRequest(web3Batch, web3.eth.call, {
         to: asset.contractAddress,
-        data: tokenBalanceData(address)
+        data: tokenBalanceData(address),
       }, 'latest')
     }
     return request.then((balance) => toMainDenomination(balance, asset.decimals))
   }
 
-  getAllBalances({ web3Batch = null } = {}) {
+  getAllBalances({ web3Batch = null }: { web3Batch: BatchRequest }): Promise<Balances> {
     return Promise.resolve(this.getSupportedAssets())
       .then((assets) => {
         const batch = web3Batch || new web3.BatchRequest()
@@ -95,18 +92,25 @@ export default class EthereumWallet extends Wallet {
         {}))
   }
 
-  _createTransaction(toAddress, amount, asset, options = {}) {
+  _createTransaction(toAddress: string, amount: Amount, asset: Asset, options?: {
+    previousTx?: EthTransaction,
+    nonce?: number,
+    gasPrice?: Numerical,
+    gasLimit?: Numerical,
+    gas?: Numerical, // Alias for gasLimit
+  }): Promise<Partial<Transaction>> {
     return Promise.resolve().then(() => {
       log.debug(`Create transaction sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${toAddress}`)
-      let txData = {
+      const txData = {
         chainId: config.ethereumChainId,
         from: this.getAddress(),
-        value: ZERO,
-        data: ''
+        value: '',
+        data: '',
+        to: '',
       }
       if (asset.symbol === 'ETH') {
         txData.to = toAddress
-        txData.value = toSmallestDenomination(amount, asset.decimals)
+        txData.value = toHex(toSmallestDenomination(amount, asset.decimals))
       } else if (asset.ERC20) {
         // Handle ERC20
         txData.to = asset.contractAddress,
@@ -114,47 +118,47 @@ export default class EthereumWallet extends Wallet {
       } else {
         throw new Error(`Unsupported asset ${asset.symbol || asset} provided to EthereumWallet.createTransaction`)
       }
-      txData.value = toHex(txData.value)
 
       const previousTx = options.previousTx
       let customNonce = options.nonce
-      if (!customNonce && previousTx && previousTx.txData.from.toLowerCase() == txData.from.toLowerCase()) {
+      if (!customNonce && previousTx && previousTx.txData.from.toLowerCase() === txData.from.toLowerCase()) {
         customNonce = toBigNumber(previousTx.txData.nonce).plus(1).toNumber()
       }
       const customGasPrice = options.gasPrice
       const customGasLimit = options.gasLimit || options.gas
 
-      return Promise.all([
-        customGasPrice || this._getDefaultFeeRate(asset).then(({ rate }) => rate),
+      const opts: Array<Numerical | Promise<Numerical>> = [
+        customGasPrice || this._getDefaultFeeRate().then(({ rate }) => rate),
         customGasLimit || web3.eth.estimateGas(txData),
-        customNonce || web3.eth.getTransactionCount(txData.from)
-      ]).then(([gasPrice, gasLimit, nonce]) => ({
+        customNonce || web3.eth.getTransactionCount(txData.from),
+      ]
+      return Promise.all(opts).then(([gasPrice, gasLimit, nonce]) => ({
         feeAmount: toTxFee(gasLimit, gasPrice),
         feeSymbol: 'ETH',
         txData: {
           ...txData,
           gasPrice: toHex(gasPrice),
           gasLimit: toHex(gasLimit),
-          nonce: toHex(nonce)
+          nonce: toHex(nonce),
         },
       }))
     })
   }
 
-  _getTransactionReceipt(txHash) {
-    return web3.eth.getTransactionReceipt(txHash)
+  _getTransactionReceipt(tx: Transaction): Promise<Receipt> {
+    return web3.eth.getTransactionReceipt(tx.hash)
       .then(toUniversalReceipt)
   }
 
-  _sendSignedTx(tx, options = {}) {
-    return web3SendTx(tx.signedTxData.raw, true, options)
-      .then((txHash) => ({ hash: txHash }))
+  _sendSignedTx(tx: Transaction, options: object): Promise<Transaction> {
+    return web3SendTx(tx.signedTxData.raw, options)
+      .then(({ transactionHash }) => ({ ...tx, hash: transactionHash }))
   }
 
-  _validateTxData(txData) {
+  _validateTxData(txData: TxData): TxData {
     if (txData === null || typeof txData !== 'object') {
       log.error('invalid txData', txData)
-      throw new Error(`Invalid ${EthereumWallet.type} txData of type ${typeof tx}`)
+      throw new Error(`Invalid ${EthereumWallet.type} txData of type ${typeof txData}`)
     }
     const requiredProps = ['data', 'from', 'gasLimit', 'gasPrice', 'nonce', 'to', 'value']
     const missingProps = difference(requiredProps, Object.keys(txData))
@@ -165,10 +169,10 @@ export default class EthereumWallet extends Wallet {
     return txData
   }
 
-  _validateSignedTxData(signedTxData) {
+  _validateSignedTxData(signedTxData: SignedTxData): SignedTxData {
     if (signedTxData === null || typeof signedTxData !== 'object') {
       log.error('invalid signedTxData', signedTxData)
-      throw new Error(`Invalid ${EthereumWallet.type} signedTxData of type ${typeof tx}`)
+      throw new Error(`Invalid ${EthereumWallet.type} signedTxData of type ${typeof signedTxData}`)
     }
     const { raw } = signedTxData
     if (typeof raw !== 'string') {
@@ -178,14 +182,14 @@ export default class EthereumWallet extends Wallet {
     return signedTxData
   }
 
-  _signedEthJsTxToObject(ethJsTx) {
+  _signedEthJsTxToObject(ethJsTx: EthJsTx): SignedTxData {
     const validationError = ethJsTx.validate(true)
     if (validationError) {
       throw new Error(validationError)
     }
     return {
       raw: addHexPrefix(ethJsTx.serialize().toString('hex')),
-      tx: ethJsTx
+      tx: ethJsTx,
     }
   }
 

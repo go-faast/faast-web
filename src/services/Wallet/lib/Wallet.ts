@@ -2,7 +2,7 @@ import { BigNumber, ZERO } from 'Utilities/convert'
 import log from 'Utilities/log'
 
 import {
-  Asset, Transaction, TransactionOutput,
+  Asset, Transaction, TransactionOutput, Receipt,
   Amount, Balances, FeeRate, AssetProvider, WalletGetter,
 } from './types'
 
@@ -30,10 +30,10 @@ export default abstract class Wallet {
   abstract _getBalance(asset: Asset, options: object): Promise<Amount>
   abstract _createTransaction(
     address: string, amount: Amount, asset: Asset, options: object,
-  ): Promise<Transaction>
-  abstract _signTx(tx: Transaction, options: object): Promise<Transaction>
-  abstract _sendSignedTx(tx: Transaction, options: object): Promise<Transaction>
-  abstract _getTransactionReceipt(tx: Transaction, options: object): Promise<object>
+  ): Promise<Partial<Transaction>>
+  abstract _signTx(tx: Transaction, options: object): Promise<Partial<Transaction>>
+  abstract _sendSignedTx(tx: Transaction, options: object): Promise<Partial<Transaction>>
+  abstract _getTransactionReceipt(tx: Transaction, options: object): Promise<Receipt>
   abstract _getDefaultFeeRate(asset: Asset, options: object): Promise<FeeRate>
 
   /** The ID of this wallet */
@@ -247,18 +247,18 @@ export default abstract class Wallet {
     throw new Error('Unsupported method _createAggregateTransaction')
   }
 
-  _signAndSendTx(tx: Transaction, options: object = {}): Promise<Transaction> {
+  _signAndSendTx(tx: Transaction, options: object): Promise<Partial<Transaction>> {
     return this._signTx(tx, options)
-      .then((signedTx) => this._sendSignedTx(signedTx, options))
+      .then((signedTx) => this._sendSignedTx({ ...tx, ...signedTx }, options))
   }
 
   /** Default does nothing, should be overridden in subclass */
-  _validateTxData<T>(txData: T): T {
+  _validateTxData(txData: any): any {
     return txData
   }
 
   /** Default does nothing, should be overridden in subclass */
-  _validateSignedTxData<T>(signedTxData: T): T {
+  _validateSignedTxData(signedTxData: any): any {
     return signedTxData
   }
 
