@@ -98,11 +98,11 @@ export class BitcoreBlockchain {
   blocks: Stream<void>;
 
   addresses: Set<string>; // subscribed addresses
-  socket: Deferred<Socket> = deferred();
+  socket: Deferred<Socket>;
 
   socketWorkerFactory: SocketWorkerFactory;
   endpoints: Array<string>;
-  workingUrl: string = 'none';
+  workingUrl: string;
   zcash: boolean;
 
   hasSmartTxFees: boolean; // does server support estimatesmartfee
