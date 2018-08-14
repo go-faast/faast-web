@@ -1,6 +1,6 @@
 import coininfo from 'coininfo'
 import {
-  WorkerDiscovery, Blockchain, BitcoreBlockchain, AccountLoadStatus,
+  WorkerDiscovery, BitcoreBlockchain, AccountLoadStatus,
   UtxoInfo as BaseUtxoInfo, AccountInfo as BaseAccountInfo,
 } from 'hd-wallet'
 import { TransactionBuilder, Network } from 'bitcoinjs-lib'

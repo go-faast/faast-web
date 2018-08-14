@@ -5,37 +5,30 @@ import log from 'Utilities/log'
 import blockstack from 'Utilities/blockstack'
 import { sessionStorageGet, sessionStorageSet, sessionStorageRemove, sessionStorageForEach } from 'Utilities/storage'
 import { Wallet, WalletSerializer, MultiWallet } from './lib'
-
+import { AssetProvider } from './lib/types'
 
 const legacyStorageKey = 'wallet'
 const walletStorageKeyPrefix = 'faast-wallet-'
 const multiWalletStorageKeyPrefix = 'faast-multiwallet-' // Deprecated
 
-const walletStorageKey = (id) => `${walletStorageKeyPrefix}${id}`
+const walletStorageKey = (id: string) => `${walletStorageKeyPrefix}${id}`
 
-const getStorageKey = (wallet) => walletStorageKey(wallet.getId())
+const getStorageKey = (wallet: Wallet) => walletStorageKey(wallet.getId())
 
-const defaultWalletService = new WalletService()
+export class WalletService {
 
-window.faast = window.faast || {}
-window.faast.wallets = defaultWalletService._activeWallets
+  activeWallets: { [id: string]: Wallet } = {}
+  walletAssetProvider: AssetProvider = () => ({})
 
-export default defaultWalletService
-
-export function WalletService() {
-  
-  const activeWallets = {}
-  let walletAssetProvider = () => {}
-
-  const setAssetProvider = (assetProvider) => {
-    walletAssetProvider = assetProvider
-    Object.values(activeWallets).forEach((wallet) => wallet.setAssetProvider(assetProvider))
+  setAssetProvider(assetProvider: AssetProvider) {
+    this.walletAssetProvider = assetProvider
+    Object.values(this.activeWallets).forEach((wallet) => wallet.setAssetProvider(assetProvider))
   }
 
-  const getStoredWalletKeys = () => {
-    const walletKeys = []
-    const multiWalletKeys = []
-    sessionStorageForEach((key) => {
+  getStoredWalletKeys = () => {
+    const walletKeys: string[] = []
+    const multiWalletKeys: string[] = []
+    sessionStorageForEach((key: string) => {
       if (key.startsWith(walletStorageKeyPrefix)) {
         walletKeys.push(key)
       } else if (key.startsWith(multiWalletStorageKeyPrefix)) {
@@ -53,33 +46,32 @@ export function WalletService() {
     return walletKeys
   }
 
-  const put = (wallet) => {
+  put = (wallet: Wallet) => {
     if (wallet) {
-      wallet.setAssetProvider(walletAssetProvider)
-      wallet.setWalletGetter(get)
-      activeWallets[wallet.getId()] = wallet
+      wallet.setAssetProvider(this.walletAssetProvider)
+      wallet.setWalletGetter(this.get)
+      this.activeWallets[wallet.getId()] = wallet
     }
     return wallet
   }
 
   /** Get all wallets as array */
-  const getAll = () => Object.values(activeWallets)
+  getAll = () => Object.values(this.activeWallets)
 
   /** Get all wallets as an object mapped by ID */
-  const getAllById = () => ({ ...activeWallets })
+  getAllById = () => ({ ...this.activeWallets })
 
   /** Get a Wallet by ID. Returns if already a Wallet */
-  const get = (walletOrId) => {
+  get = (walletOrId: Wallet | string) => {
     if (walletOrId instanceof Wallet) {
       return walletOrId
     }
     const id = walletOrId
-    let wallet = activeWallets[id]
-    return wallet
+    return this.activeWallets[id]
   }
 
-  const getOrThrow = (id, errorMessage) => {
-    const wallet = get(id)
+  getOrThrow = (id: string, errorMessage?: string) => {
+    const wallet = this.get(id)
     if (!wallet) {
       throw new Error(errorMessage || `Cannot get wallet with id ${id}`)
     }
@@ -87,28 +79,30 @@ export function WalletService() {
   }
 
   /** Remove the provided Wallet or Wallet with specified ID and delete from session */
-  const remove = (walletOrId) => {
-    let id = walletOrId
+  remove = (walletOrId: Wallet | string) => {
+    let id: string
     if (walletOrId instanceof Wallet) {
       id = walletOrId.getId()
+    } else {
+      id = walletOrId
     }
-    const removedWallet = activeWallets[id]
+    const removedWallet = this.activeWallets[id]
     if (removedWallet) {
-      delete activeWallets[id]
+      delete this.activeWallets[id]
       log.debug('removed wallet', id)
-      deleteFromStorage(removedWallet)
+      this.deleteFromStorage(removedWallet)
     }
     return removedWallet
   }
 
   /** Removes all Wallets and clears any stored in the session */
-  const removeAll = () => {
-    Object.keys(activeWallets).map(remove)
-    getStoredWalletKeys().forEach(sessionStorageRemove)
+  removeAll = () => {
+    Object.keys(this.activeWallets).map((w) => this.remove(w))
+    this.getStoredWalletKeys().forEach(sessionStorageRemove)
   }
 
   /** Load the wallet from session at the provided storage key */
-  const loadFromStorage = (storageKey) => {
+  loadFromStorage = (storageKey: string) => {
     const walletString = sessionStorageGet(storageKey)
     if (walletString) {
       const wallet = WalletSerializer.parse(walletString)
@@ -122,7 +116,7 @@ export function WalletService() {
   }
 
   /** Save the provided wallet to session storage */
-  const saveToStorage = (wallet) => {
+  saveToStorage = (wallet: Wallet | null) => {
     if (wallet && wallet.isPersistAllowed()) {
       const id = wallet.getId()
       const storageKey = getStorageKey(wallet)
@@ -132,7 +126,7 @@ export function WalletService() {
     return wallet
   }
 
-  const deleteFromStorage = (wallet) => {
+  deleteFromStorage = (wallet: Wallet | null) => {
     if (wallet) {
       const id = wallet.getId()
       const key = getStorageKey(wallet)
@@ -145,79 +139,79 @@ export function WalletService() {
   }
 
   /** Restore all wallets stored in session */
-  const restoreSessionStorage = () => getStoredWalletKeys().map((key) => {
-    const wallet = loadFromStorage(key)
+  restoreSessionStorage = () => this.getStoredWalletKeys().map((key) => {
+    const wallet = this.loadFromStorage(key)
     if (wallet) {
       const newStorageKey = getStorageKey(wallet)
       if (key !== newStorageKey) {
         sessionStorageRemove(key)
-        saveToStorage(wallet)
+        this.saveToStorage(wallet)
         log.debug(`migrated wallet from session key ${key} to ${newStorageKey}`)
       }
-      put(wallet)
+      this.put(wallet)
     }
   })
 
   /** Convert legacy wallet to new storage format, store in the new format and return the wallet */
-  const restoreLegacy = () => {
-    const legacyWallet = loadFromStorage(legacyStorageKey)
+  restoreLegacy = () => {
+    const legacyWallet = this.loadFromStorage(legacyStorageKey)
     if (legacyWallet) {
       log.debug('restored legacy wallet', legacyWallet.getId())
-      saveToStorage(legacyWallet)
-      put(legacyWallet)
+      this.saveToStorage(legacyWallet)
+      this.put(legacyWallet)
     }
     sessionStorageRemove(legacyStorageKey)
     return legacyWallet
   }
 
   /** Parse the wallet from url query string and store in session */
-  const restoreQueryString = () => {
+  restoreQueryString = () => {
     const query = queryString.parse(window.location.search)
     if (query.wallet) {
       const encryptedWalletString = Buffer.from(query.wallet, 'base64').toString()
       const wallet = WalletSerializer.parse(encryptedWalletString)
       if (wallet) {
         log.debug('restored querystring wallet', wallet.getId())
-        saveToStorage(wallet)
-        put(wallet)
+        this.saveToStorage(wallet)
+        this.put(wallet)
         return wallet
       }
     }
   }
 
-  const restoreBlockstack = () => {
+  restoreBlockstack = () => {
     const wallet = blockstack.restoreWallet()
     if (wallet) {
       log.debug('restored blockstack wallet', wallet.getId())
-      put(wallet)
+      this.put(wallet)
       return wallet
     }
   }
 
-  const add = (wallet) => {
+  add = (wallet: any) => {
     if (wallet instanceof Wallet) {
       const id = wallet.getId()
-      if (!activeWallets.hasOwnProperty(id)) {
+      if (!this.activeWallets.hasOwnProperty(id)) {
         log.debug('adding new wallet', id)
       }
-      put(wallet)
-      saveToStorage(wallet)
+      this.put(wallet)
+      this.saveToStorage(wallet)
     } else {
       log.error('not a wallet', wallet)
     }
     return wallet
   }
 
-  const update = add
+  update = this.add
 
-  const restoreAll = () => {
-    restoreSessionStorage()
-    restoreLegacy()
-    restoreQueryString()
-    restoreBlockstack()
+  restoreAll = () => {
+    this.restoreSessionStorage()
+    this.restoreLegacy()
+    this.restoreQueryString()
+    this.restoreBlockstack()
     // Filter invalid wallet references
-    const activeWalletIds = new Set(Object.keys(activeWallets))
-    const activeWalletsList = Object.values(activeWallets)
+    const activeWalletIds = new Set(Object.keys(this.activeWallets))
+    const activeWalletsList = Object.values(this.activeWallets)
     activeWalletsList.forEach((wallet) => {
       if (wallet instanceof MultiWallet) {
         wallet.walletIds = new Set(Array.from(wallet.walletIds).filter((walletId) => activeWalletIds.has(walletId)))
@@ -226,18 +220,8 @@ export function WalletService() {
     log.debug('wallets restored', activeWalletsList)
     return activeWalletsList
   }
-
-  return {
-    _activeWallets: activeWallets,
-    setAssetProvider,
-    get,
-    getOrThrow,
-    getAll,
-    getAllById,
-    remove,
-    removeAll,
-    add,
-    update,
-    restoreAll
-  }
 }
+
+const defaultWalletService = new WalletService()
+
+export default defaultWalletService
