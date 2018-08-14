@@ -169,6 +169,7 @@ let config = {
       Selectors: 'App/selectors',
       Routes: 'App/routes',
       Log: 'Utilities/log',
+      Types: 'Src/types',
     },
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.scss', '.css']
   },
