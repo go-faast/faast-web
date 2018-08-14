@@ -16,17 +16,13 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
 
   static type = 'BitcoinWalletLedger'
 
-  constructor(xpub: string, public derivationPath: string, label?: string) {
-    super(xpub, label)
+  constructor(xpub: string, derivationPath: string, label?: string) {
+    super(xpub, derivationPath, label)
   }
 
   getType() { return BitcoinWalletLedger.type }
 
   getTypeLabel() { return typeLabel }
-
-  isLegacyAccount() { return this.derivationPath.startsWith('m/44') }
-
-  getAccountNumber() { return Number.parseInt(this.derivationPath.match(/(\d+)'$/)[1]) + 1 }
 
   getLabel() {
     return this.label || `Bitcoin${this.isLegacyAccount() ? ' legacy' : ''} account #${this.getAccountNumber()}`
@@ -47,10 +43,6 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
         return new BitcoinWalletLedger(xpubkey, derivationPath)
       })
   }
-
-  _canSendAsset() { return true }
-
-  isReadOnly() { return false }
 
   /**
    * Sign a transaction using ledgerjs api

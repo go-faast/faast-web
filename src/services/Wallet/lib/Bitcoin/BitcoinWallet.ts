@@ -9,6 +9,7 @@ import Wallet from '../Wallet'
 
 import { Asset } from 'Types'
 import { TransactionOutput, Transaction, Amount, FeeRate, Receipt } from '../types'
+import { BtcTransaction } from './types'
 
 const DEFAULT_FEE_PER_BYTE = 10
 
@@ -20,13 +21,15 @@ export default abstract class BitcoinWallet extends Wallet {
   _bitcore: Bitcore
   _latestDiscoveryResult: object
 
-  constructor(public xpub: string, label?: string) {
+  constructor(public xpub: string, public derivationPath: string, label?: string) {
     super(toHashId(xpub), label)
     this._bitcore = getNetwork(this.assetSymbol)
     this._latestDiscoveryResult = null
   }
 
-  abstract isLegacyAccount(): boolean
+  isLegacyAccount() { return this.derivationPath.startsWith('m/44') }
+
+  getAccountNumber() { return Number.parseInt(this.derivationPath.match(/(\d+)'$/)[1]) + 1 }
 
   getLabel() { return this.label || `Bitcoin ${ellipsize(this.xpub, 8, 4)}` }
 
@@ -93,7 +96,7 @@ export default abstract class BitcoinWallet extends Wallet {
     outputs: TransactionOutput[],
     asset: Asset,
     { feeRate: feeRateOption }: { feeRate?: number },
-  ): Promise<Partial<Transaction>> {
+  ): Promise<Partial<BtcTransaction>> {
     return Promise.all([
       this._getDiscoveryResult(),
       feeRateOption || this._getDefaultFeeRate(asset).then(({ rate }) => rate),
@@ -124,7 +127,7 @@ export default abstract class BitcoinWallet extends Wallet {
     amount: Amount,
     asset: Asset,
     options: object,
-  ): Promise<Partial<Transaction>> {
+  ): Promise<Partial<BtcTransaction>> {
     return this._createAggregateTransaction([{ address, amount }], asset, options)
   }
 
@@ -133,7 +136,7 @@ export default abstract class BitcoinWallet extends Wallet {
       .then(({ balance }) => toMainDenomination(balance, asset.decimals))
   }
 
-  _getTransactionReceipt({ hash }: Transaction): Promise<Receipt> {
+  _getTransactionReceipt({ hash }: BtcTransaction): Promise<Receipt> {
     return this._bitcore.lookupTransaction(hash)
       .then((result) => !result ? null : ({
         confirmed: result.height > 0,
@@ -143,7 +146,7 @@ export default abstract class BitcoinWallet extends Wallet {
       }))
   }
 
-  _sendSignedTx({ signedTxData }: Transaction): Promise<Partial<Transaction>> {
+  _sendSignedTx({ signedTxData }: BtcTransaction): Promise<Partial<BtcTransaction>> {
     return this._bitcore.sendTransaction(signedTxData)
       .then((txHash) => {
         this._latestDiscoveryResult = null // Clear discovery cache to avoid double spending utxos

@@ -12,17 +12,13 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
 
   static type = 'BitcoinWalletTrezor'
 
-  constructor(xpub: string, public derivationPath: string, label?: string) {
-    super(xpub, label)
+  constructor(xpub: string, derivationPath: string, label?: string) {
+    super(xpub, derivationPath, label)
   }
 
   getType() { return BitcoinWalletTrezor.type }
 
   getTypeLabel() { return typeLabel }
-
-  isLegacyAccount() { return this.derivationPath.startsWith('m/44') }
-
-  getAccountNumber() { return Number.parseInt(this.derivationPath.match(/(\d+)'$/)[1]) + 1 }
 
   getLabel() {
     return this.label || `Bitcoin${this.isLegacyAccount() ? ' legacy' : ''} account #${this.getAccountNumber()}`
