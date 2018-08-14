@@ -95,7 +95,7 @@ export class Bitcore extends BitcoreBlockchain {
   discoverAccount(xpub: string, onUpdate?: (status: AccountLoadStatus) => void): Promise<AccountInfo> {
     return Promise.resolve()
       .then(() => {
-        let segwit = 'off'
+        let segwit: 'off' | 'p2sh' = 'off'
         if (xpub.startsWith('ypub')) {
           segwit = 'p2sh'
           xpub = ypubToXpub(xpub)
