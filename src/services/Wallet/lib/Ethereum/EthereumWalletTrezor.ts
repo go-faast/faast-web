@@ -1,5 +1,5 @@
 import EthereumjsTx from 'ethereumjs-tx'
-import EthereumJsUtil from 'ethereumjs-util'
+import { pubToAddress } from 'ethereumjs-util'
 import HDKey from 'hdkey'
 
 import config from 'Config'
@@ -9,30 +9,34 @@ import { toHex } from 'Utilities/convert'
 import Trezor from 'Services/Trezor'
 
 import EthereumWallet from './EthereumWallet'
+import { ConnectResult } from '../types'
+import { EthTransaction } from './types'
 
 const typeLabel = config.walletTypes.trezor.name
 
-const createAccountGetter = (baseDerivationPath, hdKey) => (index) => {
+const createAccountGetter = (baseDerivationPath: string, hdKey: HDKey) => (index: number) => {
   const derivedKey = hdKey.derive(`m/${index}`)
-  const address = '0x' + EthereumJsUtil.publicToAddress(derivedKey.publicKey, true).toString('hex')
+  const address = '0x' + (pubToAddress(derivedKey.publicKey, true) as Buffer).toString('hex')
   const fullDerivationPath = `${baseDerivationPath}/${index}`
   return Promise.resolve(new EthereumWalletTrezor(address, fullDerivationPath))
 }
 
 export default class EthereumWalletTrezor extends EthereumWallet {
 
-  static type = 'EthereumWalletTrezor';
+  static type = 'EthereumWalletTrezor'
 
-  constructor(address, derivationPath, label) {
+  /**
+   * @param derivationPath - Full path to `address`
+   */
+  constructor(address: string, public derivationPath: string, label?: string) {
     super(address, label)
-    this.derivationPath = derivationPath // Expects full path to `address`
   }
 
   getType() { return EthereumWalletTrezor.type }
 
   getTypeLabel() { return typeLabel }
 
-  static connect(derivationPath = 'm/44\'/60\'/0\'/0') {
+  static connect(derivationPath = 'm/44\'/60\'/0\'/0'): Promise<ConnectResult> {
     return Trezor.getXPubKey(derivationPath)
       .then(({ publicKey, chainCode }) => {
         log.info('Trezor getXPubKey success')
@@ -44,24 +48,24 @@ export default class EthereumWalletTrezor extends EthereumWallet {
       .then((getAccount) => getAccount(0)
         .then(() => ({
           derivationPath,
-          getAccount
+          getAccount,
         })))
   }
 
-  _signTx(tx) {
+  _signTx(tx: EthTransaction, options: object): Promise<Partial<EthTransaction>> {
     return Promise.resolve().then(() => {
       Trezor.closeAfterSuccess(false)
       const { txData } = tx
-      const { nonce, gasPrice, gasLimit, to, value, data, chainId } = txData
+      const { nonce, gasPrice, gas, to, value, data, chainId } = txData
       return Trezor.signEthereumTx(
         this.derivationPath,
         stripHexPrefix(nonce),
         stripHexPrefix(gasPrice),
-        stripHexPrefix(gasLimit),
+        stripHexPrefix(gas),
         stripHexPrefix(to),
         stripHexPrefix(value),
         stripHexPrefix(data) || null,
-        chainId
+        chainId,
       ).then((result) => {
         log.info('trezor signed tx', result)
         return {
@@ -69,8 +73,8 @@ export default class EthereumWalletTrezor extends EthereumWallet {
             ...txData,
             r: addHexPrefix(result.r),
             s: addHexPrefix(result.s),
-            v: toHex(result.v)
-          }))
+            v: toHex(result.v),
+          })),
         }
       }).catch((e) => {
         if (e.message === 'Action cancelled by user') {

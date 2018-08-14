@@ -10,47 +10,40 @@ import AppBtc from '@ledgerhq/hw-app-btc'
 
 const EXCHANGE_TIMEOUT = 120000 // ms user has to approve/deny transaction
 
-const serviceConfig = {
-  eth: {
-    App: AppEth,
-    methodNames: [
-      'getAddress',
-      'signTransaction',
-      'getAppConfiguration',
-      'signPersonalMessage',
-    ]
-  },
-  btc: {
-    App: AppBtc,
-    methodNames: [
-      'getWalletPublicKey',
-      'signMessageNew',
-      'createPaymentTransactionNew',
-      'signP2SHTransaction',
-      'splitTransaction',
-      'serializeTransactionOutputs',
-      'serializeTransaction',
-      'displayTransactionDebug'
-    ]
-  }
+type AppType = AppEth | AppBtc
+
+function createApp(appType: any): Promise<AppType> {
+  return Transport.create().then((transport: Transport) => {
+    transport.setExchangeTimeout(EXCHANGE_TIMEOUT)
+    return new appType(transport)
+  })
 }
 
-export default Object.entries(serviceConfig).reduce((apps, [appName, { App, methodNames }]) => {
-  const getApp = () => Transport.create().then((transport) => {
-    transport.setExchangeTimeout(EXCHANGE_TIMEOUT)
-    return new App(transport)
+function proxy(appType: any, methodName: string) {
+  return (...args: any[]) => createApp(appType).then((app) => {
+    const fn = app[methodName]
+    if (typeof fn !== 'function') {
+      throw new Error(`Function ${methodName} is not a method of ledger ${appType.constructor.name} app`)
+    }
+    return fn.call(app, ...args)
   })
-  return {
-    ...apps,
-    [appName]: methodNames.reduce((methods, methodName) => ({
-      ...methods,
-      [methodName]: (...args) => getApp().then((app) => {
-        let fn = app[methodName]
-        if (typeof fn !== 'function') {
-          throw new Error(`Function ${methodName} is not a method of ledger ${appName} app`)
-        }
-        return fn.call(app, ...args)
-      })
-    }), {})
-  }
-}, {})
+}
+
+export default {
+  eth: {
+    getAddress: proxy(AppEth, 'getAddress'),
+    signTransaction: proxy(AppEth, 'signTransaction'),
+    getAppConfiguration: proxy(AppEth, 'getAppConfiguration'),
+    signPersonalMessage: proxy(AppEth, 'signPersonalMessage'),
+  },
+  btc: {
+    getWalletPublicKey: proxy(AppBtc, 'getWalletPublicKey'),
+    signMessageNew: proxy(AppBtc, 'signMessageNew'),
+    createPaymentTransactionNew: proxy(AppBtc, 'createPaymentTransactionNew'),
+    signP2SHTransaction: proxy(AppBtc, 'signP2SHTransaction'),
+    splitTransaction: proxy(AppBtc, 'splitTransaction'),
+    serializeTransactionOutputs: proxy(AppBtc, 'serializeTransactionOutputs'),
+    serializeTransaction: proxy(AppBtc, 'serializeTransaction'),
+    displayTransactionDebug: proxy(AppBtc, 'displayTransactionDebug'),
+  },
+}

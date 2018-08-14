@@ -48,7 +48,7 @@ export default abstract class Wallet {
   /* The following methods return default values and can be overriden by subclass where applicable */
   isReadOnly(): boolean { return false }
   isPasswordProtected(): boolean { return false }
-  checkPasswordCorrect(): boolean { return true }
+  checkPasswordCorrect(password: string): boolean { return true }
   isSignTransactionSupported(): boolean { return true }
   isAggregateTransactionSupported(aos: Asset | string): boolean { return false }
 
@@ -243,7 +243,7 @@ export default abstract class Wallet {
     outputs: TransactionOutput[],
     asset: Asset,
     options: object = {},
-  ): Promise<Transaction> {
+  ): Promise<Partial<Transaction>> {
     throw new Error('Unsupported method _createAggregateTransaction')
   }
 

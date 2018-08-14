@@ -23,31 +23,36 @@ export interface Transaction {
 
 export type Amount = BigNumber
 
-export interface TransactionOutput {
+export type TransactionOutput = {
   address: string,
   amount: Amount,
 }
 
-export interface Balances {
+export type Balances = {
   [symbol: string]: Amount,
 }
 
-export interface FeeRate {
-  rate: Amount | number
-  unit: string
+export type FeeRate = {
+  rate: Amount | number,
+  unit: string,
 }
 
 export type AssetProvider = () => Asset[] | { [symbol: string]: Asset }
 export type WalletGetter = (id: string) => Wallet | null
 
-export interface Web3Receipt {
+export type Web3Receipt = {
   blockNumber: number,
   status: boolean | number | string,
 }
 
-export interface Receipt {
+export type Receipt = {
   confirmed: boolean,
   succeeded: boolean,
   blockNumber: number,
   raw: object,
+}
+
+export type ConnectResult = {
+  derivationPath: string,
+  getAccount: (index: number) => Promise<Wallet>,
 }

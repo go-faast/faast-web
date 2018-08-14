@@ -2,7 +2,7 @@
 
 declare module 'ethereumjs-tx' {
   export default class EthereumTx {
-    raw: Buffer[]
+    raw: Array<Buffer | number>
     r: Buffer
     s: Buffer
     v: Buffer

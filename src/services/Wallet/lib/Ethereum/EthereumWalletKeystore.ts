@@ -7,62 +7,77 @@ import { stripHexPrefix, parseJson } from 'Utilities/helpers'
 import { toChecksumAddress } from 'Utilities/convert'
 
 import EthereumWallet from './EthereumWallet'
+import { Transaction } from '../types'
 
-const getKeystoreAddress = (keystore) => toChecksumAddress(keystore.address || keystore.getAddressString())
+type Keystore = {
+  id: string,
+  version: string,
+  address: string,
+  crypto: string,
+}
+
+const getKeystoreAddress = (keystore: EthereumjsWallet | Keystore) =>
+  toChecksumAddress(keystore instanceof EthereumjsWallet ? keystore.getAddressString() : keystore.address)
+
+function parseKeystore(keystoreToParse: object | string): Keystore {
+  if (!keystoreToParse) {
+    throw new Error(`Invalid keystore "${keystoreToParse}"`)
+  }
+  let keystore
+  // Convert keystore to lower case to avoid ethereumjs-wallet parsing issues
+  if (isString(keystoreToParse)) {
+    keystore = parseJson(keystoreToParse.toLowerCase())
+  } else if (isObject(keystoreToParse)) {
+    keystore = Object.entries(keystoreToParse).reduce((lowerCased, [key, value]) => ({
+      ...lowerCased,
+      [key.toLowerCase()]: value,
+    }), {})
+  } else {
+    throw new Error(`Keystore has invalid type ${typeof keystore}`)
+  }
+  const version = keystore.version
+  if (typeof version === 'undefined') {
+    throw new Error('Keystore version information missing')
+  }
+  if (version !== 3) {
+    throw new Error(`Keystore version ${keystore.version} unsupported`)
+  }
+  if (!keystore.crypto) {
+    throw new Error('Keystore crypto information missing')
+  }
+  if (!keystore.address) {
+    throw new Error('Keystore address missing')
+  }
+  return keystore
+}
 
 export default class EthereumWalletKeystore extends EthereumWallet {
 
-  static type = 'EthereumWalletKeystore';
+  static type = 'EthereumWalletKeystore'
 
-  constructor(keystore, label) {
-    let isEncrypted
+  keystore: EthereumjsWallet | Keystore
+
+  constructor(keystore: EthereumjsWallet | object | string, label?: string) {
+    let parsedKeystore: EthereumjsWallet | Keystore
     if (keystore instanceof EthereumjsWallet) {
-      isEncrypted = false
+      parsedKeystore = keystore
     } else {
-      if (!keystore) {
-        throw new Error(`Invalid keystore "${keystore}"`)
-      }
-      // Convert keystore to lower case to avoid ethereumjs-wallet parsing issues
-      if (isString(keystore)) {
-        keystore = parseJson(keystore.toLowerCase())
-      } else if (isObject(keystore)) {
-        keystore = Object.entries(keystore).reduce((lowerCased, [key, value]) => ({
-          ...lowerCased,
-          [key.toLowerCase()]: value,
-        }), {})
-      } else {
-        throw new Error(`Keystore has invalid type ${typeof keystore}`)
-      }
-      const version = keystore.version
-      if (typeof version === 'undefined') {
-        throw new Error('Keystore version information missing')
-      }
-      if (version !== 3) {
-        throw new Error(`Keystore version ${keystore.version} unsupported`)
-      }
-      if (!keystore.crypto) {
-        throw new Error('Keystore crypto information missing')
-      }
-      if (!keystore.address) {
-        throw new Error('Keystore address missing')
-      }
-      isEncrypted = true
+      parsedKeystore = parseKeystore(keystore)
     }
-    super(getKeystoreAddress(keystore), label)
-    this.keystore = keystore
-    this._isEncrypted = isEncrypted
+    super(getKeystoreAddress(parsedKeystore), label)
+    this.keystore = parsedKeystore
   }
 
   static generate() {
     return new EthereumWalletKeystore(EthereumjsWallet.generate())
   }
 
-  static fromPrivateKey(privateKey) {
+  static fromPrivateKey(privateKey: string) {
     const pk = Buffer.from(stripHexPrefix(privateKey.trim()), 'hex')
     return new EthereumWalletKeystore(EthereumjsWallet.fromPrivateKey(pk))
   }
 
-  static fromJson(jsonKeystore) {
+  static fromJson(jsonKeystore: object | string) {
     return new EthereumWalletKeystore(jsonKeystore)
   }
 
@@ -70,11 +85,11 @@ export default class EthereumWalletKeystore extends EthereumWallet {
 
   getTypeLabel() { return 'Keystore file' }
 
-  isPersistAllowed() { return this._isEncrypted && this._persistAllowed }
+  isPasswordProtected(): boolean { return !(this.keystore instanceof EthereumjsWallet) }
 
-  isPasswordProtected() { return this._isEncrypted }
+  isPersistAllowed(): boolean { return super.isPersistAllowed() && this.isPasswordProtected() }
 
-  checkPasswordCorrect(password) {
+  checkPasswordCorrect(password: string): boolean {
     if (!isString(password)) {
       return false
     }
@@ -86,32 +101,37 @@ export default class EthereumWalletKeystore extends EthereumWallet {
     }
   }
 
-  encrypt(password = '') {
-    if (this._isEncrypted) {
-      return this
+  getEncryptedKeystore(password: string): Keystore {
+    if (this.keystore instanceof EthereumjsWallet) {
+      return this.keystore.toV3(password, config.encrOpts) as Keystore
     }
-    return new EthereumWalletKeystore(this.keystore.toV3(password, config.encrOpts))
+    return this.keystore
   }
 
-  decrypt(password) {
-    if (!this._isEncrypted) {
-      return this
+  getDecryptedKeystore(password?: string): EthereumjsWallet {
+    if (this.keystore instanceof EthereumjsWallet) {
+      return this.keystore
     }
     if (isUndefined(password)) {
-      password = window.prompt(`Enter password for Ethereum account ${this.getId()}`)
+      password = window.prompt(`Enter password for Ethereum account ${this.getAddress()}`)
     }
     if (!isString(password)) {
       throw new Error(`Invalid password of type ${typeof password}`)
     }
-    return new EthereumWalletKeystore(EthereumjsWallet.fromV3(this.keystore, password, true))
+    return EthereumjsWallet.fromV3(this.keystore, password, true)
   }
 
-  _signTx(tx, { password }) {
+  encrypt(password: string): EthereumWalletKeystore {
+    return new EthereumWalletKeystore(this.getEncryptedKeystore(password))
+  }
+
+  decrypt(password?: string): EthereumWalletKeystore {
+    return new EthereumWalletKeystore(this.getDecryptedKeystore(password))
+  }
+
+  _signTx(tx: Transaction, { password }: { password?: string }) {
     return Promise.resolve().then(() => {
-      let keystore = this.keystore
-      if (this._isEncrypted) {
-        keystore = this.decrypt(password).keystore
-      }
+      const keystore = this.getDecryptedKeystore(password)
       const signedTx = new EthereumjsTx(tx.txData)
       signedTx.sign(keystore.getPrivateKey())
       return {
@@ -120,12 +140,12 @@ export default class EthereumWalletKeystore extends EthereumWallet {
     })
   }
 
-  getFileName(password) {
-    return Promise.resolve(this.decrypt(password).keystore.getV3Filename())
+  getFileName(password?: string): string {
+    return this.getDecryptedKeystore(password).getV3Filename()
   }
 
-  getPrivateKeyString(password) {
-    return Promise.resolve(this.decrypt(password).keystore.getPrivateKeyString())
+  getPrivateKeyString(password?: string): string {
+    return this.getDecryptedKeystore(password).getPrivateKeyString()
   }
 
 }

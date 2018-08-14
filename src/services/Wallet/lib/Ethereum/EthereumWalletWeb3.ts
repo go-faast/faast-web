@@ -6,6 +6,8 @@ import { toChecksumAddress, toBigNumber } from 'Utilities/convert'
 
 import { web3SendTx } from './util'
 import EthereumWallet from './EthereumWallet'
+import { Transaction } from '../types'
+import { EthTransaction } from './types'
 
 const checkAccountAvailable = (address: string) => Promise.resolve(address)
   .then((resolvedAddress) => web3.eth.getAccounts()
@@ -34,21 +36,16 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
 
   _checkAvailable() { return checkAccountAvailable(this.address) }
 
-  _signAndSendTx(tx, options) {
+  _signAndSendTx(tx: Transaction, options: object): Promise<Partial<Transaction>> {
     return web3SendTx(tx.txData, options)
-      .then((txHash) => ({ hash: txHash }));
+      .then(({ transactionHash }) => ({ hash: transactionHash }));
   }
 
-  _signTx(tx) {
+  _signTx(tx: EthTransaction): Promise<Partial<EthTransaction>> {
     const { txData } = tx
-    const { value, gasLimit, gasPrice, nonce } = txData
-    return web3.eth.signTransaction({
-      ...omit(txData, 'chainId'),
-      value: toBigNumber(value),
-      gas: toBigNumber(gasLimit).toNumber(),
-      gasPrice: toBigNumber(gasPrice),
-      nonce: toBigNumber(nonce).toNumber()
-    })
+    const { value, gas, gasPrice, nonce } = txData
+    return web3.eth.signTransaction(omit(txData, 'chainId'))
+      .then((signedTxData) => ({ signedTxData }))
   }
 
   static fromDefaultAccount() {

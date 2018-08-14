@@ -98,13 +98,13 @@ export default abstract class EthereumWallet extends Wallet {
     gasPrice?: Numerical,
     gasLimit?: Numerical,
     gas?: Numerical, // Alias for gasLimit
-  }): Promise<Partial<Transaction>> {
+  }): Promise<Partial<EthTransaction>> {
     return Promise.resolve().then(() => {
       log.debug(`Create transaction sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${toAddress}`)
       const txData = {
         chainId: config.ethereumChainId,
         from: this.getAddress(),
-        value: '',
+        value: toHex(ZERO),
         data: '',
         to: '',
       }
@@ -138,19 +138,19 @@ export default abstract class EthereumWallet extends Wallet {
         txData: {
           ...txData,
           gasPrice: toHex(gasPrice),
-          gasLimit: toHex(gasLimit),
+          gas: toHex(gasLimit),
           nonce: toHex(nonce),
         },
       }))
     })
   }
 
-  _getTransactionReceipt(tx: Transaction): Promise<Receipt> {
+  _getTransactionReceipt(tx: EthTransaction): Promise<Receipt> {
     return web3.eth.getTransactionReceipt(tx.hash)
       .then(toUniversalReceipt)
   }
 
-  _sendSignedTx(tx: Transaction, options: object): Promise<Transaction> {
+  _sendSignedTx(tx: EthTransaction, options: object): Promise<EthTransaction> {
     return web3SendTx(tx.signedTxData.raw, options)
       .then(({ transactionHash }) => ({ ...tx, hash: transactionHash }))
   }

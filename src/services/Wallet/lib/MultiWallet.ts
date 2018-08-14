@@ -5,7 +5,7 @@ import { reduceByKey, toHashId } from 'Utilities/helpers'
 
 import Wallet from './Wallet'
 import {
-  Asset, Transaction, Amount, Balances, FeeRate, TransactionOutput,
+  Asset, Transaction, Amount, Balances, FeeRate, TransactionOutput, Receipt,
 } from './types'
 
 const selectFirst = (wallets: Wallet[]) => wallets[0]
@@ -128,14 +128,16 @@ export default class MultiWallet extends Wallet {
       (wallet) => wallet._getDefaultFeeRate(asset, options))
   }
 
-  _createTransaction(toAddress: string, amount: Amount, asset: Asset, options: object): Promise<Transaction> {
+  _createTransaction(toAddress: string, amount: Amount, asset: Asset, options: object): Promise<Partial<Transaction>> {
     return this._chooseWallet(
       asset,
       options,
       (wallet) => wallet._createTransaction(toAddress, amount, asset, options))
   }
 
-  _createAggregateTransaction(outputs: TransactionOutput[], asset: Asset, options: object): Promise<Transaction> {
+  _createAggregateTransaction(
+    outputs: TransactionOutput[], asset: Asset, options: object,
+  ): Promise<Partial<Transaction>> {
     return this._chooseWallet(
       asset,
       options,
@@ -154,15 +156,15 @@ export default class MultiWallet extends Wallet {
     return tx
   }
 
-  _signTx(tx: Transaction, options: object): Promise<Transaction> {
+  _signTx(tx: Transaction, options: object): Promise<Partial<Transaction>> {
     return this.getWallet(tx.walletId)._signTx(tx, options)
   }
 
-  _sendSignedTx(tx: Transaction, options: object): Promise<Transaction> {
+  _sendSignedTx(tx: Transaction, options: object): Promise<Partial<Transaction>> {
     return this.getWallet(tx.walletId)._sendSignedTx(tx, options)
   }
 
-  _getTransactionReceipt(tx: Transaction, options: object): Promise<object> {
+  _getTransactionReceipt(tx: Transaction, options: object): Promise<Receipt> {
     return this.getWallet(tx.walletId)._getTransactionReceipt(tx, options)
   }
 

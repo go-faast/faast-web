@@ -5,7 +5,7 @@ import MultiWalletTrezor from './MultiWalletTrezor'
 import MultiWalletLedger from './MultiWalletLedger'
 import {
   EthereumWalletWeb3, EthereumWalletTrezor, EthereumWalletLedger,
-  EthereumWalletKeystore, EthereumWalletViewOnly, EthereumWalletBlockstack,
+  EthereumWalletKeystore, EthereumWalletViewOnly,
 } from './Ethereum'
 import { BitcoinWalletTrezor, BitcoinWalletLedger } from './Bitcoin'
 
@@ -35,7 +35,6 @@ const parseWalletObject = (wallet: Wallet | SerializedWallet): Wallet | null => 
     case 'MultiWalletTrezor': return new MultiWalletTrezor(wallet.id, wallet.walletIds, label)
     case 'MultiWalletLedger': return new MultiWalletLedger(wallet.id, wallet.walletIds, label)
     case 'EthereumWalletKeystore': return new EthereumWalletKeystore(wallet.keystore, label)
-    case 'EthereumWalletBlockstack': return new EthereumWalletBlockstack(wallet.keystore, label)
     case 'EthereumWalletWeb3': return new EthereumWalletWeb3(wallet.address, wallet.providerName, label)
     case 'EthereumWalletViewOnly': return new EthereumWalletViewOnly(wallet.address, label)
     case 'EthereumWalletTrezor': return new EthereumWalletTrezor(wallet.address, wallet.derivationPath, label)

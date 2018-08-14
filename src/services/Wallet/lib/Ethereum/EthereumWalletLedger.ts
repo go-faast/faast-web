@@ -7,10 +7,11 @@ import { addHexPrefix } from 'Utilities/helpers'
 import Ledger from 'Services/Ledger'
 
 import EthereumWallet from './EthereumWallet'
+import { EthTransaction } from './types'
 
 const typeLabel = config.walletTypes.ledger.name
 
-const createAccountGetter = (baseDerivationPath) => (index) => {
+const createAccountGetter = (baseDerivationPath: string) => (index: number) => {
   const fullDerivationPath = `${baseDerivationPath}/${index}`
   return Ledger.eth.getAddress(fullDerivationPath)
     .then(({ address }) => new EthereumWalletLedger(address, fullDerivationPath))
@@ -20,9 +21,11 @@ export default class EthereumWalletLedger extends EthereumWallet {
 
   static type = 'EthereumWalletLedger';
 
-  constructor(address, derivationPath, label) {
+  /**
+   * @param derivationPath - full path to `address`
+   */
+  constructor(address: string, public derivationPath: string, label?: string) {
     super(address, label)
-    this.derivationPath = derivationPath // Expects full path to `address`
   }
 
   getType() { return EthereumWalletLedger.type }
@@ -42,7 +45,7 @@ export default class EthereumWalletLedger extends EthereumWallet {
         })))
   }
 
-  _signTx(tx) {
+  _signTx(tx: EthTransaction): Promise<Partial<EthTransaction>> {
     return Promise.resolve().then(() => {
       const { txData } = tx
       let ethJsTx

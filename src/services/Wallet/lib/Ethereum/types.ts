@@ -1,5 +1,6 @@
 import { TransactionReceipt as Web3TxReceipt } from 'web3/types'
 import { Tx as Web3Tx } from 'web3/eth/types'
+import { EncodedTransaction } from 'web3/types'
 import EthereumjsTx from 'ethereumjs-tx'
 import { Transaction, Receipt } from '../types'
 
@@ -21,7 +22,7 @@ export type TxData = Web3Tx & {
   chainId?: number,
 }
 
-export type SignedTxData = {
+export type SignedTxData = EncodedTransaction | {
   tx: EthereumjsTx,
   raw: string,
 }
