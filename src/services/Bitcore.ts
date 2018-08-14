@@ -1,6 +1,9 @@
 import { networks } from 'bitcoinjs-lib-zcash'
-import { WorkerDiscovery, BitcoreBlockchain } from 'hd-wallet'
-import { TransactionBuilder } from 'bitcoinjs-lib'
+import {
+  WorkerDiscovery, BitcoreBlockchain, AccountLoadStatus,
+  UtxoInfo as BaseUtxoInfo, AccountInfo as BaseAccountInfo,
+} from 'hd-wallet'
+import { TransactionBuilder, Network } from 'bitcoinjs-lib'
 import { omit } from 'lodash'
 
 import xpubWasmFile from 'hd-wallet/lib/fastxpub/fastxpub.wasm?file'
@@ -20,17 +23,36 @@ const xpubWasmFilePromise = fetch(xpubWasmFile)
 const socketWorkerFactory = () => new SocketWorker()
 const discoveryWorkerFactory = () => new DiscoveryWorker()
 
+export type UtxoInfo = BaseUtxoInfo & {
+  confirmations: number,
+}
+
+export type AccountInfo = BaseAccountInfo & {
+  utxos: UtxoInfo[],
+}
+
+export type TxOutput = {
+  address: string,
+  amount: number,
+}
+
+export type PaymentTx = {
+  inputUtxos: UtxoInfo[]
+  outputs: TxOutput[]
+  outputScript: string,
+  fee: number,
+  change: number,
+  changePath: number[],
+  changeAddress: string,
+  isSegwit: boolean,
+}
+
 /**
  * Sort the utxos for input selection
- *
- * @param {Object[]} utxoList
- * @param {Number} utxoList[].value
- * @param {Number} utxoList[].confirmations
- * @returns {Object[]}
  */
-function sortUtxos(utxoList) {
-  const matureList = []
-  const immatureList = []
+function sortUtxos(utxoList: UtxoInfo[]): UtxoInfo[] {
+  const matureList: UtxoInfo[] = []
+  const immatureList: UtxoInfo[] = []
   utxoList.forEach((utxo) => {
     if (utxo.confirmations >= 6) {
       matureList.push(utxo)
@@ -43,29 +65,29 @@ function sortUtxos(utxoList) {
   return matureList.concat(immatureList)
 }
 
-class Bitcore extends BitcoreBlockchain {
-  constructor(assetSymbol, networkConfig, bitcoreUrls) {
+export class Bitcore extends BitcoreBlockchain {
+
+  discovery: WorkerDiscovery
+
+  constructor(public assetSymbol: string, public network: Network, bitcoreUrls: string[]) {
     super(bitcoreUrls, socketWorkerFactory)
-    this.assetSymbol = assetSymbol
-    this.network = networkConfig
     this.discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubWasmFilePromise, this)
   }
 
   toJSON() {
-    return {
-      ...this,
+    return Object.assign({}, this, {
       discovery: omit(this.discovery, 'chain'), // Avoid circular reference
-    }
+    })
   }
 
   /**
    * Discover the balance, transactions, unused addresses, etc of an xpub.
    *
-   * @param {String} xpub - The xpub or ypub to discover
-   * @param {Function} [onUpdate] - Callback for partial updates to discover result
-   * @returns {Promise<Object>}
+   * @param xpub - The xpub or ypub to discover
+   * @param [onUpdate] - Callback for partial updates to discover result
+   * @returns Account info promise
    */
-  discoverAccount(xpub, onUpdate) {
+  discoverAccount(xpub: string, onUpdate?: (status: AccountLoadStatus) => void): Promise<AccountInfo> {
     return Promise.resolve()
       .then(() => {
         let segwit = 'off'
@@ -77,9 +99,9 @@ class Bitcore extends BitcoreBlockchain {
         if (onUpdate) {
           process.stream.values.attach(onUpdate)
         }
-        return process.ending.then((result) => ({
+        return process.ending.then((result: BaseAccountInfo) => ({
           ...result,
-          utxos: result.utxos.map((utxo) => ({
+          utxos: result.utxos.map((utxo: BaseUtxoInfo) => ({
             ...utxo,
             confirmations: utxo.height ? result.lastBlock.height - utxo.height : 0,
           })),
@@ -109,7 +131,13 @@ class Bitcore extends BitcoreBlockchain {
    *   Otherwise it will be included as a fee instead (unit: satoshi)
    * @returns {Object}
    */
-  buildPaymentTx(account, desiredOutputs, feeRate, isSegwit = true, dustThreshold = 546) {
+  buildPaymentTx(
+    account: AccountInfo,
+    desiredOutputs: Array<{ address: string, amount: number}>,
+    feeRate: number,
+    isSegwit = true,
+    dustThreshold = 546,
+  ): PaymentTx {
     const { utxos, changeIndex, changeAddresses } = account
     let changeAddress = changeAddresses[changeIndex]
     const sortedUtxos = sortUtxos(utxos)
@@ -187,7 +215,7 @@ const assetToBitcore: { [symbol: string]: Bitcore } = {
 }
 
 /** Get the Bitcore service for the specified asset */
-function getNetwork(assetSymbol: string): Bitcore {
+export function getNetwork(assetSymbol: string): Bitcore {
   const bitcore = assetToBitcore[assetSymbol]
   if (!bitcore) {
     throw new Error(`Asset ${assetSymbol} has no Bitcore configuration`)
@@ -195,12 +223,7 @@ function getNetwork(assetSymbol: string): Bitcore {
   return bitcore
 }
 
-const wrapBitcoreFn = (fnName: string) => (assetSymbol, ...args) => getNetwork(assetSymbol)
-  .then((bitcore) => bitcore[fnName](...args))
-
 export default {
   getNetwork,
-  discoverAccount: wrapBitcoreFn('discoverAccount'),
-  lookupTransaction: wrapBitcoreFn('lookupTransaction'),
-  buildPaymentTx: wrapBitcoreFn('buildPaymentTx'),
+  Bitcore,
 }
