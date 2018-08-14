@@ -1,4 +1,4 @@
-import { HDNode, Network } from 'bitcoinjs-lib-zcash';
+import { HDNode, Network } from 'bitcoinjs-lib';
 import { WorkerChannel } from './simple-worker-channel';
 
 export type AddressSource = {

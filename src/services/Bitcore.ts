@@ -1,4 +1,4 @@
-import { networks } from 'bitcoinjs-lib-zcash'
+import coininfo from 'coininfo'
 import {
   WorkerDiscovery, BitcoreBlockchain, AccountLoadStatus,
   UtxoInfo as BaseUtxoInfo, AccountInfo as BaseAccountInfo,
@@ -6,10 +6,13 @@ import {
 import { TransactionBuilder, Network } from 'bitcoinjs-lib'
 import { omit } from 'lodash'
 
+// @ts-ignore
 import xpubWasmFile from 'hd-wallet/lib/fastxpub/fastxpub.wasm?file'
-
+// @ts-ignore
 import XpubWorker from 'hd-wallet/lib/fastxpub/fastxpub?worker'
+// @ts-ignore
 import SocketWorker from 'hd-wallet/lib/socketio-worker/inside?worker'
+// @ts-ignore
 import DiscoveryWorker from 'hd-wallet/lib/discovery/worker/inside?worker'
 
 import log from 'Utilities/log'
@@ -67,10 +70,12 @@ function sortUtxos(utxoList: UtxoInfo[]): UtxoInfo[] {
 
 export class Bitcore extends BitcoreBlockchain {
 
+  network: Network
   discovery: WorkerDiscovery
 
-  constructor(public assetSymbol: string, public network: Network, bitcoreUrls: string[]) {
+  constructor(public assetSymbol: string, bitcoreUrls: string[]) {
     super(bitcoreUrls, socketWorkerFactory)
+    this.network = coininfo(assetSymbol).toBitcoinJS()
     this.discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubWasmFilePromise, this)
   }
 
@@ -208,10 +213,8 @@ export class Bitcore extends BitcoreBlockchain {
 }
 
 const assetToBitcore: { [symbol: string]: Bitcore } = {
-  BTC: new Bitcore('BTC', networks.bitcoin, [
-    'https://blockexplorer.com', 'https://bitcore1.trezor.io', 'https://bitcore3.trezor.io',
-  ]),
-  LTC: new Bitcore('LTC', networks.litecoin, ['https://ltc-bitcore3.trezor.io']),
+  BTC: new Bitcore('BTC', ['https://blockexplorer.com', 'https://bitcore1.trezor.io', 'https://bitcore3.trezor.io']),
+  LTC: new Bitcore('LTC', ['https://ltc-bitcore3.trezor.io']),
 }
 
 /** Get the Bitcore service for the specified asset */

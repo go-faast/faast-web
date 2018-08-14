@@ -1,4 +1,4 @@
-import { Network as BitcoinJsNetwork, HDNode as BitcoinJsHDNode } from 'bitcoinjs-lib-zcash';
+import { Network as BitcoinJsNetwork, HDNode as BitcoinJsHDNode } from 'bitcoinjs-lib';
 import {
   AccountInfo,
   AccountLoadStatus,
