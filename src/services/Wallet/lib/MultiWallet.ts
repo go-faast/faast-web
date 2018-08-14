@@ -4,8 +4,9 @@ import { toBigNumber } from 'Utilities/convert'
 import { reduceByKey, toHashId } from 'Utilities/helpers'
 
 import Wallet from './Wallet'
+import { Asset } from 'Types'
 import {
-  Asset, Transaction, Amount, Balances, FeeRate, TransactionOutput, Receipt,
+  Transaction, Amount, Balances, FeeRate, TransactionOutput, Receipt,
 } from './types'
 
 const selectFirst = (wallets: Wallet[]) => wallets[0]

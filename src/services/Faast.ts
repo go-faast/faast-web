@@ -2,38 +2,41 @@ import { fetchGet, fetchPost, fetchDelete } from 'Utilities/fetch'
 import log from 'Utilities/log'
 import config from 'Config'
 
+import { Asset } from 'Types'
+
 const { siteUrl, apiUrl } = config
 
-const getAssets = () => fetchGet(`${apiUrl}/currencies`)
-  .then((assets) => assets.filter((asset) => {
-    if (!asset.symbol) {
-      log.warn('omitting asset without symbol', asset)
-      return false
-    }
-    if (!asset.name) {
-      log.warn('omitting asset without name', asset.symbol)
-      return false
-    }
-    return true
-  }))
+function getAssets(): Promise<Asset[]> {
+  return fetchGet(`${apiUrl}/currencies`)
+    .then((assets: Array<Partial<Asset>>) => assets.filter((asset) => {
+      if (!asset.symbol) {
+        log.warn('omitting asset without symbol', asset)
+        return false
+      }
+      if (!asset.name) {
+        log.warn('omitting asset without name', asset.symbol)
+        return false
+      }
+      return true
+    }).map((asset) => {
+      if (!asset.decimals) {
+        asset.decimals = 0
+      }
+      return asset as Asset
+    }))
+}
 
-const getAssetPrice = (symbol) => fetchGet(`${siteUrl}/app/portfolio-price/${symbol}`)
+const getAssetPrice = (symbol: string) => fetchGet(`${siteUrl}/app/portfolio-price/${symbol}`)
 
 const getAssetPrices = () => fetchGet(`${siteUrl}/app/portfolio-price`)
 
-const getPriceChart = (symbol) => fetchGet(`${siteUrl}/app/portfolio-chart/${symbol}`)
+const getPriceChart = (symbol: string) => fetchGet(`${siteUrl}/app/portfolio-chart/${symbol}`)
 
-const getMarketInfo = (pair) => fetchGet(`${apiUrl}/marketinfo/${pair}`)
+const getMarketInfo = (pair: string) => fetchGet(`${apiUrl}/marketinfo/${pair}`)
 
-const postExchange = (info) => fetchPost(`${apiUrl}/shift`, info)
+const postExchange = (info: object) => fetchPost(`${apiUrl}/shift`, info)
 
-const getOrderStatus = (swapOrderId) => fetchGet(`${apiUrl}/txStat/${swapOrderId}`)
-
-const getSwundle = (address) => fetchGet(`${apiUrl}/swundle/${address}`)
-
-const postSwundle = (address, swap) => fetchPost(`${apiUrl}/swundle/${address}`, { swap })
-
-const removeSwundle = (address) => fetchDelete(`${apiUrl}/swundle/${address}`)
+const getOrderStatus = (swapOrderId: string) => fetchGet(`${apiUrl}/txStat/${swapOrderId}`)
 
 export default {
   getAssets,
@@ -43,7 +46,4 @@ export default {
   getMarketInfo,
   postExchange,
   getOrderStatus,
-  getSwundle,
-  postSwundle,
-  removeSwundle,
 }

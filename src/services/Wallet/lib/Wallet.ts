@@ -1,8 +1,9 @@
 import { BigNumber, ZERO } from 'Utilities/convert'
 import log from 'Utilities/log'
 
+import { Asset } from 'Types'
 import {
-  Asset, Transaction, TransactionOutput, Receipt,
+  Transaction, TransactionOutput, Receipt,
   Amount, Balances, FeeRate, AssetProvider, WalletGetter,
 } from './types'
 

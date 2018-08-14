@@ -4,18 +4,20 @@ import config from 'Config'
 import log from 'Utilities/log'
 import { xpubToYpub, joinDerivationPath } from 'Utilities/bitcoin'
 import Ledger from 'Services/Ledger'
+import { UtxoInfo } from 'Services/Bitcore'
 
 import BitcoinWallet from './BitcoinWallet'
+import { Transaction } from '../types'
+import { BtcTransaction } from './types'
 
 const typeLabel = config.walletTypes.ledger.name
 
 export default class BitcoinWalletLedger extends BitcoinWallet {
 
-  static type = 'BitcoinWalletLedger';
+  static type = 'BitcoinWalletLedger'
 
-  constructor(xpub, derivationPath, label) {
+  constructor(xpub: string, public derivationPath: string, label?: string) {
     super(xpub, label)
-    this.derivationPath = derivationPath
   }
 
   getType() { return BitcoinWalletLedger.type }
@@ -26,9 +28,11 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
 
   getAccountNumber() { return Number.parseInt(this.derivationPath.match(/(\d+)'$/)[1]) + 1 }
 
-  getLabel() { return this.label || `Bitcoin${this.isLegacyAccount() ? ' legacy' : ''} account #${this.getAccountNumber()}` }
+  getLabel() {
+    return this.label || `Bitcoin${this.isLegacyAccount() ? ' legacy' : ''} account #${this.getAccountNumber()}`
+  }
 
-  static fromPath(derivationPath) {
+  static fromPath(derivationPath: string): Promise<BitcoinWalletLedger> {
     return Ledger.btc.getWalletPublicKey(derivationPath)
       .then(({ publicKey, chainCode }) => {
         log.info('Ledger.btc.getWalletPublicKey success')
@@ -49,23 +53,22 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
   isReadOnly() { return false }
 
   /**
-  * Sign a transaction using ledgerjs api
-  */
-  _signTx(tx) {
-    const { txData } = tx
+   * Sign a transaction using ledgerjs api
+   */
+  _signTx({ txData }: BtcTransaction): Promise<Partial<BtcTransaction>> {
     return Promise.all(txData.inputUtxos.map((utxo) =>
       this._bitcore.lookupTransaction(utxo.transactionHash)
         .then((txInfo) => Ledger.btc.splitTransaction(txInfo.hex, true, false))
         .then((splitTx) => ({
           ...utxo,
-          splitTx
+          splitTx,
         }))))
-      .then((inputUtxos) => {
+      .then((inputUtxos: Array<UtxoInfo & { splitTx: object }>) => {
         log.info('inputUtxos', inputUtxos)
 
         const { changePath, outputScript, isSegwit } = txData
-        const inputs = []
-        const paths = []
+        const inputs: Array<[object, number]> = []
+        const paths: string[] = []
         inputUtxos.forEach((utxo) => {
           inputs.push([utxo.splitTx, utxo.index])
           paths.push(joinDerivationPath(this.derivationPath, utxo.addressPath))
@@ -82,7 +85,7 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
           isSegwit)
       })
       .then((signedTxHex) => ({
-        signedTxData: signedTxHex
+        signedTxData: signedTxHex,
       }))
   }
 }

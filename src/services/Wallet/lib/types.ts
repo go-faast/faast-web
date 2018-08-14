@@ -1,13 +1,6 @@
-import Wallet from './Wallet'
 import BigNumber from 'bignumber.js'
-
-export interface Asset {
-  symbol: string
-  name: string
-  decimals: number
-  contractAddress?: string
-  ERC20?: boolean
-}
+import Wallet from './Wallet'
+import { Asset } from 'Types'
 
 export interface Transaction {
   walletId: string

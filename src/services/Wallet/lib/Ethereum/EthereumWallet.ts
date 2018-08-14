@@ -14,7 +14,8 @@ import log from 'Utilities/log'
 import { batchRequest, tokenBalanceData, tokenSendData, web3SendTx, toUniversalReceipt } from './util'
 import Wallet from '../Wallet'
 import { EthTransaction, TxData, SignedTxData } from './types'
-import { Asset, Amount, Balances, Transaction, Receipt } from '../types'
+import { Asset } from 'Types'
+import { Amount, Balances, Transaction, Receipt } from '../types'
 
 const DEFAULT_GAS_PRICE = 21e9 // 21 Gwei
 

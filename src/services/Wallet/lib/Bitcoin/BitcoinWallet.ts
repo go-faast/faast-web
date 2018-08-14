@@ -7,7 +7,8 @@ import { getNetwork, Bitcore, AccountInfo } from 'Services/Bitcore'
 
 import Wallet from '../Wallet'
 
-import { TransactionOutput, Transaction, Asset, Amount, FeeRate, Receipt } from '../types'
+import { Asset } from 'Types'
+import { TransactionOutput, Transaction, Amount, FeeRate, Receipt } from '../types'
 
 const DEFAULT_FEE_PER_BYTE = 10
 

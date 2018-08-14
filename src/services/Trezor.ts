@@ -41,6 +41,24 @@ declare global {
   }
 }
 
+export type TrezorInput = {
+  address_n: number[],
+  prev_hash: string,
+  prev_index: number,
+  amount?: number,
+  script_type?: string,
+}
+
+type TrezorOutputPart = {
+}
+
+export type TrezorOutput = {
+  address?: string,
+  address_n?: number[],
+  amount: number,
+  script_type: string,
+}
+
 function createCallback(fnName: string, args: any[], resolve: (x: Result) => void, reject: (e: Error) => void) {
   return (result?: CallbackResult) => {
     if (!result) {
@@ -75,7 +93,12 @@ const proxy = (tc: TrezorConnectType, key: string, val: any) => {
 }
 
 class PromisifiedTrezorConnect {
-  getXPubKey: (derivationPath: string) => Promise<{ publicKey: string, chainCode: string}>
+  getXPubKey: (derivationPath: string) => Promise<{
+    publicKey: string,
+    chainCode: string,
+    xpubkey: string,
+    serializedPath: string,
+  }>
   signEthereumTx: (
     derivationPath: string,
     nonce: string,
@@ -86,6 +109,10 @@ class PromisifiedTrezorConnect {
     data: string | null,
     chainId: number,
   ) => Promise<{ r: string, s: string, v: string}>
+  signTx: (inputs: TrezorInput[], outputs: TrezorOutput[]) => Promise<{
+    serialized_tx: string,
+  }>
+
   [key: string]: (...args: any[]) => any
 
   constructor(tc: TrezorConnectType) {

@@ -1,19 +1,19 @@
 import config from 'Config'
 import log from 'Utilities/log'
 import { xpubToYpub, derivationPathStringToArray } from 'Utilities/bitcoin'
-import Trezor from 'Services/Trezor'
+import Trezor, { TrezorOutput } from 'Services/Trezor'
 
 import BitcoinWallet from './BitcoinWallet'
+import { BtcTransaction } from './types'
 
 const typeLabel = config.walletTypes.trezor.name
 
 export default class BitcoinWalletTrezor extends BitcoinWallet {
 
-  static type = 'BitcoinWalletTrezor';
+  static type = 'BitcoinWalletTrezor'
 
-  constructor(xpub, derivationPath, label) {
+  constructor(xpub: string, public derivationPath: string, label?: string) {
     super(xpub, label)
-    this.derivationPath = derivationPath
   }
 
   getType() { return BitcoinWalletTrezor.type }
@@ -24,9 +24,11 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
 
   getAccountNumber() { return Number.parseInt(this.derivationPath.match(/(\d+)'$/)[1]) + 1 }
 
-  getLabel() { return this.label || `Bitcoin${this.isLegacyAccount() ? ' legacy' : ''} account #${this.getAccountNumber()}` }
+  getLabel() {
+    return this.label || `Bitcoin${this.isLegacyAccount() ? ' legacy' : ''} account #${this.getAccountNumber()}`
+  }
 
-  static fromPath(derivationPath = null) {
+  static fromPath(derivationPath: string | null = null) {
     Trezor.setCurrency('BTC')
     return Trezor.getXPubKey(derivationPath)
       .then((result) => {
@@ -43,7 +45,7 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
       })
   }
 
-  _signTx(tx) {
+  _signTx(tx: BtcTransaction): Promise<Partial<BtcTransaction>> {
     const { txData: { inputUtxos, outputs, change, changePath } } = tx
     const baseDerivationPathArray = derivationPathStringToArray(this.derivationPath)
     const trezorInputs = inputUtxos.map(({ addressPath, transactionHash, index, value }) => ({
@@ -55,7 +57,7 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
         script_type: 'SPENDP2SHWITNESS',
       }),
     }))
-    const trezorOutputs = outputs.map(({ address, amount }) => ({
+    const trezorOutputs: TrezorOutput[] = outputs.map(({ address, amount }) => ({
       address,
       amount,
       script_type: 'PAYTOADDRESS',
