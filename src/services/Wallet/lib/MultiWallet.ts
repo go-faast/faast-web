@@ -80,8 +80,8 @@ export default class MultiWallet extends Wallet {
     return this.getWallets().filter((wallet) => wallet.isAssetSupported(assetOrSymbol))
   }
 
-  isAssetSupported(assetOrSymbol: Asset | string) {
-    return this.getWallets().some((wallet) => wallet.isAssetSupported(assetOrSymbol))
+  _isAssetSupported(asset: Asset) {
+    return this.getWallets().some((wallet) => wallet.isAssetSupported(asset))
   }
 
   isAggregateTransactionSupported(assetOrSymbol: Asset | string) {

@@ -1,38 +1,41 @@
 import log from 'Utilities/log'
 import { toHashId } from 'Utilities/helpers'
 import { toMainDenomination, toSmallestDenomination } from 'Utilities/convert'
-import { abstractMethod, assertExtended } from 'Utilities/reflect'
 import { ellipsize } from 'Utilities/display'
 import { fetchGet } from 'Utilities/fetch'
-import Bitcore from 'Services/Bitcore'
+import { getNetwork, Bitcore } from 'Services/Bitcore'
 
 import Wallet from '../Wallet'
 
-const supportedAssets = ['BTC']
+import { TransactionOutput, Transaction, Asset } from '../types'
 
 const DEFAULT_FEE_PER_BYTE = 10
 
-@abstractMethod('getTypeLabel', '_createAggregateTransaction', '_signTx', '_sendSignedTx', '_validateTxData', '_validateSignedTxData')
-export default class BitcoinWallet extends Wallet {
+export default abstract class BitcoinWallet extends Wallet {
 
-  static type = 'BitcoinWallet';
+  static type = 'BitcoinWallet'
 
-  constructor(xpub, label) {
+  assetSymbol = 'BTC'
+  _bitcore: Bitcore
+  _latestDiscoveryResult: object
+
+  constructor(public xpub: string, label?: string) {
     super(toHashId(xpub), label)
-    assertExtended(this, BitcoinWallet)
-    this.assetSymbol = 'BTC'
-    this.xpub = xpub
-    this._bitcore = Bitcore.getNetwork(this.assetSymbol)
+    this._bitcore = getNetwork(this.assetSymbol)
     this._latestDiscoveryResult = null
   }
 
   getLabel() { return this.label || `Bitcoin ${ellipsize(this.xpub, 8, 4)}` }
 
-  isAssetSupported(assetOrSymbol) { return supportedAssets.includes(this.getSymbol(assetOrSymbol)) }
-
   isSingleAddress() { return false }
 
-  isAggregateTransactionSupported(assetOrSymbol) { return this.isAssetSupported(assetOrSymbol) }
+  _isAssetSupported(asset: Asset) {
+    return asset && asset.symbol === this.assetSymbol
+  }
+
+  _isAggregateTransactionSupported(asset: Asset) {
+    return this._isAssetSupported(asset)
+  }
 
   _performDiscovery() {
     const discoveryPromise = this._bitcore.discoverAccount(this.xpub)
@@ -55,9 +58,8 @@ export default class BitcoinWallet extends Wallet {
       })
   }
 
-  getFreshAddress(assetOrSymbol, { index = 0 } = {}) {
-    return Promise.resolve(assetOrSymbol)
-      .then(::this.assertAssetSupported)
+  _getFreshAddress(asset: Asset, { index = 0 }) {
+    return Promise.resolve()
       .then(() => this._getDiscoveryResult())
       .then(({ unusedAddresses }) => unusedAddresses[index])
       .catch((e) => {

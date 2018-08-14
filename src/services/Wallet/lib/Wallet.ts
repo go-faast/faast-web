@@ -14,17 +14,26 @@ export default abstract class Wallet {
   _assetProvider: AssetProvider = () => []
   _walletGetter: WalletGetter = () => null
 
+  /** The ID of this wallet */
+  getId(): string { return this.id }
+
+  getLabel(): string { return this.label || this.getType() }
+  setLabel(label: string): void { this.label = label }
+
+  isPersistAllowed(): boolean { return this._persistAllowed }
+  setPersistAllowed(persistAllowed: boolean): void { this._persistAllowed = persistAllowed }
+
   /** The type of this wallet. Generally the class name should is used. */
   abstract getType(): string
 
   /** A user friendly label for this type of wallet. (e.g. MetaMask, TREZOR) */
   abstract getTypeLabel(): string
 
-  /** Return true if the asset is supported */
-  abstract isAssetSupported(asset: Asset | string): boolean
-
   /** Return true if only one address used (e.g. Ethereum), false multiple (e.g. Bitcoin) */
   abstract isSingleAddress(): boolean
+
+  /** Return true if the asset is supported */
+  abstract _isAssetSupported(asset: Asset): boolean
 
   abstract _getFreshAddress(asset: Asset, options: object): Promise<string>
   abstract _getBalance(asset: Asset, options: object): Promise<Amount>
@@ -36,21 +45,18 @@ export default abstract class Wallet {
   abstract _getTransactionReceipt(tx: Transaction, options: object): Promise<Receipt>
   abstract _getDefaultFeeRate(asset: Asset, options: object): Promise<FeeRate>
 
-  /** The ID of this wallet */
-  getId(): string { return this.id }
-
-  getLabel(): string { return this.label || this.getType() }
-  setLabel(label: string): void { this.label = label }
-
-  isPersistAllowed(): boolean { return this._persistAllowed }
-  setPersistAllowed(persistAllowed: boolean): void { this._persistAllowed = persistAllowed }
+  abstract _createAggregateTransaction(
+    outputs: TransactionOutput[],
+    asset: Asset,
+    options: object,
+  ): Promise<Partial<Transaction>>
 
   /* The following methods return default values and can be overriden by subclass where applicable */
   isReadOnly(): boolean { return false }
   isPasswordProtected(): boolean { return false }
   checkPasswordCorrect(password: string): boolean { return true }
   isSignTransactionSupported(): boolean { return true }
-  isAggregateTransactionSupported(aos: Asset | string): boolean { return false }
+  _isAggregateTransactionSupported(aos: Asset): boolean { return true }
 
   setAssetProvider(assetProvider: AssetProvider): void {
     if (typeof assetProvider !== 'function') {
@@ -93,6 +99,10 @@ export default abstract class Wallet {
     return this.getAllAssetsBySymbol()[this.getSymbol(aos)]
   }
 
+  isAssetSupported(aos: Asset | string): boolean {
+    return this._isAssetSupported(this.getAsset(aos))
+  }
+
   getSupportedAssets(): Asset[] {
     return this.getAllAssets().filter(this.isAssetSupported.bind(this))
   }
@@ -128,7 +138,7 @@ export default abstract class Wallet {
     return this.getSupportedAssets().filter((asset) => !this.canSendAsset(asset))
   }
 
-  getUnsendablestrings(): string[] {
+  getUnsendableAssetSymbols(): string[] {
     return this.getUnsendableAssets().map(({ symbol }) => symbol)
   }
 
@@ -165,6 +175,10 @@ export default abstract class Wallet {
           this._newTransaction(asset, [{ address, amount }], result),
         ))
     })
+  }
+
+  isAggregateTransactionSupported(aos: Asset | string) {
+    return this._isAggregateTransactionSupported(this.getAsset(aos))
   }
 
   createAggregateTransaction(
@@ -236,15 +250,6 @@ export default abstract class Wallet {
     return Object.assign({
       type: this.getType(),
     }, this)
-  }
-
-  /** Unsupported by default, can be overriden in subclass */
-  _createAggregateTransaction(
-    outputs: TransactionOutput[],
-    asset: Asset,
-    options: object = {},
-  ): Promise<Partial<Transaction>> {
-    throw new Error('Unsupported method _createAggregateTransaction')
   }
 
   _signAndSendTx(tx: Transaction, options: object): Promise<Partial<Transaction>> {

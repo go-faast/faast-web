@@ -38,12 +38,17 @@ export default abstract class EthereumWallet extends Wallet {
 
   isSingleAddress() { return true }
 
+  _isAggregateTransactionSupported() { return false }
+
+  _createAggregateTransaction(): never {
+    throw new Error('Ethereum wallet does not support aggregate transactions')
+  }
+
   _getFreshAddress(asset: Asset): Promise<string> {
     return Promise.resolve(this.getAddress())
   }
 
-  isAssetSupported(assetOrSymbol: Asset | string) {
-    const asset = this.getAsset(assetOrSymbol)
+  _isAssetSupported(asset: Asset) {
     return asset && (asset.symbol === 'ETH' || asset.ERC20)
   }
 
