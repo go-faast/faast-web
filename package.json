@@ -37,7 +37,6 @@
     "@ledgerhq/hw-transport-u2f": "^4.15.0",
     "@types/bitcoinjs-lib": "^3.4.0",
     "@types/ethereumjs-util": "^5.2.0",
-    "@types/hdkey": "^0.7.0",
     "@types/lodash": "^4.14.116",
     "@types/query-string": "^6.1.0",
     "@types/uuid": "^3.4.3",
