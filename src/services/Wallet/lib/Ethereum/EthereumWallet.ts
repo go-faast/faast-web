@@ -79,7 +79,7 @@ export default abstract class EthereumWallet extends Wallet {
     return request.then((balance) => toMainDenomination(balance, asset.decimals))
   }
 
-  getAllBalances({ web3Batch = null }: { web3Batch: BatchRequest }): Promise<Balances> {
+  getAllBalances({ web3Batch = null }: { web3Batch?: BatchRequest } = {}): Promise<Balances> {
     return Promise.resolve(this.getSupportedAssets())
       .then((assets) => {
         const batch = web3Batch || new web3.BatchRequest()
