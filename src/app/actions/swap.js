@@ -44,7 +44,7 @@ const createSwapFinish = (dispatch, type, swap, additions) => (errorMessage, mor
   }
   if (updatedFields && Object.keys(updatedFields).length > 0) {
     dispatch(swapUpdated(swap.id, updatedFields))
-    return { ...swap, ...updatedFields }
+    swap = { ...swap, ...updatedFields }
   }
   return swap
 }
@@ -132,6 +132,7 @@ export const setSwapTx = (swapId, tx, outputIndex = 0) => (dispatch) => {
 }
 
 export const createSwapTx = (swap, options) => (dispatch) => {
+  if (swap.error) return swap
   log.debug('createSwapTx', swap)
   const { order, sendUnits, sendSymbol, sendWalletId } = swap
   const finish = createSwapFinish(dispatch, 'createSwapTx', swap)

@@ -124,6 +124,7 @@ const createSwundleTxs = (swundle, options) => (dispatch, getState) => {
 
     return Promise.all(Object.entries(swapsByAsset).map(([symbol, swaps]) => {
       if (walletInstance.isAggregateTransactionSupported(symbol)) {
+        if (swaps.some((swap) => swap.error)) { return }
         // Create a single aggregate transaction for multiple swaps (e.g. bitcoin, litecoin)
         const outputs = swaps.map(({ sendUnits, order }) => ({
           address: order.deposit,
