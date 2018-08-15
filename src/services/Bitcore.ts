@@ -4,7 +4,7 @@ import {
   UtxoInfo as BaseUtxoInfo, AccountInfo as BaseAccountInfo,
 } from 'hd-wallet'
 import { TransactionBuilder, Network } from 'bitcoinjs-lib'
-import { omit } from 'lodash'
+import { pick, omit } from 'lodash'
 
 // @ts-ignore
 import xpubWasmFile from 'hd-wallet/lib/fastxpub/fastxpub.wasm?file'
@@ -50,6 +50,32 @@ export type PaymentTx = {
   isSegwit: boolean,
 }
 
+// Fields missing in the coininfo provided config
+const extraNetworkConfig: {
+  [symbol: string]: Partial<Network>,
+} = {
+  'BTC': {
+    messagePrefix: '\x18Bitcoin Signed Message:\n',
+  },
+  'BTC-TEST': {
+    messagePrefix: '\x18Bitcoin Signed Message:\n',
+  },
+  'LTC': {
+    messagePrefix: '\x19Litecoin Signed Message:\n',
+  },
+}
+
+function getNetworkConfig(symbol: string): Network {
+  const extraConfig = extraNetworkConfig[symbol]
+  if (!extraConfig) {
+    throw new Error(`Missing extraConfig for ${symbol}`)
+  }
+  return {
+    ...pick(coininfo(symbol).toBitcoinJS(), 'bech32', 'bip32', 'pubKeyHash', 'scriptHash', 'wif'),
+    ...extraConfig,
+  } as Network
+}
+
 /**
  * Sort the utxos for input selection
  */
@@ -75,7 +101,7 @@ export class Bitcore extends BitcoreBlockchain {
 
   constructor(public assetSymbol: string, bitcoreUrls: string[]) {
     super(bitcoreUrls, socketWorkerFactory)
-    this.network = coininfo(assetSymbol).toBitcoinJS()
+    this.network = getNetworkConfig(assetSymbol)
     this.discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubWasmFilePromise, this)
   }
 
