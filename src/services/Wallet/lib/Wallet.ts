@@ -108,7 +108,7 @@ export default abstract class Wallet {
     return this.getAllAssets().filter(this.isAssetSupported.bind(this))
   }
 
-  getSupportedstrings(): string[] {
+  getSupportedAssetSymbols(): string[] {
     return this.getSupportedAssets().map(({ symbol }) => symbol)
   }
 
