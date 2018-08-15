@@ -1,5 +1,5 @@
 import { TransactionReceipt as Web3TxReceipt } from 'web3/types'
-import { Tx as Web3Tx } from 'web3/eth/types'
+import { Tx as Web3Tx, BatchRequest } from 'web3/eth/types'
 import { EncodedTransaction } from 'web3/types'
 import EthereumjsTx from 'ethereumjs-tx'
 import { Transaction, Receipt } from '../types'
@@ -30,4 +30,8 @@ export type SignedTxData = EncodedTransaction | {
 export type EthTransaction = Transaction & {
   txData?: TxData | null,
   signedTxData?: SignedTxData | null,
+}
+
+export type GetBalanceOptions = {
+  web3Batch?: BatchRequest,
 }

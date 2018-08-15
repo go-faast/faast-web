@@ -1,5 +1,4 @@
 import { difference } from 'lodash'
-import { BatchRequest } from 'web3/eth/types'
 import EthJsTx from 'ethereumjs-tx'
 
 import config from 'Config'
@@ -13,7 +12,7 @@ import log from 'Utilities/log'
 
 import { batchRequest, tokenBalanceData, tokenSendData, web3SendTx, toUniversalReceipt } from './util'
 import Wallet from '../Wallet'
-import { EthTransaction, TxData, SignedTxData } from './types'
+import { EthTransaction, TxData, SignedTxData, GetBalanceOptions } from './types'
 import { Asset } from 'Types'
 import { Amount, Balances, Transaction, Receipt } from '../types'
 
@@ -65,7 +64,7 @@ export default abstract class EthereumWallet extends Wallet {
       }))
   }
 
-  _getBalance(asset: Asset, { web3Batch = null }: { web3Batch: BatchRequest }): Promise<Amount> {
+  _getBalance(asset: Asset, { web3Batch = null }: GetBalanceOptions): Promise<Amount> {
     const address = this.getAddress()
     let request: Promise<Numerical>
     if (asset.symbol === 'ETH') {
@@ -79,7 +78,7 @@ export default abstract class EthereumWallet extends Wallet {
     return request.then((balance) => toMainDenomination(balance, asset.decimals))
   }
 
-  getAllBalances({ web3Batch = null }: { web3Batch?: BatchRequest } = {}): Promise<Balances> {
+  getAllBalances({ web3Batch = null }: GetBalanceOptions = {}): Promise<Balances> {
     return Promise.resolve(this.getSupportedAssets())
       .then((assets) => {
         const batch = web3Batch || new web3.BatchRequest()
