@@ -30,7 +30,7 @@ export type FeeRate = {
   unit: string,
 }
 
-export type AssetProvider = () => Asset[] | { [symbol: string]: Asset }
+export type AssetProvider = () => (Asset[] | { [symbol: string]: Asset })
 export type WalletGetter = (id: string) => Wallet | null
 
 export type Web3Receipt = {

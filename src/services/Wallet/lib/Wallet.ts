@@ -81,7 +81,7 @@ export default abstract class Wallet {
     return assets || []
   }
 
-  getAllAssetsBySymbol() {
+  getAllAssetsBySymbol(): { [symbol: string]: Asset } {
     const assets = this._assetProvider()
     if (Array.isArray(assets)) {
       return assets.reduce((mapped, asset) => ({ ...mapped, [asset.symbol]: asset }), {})
@@ -97,7 +97,10 @@ export default abstract class Wallet {
   }
 
   getAsset(aos: Asset | string): Asset {
-    return this.getAllAssetsBySymbol()[this.getSymbol(aos)]
+    if (typeof aos === 'string') {
+      return this.getAllAssetsBySymbol()[aos]
+    }
+    return aos
   }
 
   isAssetSupported(aos: Asset | string): boolean {
@@ -105,7 +108,7 @@ export default abstract class Wallet {
   }
 
   getSupportedAssets(): Asset[] {
-    return this.getAllAssets().filter(this.isAssetSupported.bind(this))
+    return this.getAllAssets().filter((a) => this._isAssetSupported(a))
   }
 
   getSupportedAssetSymbols(): string[] {
@@ -118,7 +121,7 @@ export default abstract class Wallet {
 
   getSupportedAsset(aos: Asset | string): Asset {
     const asset = this.getAsset(aos)
-    return (asset && this.isAssetSupported(asset)) ? asset : null
+    return (asset && this._isAssetSupported(asset)) ? asset : null
   }
 
   assertAssetSupported(aos: Asset | string): Asset {
@@ -130,7 +133,7 @@ export default abstract class Wallet {
   }
 
   /** Default behaviour, should be overriden in subclass if applicable */
-  canSendAsset(aos: Asset | string) {
+  canSendAsset(aos: Asset | string): boolean {
     const asset = this.getSupportedAsset(aos)
     return asset && !this.isReadOnly()
   }
