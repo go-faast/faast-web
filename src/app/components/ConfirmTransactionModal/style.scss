@@ -1,3 +1,27 @@
+.metaMaskContainer {
+  background-color: #eeeeee;
+  color: #4d4d4d;
+  padding: 20px;
+}
+/*metamask svg container*/
+.metaMaskIconContainer {
+  position: relative;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: bottom;
+}
+
+.wordBreak {
+  word-break: break-all;
+}
+
+/*metamask total styling - keeping if added back*/
+.total {
+  color: rgb(47, 154, 224);
+}
 
 .trezorScreen {
   position: relative;

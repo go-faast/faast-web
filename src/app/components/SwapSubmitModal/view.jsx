@@ -12,7 +12,7 @@ import ConfirmTransactionModal from 'Components/ConfirmTransactionModal'
 
 const SwapSubmitModal = ({
   isOpen, swundle, headerText, continueText, continueDisabled, continueLoading,
-  errorMessage, handleContinue, handleCancel, currentSwap,
+  errorMessage, handleContinue, handleCancel, currentSwap
 }) => (
   <div>
     <Modal size='lg' backdrop='static' isOpen={isOpen} toggle={handleCancel}>
