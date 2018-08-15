@@ -81,7 +81,7 @@ export function toTxFee(gasLimit: Numerical, gasPrice: Numerical): BigNumber {
 
 export function toHex(value: Numerical): string {
   value = toBigNumber(value)
-  return web3.utils.numberToHex(value)
+  return web3.utils.toHex(value)
 }
 
 export function toChecksumAddress(address: string): string {

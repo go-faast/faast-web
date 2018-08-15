@@ -22,7 +22,8 @@
     "build": "npm run lint && npm run build:webpack",
     "version": "git checkout develop && npm run build && git add -A dist",
     "postversion": "git push && git push --tags",
-    "release": "git checkout master && git merge develop && git push && git checkout develop"
+    "release": "git checkout master && git merge develop && git push && git checkout develop",
+    "postinstall": "rm -f node_modules/web3/index.d.ts"
   },
   "standard": {
     "ignore": [
