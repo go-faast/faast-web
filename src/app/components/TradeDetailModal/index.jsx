@@ -33,7 +33,7 @@ export default compose(
     Trade Details
     </ModalHeader>
     <ModalBody>
-        <SwapStatusCard isExpanded={true} swap={swap}/>
+        <SwapStatusCard swap={swap} expanded/>
     </ModalBody>
 </Modal>
 ))

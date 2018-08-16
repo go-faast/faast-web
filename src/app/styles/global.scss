@@ -1,6 +1,12 @@
 @import '~faast-ui/src/style/index.scss';
 @import 'variables';
 
+.swapChangeArrow {
+  position:relative;
+  vertical-align: middle;
+  top: -2px;
+}
+
 @-webkit-keyframes blinker {
   from { opacity: 1.0; }
   to { opacity: 0.0; }

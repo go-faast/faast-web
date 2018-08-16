@@ -1,20 +1,21 @@
 import React from 'react'
-import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers } from 'recompose'
-import PropTypes from 'prop-types'
-import CoinIcon from 'Components/CoinIcon'
-import { Table } from 'reactstrap'
-import Units from 'Components/Units'
-import Expandable from 'Components/Expandable'
-import { formatDate } from 'Utilities/display'
-import classNames from 'class-names'
-import { tableStyle, exclamationIcon } from './style'
-import routes from 'Routes'
 import { push as pushAction } from 'react-router-redux'
 import { connect } from 'react-redux'
+import { Table } from 'reactstrap'
+import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers } from 'recompose'
+import { formatDate } from 'Utilities/display'
+import routes from 'Routes'
+import PropTypes from 'prop-types'
+import classNames from 'class-names'
+
+import Units from 'Components/Units'
+import Expandable from 'Components/Expandable'
+import { tradeTable } from './style'
+import CoinIcon from 'Components/CoinIcon'
 
 const TradeTable = ({ swaps, handleClick }) => {
   return (
-    <Table hover striped responsive className={classNames(tableStyle, 'table-accordian')}>
+    <Table hover striped responsive className={classNames(tradeTable, 'table-accordian')}>
       <thead>
         <tr>
           <th></th>
@@ -52,7 +53,7 @@ const createTableRow = (swaps, handleClick) => {
       <tr key={id} onClick={() => handleClick(id)}>
         <td>{createStatusLabel(detailsCode)}</td>
         <td>{formatDate(created, 'yyyy-MM-dd hh:mm:ss')}</td>
-        <td><CoinIcon symbol={sendSymbol} size='sm' inline /> {sendSymbol} <i style={{ color: '#777' }} className='fa fa-long-arrow-right'/> <CoinIcon symbol={receiveSymbol} size='sm' inline /> {receiveSymbol}</td>
+        <td><CoinIcon symbol={sendSymbol} size='sm' inline/> {sendSymbol} <i style={{ color: '#777' }} className='fa fa-long-arrow-right'/> <CoinIcon symbol={receiveSymbol} size='sm' inline/> {receiveSymbol}</td>
         <td><Units value={inverseRate} symbol={sendSymbol} showSymbol={true} precision={6}/></td>
         <td><Units value={receiveUnits} symbol={receiveSymbol} showSymbol={true} precision={6}/></td>
         <td><Units value={feeAmount} symbol={feeSymbol} showSymbol={true} precision={6}/></td>

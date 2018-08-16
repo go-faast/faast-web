@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { compose, setDisplayName, setPropTypes, defaultProps, withState } from 'recompose'
+import { compose, setDisplayName, setPropTypes, defaultProps, withProps } from 'recompose'
 import { Row, Col, Card, CardBody, CardFooter, Alert, Collapse, Button } from 'reactstrap'
-import classNames from 'class-names'
-import ChangePercent from 'Components/ChangePercent'
-import { arrowStyle } from './TradeDetailModal/style'
-import config from 'Config'
 import { formatDate } from 'Utilities/display'
+import classNames from 'class-names'
+import config from 'Config'
+import withToggle from '../hoc/withToggle'
+
+import ChangePercent from 'Components/ChangePercent'
 import ArrowIcon from 'Components/ArrowIcon'
 import CoinIcon from 'Components/CoinIcon'
 import Units from 'Components/Units'
@@ -23,10 +24,10 @@ const StatusFooter = ({ className, children, ...props }) => (
 const priceChange = (timestamp, asset) => {
   const { change1, change7d, change24 } = asset
   const daysSinceTrade = (Date.now() - timestamp) / 86400000
-  const timespan = daysSinceTrade < 1 ? 'Last 24hr: ' : daysSinceTrade >= 2 ? 'Last 7d: ' : 'Last 1d: '
-  var priceChangeText = daysSinceTrade < 1 ? change1 : daysSinceTrade >= 2 ? change7d : change24
+  const timespan = daysSinceTrade <= .0417 ? 'Last 1hr: ' : daysSinceTrade >= 2 ? 'Last 7d: ' : 'Last 24hrs: '
+  var priceChangeText = daysSinceTrade <= .0417 ? change1 : daysSinceTrade >= 2 ? change7d : change24
   return (
-    <span>{timespan}<ChangePercent>{priceChangeText}</ChangePercent><ArrowIcon style={arrowStyle} size={.58} dir={priceChangeText < 0 ? 'down' : 'up'} color={priceChangeText < 0 ? 'danger' : 'success'}/></span>
+    <span>{timespan}<ChangePercent>{priceChangeText}</ChangePercent><ArrowIcon className="swapChangeArrow" size={.58} dir={priceChangeText < 0 ? 'down' : 'up'} color={priceChangeText < 0 ? 'danger' : 'success'}/></span>
   )
 }
 
@@ -37,31 +38,35 @@ export default compose(
     showWalletLabels: PropTypes.bool,
     showFees: PropTypes.bool,
     showDetails: PropTypes.bool,
-    isExpanded: PropTypes.bool
+    expanded: PropTypes.bool
   }),
   defaultProps({
     showWalletLabels: true,
     showFees: false,
     showDetails: false,
-    isExpanded: false
+    expanded: null
   }),
-  withState('isExpanded', 'toggleExpanded', ({ isExpanded }) => isExpanded),
+  withToggle('expandedState'),
+  withProps(({ expanded, isExpandedState, toggleExpandedState }) => ({
+    isExpanded: expanded === null ? isExpandedState : expanded,
+    togglerProps: expanded === null ? { tag: Button, color: 'ultra-dark', onClick: toggleExpandedState } : {}
+  }))
 )(({
   swap: {
     sendWalletId, sendSymbol, sendAsset, sendUnits,
     receiveWalletId, receiveSymbol, receiveAsset, receiveUnits,
     error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee,
-    tx: { hash: txHash, feeAmount: txFee, feeSymbol: txFeeSymbol, confirmed, succeeded },
+    tx: { confirmed, succeeded, hash: txHash, feeAmount: txFee, feeSymbol: txFeeSymbol },
     status: { code, details }, orderId,
     order: { created }
   },
-  statusText, showDetails, isExpanded, toggleExpanded
+  statusText, showDetails, isExpanded, togglerProps, expanded
 }) => (
   <Card className='flat'>
-    <CardBody className='py-2 pr-3 pl-2 border-0 lh-0' tag={Button} color='ultra-dark' onClick={() => toggleExpanded(!isExpanded)} style={{ minHeight: '4rem' }}>
+    <CardBody className='py-2 pr-3 pl-2 border-0 lh-0' tag={Button} color='ultra-dark'  {...togglerProps} style={{ minHeight: '4rem' }}>
       <Row className='gutter-0 align-items-center font-size-small text-muted'>
         <Col xs='auto'>
-          <i style={{ transition: 'all .15s ease-in-out' }} className={classNames('fa fa-chevron-circle-down text-primary px-2 mr-2', { ['fa-rotate-180']: isExpanded })}/>
+          { expanded === null ? <i style={{ transition: 'all .15s ease-in-out' }} className={classNames('fa fa-chevron-circle-down text-primary px-2 mr-2', { ['fa-rotate-180']: isExpanded })}/> : false }
         </Col>
         <Col>
           <Row className='gutter-2 align-items-center text-center text-sm-left'>
