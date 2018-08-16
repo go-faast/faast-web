@@ -63,7 +63,10 @@ function getNetworkConfig(symbol: string): Network {
 const bitcoreConfigs: { [symbol: string]: BitcoreConfig } = [
   {
     symbol: 'BTC',
-    bitcoreUrls: ['https://blockexplorer.com', 'https://bitcore1.trezor.io', 'https://bitcore3.trezor.io'],
+    bitcoreUrls: [
+      'https://btc.bitaccess.ca', 'https://blockexplorer.com',
+      'https://bitcore1.trezor.io', 'https://bitcore3.trezor.io',
+    ],
     network: {
       ...getNetworkConfig('BTC'),
       messagePrefix: '\x18Bitcoin Signed Message:\n',
