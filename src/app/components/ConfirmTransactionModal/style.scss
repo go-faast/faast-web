@@ -1,10 +1,17 @@
+/* MetaMask styles */
 .metaMaskContainer {
-  background-color: #eeeeee;
+  background-color: #fff;
   color: #4d4d4d;
-  padding: 20px;
+  max-width: 408px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.transfer {
+.metaMaskNonce {
+  color: #8C8E94;
+}
+
+.metaMaskTransfer {
   color: #8C8E94;
   border: 1px solid #8C8E94;
   display: inline-block;
@@ -14,11 +21,42 @@
   text-transform: uppercase;
 }
 
-/*metamask total styling - keeping if added back*/
-.total {
+.metaMaskAddressRow {
+  height: 42px;
+  padding-left: 24px;
+  padding-right: 24px;
+  border-bottom: 1px solid #d2d8dd;
+  border-top: 1px solid #d2d8dd;
+}
+
+.metaMaskAmountRow {
+  border-bottom: 1px solid #d2d8dd;
+  padding: 16px 24px;
+  background-color: #f9fafa;
+}
+
+.metaMaskFeeRow {
+  padding: 24px;
+}
+
+// total fiat styling - keeping if added back
+.metaMaskTotal {
   color: rgb(47, 154, 224);
 }
 
+.metaMaskArrow {
+  background: #fff;
+  padding: 5px;
+  border: 1px solid #d2d8dd;
+  border-radius: 20px;
+  height: 32px;
+  width: 32px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Trezor styles */
 .trezorScreen {
   position: relative;
   width: 200px;
@@ -28,11 +66,6 @@
   border-radius: 8px;
   white-space: nowrap;
   overflow: hidden;
-}
-
-.ledgerScreen {
-  background-color: #000;
-  color: #00FFFF;
 }
 
 /*octagon in trezor instructions component*/
@@ -64,4 +97,10 @@
   left: 8px;
   top: 0px;
   font-size: 14px;
+}
+
+/* Ledger styles */
+.ledgerScreen {
+  background-color: #000;
+  color: #00FFFF;
 }
