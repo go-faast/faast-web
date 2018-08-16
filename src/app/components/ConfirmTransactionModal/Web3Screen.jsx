@@ -15,7 +15,7 @@ export default compose(
 )(({ screens }) => (
   <div className={style.metaMaskContainer}>
     {screens.map(({ left, right }, i) => (
-      <div key={`Web3Screen-${i}`}>
+      <div key={i}>
         {left}
         {right}
       </div>
