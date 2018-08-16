@@ -1,6 +1,10 @@
 @import '~faast-ui/src/style/index.scss';
 @import 'variables';
 
+.wordBreak {
+  word-break: break-all;
+}
+
 @-webkit-keyframes blinker {
   from { opacity: 1.0; }
   to { opacity: 0.0; }
