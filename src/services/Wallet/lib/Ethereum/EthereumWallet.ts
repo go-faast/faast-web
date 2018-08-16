@@ -5,7 +5,7 @@ import config from 'Config'
 import web3 from 'Services/Web3'
 import { addHexPrefix, toHashId } from 'Utilities/helpers'
 import {
-  ZERO, Numerical, toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee,
+  ZERO, Numerical, toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee, toNumber,
 } from 'Utilities/convert'
 import { ellipsize } from 'Utilities/display'
 import log from 'Utilities/log'
@@ -124,11 +124,14 @@ export default abstract class EthereumWallet extends Wallet {
         throw new Error(`Unsupported asset ${asset.symbol || asset} provided to EthereumWallet.createTransaction`)
       }
 
-      const previousTx = options.previousTx
+      const { previousTx } = options
       let customNonce = options.nonce
-      if (!customNonce && previousTx && previousTx.txData.from.toLowerCase() === txData.from.toLowerCase()) {
-        customNonce = toBigNumber(previousTx.txData.nonce).plus(1).toNumber()
+      if (typeof customNonce === 'undefined'
+        && previousTx
+        && previousTx.txData.from.toLowerCase() === txData.from.toLowerCase()) {
+        customNonce = toNumber(previousTx.txData.nonce) + 1
       }
+
       const customGasPrice = options.gasPrice
       const customGasLimit = options.gasLimit || options.gas
 

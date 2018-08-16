@@ -135,10 +135,10 @@ const createSwundleTxs = (swundle, options) => (dispatch, getState) => {
       } else {
         // Create a transaction for each swap (e.g. ethereum)
         let previousTx
-        return processArray(swaps, (swap) => dispatch(createSwapTx(swap, { ...options, previousTx })))
+        return processArray(swaps, (swap) => dispatch(createSwapTx(swap, { ...options, previousTx }))
           .then((tx) => {
             previousTx = tx
-          })
+          }))
       }
     }))
   })).then(() => getSwundle(getState(), swundle.id))

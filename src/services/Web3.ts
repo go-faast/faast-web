@@ -1,5 +1,5 @@
 import config from 'Config'
-import Web3 = require('web3')
+import Web3 from 'web3'
 
 declare global {
   interface Window {
