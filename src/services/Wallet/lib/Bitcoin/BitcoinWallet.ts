@@ -3,7 +3,7 @@ import { toHashId } from 'Utilities/helpers'
 import { toMainDenomination, toSmallestDenomination } from 'Utilities/convert'
 import { ellipsize } from 'Utilities/display'
 import { fetchGet } from 'Utilities/fetch'
-import { getNetwork, Bitcore, AccountInfo } from 'Services/Bitcore'
+import { getBitcore, Bitcore, AccountInfo } from 'Services/Bitcore'
 
 import Wallet from '../Wallet'
 
@@ -23,7 +23,7 @@ export default abstract class BitcoinWallet extends Wallet {
 
   constructor(public xpub: string, public derivationPath: string, label?: string) {
     super(toHashId(xpub), label)
-    this._bitcore = getNetwork(this.assetSymbol)
+    this._bitcore = getBitcore(this.assetSymbol)
     this._latestDiscoveryResult = null
   }
 

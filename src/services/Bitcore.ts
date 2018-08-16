@@ -50,31 +50,34 @@ export type PaymentTx = {
   isSegwit: boolean,
 }
 
-// Fields missing in the coininfo provided config
-const extraNetworkConfig: {
-  [symbol: string]: Partial<Network>,
-} = {
-  'BTC': {
-    messagePrefix: '\x18Bitcoin Signed Message:\n',
-  },
-  'BTC-TEST': {
-    messagePrefix: '\x18Bitcoin Signed Message:\n',
-  },
-  'LTC': {
-    messagePrefix: '\x19Litecoin Signed Message:\n',
-  },
+type BitcoreConfig = {
+  symbol: string,
+  bitcoreUrls: string[],
+  network: Network,
 }
 
 function getNetworkConfig(symbol: string): Network {
-  const extraConfig = extraNetworkConfig[symbol]
-  if (!extraConfig) {
-    throw new Error(`Missing extraConfig for ${symbol}`)
-  }
-  return {
-    ...pick(coininfo(symbol).toBitcoinJS(), 'bech32', 'bip32', 'pubKeyHash', 'scriptHash', 'wif'),
-    ...extraConfig,
-  } as Network
+  return pick(coininfo(symbol).toBitcoinJS(), 'bech32', 'bip32', 'messagePrefix', 'pubKeyHash', 'scriptHash', 'wif')
 }
+
+const bitcoreConfigs: { [symbol: string]: BitcoreConfig } = [
+  {
+    symbol: 'BTC',
+    bitcoreUrls: ['https://blockexplorer.com', 'https://bitcore1.trezor.io', 'https://bitcore3.trezor.io'],
+    network: {
+      ...getNetworkConfig('BTC'),
+      messagePrefix: '\x18Bitcoin Signed Message:\n',
+    },
+  },
+  {
+    symbol: 'LTC',
+    bitcoreUrls: ['https://ltc-bitcore3.trezor.io'],
+    network: {
+      ...getNetworkConfig('LTC'),
+      messagePrefix: '\x19Litecoin Signed Message:\n',
+    },
+  },
+].reduce((bySymbol, config) => ({ ...bySymbol, [config.symbol]: config }), {})
 
 /**
  * Sort the utxos for input selection
@@ -96,12 +99,14 @@ function sortUtxos(utxoList: UtxoInfo[]): UtxoInfo[] {
 
 export class Bitcore extends BitcoreBlockchain {
 
+  assetSymbol: string
   network: Network
   discovery: WorkerDiscovery
 
-  constructor(public assetSymbol: string, bitcoreUrls: string[]) {
-    super(bitcoreUrls, socketWorkerFactory)
-    this.network = getNetworkConfig(assetSymbol)
+  constructor(config: BitcoreConfig) {
+    super(config.bitcoreUrls, socketWorkerFactory)
+    this.assetSymbol = config.symbol
+    this.network = config.network
     this.discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubWasmFilePromise, this)
   }
 
@@ -238,21 +243,23 @@ export class Bitcore extends BitcoreBlockchain {
   }
 }
 
-const assetToBitcore: { [symbol: string]: Bitcore } = {
-  BTC: new Bitcore('BTC', ['https://blockexplorer.com', 'https://bitcore1.trezor.io', 'https://bitcore3.trezor.io']),
-  LTC: new Bitcore('LTC', ['https://ltc-bitcore3.trezor.io']),
-}
+const bitcoreInstances: { [symbol: string]: Bitcore } = {}
 
 /** Get the Bitcore service for the specified asset */
-export function getNetwork(assetSymbol: string): Bitcore {
-  const bitcore = assetToBitcore[assetSymbol]
-  if (!bitcore) {
-    throw new Error(`Asset ${assetSymbol} has no Bitcore configuration`)
+export function getBitcore(assetSymbol: string): Bitcore {
+  const bitcore = bitcoreInstances[assetSymbol]
+  if (bitcore) {
+    return bitcore
   }
-  return bitcore
+  const bitcoreConfig = bitcoreConfigs[assetSymbol]
+  if (bitcoreConfig) {
+    log.debug('Creating new Bitcore using config', bitcoreConfig)
+    return (bitcoreInstances[assetSymbol] = new Bitcore(bitcoreConfig))
+  }
+  throw new Error(`Bitcore not configured for asset ${assetSymbol}`)
 }
 
 export default {
-  getNetwork,
+  getBitcore,
   Bitcore,
 }
