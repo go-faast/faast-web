@@ -37,7 +37,14 @@ const vendorOutputPath = 'vendor/'
 const bundleOutputPath = 'bundle/'
 const faviconOutputPath = 'favicon/'
 
-const vendorDeps = ['font-awesome/css/font-awesome.min.css', 'web3.min.js']
+const vendorDeps = ['font-awesome/css/font-awesome.min.css']
+
+const jsLoader = {
+  loader: 'babel-loader',
+  options: {
+    cacheDirectory: true,
+  }
+}
 
 const cssLoader = ({ sourceMap = true, modules = true } = {}) => ExtractTextPlugin.extract({
   fallback: 'style-loader',
@@ -98,6 +105,13 @@ let config = {
   },
   module: {
     rules: [{
+      test: /\.tsx?$/,
+      exclude: /node_modules/,
+      use: [
+        jsLoader,
+        { loader: 'ts-loader' },
+      ]
+    }, {
       test: /\.jsx?$/,
       rules: [{
         resourceQuery: /worker/,
@@ -107,7 +121,7 @@ let config = {
         }
       }, {
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        use: [jsLoader]
       }]
     }, {
       test: /(\.css|\.scss)$/,
@@ -155,8 +169,9 @@ let config = {
       Selectors: 'App/selectors',
       Routes: 'App/routes',
       Log: 'Utilities/log',
+      Types: 'Src/types',
     },
-    extensions: ['.js', '.jsx', '.json', '.scss', '.css']
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.scss', '.css']
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -205,7 +220,7 @@ let config = {
     }),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest'
-    }),
+    })
   ]
 }
 
