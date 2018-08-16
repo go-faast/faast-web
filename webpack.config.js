@@ -62,10 +62,9 @@ const cssLoader = ({ sourceMap = true, modules = true } = {}) => ExtractTextPlug
     loader: 'postcss-loader', // Run post css actions
     options: {
       sourceMap,
-      plugins: () => [ // post css plugins, can be exported to postcss.config.js
-        require('precss'),
-        require('autoprefixer')
-      ]
+      config: {
+        path: path.resolve(__dirname, './postcss.config.js'),
+      }
     }
   }, {
     loader: 'sass-loader', // compiles SASS to CSS
