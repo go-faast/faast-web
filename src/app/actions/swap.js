@@ -123,7 +123,7 @@ export const createOrder = (swap) => (dispatch) => {
   .then((order) => finish(null, { order }))
   .catch((e) => {
     log.error('createOrder', e)
-    return finish('Error creating swap order')
+    return finish(`Error creating swap for pair ${pair}, please contact support@faa.st`)
   })
 }
 
