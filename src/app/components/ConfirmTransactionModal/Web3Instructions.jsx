@@ -14,7 +14,7 @@ const Web3Instructions = ({ tx: { outputs: [{ amount, address }], assetSymbol, f
         <a href='https://i.imgur.com/Gqn7JUM.mp4' target='_blank' rel='noopener noreferrer'> here.</a>
       </small></p>
       <Web3Screen screens={[
-        { left: (<div className={'font-weight-bold wordBreak'}>{address}</div>), right: (<small><div className={classNames('mt-2 mb-1 font-size-xs', transfer)}>Transfer</div></small>) },
+        { left: (<div className={'font-weight-bold wordBreak'}>{address}</div>), right: (<div className={classNames('mt-2 mb-1 font-size-xs', transfer)}>Transfer</div>) },
         { left: 'Amount', right: (<span className='font-weight-bold float-right'><Units value={amount} symbol={assetSymbol} precision={null}/></span>) },
         { left: 'Gas fee', right: (<span className='font-weight-bold float-right'><Units value={feeAmount} symbol={feeSymbol} precision={null}/></span>) }
       ]}/>
