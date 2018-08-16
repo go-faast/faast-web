@@ -1,6 +1,6 @@
 import log from 'Utilities/log'
 import { toHashId } from 'Utilities/helpers'
-import { toMainDenomination, toSmallestDenomination } from 'Utilities/convert'
+import { toMainDenomination, toSmallestDenomination, toNumber } from 'Utilities/convert'
 import { ellipsize } from 'Utilities/display'
 import { fetchGet } from 'Utilities/fetch'
 import { getBitcore, Bitcore, AccountInfo } from 'Services/Bitcore'
@@ -99,7 +99,7 @@ export default abstract class BitcoinWallet extends Wallet {
   ): Promise<BtcTransaction> {
     return Promise.all([
       this._getDiscoveryResult(),
-      feeRateOption || this._getDefaultFeeRate(asset).then(({ rate }) => rate),
+      feeRateOption || this._getDefaultFeeRate(asset).then(({ rate }) => toNumber(rate)),
     ]).then(([discoverResult, feeRate]) => {
       const isSegwit = !this.isLegacyAccount()
       const convertedOutputs = outputs.map(({ address, amount }) => ({
