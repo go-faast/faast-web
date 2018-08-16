@@ -10,8 +10,8 @@ import classNames from 'class-names'
 
 import Units from 'Components/Units'
 import Expandable from 'Components/Expandable'
-import { tradeTable } from './style'
 import CoinIcon from 'Components/CoinIcon'
+import { tradeTable, tradeCoinIcon } from './style'
 
 const TradeTable = ({ swaps, handleClick }) => {
   return (
@@ -53,7 +53,7 @@ const createTableRow = (swaps, handleClick) => {
       <tr key={id} onClick={() => handleClick(id)}>
         <td>{createStatusLabel(detailsCode)}</td>
         <td>{formatDate(created, 'yyyy-MM-dd hh:mm:ss')}</td>
-        <td><CoinIcon symbol={sendSymbol} size='sm' inline/> {sendSymbol} <i style={{ color: '#777' }} className='fa fa-long-arrow-right'/> <CoinIcon symbol={receiveSymbol} size='sm' inline/> {receiveSymbol}</td>
+        <td><CoinIcon className={tradeCoinIcon} symbol={sendSymbol} size='sm' inline/> {sendSymbol} <i style={{ color: '#777' }} className='fa fa-long-arrow-right'/> <CoinIcon className={tradeCoinIcon} symbol={receiveSymbol} size='sm' inline/> {receiveSymbol}</td>
         <td><Units value={inverseRate} symbol={sendSymbol} showSymbol={true} precision={6}/></td>
         <td><Units value={receiveUnits} symbol={receiveSymbol} showSymbol={true} precision={6}/></td>
         <td><Units value={feeAmount} symbol={feeSymbol} showSymbol={true} precision={6}/></td>
