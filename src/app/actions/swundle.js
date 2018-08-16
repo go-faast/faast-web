@@ -137,7 +137,9 @@ const createSwundleTxs = (swundle, options) => (dispatch, getState) => {
         let previousTx
         return processArray(swaps, (swap) => dispatch(createSwapTx(swap, { ...options, previousTx }))
           .then((tx) => {
-            previousTx = tx
+            if (!tx.error) {
+              previousTx = tx
+            }
           }))
       }
     }))

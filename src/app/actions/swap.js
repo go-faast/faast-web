@@ -93,7 +93,7 @@ export const updateMarketInfo = (swap) => (dispatch) => Promise.resolve().then((
 
 // Checks to see if the deposit is high enough for the rate and swap fee
 // so the expected amount ends up larger than zero
-export const checkSufficientDeposit = (swap) => (dispatch, getState) => {
+export const checkSufficientDeposit = (swap) => (dispatch, getState) => Promise.resolve().then(() => {
   if (swap.error) return swap
   const { sendUnits, receiveSymbol, rate, fee } = swap
   const finish = createSwapFinish(dispatch, 'checkSufficientDeposit', swap)
@@ -103,9 +103,9 @@ export const checkSufficientDeposit = (swap) => (dispatch, getState) => {
     return finish('Estimated amount to receive is below 0')
   }
   return finish()
-}
+})
 
-export const createOrder = (swap) => (dispatch) => {
+export const createOrder = (swap) => (dispatch) => Promise.resolve().then(() => {
   if (swap.error) return swap
   const finish = createSwapFinish(dispatch, 'createOrder', swap)
   const { sendWalletId, sendSymbol, receiveWalletId, receiveSymbol, pair } = swap
@@ -125,13 +125,13 @@ export const createOrder = (swap) => (dispatch) => {
     log.error('createOrder', e)
     return finish(`Error creating swap for pair ${pair}, please contact support@faa.st`)
   })
-}
+})
 
 export const setSwapTx = (swapId, tx, outputIndex = 0) => (dispatch) => {
   dispatch(swapUpdated(swapId, { sendUnits: tx.outputs[outputIndex].amount, txId: tx.id }))
 }
 
-export const createSwapTx = (swap, options) => (dispatch) => {
+export const createSwapTx = (swap, options) => (dispatch) => Promise.resolve().then(() => {
   if (swap.error) return swap
   log.debug('createSwapTx', swap)
   const { order, sendUnits, sendSymbol, sendWalletId } = swap
@@ -145,7 +145,7 @@ export const createSwapTx = (swap, options) => (dispatch) => {
       log.error('createSwapTx', e)
       return finish('Error creating deposit transaction')
     })
-}
+})
 
 export const initiateSwap = (swap) => (dispatch, getState) => {
   return dispatch(updateMarketInfo(swap))
