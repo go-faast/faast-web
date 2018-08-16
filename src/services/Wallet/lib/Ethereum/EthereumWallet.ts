@@ -97,15 +97,15 @@ export default abstract class EthereumWallet extends Wallet {
         {}))
   }
 
-  _createTransaction(toAddress: string, amount: Amount, asset: Asset, options?: {
+  _createTransaction(address: string, amount: Amount, asset: Asset, options?: {
     previousTx?: EthTransaction,
     nonce?: number,
     gasPrice?: Numerical,
     gasLimit?: Numerical,
     gas?: Numerical, // Alias for gasLimit
-  }): Promise<Partial<EthTransaction>> {
+  }): Promise<EthTransaction> {
     return Promise.resolve().then(() => {
-      log.debug(`Create transaction sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${toAddress}`)
+      log.debug(`Create transaction sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${address}`)
       const txData = {
         chainId: config.ethereumChainId,
         from: this.getAddress(),
@@ -114,12 +114,12 @@ export default abstract class EthereumWallet extends Wallet {
         to: '',
       }
       if (asset.symbol === 'ETH') {
-        txData.to = toAddress
+        txData.to = address
         txData.value = toHex(toSmallestDenomination(amount, asset.decimals))
       } else if (asset.ERC20) {
         // Handle ERC20
         txData.to = asset.contractAddress,
-        txData.data = tokenSendData(toAddress, amount, asset.decimals)
+        txData.data = tokenSendData(address, amount, asset.decimals)
       } else {
         throw new Error(`Unsupported asset ${asset.symbol || asset} provided to EthereumWallet.createTransaction`)
       }
@@ -138,6 +138,7 @@ export default abstract class EthereumWallet extends Wallet {
         customNonce || web3.eth.getTransactionCount(txData.from),
       ]
       return Promise.all(opts).then(([gasPrice, gasLimit, nonce]) => ({
+        ...this._newTransaction(asset, [{ address, amount }]),
         feeAmount: toTxFee(gasLimit, gasPrice),
         feeSymbol: 'ETH',
         txData: {
@@ -165,7 +166,7 @@ export default abstract class EthereumWallet extends Wallet {
       log.error('invalid txData', txData)
       throw new Error(`Invalid ${EthereumWallet.type} txData of type ${typeof txData}`)
     }
-    const requiredProps = ['data', 'from', 'gasLimit', 'gasPrice', 'nonce', 'to', 'value']
+    const requiredProps = ['data', 'from', 'gas', 'gasPrice', 'nonce', 'to', 'value', 'chainId']
     const missingProps = difference(requiredProps, Object.keys(txData))
     if (missingProps.length > 0) {
       log.debug('invalid txData', txData)

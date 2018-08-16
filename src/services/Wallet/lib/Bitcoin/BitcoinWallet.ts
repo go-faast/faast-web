@@ -96,7 +96,7 @@ export default abstract class BitcoinWallet extends Wallet {
     outputs: TransactionOutput[],
     asset: Asset,
     { feeRate: feeRateOption }: { feeRate?: number },
-  ): Promise<Partial<BtcTransaction>> {
+  ): Promise<BtcTransaction> {
     return Promise.all([
       this._getDiscoveryResult(),
       feeRateOption || this._getDefaultFeeRate(asset).then(({ rate }) => rate),
@@ -109,14 +109,15 @@ export default abstract class BitcoinWallet extends Wallet {
       return this._bitcore.buildPaymentTx(discoverResult, convertedOutputs, feeRate, isSegwit)
     })
     .then((txData) => {
+      // buildPaymentTx can adjust output amounts in some situations
+      const newOutputs = txData.outputs.map(({ address, amount }) => ({
+        address,
+        amount: toMainDenomination(amount, asset.decimals),
+      }))
       return {
+        ...this._newTransaction(asset, newOutputs),
         feeAmount: toMainDenomination(txData.fee, asset.decimals),
         feeSymbol: 'BTC',
-        // buildPaymentTx can adjust output amounts in some situations
-        outputs: txData.outputs.map(({ address, amount }) => ({
-          address,
-          amount: toMainDenomination(amount, asset.decimals),
-        })),
         txData,
       }
     })
@@ -127,7 +128,7 @@ export default abstract class BitcoinWallet extends Wallet {
     amount: Amount,
     asset: Asset,
     options: object,
-  ): Promise<Partial<BtcTransaction>> {
+  ): Promise<BtcTransaction> {
     return this._createAggregateTransaction([{ address, amount }], asset, options)
   }
 

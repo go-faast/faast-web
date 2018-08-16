@@ -2,16 +2,18 @@ import BigNumber from 'bignumber.js'
 import Wallet from './Wallet'
 import { Asset } from 'Types'
 
-export interface Transaction {
-  walletId: string
-  type: string
-  outputs: TransactionOutput[]
-  assetSymbol: string
-  hash: string | null
-  signed: boolean
-  sent: boolean
-  txData?: object | null
-  signedTxData?: any
+export type Transaction = {
+  walletId: string,
+  type: string,
+  outputs: TransactionOutput[],
+  assetSymbol: string,
+  feeAmount: BigNumber,
+  feeSymbol: string,
+  hash: string | null,
+  signed: boolean,
+  sent: boolean,
+  txData?: object | null,
+  signedTxData?: any,
 }
 
 export type Amount = BigNumber

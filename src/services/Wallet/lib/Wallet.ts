@@ -40,7 +40,7 @@ export default abstract class Wallet {
   abstract _getBalance(asset: Asset, options: object): Promise<Amount>
   abstract _createTransaction(
     address: string, amount: Amount, asset: Asset, options: object,
-  ): Promise<Partial<Transaction>>
+  ): Promise<Transaction>
   abstract _signTx(tx: Transaction, options: object): Promise<Partial<Transaction>>
   abstract _sendSignedTx(tx: Transaction, options: object): Promise<Partial<Transaction>>
   abstract _getTransactionReceipt(tx: Transaction, options: object): Promise<Receipt>
@@ -50,7 +50,7 @@ export default abstract class Wallet {
     outputs: TransactionOutput[],
     asset: Asset,
     options: object,
-  ): Promise<Partial<Transaction>>
+  ): Promise<Transaction>
 
   /* The following methods return default values and can be overriden by subclass where applicable */
   isReadOnly(): boolean { return false }
@@ -174,10 +174,7 @@ export default abstract class Wallet {
     return Promise.resolve().then(() => {
       const asset = this.assertAssetSupported(aos)
       return this._createTransaction(address, amount, asset, options)
-        .then((result) => log.debugInline(
-          'createTransaction',
-          this._newTransaction(asset, [{ address, amount }], result),
-        ))
+        .then((tx) => log.debugInline('createTransaction', tx))
     })
   }
 
@@ -194,10 +191,7 @@ export default abstract class Wallet {
       const asset = this.assertAssetSupported(aos)
       this._assertAggregateTransactionSupported(asset)
       return this._createAggregateTransaction(outputs, asset, options)
-        .then((result) => log.debugInline(
-          'createAggregateTransaction',
-          this._newTransaction(asset, outputs, result),
-        ))
+        .then((tx) => log.debugInline('createAggregateTransaction', tx))
     })
   }
 
@@ -208,8 +202,8 @@ export default abstract class Wallet {
       return this._signTx(tx, options)
     }).then((result) => log.debugInline('signTransaction', ({
       ...tx,
-      ...result,
       signed: true,
+      ...result,
     })))
   }
 
@@ -221,9 +215,9 @@ export default abstract class Wallet {
         : this._signAndSendTx(tx, options)
     }).then((result) => log.debugInline('sendTransaction', ({
       ...tx,
-      ...result,
       signed: true,
       sent: true,
+      ...result,
     })))
   }
 
@@ -300,18 +294,22 @@ export default abstract class Wallet {
     return aos
   }
 
-  _newTransaction(asset: Asset, outputs: TransactionOutput[], result: object): Transaction {
+  _newTransaction(
+    asset: Asset,
+    outputs: TransactionOutput[],
+  ): Transaction {
     return {
       walletId: this.getId(),
       type: this.getType(),
       outputs,
       assetSymbol: asset.symbol,
+      feeAmount: ZERO,
+      feeSymbol: asset.symbol,
       hash: null,
       signed: false,
       sent: false,
       txData: null,
       signedTxData: null,
-      ...result,
     }
   }
 

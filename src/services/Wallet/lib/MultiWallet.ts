@@ -129,7 +129,7 @@ export default class MultiWallet extends Wallet {
       (wallet) => wallet._getDefaultFeeRate(asset, options))
   }
 
-  _createTransaction(toAddress: string, amount: Amount, asset: Asset, options: object): Promise<Partial<Transaction>> {
+  _createTransaction(toAddress: string, amount: Amount, asset: Asset, options: object): Promise<Transaction> {
     return this._chooseWallet(
       asset,
       options,
@@ -138,7 +138,7 @@ export default class MultiWallet extends Wallet {
 
   _createAggregateTransaction(
     outputs: TransactionOutput[], asset: Asset, options: object,
-  ): Promise<Partial<Transaction>> {
+  ): Promise<Transaction> {
     return this._chooseWallet(
       asset,
       options,
@@ -150,9 +150,10 @@ export default class MultiWallet extends Wallet {
     if (tx === null || typeof tx !== 'object') {
       throw new Error(`Invalid tx of type ${typeof tx}`)
     }
-    const wallet = this.getWallet(tx.walletId)
-    if (!wallet) {
-      throw new Error(`Invalid tx provided to ${this.getType()} ${this.getId()} with invalid walletId ${tx.walletId}`)
+    const { walletId } = tx
+    const validWalletId = walletId === this.getId() || this.hasWallet(walletId)
+    if (!validWalletId) {
+      throw new Error(`Invalid tx provided to ${this.getType()} ${this.getId()} with invalid walletId ${walletId}`)
     }
     return tx
   }
