@@ -3,13 +3,13 @@ const merge = require('webpack-merge')
 const path = require('path')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const HtmlPlugin = require('html-webpack-plugin')
-const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const FaviconPlugin = require('favicons-webpack-plugin')
 const CleanPlugin = require('clean-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const IncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 const HardSourcePlugin = require('hard-source-webpack-plugin')
+const MiniCssExtractPlugin = require('mini-css-extract-plugin')
 
 const pkg = require('./package.json')
 
@@ -47,9 +47,9 @@ const jsLoader = {
   }
 }
 
-const cssLoader = ({ sourceMap = true, modules = true } = {}) => ExtractTextPlugin.extract({
-  fallback: 'style-loader',
-  use: [{
+const cssLoader = ({ sourceMap = true, modules = true } = {}) => [
+  isDev ? 'style-loader' : MiniCssExtractPlugin.loader,
+  {
     loader: 'css-loader', // translates CSS into CommonJS modules
     options: {
       sourceMap,
@@ -58,7 +58,8 @@ const cssLoader = ({ sourceMap = true, modules = true } = {}) => ExtractTextPlug
       importLoaders: 2,
       localIdentName: isDev ? '[name]__[local]__[hash:base64:5]' : '[hash:base64]'
     }
-  }, {
+  },
+  {
     loader: 'postcss-loader', // Run post css actions
     options: {
       sourceMap,
@@ -67,7 +68,8 @@ const cssLoader = ({ sourceMap = true, modules = true } = {}) => ExtractTextPlug
         require('autoprefixer')
       ]
     }
-  }, {
+  },
+  {
     loader: 'sass-loader', // compiles SASS to CSS
     options: { 
       sourceMap,
@@ -77,8 +79,8 @@ const cssLoader = ({ sourceMap = true, modules = true } = {}) => ExtractTextPlug
       precision: 6,
       data: `$env: ${NODE_ENV};` // Inject env as sass variable
     }
-  }]
-})
+  }
+]
 
 const assetLoader = (subDir) => ({
   loader: 'file-loader',
@@ -93,6 +95,7 @@ const fontAssetLoader = assetLoader('font')
 const fileAssetLoader = assetLoader('file')
 
 let config = {
+  mode: NODE_ENV,
   context: projectRoot,
   entry: path.join(src, 'index.jsx'),
   output: {
@@ -193,10 +196,9 @@ let config = {
         removeEmptyAttributes: true,
       }
     }),
-    new ExtractTextPlugin({
-      filename: bundleOutputPath + (isDev ? '[name].css' : '[name].[contenthash].css'),
-      ignoreOrder: true,
-      disable: isDev
+    new MiniCssExtractPlugin({
+      filename: isDev ? '[name].css' : '[name].[hash].css',
+      chunkFilename: isDev ? '[id].css' : '[id].[hash].css',
     }),
     new OptimizeCssAssetsPlugin(),
     new FaviconPlugin({
@@ -215,13 +217,6 @@ let config = {
       append: false,
       hash: true
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: (module) => module.context && module.context.indexOf('node_modules') >= 0
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'manifest'
-    }),
     new HardSourcePlugin(),
   ]
 }
@@ -239,7 +234,6 @@ if (!isDev) {
           }
         }
       }),
-      new webpack.optimize.ModuleConcatenationPlugin(),
       new webpack.HashedModuleIdsPlugin(),
     ]
   })
