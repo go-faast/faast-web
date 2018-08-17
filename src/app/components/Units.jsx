@@ -11,13 +11,15 @@ class Units extends React.Component {
   render() {
     const {
       tag: Tag, value: propValue, symbol, showSymbol, prefixSymbol,
-      precision, maxDigits, prefix, suffix, roundingMode, ...props
+      precision, maxDigits, prefix, suffix, roundingMode, roundingType, ...props
     } = this.props
     const value = toBigNumber(propValue)
     let expanded = value.toFormat()
     let shrunk = expanded
     if (precision) {
-      shrunk = value.toDigits(precision, roundingMode).toFormat()
+      shrunk = roundingType === 'dp'
+        ? value.toFormat(precision, roundingMode)
+        : value.toDigits(precision, roundingMode).toFormat()
       const digitCount = shrunk.replace(/\D/g, '').length
       if (digitCount > maxDigits) {
         shrunk = value.toExponential(precision)
@@ -54,6 +56,10 @@ Units.propTypes = {
     BigNumber.ROUND_HALF_UP, BigNumber.ROUND_HALF_DOWN, BigNumber.ROUND_HALF_EVEN,
     BigNumber.ROUND_HALF_CEIL, BigNumber.ROUND_HALF_FLOOR
   ]),
+  roundingType: PropTypes.oneOf([
+    'dp', // Round to 'precision' decimal places
+    'sd', // Round to 'precision' significant digits
+  ])
 }
 
 Units.defaultProps = {
@@ -67,6 +73,7 @@ Units.defaultProps = {
   prefix: '',
   suffix: '',
   roundingMode: BigNumber.ROUND_HALF_UP,
+  roundingType: 'sd'
 }
 
 export default Units

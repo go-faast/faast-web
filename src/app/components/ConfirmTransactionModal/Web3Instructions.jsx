@@ -44,26 +44,26 @@ const Web3Instructions = ({ tx: { outputs: [{ amount, address }], assetSymbol, f
           <div className={classNames('float-right', metaMaskNonce)}>#{toNumber(txData.nonce)}</div>
         </div>
         <h2 className='font-weight-bold my-2'>
-          <Units value={amount} precision={8} {...unitProps(assetSymbol)}/>
+          <Units value={amount} precision={6} roundingType='dp' {...unitProps(assetSymbol)}/>
         </h2>
       </div>
       <div className={metaMaskFeeRow}>
         <div>
           GAS FEE
           <span className='font-weight-bold float-right'>
-            <Units value={feeAmount} precision={4} {...unitProps(feeSymbol)}/>
+            <Units value={feeAmount} precision={6} roundingType='dp' {...unitProps(feeSymbol)}/>
           </span>
         </div>
         <div>
           TOTAL
           <span className='font-weight-bold float-right'>
             {assetSymbol === 'ETH' ? (
-              <Units value={amount.plus(feeAmount)} precision={8} {...unitProps(assetSymbol)}/>
+              <Units value={amount.plus(feeAmount)} precision={6} roundingType='dp' {...unitProps(assetSymbol)}/>
             ) : (
               <Fragment>
-                <Units value={amount} precision={8} {...unitProps(assetSymbol)}/>
+                <Units value={amount} precision={6} roundingType='dp' {...unitProps(assetSymbol)}/>
                 {' + '}
-                <Units value={feeAmount} precision={4} {...unitProps(feeSymbol)}/>
+                <Units value={feeAmount} precision={6} roundingType='dp' {...unitProps(feeSymbol)}/>
               </Fragment>
             )}
           </span>
