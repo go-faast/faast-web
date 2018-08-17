@@ -23,9 +23,9 @@ const StatusFooter = ({ className, children, ...props }) => (
 
 const priceChange = (timestamp, asset) => {
   const { change1, change7d, change24 } = asset
-  const daysSinceTrade = (Date.now() - timestamp) / 86400000
-  const timespan = daysSinceTrade <= .0417 ? 'Last 1hr: ' : daysSinceTrade >= 2 ? 'Last 7d: ' : 'Last 24hrs: '
-  var priceChangeText = daysSinceTrade <= .0417 ? change1 : daysSinceTrade >= 2 ? change7d : change24
+  const hoursSinceTrade = (Date.now() - timestamp) / 3600000
+  const timespan = hoursSinceTrade <= 1 ? 'Last 1hr: ' : hoursSinceTrade >= 24 ? 'Last 7d: ' : 'Last 24hrs: '
+  var priceChangeText = hoursSinceTrade <= 1 ? change1 : hoursSinceTrade >= 24 ? change7d : change24
   return (
     <span>{timespan}<ChangePercent>{priceChangeText}</ChangePercent><ArrowIcon className="swapChangeArrow" size={.58} dir={priceChangeText < 0 ? 'down' : 'up'} color={priceChangeText < 0 ? 'danger' : 'success'}/></span>
   )
