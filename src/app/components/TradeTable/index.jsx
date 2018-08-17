@@ -48,16 +48,19 @@ const createTableRow = (swaps, handleClick) => {
     } = swap
     const inverseRate = (1 / rate)
     const totalPrice = parseFloat((inverseRate * receiveUnits) + feeAmount)
-    var tableRow = detailsCode == ('order_complete' || 'processing') ?
+    var tableRow = (
+      detailsCode == 'order_complete' || 
+      detailsCode == 'processing' || 
+      detailsCode == 'pending_receipt') ?
      (
       <tr key={id} onClick={() => handleClick(id)}>
         <td>{createStatusLabel(detailsCode)}</td>
         <td>{formatDate(created, 'yyyy-MM-dd hh:mm:ss')}</td>
         <td><CoinIcon className={tradeCoinIcon} symbol={sendSymbol} size='sm' inline/> {sendSymbol} <i style={{ color: '#777' }} className='fa fa-long-arrow-right'/> <CoinIcon className={tradeCoinIcon} symbol={receiveSymbol} size='sm' inline/> {receiveSymbol}</td>
-        <td><Units value={inverseRate} symbol={sendSymbol} showSymbol={true} precision={6}/></td>
-        <td><Units value={receiveUnits} symbol={receiveSymbol} showSymbol={true} precision={6}/></td>
-        <td><Units value={feeAmount} symbol={feeSymbol} showSymbol={true} precision={6}/></td>
-        <td><Units value={totalPrice} symbol={sendSymbol} showSymbol={true} precision={6}/></td>
+        <td><Units value={inverseRate} symbol={sendSymbol} showSymbol precision={6}/></td>
+        <td><Units value={receiveUnits} symbol={receiveSymbol} showSymbol precision={6}/></td>
+        <td><Units value={feeAmount} symbol={feeSymbol} showSymbol precision={6}/></td>
+        <td><Units value={totalPrice} symbol={sendSymbol} showSymbol precision={6}/></td>
       </tr>
     ) : false
 
