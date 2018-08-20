@@ -1,6 +1,12 @@
 @import '~faast-ui/src/style/index.scss';
 @import 'variables';
 
+.swapChangeArrow {
+  position:relative;
+  vertical-align: middle;
+  top: -2px;
+}
+
 .wordBreak {
   word-break: break-all;
 }

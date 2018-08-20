@@ -1,12 +1,13 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
+import { compose, setDisplayName, setPropTypes, defaultProps, withProps } from 'recompose'
 import { Row, Col, Card, CardBody, CardFooter, Alert, Collapse, Button } from 'reactstrap'
+import { formatDate } from 'Utilities/display'
 import classNames from 'class-names'
-
 import config from 'Config'
+import withToggle from '../hoc/withToggle'
 
-import withToggle from 'Hoc/withToggle'
+import ChangePercent from 'Components/ChangePercent'
 import ArrowIcon from 'Components/ArrowIcon'
 import CoinIcon from 'Components/CoinIcon'
 import Units from 'Components/Units'
@@ -20,6 +21,16 @@ const StatusFooter = ({ className, children, ...props }) => (
   </CardFooter>
 )
 
+const priceChange = (timestamp, asset) => {
+  const { change1, change7d, change24 } = asset
+  const hoursSinceTrade = (Date.now() - timestamp) / 3600000
+  const timespan = hoursSinceTrade <= 1 ? 'Last 1hr: ' : hoursSinceTrade >= 24 ? 'Last 7d: ' : 'Last 24hrs: '
+  var priceChangeText = hoursSinceTrade <= 1 ? change1 : hoursSinceTrade >= 24 ? change7d : change24
+  return (
+    <span>{timespan}<ChangePercent>{priceChangeText}</ChangePercent><ArrowIcon className="swapChangeArrow" size={.58} dir={priceChangeText < 0 ? 'down' : 'up'} color={priceChangeText < 0 ? 'danger' : 'success'}/></span>
+  )
+}
+
 export default compose(
   setDisplayName('SwapStatusCard'),
   setPropTypes({
@@ -27,35 +38,43 @@ export default compose(
     showWalletLabels: PropTypes.bool,
     showFees: PropTypes.bool,
     showDetails: PropTypes.bool,
+    expanded: PropTypes.bool
   }),
   defaultProps({
     showWalletLabels: true,
     showFees: false,
     showDetails: false,
+    expanded: null
   }),
-  withToggle('expanded')
+  withToggle('expandedState'),
+  withProps(({ expanded, isExpandedState, toggleExpandedState }) => ({
+    isExpanded: expanded === null ? isExpandedState : expanded,
+    togglerProps: expanded === null ? { tag: Button, color: 'ultra-dark', onClick: toggleExpandedState } : {}
+  }))
 )(({
   swap: {
     sendWalletId, sendSymbol, sendAsset, sendUnits,
     receiveWalletId, receiveSymbol, receiveAsset, receiveUnits,
     error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee,
-    tx: { hash: txHash, feeAmount: txFee, feeSymbol: txFeeSymbol, confirmed, succeeded },
-    status: { code, details }, orderId
+    tx: { confirmed, succeeded, hash: txHash, feeAmount: txFee, feeSymbol: txFeeSymbol },
+    status: { code, details }, orderId,
+    order: { created }
   },
-  statusText, showDetails, isExpanded, toggleExpanded
+  statusText, showDetails, isExpanded, togglerProps, expanded
 }) => (
   <Card className='flat'>
-    <CardBody className='py-2 pr-3 pl-2 border-0 lh-0' tag={Button} color='ultra-dark' onClick={toggleExpanded} style={{ minHeight: '4rem' }}>
+    <CardBody className='py-2 pr-3 pl-2 border-0 lh-0' tag={Button} color='ultra-dark'  {...togglerProps} style={{ minHeight: '4rem' }}>
       <Row className='gutter-0 align-items-center font-size-small text-muted'>
         <Col xs='auto'>
-          <i style={{ transition: 'all .15s ease-in-out' }} className={classNames('fa fa-chevron-circle-down text-primary px-2 mr-2', { ['fa-rotate-180']: isExpanded })}/>
+          { expanded === null ? <i style={{ transition: 'all .15s ease-in-out' }} className={classNames('fa fa-chevron-circle-down text-primary px-2 mr-2', { ['fa-rotate-180']: isExpanded })}/> : false }
         </Col>
         <Col>
           <Row className='gutter-2 align-items-center text-center text-sm-left'>
             <Col xs='12' sm='auto'><CoinIcon symbol={sendSymbol}/></Col>
             <Col xs='12' sm>
               <Row className='gutter-2'>
-                <Col xs='12' className='order-sm-2 font-size-sm'>{sendAsset.name}</Col>
+                <Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(created, sendAsset)}</Col>
+                <Col xs='12' className='order-sm-2 font-size-sm pt-0'>{sendAsset.name}</Col>
                 <Col xs='12' className='text-white'>
                   <Units value={sendUnits} symbol={sendSymbol} prefix='-'/>
                 </Col>
@@ -72,7 +91,8 @@ export default compose(
             <Col xs='12' sm='auto' className='order-sm-2'><CoinIcon symbol={receiveSymbol}/></Col>
             <Col xs='12' sm>
               <Row className='gutter-2'>
-                <Col xs='12' className='order-sm-2 font-size-sm'>{receiveAsset.name}</Col>
+                <Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(created, receiveAsset)}</Col>
+                <Col xs='12' className='order-sm-2 font-size-sm pt-0'>{receiveAsset.name}</Col>
                 <Col xs='12' className='text-white'>
                   <UnitsLoading value={receiveUnits} symbol={receiveSymbol} error={error} prefix='+'/>
                 </Col>
@@ -99,6 +119,10 @@ export default compose(
               })}>
                 {details}
               </td>
+            </tr>
+            <tr>
+              <td><b>Order Date:</b></td>
+              <td colSpan='2' className='px-2'>{formatDate(created, 'yyyy-MM-dd hh:mm:ss')}</td>
             </tr>
             <tr>
               <td><b>Rate:</b></td>

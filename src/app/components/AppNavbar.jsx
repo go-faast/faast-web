@@ -41,6 +41,12 @@ const AppNavbar = ({ disablePortfolioLinks, routerPush, children, ...props }) =>
               <span className='nav-link-label d-none d-sm-inline'>Swap</span>
             </NavLink>
           </NavItem>,
+          <NavItem key='trades'>
+            <NavLink tag={RouterNavLink} to='/trades'>
+              <i className='nav-link-icon fa fa-history'/>
+              <span className='nav-link-label d-none d-sm-inline'>Trade History</span>
+            </NavLink>
+          </NavItem>,
           <NavItem key='connect'>
             <NavLink tag={RouterNavLink} to='/connect'>
               <i className='nav-link-icon fa fa-plus'/>

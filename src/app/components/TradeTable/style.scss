@@ -1,0 +1,53 @@
+@import '~Styles/variables';
+
+$collapse-point: md;
+$expand-point: breakpoint-next($collapse-point);
+
+.pendingIcon {
+  font-size: 11px;
+  background: #ffd93b;
+  border-radius: 50%;
+  width: 15.44px;
+  height: 15.44px;
+  text-align: center;
+  color: #2E2E2E;
+  line-height: 18px;
+}
+
+.tradeCoinIcon {
+  position: relative;
+  top: -1px;
+}
+
+.tradeTable {
+  line-height: 1;
+
+  td, th {
+    vertical-align: middle !important;
+    &:first-child {
+      @include media-breakpoint-down($collapse-point) {
+        text-align: center;
+      }
+    }
+  }
+
+  .expandedOnly {
+    @include media-breakpoint-down($collapse-point) {
+      display: none;
+    }
+  }
+
+  .collapsedOnly {
+    @include media-breakpoint-up($expand-point) {
+      display: none;
+    }
+  }
+
+  .collapsedRow {
+    @include media-breakpoint-down($collapse-point) {
+      margin-top: 0.5rem;
+      display: block;
+      font-size: $small-font-size;
+    }
+  }
+}
