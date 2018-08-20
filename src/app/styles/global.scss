@@ -7,6 +7,10 @@
   top: -2px;
 }
 
+.wordBreak {
+  word-break: break-all;
+}
+
 @-webkit-keyframes blinker {
   from { opacity: 1.0; }
   to { opacity: 0.0; }

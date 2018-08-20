@@ -23,6 +23,8 @@ const swapInitialState = {
   orderId: '',
   order: {},
   txId: '',
+  error: '',
+  errorType: '',
 }
 
 const upsertSwap = createUpserter('id', swapInitialState)

@@ -124,6 +124,7 @@ const createSwundleTxs = (swundle, options) => (dispatch, getState) => {
 
     return Promise.all(Object.entries(swapsByAsset).map(([symbol, swaps]) => {
       if (walletInstance.isAggregateTransactionSupported(symbol)) {
+        if (swaps.some((swap) => swap.error)) { return }
         // Create a single aggregate transaction for multiple swaps (e.g. bitcoin, litecoin)
         const outputs = swaps.map(({ sendUnits, order }) => ({
           address: order.deposit,
@@ -134,10 +135,12 @@ const createSwundleTxs = (swundle, options) => (dispatch, getState) => {
       } else {
         // Create a transaction for each swap (e.g. ethereum)
         let previousTx
-        return processArray(swaps, (swap) => dispatch(createSwapTx(swap, { ...options, previousTx })))
+        return processArray(swaps, (swap) => dispatch(createSwapTx(swap, { ...options, previousTx }))
           .then((tx) => {
-            previousTx = tx
-          })
+            if (!tx.error) {
+              previousTx = tx
+            }
+          }))
       }
     }))
   })).then(() => getSwundle(getState(), swundle.id))
@@ -159,7 +162,7 @@ export const initSwundle = (swundle) => (dispatch) => Promise.resolve().then(() 
     })
     .catch((e) => {
       log.error('initSwundle error', e)
-      dispatch(initFailed(swundle.id, e.message))
+      dispatch(initFailed(swundle.id, e.message || e))
     })
 })
 

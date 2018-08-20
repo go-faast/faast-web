@@ -1,6 +1,7 @@
-# faast Portfolio
+# Faast Portfolio
 
-The open-source portfolio application featured on https://faa.st
+A decentralized cryptocurrency portfolio manager and exchange interface
+https://faa.st/portfolio
 
 ## Production/Building/Development
 

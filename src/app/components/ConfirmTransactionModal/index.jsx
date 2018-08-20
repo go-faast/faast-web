@@ -5,19 +5,21 @@ import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap'
 
 import {
   EthereumWalletLedger, EthereumWalletTrezor,
-  BitcoinWalletLedger, BitcoinWalletTrezor,
+  BitcoinWalletLedger, BitcoinWalletTrezor, EthereumWalletWeb3
 } from 'Services/Wallet'
 
 import LedgerEthInstructions from './LedgerEthInstructions'
 import LedgerBtcInstructions from './LedgerBtcInstructions'
 import TrezorEthInstructions from './TrezorEthInstructions'
-import TrezorBtcInstruction from './TrezorBtcInstructions'
+import TrezorBtcInstructions from './TrezorBtcInstructions'
+import Web3Instructions from './Web3Instructions'
 
 const supportedTypes = {
   [EthereumWalletLedger.type]: LedgerEthInstructions,
   [BitcoinWalletLedger.type]: LedgerBtcInstructions,
   [EthereumWalletTrezor.type]: TrezorEthInstructions,
-  [BitcoinWalletTrezor.type]: TrezorBtcInstruction
+  [BitcoinWalletTrezor.type]: TrezorBtcInstructions,
+  [EthereumWalletWeb3.type]: Web3Instructions
 }
 
 export default compose(

@@ -1,5 +1,5 @@
 import { isString, isObject } from 'lodash'
-import queryString from 'query-string'
+import * as queryString from 'query-string'
 
 import idb from './idb'
 import { dateNowString } from './helpers'
@@ -8,7 +8,7 @@ import config from 'Config'
 const storeName = 'logging'
 
 const query = queryString.parse(window.location.search)
-if (query.log_level) window.faast.log_level = query.log_level
+const appLogLevel = query.log_level || config.logLevel
 
 let idbNotReadyQueue = []
 
@@ -41,7 +41,6 @@ const logLevels = {
 }
 
 const log = (level) => (text, ...data) => {
-  const appLogLevel = window.faast.log_level || config.logLevel
   if (logLevels[level] >= logLevels[appLogLevel]) {
     console[level](text, ...data)
     if (text instanceof Error) {

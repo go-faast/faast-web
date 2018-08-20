@@ -16,8 +16,10 @@ export default compose(
       <span key={`output-${i}`}>
         Confirm sending <br/>
         <Units value={amount} symbol={assetSymbol} precision={null}/> to<br/>
-        {address.slice(0, 17)}<br/>
-        {address.slice(17)}?
+        <code className='text-white'>
+          {address.slice(0, 17)}<br/>
+          {address.slice(17)}
+        </code>
       </span>
     )), (
     <span key='fee'>

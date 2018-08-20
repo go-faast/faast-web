@@ -11,13 +11,13 @@ class Units extends React.Component {
   render() {
     const {
       tag: Tag, value: propValue, symbol, showSymbol, prefixSymbol,
-      precision, maxDigits, prefix, suffix, ...props
+      precision, maxDigits, prefix, suffix, roundingMode, ...props
     } = this.props
     const value = toBigNumber(propValue)
     let expanded = value.toFormat()
     let shrunk = expanded
     if (precision) {
-      shrunk = value.toDigits(precision, BigNumber.ROUND_DOWN).toFormat()
+      shrunk = value.toDigits(precision, roundingMode).toFormat()
       const digitCount = shrunk.replace(/\D/g, '').length
       if (digitCount > maxDigits) {
         shrunk = value.toExponential(precision)
@@ -49,6 +49,11 @@ Units.propTypes = {
   maxDigits: PropTypes.number, // Maximum number of digits allowed (including zeros) before using exponential form
   prefix: PropTypes.node, // Arbitrary node to place before the unit
   suffix: PropTypes.node, // Arbitrary node to palce after the unit
+  roundingMode: PropTypes.oneOf([
+    BigNumber.ROUND_UP, BigNumber.ROUND_DOWN, BigNumber.ROUND_CEIL, BigNumber.ROUND_FLOOR,
+    BigNumber.ROUND_HALF_UP, BigNumber.ROUND_HALF_DOWN, BigNumber.ROUND_HALF_EVEN,
+    BigNumber.ROUND_HALF_CEIL, BigNumber.ROUND_HALF_FLOOR
+  ]),
 }
 
 Units.defaultProps = {
@@ -61,6 +66,7 @@ Units.defaultProps = {
   maxDigits: 10,
   prefix: '',
   suffix: '',
+  roundingMode: BigNumber.ROUND_HALF_UP,
 }
 
 export default Units
