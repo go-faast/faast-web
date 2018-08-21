@@ -15,7 +15,7 @@ import SocketWorker from 'hd-wallet/lib/socketio-worker/inside?worker'
 import DiscoveryWorker from 'hd-wallet/lib/discovery/worker/inside?worker'
 
 import log from 'Utilities/log'
-import { ypubToXpub, estimateTxFee, getBip32MagicNumber } from 'Utilities/bitcoin'
+import { toXpub, estimateTxFee, getBip32MagicNumber } from 'Utilities/bitcoin'
 import networks, { NetworkConfig } from 'Utilities/networks'
 
 // setting up workers
@@ -100,7 +100,7 @@ export class Bitcore extends BitcoreBlockchain {
         let segwit: 'off' | 'p2sh' = 'off'
         if (xpub.startsWith('ypub')) {
           segwit = 'p2sh'
-          xpub = ypubToXpub(xpub)
+          xpub = toXpub(xpub)
         }
         const process = this.discovery.discoverAccount(null, xpub, this.network.bitcoinJsNetwork, segwit)
         if (onUpdate) {

@@ -2,7 +2,7 @@ import HDKey from 'hdkey'
 
 import config from 'Config'
 import log from 'Utilities/log'
-import { xpubToYpub, joinDerivationPath } from 'Utilities/bitcoin'
+import { toYpub, joinDerivationPath } from 'Utilities/bitcoin'
 import Ledger from 'Services/Ledger'
 import { UtxoInfo } from 'Services/Bitcore'
 
@@ -37,7 +37,7 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
         hdKey.chainCode = Buffer.from(chainCode, 'hex')
         let xpubkey = hdKey.publicExtendedKey
         if (derivationPath.startsWith('m/49\'')) {
-          xpubkey = xpubToYpub(xpubkey)
+          xpubkey = toYpub(xpubkey)
           log.info('Converted segwit xpub to ypub')
         }
         return new BitcoinWalletLedger(xpubkey, derivationPath)

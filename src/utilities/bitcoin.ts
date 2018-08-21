@@ -1,31 +1,33 @@
 import b58 from 'bs58check'
 import networks from 'Utilities/networks'
 
-export function getBip32MagicNumber(b58Prefix: string): string {
+export function getBip32MagicNumber(bip32Prefix: string): string {
   for (const network of Object.values(networks)) {
     for (const paymentType of network.paymentTypes) {
-      if (b58Prefix === paymentType.bip32.public.b58) {
+      if (bip32Prefix === paymentType.bip32.public.b58) {
         return paymentType.bip32.public.hex
       }
-      if (b58Prefix === paymentType.bip32.private.b58) {
+      if (bip32Prefix === paymentType.bip32.private.b58) {
         return paymentType.bip32.private.hex
       }
     }
   }
+  throw new Error(`Cannot get bip32 magic number for ${bip32Prefix}`)
 }
 
-/** Takes ypub and turns into xpub
+/**
+ * Converts prefix of bip32 extended public/private keys
  * Source: https://github.com/bitcoinjs/bitcoinjs-lib/issues/966
  */
-function b58convert(encoded: string, newMagicNumber: string) {
+export function convertBip32Prefix(encoded: string, newPrefix: string) {
   let data = b58.decode(encoded)
   data = data.slice(4)
-  data = Buffer.concat([Buffer.from(newMagicNumber, 'hex'), data])
+  data = Buffer.concat([Buffer.from(getBip32MagicNumber(newPrefix), 'hex'), data])
   return b58.encode(data)
 }
 
-export const ypubToXpub = (ypub: string) => b58convert(ypub, getBip32MagicNumber('xpub'))
-export const xpubToYpub = (xpub: string) => b58convert(xpub, getBip32MagicNumber('ypub'))
+export const toXpub = (bip32key: string) => convertBip32Prefix(bip32key, 'xpub')
+export const toYpub = (bip32key: string) => convertBip32Prefix(bip32key, 'ypub')
 
 /**
  * Estimate size of transaction a certain number of inputs and outputs.
@@ -111,8 +113,8 @@ export function derivationPathStringToArray(derivationPath: string): number[] {
 }
 
 export default {
-  ypubToXpub,
-  xpubToYpub,
+  toXpub,
+  toYpub,
   estimateTxSize,
   estimateTxFee,
   joinDerivationPath,

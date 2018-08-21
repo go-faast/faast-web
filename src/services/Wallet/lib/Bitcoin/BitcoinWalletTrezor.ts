@@ -1,6 +1,6 @@
 import config from 'Config'
 import log from 'Utilities/log'
-import { xpubToYpub, derivationPathStringToArray } from 'Utilities/bitcoin'
+import { toYpub, derivationPathStringToArray } from 'Utilities/bitcoin'
 import Trezor, { TrezorOutput } from 'Services/Trezor'
 
 import BitcoinWallet from './BitcoinWallet'
@@ -34,7 +34,7 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
           serializedPath = `m/${serializedPath}`
         }
         if (serializedPath.startsWith('m/49\'')) {
-          xpubkey = xpubToYpub(xpubkey)
+          xpubkey = toYpub(xpubkey)
           log.info('Converted segwit xpub to ypub')
         }
         return new BitcoinWalletTrezor(xpubkey, serializedPath)
