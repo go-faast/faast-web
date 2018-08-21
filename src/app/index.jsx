@@ -5,7 +5,7 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import logger from 'redux-logger'
 import { Provider } from 'react-redux'
-import { throttle, pick } from 'lodash'
+import { throttle } from 'lodash'
 import { ConnectedRouter, routerMiddleware } from 'react-router-redux'
 import ReduxToastr from 'react-redux-toastr'
 import { createHashHistory, createBrowserHistory } from 'history'
@@ -15,7 +15,7 @@ import reducers from './reducers'
 import { saveToAddress } from 'Utilities/storage'
 import { getDefaultPortfolio, isAppReady } from 'Selectors'
 import config from 'Config'
-import { getLatestSwundleId, getSwundleState, getSwapState, getAssetState, getTxState } from 'Selectors'
+import { getSwundleState, getSwapState, getAssetState, getTxState } from 'Selectors'
 
 const { isDev, isIpfs } = config
 const createHistory = isIpfs ? createHashHistory : createBrowserHistory
@@ -54,15 +54,10 @@ store.subscribe(throttle(() => {
       const allSwundles = getSwundleState(state)
       const allSwaps = getSwapState(state)
       const allTxs = getTxState(state)
-      const latestSwundleId = getLatestSwundleId(state)
-      const latestSwapIds = (allSwundles[latestSwundleId] || {}).swaps || []
-      const latestSwaps = pick(allSwaps, latestSwapIds)
-      const latestTxIds = Object.values(latestSwaps)
-        .map(({ txId }) => txId)
       saveToAddress(wallet.id, {
-        swundle: pick(allSwundles, latestSwundleId),
-        swap: latestSwaps,
-        tx: pick(allTxs, latestTxIds),
+        swundle: allSwundles,
+        swap: allSwaps,
+        tx: allTxs,
         settings: settings
       })
       const assets = getAssetState(state)
