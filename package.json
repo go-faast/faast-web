@@ -56,7 +56,7 @@
     "babel-preset-react": "^6.24.1",
     "base-x": "^3.0.4",
     "bignumber.js": "^4.0.4",
-    "bitcoinjs-lib": "^3.3.2",
+    "bitcoinjs-lib": "^4.0.1",
     "bitcore-lib": "^0.15.0",
     "blockstack": "^0.14.0",
     "bootstrap": "^4.0.0",
