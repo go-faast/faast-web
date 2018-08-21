@@ -1,9 +1,8 @@
-import coininfo from 'coininfo'
 import {
   WorkerDiscovery, BitcoreBlockchain, AccountLoadStatus,
   UtxoInfo as BaseUtxoInfo, AccountInfo as BaseAccountInfo,
 } from 'hd-wallet'
-import { TransactionBuilder, Network } from 'bitcoinjs-lib'
+import { TransactionBuilder } from 'bitcoinjs-lib'
 import { pick, omit } from 'lodash'
 
 // @ts-ignore
@@ -16,7 +15,8 @@ import SocketWorker from 'hd-wallet/lib/socketio-worker/inside?worker'
 import DiscoveryWorker from 'hd-wallet/lib/discovery/worker/inside?worker'
 
 import log from 'Utilities/log'
-import { ypubToXpub, estimateTxFee } from 'Utilities/bitcoin'
+import { ypubToXpub, estimateTxFee, getBip32MagicNumber } from 'Utilities/bitcoin'
+import networks, { NetworkConfig } from 'Utilities/networks'
 
 // setting up workers
 const xpubWorker = new XpubWorker()
@@ -50,38 +50,6 @@ export type PaymentTx = {
   isSegwit: boolean,
 }
 
-type BitcoreConfig = {
-  symbol: string,
-  bitcoreUrls: string[],
-  network: Network,
-}
-
-function getNetworkConfig(symbol: string): Network {
-  return pick(coininfo(symbol).toBitcoinJS(), 'bech32', 'bip32', 'messagePrefix', 'pubKeyHash', 'scriptHash', 'wif')
-}
-
-const bitcoreConfigs: { [symbol: string]: BitcoreConfig } = [
-  {
-    symbol: 'BTC',
-    bitcoreUrls: [
-      'https://btc.bitaccess.ca', 'https://blockexplorer.com',
-      'https://bitcore1.trezor.io', 'https://bitcore3.trezor.io',
-    ],
-    network: {
-      ...getNetworkConfig('BTC'),
-      messagePrefix: '\x18Bitcoin Signed Message:\n',
-    },
-  },
-  {
-    symbol: 'LTC',
-    bitcoreUrls: ['https://ltc-bitcore3.trezor.io'],
-    network: {
-      ...getNetworkConfig('LTC'),
-      messagePrefix: '\x19Litecoin Signed Message:\n',
-    },
-  },
-].reduce((bySymbol, config) => ({ ...bySymbol, [config.symbol]: config }), {})
-
 /**
  * Sort the utxos for input selection
  */
@@ -103,13 +71,13 @@ function sortUtxos(utxoList: UtxoInfo[]): UtxoInfo[] {
 export class Bitcore extends BitcoreBlockchain {
 
   assetSymbol: string
-  network: Network
+  network: NetworkConfig
   discovery: WorkerDiscovery
 
-  constructor(config: BitcoreConfig) {
+  constructor(config: NetworkConfig) {
     super(config.bitcoreUrls, socketWorkerFactory)
     this.assetSymbol = config.symbol
-    this.network = config.network
+    this.network = config
     this.discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubWasmFilePromise, this)
   }
 
@@ -134,7 +102,7 @@ export class Bitcore extends BitcoreBlockchain {
           segwit = 'p2sh'
           xpub = ypubToXpub(xpub)
         }
-        const process = this.discovery.discoverAccount(null, xpub, this.network, segwit)
+        const process = this.discovery.discoverAccount(null, xpub, this.network.bitcoinJsNetwork, segwit)
         if (onUpdate) {
           process.stream.values.attach(onUpdate)
         }
@@ -217,7 +185,7 @@ export class Bitcore extends BitcoreBlockchain {
     }
 
     /* Build outputs */
-    const outputBuilder = new TransactionBuilder(this.network)
+    const outputBuilder = new TransactionBuilder(this.network.bitcoinJsNetwork)
     outputs.forEach(({ amount, address }) => outputBuilder.addOutput(address, amount))
 
     let change = inputTotal - amountWithFee
@@ -254,10 +222,10 @@ export function getBitcore(assetSymbol: string): Bitcore {
   if (bitcore) {
     return bitcore
   }
-  const bitcoreConfig = bitcoreConfigs[assetSymbol]
-  if (bitcoreConfig) {
-    log.debug('Creating new Bitcore using config', bitcoreConfig)
-    return (bitcoreInstances[assetSymbol] = new Bitcore(bitcoreConfig))
+  const networkConfig = networks[assetSymbol]
+  if (networkConfig) {
+    log.debug('Creating new Bitcore for network', networkConfig)
+    return (bitcoreInstances[assetSymbol] = new Bitcore(networkConfig))
   }
   throw new Error(`Bitcore not configured for asset ${assetSymbol}`)
 }
