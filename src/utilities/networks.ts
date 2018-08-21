@@ -41,9 +41,7 @@ function network(config: StaticNetworkConfig): NetworkConfig {
   return {
     ...config,
     bitcoinJsNetwork: {
-      // Defaults
-      messagePrefix: `\x19${config.name} Signed Message:\n`,
-      // Basic config
+      // Base config
       ...pick(coininfo(symbol).toBitcoinJS(), 'bech32', 'bip32', 'messagePrefix', 'pubKeyHash', 'scriptHash', 'wif'),
       // Overrides
       ...(bitcoinJsNetwork || {}),
@@ -62,9 +60,6 @@ export const BTC = network({
     'https://btc.bitaccess.ca', 'https://blockexplorer.com',
     'https://bitcore1.trezor.io', 'https://bitcore3.trezor.io',
   ],
-  bitcoinJsNetwork: {
-    messagePrefix: '\x18Bitcoin Signed Message:\n',
-  },
   paymentTypes: [
     {
       addressEncoding: 'P2PKH',
@@ -113,9 +108,6 @@ export const BTC_TEST = network({
   symbol: 'BTC-TEST',
   name: 'Bitcoin Testnet',
   bitcoreUrls: [],
-  bitcoinJsNetwork: {
-    messagePrefix: '\x18Bitcoin Signed Message:\n',
-  },
   paymentTypes: [
     {
       addressEncoding: 'P2PKH',
@@ -164,9 +156,6 @@ export const LTC = network({
   symbol: 'LTC',
   name: 'Litecoin',
   bitcoreUrls: ['https://ltc-bitcore3.trezor.io'],
-  bitcoinJsNetwork: {
-    messagePrefix: '\x19Litecoin Signed Message:\n',
-  },
   paymentTypes: [
     {
       addressEncoding: 'P2PKH',
@@ -191,9 +180,6 @@ export const LTC_TEST = network({
   symbol: 'LTC-TEST',
   name: 'Litecoin Testnet',
   bitcoreUrls: [],
-  bitcoinJsNetwork: {
-    messagePrefix: '\x19Litecoin Signed Message:\n',
-  },
   paymentTypes: [
     {
       addressEncoding: 'P2PKH',
@@ -210,9 +196,6 @@ export const VTC = network({
   symbol: 'VTC',
   name: 'Vertcoin',
   bitcoreUrls: [],
-  bitcoinJsNetwork: {
-    messagePrefix: '\x19Vertcoin Signed Message:\n',
-  },
   paymentTypes: [
     {
       addressEncoding: 'P2PKH',
