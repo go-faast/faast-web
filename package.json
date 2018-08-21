@@ -62,7 +62,7 @@
     "bootstrap": "^4.0.0",
     "class-names": "^1.0.0",
     "clean-webpack-plugin": "^0.1.19",
-    "coininfo": "^4.2.0",
+    "coininfo": "github:go-faast/coininfo",
     "concurrently": "^3.5.0",
     "copy-webpack-plugin": "^4.5.1",
     "cross-env": "^5.0.5",
