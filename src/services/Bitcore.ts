@@ -15,7 +15,7 @@ import SocketWorker from 'hd-wallet/lib/socketio-worker/inside?worker'
 import DiscoveryWorker from 'hd-wallet/lib/discovery/worker/inside?worker'
 
 import log from 'Utilities/log'
-import { toXpub, estimateTxFee, getBip32MagicNumber } from 'Utilities/bitcoin'
+import { toXpub, estimateTxFee } from 'Utilities/bitcoin'
 import networks, { NetworkConfig } from 'Utilities/networks'
 
 // setting up workers

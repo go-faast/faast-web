@@ -4,16 +4,18 @@
  * paymentTypes sourced from: https://github.com/satoshilabs/slips/blob/master/slip-0132.md
  */
 import coininfo from 'coininfo'
-import bitcoin, { Network as BitcoinJsNetwork } from 'bitcoinjs-lib'
+import { Network as BitcoinJsNetwork } from 'bitcoinjs-lib'
 import { pick } from 'lodash'
 
-type Bip32MagicNumber = {
+export type AddressEncoding = 'P2PKH' | 'P2SH-P2WPKH' | 'P2WPKH' | 'P2SH-P2WSH' | 'P2WSH'
+
+export type Bip32MagicNumber = {
   hex: string,
   b58: string,
 }
 
-type PaymentType = {
-  addressEncoding: string,
+export type PaymentType = {
+  addressEncoding: AddressEncoding,
   bip44Path: string | null,
   bip32: {
     public: Bip32MagicNumber,
