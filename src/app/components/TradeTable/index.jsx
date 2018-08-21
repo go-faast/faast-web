@@ -14,6 +14,8 @@ import CoinIcon from 'Components/CoinIcon'
 import { tradeTable, tradeCoinIcon } from './style'
 
 const TradeTable = ({ swaps, handleClick }) => {
+  swaps.sort((a,b) => { return (a.order.created < b.order.created) ? 1 : ((b.order.created < a.order.created) ? -1 : 0) })
+  swaps = swaps.filter(s => (s.status.detailsCode == 'order_complete' || s.status.detailsCode == 'processing' || s.status.detailsCode == 'pending_receipt'))
   return (
     <Table hover striped responsive className={classNames(tradeTable, 'table-accordian')}>
       <thead>
@@ -41,7 +43,6 @@ const TradeTable = ({ swaps, handleClick }) => {
 }
 
 const createTableRow = (swaps, handleClick) => {
-  swaps.sort(function(a,b) {return (a.order.created < b.order.created) ? 1 : ((b.order.created < a.order.created) ? -1 : 0);})
   return swaps.map(swap => {
     const { 
       id, rate, sendSymbol, receiveUnits, receiveSymbol, order: { created }, tx: { feeAmount, feeSymbol }, status: { detailsCode }
@@ -49,10 +50,6 @@ const createTableRow = (swaps, handleClick) => {
     const inverseRate = (1 / rate)
     const totalPrice = parseFloat((inverseRate * receiveUnits) + feeAmount)
     var tableRow = (
-      detailsCode == 'order_complete' || 
-      detailsCode == 'processing' || 
-      detailsCode == 'pending_receipt') ?
-     (
       <tr key={id} onClick={() => handleClick(id)}>
         <td>{createStatusLabel(detailsCode)}</td>
         <td>{formatDate(created, 'yyyy-MM-dd hh:mm:ss')}</td>
@@ -62,7 +59,7 @@ const createTableRow = (swaps, handleClick) => {
         <td><Units value={feeAmount} symbol={feeSymbol} showSymbol precision={6}/></td>
         <td><Units value={totalPrice} symbol={sendSymbol} showSymbol precision={6}/></td>
       </tr>
-    ) : false
+    )
 
     return tableRow
   })
