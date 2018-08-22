@@ -1,12 +1,12 @@
 import b58 from 'bs58check'
-import bitcoin, { Network as BitcoinJsNetwork } from 'bitcoinjs-lib'
+import { payments, bip32, Network as BitcoinJsNetwork } from 'bitcoinjs-lib'
 import networks, { NetworkConfig, PaymentType, AddressEncoding, BTC } from 'Utilities/networks'
 
 const getHdKeyPrefix = (hdKey: string): string => hdKey.slice(0, 4)
 
 export function getPaymentTypeForPrefix(bip32Prefix: string, network: NetworkConfig): PaymentType {
   const paymentType = network.paymentTypes.find((pt) =>
-    bip32Prefix === pt.bip32.public.b58 || bip32Prefix === pt.bip32.private.b58)
+    bip32Prefix === pt.bip32.publicPrefix || bip32Prefix === pt.bip32.privatePrefix)
   if (!paymentType) {
     throw new Error(`Cannot find ${network.name} PaymentType for prefix ${bip32Prefix}`)
   }
@@ -22,13 +22,19 @@ export function getPaymentTypeForEncoding(encoding: AddressEncoding, network: Ne
 }
 
 export function isPublicPrefix(bip32Prefix: string, paymentType: PaymentType): boolean {
-  if (bip32Prefix === paymentType.bip32.public.b58) {
+  if (bip32Prefix === paymentType.bip32.publicPrefix) {
     return true
   }
-  if (bip32Prefix === paymentType.bip32.private.b58) {
+  if (bip32Prefix === paymentType.bip32.privatePrefix) {
     return false
   }
   throw new Error(`PaymentType ${paymentType.addressEncoding} not compatible with bip32 prefix ${bip32Prefix}`)
+}
+
+const bufferFromUInt32 = (x: number) => {
+  const b = Buffer.alloc(4)
+  b.writeUInt32BE(x, 0)
+  return b
 }
 
 /**
@@ -46,8 +52,8 @@ export function convertHdKeyAddressEncoding(
   const currentPaymentType = getPaymentTypeForPrefix(prefix, network)
   const newPaymentType = getPaymentTypeForEncoding(newEncoding, network)
   const isPublic = isPublicPrefix(prefix, currentPaymentType)
-  const newMagicNumber = isPublic ? newPaymentType.bip32.public : newPaymentType.bip32.private
-  data = Buffer.concat([Buffer.from(newMagicNumber.hex, 'hex'), data])
+  const newMagicNumber = bufferFromUInt32(isPublic ? newPaymentType.bip32.public : newPaymentType.bip32.private)
+  data = Buffer.concat([newMagicNumber, data])
   return b58.encode(data)
 }
 
@@ -55,31 +61,38 @@ export const toXpub = (hdKey: string) => convertHdKeyAddressEncoding(hdKey, 'P2P
 export const toYpub = (hdKey: string) => convertHdKeyAddressEncoding(hdKey, 'P2SH-P2WPKH', BTC)
 
 const paymentEncoders: {
-  [encoding in AddressEncoding]: (args: object, opts?: object) => { address?: string }
+  [encoding in AddressEncoding]: (args: object, opts?: payments.PaymentOpts) => { address?: string }
 } = {
-  'P2PKH': bitcoin.payments.p2pkh,
-  'P2SH-P2WPKH': (args: object, opts?: object) => bitcoin.payments.p2sh({
-    redeem: bitcoin.payments.p2wpkh(args, opts),
+  'P2PKH': payments.p2pkh,
+  'P2SH-P2WPKH': (args: payments.PaymentP2wpkh & payments.MaybeNetwork, opts?: payments.PaymentOpts) => payments.p2sh({
+    redeem: payments.p2wpkh(args, opts),
+    network: args.network,
   }),
-  'P2WPKH': bitcoin.payments.p2wpkh,
-  'P2SH-P2WSH': (args: object, opts?: object) => bitcoin.payments.p2sh({
-    redeem: bitcoin.payments.p2wsh(args, opts),
+  'P2WPKH': payments.p2wpkh,
+  'P2SH-P2WSH': (args: payments.PaymentP2wsh & payments.MaybeNetwork, opts?: payments.PaymentOpts) => payments.p2sh({
+    redeem: payments.p2wsh(args, opts),
+    network: args.network,
   }),
-  'P2WSH': bitcoin.payments.p2wsh,
+  'P2WSH': payments.p2wsh,
 }
 
 export function encodeAddress(pubKey: Buffer, encoding: AddressEncoding, network: NetworkConfig): string {
   const paymentEncoder = paymentEncoders[encoding]
   const { bitcoinJsNetwork } = network
+  const paymentType = getPaymentTypeForEncoding(encoding, network)
   return paymentEncoder({ pubkey: pubKey, network: bitcoinJsNetwork }).address
 }
 
 export function deriveAddress(hdKey: string, path: number[], network: NetworkConfig): string {
-  let hdNode = bitcoin.bip32.fromBase58(hdKey)
+  const paymentType = getPaymentTypeForPrefix(getHdKeyPrefix(hdKey), network)
+  const bip32Network = {
+    ...network.bitcoinJsNetwork,
+    bip32: paymentType.bip32,
+  }
+  let hdNode = bip32.fromBase58(hdKey, bip32Network)
   for (const i of path) {
     hdNode = hdNode.derive(i)
   }
-  const paymentType = getPaymentTypeForPrefix(getHdKeyPrefix(hdKey), network)
   return encodeAddress(hdNode.publicKey, paymentType.addressEncoding, network)
 }
 
