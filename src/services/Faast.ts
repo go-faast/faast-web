@@ -7,7 +7,7 @@ import { Asset } from 'Types'
 const { siteUrl, apiUrl } = config
 
 function getAssets(): Promise<Asset[]> {
-  return fetchGet(`${apiUrl}/currencies`)
+  return fetchGet(`${apiUrl}/api/v1/public/currencies`)
     .then((assets: Array<Partial<Asset>>) => assets.filter((asset) => {
       if (!asset.symbol) {
         log.warn('omitting asset without symbol', asset)
@@ -32,11 +32,29 @@ const getAssetPrices = () => fetchGet(`${siteUrl}/app/portfolio-price`)
 
 const getPriceChart = (symbol: string) => fetchGet(`${siteUrl}/app/portfolio-chart/${symbol}`)
 
-const getMarketInfo = (pair: string) => fetchGet(`${apiUrl}/marketinfo/${pair}`)
+const getMarketInfo = (pair: string) => fetchGet(`${apiUrl}/api/v1/public/marketinfo/${pair}`)
 
-const postExchange = (info: object) => fetchPost(`${apiUrl}/shift`, info)
+type NewSwapArgs = {
+  userId: string,
+  sendAmount: number,
+  sendSymbol: string,
+  receiveAddress: string,
+  receiveSymbol: string,
+  refundAddress: string,
+}
 
-const getOrderStatus = (swapOrderId: string) => fetchGet(`${apiUrl}/txStat/${swapOrderId}`)
+const postNewSwap = (
+  { userId, sendAmount, sendSymbol, receiveAddress, receiveSymbol, refundAddress }: NewSwapArgs,
+) => fetchPost(`${apiUrl}/api/v2/public/swap`, {
+  user_id: userId,
+  deposit_amount: sendAmount,
+  deposit_currency: sendSymbol,
+  withdrawal_address: receiveAddress,
+  withdrawal_currency: receiveSymbol,
+  refund_address: refundAddress,
+})
+
+const getOrderStatus = (swapOrderId: string) => fetchGet(`${apiUrl}/api/v1/public/txStat/${swapOrderId}`)
 
 export default {
   getAssets,
@@ -44,6 +62,6 @@ export default {
   getAssetPrices,
   getPriceChart,
   getMarketInfo,
-  postExchange,
+  postNewSwap,
   getOrderStatus,
 }

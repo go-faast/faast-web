@@ -38,6 +38,10 @@ export default abstract class EthereumWallet extends Wallet {
 
   isSingleAddress() { return true }
 
+  _getUserId(asset: Asset): string {
+    return this.getAddress()
+  }
+
   _isAggregateTransactionSupported() { return false }
 
   _createAggregateTransaction(): never {

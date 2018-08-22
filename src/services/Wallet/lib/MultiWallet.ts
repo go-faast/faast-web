@@ -92,45 +92,55 @@ export default class MultiWallet extends Wallet {
   _chooseWallet<T>(
     asset: Asset,
     { selectWalletCallback = selectFirst }: Options,
+    applyToWallet: (wallet: Wallet) => T,
+  ): T {
+    if (!asset) {
+      return null
+    }
+    const walletsForAsset = this._getWalletsForAsset(asset)
+    if (walletsForAsset.length === 0) {
+      throw new Error(`Failed to find wallet supporting ${asset.symbol}`)
+    }
+    let selectedWallet
+    if (walletsForAsset.length === 1) {
+      selectedWallet = walletsForAsset[0]
+    } else {
+      selectedWallet = selectWalletCallback(walletsForAsset)
+    }
+    return applyToWallet(selectedWallet)
+  }
+
+  _chooseWalletPromise<T>(
+    asset: Asset,
+    options: Options,
     applyToWallet: (wallet: Wallet) => Promise<T> | T,
-  ): Promise<T | null> {
-    return Promise.resolve().then(() => {
-      if (!asset) {
-        return null
-      }
-      const walletsForAsset = this._getWalletsForAsset(asset)
-      if (walletsForAsset.length === 0) {
-        throw new Error(`Failed to find wallet supporting ${asset.symbol}`)
-      }
-      let selectedWallet
-      if (walletsForAsset.length === 1) {
-        selectedWallet = walletsForAsset[0]
-      } else {
-        selectedWallet = selectWalletCallback(walletsForAsset)
-      }
-      if (selectedWallet instanceof Promise) {
-        return selectedWallet.then(applyToWallet)
-      }
-      return applyToWallet(selectedWallet)
-    })
+  ): Promise<T> {
+    return Promise.resolve().then(() => this._chooseWallet(asset, options, applyToWallet))
+  }
+
+  _getUserId(asset: Asset, options: object): string {
+    return this._chooseWallet(
+      asset,
+      options,
+      (wallet) => wallet._getUserId(asset, options))
   }
 
   _getFreshAddress(asset: Asset, options: object): Promise<string> {
-    return this._chooseWallet(
+    return this._chooseWalletPromise(
       asset,
       options,
       (wallet) => wallet._getFreshAddress(asset, options))
   }
 
   _getDefaultFeeRate(asset: Asset, options: object): Promise<FeeRate> {
-    return this._chooseWallet(
+    return this._chooseWalletPromise(
       asset,
       options,
       (wallet) => wallet._getDefaultFeeRate(asset, options))
   }
 
   _createTransaction(toAddress: string, amount: Amount, asset: Asset, options: object): Promise<Transaction> {
-    return this._chooseWallet(
+    return this._chooseWalletPromise(
       asset,
       options,
       (wallet) => wallet._createTransaction(toAddress, amount, asset, options))
@@ -139,7 +149,7 @@ export default class MultiWallet extends Wallet {
   _createAggregateTransaction(
     outputs: TransactionOutput[], asset: Asset, options: object,
   ): Promise<Transaction> {
-    return this._chooseWallet(
+    return this._chooseWalletPromise(
       asset,
       options,
       (wallet) => wallet._createAggregateTransaction(outputs, asset, options),

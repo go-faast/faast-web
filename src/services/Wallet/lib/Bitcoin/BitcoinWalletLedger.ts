@@ -16,10 +16,6 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
 
   static type = 'BitcoinWalletLedger'
 
-  constructor(xpub: string, derivationPath: string, label?: string) {
-    super(xpub, derivationPath, label)
-  }
-
   getType() { return BitcoinWalletLedger.type }
 
   getTypeLabel() { return typeLabel }
