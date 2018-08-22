@@ -90,48 +90,50 @@ declare module 'bitcoinjs-lib' {
 
   export type Rng = (size: number) => Buffer;
 
-  export class bip32 {
-    constructor(keyPair: ECPair, chainCode: Buffer);
+  export namespace bip32 {
 
-    keyPair: ECPair;
+    type BIP32Network = Pick<Network, 'wif' | 'bip32'>
 
-    derive(index: number): bip32;
+    interface BIP32 {
 
-    deriveHardened(index: number): bip32;
+      chainCode: Buffer;
+      depth: number;
+      index: number;
+      network: BIP32Network;
+      parentFingerprint: number;
+      keyPair: ECPair;
 
-    derivePath(path: string): bip32;
+      readonly identifier: Buffer;
+      readonly fingerprint: Buffer;
+      readonly privateKey: Buffer;
+      readonly publicKey: Buffer;
 
-    getAddress(): string;
+      isNeutered(): boolean;
 
-    getFingerprint(): Buffer;
+      neutered(): BIP32;
 
-    getIdentifier(): Buffer;
+      toBase58(): string;
 
-    getNetwork(): Network;
+      toWIF(): string;
 
-    getPublicKeyBuffer(): Buffer;
+      derive(index: number): BIP32;
 
-    isNeutered(): boolean;
+      deriveHardened(index: number): BIP32;
 
-    neutered(): bip32;
+      derivePath(path: string): BIP32;
 
-    sign(hash: Buffer): Buffer;
+      sign(hash: Buffer): Buffer;
 
-    toBase58(): string;
+      verify(hash: Buffer, signature: Buffer): boolean;
+    }
 
-    verify(hash: Buffer, signature: Buffer): boolean;
+    function fromBase58(string: string, network?: BIP32Network): BIP32;
 
-    static HIGHEST_BIT: number;
+    function fromPrivateKey(publicKey: Buffer, chainCode: Buffer, network?: BIP32Network): BIP32;
 
-    static LENGTH: number;
+    function fromPublicKey(publicKey: Buffer, chainCode: Buffer, network?: BIP32Network): BIP32;
 
-    static fromBase58(string: string, networks?: Network[] | Network): bip32;
-
-    static fromSeedBuffer(seed: Buffer, network?: Network): bip32;
-
-    static fromSeedHex(hex: string, network?: Network): bip32;
-
-    static MASTER_SECRET: Buffer;
+    function fromSeed(seed: Buffer, network?: BIP32Network): BIP32;
   }
 
   export class Transaction {

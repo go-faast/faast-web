@@ -80,7 +80,7 @@ export function deriveAddress(hdKey: string, path: number[], network: NetworkCon
     hdNode = hdNode.derive(i)
   }
   const paymentType = getPaymentTypeForPrefix(getHdKeyPrefix(hdKey), network)
-  return encodeAddress(hdNode.getPublicKeyBuffer(), paymentType.addressEncoding, network)
+  return encodeAddress(hdNode.publicKey, paymentType.addressEncoding, network)
 }
 
 /**
