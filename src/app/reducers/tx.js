@@ -26,9 +26,9 @@ const txUnpersistedInitialState = {
   signingError: '',
   sending: false,
   sendingError: '',
-  receipt: null,
 }
 const txInitialState = {
+  v: '2',
   id: '',
   walletId: '',
   type: '',
@@ -41,6 +41,7 @@ const txInitialState = {
   hash: null,
   signed: false,
   sent: false,
+  receipt: null,
   ...txUnpersistedInitialState
 }
 

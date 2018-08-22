@@ -25,7 +25,7 @@ export const formatDate = (date, format) => {
   if (!date) {
     return
   }
-  date = new Date(date)
+  date = date instanceof Date ? date : new Date(date)
   var dateObj = {
     M: date.getMonth() + 1,
     d: date.getDate(),

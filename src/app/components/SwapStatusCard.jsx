@@ -21,9 +21,9 @@ const StatusFooter = ({ className, children, ...props }) => (
   </CardFooter>
 )
 
-const priceChange = (timestamp, asset) => {
+const priceChange = (date, asset) => {
   const { change1, change7d, change24 } = asset
-  const hoursSinceTrade = (Date.now() - timestamp) / 3600000
+  const hoursSinceTrade = (Date.now() - date.getTime()) / 3600000
   const timespan = hoursSinceTrade <= 1 ? 'Last 1hr: ' : hoursSinceTrade >= 24 ? 'Last 7d: ' : 'Last 24hrs: '
   var priceChangeText = hoursSinceTrade <= 1 ? change1 : hoursSinceTrade >= 24 ? change7d : change24
   return (
@@ -57,8 +57,7 @@ export default compose(
     receiveWalletId, receiveSymbol, receiveAsset, receiveUnits,
     error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee,
     tx: { confirmed, succeeded, hash: txHash, feeAmount: txFee, feeSymbol: txFeeSymbol },
-    status: { code, details }, orderId,
-    order: { created: orderCreated }
+    status: { code, details }, orderId, createdAt,
   },
   statusText, showDetails, isExpanded, togglerProps, expanded
 }) => {
@@ -77,7 +76,7 @@ export default compose(
               <Col xs='12' sm='auto'><CoinIcon symbol={sendSymbol}/></Col>
               <Col xs='12' sm>
                 <Row className='gutter-2'>
-                  <Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(orderCreated, sendAsset)}</Col>
+                  <Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, sendAsset)}</Col>
                   <Col xs='12' className='order-sm-2 font-size-sm pt-0'>{sendAsset.name}</Col>
                   <Col xs='12' className='text-white'>
                     <Units value={sendUnits} symbol={sendSymbol} prefix='-'/>
@@ -95,7 +94,7 @@ export default compose(
               <Col xs='12' sm='auto' className='order-sm-2'><CoinIcon symbol={receiveSymbol}/></Col>
               <Col xs='12' sm>
                 <Row className='gutter-2'>
-                  <Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(orderCreated, receiveAsset)}</Col>
+                  <Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, receiveAsset)}</Col>
                   <Col xs='12' className='order-sm-2 font-size-sm pt-0'>{receiveAsset.name}</Col>
                   <Col xs='12' className='text-white'>
                     <UnitsLoading value={receiveUnits} symbol={receiveSymbol} error={error} prefix='+'/>
@@ -125,16 +124,9 @@ export default compose(
                 </td>
               </tr>
               <tr>
-                <td><b>Order Date:</b></td>
-                <td colSpan='2' className='px-2'>{orderCreated
-                  ? formatDate(orderCreated, 'yyyy-MM-dd hh:mm:ss')
-                  : loadingValue}
-                </td>
-              </tr>
-              <tr>
                 <td><b>Rate:</b></td>
                 <td colSpan='2' className='px-2'>
-                  <UnitsLoading value={rate} symbol={receiveSymbol} error={error} precision={null} prefix={`1 ${sendSymbol} = `}/>
+                  <UnitsLoading value={rate} symbol={sendSymbol} error={error} precision={null} prefix={`1 ${receiveSymbol} = `}/>
                 </td>
               </tr>
               <tr>
@@ -158,6 +150,13 @@ export default compose(
                 <td><b>Receiving:</b></td>
                 <td className='px-2'><UnitsLoading value={receiveUnits} symbol={receiveSymbol} error={error} precision={null}/></td>
                 <td><i>using wallet</i> <WalletLabel.Connected id={receiveWalletId} tag='span' hideIcon/></td>
+              </tr>
+              <tr>
+                <td><b>Date Created:</b></td>
+                <td colSpan='2' className='px-2'>{createdAt
+                  ? formatDate(createdAt, 'yyyy-MM-dd hh:mm:ss')
+                  : loadingValue}
+                </td>
               </tr>
               <tr>
                 <td><b>Order ID:</b></td>

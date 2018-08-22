@@ -27,7 +27,7 @@ export const getAllSwundles = createSelector(
   (allSwundles, allSwaps) => mapValues(allSwundles, createSwundleExtender(allSwaps)))
 export const getAllSwundlesArray = createSelector(
   getAllSwundles,
-  (allSwundles) => Object.values(allSwundles).sort((a, b) => b.createdDate - a.createdDate) // Most recently created first
+  (allSwundles) => Object.values(allSwundles).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()) // Most recently created first
 )
 export const getSwundle = createItemSelector(getAllSwundles, selectItemId, (allSwundles, id) => allSwundles[id])
 
@@ -38,7 +38,7 @@ export const getCurrentSwundle = createSelector(
 export const getCurrentSwundleId = createSelector(getCurrentSwundle, (swundle) => swundle ? swundle.id : '')
 export const isCurrentSwundleSigning = createSelector(getCurrentSwundle, (swundle) => swundle && swundle.signing)
 export const isCurrentSwundleSending = createSelector(getCurrentSwundle, (swundle) => swundle && swundle.sending)
-export const getCurrentSwundleCreatedDate = createSelector(getCurrentSwundle, (swundle) => swundle ? swundle.createdDate : 0)
+export const getCurrentSwundleCreatedDate = createSelector(getCurrentSwundle, (swundle) => swundle ? swundle.createdAt : new Date(0))
 export const getCurrentSwundleSwaps = createSelector(getCurrentSwundle, (swundle) => swundle ? swundle.swaps : [])
 export const getCurrentSwundleStatus = createSelector(getCurrentSwundle, (swundle) => swundle && swundle.status)
 

@@ -29,7 +29,7 @@ export const retrieveAssets = () => (dispatch, getState) => {
     return
   }
   dispatch(assetsLoading())
-  return Faast.getAssets()
+  return Faast.fetchAssets()
     .then((assets) => dispatch(assetsLoaded(assets)))
     .catch((e) => {
       log.error(e)
@@ -44,7 +44,7 @@ export const retrieveAssetPrice = (symbol) => (dispatch, getState) => {
     return
   }
   dispatch(assetPriceLoading(symbol))
-  return Faast.getAssetPrice(symbol)
+  return Faast.fetchAssetPrice(symbol)
     .then((asset) => dispatch(assetPriceUpdated(asset)))
     .catch((e) => {
       log.error(e)
@@ -59,7 +59,7 @@ export const retrieveAssetPrices = () => (dispatch, getState) => {
     return
   }
   dispatch(assetPricesLoading())
-  return Faast.getAssetPrices()
+  return Faast.fetchAssetPrices()
     .then((assets) => dispatch(assetPricesUpdated(assets)))
     .catch((e) => {
       log.error(e)

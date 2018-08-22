@@ -11,8 +11,7 @@ export default compose(
   setDisplayName('TradeDetailModal'),
   connect(createStructuredSelector({
     swap: (state, props) => getSwap(state, props.tradeId)
-  }), {
-  }),
+  })),
   setPropTypes({
     showWalletLabels: PropTypes.bool,
     showFees: PropTypes.bool,
@@ -29,11 +28,11 @@ export default compose(
   }, isOpen, toggle, swap
 }) => (
 <Modal key={`modal-${id}`} size='lg' isOpen={isOpen} toggle={toggle} className='mt-6 mx-md-auto' contentClassName='p-0'>
-    <ModalHeader tag='h4' toggle={toggle} className='text-primary'>
+  <ModalHeader tag='h4' toggle={toggle} className='text-primary'>
     Trade Details
-    </ModalHeader>
-    <ModalBody>
-        <SwapStatusCard swap={swap} expanded/>
-    </ModalBody>
+  </ModalHeader>
+  <ModalBody>
+    <SwapStatusCard swap={swap} expanded/>
+  </ModalBody>
 </Modal>
 ))

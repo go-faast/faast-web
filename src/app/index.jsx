@@ -9,6 +9,7 @@ import { throttle } from 'lodash'
 import { ConnectedRouter, routerMiddleware } from 'react-router-redux'
 import ReduxToastr from 'react-redux-toastr'
 import { createHashHistory, createBrowserHistory } from 'history'
+import { pickBy } from 'lodash'
 
 import App from 'Components/App'
 import reducers from './reducers'
@@ -51,9 +52,9 @@ store.subscribe(throttle(() => {
     const wallet = getDefaultPortfolio(state)
     if (wallet) {
       const { settings } = state
-      const allSwundles = getSwundleState(state)
-      const allSwaps = getSwapState(state)
-      const allTxs = getTxState(state)
+      const allSwundles = pickBy(getSwundleState(state), (s) => s.sent)
+      const allTxs = pickBy(getTxState(state), (tx) => tx.sent)
+      const allSwaps = pickBy(getSwapState(state), (s) => Boolean(allTxs[s.txId]))
       saveToAddress(wallet.id, {
         swundle: allSwundles,
         swap: allSwaps,

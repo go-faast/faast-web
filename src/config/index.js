@@ -30,7 +30,7 @@ export default {
   bitcoreInsightApi: 'https://bitcore.faa.st/insight-api',
   ethereumChainId: 1,
   siteUrl: typeof SITE_URL !== 'undefined' ? SITE_URL : 'https://faa.st',
-  apiUrl: typeof API_URL !== 'undefined' ? API_URL : 'https://api.faa.st/api/v1/public',
+  apiUrl: typeof API_URL !== 'undefined' ? API_URL : 'https://api.faa.st',
   encrOpts: {
     kdf: 'scrypt',
     n: 1024

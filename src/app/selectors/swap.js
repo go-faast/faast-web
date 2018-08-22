@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { mapValues } from 'Utilities/helpers'
-import { getSwapStatus, getSwapFriendlyError, estimateReceiveAmount } from 'Utilities/swap'
+import { getSwapStatus, getSwapFriendlyError } from 'Utilities/swap'
 import { createItemSelector, selectItemId } from 'Utilities/selector'
 import { toBigNumber } from 'Utilities/convert'
 
@@ -18,7 +18,7 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
   swap = {
     ...swap,
     pair: `${sendSymbol}_${receiveSymbol}`.toLowerCase(),
-    inverseRate: 1 / rate,
+    inverseRate: toBigNumber(rate).pow(-1),
     sendAsset,
     receiveAsset,
     hasFee: fee && toBigNumber(fee).gt(0),
@@ -32,7 +32,6 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
   }
   return {
     ...swap,
-    receiveUnits: estimateReceiveAmount(swap),
     status: getSwapStatus(swap),
     friendlyError: getSwapFriendlyError(swap),
   }
@@ -51,7 +50,7 @@ export const getSentSwapsSorted = createSelector(
   getAllSwapsArray,
   (allSwaps) => allSwaps
     .filter((s) => s.tx.sent)
-    .sort((a, b) => new Date(b.order.created).getTime() - new Date(a.order.created).getTime())
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 )
 
 export const getSwapOrder = createItemSelector(getSwap, (swap) => swap ? swap.order : null)

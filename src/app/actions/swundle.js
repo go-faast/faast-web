@@ -8,9 +8,9 @@ import { processArray } from 'Utilities/helpers'
 import { ZERO, BigNumber, toBigNumber } from 'Utilities/convert'
 
 import {
-  swapsRestored, addSwap, removeSwap, restoreSwapPolling,
-  updateMarketInfo, checkSufficientDeposit, createOrder,
-  createSwapTx, signSwap, sendSwap, setSwapTx,
+  restoreSwaps, addSwap, removeSwap, restoreSwapPolling,
+  createOrder, createSwapTx, signSwap, sendSwap, setSwapTx,
+  swapError,
 } from 'Actions/swap'
 import { txsRestored, txRestored, createAggregateTx } from 'Actions/tx'
 import { getAllWallets, getSwundle, getCurrentSwundle, getLatestSwundle } from 'Selectors'
@@ -126,12 +126,17 @@ const createSwundleTxs = (swundle, options) => (dispatch, getState) => {
       if (walletInstance.isAggregateTransactionSupported(symbol)) {
         if (swaps.some((swap) => swap.error)) { return }
         // Create a single aggregate transaction for multiple swaps (e.g. bitcoin, litecoin)
-        const outputs = swaps.map(({ sendUnits, order }) => ({
-          address: order.deposit,
+        const outputs = swaps.map(({ sendUnits, depositAddress }) => ({
+          address: depositAddress,
           amount: sendUnits,
         }))
         return dispatch(createAggregateTx(walletId, outputs, symbol, options))
           .then((tx) => Promise.all(swaps.map((swap, i) => dispatch(setSwapTx(swap.id, tx, i)))))
+          .catch((e) => {
+            log.error(e)
+            swaps.forEach((swap) => dispatch(swapError(swap.id, 'Error creating swap transaction', 'createSwapTx')))
+            throw new Error('Error creating swap transactions')
+          })
       } else {
         // Create a transaction for each swap (e.g. ethereum)
         let previousTx
@@ -149,10 +154,7 @@ const createSwundleTxs = (swundle, options) => (dispatch, getState) => {
 export const initSwundle = (swundle) => (dispatch) => Promise.resolve().then(() => {
   log.info('initSwundle', swundle.id)
   dispatch(initStarted(swundle.id))
-  return Promise.all(swundle.swaps
-    .map((swap) => dispatch(updateMarketInfo(swap))
-      .then((swap) => dispatch(checkSufficientDeposit(swap)))))
-    .then((swaps) => ({ ...swundle, swaps }))
+  return Promise.resolve(swundle)
     .then((s) => dispatch(checkSufficientBalances(s)))
     .then((s) => forEachSwap(s, (swap) => dispatch(createOrder(swap))))
     .then((s) => dispatch(createSwundleTxs(s)))
@@ -173,7 +175,7 @@ export const createSwundle = (newSwaps) => (dispatch, getState) => {
     .then((swaps) => {
       dispatch(swundleAdded({
         id,
-        createdDate: Date.now(),
+        createdDate: new Date(),
         swaps: swaps
       }))
       return getSwundle(getState(), id)
@@ -238,10 +240,14 @@ export const restoreSwundles = (state) => (dispatch) => {
         dispatch(txRestored(tx))
       }
     })
-    dispatch(swapsRestored(swapList))
+    dispatch(restoreSwaps(swapList))
     if (state.swundle) {
       hasSwundle = true
-      dispatch(swundlesRestored(state.swundle))
+      dispatch(swundlesRestored(Object.values(state.swundle)
+        .map((swundle) => ({
+          ...swundle,
+          createdAt: new Date(swundle.createdDate || swundle.createdAt)
+        }))))
     }
   } else if (validateSwundleV1(state)) {
     swapList = state.reduce((swapList, send) => [
@@ -261,13 +267,14 @@ export const restoreSwundles = (state) => (dispatch) => {
         }
       })),
     ], [])
-    dispatch(swapsRestored(swapList))
+    dispatch(restoreSwaps(swapList))
   }
   if (swapList && !hasSwundle) {
-    const createdDate = ((swapList[0] || {}).order || {}).created || Date.now()
+    const firstSwap = (swapList[0] || {})
+    const createdAt = firstSwap.createdAt || (firstSwap.order || {}).created
     dispatch(swundleAdded({
       id: uuid(),
-      createdDate,
+      createdDate: createdAt ? new Date(createdAt) : new Date(),
       swaps: swapList
     }))
   }

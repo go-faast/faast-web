@@ -78,7 +78,7 @@ export default abstract class BitcoinWallet extends Wallet {
       .then(() => this._getDiscoveryResult())
       .then(({ unusedAddresses }) => unusedAddresses[index])
       .catch((e) => {
-        throw new Error(`Failed to get fresh bitcoin address: ${e.message}`)
+        throw new Error(`Failed to get fresh bitcoin address: ${e.message || e}`)
       })
   }
 

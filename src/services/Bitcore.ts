@@ -149,7 +149,18 @@ export class Bitcore extends BitcoreBlockchain {
     let changeAddress = changeAddresses[changeIndex]
     const sortedUtxos = sortUtxos(utxos)
 
-    const outputs = desiredOutputs.map(({ address, amount }) => ({ address, amount })) // Clone
+    const outputs = desiredOutputs
+      .map(({ address, amount }, i) => {
+        // validate
+        if (typeof address !== 'string') {
+          throw new Error(`Invalid address ${address} provided for output ${i}`)
+        }
+        if (typeof amount !== 'number') {
+          throw new Error(`Invalid amount ${amount} provided for output ${i}`)
+        }
+        // clone
+        return { address, amount }
+      })
     const outputCount = outputs.length + 1 // Plus one for change output
     let outputTotal = outputs.reduce((total, { amount }) => total + amount, 0)
 
@@ -185,6 +196,7 @@ export class Bitcore extends BitcoreBlockchain {
     }
 
     /* Build outputs */
+    log.debug(`Creating ${this.assetSymbol} tx with outputs`, outputs)
     const outputBuilder = new TransactionBuilder(this.network.bitcoinJsNetwork)
     outputs.forEach(({ amount, address }) => outputBuilder.addOutput(address, amount))
 
@@ -193,6 +205,7 @@ export class Bitcore extends BitcoreBlockchain {
     if (change > dustThreshold) { // Avoid creating dust outputs
       outputBuilder.addOutput(changeAddress, change)
     } else {
+      log.debug(`Change of ${change} sat is below dustThreshold of ${dustThreshold}, adding to fee`)
       fee += change
       change = 0
       changeAddress = null

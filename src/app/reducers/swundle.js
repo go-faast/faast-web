@@ -21,8 +21,9 @@ const swundleUnpersistedInitialState = {
   error: '',
 }
 const swundleInitialState = {
+  v: '2',
   id: '',
-  createdDate: 0,
+  createdAt: new Date(0),
   swaps: [],
   dismissed: false,
   initialized: false,

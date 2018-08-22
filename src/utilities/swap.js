@@ -1,7 +1,5 @@
 import { isString } from 'lodash'
 
-import { toUnit, toPrecision } from 'Utilities/convert'
-
 const createStatus = (code, label, labelClass) => (detailsCode, details) => ({ code, label, labelClass, detailsCode, details })
 
 const statusPending = createStatus('pending', 'Processing', 'text-primary')
@@ -10,7 +8,7 @@ const statusComplete = createStatus('complete', 'Complete', 'text-success')
 
 export const getSwapStatus = (swap) => {
   const {
-    error, rate, orderId, order, tx
+    error, rate, orderId, orderStatus, order, tx
   } = swap
   if (error) {
     if (isString(error) && error.toLowerCase().includes('insufficient funds')) {
@@ -24,10 +22,10 @@ export const getSwapStatus = (swap) => {
   if (order.error) {
     return statusFailed('order_error', 'An error occured with this order, please contact support@faa.st')
   }
-  if (order.status === 'failed' || order.status === 'cancelled') {
-    return statusFailed(`order_${order.status}`, 'Order was unsuccessful, please contact support@faa.st')
+  if (orderStatus === 'failed' || orderStatus === 'cancelled') {
+    return statusFailed(`order_${orderStatus}`, 'Order was unsuccessful, please contact support@faa.st')
   }
-  if (order.status === 'complete') {
+  if (orderStatus === 'complete') {
     return statusComplete('order_complete', 'Order completed successfully')
   }
   if (!rate) {
@@ -95,12 +93,4 @@ export const getSwapFriendlyError = (swap) => {
     }
   }
   return 'Unknown error'
-}
-
-export const estimateReceiveAmount = (swap) => {
-  const { fee, rate, sendUnits, receiveAsset } = (swap || {})
-  if (fee && rate && sendUnits) {
-    const converted = toUnit(sendUnits, rate, receiveAsset.decimals)
-    return toPrecision(converted.minus(fee), receiveAsset.decimals)
-  }
 }

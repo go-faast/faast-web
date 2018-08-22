@@ -1,16 +1,13 @@
+import { isObject } from 'lodash'
 import { newScopedCreateAction } from 'Utilities/action'
 import log from 'Utilities/log'
-import {
-  toBigNumber,
-  toPrecision,
-  toUnit,
-} from 'Utilities/convert'
+import { toBigNumber } from 'Utilities/convert'
 import walletService from 'Services/Wallet'
 
-import { getMarketInfo, postExchange, getOrderStatus } from 'Actions/request'
+import Faast from 'Services/Faast'
 import { createTx, signTx, sendTx, updateTxReceipt, pollTxReceipt } from 'Actions/tx'
 
-import { getAsset, getSwap, getTx } from 'Selectors'
+import { getSwap, getTx } from 'Selectors'
 
 const createAction = newScopedCreateAction(__filename)
 
@@ -20,6 +17,28 @@ export const swapAdded = createAction('ADDED')
 export const swapRemoved = createAction('REMOVED', (id) => ({ id }))
 export const swapUpdated = createAction('UPDATED', (id, data) => ({ id, ...data }))
 export const swapOrderUpdated = createAction('ORDER_UPDATED', (id, data) => ({ id, order: data }))
+export const swapError = createAction('ERROR', (id, error, errorType = '') => ({ id, error, errorType }))
+export const swapOrderStatusUpdated = createAction('ORDER_STATUS_UPDATED', (id, orderStatus) => ({ id, orderStatus }))
+
+export const restoreSwaps = (swaps) => (dispatch) => {
+  return dispatch(swapsRestored((isObject(swaps) ? Object.values(swaps) : swaps)
+    .map((s) => {
+      const v = s.v || '1'
+      const createdAt = s.createdAt || s.order.created
+      const rate = v === '1' ? toBigNumber(s.rate).pow(-1) : toBigNumber(s.rate)
+      const sendUnits = toBigNumber(s.sendUnits)
+      const receiveUnits = s.receiveUnits ? toBigNumber(s.receiveUnits) : sendUnits.div(rate)
+      return {
+        ...s,
+        rate,
+        sendUnits,
+        receiveUnits,
+        depositAddress: s.depositAddress || s.order.deposit || s.order.depositAddress || s.order.address || '',
+        createdAt: createdAt ? new Date(createdAt) : new Date(0),
+        orderStatus: s.orderStatus || s.order.status || '',
+      }
+    })))
+}
 
 export const addSwap = (swap) => (dispatch) => {
   return dispatch(swapAdded(swap)).payload
@@ -30,97 +49,42 @@ export const removeSwap = (swapOrId) => (dispatch) => {
   dispatch(swapRemoved(id))
 }
 
-const createSwapFinish = (dispatch, type, swap, additions) => (errorMessage, moreAdditions) => {
-  const updatedFields = {}
+const createSwapFinish = (type, swap) => (dispatch, getState) => (errorMessage, updatedFields) => {
   if (errorMessage) {
-    updatedFields.error = errorMessage
-    updatedFields.errorType = type
-  }
-  if (additions) {
-    Object.assign(updatedFields, additions)
-  }
-  if (moreAdditions) {
-    Object.assign(updatedFields, moreAdditions)
+    dispatch(swapError(swap.id, errorMessage, type))
   }
   if (updatedFields && Object.keys(updatedFields).length > 0) {
     dispatch(swapUpdated(swap.id, updatedFields))
-    swap = { ...swap, ...updatedFields }
   }
-  return swap
+  return getSwap(getState(), swap.id)
 }
-
-export const updateMarketInfo = (swap) => (dispatch) => Promise.resolve().then(() => {
-  if (swap.error) return swap
-  const { sendSymbol, sendUnits, receiveSymbol, pair } = swap
-  const newFields = {}
-  const finish = createSwapFinish(dispatch, 'updateMarketInfo', swap, newFields)
-  if (sendSymbol === receiveSymbol) return finish('cannot swap to same asset')
-
-  return dispatch(getMarketInfo(pair))
-    .then((res) => {
-      log.debug('marketinfo response', res)
-      if (!res.pair) {
-        return finish('Error getting market info')
-      }
-      if (res.hasOwnProperty('rate')) {
-        newFields.rate = toBigNumber(res.rate)
-      } else {
-        return finish('Error getting market rate')
-      }
-      if (res.hasOwnProperty('outgoing_network_fee')) {
-        newFields.fee = toBigNumber(res.outgoing_network_fee)
-      } else if (res.hasOwnProperty('minerFee')) {
-        newFields.fee = toBigNumber(res.minerFee)
-      } else {
-        return finish('Error getting swap fee')
-      }
-      if (res.hasOwnProperty('minimum') && sendUnits.lessThan(res.minimum)) {
-        return finish(`Minimum amount is ${res.minimum} ${sendSymbol}`)
-      }
-      if (res.hasOwnProperty('min') && sendUnits.lessThan(res.min)) {
-        return finish(`Minimum amount is ${res.min} ${sendSymbol}`)
-      }
-      if ((res.hasOwnProperty('limit') && sendUnits.greaterThan(res.limit)) || (res.maxLimit && sendUnits.greaterThan(res.maxLimit))) {
-        return finish(`Maximum amount is ${res.limit} ${sendSymbol}`)
-      }
-      return finish()
-    })
-    .catch((e) => {
-      log.error(e)
-      return finish('Error getting market info')
-    })
-})
-
-// Checks to see if the deposit is high enough for the rate and swap fee
-// so the expected amount ends up larger than zero
-export const checkSufficientDeposit = (swap) => (dispatch, getState) => Promise.resolve().then(() => {
-  if (swap.error) return swap
-  const { sendUnits, receiveSymbol, rate, fee } = swap
-  const finish = createSwapFinish(dispatch, 'checkSufficientDeposit', swap)
-  const receiveAsset = getAsset(getState(), receiveSymbol)
-  const expected = toPrecision(toUnit(sendUnits, rate, receiveAsset.decimals).minus(fee), receiveAsset.decimals)
-  if (expected.lessThanOrEqualTo(0)) {
-    return finish('Estimated amount to receive is below 0')
-  }
-  return finish()
-})
 
 export const createOrder = (swap) => (dispatch) => Promise.resolve().then(() => {
   if (swap.error) return swap
-  const finish = createSwapFinish(dispatch, 'createOrder', swap)
-  const { sendWalletId, sendSymbol, receiveWalletId, receiveSymbol, pair } = swap
+  const finish = dispatch(createSwapFinish('createOrder', swap))
+  const { sendWalletId, sendUnits, sendSymbol, receiveWalletId, receiveSymbol, pair } = swap
   const sendWalletInstance = walletService.get(sendWalletId)
   const receiveWalletInstance = walletService.get(receiveWalletId)
   return Promise.all([
     sendWalletInstance.getFreshAddress(sendSymbol),
     receiveWalletInstance.getFreshAddress(receiveSymbol),
+    receiveWalletInstance.getUserId(sendSymbol),
   ])
-  .then(([returnAddress, withdrawalAddress]) => dispatch(postExchange({
-    pair,
-    withdrawal: withdrawalAddress,
-    returnAddress,
-  })))
-  .then((order) => finish(null, { order }))
+  .then(([refundAddress, receiveAddress, userId]) => Faast.postFixedPriceSwap(
+    sendUnits.toNumber(),
+    sendSymbol,
+    receiveAddress,
+    receiveSymbol,
+    refundAddress,
+    userId,
+  ))
+  .then((order) => finish(null, {
+    order,
+    createdAt: order.createdAt,
+    rate: toBigNumber(order.rate),
+    depositAddress: order.depositAddress,
+    receiveUnits: toBigNumber(order.receiveAmount),
+  }))
   .catch((e) => {
     log.error('createOrder', e)
     return finish(`Error creating swap for pair ${pair}, please contact support@faa.st`)
@@ -134,9 +98,9 @@ export const setSwapTx = (swapId, tx, outputIndex = 0) => (dispatch) => {
 export const createSwapTx = (swap, options) => (dispatch) => Promise.resolve().then(() => {
   if (swap.error) return swap
   log.debug('createSwapTx', swap)
-  const { order, sendUnits, sendSymbol, sendWalletId } = swap
-  const finish = createSwapFinish(dispatch, 'createSwapTx', swap)
-  return dispatch(createTx(sendWalletId, order.deposit, sendUnits, sendSymbol, options))
+  const { sendUnits, sendSymbol, sendWalletId, depositAddress } = swap
+  const finish = dispatch(createSwapFinish('createSwapTx', swap))
+  return dispatch(createTx(sendWalletId, depositAddress, sendUnits, sendSymbol, options))
     .then((tx) => {
       dispatch(setSwapTx(swap.id, tx))
       return tx
@@ -148,9 +112,7 @@ export const createSwapTx = (swap, options) => (dispatch) => Promise.resolve().t
 })
 
 export const initiateSwap = (swap) => (dispatch, getState) => {
-  return dispatch(updateMarketInfo(swap))
-    .then((s) => dispatch(checkSufficientDeposit(s)))
-    .then((s) => dispatch(createOrder(s)))
+  return dispatch(createOrder(swap))
     .then((s) => dispatch(createSwapTx(s)))
     .then(() => getSwap(getState(), swap.id))
 }
@@ -184,9 +146,9 @@ const updateOrderStatus = (swap) => (dispatch) => {
     log.info(`updateOrderStatus: swap ${id} has no orderId`)
     return
   }
-  return dispatch(getOrderStatus(orderId))
+  return Faast.fetchOrderStatus(orderId)
     .then((order) => {
-      dispatch(swapOrderUpdated(id, order))
+      dispatch(swapOrderStatusUpdated(id, order.status))
       return order
     })
     .catch(log.error)
