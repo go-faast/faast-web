@@ -22,7 +22,7 @@ export const ellipsize = (str, maxStartChars = 0, maxEndChars = 0) => {
 }
 
 export const formatDate = (date, format) => {
-  if (typeof date !== 'number') {
+  if (!date) {
     return
   }
   date = new Date(date)

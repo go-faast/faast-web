@@ -11,13 +11,14 @@ import { getAllTxs } from './tx'
 export const getSwapState = ({ swap }) => swap
 
 const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
-  const { sendSymbol, receiveSymbol, fee, txId } = swap
+  const { sendSymbol, receiveSymbol, fee, txId, rate } = swap
   const sendAsset = allAssets[sendSymbol]
   const receiveAsset = allAssets[receiveSymbol]
   const tx = allTxs[txId] || {}
   swap = {
     ...swap,
     pair: `${sendSymbol}_${receiveSymbol}`.toLowerCase(),
+    inverseRate: 1 / rate,
     sendAsset,
     receiveAsset,
     hasFee: fee && toBigNumber(fee).gt(0),
@@ -45,5 +46,12 @@ export const getAllSwaps = createSelector(
   (allSwaps, allAssets, allWallets, allTxs) => mapValues(allSwaps, createSwapExtender(allAssets, allWallets, allTxs)))
 export const getAllSwapsArray = createSelector(getAllSwaps, Object.values)
 export const getSwap = createItemSelector(getAllSwaps, selectItemId, (allSwaps, id) => allSwaps[id])
+
+export const getSentSwapsSorted = createSelector(
+  getAllSwapsArray,
+  (allSwaps) => allSwaps
+    .filter((s) => s.tx.sent)
+    .sort((a, b) => new Date(b.order.created).getTime() - new Date(a.order.created).getTime())
+)
 
 export const getSwapOrder = createItemSelector(getSwap, (swap) => swap ? swap.order : null)

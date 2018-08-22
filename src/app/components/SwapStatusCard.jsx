@@ -67,7 +67,7 @@ export default compose(
     : (<Spinner inline size='sm'/>))
   return (
     <Card className='flat'>
-      <CardBody className='py-2 pr-3 pl-2 border-0 lh-0' tag={Button} color='ultra-dark'  {...togglerProps} style={{ minHeight: '4rem' }}>
+      <CardBody className='py-2 pr-3 pl-2 border-0 lh-0' {...togglerProps} style={{ minHeight: '4rem' }}>
         <Row className='gutter-0 align-items-center font-size-small text-muted'>
           <Col xs='auto'>
             { expanded === null ? <i style={{ transition: 'all .15s ease-in-out' }} className={classNames('fa fa-chevron-circle-down text-primary px-2 mr-2', { ['fa-rotate-180']: isExpanded })}/> : false }

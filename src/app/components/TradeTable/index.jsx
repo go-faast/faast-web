@@ -13,57 +13,45 @@ import Expandable from 'Components/Expandable'
 import CoinIcon from 'Components/CoinIcon'
 import { tradeTable, tradeCoinIcon } from './style'
 
-const TradeTable = ({ swaps, handleClick }) => {
-  swaps.sort((a,b) => { return (a.order.created < b.order.created) ? 1 : ((b.order.created < a.order.created) ? -1 : 0) })
-  swaps = swaps.filter(s => (s.status.detailsCode == 'order_complete' || s.status.detailsCode == 'processing' || s.status.detailsCode == 'pending_receipt'))
-  return (
-    <Table hover striped responsive className={classNames(tradeTable, 'table-accordian')}>
-      <thead>
-        <tr>
-          <th></th>
-          <th>Date</th>
-          <th>Pair</th>
-          <th>Rate</th>
-          <th>Amount Received</th>
-          <th>Tx Fees</th>
-          <th>Total Cost</th>
-        </tr>
-      </thead>
-      <tbody>
-        {swaps.length === 0 ? (
+const TableRow = ({
+  swap: { sendUnits, sendSymbol, receiveUnits, receiveSymbol, inverseRate, order: { created }, status: { detailsCode } },
+  ...props
+}) => (
+  <tr {...props}>
+    <td>{createStatusLabel(detailsCode)}</td>
+    <td>{formatDate(created, 'yyyy-MM-dd hh:mm:ss')}</td>
+    <td><CoinIcon className={tradeCoinIcon} symbol={sendSymbol} size='sm' inline/> {sendSymbol} <i style={{ color: '#777' }} className='fa fa-long-arrow-right'/> <CoinIcon className={tradeCoinIcon} symbol={receiveSymbol} size='sm' inline/> {receiveSymbol}</td>
+    <td><Units value={inverseRate} symbol={sendSymbol} showSymbol precision={6}/></td>
+    <td><Units value={receiveUnits} symbol={receiveSymbol} showSymbol precision={6}/></td>
+    <td><Units value={sendUnits} symbol={sendSymbol} showSymbol precision={6}/></td>
+  </tr>
+)
+
+const TradeTable = ({ swaps, handleClick }) => (
+  <Table hover striped responsive className={classNames(tradeTable, 'table-accordian')}>
+    <thead>
+      <tr>
+        <th></th>
+        <th>Date</th>
+        <th>Pair</th>
+        <th>Rate</th>
+        <th>Amount Received</th>
+        <th>Total Cost</th>
+      </tr>
+    </thead>
+    <tbody>
+      {swaps.length === 0 ? (
         <tr className='text-center'>
           <td colSpan='10'>
             <i>No previous trades to show</i>
           </td>
         </tr>
-      ) : createTableRow(swaps, handleClick)}
-      </tbody>
-    </Table>
-  )
-}
-
-const createTableRow = (swaps, handleClick) => {
-  return swaps.map(swap => {
-    const { 
-      id, rate, sendSymbol, receiveUnits, receiveSymbol, order: { created }, tx: { feeAmount, feeSymbol }, status: { detailsCode }
-    } = swap
-    const inverseRate = (1 / rate)
-    const totalPrice = parseFloat((inverseRate * receiveUnits) + feeAmount)
-    var tableRow = (
-      <tr key={id} onClick={() => handleClick(id)}>
-        <td>{createStatusLabel(detailsCode)}</td>
-        <td>{formatDate(created, 'yyyy-MM-dd hh:mm:ss')}</td>
-        <td><CoinIcon className={tradeCoinIcon} symbol={sendSymbol} size='sm' inline/> {sendSymbol} <i style={{ color: '#777' }} className='fa fa-long-arrow-right'/> <CoinIcon className={tradeCoinIcon} symbol={receiveSymbol} size='sm' inline/> {receiveSymbol}</td>
-        <td><Units value={inverseRate} symbol={sendSymbol} showSymbol precision={6}/></td>
-        <td><Units value={receiveUnits} symbol={receiveSymbol} showSymbol precision={6}/></td>
-        <td><Units value={feeAmount} symbol={feeSymbol} showSymbol precision={6}/></td>
-        <td><Units value={totalPrice} symbol={sendSymbol} showSymbol precision={6}/></td>
-      </tr>
-    )
-
-    return tableRow
-  })
-} 
+      ) : swaps.map((swap) => (
+        <TableRow key={swap.id} swap={swap} onClick={() => handleClick(swap.id)}/>
+      ))}
+    </tbody>
+  </Table>
+)
 
 const createStatusLabel = (status) => {
   const icon = status == 'order_complete' ? (
@@ -75,17 +63,17 @@ const createStatusLabel = (status) => {
 }
 
 export default compose(
-    setDisplayName('TradeTable'),
-    connect(null, {
-      push: pushAction
-    }),
-    setPropTypes({
-      swaps: PropTypes.arrayOf(PropTypes.object).isRequired
-    }),
-    defaultProps({
-      swaps: []
-    }),
-    withHandlers({
-      handleClick: ({ push }) => (orderId) => push(routes.tradeDetail(orderId))
-    })
-  )(TradeTable)
+  setDisplayName('TradeTable'),
+  connect(null, {
+    push: pushAction
+  }),
+  setPropTypes({
+    swaps: PropTypes.arrayOf(PropTypes.object).isRequired
+  }),
+  defaultProps({
+    swaps: []
+  }),
+  withHandlers({
+    handleClick: ({ push }) => (orderId) => push(routes.tradeDetail(orderId))
+  })
+)(TradeTable)

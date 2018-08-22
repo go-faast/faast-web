@@ -1,6 +1,6 @@
 import React from 'react'
 import { compose, setDisplayName } from 'recompose'
-import { getAllSwapsArray } from 'Selectors/swap'
+import { getSentSwapsSorted } from 'Selectors/swap'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
@@ -9,7 +9,7 @@ import TradeTable from 'Components/TradeTable'
 import Expandable from 'Components/Expandable'
 
 
-const TradeHistory = ({ allSwapsArray }) => {
+const TradeHistory = ({ swaps }) => {
   return (
     <Layout className='pt-3'>
       <h4 className='mt-2 text-primary'>Trade History 
@@ -18,7 +18,7 @@ const TradeHistory = ({ allSwapsArray }) => {
         shrunk={<small><i className='fa fa-info-circle'></i></small>} 
         expanded={'Your trading history is stored locally and cannot be accessed on other computers.'}>
       </Expandable></h4>
-      <TradeTable swaps={allSwapsArray}/>
+      <TradeTable swaps={swaps}/>
     </Layout>
   )
 }
@@ -26,7 +26,7 @@ const TradeHistory = ({ allSwapsArray }) => {
 export default compose(
     setDisplayName('TradeHistory'),
     connect(createStructuredSelector({
-      allSwapsArray: getAllSwapsArray
+      swaps: getSentSwapsSorted
     }), {
     })
   )(TradeHistory)
