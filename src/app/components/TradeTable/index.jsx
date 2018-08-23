@@ -14,12 +14,12 @@ import CoinIcon from 'Components/CoinIcon'
 import { tradeTable, tradeCoinIcon } from './style'
 
 const TableRow = ({
-  swap: { sendUnits, sendSymbol, receiveUnits, receiveSymbol, rate, order: { created }, status: { detailsCode } },
+  swap: { sendUnits, sendSymbol, receiveUnits, receiveSymbol, rate, createdAt, status: { detailsCode } },
   ...props
 }) => (
   <tr {...props}>
     <td>{createStatusLabel(detailsCode)}</td>
-    <td>{formatDate(created, 'yyyy-MM-dd hh:mm:ss')}</td>
+    <td>{formatDate(createdAt, 'yyyy-MM-dd hh:mm:ss')}</td>
     <td><CoinIcon className={tradeCoinIcon} symbol={sendSymbol} size='sm' inline/> {sendSymbol} <i style={{ color: '#777' }} className='fa fa-long-arrow-right'/> <CoinIcon className={tradeCoinIcon} symbol={receiveSymbol} size='sm' inline/> {receiveSymbol}</td>
     <td><Units value={rate} precision={6}/></td>
     <td><Units value={receiveUnits} symbol={receiveSymbol} showSymbol precision={6}/></td>
