@@ -30,6 +30,14 @@
   color: $primary;
 }
 
+.navbar-nav {
+  white-space: nowrap;
+}
+
+.navbar-collapse {
+  justify-content: flex-end;
+}
+
 .redux-toastr {
   .toastr {
     border-radius: $border-radius;
