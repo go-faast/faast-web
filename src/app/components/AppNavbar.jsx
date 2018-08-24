@@ -14,7 +14,7 @@ import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
-import { withState, setDisplayName, compose } from 'recompose'
+import { setDisplayName, compose } from 'recompose'
 
 import config from 'Config'
 import { isDefaultPortfolioEmpty } from 'Selectors'
