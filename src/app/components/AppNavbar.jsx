@@ -18,19 +18,20 @@ import { withState, setDisplayName, compose } from 'recompose'
 
 import config from 'Config'
 import { isDefaultPortfolioEmpty } from 'Selectors'
+import withToggle from 'Hoc/withToggle'
 
 import Icon from 'Components/Icon'
 import AddressSearchForm from 'Components/AddressSearchForm'
 import FaastLogo from 'Img/faast-logo.png'
 
-const AppNavbar = ({ disablePortfolioLinks, routerPush, children, toggleMobileMenu, mobileMenuIsExpanded, ...props }) => (
+const AppNavbar = ({ disablePortfolioLinks, routerPush, children, isExpanded, toggleExpanded, ...props }) => (
   <Navbar {...props}>
     <Container>
       <NavbarBrand tag={Link} to='/' className='mr-auto'>
         <Icon src={FaastLogo} height='1.5rem' width='1.5rem' inline className='mx-3'/>Faast Portfolio <sup className='beta-tag'>beta</sup>
       </NavbarBrand>
-      <NavbarToggler onClick={() => {toggleMobileMenu(!mobileMenuIsExpanded)}} />
-      <Collapse isOpen={mobileMenuIsExpanded} navbar>
+      <NavbarToggler onClick={toggleExpanded} />
+      <Collapse isOpen={isExpanded} navbar>
       <Nav navbar>
         {!disablePortfolioLinks && ([
           <NavItem key='dashboard'>
@@ -80,5 +81,5 @@ export default compose(
   }), {
     routerPush: push,
   }),
-  withState('mobileMenuIsExpanded', 'toggleMobileMenu', false),
+  withToggle('expanded')
 )(AppNavbar)
