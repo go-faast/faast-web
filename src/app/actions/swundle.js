@@ -175,7 +175,7 @@ export const createSwundle = (newSwaps) => (dispatch, getState) => {
     .then((swaps) => {
       dispatch(swundleAdded({
         id,
-        createdDate: new Date(),
+        createdAt: new Date(),
         swaps: swaps
       }))
       return getSwundle(getState(), id)
