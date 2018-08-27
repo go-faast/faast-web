@@ -126,7 +126,7 @@ export default compose(
               <tr>
                 <td><b>Rate:</b></td>
                 <td colSpan='2' className='px-2'>
-                  <UnitsLoading value={rate} symbol={sendSymbol} error={error} precision={null} prefix={`1 ${receiveSymbol} = `}/>
+                  <UnitsLoading value={rate} symbol={receiveSymbol} error={error} precision={null} prefix={`1 ${sendSymbol} = `}/>
                 </td>
               </tr>
               <tr>
