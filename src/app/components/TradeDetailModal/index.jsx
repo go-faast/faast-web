@@ -23,11 +23,9 @@ export default compose(
     showDetails: false
   })
 )(({
-  swap: {
-    id,
-  }, isOpen, toggle, swap
+  swap, isOpen, toggle,
 }) => (
-<Modal key={`modal-${id}`} size='lg' isOpen={isOpen} toggle={toggle} className='mt-6 mx-md-auto' contentClassName='p-0'>
+<Modal size='lg' isOpen={isOpen} toggle={toggle} className='mt-6 mx-md-auto' contentClassName='p-0'>
   <ModalHeader tag='h4' toggle={toggle} className='text-primary'>
     Trade Details
   </ModalHeader>

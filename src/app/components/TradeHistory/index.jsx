@@ -27,6 +27,5 @@ export default compose(
     setDisplayName('TradeHistory'),
     connect(createStructuredSelector({
       swaps: getSentSwapsSorted
-    }), {
-    })
+    }))
   )(TradeHistory)

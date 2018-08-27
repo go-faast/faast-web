@@ -56,7 +56,7 @@ export default createReducer({
   [txsRestored]: (state, txs) => (isObject(txs) ? Object.values(txs) : txs)
     .map(prune)
     .map(normalize)
-    .reduce(upsertTx, {}),
+    .reduce(upsertTx, state),
   [txRestored]: (state, tx) => upsertTx(state, normalize(prune(tx))),
   [txAdded]: (state, tx) => upsertTx(state, normalize(tx)),
   [txUpdated]: (state, tx) => updateTx(state, normalize(tx)),

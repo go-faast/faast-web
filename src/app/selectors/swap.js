@@ -3,6 +3,7 @@ import { mapValues } from 'Utilities/helpers'
 import { getSwapStatus, getSwapFriendlyError } from 'Utilities/swap'
 import { createItemSelector, selectItemId } from 'Utilities/selector'
 import { toBigNumber } from 'Utilities/convert'
+import { MultiWallet } from 'Services/Wallet'
 
 import { getAllAssets } from './asset'
 import { getAllWallets } from './wallet'
@@ -11,16 +12,28 @@ import { getAllTxs } from './tx'
 export const getSwapState = ({ swap }) => swap
 
 const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
-  const { sendSymbol, receiveSymbol, fee, txId, rate } = swap
+  const { sendSymbol, receiveSymbol, txId, rate } = swap
   const sendAsset = allAssets[sendSymbol]
   const receiveAsset = allAssets[receiveSymbol]
   const tx = allTxs[txId] || {}
+  const fee = toBigNumber(0)
+  let { receiveWalletId } = swap
+  if (!receiveWalletId) {
+    const receiveAddress = swap.receiveAddress.startsWith('0x') ? swap.receiveAddress.toLowerCase() : swap.receiveAddress
+    const receiveWallet = Object.values(allWallets)
+      .find((w) => !w.type.includes(MultiWallet.type) && w.usedAddresses.includes(receiveAddress))
+    if (receiveWallet) {
+      receiveWalletId = receiveWallet.id
+    }
+  }
   swap = {
     ...swap,
+    receiveWalletId,
     pair: `${sendSymbol}_${receiveSymbol}`.toLowerCase(),
     inverseRate: toBigNumber(rate).pow(-1),
     sendAsset,
     receiveAsset,
+    fee,
     hasFee: fee && toBigNumber(fee).gt(0),
     tx,
     txSigning: tx.signing,
@@ -44,13 +57,15 @@ export const getAllSwaps = createSelector(
   getAllTxs,
   (allSwaps, allAssets, allWallets, allTxs) => mapValues(allSwaps, createSwapExtender(allAssets, allWallets, allTxs)))
 export const getAllSwapsArray = createSelector(getAllSwaps, Object.values)
-export const getSwap = createItemSelector(getAllSwaps, selectItemId, (allSwaps, id) => allSwaps[id])
+export const getSwap = createItemSelector(
+  getAllSwaps,
+  selectItemId,
+  (allSwaps, id) => allSwaps[id] || Object.values(allSwaps).find((s) => s.orderId === id)
+)
 
 export const getSentSwapsSorted = createSelector(
   getAllSwapsArray,
   (allSwaps) => allSwaps
-    .filter((s) => s.tx.sent)
+    .filter((s) => s.orderStatus !== 'awaiting deposit' || s.tx.sent)
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 )
-
-export const getSwapOrder = createItemSelector(getSwap, (swap) => swap ? swap.order : null)

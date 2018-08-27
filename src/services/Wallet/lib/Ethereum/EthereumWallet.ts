@@ -18,18 +18,12 @@ import { Amount, Balances, Transaction, Receipt } from '../types'
 
 const DEFAULT_GAS_PRICE = 21e9 // 21 Gwei
 
-function addressToId(address: string): string {
-  return toHashId(address.toLowerCase())
-}
-
 export default abstract class EthereumWallet extends Wallet {
 
   static type = 'EthereumWallet';
 
-  static addressToId = addressToId;
-
   constructor(public address: string, label?: string) {
-    super(addressToId(address), label)
+    super(address, label)
   }
 
   getLabel() { return this.label || `Ethereum ${ellipsize(this.getAddress(), 6, 4)}` }
@@ -38,9 +32,7 @@ export default abstract class EthereumWallet extends Wallet {
 
   isSingleAddress() { return true }
 
-  _getUserId(asset: Asset): string {
-    return this.getAddress()
-  }
+  getUsedAddresses() { return Promise.resolve([this.getAddress()]) }
 
   _isAggregateTransactionSupported() { return false }
 

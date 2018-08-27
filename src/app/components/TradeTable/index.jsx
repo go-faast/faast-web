@@ -14,7 +14,7 @@ import CoinIcon from 'Components/CoinIcon'
 import { tradeTable, tradeCoinIcon } from './style'
 
 const TableRow = ({
-  swap: { sendUnits, sendSymbol, receiveUnits, receiveSymbol, rate, createdAt, status: { detailsCode } },
+  swap: { sendAmount, sendSymbol, receiveAmount, receiveSymbol, rate, createdAt, status: { detailsCode } },
   ...props
 }) => (
   <tr {...props}>
@@ -22,8 +22,8 @@ const TableRow = ({
     <td>{formatDate(createdAt, 'yyyy-MM-dd hh:mm:ss')}</td>
     <td><CoinIcon className={tradeCoinIcon} symbol={sendSymbol} size='sm' inline/> {sendSymbol} <i style={{ color: '#777' }} className='fa fa-long-arrow-right'/> <CoinIcon className={tradeCoinIcon} symbol={receiveSymbol} size='sm' inline/> {receiveSymbol}</td>
     <td><Units value={rate} precision={6}/></td>
-    <td><Units value={receiveUnits} symbol={receiveSymbol} showSymbol precision={6}/></td>
-    <td><Units value={sendUnits} symbol={sendSymbol} showSymbol precision={6}/></td>
+    <td><Units value={receiveAmount} symbol={receiveSymbol} showSymbol precision={6}/></td>
+    <td><Units value={sendAmount} symbol={sendSymbol} showSymbol precision={6}/></td>
   </tr>
 )
 
@@ -46,8 +46,8 @@ const TradeTable = ({ swaps, handleClick }) => (
             <i>No previous trades to show</i>
           </td>
         </tr>
-      ) : swaps.map((swap) => (
-        <TableRow key={swap.id} swap={swap} onClick={() => handleClick(swap.id)}/>
+      ) : swaps.map((swap) => !swap.orderId ? null : (
+        <TableRow key={swap.orderId} swap={swap} onClick={() => handleClick(swap.orderId)}/>
       ))}
     </tbody>
   </Table>

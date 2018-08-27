@@ -53,11 +53,11 @@ export default compose(
   }))
 )(({
   swap: {
-    sendWalletId, sendSymbol, sendAsset, sendUnits,
-    receiveWalletId, receiveSymbol, receiveAsset, receiveUnits,
+    orderId, sendWalletId, sendSymbol, sendAsset, sendAmount,
+    receiveWalletId, receiveSymbol, receiveAsset, receiveAmount, receiveAddress,
     error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee,
     tx: { confirmed, succeeded, hash: txHash, feeAmount: txFee, feeSymbol: txFeeSymbol },
-    status: { code, details }, orderId, createdAt,
+    status: { code, details }, createdAt, initializing,
   },
   statusText, showDetails, isExpanded, togglerProps, expanded
 }) => {
@@ -79,7 +79,7 @@ export default compose(
                   <Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, sendAsset)}</Col>
                   <Col xs='12' className='order-sm-2 font-size-sm pt-0'>{sendAsset.name}</Col>
                   <Col xs='12' className='text-white'>
-                    <Units value={sendUnits} symbol={sendSymbol} prefix='-'/>
+                    <Units value={sendAmount} symbol={sendSymbol} prefix='-'/>
                   </Col>
                 </Row>
               </Col>
@@ -97,7 +97,7 @@ export default compose(
                   <Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, receiveAsset)}</Col>
                   <Col xs='12' className='order-sm-2 font-size-sm pt-0'>{receiveAsset.name}</Col>
                   <Col xs='12' className='text-white'>
-                    <UnitsLoading value={receiveUnits} symbol={receiveSymbol} error={error} prefix='+'/>
+                    <UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} prefix='+'/>
                   </Col>
                 </Row>
               </Col>
@@ -126,15 +126,17 @@ export default compose(
               <tr>
                 <td><b>Rate:</b></td>
                 <td colSpan='2' className='px-2'>
-                  <UnitsLoading value={rate} symbol={receiveSymbol} error={error} precision={null} prefix={`1 ${sendSymbol} = `}/>
+                  <UnitsLoading value={rate} symbol={sendSymbol} error={error} precision={null} prefix={`1 ${receiveSymbol} = `}/>
                 </td>
               </tr>
-              <tr>
-                <td><b>Network fee:</b></td>
-                <td colSpan='2' className='px-2'>
-                  <UnitsLoading value={txFee} symbol={txFeeSymbol} error={error} precision={null} showFiat/>
-                </td>
-              </tr>
+              { (txFee || initializing) && (
+                <tr>
+                  <td><b>Network fee:</b></td>
+                  <td colSpan='2' className='px-2'>
+                    <UnitsLoading value={txFee} symbol={txFeeSymbol} error={error} precision={null} showFiat/>
+                  </td>
+                </tr>
+              )}
               {hasSwapFee && (
                 <tr>
                   <td><b>Swap fee:</b></td>
@@ -143,13 +145,19 @@ export default compose(
               )}
               <tr>
                 <td><b>Sending:</b></td>
-                <td className='px-2'><UnitsLoading value={sendUnits} symbol={sendSymbol} error={error} precision={null}/></td>
-                <td><i>using wallet</i> <WalletLabel.Connected id={sendWalletId} tag='span' hideIcon/></td>
+                <td className='px-2'><UnitsLoading value={sendAmount} symbol={sendSymbol} error={error} precision={null}/></td>
+                { sendWalletId ? (
+                  <td><i>using wallet</i> <WalletLabel.Connected id={sendWalletId} tag='span' hideIcon/></td>
+                ) : null}
               </tr>
               <tr>
                 <td><b>Receiving:</b></td>
-                <td className='px-2'><UnitsLoading value={receiveUnits} symbol={receiveSymbol} error={error} precision={null}/></td>
-                <td><i>using wallet</i> <WalletLabel.Connected id={receiveWalletId} tag='span' hideIcon/></td>
+                <td className='px-2'><UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} precision={null}/></td>
+                { receiveWalletId ? (
+                  <td><i>using wallet</i> <WalletLabel.Connected id={receiveWalletId} tag='span' hideIcon/></td>
+                ) : (
+                  <td><i>at address</i> {receiveAddress}</td>
+                )}
               </tr>
               <tr>
                 <td><b>Date Created:</b></td>

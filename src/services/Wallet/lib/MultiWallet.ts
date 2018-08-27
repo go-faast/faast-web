@@ -1,4 +1,5 @@
 import uuid from 'uuid/v4'
+import { flatten } from 'lodash'
 import BigNumber from 'bignumber.js'
 import { toBigNumber } from 'Utilities/convert'
 import { reduceByKey, toHashId } from 'Utilities/helpers'
@@ -89,11 +90,11 @@ export default class MultiWallet extends Wallet {
     return this.getWallets().some((wallet) => wallet.isAggregateTransactionSupported(assetOrSymbol))
   }
 
-  _chooseWallet<T>(
-    asset: Asset,
-    { selectWalletCallback = selectFirst }: Options,
-    applyToWallet: (wallet: Wallet) => T,
-  ): T {
+  getWalletForAsset(
+    aos: Asset | string,
+    { selectWalletCallback = selectFirst }: Options = {},
+  ): Wallet {
+    const asset = this.getAsset(aos)
     if (!asset) {
       return null
     }
@@ -107,7 +108,19 @@ export default class MultiWallet extends Wallet {
     } else {
       selectedWallet = selectWalletCallback(walletsForAsset)
     }
-    return applyToWallet(selectedWallet)
+    return selectedWallet
+  }
+
+  getUsedAddresses() {
+    return Promise.all(this.getWallets().map((wallet) => wallet.getUsedAddresses())).then(flatten)
+  }
+
+  _chooseWallet<T>(
+    asset: Asset,
+    options: Options,
+    applyToWallet: (wallet: Wallet) => T,
+  ): T {
+    return applyToWallet(this.getWalletForAsset(asset, options))
   }
 
   _chooseWalletPromise<T>(
@@ -116,13 +129,6 @@ export default class MultiWallet extends Wallet {
     applyToWallet: (wallet: Wallet) => Promise<T> | T,
   ): Promise<T> {
     return Promise.resolve().then(() => this._chooseWallet(asset, options, applyToWallet))
-  }
-
-  _getUserId(asset: Asset, options: object): string {
-    return this._chooseWallet(
-      asset,
-      options,
-      (wallet) => wallet._getUserId(asset, options))
   }
 
   _getFreshAddress(asset: Asset, options: object): Promise<string> {

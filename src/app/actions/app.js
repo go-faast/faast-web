@@ -1,14 +1,14 @@
 import { newScopedCreateAction } from 'Utilities/action'
-import { restoreFromAddress } from 'Utilities/storage'
+import { localStorageGetJson } from 'Utilities/storage'
 import blockstack from 'Utilities/blockstack'
 import { filterUrl } from 'Utilities/helpers'
 import log from 'Utilities/log'
-import { getDefaultPortfolio } from 'Selectors'
 
 import { retrieveAssets, restoreAssets } from './asset'
 import { setSettings } from './settings'
 import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
-import { restoreSwundles } from './swundle'
+import { restoreTxs } from './tx'
+import { retrieveAllSwaps } from './swap'
 
 const createAction = newScopedCreateAction(__filename)
 
@@ -16,9 +16,9 @@ export const appReady = createAction('READY')
 export const appError = createAction('ERROR')
 export const resetAll = createAction('RESET_ALL')
 
-export const restoreState = (dispatch, getState) => Promise.resolve()
+export const restoreState = (dispatch) => Promise.resolve()
   .then(() => {
-    const assetCache = restoreFromAddress('cache:asset')
+    const assetCache = localStorageGetJson('state:asset')
     if (assetCache) {
       dispatch(restoreAssets(assetCache))
       dispatch(retrieveAssets()) // Retrieve updated assets in background
@@ -28,14 +28,12 @@ export const restoreState = (dispatch, getState) => Promise.resolve()
   })
   .then(() => dispatch(restoreAllPortfolios()))
   .then(() => {
-    const wallet = getDefaultPortfolio(getState())
-    const addressState = restoreFromAddress(wallet && wallet.id)
-    if (addressState) {
-      dispatch(restoreSwundles(addressState))
-      const settings = addressState.settings
-      dispatch(setSettings(settings))
-    }
     dispatch(updateAllHoldings())
+    const txState = localStorageGetJson('state:tx')
+    if (txState) {
+      dispatch(restoreTxs(txState))
+    }
+    return dispatch(retrieveAllSwaps())
   })
   .catch((e) => {
     log.error(e)

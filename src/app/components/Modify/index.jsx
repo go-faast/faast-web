@@ -2,22 +2,19 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
-import BigNumber from 'bignumber.js'
 import uuid from 'uuid/v4'
 
 import { toUnit, toPercentage } from 'Utilities/convert'
 import { updateObjectInArray, splice } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
-import { toBigNumber } from 'Utilities/convert'
+import { ZERO, toBigNumber } from 'Utilities/convert'
 
 import { getCurrentPortfolioWithWalletHoldings, getAllAssets } from 'Selectors'
 import { toggleOrderModal, showOrderModal } from 'Actions/orderModal'
 import { createSwundle } from 'Actions/swundle'
 
 import ModifyView from './view'
-
-const ZERO = new BigNumber(0)
 
 const filterAdjustedHoldings = (walletHoldings) => {
   return Object.entries(walletHoldings).reduce((filteredResult, [walletId, holdings]) => {
@@ -219,14 +216,14 @@ class Modify extends Component {
         if (rAcc.toSwap.greaterThan(0) && rVal.fiatToSwap.lessThan(0)) {
           remaining = rAcc.toSwap.plus(rVal.fiatToSwap)
           spent = remaining.lessThan(0) ? rAcc.toSwap : rAcc.toSwap.minus(remaining)
-          let sendUnits = toUnit(spent, sVal.price, sVal.decimals, true)
+          let sendAmount = toUnit(spent, sVal.price, sVal.decimals, true)
           // Round to a reasonable number of decimal places to improve readability on hardware wallet
           // screens. 8 decimals is more than enough to accurately represent $0.01 of any asset
-          sendUnits = sendUnits.round(8)
+          sendAmount = sendAmount.round(8)
           toReceive = rAcc.toReceive.concat({
             walletId: rVal.walletId,
             symbol: rVal.symbol,
-            sendUnits
+            sendAmount
           })
         } else {
           remaining = rAcc.toSwap
@@ -256,12 +253,12 @@ class Modify extends Component {
       // by adding the difference to the last swap that sends it
       const { walletId: fromWalletId, symbol: fromSymbol, emptyAsset, toReceive } = s
       if (emptyAsset) {
-        const sendUnitsTotal = toReceive.reduce((sum, { sendUnits }) => sum.plus(sendUnits), ZERO)
+        const sendAmountTotal = toReceive.reduce((sum, { sendAmount }) => sum.plus(sendAmount), ZERO)
         const assetHolding = walletHoldings[fromWalletId].find(({ symbol }) => symbol === fromSymbol)
-        const difference = assetHolding.balance.minus(sendUnitsTotal)
+        const difference = assetHolding.balance.minus(sendAmountTotal)
         const last = toReceive[toReceive.length - 1]
-        const newSendUnits = last.sendUnits.plus(difference)
-        const newLast = { ...last, sendUnits: newSendUnits }
+        const newsendAmount = last.sendAmount.plus(difference)
+        const newLast = { ...last, sendAmount: newsendAmount }
         const repairedToReceive = toReceive.slice(0, -1).concat([newLast])
         return { ...s, toReceive: repairedToReceive }
       }
@@ -276,7 +273,7 @@ class Modify extends Component {
         id: uuid(),
         sendWalletId: send.walletId,
         sendSymbol: send.symbol,
-        sendUnits: receive.sendUnits,
+        sendAmount: receive.sendAmount,
         receiveWalletId: receive.walletId,
         receiveSymbol: receive.symbol
       }))

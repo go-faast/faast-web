@@ -33,8 +33,8 @@ export default abstract class Wallet {
   /** Return true if only one address used (e.g. Ethereum), false multiple (e.g. Bitcoin) */
   abstract isSingleAddress(): boolean
 
-  /** Return a user identifier for the provided asset */
-  abstract _getUserId(asset: Asset, options: object): string
+  /** Return a list of all addresses used by this wallet */
+  abstract getUsedAddresses(): Promise<string[]>
 
   /** Return true if the asset is supported */
   abstract _isAssetSupported(asset: Asset): boolean
@@ -147,10 +147,6 @@ export default abstract class Wallet {
 
   getUnsendableAssetSymbols(): string[] {
     return this.getUnsendableAssets().map(({ symbol }) => symbol)
-  }
-
-  getUserId(aos: Asset | string, options: object = {}): string {
-    return this._getUserId(this.assertAssetSupported(aos), options)
   }
 
   /** Get a fresh address for the provided asset */
