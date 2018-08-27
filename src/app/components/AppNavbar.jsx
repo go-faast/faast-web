@@ -1,20 +1,20 @@
-import React from 'react';
+import React from 'react'
 import {
   Container,
   Collapse,
   Navbar,
-//  NavbarToggler,
   NavbarBrand,
   Nav,
   NavItem,
   NavLink,
   NavbarToggler
-} from 'reactstrap';
+} from 'reactstrap'
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
 import { setDisplayName, compose } from 'recompose'
+import { pick } from 'lodash'
 
 import config from 'Config'
 import { isDefaultPortfolioEmpty } from 'Selectors'
@@ -25,7 +25,7 @@ import AddressSearchForm from 'Components/AddressSearchForm'
 import FaastLogo from 'Img/faast-logo.png'
 
 const AppNavbar = ({ disablePortfolioLinks, routerPush, children, isExpanded, toggleExpanded, ...props }) => (
-  <Navbar {...props}>
+  <Navbar {...pick(props, Object.keys(Navbar.propTypes))}>
     <Container>
       <NavbarBrand tag={Link} to='/' className='mr-auto'>
         <Icon src={FaastLogo} height='1.5rem' width='1.5rem' inline className='mx-3'/>Faast Portfolio <sup className='beta-tag'>beta</sup>
