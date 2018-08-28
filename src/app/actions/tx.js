@@ -96,7 +96,7 @@ const newSendTxEventListeners = (txId) => (dispatch) => ({
     dispatch(txReceiptUpdated(txId, receipt))
   },
   onConfirmation: (conf) => {
-    // dispatch(txConfirmationsUpdated(txId, conf))
+    dispatch(txConfirmationsUpdated(txId, conf))
   }
 })
 

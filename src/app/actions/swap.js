@@ -1,8 +1,10 @@
+import { flatten } from 'lodash'
+
 import { newScopedCreateAction, idPayload } from 'Utilities/action'
 import log from 'Log'
 import walletService, { MultiWallet } from 'Services/Wallet'
-
 import Faast from 'Services/Faast'
+
 import { createTx, signTx, sendTx, updateTxReceipt, pollTxReceipt } from 'Actions/tx'
 import { defaultPortfolioId } from 'Actions/portfolio'
 
@@ -28,6 +30,7 @@ export const retrieveSwaps = (walletId) => (dispatch, getState) => {
   if (!wallet) { return }
   if (wallet.type.includes(MultiWallet.type)) {
     return Promise.all(wallet.nestedWalletIds.map((nestedWalletId) => dispatch(retrieveSwaps(nestedWalletId))))
+      .then(flatten)
   }
   return Faast.fetchOrders(walletId)
     .then((orders) => dispatch(swapsRetrieved(orders)).payload)
@@ -160,7 +163,7 @@ const updateOrderStatus = (swap) => (dispatch) => {
     .catch(log.error)
 }
 
-const isOrderFinalized = (order) => order && (order.status === 'complete' || order.status === 'failed')
+const isSwapFinalized = (swap) => swap && (swap.orderStatus === 'complete' || swap.orderStatus === 'failed')
 
 export const pollOrderStatus = (swap) => (dispatch) => {
   const { id, orderId } = swap
@@ -171,7 +174,7 @@ export const pollOrderStatus = (swap) => (dispatch) => {
   const orderStatusInterval = window.setInterval(() => {
     dispatch(updateOrderStatus(swap))
       .then((order) => {
-        if (isOrderFinalized(order)) {
+        if (isSwapFinalized(order)) {
           clearInterval(orderStatusInterval)
         }
       })
@@ -180,8 +183,10 @@ export const pollOrderStatus = (swap) => (dispatch) => {
   window.faast.intervals.orderStatus.push(orderStatusInterval)
 }
 
-export const restoreSwapPolling = (swap) => (dispatch, getState) => {
+export const restoreSwapPolling = (swapId) => (dispatch, getState) => {
+  let swap = getSwap(getState(),  swapId)
   if (!swap) {
+    log.debug(`restoreSwapPolling: could not find swap ${swapId}`)
     return
   }
   return Promise.all([
@@ -189,11 +194,11 @@ export const restoreSwapPolling = (swap) => (dispatch, getState) => {
     updateOrderStatus(swap)
   ]).then(() => {
     swap = getSwap(getState(), swap.id)
-    const { status, order } = swap
-    if (status.detailsCode === 'pending_receipt') {
+    const { orderStatus, tx } = swap
+    if (tx.sent && !tx.receipt) {
       dispatch(pollTxReceipt(swap.txId))
     }
-    if (!isOrderFinalized(order) && swap.tx.sent) {
+    if (!isSwapFinalized(swap) && (orderStatus !== 'awaiting deposit' || tx.sent)) {
       dispatch(pollOrderStatus(swap))
     }
   })

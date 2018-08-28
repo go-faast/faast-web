@@ -219,5 +219,5 @@ export const restoreLatestSwundlePolling = () => (dispatch, getState) => {
   if (!latestSwundle || latestSwundle.dismissed) {
     return
   }
-  latestSwundle.swaps.forEach((swap) => dispatch(restoreSwapPolling(swap)))
+  latestSwundle.swaps.forEach((swap) => dispatch(restoreSwapPolling(swap.id)))
 }
