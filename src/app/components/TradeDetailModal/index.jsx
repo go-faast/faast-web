@@ -34,7 +34,7 @@ export default compose(
   })
 )(({
   swap, toggle, ...props,
-}) => swap && (
+}) => !swap ? null : (
   <Modal
     size='lg' toggle={toggle} className='mt-6 mx-md-auto' contentClassName='p-0'
     {...pick(props, Object.keys(Modal.propTypes))}>
