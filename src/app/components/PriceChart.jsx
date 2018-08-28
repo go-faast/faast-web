@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import ReactHighstock from 'react-highcharts/ReactHighstock.src'
 import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
-import Faast from 'Services/Faast'
+import { getPriceChart } from 'Actions/request'
 import config from 'Config'
 import { merge } from 'lodash'
 
@@ -40,15 +41,15 @@ class PriceChart extends Component {
     if (!prevProps.chartOpen && this.props.chartOpen) {
       const priceChart = this.refs[`priceChart_${symbol}`].getChart()
       priceChart.showLoading()
-      Faast.fetchPriceChart(symbol)
-        .then((data) => {
-          priceChart.hideLoading()
-          priceChart.series[0].setData(data)
-        })
-        .catch(e => {
-          log.error(e)
-          toastr.error(`Error getting price chart data for ${symbol}`)
-        })
+      this.props.getPriceChart(symbol)
+      .then((data) => {
+        priceChart.hideLoading()
+        priceChart.series[0].setData(data)
+      })
+      .catch(e => {
+        log.error(e)
+        toastr.error(`Error getting price chart data for ${symbol}`)
+      })
     }
   }
 
@@ -58,8 +59,15 @@ class PriceChart extends Component {
 }
 
 PriceChart.propTypes = {
+  getPriceChart: PropTypes.func.isRequired,
   symbol: PropTypes.string.isRequired,
   chartOpen: PropTypes.bool
 }
 
-export default PriceChart
+const mapStateToProps = null
+
+const mapDispatchToProps = {
+  getPriceChart,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PriceChart)
