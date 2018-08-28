@@ -18,7 +18,7 @@ import { Amount, Balances, Transaction, Receipt } from '../types'
 
 const DEFAULT_GAS_PRICE = 21e9 // 21 Gwei
 const DEFAULT_GAS_LIMIT_ETH = toBigNumber(21000)
-const DEFAULT_GAS_LIMIT_TOKEN = toBigNumber(60000)
+const DEFAULT_GAS_LIMIT_TOKEN = toBigNumber(100000)
 
 function estimateGasLimit(txData: Partial<TxData>): Promise<BigNumber> {
   log.debug('estimateGasLimit', txData)
