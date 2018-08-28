@@ -151,7 +151,7 @@ const createSwundleTxs = (swundle, options) => (dispatch, getState) => {
 }
 
 export const initSwundle = (swundle) => (dispatch) => Promise.resolve().then(() => {
-  log.info('initSwundle', swundle.id)
+  log.debug('initSwundle', swundle.id)
   dispatch(initStarted(swundle.id))
   return Promise.resolve(swundle)
     .then((s) => dispatch(checkSufficientBalances(s)))
@@ -169,7 +169,7 @@ export const initSwundle = (swundle) => (dispatch) => Promise.resolve().then(() 
 
 export const createSwundle = (newSwaps) => (dispatch, getState) => {
   const id = uuid()
-  log.info('createSwundle', id, newSwaps)
+  log.debug('createSwundle', id, newSwaps)
   return Promise.all(newSwaps.map((swap) => dispatch(addSwap(swap))))
     .then((swaps) => {
       dispatch(swundleAdded({
