@@ -5,7 +5,7 @@ import config from 'Config'
 import web3 from 'Services/Web3'
 import { addHexPrefix, toHashId } from 'Utilities/helpers'
 import {
-  ZERO, Numerical, toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee, toNumber,
+  ZERO, BigNumber, Numerical, toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee, toNumber,
 } from 'Utilities/convert'
 import { ellipsize } from 'Utilities/display'
 import log from 'Utilities/log'
@@ -17,16 +17,21 @@ import { Asset } from 'Types'
 import { Amount, Balances, Transaction, Receipt } from '../types'
 
 const DEFAULT_GAS_PRICE = 21e9 // 21 Gwei
-const DEFAULT_GAS_LIMIT_ETH = 21000
-const DEFAULT_GAS_LIMIT_TOKEN = 60000
+const DEFAULT_GAS_LIMIT_ETH = toBigNumber(21000)
+const DEFAULT_GAS_LIMIT_TOKEN = toBigNumber(60000)
 
-function estimateGasLimit(txData: Partial<TxData>): Promise<number> {
+function estimateGasLimit(txData: Partial<TxData>): Promise<BigNumber> {
   log.debug('estimateGasLimit', txData)
-  try {
-    return web3.eth.estimateGas(txData)
-  } catch (e) {
+  const errorFallback = (e: any) => {
     log.warn('Error calling web3.eth.estimateGas, falling back to fixed limits', e)
     return Promise.resolve(txData.data ? DEFAULT_GAS_LIMIT_TOKEN : DEFAULT_GAS_LIMIT_ETH)
+  }
+  try {
+    return web3.eth.estimateGas(txData)
+      .then(toBigNumber)
+      .catch(errorFallback)
+  } catch (e) {
+    return errorFallback(e)
   }
 }
 
@@ -63,7 +68,7 @@ export default abstract class EthereumWallet extends Wallet {
   _getDefaultFeeRate() {
     return web3.eth.getGasPrice()
       .catch((e) => {
-        log.error('Failed to get ethereum dynamic fee, using default', e)
+        log.error(`Failed to get ethereum dynamic fee, using default of ${DEFAULT_GAS_PRICE} wei`, e)
         return DEFAULT_GAS_PRICE
       })
       .then((gasPrice) => ({

@@ -3,6 +3,7 @@ import EthereumjsUtil from 'ethereumjs-util'
 import padLeft from 'pad-left'
 import web3 from 'Services/Web3'
 import config from 'Config'
+import { addHexPrefix } from 'Utilities/helpers'
 
 if (!config.isDev) {
   BigNumber.config({ ERRORS: false })
@@ -81,7 +82,7 @@ export function toTxFee(gasLimit: Numerical, gasPrice: Numerical): BigNumber {
 
 export function toHex(value: Numerical): string {
   value = toBigNumber(value)
-  return web3.utils.toHex(value)
+  return addHexPrefix(value.toString(16))
 }
 
 export function toChecksumAddress(address: string): string {

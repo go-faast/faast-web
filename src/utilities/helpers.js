@@ -88,7 +88,7 @@ export const stripHexPrefix = (hex) => {
 
 export const addHexPrefix = (hex) => {
   if (typeof hex !== 'string') hex = String(hex)
-  if (hex.slice(0, 2) === '0x') return hex
+  if (hex.startsWith('0x')) return hex
   return `0x${hex}`
 }
 
