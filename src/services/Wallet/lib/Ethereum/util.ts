@@ -53,7 +53,7 @@ export function toUniversalReceipt(receipt: Web3Receipt): Receipt {
 /** Send the transaction and return a promise that resolves to the txHash after the
  * transaction is broadcast to the network.
  */
-export function web3SendTx(txData: Web3Tx | string, options: SendOptions = {}) {
+export function web3SendTx(txData: Web3Tx | string, options: SendOptions = {}): Promise<string> {
   return new Promise((resolve, reject) => {
     const { onTxHash, onReceipt, onConfirmation, onError } = options
     // sendSignedTransaction resolves when the tx receipt is available, which occurs after

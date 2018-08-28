@@ -36,9 +36,9 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
 
   _checkAvailable() { return checkAccountAvailable(this.address) }
 
-  _signAndSendTx(tx: Transaction, options: object): Promise<Partial<Transaction>> {
+  _signAndSendTx(tx: Transaction, options: object): Promise<Partial<EthTransaction>> {
     return web3SendTx(tx.txData, options)
-      .then(({ transactionHash }) => ({ hash: transactionHash }));
+      .then((hash) => ({ hash }));
   }
 
   _signTx(tx: EthTransaction): Promise<Partial<EthTransaction>> {

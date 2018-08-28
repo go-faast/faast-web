@@ -23,7 +23,7 @@ export default abstract class EthereumWallet extends Wallet {
   static type = 'EthereumWallet';
 
   constructor(public address: string, label?: string) {
-    super(address, label)
+    super(address.toLowerCase(), label)
   }
 
   getLabel() { return this.label || `Ethereum ${ellipsize(this.getAddress(), 6, 4)}` }
@@ -155,9 +155,9 @@ export default abstract class EthereumWallet extends Wallet {
       .then(toUniversalReceipt)
   }
 
-  _sendSignedTx(tx: EthTransaction, options: object): Promise<EthTransaction> {
+  _sendSignedTx(tx: EthTransaction, options: object): Promise<Partial<EthTransaction>> {
     return web3SendTx(tx.signedTxData.raw, options)
-      .then(({ transactionHash }) => ({ ...tx, hash: transactionHash }))
+      .then((hash) => ({ hash }))
   }
 
   _validateTxData(txData: TxData): TxData {
