@@ -32,8 +32,8 @@ const swapInitialState: SwapState = {
   // Fields from backend
   orderId: '', // backend swap_id
   orderStatus: '',
-  createdAt: new Date(0),
-  updatedAt: new Date(0),
+  createdAt: null,
+  updatedAt: null,
   depositAddress: '',
   sendWalletId: '',
   sendAmount: 0,
@@ -43,8 +43,8 @@ const swapInitialState: SwapState = {
   receiveSymbol: '',
   spotRate: undefined,
   rate: undefined,
-  rateLockedAt: new Date(0),
-  rateLockedUntil: new Date(0),
+  rateLockedAt: null,
+  rateLockedUntil: null,
   amountDeposited: undefined,
   amountWithdrawn: undefined,
   backendOrderId: undefined,

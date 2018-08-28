@@ -23,7 +23,8 @@ const StatusFooter = ({ className, children, ...props }) => (
 
 const priceChange = (date, asset) => {
   const { change1, change7d, change24 } = asset
-  const hoursSinceTrade = (Date.now() - date.getTime()) / 3600000
+  // falsey date => hasn't loaded yet so default to 1h change
+  const hoursSinceTrade = !date ? 0 : (Date.now() - date.getTime()) / 3600000
   const timespan = hoursSinceTrade <= 1 ? 'Last 1hr: ' : hoursSinceTrade >= 24 ? 'Last 7d: ' : 'Last 24hrs: '
   var priceChangeText = hoursSinceTrade <= 1 ? change1 : hoursSinceTrade >= 24 ? change7d : change24
   return (

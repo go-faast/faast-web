@@ -8,6 +8,8 @@ import { ZERO } from 'Utilities/convert'
 
 import { getAllSwaps } from './swap'
 
+const zeroDate = new Date(0)
+
 export const getSwundleState = ({ swundle }) => swundle
 
 const createSwundleExtender = (allSwaps) => (swundle) => {
@@ -27,7 +29,9 @@ export const getAllSwundles = createSelector(
   (allSwundles, allSwaps) => mapValues(allSwundles, createSwundleExtender(allSwaps)))
 export const getAllSwundlesArray = createSelector(
   getAllSwundles,
-  (allSwundles) => Object.values(allSwundles).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()) // Most recently created first
+  (allSwundles) => Object.values(allSwundles)
+    // Most recently created first
+    .sort((a, b) => (b.createdAt || zeroDate).getTime() - (a.createdAt || zeroDate).getTime())
 )
 export const getSwundle = createItemSelector(getAllSwundles, selectItemId, (allSwundles, id) => allSwundles[id])
 

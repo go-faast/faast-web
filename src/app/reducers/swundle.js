@@ -23,7 +23,7 @@ const swundleUnpersistedInitialState = {
 const swundleInitialState = {
   v: '2',
   id: '',
-  createdAt: new Date(0),
+  createdAt: null,
   swaps: [],
   dismissed: false,
   initialized: false,

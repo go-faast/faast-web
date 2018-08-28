@@ -68,7 +68,8 @@ export const getSwap = createItemSelector(
 export const getSentSwapsSorted = createSelector(
   getAllSwapsArray,
   (allSwaps) => allSwaps
-    .filter((s) => s.orderStatus !== 'awaiting deposit' || s.tx.sent)
+    .filter((s) => (s.orderStatus !== 'awaiting deposit' || s.tx.sent) && s.createdAt)
+    // Most recently created first
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 )
 
