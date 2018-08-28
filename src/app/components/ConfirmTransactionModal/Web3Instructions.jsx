@@ -17,7 +17,11 @@ const ETH_SYMBOL = '♦'
 
 const unitProps = (symbol) => symbol === 'ETH' ? { symbol: ETH_SYMBOL, prefixSymbol: true } : { symbol }
 
-const Web3Instructions = ({ tx: { outputs: [{ amount, address }], assetSymbol, feeAmount, feeSymbol, txData } }) => (
+const Web3Instructions = ({
+  tx: {
+    outputs: [{ amount, address }], assetSymbol, feeAmount, feeSymbol, txData, totalSent
+  }
+}) => (
   <div>
     <p>Please confirm the transaction. You should see the following information in your MetaMask.</p>
     <p><small>
@@ -58,7 +62,7 @@ const Web3Instructions = ({ tx: { outputs: [{ amount, address }], assetSymbol, f
           TOTAL
           <span className='font-weight-bold float-right'>
             {assetSymbol === 'ETH' ? (
-              <Units value={amount.plus(feeAmount)} precision={6} roundingType='dp' {...unitProps(assetSymbol)}/>
+              <Units value={totalSent} precision={6} roundingType='dp' {...unitProps(assetSymbol)}/>
             ) : (
               <Fragment>
                 <Units value={amount} precision={6} roundingType='dp' {...unitProps(assetSymbol)}/>
