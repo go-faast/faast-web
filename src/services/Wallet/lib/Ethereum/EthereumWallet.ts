@@ -17,6 +17,18 @@ import { Asset } from 'Types'
 import { Amount, Balances, Transaction, Receipt } from '../types'
 
 const DEFAULT_GAS_PRICE = 21e9 // 21 Gwei
+const DEFAULT_GAS_LIMIT_ETH = 21000
+const DEFAULT_GAS_LIMIT_TOKEN = 60000
+
+function estimateGasLimit(txData: Partial<TxData>): Promise<number> {
+  log.debug('estimateGasLimit', txData)
+  try {
+    return web3.eth.estimateGas(txData)
+  } catch (e) {
+    log.warn('Error calling web3.eth.estimateGas, falling back to fixed limits', e)
+    return Promise.resolve(txData.data ? DEFAULT_GAS_LIMIT_TOKEN : DEFAULT_GAS_LIMIT_ETH)
+  }
+}
 
 export default abstract class EthereumWallet extends Wallet {
 
@@ -101,7 +113,7 @@ export default abstract class EthereumWallet extends Wallet {
     gas?: Numerical, // Alias for gasLimit
   }): Promise<EthTransaction> {
     return Promise.resolve().then(() => {
-      log.debug(`Create transaction sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${address}`)
+      log.debug(`Creating transaction sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${address}`)
       const txData = {
         chainId: config.ethereumChainId,
         from: this.getAddress(),
@@ -133,7 +145,7 @@ export default abstract class EthereumWallet extends Wallet {
 
       const opts: Array<Numerical | Promise<Numerical>> = [
         customGasPrice || this._getDefaultFeeRate().then(({ rate }) => rate),
-        customGasLimit || web3.eth.estimateGas(txData),
+        customGasLimit || estimateGasLimit(txData),
         customNonce || web3.eth.getTransactionCount(txData.from),
       ]
       return Promise.all(opts).then(([gasPrice, gasLimit, nonce]) => ({
