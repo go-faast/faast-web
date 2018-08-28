@@ -38,12 +38,12 @@ class PriceChart extends Component {
   componentDidUpdate (prevProps) {
     const symbol = this.props.symbol
     if (!prevProps.chartOpen && this.props.chartOpen) {
-      const priceChart = this.refs[`priceChart_${symbol}`].getChart()
-      priceChart.showLoading()
       Faast.fetchPriceChart(symbol)
         .then((data) => {
-          priceChart.hideLoading()
+          const priceChart = this.refs[`priceChart_${symbol}`].getChart()
+          priceChart.showLoading()
           priceChart.series[0].setData(data)
+          priceChart.hideLoading()
         })
         .catch(e => {
           log.error(e)
