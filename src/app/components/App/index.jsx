@@ -6,7 +6,7 @@ import { hot } from 'react-hot-loader'
 import { withRouter } from 'react-router'
 
 import { init } from 'Actions/app'
-import { isAppReady, getAppError } from 'Selectors'
+import { isAppReady, getAppError, isDefaultPortfolioEmpty } from 'Selectors'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 
 // Import stylesheets here so they're noticed by HMR
@@ -22,6 +22,7 @@ export default compose(
   connect(createStructuredSelector({
     ready: isAppReady,
     error: getAppError,
+    hasNoWallets: isDefaultPortfolioEmpty,
   }), {
     initApp: init
   }),
