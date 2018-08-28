@@ -16,7 +16,7 @@ import reducers from './reducers'
 import { localStorageSetJson } from 'Utilities/storage'
 import { isAppReady } from 'Selectors'
 import config from 'Config'
-import { getAssetState, getTxState } from 'Selectors'
+import { getAssetState, getTxState, getSentSwapOrderTxIds } from 'Selectors'
 
 const { isDev, isIpfs } = config
 const createHistory = isIpfs ? createHashHistory : createBrowserHistory
@@ -45,15 +45,22 @@ const store = createStore(reducers, composeEnhancers(applyMiddleware(...middlewa
 
 let cachedAssets
 let cachedTxs
+let cachedSwapTxIds
 
 store.subscribe(throttle(() => {
   const state = store.getState()
   const appReady = isAppReady(state)
   if (appReady) {
+    const swapTxIds = getSentSwapOrderTxIds(state)
+    if (swapTxIds !== cachedSwapTxIds) {
+      localStorageSetJson('state:swap-txId', swapTxIds)
+      cachedSwapTxIds = swapTxIds
+    }
     const txState = getTxState(state)
     if (txState !== cachedTxs) {
       const allTxs = pickBy(txState, (tx) => tx.sent)
       localStorageSetJson('state:tx', allTxs)
+      cachedTxs = txState
     }
     const assetState = getAssetState(state)
     if (assetState !== cachedAssets) {

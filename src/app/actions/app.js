@@ -8,7 +8,7 @@ import { retrieveAssets, restoreAssets } from './asset'
 import { setSettings } from './settings'
 import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
 import { restoreTxs } from './tx'
-import { retrieveAllSwaps } from './swap'
+import { retrieveAllSwaps, restoreSwapTxIds } from './swap'
 
 const createAction = newScopedCreateAction(__filename)
 
@@ -34,6 +34,12 @@ export const restoreState = (dispatch) => Promise.resolve()
       dispatch(restoreTxs(txState))
     }
     return dispatch(retrieveAllSwaps())
+  })
+  .then(() => {
+    const swapTxIds = localStorageGetJson('state:swap-txId')
+    if (swapTxIds) {
+      dispatch(restoreSwapTxIds(swapTxIds))
+    }
   })
   .catch((e) => {
     log.error(e)

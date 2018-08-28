@@ -17,6 +17,7 @@ export const swapRemoved = createAction('REMOVED', (id) => ({ id }))
 export const swapUpdated = createAction('UPDATED', (id, data) => ({ id, ...data }))
 export const swapError = createAction('ERROR', (id, error, errorType = '') => ({ id, error, errorType }))
 export const swapOrderStatusUpdated = createAction('STATUS_UPDATED', (id, status) => ({ id, orderStatus: status }))
+export const swapTxIdUpdated = createAction('TX_ID_UPDATED', (id, txId) => ({ id, txId }))
 
 export const swapInitStarted = createAction('INIT_STARTED', idPayload)
 export const swapInitSuccess = createAction('INIT_SUCCESS', idPayload)
@@ -34,6 +35,10 @@ export const retrieveSwaps = (walletId) => (dispatch, getState) => {
 
 export const retrieveAllSwaps = () => (dispatch) => {
   return dispatch(retrieveSwaps(defaultPortfolioId))
+}
+
+export const restoreSwapTxIds = (swapIdToTxId) => (dispatch) => {
+  Object.entries(swapIdToTxId).forEach(([swapId, txId]) => dispatch(swapTxIdUpdated(swapId, txId)))
 }
 
 export const addSwap = (swap) => (dispatch) => {

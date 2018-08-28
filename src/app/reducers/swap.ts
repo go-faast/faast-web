@@ -6,7 +6,7 @@ import { SwapOrder } from 'Types'
 import { resetAll } from 'Actions/app'
 import {
   resetSwaps, swapsRetrieved, swapAdded, swapUpdated, swapRemoved, swapError,
-  swapInitStarted, swapInitSuccess, swapInitFailed,
+  swapInitStarted, swapInitSuccess, swapInitFailed, swapOrderStatusUpdated, swapTxIdUpdated,
 } from 'Actions/swap'
 
 type SwapState = SwapOrder & {
@@ -39,10 +39,10 @@ const swapInitialState: SwapState = {
   sendAmount: 0,
   sendSymbol: '',
   receiveAddress: '',
-  receiveAmount: 0,
+  receiveAmount: undefined,
   receiveSymbol: '',
-  spotRate: 0,
-  rate: 0,
+  spotRate: undefined,
+  rate: undefined,
   rateLockedAt: new Date(0),
   rateLockedUntil: new Date(0),
   amountDeposited: undefined,
@@ -75,6 +75,8 @@ export default createReducer({
   [swapUpdated]: (state, swap) => update(state, normalize(swap)),
   [swapError]: (state, swap) => update(state, normalize(swap)),
   [swapRemoved]: (state, { id }) => omit(state, id),
+  [swapOrderStatusUpdated]: update,
+  [swapTxIdUpdated]: update,
   [swapInitStarted]: (state, { id }) => update(state, {
     id,
     initializing: true,

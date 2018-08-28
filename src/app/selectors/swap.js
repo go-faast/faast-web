@@ -12,16 +12,18 @@ import { getAllTxs } from './tx'
 export const getSwapState = ({ swap }) => swap
 
 const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
-  const { sendSymbol, receiveSymbol, txId, rate } = swap
+  const { sendSymbol, receiveSymbol, txId, rate, receiveAddress } = swap
   const sendAsset = allAssets[sendSymbol]
   const receiveAsset = allAssets[receiveSymbol]
   const tx = allTxs[txId] || {}
   const fee = toBigNumber(0)
   let { receiveWalletId } = swap
   if (!receiveWalletId) {
-    const receiveAddress = swap.receiveAddress.startsWith('0x') ? swap.receiveAddress.toLowerCase() : swap.receiveAddress
     const receiveWallet = Object.values(allWallets)
-      .find((w) => !w.type.includes(MultiWallet.type) && w.usedAddresses.includes(receiveAddress))
+      .find((w) => !w.type.includes(MultiWallet.type)
+        && (w.usedAddresses.includes(receiveAddress)
+          || (swap.receiveAddress.startsWith('0x')
+            && w.usedAddresses.includes(receiveAddress.toLowerCase()))))
     if (receiveWallet) {
       receiveWalletId = receiveWallet.id
     }
@@ -68,4 +70,19 @@ export const getSentSwapsSorted = createSelector(
   (allSwaps) => allSwaps
     .filter((s) => s.orderStatus !== 'awaiting deposit' || s.tx.sent)
     .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+)
+
+export const getSentSwapOrderTxIds = createSelector(
+  getAllSwapsArray,
+  getAllTxs,
+  (allSwapsArray, allTxs) => allSwapsArray.reduce((byId, swap) => {
+    const tx = allTxs[swap.txId]
+    if (tx && tx.sent) {
+      return {
+        ...byId,
+        [swap.orderId]: tx.id,
+      }
+    }
+    return byId
+  }, {})
 )
