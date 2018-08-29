@@ -7,7 +7,7 @@ import { ZERO, BigNumber } from 'Utilities/convert'
 import display from 'Utilities/display'
 
 const ChangePercent = ({ tag: Tag, className, children: change }) => (
-  <Tag className={classNames(className, change.isNegative() ? 'text-negative' : 'text-positive')}>
+  <Tag className={classNames(className, change.isNegative() ? 'text-negative' : change > 0 ? 'text-positive' : null)}>
     {display.percentage(change, true)}
   </Tag>
 )
