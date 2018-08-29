@@ -5,6 +5,18 @@ import sha256 from 'hash.js/lib/hash/sha/256'
 import baseX from 'base-x'
 import urlJoin from 'url-join'
 
+const getDate = (item, dateField) => {
+  let d = typeof item === 'object' && item !== null && item[dateField]
+  if (!d) { return 0 }
+  if (!(d instanceof Date)) {
+    d = new Date(d)
+  }
+  return d.getTime()
+}
+
+export const dateSort = (items, dir, dateField) => items
+  .sort((a, b) => (dir === 'desc' ? -1 : 1) * (getDate(a, dateField) - getDate(b, dateField)))
+
 export const bs62 = baseX('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
 
 export const toHashId = (s) => bs62.encode(Buffer.from(sha256().update(s).digest().slice(0, 16)))

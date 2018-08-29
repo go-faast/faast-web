@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { mapValues } from 'Utilities/helpers'
+import { mapValues, dateSort } from 'Utilities/helpers'
 import { getSwapStatus, getSwapFriendlyError } from 'Utilities/swap'
 import { createItemSelector, selectItemId } from 'Utilities/selector'
 import { toBigNumber } from 'Utilities/convert'
@@ -57,20 +57,18 @@ export const getAllSwaps = createSelector(
   getAllAssets,
   getAllWallets,
   getAllTxs,
-  (allSwaps, allAssets, allWallets, allTxs) => mapValues(allSwaps, createSwapExtender(allAssets, allWallets, allTxs)))
-export const getAllSwapsArray = createSelector(getAllSwaps, Object.values)
+  (allSwaps, allAssets, allWallets, allTxs) => mapValues(allSwaps, createSwapExtender(allAssets, allWallets, allTxs))
+)
+
+export const getAllSwapsArray = createSelector(
+  getAllSwaps,
+  (allSwaps) => dateSort(Object.values(allSwaps), 'desc', 'createdAt')
+)
+
 export const getSwap = createItemSelector(
   getAllSwaps,
   selectItemId,
   (allSwaps, id) => allSwaps[id] || Object.values(allSwaps).find((s) => s.orderId === id)
-)
-
-export const getSentSwapsSorted = createSelector(
-  getAllSwapsArray,
-  (allSwaps) => allSwaps
-    .filter((s) => (s.orderStatus !== 'awaiting deposit' || s.tx.sent) && s.createdAt)
-    // Most recently created first
-    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
 )
 
 export const getSentSwapOrderTxIds = createSelector(

@@ -2,13 +2,11 @@ import { createSelector } from 'reselect'
 import { uniq, map } from 'lodash'
 
 import { createItemSelector, selectItemId } from 'Utilities/selector'
-import { mapValues } from 'Utilities/helpers'
+import { mapValues, dateSort } from 'Utilities/helpers'
 import { statusAllSwaps } from 'Utilities/swap'
 import { ZERO } from 'Utilities/convert'
 
 import { getAllSwaps } from './swap'
-
-const zeroDate = new Date(0)
 
 export const getSwundleState = ({ swundle }) => swundle
 
@@ -29,9 +27,7 @@ export const getAllSwundles = createSelector(
   (allSwundles, allSwaps) => mapValues(allSwundles, createSwundleExtender(allSwaps)))
 export const getAllSwundlesArray = createSelector(
   getAllSwundles,
-  (allSwundles) => Object.values(allSwundles)
-    // Most recently created first
-    .sort((a, b) => (b.createdAt || zeroDate).getTime() - (a.createdAt || zeroDate).getTime())
+  (allSwundles) => dateSort(Object.values(allSwundles), 'desc', 'createdAt')
 )
 export const getSwundle = createItemSelector(getAllSwundles, selectItemId, (allSwundles, id) => allSwundles[id])
 
