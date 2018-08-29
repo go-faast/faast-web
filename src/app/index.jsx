@@ -13,7 +13,7 @@ import { pickBy } from 'lodash'
 
 import App from 'Components/App'
 import reducers from './reducers'
-import { localStorageSetJson } from 'Utilities/storage'
+import { localStorageSetJson, localStorageGetJson } from 'Utilities/storage'
 import { isAppReady } from 'Selectors'
 import config from 'Config'
 import { getAssetState, getTxState, getSentSwapOrderTxIds } from 'Selectors'
@@ -51,8 +51,12 @@ store.subscribe(throttle(() => {
   const state = store.getState()
   const appReady = isAppReady(state)
   if (appReady) {
-    const swapTxIds = getSentSwapOrderTxIds(state)
+    let swapTxIds = getSentSwapOrderTxIds(state)
     if (swapTxIds !== cachedSwapTxIds) {
+      const existingSwapTxIds = localStorageGetJson('state:swap-txId')
+      if (existingSwapTxIds) {
+        swapTxIds = { ...existingSwapTxIds, ...swapTxIds }
+      }
       localStorageSetJson('state:swap-txId', swapTxIds)
       cachedSwapTxIds = swapTxIds
     }
