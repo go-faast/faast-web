@@ -9,6 +9,10 @@
     "Dan Wolfgram <dan@bitaccess.co>",
     "Matus Dubrava <matus@bitaccess.co>"
   ],
+  "engines": {
+    "node": "8",
+    "npm": "6"
+  },
   "license": "MIT",
   "files": [
     "dist/",
