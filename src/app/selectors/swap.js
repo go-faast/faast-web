@@ -12,7 +12,7 @@ import { getAllTxs } from './tx'
 export const getSwapState = ({ swap }) => swap
 
 const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
-  const { sendSymbol, receiveSymbol, txId, rate, receiveAddress } = swap
+  const { sendSymbol, receiveSymbol, txId, rate, receiveAddress, createdAt } = swap
   const sendAsset = allAssets[sendSymbol]
   const receiveAsset = allAssets[receiveSymbol]
   const tx = allTxs[txId] || {}
@@ -44,10 +44,18 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
     txSending: tx.sending,
     txSent: tx.sent,
     txSendingError: tx.sendingError,
+    contactSupport,
+    status
   }
+
+  const status = getSwapStatus(swap)
+  const timeSinceCreated = createdAt ? createdAt.getTime() : Date.now()
+  const contactSupport = ((Date.now() - timeSinceCreated) / 3600000 >= 4 && status.code == 'pending') ? true : false
+  
   return {
     ...swap,
-    status: getSwapStatus(swap),
+    status,
+    contactSupport,
     friendlyError: getSwapFriendlyError(swap),
   }
 }

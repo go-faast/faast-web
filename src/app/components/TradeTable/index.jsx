@@ -14,11 +14,12 @@ import CoinIcon from 'Components/CoinIcon'
 import { tradeTable, tradeCoinIcon } from './style'
 
 const TableRow = ({
-  swap: { sendAmount, sendSymbol, receiveAmount, receiveSymbol, rate, createdAt, status: { detailsCode } },
+  swap,
+  swap: { sendAmount, sendSymbol, receiveAmount, receiveSymbol, rate, createdAt },
   ...props
 }) => (
   <tr {...props}>
-    <td>{createStatusLabel(detailsCode)}</td>
+    <td>{createStatusLabel(swap)}</td>
     <td>{formatDate(createdAt, 'yyyy-MM-dd hh:mm:ss')}</td>
     <td><CoinIcon className={tradeCoinIcon} symbol={sendSymbol} size='sm' inline/> {sendSymbol} <i style={{ color: '#777' }} className='fa fa-long-arrow-right'/> <CoinIcon className={tradeCoinIcon} symbol={receiveSymbol} size='sm' inline/> {receiveSymbol}</td>
     <td><Units value={rate} precision={6}/></td>
@@ -53,13 +54,28 @@ const TradeTable = ({ swaps, handleClick }) => (
   </Table>
 )
 
-const createStatusLabel = (status) => {
-  const icon = status == 'order_complete' ? (
-    <i style={{ fontSize: '18px' }} className='text-success fa fa-check-circle'></i>
-  ) : (
-    <i className='fa fa-spinner fa-pulse'/>
-  )
-  return <Expandable shrunk={icon} expanded={status.replace('_',' ')}></Expandable>
+//NOTE: if we end up not filtering out other statuses this approach wont work
+const statusInfo = {
+  support: {
+    icon: <i className='fa fa-exclamation-circle text-warning'></i>,
+    expanded: 'There may be an issue. Contact support@faa.st for more info.'
+  },
+  complete: {
+    icon: <i style={{ fontSize: '18px' }} className='text-success fa fa-check-circle'></i>,
+    expanded: 'Order Complete'
+  },
+  processing: {
+    icon: <i className='fa fa-spinner fa-pulse'/>,
+    expanded: 'Processing'
+  }
+}
+
+const createStatusLabel = (swap) => {
+  const { contactSupport, status: { detailsCode } } = swap
+  const { support, complete, processing } = statusInfo
+  const status = contactSupport ? support : detailsCode == 'order_complete' ? complete : processing
+
+  return <Expandable shrunk={status.icon} expanded={status.expanded}></Expandable>
 }
 
 export default compose(
