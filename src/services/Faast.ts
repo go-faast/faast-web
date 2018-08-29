@@ -89,13 +89,35 @@ export const fetchOrderStatus = (swapOrderId: string) => fetchGet(`${apiUrl}/api
     throw new Error(errMsg)
   })
 
-export const fetchOrders = (walletId: string, page?: number, limit: number = 20): Promise<SwapOrder[]> =>
+const isOrderAbandoned = ({ orderStatus, createdAt, rateLockedUntil }: SwapOrder) =>
+  orderStatus === 'awaiting deposit' && (rateLockedUntil
+    ? ((rateLockedUntil.getTime() + (15 * 60 * 1000)) < Date.now()) // Fixed: Expiry and grace period have passed
+    : (Date.now() - createdAt.getTime() > 24 * 60 * 60 * 1000)) // Variable: Order is really old
+
+const isOrderActive = (o: SwapOrder) => !isOrderAbandoned(o)
+
+export const fetchOrders = (
+  walletId: string,
+  page: number = 1,
+  limit: number = 20,
+  _partialLimit: number = 0, // Used for recursive purposes only
+): Promise<SwapOrder[]> =>
   fetchGet(`${apiUrl}/api/v2/public/swaps`, {
     user_id: walletId,
     page,
     limit,
   }).then((r) => log.debugInline(`fetchOrders:${walletId}`, r))
-    .then((r) => r.orders.map(formatOrderResult))
+    .then((r) => {
+      const orders = r.orders.map(formatOrderResult)
+      const activeOrders = orders.filter(isOrderActive)
+      _partialLimit += activeOrders.length
+      if (_partialLimit < limit && r.total > page * limit) {
+        // retrieve more pages until we've found `limit` # of active orders
+        return fetchOrders(walletId, page + 1, limit, _partialLimit)
+          .then((moreOrders) => [...activeOrders, ...moreOrders])
+      }
+      return activeOrders
+    })
     .catch((e) => {
       log.error(e)
       throw e
