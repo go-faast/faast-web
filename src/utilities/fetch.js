@@ -1,13 +1,22 @@
 /* eslint-env browser */
 
 import log from 'Utilities/log'
+import qs from 'query-string'
 
-export const fetchJson = (method, path, body) => {
-  if (method !== 'POST') {
-    const querySeparator = path.includes('?') ? '&' : '?'
-    path = `${path}${querySeparator}cachebuster=${Date.now().toString()}`
+export const fetchJson = (method, path, body, params = {}) => {
+  let encodedParams = {}
+  if (path.includes('?')) {
+    const parsed = qs.parseUrl(path)
+    path = parsed.url
+    encodedParams = parsed.query || {}
   }
-  log.debug(`requesting ${method} ${path}`)
+  const allParams = {
+    ...(method === 'GET' ? { '_': Date.now() } : {}),
+    ...encodedParams,
+    ...params,
+  }
+  const allParamsString = qs.stringify(allParams)
+  const fullPath = path + (allParamsString ? '?' + allParamsString : '')
   const options = {
     method: method,
     headers: {
@@ -26,7 +35,8 @@ export const fetchJson = (method, path, body) => {
     options.body = JSON.stringify(newBody)
     options.headers['Content-Type'] = 'application/json'
   }
-  return fetch(path, options)
+  log.debug(`requesting ${method} ${fullPath}`)
+  return fetch(fullPath, options)
   .then((response) => {
     try {
       return response.json()
@@ -42,8 +52,8 @@ export const fetchJson = (method, path, body) => {
   })
 }
 
-export const fetchGet = (path) => fetchJson('GET', path)
+export const fetchGet = (path, params) => fetchJson('GET', path, null, params)
 
-export const fetchPost = (path, body) => fetchJson('POST', path, body)
+export const fetchPost = (path, body, params) => fetchJson('POST', path, body, params)
 
-export const fetchDelete = (path, body) => fetchJson('DELETE', path, body)
+export const fetchDelete = (path, body, params) => fetchJson('DELETE', path, body, params)

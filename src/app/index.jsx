@@ -13,10 +13,10 @@ import { pickBy } from 'lodash'
 
 import App from 'Components/App'
 import reducers from './reducers'
-import { saveToAddress } from 'Utilities/storage'
-import { getDefaultPortfolio, isAppReady } from 'Selectors'
+import { localStorageSetJson, localStorageGetJson } from 'Utilities/storage'
+import { isAppReady } from 'Selectors'
 import config from 'Config'
-import { getSwundleState, getSwapState, getAssetState, getTxState } from 'Selectors'
+import { getAssetState, getTxState, getSentSwapOrderTxIds } from 'Selectors'
 
 const { isDev, isIpfs } = config
 const createHistory = isIpfs ? createHashHistory : createBrowserHistory
@@ -44,28 +44,32 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const store = createStore(reducers, composeEnhancers(applyMiddleware(...middleware)))
 
 let cachedAssets
+let cachedTxs
+let cachedSwapTxIds
 
 store.subscribe(throttle(() => {
   const state = store.getState()
   const appReady = isAppReady(state)
   if (appReady) {
-    const wallet = getDefaultPortfolio(state)
-    if (wallet) {
-      const { settings } = state
-      const allSwundles = pickBy(getSwundleState(state), (s) => s.sent)
-      const allTxs = pickBy(getTxState(state), (tx) => tx.sent)
-      const allSwaps = pickBy(getSwapState(state), (s) => Boolean(allTxs[s.txId]))
-      saveToAddress(wallet.id, {
-        swundle: allSwundles,
-        swap: allSwaps,
-        tx: allTxs,
-        settings: settings
-      })
-      const assets = getAssetState(state)
-      if (assets !== cachedAssets) {
-        saveToAddress('cache:asset', assets)
-        cachedAssets = assets
+    let swapTxIds = getSentSwapOrderTxIds(state)
+    if (swapTxIds !== cachedSwapTxIds) {
+      const existingSwapTxIds = localStorageGetJson('state:swap-txId')
+      if (existingSwapTxIds) {
+        swapTxIds = { ...existingSwapTxIds, ...swapTxIds }
       }
+      localStorageSetJson('state:swap-txId', swapTxIds)
+      cachedSwapTxIds = swapTxIds
+    }
+    const txState = getTxState(state)
+    if (txState !== cachedTxs) {
+      const allTxs = pickBy(txState, (tx) => tx.sent)
+      localStorageSetJson('state:tx', allTxs)
+      cachedTxs = txState
+    }
+    const assetState = getAssetState(state)
+    if (assetState !== cachedAssets) {
+      localStorageSetJson('state:asset', assetState)
+      cachedAssets = assetState
     }
   }
 }, 1000))

@@ -93,35 +93,3 @@ export const localStorageRemove = (key) => storageRemove('localStorage', key)
 export const localStorageClear = () => storageClear('localStorage')
 
 export const localStorageForEach = (cb) => storageForEach('localStorage', cb)
-
-export const restoreFromAddress = (address) => {
-  if (!address) return undefined
-
-  try {
-    const serialized = localStorageGet(address)
-    if (serialized === null) return undefined
-
-    return JSON.parse(serialized)
-  } catch (err) {
-    return undefined
-  }
-}
-
-export const saveToAddress = (address, newState) => {
-  if (!address) return
-
-  const currentState = restoreFromAddress(address)
-  try {
-    const serialized = JSON.stringify(Object.assign({}, currentState, newState))
-    localStorageSet(address, serialized)
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-export const clearSwap = (address) => {
-  if (!address) return
-
-  const currentState = restoreFromAddress(address)
-  localStorageSet(address, JSON.stringify(Object.assign({}, currentState, { swap: [] })))
-}

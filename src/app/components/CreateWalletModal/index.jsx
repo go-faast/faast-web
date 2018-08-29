@@ -75,12 +75,14 @@ class CreateWalletModal extends Component {
     const walletName = this.getWalletName()
 
     Promise.resolve(this.state.createdWallet)
-      .then((createdWallet) => createdWallet.getFileName(password)
-        .then((fileName) => this.setState({
+      .then((createdWallet) => {
+        const fileName = createdWallet.getFileName(password)
+        this.setState({
           view: 'download',
           createdWallet: createdWallet.encrypt(password),
           fileName
-        })))
+        })
+      })
       .catch((e) => {
         log.error('handleCreatePassword', e)
         toastr.error(`Error creating ${walletName}`)

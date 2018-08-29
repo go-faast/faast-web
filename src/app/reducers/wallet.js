@@ -4,7 +4,8 @@ import { omit } from 'lodash'
 import { resetAll } from 'Actions/app'
 import {
   walletAdded, walletUpdated, walletRemoved, allWalletsRemoved, 
-  walletBalancesUpdating, walletBalancesUpdated, walletBalancesError
+  walletBalancesUpdating, walletBalancesUpdated, walletBalancesError,
+  walletUsedAddressesUpdated,
 } from 'Actions/wallet'
 import { createUpserter, createUpdater } from 'Utilities/helpers'
 
@@ -21,6 +22,7 @@ const walletInitialState = {
   isSignTxSupported: false,
   supportedAssets: [],
   nestedWalletIds: [],
+  usedAddresses: [],
   balances: {},
   balancesUpdating: false,
   balancesLoaded: false,
@@ -53,4 +55,8 @@ export default createReducer({
     id,
     balancesError: error,
   }),
+  [walletUsedAddressesUpdated]: (state, { id, usedAddresses }) => updateWallet(state, {
+    id,
+    usedAddresses
+  })
 }, initialState)

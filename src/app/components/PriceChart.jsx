@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import ReactHighstock from 'react-highcharts/ReactHighstock.src'
 import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
-import Faast from 'Services/Faast'
+import { fetchPriceChart } from 'Services/Faast'
 import config from 'Config'
 import { merge } from 'lodash'
 
@@ -38,10 +39,12 @@ class PriceChart extends Component {
   componentDidUpdate (prevProps) {
     const symbol = this.props.symbol
     if (!prevProps.chartOpen && this.props.chartOpen) {
-      Faast.fetchPriceChart(symbol)
+      const priceChart = this.refs[`priceChart_${symbol}`].getChart()
+      //set data to blank so if multiple charts open doesn't show previous data while loading
+      priceChart.series[0].setData([])
+      priceChart.showLoading()
+      fetchPriceChart(symbol)
         .then((data) => {
-          const priceChart = this.refs[`priceChart_${symbol}`].getChart()
-          priceChart.showLoading()
           priceChart.series[0].setData(data)
           priceChart.hideLoading()
         })
@@ -62,4 +65,4 @@ PriceChart.propTypes = {
   chartOpen: PropTypes.bool
 }
 
-export default PriceChart
+export default connect()(PriceChart)

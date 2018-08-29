@@ -50,6 +50,12 @@ export const getWallet = createItemSelector(
 export const getAllWallets = (state) => mapValues(getWalletState(state), (_, id) => getWallet(state, id))
 export const getAllWalletsArray = createSelector(getAllWallets, Object.values)
 export const getAllWalletIds = createSelector(getAllWallets, Object.keys)
+export const getLeafWalletIds = createSelector(
+  getAllWalletsArray,
+  (wallets) => wallets
+    .filter(({ type }) => !type.includes(MultiWallet.type))
+    .map(({ id }) => id)
+)
 
 export const getWalletParents = createItemSelector(
   getAllWallets,

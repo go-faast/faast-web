@@ -5,7 +5,7 @@ import config from 'Config'
 import web3 from 'Services/Web3'
 import { addHexPrefix, toHashId } from 'Utilities/helpers'
 import {
-  ZERO, Numerical, toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee, toNumber,
+  ZERO, BigNumber, Numerical, toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee, toNumber,
 } from 'Utilities/convert'
 import { ellipsize } from 'Utilities/display'
 import log from 'Utilities/log'
@@ -17,19 +17,30 @@ import { Asset } from 'Types'
 import { Amount, Balances, Transaction, Receipt } from '../types'
 
 const DEFAULT_GAS_PRICE = 21e9 // 21 Gwei
+const DEFAULT_GAS_LIMIT_ETH = toBigNumber(21000)
+const DEFAULT_GAS_LIMIT_TOKEN = toBigNumber(100000)
 
-function addressToId(address: string): string {
-  return toHashId(address.toLowerCase())
+function estimateGasLimit(txData: Partial<TxData>): Promise<BigNumber> {
+  log.debug('estimateGasLimit', txData)
+  const errorFallback = (e: any) => {
+    log.warn('Error calling web3.eth.estimateGas, falling back to fixed limits', e)
+    return Promise.resolve(txData.data ? DEFAULT_GAS_LIMIT_TOKEN : DEFAULT_GAS_LIMIT_ETH)
+  }
+  try {
+    return web3.eth.estimateGas(txData)
+      .then(toBigNumber)
+      .catch(errorFallback)
+  } catch (e) {
+    return errorFallback(e)
+  }
 }
 
 export default abstract class EthereumWallet extends Wallet {
 
   static type = 'EthereumWallet';
 
-  static addressToId = addressToId;
-
   constructor(public address: string, label?: string) {
-    super(addressToId(address), label)
+    super(address.toLowerCase(), label)
   }
 
   getLabel() { return this.label || `Ethereum ${ellipsize(this.getAddress(), 6, 4)}` }
@@ -38,9 +49,7 @@ export default abstract class EthereumWallet extends Wallet {
 
   isSingleAddress() { return true }
 
-  _getUserId(asset: Asset): string {
-    return this.getAddress()
-  }
+  getUsedAddresses() { return Promise.resolve([this.getAddress()]) }
 
   _isAggregateTransactionSupported() { return false }
 
@@ -59,7 +68,7 @@ export default abstract class EthereumWallet extends Wallet {
   _getDefaultFeeRate() {
     return web3.eth.getGasPrice()
       .catch((e) => {
-        log.error('Failed to get ethereum dynamic fee, using default', e)
+        log.error(`Failed to get ethereum dynamic fee, using default of ${DEFAULT_GAS_PRICE} wei`, e)
         return DEFAULT_GAS_PRICE
       })
       .then((gasPrice) => ({
@@ -109,7 +118,7 @@ export default abstract class EthereumWallet extends Wallet {
     gas?: Numerical, // Alias for gasLimit
   }): Promise<EthTransaction> {
     return Promise.resolve().then(() => {
-      log.debug(`Create transaction sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${address}`)
+      log.debug(`Creating transaction sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${address}`)
       const txData = {
         chainId: config.ethereumChainId,
         from: this.getAddress(),
@@ -141,7 +150,7 @@ export default abstract class EthereumWallet extends Wallet {
 
       const opts: Array<Numerical | Promise<Numerical>> = [
         customGasPrice || this._getDefaultFeeRate().then(({ rate }) => rate),
-        customGasLimit || web3.eth.estimateGas(txData),
+        customGasLimit || estimateGasLimit(txData),
         customNonce || web3.eth.getTransactionCount(txData.from),
       ]
       return Promise.all(opts).then(([gasPrice, gasLimit, nonce]) => ({
@@ -163,9 +172,9 @@ export default abstract class EthereumWallet extends Wallet {
       .then(toUniversalReceipt)
   }
 
-  _sendSignedTx(tx: EthTransaction, options: object): Promise<EthTransaction> {
+  _sendSignedTx(tx: EthTransaction, options: object): Promise<Partial<EthTransaction>> {
     return web3SendTx(tx.signedTxData.raw, options)
-      .then(({ transactionHash }) => ({ ...tx, hash: transactionHash }))
+      .then((hash) => ({ hash }))
   }
 
   _validateTxData(txData: TxData): TxData {

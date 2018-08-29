@@ -13,7 +13,7 @@ import { Asset } from 'Types'
 import { TransactionOutput, Transaction, Amount, FeeRate, Receipt } from '../types'
 import { BtcTransaction } from './types'
 
-const USER_ID_DERIVATION_PATH = [26, 5, 172, 179] // Arbitrary bip32 path used to identify an HD wallet
+const ID_DERIVATION_PATH = [26, 5, 172, 179] // Arbitrary bip32 path used to identify an HD wallet
 const DEFAULT_FEE_PER_BYTE = 10
 
 export default abstract class BitcoinWallet extends Wallet {
@@ -21,13 +21,11 @@ export default abstract class BitcoinWallet extends Wallet {
   static type = 'BitcoinWallet'
 
   assetSymbol = 'BTC'
-  userId: string
   _bitcore: Bitcore
-  _latestDiscoveryResult: object
+  _latestDiscoveryResult: AccountInfo
 
-  constructor(public xpub: string, public derivationPath: string, userId?: string, label?: string) {
-    super(toHashId(xpub), label)
-    this.userId = userId || deriveAddress(this.xpub, USER_ID_DERIVATION_PATH, networks.BTC)
+  constructor(public xpub: string, public derivationPath: string, label?: string) {
+    super(deriveAddress(xpub, ID_DERIVATION_PATH, networks.BTC), label)
     this._bitcore = getBitcore(this.assetSymbol)
     this._latestDiscoveryResult = null
   }
@@ -39,10 +37,6 @@ export default abstract class BitcoinWallet extends Wallet {
   getLabel() { return this.label || `Bitcoin ${ellipsize(this.xpub, 8, 4)}` }
 
   isSingleAddress() { return false }
-
-  _getUserId(asset: Asset) {
-    return this.userId
-  }
 
   _isAssetSupported(asset: Asset) {
     return asset && asset.symbol === this.assetSymbol
@@ -63,7 +57,7 @@ export default abstract class BitcoinWallet extends Wallet {
     return discoveryPromise
   }
 
-  _getDiscoveryResult(): AccountInfo {
+  _getDiscoveryResult(): Promise<AccountInfo> {
     return Promise.resolve(this._latestDiscoveryResult)
       .then((result) => {
         if (!result) {
@@ -71,6 +65,11 @@ export default abstract class BitcoinWallet extends Wallet {
         }
         return result
       })
+  }
+
+  getUsedAddresses() {
+    return this._getDiscoveryResult()
+      .then((result) => result.usedAddresses.map(({ address }: { address: string }) => address))
   }
 
   _getFreshAddress(asset: Asset, { index = 0 }) {

@@ -19,7 +19,6 @@ interface SerializedWallet {
   providerName?: string,
   xpub?: string,
   keystore?: object,
-  userId?: string,
 }
 
 const parseWalletObject = (wallet: Wallet | SerializedWallet): Wallet | null => {
@@ -40,8 +39,8 @@ const parseWalletObject = (wallet: Wallet | SerializedWallet): Wallet | null => 
     case 'EthereumWalletViewOnly': return new EthereumWalletViewOnly(wallet.address, label)
     case 'EthereumWalletTrezor': return new EthereumWalletTrezor(wallet.address, wallet.derivationPath, label)
     case 'EthereumWalletLedger': return new EthereumWalletLedger(wallet.address, wallet.derivationPath, label)
-    case 'BitcoinWalletTrezor': return new BitcoinWalletTrezor(wallet.xpub, wallet.derivationPath, wallet.userId, label)
-    case 'BitcoinWalletLedger': return new BitcoinWalletLedger(wallet.xpub, wallet.derivationPath, wallet.userId, label)
+    case 'BitcoinWalletTrezor': return new BitcoinWalletTrezor(wallet.xpub, wallet.derivationPath, label)
+    case 'BitcoinWalletLedger': return new BitcoinWalletLedger(wallet.xpub, wallet.derivationPath, label)
     default: log.error(`Cannot parse wallet: invalid type '${type}'`, wallet)
   }
   return null

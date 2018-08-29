@@ -2,30 +2,45 @@ import React, { Fragment } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
 import Connect from 'Components/Connect'
 import TradeHistory from 'Components/TradeHistory'
-import WalletClosed from 'Components/WalletClosed'
 import WalletOpened from 'Components/WalletOpened'
 import Dashboard from 'Components/Dashboard'
 import Modify from 'Components/Modify'
 import SearchResults from 'Components/SearchResults'
 import ModalRoute from 'Components/ModalRoute'
 import TradeDetailModal from 'Components/TradeDetailModal'
-import routes from 'Routes'
-import { root, dashboard, swap, connect, viewOnlyAddress, tradeHistory, tradeDetail } from 'Routes'
+import {
+  root, dashboard, swap, connect, viewOnlyAddress,
+  tradeHistory, tradeDetail
+} from 'Routes'
 
-const AppView = () => (
+const AppView = ({ hasNoWallets }) => (
   <Fragment>
     <Switch>
-      <WalletClosed exact path={root.path}/>
+      <Route exact path={root.path} render={() => (
+        hasNoWallets
+          ? (<Redirect to='/connect' />)
+          : (<Redirect to='/dashboard' />)
+      )} />
+
+      {/* Routes requiring a connected wallet */}
       <WalletOpened path={dashboard.path} component={Dashboard}/>
       <WalletOpened path={swap.path} component={Modify}/>
+      <WalletOpened path={tradeHistory.path} component={TradeHistory}/>
+
+      {/* Routes that don't require a connected wallet */}
       <Route path={connect.path} component={Connect}/>
       <Route path={viewOnlyAddress.path} component={SearchResults}/>
-      <Route path={tradeHistory.path} component={TradeHistory}/>
+
       {/* Legacy routes */}
       <Redirect exact from='/balances' to={dashboard.path}/>
       <Redirect exact from='/modify' to={swap.path}/>
+
+      {/* Fallback for unknown routes */}
+      <Redirect to={dashboard.path}/>
     </Switch>
-    <ModalRoute closePath={routes.tradeHistory.path} path={tradeDetail.path} render={(props) => (
+
+    {/* Routes that show a modal over one of the above pages */}
+    <ModalRoute closePath={tradeHistory.path} path={tradeDetail.path} render={(props) => (
       <TradeDetailModal tradeId={props.match.params.tradeId} {...props}/>
     )}/>
   </Fragment>

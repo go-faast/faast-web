@@ -8,19 +8,13 @@ const statusComplete = createStatus('complete', 'Complete', 'text-success')
 
 export const getSwapStatus = (swap) => {
   const {
-    error, rate, orderId, orderStatus, order, tx
+    error, rate, orderStatus, tx
   } = swap
   if (error) {
     if (isString(error) && error.toLowerCase().includes('insufficient funds')) {
       return statusFailed('insufficient_funds', 'Insufficient funds')
     }
     return statusFailed('error', getSwapFriendlyError(swap))
-  }
-  if (!(order && orderId)) {
-    return statusPending('creating_order', 'Creating order')
-  }
-  if (order.error) {
-    return statusFailed('order_error', 'An error occured with this order, please contact support@faa.st')
   }
   if (orderStatus === 'failed' || orderStatus === 'cancelled') {
     return statusFailed(`order_${orderStatus}`, 'Order was unsuccessful, please contact support@faa.st')

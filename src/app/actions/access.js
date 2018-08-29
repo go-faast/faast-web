@@ -17,7 +17,7 @@ import {
 import { getCurrentPortfolio, getWallet } from 'Selectors'
 import { addWallet, addNestedWallet, updateWalletBalances } from 'Actions/wallet'
 import { defaultPortfolioId } from 'Actions/portfolio'
-import { restoreSwapsForWallet } from 'Actions/swundle'
+import { retrieveSwaps } from 'Actions/swap'
 
 /** Add a wallet, add it to the current portfolio, and restore swap status */
 export const openWallet = (walletPromise) => (dispatch, getState) => Promise.resolve(walletPromise)
@@ -43,7 +43,7 @@ export const openWallet = (walletPromise) => (dispatch, getState) => Promise.res
         }
         dispatch(updateWalletBalances(walletId))
       })
-      .then(() => dispatch(restoreSwapsForWallet(walletId)))
+      .then(() => dispatch(retrieveSwaps(walletId)))
   })
 
 /** Do everything in openWallet and then redirect to the dashboard */

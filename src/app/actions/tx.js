@@ -27,6 +27,10 @@ export const txSendingStart = createAction('SENDING_START', (id) => ({ id }))
 export const txSendingSuccess = createAction('SENDING_SUCCESS', (updatedTx) => updatedTx)
 export const txSendingFailed = createAction('SENDING_FAILED', (id, errorMessage) => ({ id, sendingError: errorMessage }))
 
+export const restoreTxs = (txs) => (dispatch) => {
+  dispatch(txsRestored(txs))
+}
+
 const newTxErrorHandler = (dispatch, tx, methodName, failureAction, filterMessage = identity) => (e) => {
   log.error(`${methodName} error for tx ${tx.id}`, e)
   const message = filterMessage(e.message)

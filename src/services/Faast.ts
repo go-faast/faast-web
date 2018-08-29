@@ -3,11 +3,11 @@ import { filterErrors } from 'Utilities/helpers'
 import log from 'Log'
 import config from 'Config'
 
-import { Asset } from 'Types'
+import { Asset, SwapOrder } from 'Types'
 
 const { siteUrl, apiUrl } = config
 
-function fetchAssets(): Promise<Asset[]> {
+export function fetchAssets(): Promise<Asset[]> {
   return fetchGet(`${apiUrl}/api/v1/public/currencies`)
     .then((assets: Array<Partial<Asset>>) => assets.filter((asset) => {
       if (!asset.symbol) {
@@ -27,74 +27,101 @@ function fetchAssets(): Promise<Asset[]> {
     }))
 }
 
-const fetchAssetPrice = (symbol: string) => fetchGet(`${siteUrl}/app/portfolio-price/${symbol}`)
+export const fetchAssetPrice = (symbol: string) => fetchGet(`${siteUrl}/app/portfolio-price/${symbol}`)
 
-const fetchAssetPrices = () => fetchGet(`${siteUrl}/app/portfolio-price`)
+export const fetchAssetPrices = () => fetchGet(`${siteUrl}/app/portfolio-price`)
 
-const fetchPriceChart = (symbol: string) => fetchGet(`${siteUrl}/app/portfolio-chart/${symbol}`)
+export const fetchPriceChart = (symbol: string) => fetchGet(`${siteUrl}/app/portfolio-chart/${symbol}`)
 
-const fetchMarketInfo = (pair: string) => fetchGet(`${apiUrl}/api/v1/public/marketinfo/${pair}`)
-  .then((result) => log.debugInline('getMarketInfo', result))
+export const fetchMarketInfo = (pair: string) => fetchGet(`${apiUrl}/api/v1/public/marketinfo/${pair}`)
+  .then((result) => log.debugInline('fetchMarketInfo', result))
 
-const postFixedPriceSwap = (
+const formatOrderResult = (r: any): SwapOrder => ({
+  orderId: r.swap_id,
+  orderStatus: r.status,
+  createdAt: r.created_at ? new Date(r.created_at) : null,
+  updatedAt: r.updated_at ? new Date(r.updated_at) : null,
+  depositAddress: r.deposit_address,
+  sendWalletId: r.user_id,
+  sendAmount: r.deposit_amount,
+  sendSymbol: r.deposit_currency,
+  receiveAddress: r.withdrawal_address,
+  receiveAmount: r.withdrawal_amount,
+  receiveSymbol: r.withdrawal_currency,
+  spotRate: r.spot_price,
+  rate: r.price,
+  rateLockedAt: r.price_locked_at ? new Date(r.price_locked_at) : null,
+  rateLockedUntil: r.price_locked_until ? new Date(r.price_locked_until) : null,
+  amountDeposited: r.amount_deposited,
+  amountWithdrawn: r.amount_withdrawn,
+  backendOrderId: r.order_id,
+  backendOrderState: r.order_state,
+  receiveTxId: r.txId,
+})
+
+export const postFixedPriceSwap = (
   sendAmount: number,
   sendSymbol: string,
   receiveAddress: string,
   receiveSymbol: string,
   refundAddress: string,
   userId: string,
-): Promise<{
-  orderId: string,
-  status: string,
-  createdAt: Date,
-  depositAddress: string,
-  sendUserId: string,
-  sendAmount: number,
-  sendSymbol: string,
-  receiveAddress: string,
-  receiveAmount: number,
-  receiveSymbol: string,
-  spotRate: number,
-  rate: number,
-  rateLockedAt: Date,
-  rateLockedUntil: Date,
-}> => fetchPost(`${apiUrl}/api/v2/public/swap`, {
+): Promise<SwapOrder> => fetchPost(`${apiUrl}/api/v2/public/swap`, {
   user_id: userId,
   deposit_amount: sendAmount,
   deposit_currency: sendSymbol,
   withdrawal_address: receiveAddress,
   withdrawal_currency: receiveSymbol,
   refund_address: refundAddress,
-}).then((r) => log.debugInline(r))
-  .then((r) => ({
-    orderId: r.swap_id,
-    status: r.status,
-    createdAt: new Date(r.created_at),
-    depositAddress: r.deposit_address,
-    sendUserId: r.user_id,
-    sendAmount: r.deposit_amount,
-    sendSymbol: r.deposit_currency,
-    receiveAddress: r.withdrawal_address,
-    receiveAmount: r.withdrawal_amount,
-    receiveSymbol: r.withdrawal_currency,
-    spotRate: r.spot_price,
-    rate: r.price,
-    rateLockedAt: new Date(r.price_locked_at),
-    rateLockedUntil: new Date(r.price_locked_until),
-  }))
+}).then((r) => log.debugInline('postFixedPriceSwap', r))
+  .then(formatOrderResult)
   .catch((err) => {
     log.error(err)
     const errMsg = filterErrors(err)
     throw new Error(errMsg)
   })
 
-const fetchOrderStatus = (swapOrderId: string) => fetchGet(`${apiUrl}/api/v1/public/txStat/${swapOrderId}`)
-  .then((result) => log.debugInline('getOrderStatus', result))
+export const fetchOrderStatus = (swapOrderId: string) => fetchGet(`${apiUrl}/api/v1/public/txStat/${swapOrderId}`)
+  .then((result) => log.debugInline('fetchOrderStatus', result))
   .catch((err) => {
     log.error(err)
     const errMsg = filterErrors(err)
     throw new Error(errMsg)
   })
+
+const isOrderAbandoned = ({ orderStatus, createdAt, rateLockedUntil }: SwapOrder) =>
+  orderStatus === 'awaiting deposit' && (rateLockedUntil
+    ? ((rateLockedUntil.getTime() + (15 * 60 * 1000)) < Date.now()) // Fixed: Expiry and grace period have passed
+    : (Date.now() - createdAt.getTime() > 24 * 60 * 60 * 1000)) // Variable: Order is really old
+
+const isOrderActive = (o: SwapOrder) => !isOrderAbandoned(o)
+
+export const fetchOrders = (
+  walletId: string,
+  page: number = 1,
+  limit: number = 20,
+  _partialLimit: number = 0, // Used for recursive purposes only
+): Promise<SwapOrder[]> =>
+  fetchGet(`${apiUrl}/api/v2/public/swaps`, {
+    user_id: walletId,
+    page,
+    limit,
+  }).then((r) => log.debugInline(`fetchOrders:${walletId}`, r))
+    .then((r) => {
+      const orders = r.orders.map(formatOrderResult)
+      const activeOrders = orders.filter(isOrderActive)
+      _partialLimit += activeOrders.length
+      if (_partialLimit < limit && r.total > page * limit) {
+        // retrieve more pages until we've found `limit` # of active orders
+        return fetchOrders(walletId, page + 1, limit, _partialLimit)
+          .then((moreOrders) => [...activeOrders, ...moreOrders])
+      }
+      return activeOrders
+    })
+    .catch((e) => {
+      log.error(e)
+      throw e
+    })
 
 export default {
   fetchAssets,
@@ -104,4 +131,5 @@ export default {
   fetchMarketInfo,
   postFixedPriceSwap,
   fetchOrderStatus,
+  fetchOrders,
 }

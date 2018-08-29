@@ -12,7 +12,13 @@ const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   label: wallet.getLabel(),
   type: wallet.getType(),
   typeLabel: wallet.getTypeLabel(),
-  address: wallet.isSingleAddress() ? wallet.getAddress() : '',
+  ...(wallet.isSingleAddress() ? ({
+    address: wallet.getAddress(),
+    usedAddresses: [wallet.getAddress()],
+  }) : ({
+    address: '',
+    usedAddresses: []
+  })),
   iconProps: getWalletIconProps(wallet),
   isBlockstack: wallet instanceof EthereumWalletBlockstack,
   isReadOnly: wallet.isReadOnly(),
@@ -38,6 +44,8 @@ export const walletBalancesError = createAction('BALANCES_ERROR', (walletId, err
   id: walletId,
   error: error.message || error,
 }))
+
+export const walletUsedAddressesUpdated = createAction('USED_ADDRESSES_UPDATED', (id, usedAddresses) => ({ id, usedAddresses }))
 
 export const addWallet = (walletInstance) => (dispatch) => Promise.resolve()
   .then(() => walletService.add(walletInstance))
@@ -127,6 +135,12 @@ export const updateWalletBalances = (walletId) => (dispatch, getState) => Promis
     return walletInstance.getAllBalances()
       .then((symbolToBalance) => {
         dispatch(walletBalancesUpdated(walletId, symbolToBalance))
+
+        // Retrieve used addresses in background
+        walletInstance.getUsedAddresses()
+          .then((usedAddresses) => dispatch(walletUsedAddressesUpdated(walletId, usedAddresses)))
+          .catch((e) => log.error(`Wallet ${walletId} failed to load used addreses`, e))
+
         return symbolToBalance
       })
       .catch((e) => {

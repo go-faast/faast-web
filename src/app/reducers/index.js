@@ -30,5 +30,5 @@ export default combineReducers({
   connectHardwareWallet,
   form: formReducer,
   toastr: toastrReducer,
-  router: routerReducer
+  router: routerReducer,
 })
