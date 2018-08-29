@@ -26,9 +26,16 @@ const priceChange = (date, asset) => {
   // falsey date => hasn't loaded yet so default to 1h change
   const hoursSinceTrade = !date ? 0 : (Date.now() - date.getTime()) / 3600000
   const timespan = hoursSinceTrade <= 1 ? 'Last 1hr: ' : hoursSinceTrade >= 24 ? 'Last 7d: ' : 'Last 24hrs: '
-  var priceChangeText = hoursSinceTrade <= 1 ? change1 : hoursSinceTrade >= 24 ? change7d : change24
+  var priceChange = hoursSinceTrade <= 1 ? change1 : hoursSinceTrade >= 24 ? change7d : change24
   return (
-    <span>{timespan}<ChangePercent>{priceChangeText}</ChangePercent><ArrowIcon className="swapChangeArrow" size={.58} dir={priceChangeText < 0 ? 'down' : 'up'} color={priceChangeText < 0 ? 'danger' : 'success'}/></span>
+    <span>{timespan}
+      <ChangePercent>{priceChange}</ChangePercent>
+      <ArrowIcon 
+        className={classNames('swapChangeArrow', priceChange.isZero() ? 'd-none' : null)} 
+        size={.58} dir={priceChange < 0 ? 'down' : 'up'} 
+        color={priceChange < 0 ? 'danger' : priceChange > 0 ? 'success' : null}
+      />
+    </span>
   )
 }
 
