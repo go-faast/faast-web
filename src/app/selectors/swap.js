@@ -65,6 +65,11 @@ export const getAllSwapsArray = createSelector(
   (allSwaps) => dateSort(Object.values(allSwaps), 'desc', 'createdAt')
 )
 
+export const getSentSwaps = createSelector(
+  getAllSwapsArray,
+  (allSwaps) => allSwaps.filter(({ orderStatus, tx }) => orderStatus !== 'awaiting deposit' || tx.sent)
+)
+
 export const getSwap = createItemSelector(
   getAllSwaps,
   selectItemId,

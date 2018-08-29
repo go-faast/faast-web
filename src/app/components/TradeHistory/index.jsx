@@ -1,6 +1,6 @@
 import React from 'react'
 import { compose, setDisplayName } from 'recompose'
-import { getAllSwapsArray } from 'Selectors/swap'
+import { getSentSwaps } from 'Selectors/swap'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 
@@ -17,6 +17,6 @@ const TradeHistory = ({ swaps }) => (
 export default compose(
   setDisplayName('TradeHistory'),
   connect(createStructuredSelector({
-    swaps: getAllSwapsArray
+    swaps: getSentSwaps
   }))
 )(TradeHistory)
