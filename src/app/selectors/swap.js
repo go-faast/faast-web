@@ -28,6 +28,7 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
       receiveWalletId = receiveWallet.id
     }
   }
+
   swap = {
     ...swap,
     receiveWalletId,
@@ -45,6 +46,7 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
     txSent: tx.sent,
     txSendingError: tx.sendingError,
   }
+  
   return {
     ...swap,
     status: getSwapStatus(swap),

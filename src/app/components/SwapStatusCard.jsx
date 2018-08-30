@@ -65,7 +65,7 @@ export default compose(
     receiveWalletId, receiveSymbol, receiveAsset, receiveAmount, receiveAddress,
     error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee,
     tx: { confirmed, succeeded, hash: txHash, feeAmount: txFee, feeSymbol: txFeeSymbol },
-    status: { code, details }, createdAt, initializing,
+    status: { code, details, detailsCode }, createdAt, initializing,
   },
   statusText, showDetails, isExpanded, togglerProps, expanded
 }) => {
@@ -126,7 +126,8 @@ export default compose(
                 <td><b>Status:</b></td>
                 <td colSpan='2' className={classNames('px-2', {
                   'text-success': code === 'complete',
-                  'text-warning': code === 'failed'
+                  'text-warning': detailsCode === 'contact_support',
+                  'text-danger': code === 'failed'
                 })}>
                   {details}
                 </td>
