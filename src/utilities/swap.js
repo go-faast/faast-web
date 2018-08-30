@@ -8,7 +8,7 @@ const statusComplete = createStatus('complete', 'Complete', 'text-success')
 
 export const getSwapStatus = (swap) => {
   const {
-    error, rate, orderStatus, tx
+    error, rate, orderStatus, tx, createdAt
   } = swap
   if (error) {
     if (isString(error) && error.toLowerCase().includes('insufficient funds')) {
@@ -51,6 +51,10 @@ export const getSwapStatus = (swap) => {
       return statusPending('signing_unsupported', 'Ready to send')
     }
     return statusPending('unsigned', 'Ready to sign')
+  }
+  const timeSinceCreated = createdAt ? createdAt.getTime() : Date.now()
+  if ((Date.now() - timeSinceCreated) / 3600000 >= 4) {
+    return statusPending('contact_support', 'There may be an issue. Contact support@faa.st for more info.')
   }
   return statusPending('processing', 'Processing swap')
 }

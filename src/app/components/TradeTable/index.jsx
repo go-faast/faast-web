@@ -54,28 +54,19 @@ const TradeTable = ({ swaps, handleClick }) => (
   </Table>
 )
 
-//NOTE: if we end up not filtering out other statuses this approach wont work
-const statusInfo = {
-  support: {
-    icon: <i className='fa fa-exclamation-circle text-warning'></i>,
-    expanded: 'There may be an issue. Contact support@faa.st for more info.'
-  },
-  complete: {
-    icon: <i style={{ fontSize: '18px' }} className='text-success fa fa-check-circle'></i>,
-    expanded: 'Order Complete'
-  },
-  processing: {
-    icon: <i className='fa fa-spinner fa-pulse'/>,
-    expanded: 'Processing'
-  }
+
+const statusIcons = {
+  complete: <i style={{ fontSize: '18px' }} className='text-success fa fa-check-circle'></i>,
+  contact_support: <i className='fa fa-exclamation-circle text-warning'></i>,
+  pending: <i className='fa fa-spinner fa-pulse'/>,
+  failed: <i className='fa fa-exclamation-circle text-danger'></i>
 }
 
 const createStatusLabel = (swap) => {
-  const { contactSupport, status: { detailsCode } } = swap
-  const { support, complete, processing } = statusInfo
-  const status = contactSupport ? support : detailsCode == 'order_complete' ? complete : processing
+  const { status: { detailsCode, code, details } } = swap
+  const statusIcon = statusIcons[detailsCode] || statusIcons[code]
 
-  return <Expandable shrunk={status.icon} expanded={status.expanded}></Expandable>
+  return <Expandable shrunk={statusIcon} expanded={details}></Expandable>
 }
 
 export default compose(
