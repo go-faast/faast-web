@@ -56,7 +56,7 @@ export const BTC = network({
   symbol: 'BTC',
   name: 'Bitcoin',
   bitcoreUrls: [
-    'https://btc.bitaccess.ca', 'https://blockexplorer.com',
+    'https://btc.faa.st', 'https://blockexplorer.com',
     'https://bitcore1.trezor.io', 'https://bitcore3.trezor.io',
   ],
   paymentTypes: [
