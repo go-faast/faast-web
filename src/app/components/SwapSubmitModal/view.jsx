@@ -3,16 +3,17 @@ import {
   Row, Col, Button, Alert,
   Modal, ModalHeader, ModalBody, ModalFooter
 } from 'reactstrap'
-
 import display from 'Utilities/display'
-
+import { compose, setDisplayName, setPropTypes, defaultProps, withState } from 'recompose'
 import SwapStatusCard from 'Components/SwapStatusCard'
+import Timer from '../Timer'
 import Spinner from 'Components/Spinner'
 import ConfirmTransactionModal from 'Components/ConfirmTransactionModal'
+import PropTypes from 'prop-types'
 
 const SwapSubmitModal = ({
   isOpen, swundle, headerText, continueText, continueDisabled, continueLoading,
-  errorMessage, handleContinue, handleCancel, currentSwap
+  errorMessage, handleContinue, handleCancel, currentSwap, secondsUntilPriceExpiry, showTimer, shouldShowTimer
 }) => (
   <div>
     <Modal size='lg' backdrop='static' isOpen={isOpen} toggle={handleCancel}>
@@ -48,7 +49,7 @@ const SwapSubmitModal = ({
               }
               return (
                 <Col xs='12' key={id}>
-                  <SwapStatusCard swap={swap} statusText={statusText}/>
+                  <SwapStatusCard swap={swap} statusText={statusText} />
                 </Col>
               )
             })}
@@ -58,9 +59,13 @@ const SwapSubmitModal = ({
           ? display.fiat(swundle.totalTxFee)
           : <Spinner inline size='sm'/>}
         </p>
+        {(secondsUntilPriceExpiry > 0 && showTimer)
+          ? <span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Swap rates guaranteed if deposits received by:'} onTimerEnd={() => { shouldShowTimer(false) }}/></small></span> 
+          : !showTimer
+          ? <span className='text-warning'><small>* Fixed rate is no longer guaranteed as the 15 minute locked-rate period has concluded.</small></span>
+          : null}
         <p><small className='text-muted'>
-          {'* The receive amount is an estimate based on the current Faast market rate. '
-          + 'Actual amount may vary. Additional fees may apply depending on '
+          {'** Additional fees may apply depending on '
           + 'the asset being sent and the wallet you\'re using.'}
         </small></p>
       </ModalBody>
@@ -76,4 +81,29 @@ const SwapSubmitModal = ({
   </div>
 )
 
-export default SwapSubmitModal
+export default compose(
+  setDisplayName('SwapSubmitModalView'),
+  setPropTypes({
+    headerText: PropTypes.node,
+    continueDisabled: PropTypes.bool,
+    continueLoading: PropTypes.bool,
+    continueText: PropTypes.node,
+    handleContinue: PropTypes.func,
+    handleCancel: PropTypes.func,
+    errorMessage: PropTypes.node,
+    currentSwap: PropTypes.object,
+    secondsUntilPriceExpiry: PropTypes.number
+  }),
+  defaultProps({
+    headerText: null,
+    continueDisabled: true,
+    continueLoading: true,
+    continueText: null,
+    handleContinue: () => {},
+    handleCancel: () => {},
+    errorMessage: null,
+    currentSwap: {},
+    secondsUntilPriceExpiry: 0
+  }),
+  withState('showTimer', 'shouldShowTimer', true)
+)(SwapSubmitModal)

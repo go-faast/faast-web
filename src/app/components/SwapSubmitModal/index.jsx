@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
-
+import { min } from 'lodash'
 import { closeTrezorWindow } from 'Utilities/wallet'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
@@ -66,8 +66,9 @@ class SwapSubmitModal extends Component {
     if (!swundle) {
       return null
     }
-
     let errorMessage = swundle.error
+    const soonestPriceExpiry = min(swundle.swaps.map(swap => swap.rateLockedUntil))
+    const secondsUntilPriceExpiry = (Date.parse(soonestPriceExpiry) - Date.now()) / 1000
     const currentSwap = swundle.swaps.find(({ txSigning, txSending }) => txSigning || txSending)
     const showSubmit = !requiresSigning || startedSigning // True if continue button triggers tx sending, false for signing
     const continueDisabled = showSubmit ? (!readyToSend || startedSending) : (!readyToSign || startedSigning)
@@ -85,6 +86,7 @@ class SwapSubmitModal extends Component {
         handleCancel={this.handleCancel}
         errorMessage={errorMessage}
         currentSwap={currentSwap}
+        secondsUntilPriceExpiry={secondsUntilPriceExpiry}
         {...this.props}
       />
     )

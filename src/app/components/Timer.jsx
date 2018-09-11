@@ -60,6 +60,10 @@ export default compose(
         if (seconds !== nextProps.seconds) {
           startTimer(nextProps.seconds)
         }
+      },
+      componentWillUnmount() {
+        var { timer } = this.props
+        clearInterval(timer)
       }
     }),
   )(TimerComponent)
