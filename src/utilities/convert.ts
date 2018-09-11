@@ -101,6 +101,6 @@ export function secondsToTime(secs: number): { hours: string, minutes: string, s
   const seconds = formatTimePart(Math.floor(divisorForSeconds))
   let timeObj: { hours: string, minutes: string, seconds: string } = { hours, minutes, seconds }
   // no negative
-  if (parseInt(seconds) < 0) { timeObj = { hours: '0', minutes: '00', seconds: '00'} }
+  if (parseInt(seconds) < 0) { timeObj = { hours: '0', minutes: '00', seconds: '00' } }
   return timeObj
 }
