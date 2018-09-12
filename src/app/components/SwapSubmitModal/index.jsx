@@ -9,7 +9,7 @@ import {
   isCurrentSwundleSigning, isCurrentSwundleSending,
   doesCurrentSwundleRequireSigning,
 } from 'Selectors'
-import { compose, setDisplayName, withState, withProps, branch, withHandlers, renderNothing } from 'recompose'
+import { compose, setDisplayName, withStateHandlers, withProps, branch, withHandlers, renderNothing } from 'recompose'
 import { closeTrezorWindow } from 'Utilities/wallet'
 import { min } from 'lodash'
 import display from 'Utilities/display'
@@ -27,7 +27,7 @@ import log from 'Utilities/log'
 
 const SwapSubmitModal = ({
   isOpen, swundle, headerText, continueText, continueDisabled, continueLoading,
-  errorMessage, handleContinue, handleCancel, currentSwap, secondsUntilPriceExpiry, showTimer, shouldShowTimer
+  errorMessage, handleContinue, handleCancel, currentSwap, secondsUntilPriceExpiry, timerExpired, handleTimerEnd
 }) => (
   <div>
     <Modal size='lg' backdrop='static' isOpen={isOpen} toggle={handleCancel}>
@@ -73,11 +73,9 @@ const SwapSubmitModal = ({
           ? display.fiat(swundle.totalTxFee)
           : <Spinner inline size='sm'/>}
         </p>
-        {(showTimer && secondsUntilPriceExpiry > 0)
-          ? <span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Swap rates guaranteed if deposits received by:'} onTimerEnd={() => { shouldShowTimer(false) }}/></small></span> 
-          : !showTimer
-          ? <span className='text-warning'><small>* Fixed rate is no longer guaranteed as the 15 minute locked-rate period has concluded.</small></span>
-          : null}
+        {(secondsUntilPriceExpiry > 0 && !timerExpired)
+          ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Swap rates guaranteed if deposits received by:'} onTimerEnd={() => handleTimerEnd}/></small></span>)
+          : (timerExpired && (<span className='text-warning'><small>* Fixed rate is no longer guaranteed as the 15 minute locked-rate period has concluded.</small></span>))}
         <p><small className='text-muted'>
           {'** Additional fees may apply depending on '
           + 'the asset being sent and the wallet you\'re using.'}
@@ -168,5 +166,8 @@ export default compose(
       headerText
     }
   }),
-  withState('showTimer', 'shouldShowTimer', true)
+  withStateHandlers(
+    { timerExpired: false },
+    { handleTimerEnd: () => () => ({ timerExpired: true }) },
+  )
 )(SwapSubmitModal)
