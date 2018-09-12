@@ -8,9 +8,10 @@ import Modify from 'Components/Modify'
 import SearchResults from 'Components/SearchResults'
 import ModalRoute from 'Components/ModalRoute'
 import TradeDetailModal from 'Components/TradeDetailModal'
+import SwapWidget from 'Components/SwapWidget'
 import {
   root, dashboard, swap, connect, viewOnlyAddress,
-  tradeHistory, tradeDetail
+  tradeHistory, tradeDetail, swapWidget
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => (
@@ -30,6 +31,7 @@ const AppView = ({ hasNoWallets }) => (
       {/* Routes that don't require a connected wallet */}
       <Route path={connect.path} component={Connect}/>
       <Route path={viewOnlyAddress.path} component={SearchResults}/>
+      <Route path={swapWidget.path} component={SwapWidget}/>
 
       {/* Legacy routes */}
       <Redirect exact from='/balances' to={dashboard.path}/>
