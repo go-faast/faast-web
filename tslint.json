@@ -1,5 +1,8 @@
 {
   "extends": "tslint:recommended",
+  "linterOptions": {
+    "exclude": ["**/*.js", "**/*.jsx"]
+  },
   "rules": {
       "max-line-length": {
           "options": [120]
@@ -30,11 +33,6 @@
               "timeEnd",
               "trace"
           ]
-      }
-  },
-  "jsRules": {
-      "max-line-length": {
-          "options": [120]
       }
   }
 }

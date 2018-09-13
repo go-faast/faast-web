@@ -147,7 +147,8 @@ export default compose(
     let errorMessage = swundle.error
     const soonestPriceExpiry = min(swundle.swaps.map(swap => swap.rateLockedUntil))
     const secondsUntilPriceExpiry = (Date.parse(soonestPriceExpiry) - Date.now()) / 1000
-    const currentSwap = swundle.swaps.find(({ txSigning, txSending }) => txSigning || txSending)
+    const currentSwap = swundle.swaps.find(({ txSigning, txSending, sendWallet }) =>
+      txSigning || (txSending && sendWallet && !sendWallet.isSignTxSupported))
     const showSubmit = !requiresSigning || startedSigning // True if continue button triggers tx sending, false for signing
     const continueDisabled = showSubmit ? (!readyToSend || startedSending) : (!readyToSign || startedSigning)
     const continueLoading = showSubmit ? startedSending : startedSigning

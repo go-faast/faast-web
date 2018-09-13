@@ -12,14 +12,15 @@ import { getAllTxs } from './tx'
 export const getSwapState = ({ swap }) => swap
 
 const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
-  const { sendSymbol, receiveSymbol, txId, rate, receiveAddress } = swap
+  const { sendSymbol, receiveSymbol, txId, rate, receiveAddress, sendWalletId } = swap
   const sendAsset = allAssets[sendSymbol]
   const receiveAsset = allAssets[receiveSymbol]
   const tx = allTxs[txId] || {}
   const fee = toBigNumber(0)
   let { receiveWalletId } = swap
+  let receiveWallet
   if (!receiveWalletId) {
-    const receiveWallet = Object.values(allWallets)
+    receiveWallet = Object.values(allWallets)
       .find((w) => !w.type.includes(MultiWallet.type)
         && (w.usedAddresses.includes(receiveAddress)
           || (swap.receiveAddress.startsWith('0x')
@@ -31,6 +32,8 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
 
   swap = {
     ...swap,
+    sendWallet: allWallets[sendWalletId],
+    receiveWallet,
     receiveWalletId,
     pair: `${sendSymbol}_${receiveSymbol}`.toLowerCase(),
     inverseRate: toBigNumber(rate).pow(-1),

@@ -26,7 +26,7 @@ export default {
   isProd,
   isIpfs,
   logLevel: process.env.LOG_LEVEL || (isDev ? 'debug' : 'info'),
-  web3Provider: 'https://mainnet.infura.io/0eUbsHtOiSVZZEiR5fQX',
+  web3Provider: 'https://mainnet.infura.io/v3/6c0b732cae674991b713c9b18ffdd0d3',
   bitcoreInsightApi: 'https://bitcore.faa.st/insight-api',
   ethereumChainId: 1,
   siteUrl: typeof SITE_URL !== 'undefined' ? SITE_URL : 'https://faa.st',
