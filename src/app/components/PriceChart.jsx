@@ -175,7 +175,11 @@ export default compose(
       const { symbol, chartOpen, updatePriceData, fetchPriceChart, priceChartData } = this.props
       if (!prevProps.chartOpen && chartOpen) {
         fetchPriceChart(symbol)
-        updatePriceData(priceChartData[symbol].priceData, symbol)
+        console.log('component price data', priceChartData)
+        //removes error
+        if (priceChartData[symbol]) {
+          updatePriceData(priceChartData[symbol].priceData, symbol)
+        }
       }
     }
   }),

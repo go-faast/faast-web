@@ -20,7 +20,7 @@ export const fetchPriceChartData = (symbol) => (dispatch, getState) => {
   }
   dispatch(priceChartDataLoading(symbol))
   console.log('IN FETCH PRICES BECAUSE STALE OR DONT HAVE')
-  return Faast.fetchPriceChart(symbol)
+  Faast.fetchPriceChart(symbol)
     .then((priceData) => dispatch(priceChartDataUpdated(symbol, priceData)))
     .catch((e) => {
       log.error(e)
