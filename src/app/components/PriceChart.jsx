@@ -1,26 +1,20 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withState, withHandlers } from 'recompose'
+import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withProps } from 'recompose'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { getAllPriceCharts } from 'Selectors'
+import { getPriceChartData } from 'Selectors'
 import { fetchPriceChartData } from 'Actions/priceChart'
 import ReactHighstock from 'react-highcharts/ReactHighstock.src'
 import { themeColor } from 'Utilities/style'
-import log from 'Utilities/log'
-import toastr from 'Utilities/toastrWrapper'
 
 const priceSeriesName = 'Price (USD)'
 
-const PriceChart = ({ config, symbol }) => {
-  var chartConfig = priceChartConfig
-  if (config[symbol]) {
-    chartConfig = config[symbol]
-  }
-  return <ReactHighstock config={chartConfig}/>
+const PriceChart = ({ priceChartConfig }) => {
+  return <ReactHighstock config={priceChartConfig}/>
 }
 
-const priceChartConfig = {
+const initialPriceChartConfig = {
   chart: {
     height: 350,
   },
@@ -151,17 +145,9 @@ const priceChartConfig = {
 export default compose(
   setDisplayName('PriceChart'),
   connect(createStructuredSelector({
-    priceChartData: getAllPriceCharts,
+    priceChartData: (state, { symbol }) => getPriceChartData(state, symbol)
   }), {
     fetchPriceChart: fetchPriceChartData
-  }),
-  withState('config', 'updateConfig', {}),
-  withHandlers({
-    updatePriceData: ({ config, updateConfig }) => (data, symbol) => {
-      config[symbol] = priceChartConfig
-      config[symbol].series[0].data = data
-      updateConfig(config)
-    }
   }),
   setPropTypes({
     symbol: PropTypes.string.isRequired,
@@ -170,16 +156,18 @@ export default compose(
   defaultProps({
     chartOpen: false
   }),
+  withProps(({ priceChartData }) => {
+    const priceChartConfig = initialPriceChartConfig
+    if (priceChartData) {
+      priceChartConfig.series[0].data = priceChartData.priceData
+    }
+    return { priceChartConfig }
+  }),
   lifecycle({
     componentDidUpdate (prevProps) {
-      const { symbol, chartOpen, updatePriceData, fetchPriceChart, priceChartData } = this.props
+      const { symbol, chartOpen, fetchPriceChart } = this.props
       if (!prevProps.chartOpen && chartOpen) {
         fetchPriceChart(symbol)
-        console.log('component price data', priceChartData)
-        //removes error
-        if (priceChartData[symbol]) {
-          updatePriceData(priceChartData[symbol].priceData, symbol)
-        }
       }
     }
   }),

@@ -4,7 +4,6 @@ import { createItemSelector, selectItemId, fieldSelector } from 'Utilities/selec
 export const getPriceChartState = ({ priceChart }) => priceChart
 
 export const getAllPriceCharts = createSelector(getPriceChartState, (priceCharts) => {
-  console.log('all price charts', priceCharts)
   return {
     ...priceCharts
   }
