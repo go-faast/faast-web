@@ -1,12 +1,14 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withState, withHandlers } from 'recompose'
 import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
+import { getAllPriceCharts } from 'Selectors'
+import { fetchPriceChartData } from 'Actions/priceChart'
 import ReactHighstock from 'react-highcharts/ReactHighstock.src'
 import { themeColor } from 'Utilities/style'
 import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
-import { fetchPriceChart } from 'Services/Faast'
 
 const priceSeriesName = 'Price (USD)'
 
@@ -15,7 +17,7 @@ const PriceChart = ({ config, symbol }) => {
   if (config[symbol]) {
     chartConfig = config[symbol]
   }
-  return <ReactHighstock config={chartConfig} />
+  return <ReactHighstock config={chartConfig}/>
 }
 
 const priceChartConfig = {
@@ -148,13 +150,16 @@ const priceChartConfig = {
 
 export default compose(
   setDisplayName('PriceChart'),
+  connect(createStructuredSelector({
+    priceChartData: getAllPriceCharts,
+  }), {
+    fetchPriceChart: fetchPriceChartData
+  }),
   withState('config', 'updateConfig', {}),
   withHandlers({
     updatePriceData: ({ config, updateConfig }) => (data, symbol) => {
-      console.log('config in handler1', config)
       config[symbol] = priceChartConfig
       config[symbol].series[0].data = data
-      console.log('config in handler2', config)
       updateConfig(config)
     }
   }),
@@ -167,16 +172,10 @@ export default compose(
   }),
   lifecycle({
     componentDidUpdate (prevProps) {
-      const { symbol, chartOpen, updatePriceData } = this.props
+      const { symbol, chartOpen, updatePriceData, fetchPriceChart, priceChartData } = this.props
       if (!prevProps.chartOpen && chartOpen) {
         fetchPriceChart(symbol)
-          .then((data) => {
-            updatePriceData(data, symbol)
-          })
-          .catch(e => {
-            log.error(e)
-            toastr.error(`Error getting price chart data for ${symbol}`)
-          })
+        updatePriceData(priceChartData[symbol].priceData, symbol)
       }
     }
   }),
