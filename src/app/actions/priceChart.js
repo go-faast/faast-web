@@ -6,21 +6,21 @@ import { isPriceChartLoading, isPriceChartStale, getPriceChartData } from 'Selec
 
 const createAction = newScopedCreateAction(__filename)
 
-export const priceChartDataLoading = createAction('PRICE_CHART_DATA_LOADING', (symbol) => (symbol))
-export const priceChartDataUpdated = createAction('PRICE_CHART_DATA_UPDATED', (symbol, data) => ({ symbol, data }))
-export const priceChartDataError = createAction('PRICE_CHART_DATA_ERROR', (symbol, error) => ({ symbol, error }))
+export const priceChartLoading = createAction('PRICE_CHART_DATA_LOADING', (symbol) => (symbol))
+export const priceChartUpdated = createAction('PRICE_CHART_DATA_UPDATED', (symbol, data) => ({ symbol, data }))
+export const priceChartError = createAction('PRICE_CHART_DATA_ERROR', (symbol, error) => ({ symbol, error }))
 
 export const fetchPriceChartData = (symbol) => (dispatch, getState) => {
   if (isPriceChartLoading(getState(), symbol) || !isPriceChartStale(getState(), symbol)) {
     return getPriceChartData(getState(), symbol)
   }
-  dispatch(priceChartDataLoading(symbol))
+  dispatch(priceChartLoading(symbol))
   return Faast.fetchPriceChart(symbol)
-    .then((priceData) => dispatch(priceChartDataUpdated(symbol, priceData)))
+    .then((priceData) => dispatch(priceChartUpdated(symbol, priceData)))
     .catch((e) => {
       log.error(e)
       const message = `Failed to load ${symbol} price`
-      dispatch(priceChartDataError(symbol, message))
+      dispatch(priceChartError(symbol, message))
       throw new Error(message)
     })
 }
