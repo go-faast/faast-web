@@ -146,7 +146,7 @@ const initialConfig = {
 export default compose(
   setDisplayName('PriceChart'),
   connect(createStructuredSelector({
-    priceChartData: (state, { symbol }) => getPriceChartData(state, symbol)
+    data: (state, { symbol }) => getPriceChartData(state, symbol)
   }), {
     fetchPriceChart: fetchPriceChartData
   }),
@@ -157,14 +157,13 @@ export default compose(
   defaultProps({
     chartOpen: false
   }),
-  withProps(({ priceChartData }) => {
-    console.log('data', priceChartData)
-    const config = (priceChartData 
+  withProps(({ data }) => {
+    const config = (data 
       ? {
         ...initialConfig,
         series: [{
           ...initialConfig.series[0],
-          data: priceChartData
+          data: data
         }]
       } 
       : initialConfig)
