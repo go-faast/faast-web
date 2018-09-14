@@ -2,7 +2,7 @@ import { newScopedCreateAction } from 'Utilities/action'
 import log from 'Utilities/log'
 import Faast from 'Services/Faast'
 
-import { isPriceChartLoading, isPriceChartStale, getPriceChartData } from 'Selectors'
+import { isPriceChartLoading, isPriceChartStale } from 'Selectors'
 
 const createAction = newScopedCreateAction(__filename)
 
