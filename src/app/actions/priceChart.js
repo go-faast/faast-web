@@ -12,10 +12,10 @@ export const priceChartError = createAction('PRICE_CHART_DATA_ERROR', (symbol, e
 
 export const fetchPriceChartData = (symbol) => (dispatch, getState) => {
   if (isPriceChartLoading(getState(), symbol) || !isPriceChartStale(getState(), symbol)) {
-    return getPriceChartData(getState(), symbol)
+    return
   }
   dispatch(priceChartLoading(symbol))
-  return Faast.fetchPriceChart(symbol)
+  Faast.fetchPriceChart(symbol)
     .then((priceData) => dispatch(priceChartUpdated(symbol, priceData)))
     .catch((e) => {
       log.error(e)
