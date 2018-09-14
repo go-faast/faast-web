@@ -10,11 +10,12 @@ import { themeColor } from 'Utilities/style'
 
 const priceSeriesName = 'Price (USD)'
 
-const PriceChart = ({ priceChartConfig }) => {
-  return <ReactHighstock config={priceChartConfig}/>
+const PriceChart = ({ config }) => {
+  console.log('config', config)
+  return <ReactHighstock config={config}/>
 }
 
-const initialPriceChartConfig = {
+const initialConfig = {
   chart: {
     height: 350,
   },
@@ -157,11 +158,17 @@ export default compose(
     chartOpen: false
   }),
   withProps(({ priceChartData }) => {
-    const priceChartConfig = initialPriceChartConfig
-    if (priceChartData) {
-      priceChartConfig.series[0].data = priceChartData.priceData
-    }
-    return { priceChartConfig }
+    console.log('data', priceChartData)
+    const config = (priceChartData 
+      ? {
+        ...initialConfig,
+        series: [{
+          ...initialConfig.series[0],
+          data: priceChartData
+        }]
+      } 
+      : initialConfig)
+    return { config }
   }),
   lifecycle({
     componentDidUpdate (prevProps) {

@@ -7,15 +7,15 @@ import { isPriceChartLoading, isPriceChartStale, getPriceChartData } from 'Selec
 const createAction = newScopedCreateAction(__filename)
 
 export const priceChartDataLoading = createAction('PRICE_CHART_DATA_LOADING', (symbol) => (symbol))
-export const priceChartDataUpdated = createAction('PRICE_CHART_DATA_UPDATED', (symbol, priceData) => ({ symbol, priceData }))
-export const priceChartDataError = createAction('PRICE_CHART_DATA_ERROR', (symbol, priceError) => ({ symbol, priceError }))
+export const priceChartDataUpdated = createAction('PRICE_CHART_DATA_UPDATED', (symbol, data) => ({ symbol, data }))
+export const priceChartDataError = createAction('PRICE_CHART_DATA_ERROR', (symbol, error) => ({ symbol, error }))
 
 export const fetchPriceChartData = (symbol) => (dispatch, getState) => {
   if (isPriceChartLoading(getState(), symbol) || !isPriceChartStale(getState(), symbol)) {
     return getPriceChartData(getState(), symbol)
   }
   dispatch(priceChartDataLoading(symbol))
-  Faast.fetchPriceChart(symbol)
+  return Faast.fetchPriceChart(symbol)
     .then((priceData) => dispatch(priceChartDataUpdated(symbol, priceData)))
     .catch((e) => {
       log.error(e)

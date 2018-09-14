@@ -9,9 +9,10 @@ export const getAllPriceCharts = createSelector(getPriceChartState, (priceCharts
   }
 })
 
-export const getPriceChartData = createItemSelector(getAllPriceCharts, selectItemId, (allCharts, symbol) => allCharts[symbol])
-export const isPriceChartLoading = createItemSelector(getPriceChartData, fieldSelector('loadingChartData'))
-export const isPriceChartStale = createItemSelector(getPriceChartData, priceChart => {
+export const getPriceChart = createItemSelector(getAllPriceCharts, selectItemId, (allCharts, symbol) => allCharts[symbol])
+export const getPriceChartData = createItemSelector(getPriceChart, fieldSelector('data'))
+export const isPriceChartLoading = createItemSelector(getPriceChart, fieldSelector('loading'))
+export const isPriceChartStale = createItemSelector(getPriceChart, priceChart => {
   if (priceChart) {
     const { lastUpdatedPrice } = priceChart
     const isStale = (Date.now() - lastUpdatedPrice) >= 300000 ? true : false
