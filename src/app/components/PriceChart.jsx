@@ -11,7 +11,6 @@ import { themeColor } from 'Utilities/style'
 const priceSeriesName = 'Price (USD)'
 
 const PriceChart = ({ config }) => {
-  console.log('config', config)
   return <ReactHighstock config={config}/>
 }
 
