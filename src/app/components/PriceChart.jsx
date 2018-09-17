@@ -1,26 +1,105 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
+import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withProps } from 'recompose'
 import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
+import { getPriceChartData } from 'Selectors'
+import { fetchPriceChartData } from 'Actions/priceChart'
 import ReactHighstock from 'react-highcharts/ReactHighstock.src'
-import log from 'Utilities/log'
-import toastr from 'Utilities/toastrWrapper'
-import { fetchPriceChart } from 'Services/Faast'
-import config from 'Config'
-import { merge } from 'lodash'
+import { themeColor } from 'Utilities/style'
 
 const priceSeriesName = 'Price (USD)'
 
-const priceChartConfig = merge({}, config.highCharts.priceChart, {
+const PriceChart = ({ config }) => {
+  console.log('config', config)
+  return <ReactHighstock config={config}/>
+}
+
+const initialConfig = {
   chart: {
     height: 350,
   },
-  yAxis: {
-    labels: {
-      format: '${value}'
-    },
-    title: {
-      text: priceSeriesName
+  colors: [themeColor.primary],
+  navigator: {
+    enabled: false
+  },
+  tooltip: {
+    followPointer: true
+  },
+  plotOptions: {
+    area: {
+      dataLabels: {
+        color: '#B0B0B3'
+      },
+      fillOpacity: 0.75,
+      marker: {
+        radius: 2,
+        fillColor: themeColor.ultraDark,
+      },
+      lineWidth: 2,
+      states: {
+        hover: {
+          lineWidth: 2
+        }
+      },
+      threshold: null
     }
+  },
+  rangeSelector: {
+    buttonTheme: {
+      fill: '#505053',
+      stroke: '#000000',
+      style: {
+        color: '#CCC'
+      },
+      states: {
+        hover: {
+          fill: '#707073',
+          stroke: '#000000',
+          style: {
+            color: 'white'
+          }
+        },
+        select: {
+          fill: '#000003',
+          stroke: '#000000',
+          style: {
+            color: 'white'
+          }
+        }
+      }
+    },
+    inputBoxBorderColor: '#505053',
+    inputStyle: {
+      backgroundColor: '#333',
+      color: 'silver'
+    },
+    labelStyle: {
+      color: 'silver'
+    }
+  },
+  scrollbar: {
+    enabled: false
+  },
+  title: {
+    align: 'left',
+    useHTML: true,
+    text: '',
+    style: {
+      color: '#E0E0E3',
+      fontSize: '20px'
+    }
+  },
+  xAxis: {
+    gridLineColor: '#707073',
+    labels: {
+      style: {
+        color: '#E0E0E3'
+      }
+    },
+    lineColor: '#707073',
+    minorGridLineColor: '#505053',
+    tickColor: '#707073'
   },
   series: [{
     name: priceSeriesName,
@@ -32,37 +111,70 @@ const priceChartConfig = merge({}, config.highCharts.priceChart, {
       valueDecimals: 2
     },
     threshold: null
-  }]
-})
+  }],
+  yAxis: {
+    min: 0,
+    opposite: false,
+    gridLineColor: '#707073',
+    title: {
+      text: priceSeriesName,
+      style: {
+        color: themeColor.primary
+      }
+    },
+    labels: {
+      y: null, // Center vertically
+      format: '${value}',
+      align: 'right',
+      style: {
+        color: themeColor.primary,
+        fontSize: '12px'
+      }
+    },
+    lineColor: '#707073',
+    minorGridLineColor: '#505053',
+    tickColor: '#707073',
+    tickWidth: 1,
+    plotLines: [{
+      value: 0,
+      width: 1,
+      color: '#808080'
+    }]
+  }
+}
 
-class PriceChart extends Component {
-  componentDidUpdate (prevProps) {
-    const symbol = this.props.symbol
-    if (!prevProps.chartOpen && this.props.chartOpen) {
-      const priceChart = this.refs[`priceChart_${symbol}`].getChart()
-      //set data to blank so if multiple charts open doesn't show previous data while loading
-      priceChart.series[0].setData([])
-      priceChart.showLoading()
-      fetchPriceChart(symbol)
-        .then((data) => {
-          priceChart.series[0].setData(data)
-          priceChart.hideLoading()
-        })
-        .catch(e => {
-          log.error(e)
-          toastr.error(`Error getting price chart data for ${symbol}`)
-        })
+export default compose(
+  setDisplayName('PriceChart'),
+  connect(createStructuredSelector({
+    data: (state, { symbol }) => getPriceChartData(state, symbol)
+  }), {
+    fetchPriceChart: fetchPriceChartData
+  }),
+  setPropTypes({
+    symbol: PropTypes.string.isRequired,
+    chartOpen: PropTypes.bool
+  }),
+  defaultProps({
+    chartOpen: false
+  }),
+  withProps(({ data }) => {
+    const config = (data 
+      ? {
+        ...initialConfig,
+        series: [{
+          ...initialConfig.series[0],
+          data: data
+        }]
+      } 
+      : initialConfig)
+    return { config }
+  }),
+  lifecycle({
+    componentDidUpdate (prevProps) {
+      const { symbol, chartOpen, fetchPriceChart } = this.props
+      if (!prevProps.chartOpen && chartOpen) {
+        fetchPriceChart(symbol)
+      }
     }
-  }
-
-  render () {
-    return <ReactHighstock config={priceChartConfig} ref={`priceChart_${this.props.symbol}`} />
-  }
-}
-
-PriceChart.propTypes = {
-  symbol: PropTypes.string.isRequired,
-  chartOpen: PropTypes.bool
-}
-
-export default connect()(PriceChart)
+  }),
+)(PriceChart)

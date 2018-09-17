@@ -3,6 +3,7 @@ import { reducer as formReducer } from 'redux-form'
 import { reducer as toastrReducer } from 'react-redux-toastr'
 import { routerReducer } from 'react-router-redux'
 import asset from './asset'
+import priceChart from './priceChart'
 import swap from './swap'
 import swundle from './swundle'
 import orderModal from './orderModal'
@@ -26,6 +27,7 @@ export default combineReducers({
   swundle,
   orderModal,
   settings,
+  priceChart,
   walletPasswordPrompt,
   connectHardwareWallet,
   form: formReducer,
