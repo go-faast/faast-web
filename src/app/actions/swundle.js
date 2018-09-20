@@ -123,7 +123,7 @@ const createSwundleTxs = (swundle, options) => (dispatch, getState) => {
 
     let previousTx // Used to track eth tx nonce
 
-    return Promise.all(Object.entries(swapsByAsset).map(([symbol, swaps]) => {
+    return processArray(Object.entries(swapsByAsset), ([symbol, swaps]) => {
       if (walletInstance.isAggregateTransactionSupported(symbol)) {
         if (swaps.some((swap) => swap.error)) { return }
         // Create a single aggregate transaction for multiple swaps (e.g. bitcoin, litecoin)
@@ -147,7 +147,7 @@ const createSwundleTxs = (swundle, options) => (dispatch, getState) => {
             }
           }))
       }
-    }))
+    })
   })).then(() => getSwundle(getState(), swundle.id))
 }
 
