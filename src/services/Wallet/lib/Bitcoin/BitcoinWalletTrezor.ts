@@ -24,14 +24,14 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
     Trezor.setCurrency('BTC')
     return Trezor.getXPubKey(derivationPath)
       .then((result) => {
-        log.info('Trezor xPubKey success')
+        log.debug('Trezor xPubKey success')
         let { xpubkey, serializedPath } = result
         if (!serializedPath.startsWith('m/') && /^\d/.test(serializedPath)) {
           serializedPath = `m/${serializedPath}`
         }
         if (serializedPath.startsWith('m/49\'')) {
           xpubkey = toYpub(xpubkey)
-          log.info('Converted segwit xpub to ypub')
+          log.debug('Converted segwit xpub to ypub')
         }
         return new BitcoinWalletTrezor(xpubkey, serializedPath)
       })
@@ -64,7 +64,7 @@ export default class BitcoinWalletTrezor extends BitcoinWallet {
     log.debug('_signTx inputs outputs', trezorInputs, trezorOutputs)
     return Trezor.signTx(trezorInputs, trezorOutputs)
       .then((result) => {
-        log.info('Transaction signed:', result)
+        log.info('Trezor transaction signed', result)
         const { serialized_tx: signedTxData } = result
         return {
           signedTxData,

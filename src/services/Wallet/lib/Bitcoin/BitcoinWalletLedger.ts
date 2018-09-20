@@ -27,14 +27,14 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
   static fromPath(derivationPath: string): Promise<BitcoinWalletLedger> {
     return Ledger.btc.getWalletPublicKey(derivationPath)
       .then(({ publicKey, chainCode }) => {
-        log.info('Ledger.btc.getWalletPublicKey success')
+        log.debug('Ledger.btc.getWalletPublicKey success')
         const hdKey = new HDKey()
         hdKey.publicKey = Buffer.from(publicKey, 'hex')
         hdKey.chainCode = Buffer.from(chainCode, 'hex')
         let xpubkey = hdKey.publicExtendedKey
         if (derivationPath.startsWith('m/49\'')) {
           xpubkey = toYpub(xpubkey)
-          log.info('Converted segwit xpub to ypub')
+          log.debug('Converted segwit xpub to ypub')
         }
         return new BitcoinWalletLedger(xpubkey, derivationPath)
       })
@@ -52,7 +52,7 @@ export default class BitcoinWalletLedger extends BitcoinWallet {
           splitTx,
         }))))
       .then((inputUtxos: Array<UtxoInfo & { splitTx: object }>) => {
-        log.info('inputUtxos', inputUtxos)
+        log.debug('inputUtxos', inputUtxos)
 
         const { changePath, outputScript, isSegwit } = txData
         const inputs: Array<[object, number]> = []

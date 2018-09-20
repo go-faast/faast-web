@@ -194,7 +194,7 @@ class Modify extends Component {
   }
 
   _handleSave () {
-    log.info('modify save')
+    log.debug('modify save')
     const { allowance, walletHoldings } = this.state
     
     if (allowance.fiat.greaterThan(0)) return toastr.error('Amounts remain to move')

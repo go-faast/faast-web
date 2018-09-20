@@ -56,7 +56,7 @@ export default class EthereumWalletLedger extends EthereumWallet {
 
       return Ledger.eth.signTransaction(this.derivationPath, RLP.encode(ethJsTx.raw))
         .then((result) => {
-          log.info('ledger wallet signed tx', result)
+          log.debug('ledger wallet signed tx', result)
           return {
             signedTxData: this._signedEthJsTxToObject(new EthereumjsTx({
               ...txData,
