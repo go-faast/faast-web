@@ -74,8 +74,8 @@ const SwapSubmitModal = ({
           : <Spinner inline size='sm'/>}
         </p>
         {(secondsUntilPriceExpiry > 0 && !timerExpired)
-          ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Swap rates guaranteed if deposits received by:'} onTimerEnd={() => handleTimerEnd}/></small></span>)
-          : (timerExpired && (<span className='text-warning'><small>* Fixed rate is no longer guaranteed as the 15 minute locked-rate period has concluded.</small></span>))}
+          ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if submitted within:'} onTimerEnd={() => handleTimerEnd}/></small></span>)
+          : (timerExpired && (<span className='text-warning'><small>* Quoted rates are no longer guaranteed as the 15 minute guarantee window has expired. Orders will be filled using the latest variable rate when deposit is received.</small></span>))}
         <p><small className='text-muted'>
           {'** Additional fees may apply depending on '
           + 'the asset being sent and the wallet you\'re using.'}
@@ -150,9 +150,9 @@ export default compose(
     const currentSwap = swundle.swaps.find(({ txSigning, txSending, sendWallet }) =>
       txSigning || (txSending && sendWallet && !sendWallet.isSignTxSupported))
     const showSubmit = !requiresSigning || startedSigning // True if continue button triggers tx sending, false for signing
+    const handleContinue = showSubmit ? handleSendTxs : handleSignTxs
     const continueDisabled = showSubmit ? (!readyToSend || startedSending) : (!readyToSign || startedSigning)
     const continueLoading = showSubmit ? startedSending : startedSigning
-    const continueHandler = showSubmit ? handleSendTxs : handleSignTxs
     const continueText = showSubmit ? 'Submit all' : 'Begin signing'
     const headerText = showSubmit ? 'Confirm and Submit' : 'Review and Sign'
     return {
@@ -160,9 +160,9 @@ export default compose(
       soonestPriceExpiry,
       secondsUntilPriceExpiry,
       currentSwap,
+      handleContinue,
       continueDisabled,
       continueLoading,
-      continueHandler,
       continueText,
       headerText
     }
