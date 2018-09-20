@@ -9,35 +9,36 @@ import ReduxFormField from 'Components/ReduxFormField'
 import Expandable from 'Components/Expandable'
 import CoinIcon from 'Components/CoinIcon'
 import AssetSelector from 'Components/AssetSelector'
-import { Form, Button, Modal, ModalHeader, ModalBody } from 'reactstrap'
+import { Form, Button, Modal, ModalHeader, ModalBody, Card, CardHeader, CardBody } from 'reactstrap'
 import web3 from 'Services/Web3'
-import { container, header, section, body, submitButton, asset, icon, receive, swap } from './style.scss'
+import { container, section, submitButton, asset, icon, receive, swap } from './style.scss'
 import SwapIcon from 'Img/swap-icon.svg?inline'
+import { Address } from 'bitcore-lib'
 
 const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, 
   deposit, receive, handleSelectedAsset, handleDepositSymbol, handleReceiveSymbol }) => (
-    <div className={classNames('container justify-content-center p-0', container)}>
-      <div className={header}>
-        <h1>Swap Instantly</h1>
-        <button onClick={() => handlePopUp('deposit')}>
+    <Card className={classNames('container justify-content-center p-0', container)}>
+      <CardHeader className='text-center pb-4'>
+        <h4 className='mb-3 mt-1'>Swap Instantly</h4>
+        <Button color='ultra-dark' className='flat mb-3 p-0' onClick={() => handlePopUp('deposit')}>
           <div className={asset}>
             <CoinIcon key={deposit.symbol} symbol={deposit.symbol} style={{ width: 48, height: 48 }} className='m-1'/>
-            <h4>{deposit.symbol}</h4>
+            <h4 className='m-0'>{deposit.symbol}</h4>
             <p>Deposit</p>
           </div>
-        </button>
-        <button className={swap} onClick={() => { handleDepositSymbol(receive.symbol); handleReceiveSymbol(deposit.symbol) }}><SwapIcon/></button>
-        <button onClick={() => handlePopUp('receive')}>
+        </Button>
+        <Button color='ultra-dark' className={classNames('flat', swap)} onClick={() => { handleDepositSymbol(receive.symbol); handleReceiveSymbol(deposit.symbol) }}><SwapIcon/></Button>
+        <Button color='ultra-dark' className='flat mb-3 p-0' onClick={() => handlePopUp('receive')}>
           <div className={asset}>
             <CoinIcon key={receive.symbol} symbol={receive.symbol} style={{ width: 48, height: 48 }} className='m-1'/>
-            <h4>{receive.symbol}</h4>
+            <h4 className='m-0'>{receive.symbol}</h4>
             <p>Receive</p>
           </div>
-        </button>
-      </div>
-      <div className={body}>
+        </Button>
+      </CardHeader>
+      <CardBody className='pt-1'>
         <SwapForm/>
-      </div>
+      </CardBody>
       <Modal size='lg' isOpen={isPopUpOpen} toggle={() => handlePopUp(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
         <ModalHeader toggle={() => handlePopUp(null)} tag='h4' className='text-primary'>
           Add Asset
@@ -48,11 +49,11 @@ const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets,
           )}
         </ModalBody>
       </Modal>
-    </div>
+    </Card>
 )
 
 const validateAddress = (address) => {
-  if (!web3.utils.isAddress(address)) {
+  if (!web3.utils.isAddress(address) && !Address.isValid(address)) {
     return <p>Please enter a receiving address</p>
   }
 }
@@ -73,7 +74,7 @@ const SwapForm = reduxForm({
         labelProps={{ xs: '12', md: '4' }}
         inputCol={{ xs:'12', md: true }}
         validate={validateAddress}
-        inputClassName={receive}
+        inputClassName={classNames('flat',receive)}
       />
       <div style={{ position: 'relative' }}>
         <ReduxFormField
@@ -86,6 +87,7 @@ const SwapForm = reduxForm({
           autoFocus
           labelProps={{ xs: '12', md: '4' }}
           inputCol={{ xs:'12', md: true }}
+          inputClassName='flat'
         />
         <Expandable 
           style={{ position: 'absolute', top: 16, right: 25 }} 
@@ -104,6 +106,7 @@ const SwapForm = reduxForm({
           autoFocus
           labelProps={{ xs: '12', md: '4' }}
           inputCol={{ xs:'12', md: true }}
+          inputClassName='flat'
         />
          <Expandable 
           style={{ position: 'absolute', top: 16, right: 25 }} 
@@ -112,7 +115,7 @@ const SwapForm = reduxForm({
         </Expandable>
       </div>
     </div>
-    <Button className={classNames('mt-4', submitButton)} color='primary' type='submit' disabled={invalid}>
+    <Button className={classNames('mt-2 mb-2 mx-auto', submitButton)} color='primary' type='submit' disabled={invalid}>
       Swap
     </Button>
   </Form>
