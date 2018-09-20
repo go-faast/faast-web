@@ -121,6 +121,8 @@ const createSwundleTxs = (swundle, options) => (dispatch, getState) => {
     const swapsByAsset = groupBy(walletSwaps, 'sendSymbol')
     log.debug('swapsByAsset', swapsByAsset)
 
+    let previousTx // Used to track eth tx nonce
+
     return Promise.all(Object.entries(swapsByAsset).map(([symbol, swaps]) => {
       if (walletInstance.isAggregateTransactionSupported(symbol)) {
         if (swaps.some((swap) => swap.error)) { return }
@@ -138,10 +140,9 @@ const createSwundleTxs = (swundle, options) => (dispatch, getState) => {
           })
       } else {
         // Create a transaction for each swap (e.g. ethereum)
-        let previousTx
         return processArray(swaps, (swap) => dispatch(createSwapTx(swap, { ...options, previousTx }))
           .then((tx) => {
-            if (!tx.error) {
+            if (!tx.error && tx.feeSymbol === 'ETH') {
               previousTx = tx
             }
           }))
