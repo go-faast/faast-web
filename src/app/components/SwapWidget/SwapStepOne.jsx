@@ -42,7 +42,7 @@ const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets,
         </Button>
       </CardHeader>
       <CardBody className='pt-1'>
-        <SwapForm onSubmit={(values) => handleSwapSubmit(values)} receiveAsset={receive} handleValidation={(address) => handleValidation(address)}/>
+        <SwapForm receiveAsset={receive} handleValidation={(address) => handleValidation(address)}/>
       </CardBody>
       <Modal size='lg' isOpen={isPopUpOpen} toggle={() => handlePopUp(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
         <ModalHeader toggle={() => handlePopUp(null)} tag='h4' className='text-primary'>
