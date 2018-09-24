@@ -15,13 +15,9 @@ import { container, section, submitButton, asset, icon, receive, swap } from './
 import SwapIcon from 'Img/swap-icon.svg?inline'
 import { Address } from 'bitcore-lib'
 
-
-const handleSwapSubmit = (values) => {
-  console.log(values)
-}
-
 const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, 
-  deposit, receive, handleSelectedAsset, handleDepositSymbol, handleReceiveSymbol, handleValidation }) => (
+  deposit, receive, handleSelectedAsset, handleDepositSymbol, handleReceiveSymbol, 
+  handleReceiveAddressValidation, handleReturnAddressValidation, handleSwapSubmit }) => (
     <Card className={classNames('container justify-content-center p-0', container)}>
       <CardHeader className='text-center pb-4'>
         <h4 className='mb-3 mt-1'>Swap Instantly</h4>
@@ -42,7 +38,13 @@ const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets,
         </Button>
       </CardHeader>
       <CardBody className='pt-1'>
-        <SwapForm receiveAsset={receive} handleValidation={(address) => handleValidation(address)}/>
+        <SwapForm 
+          onSubmit={handleSwapSubmit} 
+          receiveAsset={receive} 
+          depositAsset={deposit} 
+          handleReturnAddressValidation={handleReturnAddressValidation} 
+          handleReceiveAddressValidation={handleReceiveAddressValidation}
+        />
       </CardBody>
       <Modal size='lg' isOpen={isPopUpOpen} toggle={() => handlePopUp(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
         <ModalHeader toggle={() => handlePopUp(null)} tag='h4' className='text-primary'>
@@ -59,7 +61,7 @@ const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets,
 
 const SwapForm = reduxForm({
   form: 'swapWidget'
-})(({ handleSubmit, invalid, receiveAsset, handleValidation }) => (
+})(({ handleSubmit, invalid, receiveAsset, depositAsset, handleReturnAddressValidation, handleReceiveAddressValidation }) => (
   <Form onSubmit={handleSubmit}>
     <div className={section}>
       <ReduxFormField
@@ -70,9 +72,12 @@ const SwapForm = reduxForm({
         type='text'
         placeholder={`${receiveAsset.symbol} Receive Address`}
         autoFocus
+        autoCorrect='false'
+        autoCapitalize='false'
+        spellCheck='false'
         labelProps={{ xs: '12', md: '4' }}
         inputCol={{ xs:'12', md: true }}
-        validate={handleValidation}
+        validate={handleReceiveAddressValidation}
         inputClassName={classNames('flat',receive)}
       />
       <div style={{ position: 'relative' }}>
@@ -81,9 +86,12 @@ const SwapForm = reduxForm({
           className='gutter-3 align-items-center'
           id='deposit'
           name='deposit'
-          type='text'
-          placeholder='Deposit Amount (optional)'
+          type='number'
+          placeholder={`${depositAsset.symbol} Deposit Amount (optional)`}
           autoFocus
+          autoCorrect='false'
+          autoCapitalize='false'
+          spellCheck='false'
           labelProps={{ xs: '12', md: '4' }}
           inputCol={{ xs:'12', md: true }}
           inputClassName='flat'
@@ -101,10 +109,14 @@ const SwapForm = reduxForm({
           id='return'
           name='return'
           type='text'
-          placeholder='Return Address (optional)'
+          placeholder={`${depositAsset.symbol} Return Address (optional)`}
+          autoCorrect='false'
+          autoCapitalize='false'
+          spellCheck='false'
           autoFocus
           labelProps={{ xs: '12', md: '4' }}
           inputCol={{ xs:'12', md: true }}
+          validate={handleReturnAddressValidation}
           inputClassName='flat'
         />
          <Expandable 
@@ -160,17 +172,30 @@ export default compose(
       }
       handlePopUp()
     },
-    handleValidation: ({ receive }) => (address) => {
+    handleReceiveAddressValidation: ({ receive }) => (address) => {
       const { symbol, ERC20 } = receive
-      console.log(receive)
       //if no address is valid
       if (!web3.utils.isAddress(address) && !Address.isValid(address)) {
-        return <span>Please enter a valid {receive.symbol} wallet address</span>
+        return `Please enter a valid ${symbol} wallet address`
       }
       //if addresses are valid but wrong wallet
       else if ((web3.utils.isAddress(address) && (symbol !== 'ETH' && !ERC20)) || (Address.isValid(address) && symbol !== 'BTC')) {
-        return <span>Please enter a valid {receive.symbol} wallet address</span>
+        return `Please enter a valid ${symbol} wallet address`
       }
+    },
+    handleReturnAddressValidation: ({ deposit }) => (address) => {
+      const { symbol, ERC20 } = deposit
+      //if no address is valid
+      if (!web3.utils.isAddress(address) && !Address.isValid(address) && address) {
+        return `Please enter a valid ${symbol} wallet address`
+      }
+      //if addresses are valid but wrong wallet
+      else if ((web3.utils.isAddress(address) && (symbol !== 'ETH' && !ERC20)) || (Address.isValid(address) && symbol !== 'BTC') && address) {
+        return `Please enter a valid ${symbol} wallet address`
+      }
+    },
+    handleSwapSubmit: () => (values) => {
+      console.log('values!', values)
     }
   })
 )(SwapStepOne)
