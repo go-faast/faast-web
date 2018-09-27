@@ -1,28 +1,28 @@
 import React, { Fragment } from 'react'
-import { isEmpty } from 'lodash'
 import { connect } from 'react-redux'
 import { push as pushAction } from 'react-router-redux'
-import { compose, setDisplayName, lifecycle, setPropTypes, defaultProps, withProps, withHandlers } from 'recompose'
+import { compose, setDisplayName, lifecycle, setPropTypes, defaultProps, withHandlers } from 'recompose'
 import classNames from 'class-names'
 import { createStructuredSelector } from 'reselect'
 import routes from 'Routes'
 import Expandable from 'Components/Expandable'
+import Units from 'Components/Units'
 import CoinIcon from 'Components/CoinIcon'
 import ProgressBar from 'Components/ProgressBar'
-import SwapStatusCard from 'Components/SwapStatusCard'
-import { Button, Input, Col, Row, Card, CardHeader, CardBody } from 'reactstrap'
-import { container, section, submitButton, asset, icon, receive, qr, scan } from './style.scss'
-import { toBigNumber } from 'Utilities/convert'
+import { Button, Input, Col, Row, Card, CardHeader, CardBody, CardFooter } from 'reactstrap'
+import { container, submitButton, qr, scan, receipt } from './style.scss'
 import QRCode from 'qrcode.react'
 import toastr from 'Utilities/toastrWrapper'
-import SwapIcon from 'Img/swap-icon.svg?inline'
 import { fetchManualSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
 import PropTypes from 'prop-types'
 
 const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap }) => {
   swap = swap ? swap : {}
-  const { id = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', amountDeposited = '' } = swap
+  const { id = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', 
+  amountDeposited = '', receiveAmount = '', status = {}, receiveAsset = {}, inverseRate = '', orderStatus = '' } = swap
+  const { code = '', details = '', detailsCode = '' } = status
+  const { ERC20, symbol } = receiveAsset
   console.log(swap)
   return (
     <Fragment>
@@ -47,10 +47,53 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap
             <Button color='link' className='p-2' onClick={handleCopy}><i className='fa fa-copy'/></Button>
           </Col>
          </Row>
-         <div>
-           <Button onClick={() => handleTrackSwap(id)} className={classNames('mt-4 mb-2 mx-auto', submitButton)} color='primary'>Track Swap</Button>
-           <small className='text-muted'>* Track swap after you have deposited {sendSymbol} to the generated wallet address</small>
-         </div>
+        <CardFooter style={{ border: 'none', position: 'relative' }}>
+          <div className={receipt}></div>
+          <p className='mt-2' style={{ letterSpacing: 5 }}>ORDER DETAILS</p>
+          <table style={{ lineHeight: 1.25, textAlign: 'left' }}>
+            <tbody>
+              <tr>
+                <td><b>Status:</b></td>
+                <td colSpan='2' className='px-2' style={{ textTransform: 'capitalize' }}>
+                  {orderStatus} <i className='fa fa-spinner fa-pulse'/>
+                </td>
+              </tr>
+              <tr>
+                <td><b>Order ID:</b></td>
+                <td colSpan='2' className='px-2'>{id}</td>
+              </tr>
+              { amountDeposited && amountDeposited > 0 ?
+              <tr>
+                <td><b>Send Amount:</b></td>
+                <td colSpan='2' className='px-2'>{amountDeposited} {sendSymbol}</td>
+              </tr> :
+              null
+              }
+              { receiveAmount && receiveAmount > 0 ?
+              <tr>
+                <td><b>Receive Amount:</b></td>
+                <td colSpan='2' className='px-2'>{receiveAmount} {receiveSymbol}</td>
+              </tr> :
+              null
+              }
+              <tr>
+                <td><b>Rate:</b></td>
+                <td colSpan='2' className='px-2'>
+                  { isFinite(inverseRate) ? 
+                  <span>1 {sendSymbol} = <Units value={inverseRate} precision={6}/> {receiveSymbol}</span> :
+                    'Order will be fulfilled at the current market rate'}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          {(symbol == 'ETH' || ERC20) ?
+            <Fragment>
+              <Button onClick={() => handleTrackSwap(id)} className={classNames('mt-4 mb-2 mx-auto', submitButton)} color='primary' disabled={orderStatus === 'awaiting deposit'}>Track Swap</Button>
+              <small className='text-muted'>* You can track the status of the swap after your deposit of {sendSymbol} is detected</small>
+            </Fragment>
+            : null
+          }
+        </CardFooter>
         </CardBody>
       </Card>
     </Fragment>
@@ -89,9 +132,9 @@ export default compose(
     }
   }),
   lifecycle({
-    componentWillMount() {
+    componentDidMount() {
       const { swapId, fetchManualSwap } = this.props
       fetchManualSwap(swapId)
-    }
+    },
   })
 )(SwapStepTwo)

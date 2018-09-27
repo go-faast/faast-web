@@ -102,7 +102,7 @@ export const createOrder = (swap) => (dispatch) => Promise.resolve().then(() => 
 export const createManualOrder = (swap) => (dispatch) => Promise.resolve().then(() => {
   if (swap.error) return swap
   const finish = dispatch(createSwapFinish('createOrder', swap))
-  const { receiveAddress, refundAddress, sendAmount, sendSymbol, receiveSymbol, id } = swap
+  const { receiveAddress, refundAddress, sendAmount, sendSymbol, receiveSymbol } = swap
   const userId = receiveAddress
   return Faast.postFixedPriceSwap(
     toNumber(sendAmount),
@@ -189,6 +189,7 @@ export const fetchManualSwap = (swapId) => (dispatch, getState) => {
         receiveSymbol: withdrawal_currency,
         orderStatus: status
       }
+      dispatch(pollOrderStatus(stateSwap))
       return dispatch(swapAdded(stateSwap))})
     .then(() => dispatch(addManualProperty(swapId)))
     .then(() => getSwap(getState(), swapId))
