@@ -62,6 +62,10 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap
                 <td colSpan='2' className='px-2'>{id}</td>
               </tr>
               <tr>
+                <td><b>Receive Address:</b></td>
+                <td colSpan='2' className='px-2'>{receiveAddress}</td>
+              </tr>
+              <tr>
                 <td><b>Rate:</b></td>
                 <td colSpan='2' className='px-2'>
                   { isFinite(inverseRate) ? 

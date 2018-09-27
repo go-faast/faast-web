@@ -24,7 +24,7 @@ import uuid from 'uuid/v4'
 import { createManualSwap } from 'Actions/swap'
 import { searchAddress, addToPortfolio } from 'Actions/accountSearch'
 
-const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, 
+const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, handleSendAmountValidation,
   sendSymbol, receiveSymbol, handleSelectedAsset, handleSendSymbol, handleReceiveSymbol, 
   handleReceiveAddressValidation, handleReturnAddressValidation, handleSwapSubmit, isLoadingSwap }) => (
     <Fragment>
@@ -56,6 +56,7 @@ const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets,
             initialValues={{ sendSymbol, receiveSymbol }}
             handleReturnAddressValidation={handleReturnAddressValidation} 
             handleReceiveAddressValidation={handleReceiveAddressValidation}
+            handleSendAmountValidation={handleSendAmountValidation}
             isLoadingSwap={isLoadingSwap}
           />
         </CardBody>
@@ -78,7 +79,8 @@ const SwapForm = reduxForm({
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   updateUnregisteredFields: true
-})(({ handleSubmit, invalid, sendSymbol, receiveSymbol, handleReturnAddressValidation, handleReceiveAddressValidation, isLoadingSwap }) => (
+})(({ handleSubmit, invalid, sendSymbol, receiveSymbol, handleReturnAddressValidation, 
+  handleReceiveAddressValidation, isLoadingSwap, handleSendAmountValidation }) => (
   <Form onSubmit={handleSubmit}>
     <div className={section}>
     <ReduxFormField
@@ -138,6 +140,7 @@ const SwapForm = reduxForm({
           spellCheck='false'
           labelProps={{ xs: '12', md: '4' }}
           inputCol={{ xs:'12', md: true }}
+          validate={handleSendAmountValidation}
           inputClass='flat'
         />
         <Expandable 
@@ -246,6 +249,11 @@ export default compose(
       //if addresses are valid but wrong wallet
       else if ((web3.utils.isAddress(address) && (symbol !== 'ETH' && !ERC20)) || (Address.isValid(address) && symbol !== 'BTC') && address) {
         return `Please enter a valid ${symbol} wallet address`
+      }
+    },
+    handleSendAmountValidation: () => (sendAmount) => {
+      if (sendAmount && sendAmount <= 0) {
+        return 'Please enter a deposit amount greater than 0 or omit'
       }
     },
     handleSwapSubmit: ({ createSwap, searchAddress, isAlreadyInPortfolio, addWalletToPortfolio, receive, handleForward, handleLoading }) => (values) => {
