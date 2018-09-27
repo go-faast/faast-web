@@ -208,7 +208,7 @@ export default compose(
     receive: (state, { receiveSymbol }) => getAsset(state, receiveSymbol)
   })),
   withHandlers({
-    handleForward: ({ push }) => (orderId) => push(`/widget/swap?id=${orderId}`),
+    handleForward: ({ push }) => (orderId) => push(`/swap?id=${orderId}`),
   }),
   withHandlers({
     handleSelectedAsset: ({ assetType, handlePopUp, handleSendSymbol, handleReceiveSymbol, sendSymbol, receiveSymbol }) => (asset) => {
@@ -261,7 +261,7 @@ export default compose(
           return searchAddress(receiveAddress)})
         .then(() => {
           if (!isAlreadyInPortfolio && symbol === 'ETH' || ERC20) { 
-            return addWalletToPortfolio(`widget/swap?id=${id}`) 
+            return addWalletToPortfolio(`swap?id=${id}`) 
           }
           return handleForward(id)
         })

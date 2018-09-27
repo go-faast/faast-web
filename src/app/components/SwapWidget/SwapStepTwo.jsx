@@ -5,7 +5,7 @@ import { compose, setDisplayName, lifecycle, setPropTypes, defaultProps, withHan
 import classNames from 'class-names'
 import { createStructuredSelector } from 'reselect'
 import routes from 'Routes'
-import Expandable from 'Components/Expandable'
+import WalletLabel from 'Components/WalletLabel'
 import Units from 'Components/Units'
 import CoinIcon from 'Components/CoinIcon'
 import ProgressBar from 'Components/ProgressBar'
@@ -17,11 +17,10 @@ import { fetchManualSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
 import PropTypes from 'prop-types'
 
-const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap }) => {
+const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap, handleConnectWallet }) => {
   swap = swap ? swap : {}
-  const { id = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', 
-  amountDeposited = '', receiveAmount = '', status = {}, receiveAsset = {}, inverseRate = '', orderStatus = '' } = swap
-  const { code = '', details = '', detailsCode = '' } = status
+  const { id = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
+  amountDeposited = '', receiveAmount = '', receiveAsset = {}, inverseRate = '', orderStatus = '' } = swap
   const { ERC20, symbol } = receiveAsset
   console.log(swap)
   return (
@@ -91,7 +90,10 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap
               <Button onClick={() => handleTrackSwap(id)} className={classNames('mt-4 mb-2 mx-auto', submitButton)} color='primary' disabled={orderStatus === 'awaiting deposit'}>Track Swap</Button>
               <small className='text-muted'>* You can track the status of the swap after your deposit of {sendSymbol} is detected</small>
             </Fragment>
-            : null
+            : <Fragment>
+                <Button onClick={handleConnectWallet} className={classNames('mt-4 mb-2 mx-auto', submitButton)} color='primary' disabled={orderStatus === 'awaiting deposit'}>Connect Wallet</Button>
+                <small className='text-muted'>* Track the swap by connecting your wallet <br/> <i>{receiveAddress}</i> after you have deposited {sendSymbol}</small>
+              </Fragment>
           }
         </CardFooter>
         </CardBody>
@@ -129,6 +131,7 @@ export default compose(
         toastr.info('Address copied to clipboard')
       },
       handleTrackSwap: ({ push }) => (orderId) => push(routes.tradeDetail(orderId)),
+      handleConnectWallet: ({ push }) => () => push('/portfolio/connect')
     }
   }),
   lifecycle({
