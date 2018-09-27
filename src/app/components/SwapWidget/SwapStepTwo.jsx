@@ -94,7 +94,7 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap
             </Fragment>
             : <Fragment>
                 <Button onClick={handleConnectWallet} className={classNames('mt-4 mb-2 mx-auto', submitButton)} color='primary' disabled={orderStatus === 'awaiting deposit'}>Connect Wallet</Button>
-                <small className='text-muted'>* Track the swap by connecting your wallet <br/> <i>{receiveAddress}</i> after you have deposited {sendSymbol}</small>
+                <small className='text-muted'>* Track the swap by connecting your wallet <br/> <i>{receiveAddress}</i> after your deposit of {sendSymbol} is detected</small>
               </Fragment>
           }
         </CardFooter>
