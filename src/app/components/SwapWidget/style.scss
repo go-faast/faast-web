@@ -64,7 +64,7 @@ button {
     top: 0px;
     left: -25%;
     width: 150%;
-    height: 15px;
+    height: 6px;
     background: rgba(255, 36, 62, 0.5);
     border-top: 1px solid rgba(255, 36, 62, 0.8);
     border-bottom: 1px solid rgba(255, 36, 62, 0.8);
@@ -90,7 +90,7 @@ button {
       opacity:1;
     }
     25% {
-      top: 160px;
+      top: 170px;
       opacity:1;
     }
     50% {
@@ -98,11 +98,11 @@ button {
       opacity:1;
     }
     90% {
-      top: 160px;
+      top: 170px;
       opacity:1;
     }
     100% {
-      top: 160px;
+      top: 170px;
       opacity: 0;
     }
 }

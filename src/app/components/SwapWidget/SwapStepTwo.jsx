@@ -44,7 +44,7 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap
             <Button color='link' className='p-2' onClick={handleCopy}><i className='fa fa-copy'/></Button>
           </Col>
          </Row>
-        <CardFooter style={{ border: 'none', position: 'relative' }}>
+        <CardFooter style={{ border: 'none', position: 'relative', wordBreak: 'break-word' }}>
           <div className={receipt}></div>
           <p className='mt-2' style={{ letterSpacing: 5 }}>ORDER DETAILS</p>
           <table style={{ lineHeight: 1.25, textAlign: 'left' }}>
@@ -52,7 +52,7 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap
               <tr>
                 <td><b>Status:</b></td>
                 <td colSpan='2' className='px-2' style={{ textTransform: 'capitalize' }}>
-                  {orderStatus} <i className='fa fa-spinner fa-pulse'/>
+                  {orderStatus} {orderStatus !== 'complete' ? <i className='fa fa-spinner fa-pulse'/> : null}
                 </td>
               </tr>
               <tr>
