@@ -24,6 +24,7 @@ const StatusFooter = ({ className, children, ...props }) => (
 const priceChange = (date, asset) => {
   const { change1, change7d, change24 } = asset
   // falsey date => hasn't loaded yet so default to 1h change
+  date = new Date(date)
   const hoursSinceTrade = !date ? 0 : (Date.now() - date.getTime()) / 3600000
   const timespan = hoursSinceTrade <= 1 ? 'Last 1hr: ' : hoursSinceTrade >= 24 ? 'Last 7d: ' : 'Last 24hrs: '
   var priceChange = hoursSinceTrade <= 1 ? change1 : hoursSinceTrade >= 24 ? change7d : change24
@@ -65,7 +66,7 @@ export default compose(
     receiveWalletId, receiveSymbol, receiveAsset, receiveAmount, receiveAddress,
     error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee,
     tx: { confirmed, succeeded, hash: txHash, feeAmount: txFee, feeSymbol: txFeeSymbol },
-    status: { code, details, detailsCode }, createdAt, initializing,
+    status: { code, details, detailsCode }, createdAt, initializing, isManual
   },
   statusText, showDetails, isExpanded, togglerProps, expanded
 }) => {
@@ -74,7 +75,7 @@ export default compose(
     : (<Spinner inline size='sm'/>))
   return (
     <Card className='flat'>
-      <CardBody className='py-2 pr-3 pl-2 border-0 lh-0' {...togglerProps} style={{ minHeight: '4rem' }}>
+      <CardBody className={`py-2 pr-3 pl-2 border-0 ${receiveAmount ? 'lh-0' : 'pt-3 pb-3'}`} {...togglerProps} style={{ minHeight: '4rem' }}>
         <Row className='gutter-0 align-items-center font-size-small text-muted'>
           <Col xs='auto'>
             { expanded === null ? <i style={{ transition: 'all .15s ease-in-out' }} className={classNames('fa fa-chevron-circle-down text-primary px-2 mr-2', { ['fa-rotate-180']: isExpanded })}/> : false }
@@ -86,9 +87,9 @@ export default compose(
                 <Row className='gutter-2'>
                   <Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, sendAsset)}</Col>
                   <Col xs='12' className='order-sm-2 font-size-sm pt-0'>{sendAsset.name}</Col>
-                  <Col xs='12' className='text-white'>
+                  {sendAmount ? (<Col xs='12' className='text-white'>
                     <Units value={sendAmount} symbol={sendSymbol} prefix='-'/>
-                  </Col>
+                  </Col>) : null}
                 </Row>
               </Col>
             </Row>
@@ -104,9 +105,9 @@ export default compose(
                 <Row className='gutter-2'>
                   <Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, receiveAsset)}</Col>
                   <Col xs='12' className='order-sm-2 font-size-sm pt-0'>{receiveAsset.name}</Col>
-                  <Col xs='12' className='text-white'>
+                  {receiveAmount ? (<Col xs='12' className='text-white'>
                     <UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} prefix='+'/>
-                  </Col>
+                  </Col>) : null}
                 </Row>
               </Col>
             </Row>
@@ -132,12 +133,13 @@ export default compose(
                   {details}
                 </td>
               </tr>
-              <tr>
+              {(!isManual || rate) ? 
+              (<tr>
                 <td><b>Rate:</b></td>
                 <td colSpan='2' className='px-2'>
                   <UnitsLoading value={rate} symbol={sendSymbol} error={error} precision={null} prefix={`1 ${receiveSymbol} = `}/>
                 </td>
-              </tr>
+              </tr>) : null }
               { (txFee || initializing) && (
                 <tr>
                   <td><b>Network fee:</b></td>

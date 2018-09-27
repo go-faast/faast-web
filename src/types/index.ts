@@ -27,5 +27,6 @@ export interface SwapOrder {
   amountWithdrawn?: number
   backendOrderId?: string
   backendOrderState?: string
-  receiveTxId?: string
+  receiveTxId?: string,
+  isManual?: boolean
 }

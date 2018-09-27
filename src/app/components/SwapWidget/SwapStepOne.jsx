@@ -1,76 +1,117 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { compose, setDisplayName, withProps, withState, withStateHandlers, withHandlers } from 'recompose'
 import classNames from 'class-names'
 import { reduxForm } from 'redux-form'
 import { createStructuredSelector } from 'reselect'
 import { getAllAssetsArray, getAsset } from 'Selectors/asset'
+import {
+  isAccountSearchResultWalletInPortfolio,
+} from 'Selectors'
 import ReduxFormField from 'Components/ReduxFormField'
 import Expandable from 'Components/Expandable'
 import CoinIcon from 'Components/CoinIcon'
 import AssetSelector from 'Components/AssetSelector'
+import ProgressBar from 'Components/ProgressBar'
 import { Form, Button, Modal, ModalHeader, ModalBody, Card, CardHeader, CardBody } from 'reactstrap'
 import web3 from 'Services/Web3'
 import { container, section, submitButton, asset, icon, receive, swap } from './style.scss'
+import { toBigNumber } from 'Utilities/convert'
 import SwapIcon from 'Img/swap-icon.svg?inline'
 import { Address } from 'bitcore-lib'
+import uuid from 'uuid/v4'
+import { createManualSwap } from 'Actions/swap'
+import { searchAddress, addToPortfolio } from 'Actions/accountSearch'
 
 const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, 
-  deposit, receive, handleSelectedAsset, handleDepositSymbol, handleReceiveSymbol, 
+  sendSymbol, receiveSymbol, handleSelectedAsset, handleSendSymbol, handleReceiveSymbol, 
   handleReceiveAddressValidation, handleReturnAddressValidation, handleSwapSubmit }) => (
-    <Card className={classNames('container justify-content-center p-0', container)}>
-      <CardHeader className='text-center pb-4'>
-        <h4 className='mb-3 mt-1'>Swap Instantly</h4>
-        <Button color='ultra-dark' className='flat mb-3 p-0' onClick={() => handlePopUp('deposit')}>
-          <div className={asset}>
-            <CoinIcon key={deposit.symbol} symbol={deposit.symbol} style={{ width: 48, height: 48 }} className='m-1'/>
-            <h4 className='m-0'>{deposit.symbol}</h4>
-            <p>Deposit</p>
-          </div>
-        </Button>
-        <Button color='ultra-dark' className={classNames('flat', swap)} onClick={() => { handleDepositSymbol(receive.symbol); handleReceiveSymbol(deposit.symbol) }}><SwapIcon/></Button>
-        <Button color='ultra-dark' className='flat mb-3 p-0' onClick={() => handlePopUp('receive')}>
-          <div className={asset}>
-            <CoinIcon key={receive.symbol} symbol={receive.symbol} style={{ width: 48, height: 48 }} className='m-1'/>
-            <h4 className='m-0'>{receive.symbol}</h4>
-            <p>Receive</p>
-          </div>
-        </Button>
-      </CardHeader>
-      <CardBody className='pt-1'>
-        <SwapForm 
-          onSubmit={handleSwapSubmit} 
-          receiveAsset={receive} 
-          depositAsset={deposit} 
-          handleReturnAddressValidation={handleReturnAddressValidation} 
-          handleReceiveAddressValidation={handleReceiveAddressValidation}
-        />
-      </CardBody>
-      <Modal size='lg' isOpen={isPopUpOpen} toggle={() => handlePopUp(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
-        <ModalHeader toggle={() => handlePopUp(null)} tag='h4' className='text-primary'>
-          Add Asset
-        </ModalHeader>
-        <ModalBody>
-          {isPopUpOpen && (
-            <AssetSelector selectAsset={handleSelectedAsset} supportedAssetSymbols={supportedAssets}/>
-          )}
-        </ModalBody>
-      </Modal>
-    </Card>
+    <Fragment>
+      <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, 'Track Swap']} currentStep={0}/>
+      <Card className={classNames('container justify-content-center p-0', container)}>
+        <CardHeader className='text-center pb-4'>
+          <h4 className='mb-3 mt-1'>Swap Instantly</h4>
+          <Button color='ultra-dark' className='flat mb-3 p-0' onClick={() => handlePopUp('deposit')}>
+            <div className={asset}>
+              <CoinIcon key={sendSymbol} symbol={sendSymbol} style={{ width: 48, height: 48 }} className='m-1'/>
+              <h4 className='m-0'>{sendSymbol}</h4>
+              <p>Deposit</p>
+            </div>
+          </Button>
+          <Button color='ultra-dark' className={classNames('flat', swap)} onClick={() => { handleSendSymbol(receiveSymbol); handleReceiveSymbol(sendSymbol) }}><SwapIcon/></Button>
+          <Button color='ultra-dark' className='flat mb-3 p-0' onClick={() => handlePopUp('receive')}>
+            <div className={asset}>
+              <CoinIcon key={receiveSymbol} symbol={receiveSymbol} style={{ width: 48, height: 48 }} className='m-1'/>
+              <h4 className='m-0'>{receiveSymbol}</h4>
+              <p>Receive</p>
+            </div>
+          </Button>
+        </CardHeader>
+        <CardBody className='pt-1'>
+          <SwapForm 
+            onSubmit={handleSwapSubmit} 
+            receiveSymbol={receiveSymbol} 
+            sendSymbol={sendSymbol}
+            initialValues={{ sendSymbol, receiveSymbol }}
+            handleReturnAddressValidation={handleReturnAddressValidation} 
+            handleReceiveAddressValidation={handleReceiveAddressValidation}
+          />
+        </CardBody>
+        <Modal size='lg' isOpen={isPopUpOpen} toggle={() => handlePopUp(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
+          <ModalHeader toggle={() => handlePopUp(null)} tag='h4' className='text-primary'>
+            Add Asset
+          </ModalHeader>
+          <ModalBody>
+            {isPopUpOpen && (
+              <AssetSelector selectAsset={handleSelectedAsset} supportedAssetSymbols={supportedAssets}/>
+            )}
+          </ModalBody>
+        </Modal>
+      </Card>
+    </Fragment>
 )
 
 const SwapForm = reduxForm({
-  form: 'swapWidget'
-})(({ handleSubmit, invalid, receiveAsset, depositAsset, handleReturnAddressValidation, handleReceiveAddressValidation }) => (
+  form: 'swapWidget',
+  enableReinitialize: true,
+  keepDirtyOnReinitialize: true,
+  updateUnregisteredFields: true
+})(({ handleSubmit, invalid, sendSymbol, receiveSymbol, handleReturnAddressValidation, handleReceiveAddressValidation }) => (
   <Form onSubmit={handleSubmit}>
     <div className={section}>
+    <ReduxFormField
+        row
+        className='gutter-3 align-items-center'
+        id='sendSymbol'
+        name='sendSymbol'
+        type='hidden'
+        autoFocus
+        autoCorrect='false'
+        autoCapitalize='false'
+        spellCheck='false'
+        labelProps={{ xs: '12', md: '4' }}
+        inputClass='flat'
+      />
       <ReduxFormField
         row
         className='gutter-3 align-items-center'
-        id='receive'
-        name='receive'
+        id='receiveSymbol'
+        name='receiveSymbol'
+        type='hidden'
+        autoFocus
+        autoCorrect='false'
+        autoCapitalize='false'
+        spellCheck='false'
+        labelProps={{ xs: '12', md: '4' }}
+        inputClass='flat'
+      />
+      <ReduxFormField
+        row
+        className='gutter-3 align-items-center'
+        id='receiveAddress'
+        name='receiveAddress'
         type='text'
-        placeholder={`${receiveAsset.symbol} Receive Address`}
+        placeholder={`${receiveSymbol} Receive Address`}
         autoFocus
         autoCorrect='false'
         autoCapitalize='false'
@@ -78,23 +119,24 @@ const SwapForm = reduxForm({
         labelProps={{ xs: '12', md: '4' }}
         inputCol={{ xs:'12', md: true }}
         validate={handleReceiveAddressValidation}
-        inputClassName={classNames('flat',receive)}
+        inputClass={classNames('flat', receive)}
       />
+
       <div style={{ position: 'relative' }}>
         <ReduxFormField
           row
           className='gutter-3 align-items-center'
-          id='deposit'
-          name='deposit'
+          id='sendAmount'
+          name='sendAmount'
           type='number'
-          placeholder={`${depositAsset.symbol} Deposit Amount (optional)`}
+          placeholder={`${sendSymbol} Deposit Amount (optional)`}
           autoFocus
           autoCorrect='false'
           autoCapitalize='false'
           spellCheck='false'
           labelProps={{ xs: '12', md: '4' }}
           inputCol={{ xs:'12', md: true }}
-          inputClassName='flat'
+          inputClass='flat'
         />
         <Expandable 
           style={{ position: 'absolute', top: 16, right: 25 }} 
@@ -106,10 +148,10 @@ const SwapForm = reduxForm({
         <ReduxFormField
           row
           className='gutter-3 align-items-center'
-          id='return'
-          name='return'
+          id='refundAddress'
+          name='refundAddress'
           type='text'
-          placeholder={`${depositAsset.symbol} Return Address (optional)`}
+          placeholder={`${sendSymbol} Return Address (optional)`}
           autoCorrect='false'
           autoCapitalize='false'
           spellCheck='false'
@@ -117,7 +159,7 @@ const SwapForm = reduxForm({
           labelProps={{ xs: '12', md: '4' }}
           inputCol={{ xs:'12', md: true }}
           validate={handleReturnAddressValidation}
-          inputClassName='flat'
+          inputClass='flat'
         />
          <Expandable 
           style={{ position: 'absolute', top: 16, right: 25 }} 
@@ -127,7 +169,7 @@ const SwapForm = reduxForm({
       </div>
     </div>
     <Button className={classNames('mt-2 mb-2 mx-auto', submitButton)} color='primary' type='submit' disabled={invalid}>
-      Swap
+      Create Swap
     </Button>
   </Form>
 ))
@@ -135,8 +177,13 @@ const SwapForm = reduxForm({
 export default compose(
   setDisplayName('SwapStepOne'),
   connect(createStructuredSelector({
-    assets: getAllAssetsArray
-  })),
+    assets: getAllAssetsArray,
+    isAlreadyInPortfolio: isAccountSearchResultWalletInPortfolio
+  }), {
+    createSwap: createManualSwap,
+    searchAddress: searchAddress,
+    addWalletToPortfolio: addToPortfolio,
+  }),
   withProps(({ assets }) => {
     let supportedAssets = []
     assets.forEach((asset) => {
@@ -150,24 +197,24 @@ export default compose(
     { isPopUpOpen: false, assetType: null, deposit: {}, receive: {} },
     { handlePopUp: ({ isPopUpOpen }) => (type) => ({ isPopUpOpen: !isPopUpOpen, assetType: type }) },
   ),
-  withState('depositSymbol', 'handleDepositSymbol', 'BTC'),
+  withState('sendSymbol', 'handleSendSymbol', 'BTC'),
   withState('receiveSymbol', 'handleReceiveSymbol', 'ETH'),
   connect(createStructuredSelector({
-    deposit: (state, { depositSymbol }) => getAsset(state, depositSymbol),
+    deposit: (state, { sendSymbol }) => getAsset(state, sendSymbol),
     receive: (state, { receiveSymbol }) => getAsset(state, receiveSymbol)
   })),
   withHandlers({
-    handleSelectedAsset: ({ assetType, handlePopUp, handleDepositSymbol, handleReceiveSymbol, depositSymbol, receiveSymbol }) => (asset) => {
+    handleSelectedAsset: ({ assetType, handlePopUp, handleSendSymbol, handleReceiveSymbol, sendSymbol, receiveSymbol }) => (asset) => {
       const { symbol } = asset
       if (assetType === 'deposit' && (symbol != receiveSymbol)) {
-        handleDepositSymbol(symbol)
+        handleSendSymbol(symbol)
       } else if (assetType === 'deposit' && (symbol === receiveSymbol)) {
-        handleReceiveSymbol(depositSymbol)
-        handleDepositSymbol(symbol)
-      } else if (assetType === 'receive' && (symbol != depositSymbol)) {
+        handleReceiveSymbol(sendSymbol)
+        handleSendSymbol(symbol)
+      } else if (assetType === 'receive' && (symbol != sendSymbol)) {
         handleReceiveSymbol(symbol)
       } else {
-        handleDepositSymbol(receiveSymbol)
+        handleSendSymbol(receiveSymbol)
         handleReceiveSymbol(symbol)
       }
       handlePopUp()
@@ -194,8 +241,22 @@ export default compose(
         return `Please enter a valid ${symbol} wallet address`
       }
     },
-    handleSwapSubmit: () => (values) => {
+    handleSwapSubmit: ({ createSwap, searchAddress, isAlreadyInPortfolio, addWalletToPortfolio }) => (values) => {
       console.log('values!', values)
-    }
+      const { sendAmount, receiveAddress, refundAddress, sendSymbol, receiveSymbol } = values
+      let id = ''
+      createSwap({ id: uuid(), sendAmount: toBigNumber(sendAmount), receiveAddress, refundAddress, sendSymbol, receiveSymbol })
+        .then((s) => { 
+          id = s.id
+          console.log('id!', id)
+          return searchAddress(receiveAddress)})
+        .then(() => { 
+          if (!isAlreadyInPortfolio) { 
+            return addWalletToPortfolio(`widget/swap?id=${id}`) 
+          }
+        })
+        .catch(e => console.log(e))
+
+    },
   })
 )(SwapStepOne)

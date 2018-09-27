@@ -47,9 +47,9 @@ export const openWallet = (walletPromise) => (dispatch, getState) => Promise.res
   })
 
 /** Do everything in openWallet and then redirect to the dashboard */
-export const openWalletAndRedirect = (walletPromise) => (dispatch) => Promise.resolve(walletPromise)
+export const openWalletAndRedirect = (walletPromise, forwardURL) => (dispatch) => Promise.resolve(walletPromise)
   .then((wallet) => dispatch(openWallet(wallet)))
-  .then(() => dispatch(push('/dashboard')))
+  .then(() => dispatch(push(`/${forwardURL}`)))
   .catch((e) => {
     log.error(e)
     toastr.error(e.message)

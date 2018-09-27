@@ -7,6 +7,7 @@ import { resetAll } from 'Actions/app'
 import {
   resetSwaps, swapsRetrieved, swapAdded, swapUpdated, swapRemoved, swapError,
   swapInitStarted, swapInitSuccess, swapInitFailed, swapOrderStatusUpdated, swapTxIdUpdated,
+  addManualProperty,
 } from 'Actions/swap'
 
 type SwapState = SwapOrder & {
@@ -50,6 +51,7 @@ const swapInitialState: SwapState = {
   backendOrderId: undefined,
   backendOrderState: undefined,
   receiveTxId: undefined,
+  isManual: undefined,
 }
 
 const upsert = createUpserter('id', swapInitialState)
@@ -66,6 +68,7 @@ const normalize = (swap: { id?: string, orderId?: string, tx?: object }) => ({
 })
 
 export default createReducer({
+  [addManualProperty]: (state, { id }) => update(state, { id, isManual: true }),
   [resetAll]: () => initialState,
   [resetSwaps]: () => initialState,
   [swapsRetrieved]: (state, swaps) => swaps

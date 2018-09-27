@@ -11,7 +11,7 @@ import TradeDetailModal from 'Components/TradeDetailModal'
 import SwapWidget from 'Components/SwapWidget'
 import {
   root, dashboard, swap, connect, viewOnlyAddress,
-  tradeHistory, tradeDetail, swapWidget
+  tradeHistory, tradeDetail, swapWidget,
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => (

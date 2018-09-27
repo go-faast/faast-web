@@ -63,7 +63,7 @@ export default compose(
               View in portfolio
             </Button>
           ) : (
-            <Button size='sm' color='primary' onClick={handleAddToPortfolio}>
+            <Button size='sm' color='primary' onClick={() => handleAddToPortfolio('dashboard')}>
               Add to portfolio
             </Button>
           )}

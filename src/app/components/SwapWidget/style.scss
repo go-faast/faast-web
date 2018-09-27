@@ -43,7 +43,7 @@ button {
     }
 }
 .receive {
-    border-color: #6bada7 !important;
+    border: 1px solid #6bada7;
 }
 .submitButton {
     display:block;
@@ -52,6 +52,49 @@ button {
 }
 .fadedWhite {
   color: rgba(255, 255, 255, 0.8);
+}
+.qr {
+  position: relative;
+  display: inline-block;
+  border: 1px dashed #353535;
+  padding: 10px 20px;
+}
+.scan {
+    position: absolute;
+    top: 0px;
+    left: -25%;
+    width: 150%;
+    height: 5px;
+    background: rgba(244, 66, 87, 0.6);
+    border-top: 2px solid rgba(244, 66, 87, 0.6);
+    border-bottom: 2px solid rgba(244, 66, 87, 0.6);
+    box-shadow: 0px 4px 6px rgba(244, 66, 87, 0.6);
+    opacity: 1;
+    animation: scan 3s forwards;
+    animation-delay: 1s
+}
+
+@keyframes scan {
+    0% {
+      top: 0px;
+      opacity:1;
+    }
+    25% {
+      top: 160px;
+      opacity:1;
+    }
+    50% {
+      top: 0px;
+      opacity:1;
+    }
+    90% {
+      top: 160px;
+      opacity:1;
+    }
+    100% {
+      top: 160px;
+      opacity: 0;
+    }
 }
 @media screen and (max-width: 560px) {
     .btn {

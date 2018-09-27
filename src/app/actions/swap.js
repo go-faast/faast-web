@@ -1,4 +1,5 @@
 import { flatten } from 'lodash'
+import { toNumber } from 'Utilities/convert'
 
 import { newScopedCreateAction, idPayload } from 'Utilities/action'
 import log from 'Log'
@@ -21,6 +22,7 @@ export const swapError = createAction('ERROR', (id, error, errorType = '') => ({
 export const swapOrderStatusUpdated = createAction('STATUS_UPDATED', (id, status) => ({ id, orderStatus: status }))
 export const swapTxIdUpdated = createAction('TX_ID_UPDATED', (id, txId) => ({ id, txId }))
 
+export const addManualProperty = createAction('ADD_MANUAL_PROPERTY', idPayload)
 export const swapInitStarted = createAction('INIT_STARTED', idPayload)
 export const swapInitSuccess = createAction('INIT_SUCCESS', idPayload)
 export const swapInitFailed = createAction('INIT_FAILED', (id, errorMessage) => ({ id, error: errorMessage }))
@@ -83,7 +85,7 @@ export const createOrder = (swap) => (dispatch) => Promise.resolve().then(() => 
     receiveWalletInstance.getFreshAddress(receiveSymbol),
   ])
   .then(([refundAddress, receiveAddress]) => Faast.postFixedPriceSwap(
-    sendAmount.toNumber(),
+    toNumber(sendAmount),
     sendSymbol,
     receiveAddress,
     receiveSymbol,
@@ -94,6 +96,29 @@ export const createOrder = (swap) => (dispatch) => Promise.resolve().then(() => 
   .catch((e) => {
     log.error('createOrder', e)
     return finish(`Error creating swap for pair ${sendSymbol}->${receiveSymbol}, please contact support@faa.st`)
+  })
+})
+
+export const createManualOrder = (swap) => (dispatch) => Promise.resolve().then(() => {
+  if (swap.error) return swap
+  const finish = dispatch(createSwapFinish('createOrder', swap))
+  const { receiveAddress, refundAddress, sendAmount, sendSymbol, receiveSymbol, id } = swap
+  const userId = receiveAddress
+  return Faast.postFixedPriceSwap(
+    toNumber(sendAmount),
+    sendSymbol,
+    receiveAddress,
+    receiveSymbol,
+    refundAddress,
+    userId,
+  )
+  .then((order) => { 
+    finish(null, order)
+    return order
+  })
+  .catch((e) => {
+    log.error('createManualOrder', e)
+    return finish(`Error creating manual swap for pair ${sendSymbol}->${receiveSymbol}, please contact support@faa.st`)
   })
 })
 
@@ -124,6 +149,50 @@ export const initiateSwap = (swap) => (dispatch, getState) => {
     .then(() => dispatch(swapInitSuccess(swap.id)))
     .then(() => getSwap(getState(), swap.id))
     .catch((e) => dispatch(swapInitFailed(swap.id, e.message || e)))
+}
+
+export const createManualSwap = (swap) => (dispatch, getState) => {
+  let swapId = ''
+  dispatch(swapInitStarted(swap.id))
+  return dispatch(createManualOrder(swap))
+    .then((s) => { 
+      swapId = s.orderId 
+      return dispatch(swapAdded(s))
+    })
+    .then(() => dispatch(addManualProperty(swapId)))
+    .then(() => dispatch(swapInitSuccess(swapId)))
+    .then(() => getSwap(getState(), swapId))
+    .catch((e) => dispatch(swapInitFailed(swapId, e.message || e)))
+}
+
+export const fetchManualSwap = (swapId) => (dispatch, getState) => {
+  return Faast.fetchSwap(swapId)
+    .then((swap) => { 
+      const { swap_id, created_at, user_id, deposit_address, deposit_amount, deposit_currency, 
+        spot_price, price, price_locked_at, price_locked_until, withdrawal_address, 
+        withdrawal_amount, withdrawal_currency, status } = swap
+      const stateSwap = {
+        id: swap_id,
+        orderId: swap_id,
+        createdAt: created_at,
+        userId: user_id,
+        depositAddress: deposit_address,
+        amountDeposited: deposit_amount,
+        sendAmount: deposit_amount,
+        sendSymbol: deposit_currency,
+        spotRate: spot_price,
+        rate: price,
+        rateLockedAt: price_locked_at,
+        rateLockedUntil: price_locked_until,
+        receiveAddress: withdrawal_address,
+        receiveAmount: withdrawal_amount,
+        receiveSymbol: withdrawal_currency,
+        orderStatus: status
+      }
+      return dispatch(swapAdded(stateSwap))})
+    .then(() => dispatch(addManualProperty(swapId)))
+    .then(() => getSwap(getState(), swapId))
+    .catch((e) => dispatch(swapInitFailed(swapId, e.message || e)))
 }
 
 export const signSwap = (swap, passwordCache = {}) => (dispatch, getState) => Promise.resolve()
