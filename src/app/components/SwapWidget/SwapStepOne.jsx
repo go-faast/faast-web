@@ -257,7 +257,6 @@ export default compose(
       }
     },
     handleSwapSubmit: ({ createSwap, searchAddress, isAlreadyInPortfolio, addWalletToPortfolio, receive, handleForward, handleLoading }) => (values) => {
-      console.log('values!', values)
       const { symbol, ERC20 } = receive
       const { sendAmount, receiveAddress, refundAddress, sendSymbol, receiveSymbol } = values
       let id = ''
@@ -265,7 +264,6 @@ export default compose(
       createSwap({ id: uuid(), sendAmount: toBigNumber(sendAmount), receiveAddress, refundAddress, sendSymbol, receiveSymbol })
         .then((s) => { 
           id = s.id
-          console.log('id!', id)
           return searchAddress(receiveAddress)})
         .then(() => {
           if (!isAlreadyInPortfolio && symbol === 'ETH' || ERC20) { 

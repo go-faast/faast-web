@@ -5,7 +5,6 @@ import { compose, setDisplayName, lifecycle, setPropTypes, defaultProps, withHan
 import classNames from 'class-names'
 import { createStructuredSelector } from 'reselect'
 import routes from 'Routes'
-import WalletLabel from 'Components/WalletLabel'
 import Units from 'Components/Units'
 import CoinIcon from 'Components/CoinIcon'
 import ProgressBar from 'Components/ProgressBar'
@@ -22,7 +21,6 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap
   const { id = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
   amountDeposited = '', receiveAmount = '', receiveAsset = {}, inverseRate = '', orderStatus = '' } = swap
   const { ERC20, symbol } = receiveAsset
-  console.log(swap)
   return (
     <Fragment>
         <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={1}/>
