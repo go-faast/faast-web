@@ -10,7 +10,7 @@ import ModalRoute from 'Components/ModalRoute'
 import TradeDetailModal from 'Components/TradeDetailModal'
 import SwapWidget from 'Components/SwapWidget'
 import {
-  root, dashboard, swap, connect, viewOnlyAddress,
+  root, dashboard, rebalance, connect, viewOnlyAddress,
   tradeHistory, tradeDetail, swapWidget,
 } from 'Routes'
 
@@ -25,7 +25,7 @@ const AppView = ({ hasNoWallets }) => (
 
       {/* Routes requiring a connected wallet */}
       <WalletOpened path={dashboard.path} component={Dashboard}/>
-      <WalletOpened path={swap.path} component={Modify}/>
+      <WalletOpened path={rebalance.path} component={Modify}/>
       <WalletOpened path={tradeHistory.path} component={TradeHistory}/>
 
       {/* Routes that don't require a connected wallet */}
@@ -35,7 +35,7 @@ const AppView = ({ hasNoWallets }) => (
 
       {/* Legacy routes */}
       <Redirect exact from='/balances' to={dashboard.path}/>
-      <Redirect exact from='/modify' to={swap.path}/>
+      <Redirect exact from='/modify' to={rebalance.path}/>
 
       {/* Fallback for unknown routes */}
       <Redirect to={dashboard.path}/>

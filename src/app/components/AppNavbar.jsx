@@ -46,10 +46,16 @@ const AppNavbar = ({ disablePortfolioLinks, routerPush, children, isExpanded, to
               <span className='nav-link-label d-sm-inline'>Swap</span>
             </NavLink>
           </NavItem>,
-          <NavItem key='trades'>
-            <NavLink tag={RouterNavLink} to='/trades'>
+          <NavItem key='rebalance'>
+            <NavLink tag={RouterNavLink} to='/rebalance'>
+              <i className='nav-link-icon fa fa-line-chart'/>
+              <span className='nav-link-label d-sm-inline'>Rebalance</span>
+            </NavLink>
+          </NavItem>,
+          <NavItem key='orders'>
+            <NavLink tag={RouterNavLink} to='/orders'>
               <i className='nav-link-icon fa fa-history'/>
-              <span className='nav-link-label d-sm-inline'>Trade History</span>
+              <span className='nav-link-label d-sm-inline'>Orders</span>
             </NavLink>
           </NavItem>,
           <NavItem key='connect'>

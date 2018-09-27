@@ -62,6 +62,14 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap
                 <td><b>Order ID:</b></td>
                 <td colSpan='2' className='px-2'>{id}</td>
               </tr>
+              <tr>
+                <td><b>Rate:</b></td>
+                <td colSpan='2' className='px-2'>
+                  { isFinite(inverseRate) ? 
+                  <span>1 {sendSymbol} = <Units value={inverseRate} precision={6}/> {receiveSymbol}</span> :
+                    'Order will be fulfilled at the current market rate'}
+                </td>
+              </tr>
               { amountDeposited && amountDeposited > 0 ?
               <tr>
                 <td><b>Send Amount:</b></td>
@@ -76,14 +84,6 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap
               </tr> :
               null
               }
-              <tr>
-                <td><b>Rate:</b></td>
-                <td colSpan='2' className='px-2'>
-                  { isFinite(inverseRate) ? 
-                  <span>1 {sendSymbol} = <Units value={inverseRate} precision={6}/> {receiveSymbol}</span> :
-                    'Order will be fulfilled at the current market rate'}
-                </td>
-              </tr>
             </tbody>
           </table>
           {(symbol == 'ETH' || ERC20) ?
