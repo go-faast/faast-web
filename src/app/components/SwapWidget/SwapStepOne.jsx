@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { compose, setDisplayName, withProps, withState, withStateHandlers, withHandlers } from 'recompose'
 import classNames from 'class-names'
 import { reduxForm } from 'redux-form'
+import { push as pushAction } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
 import { getAllAssetsArray, getAsset } from 'Selectors/asset'
 import {
@@ -25,9 +26,9 @@ import { searchAddress, addToPortfolio } from 'Actions/accountSearch'
 
 const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, 
   sendSymbol, receiveSymbol, handleSelectedAsset, handleSendSymbol, handleReceiveSymbol, 
-  handleReceiveAddressValidation, handleReturnAddressValidation, handleSwapSubmit }) => (
+  handleReceiveAddressValidation, handleReturnAddressValidation, handleSwapSubmit, isLoadingSwap }) => (
     <Fragment>
-      <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, 'Track Swap']} currentStep={0}/>
+      <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
       <Card className={classNames('container justify-content-center p-0', container)}>
         <CardHeader className='text-center pb-4'>
           <h4 className='mb-3 mt-1'>Swap Instantly</h4>
@@ -48,13 +49,14 @@ const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets,
           </Button>
         </CardHeader>
         <CardBody className='pt-1'>
-          <SwapForm 
+          <SwapForm
             onSubmit={handleSwapSubmit} 
             receiveSymbol={receiveSymbol} 
             sendSymbol={sendSymbol}
             initialValues={{ sendSymbol, receiveSymbol }}
             handleReturnAddressValidation={handleReturnAddressValidation} 
             handleReceiveAddressValidation={handleReceiveAddressValidation}
+            isLoadingSwap={isLoadingSwap}
           />
         </CardBody>
         <Modal size='lg' isOpen={isPopUpOpen} toggle={() => handlePopUp(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
@@ -76,7 +78,7 @@ const SwapForm = reduxForm({
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   updateUnregisteredFields: true
-})(({ handleSubmit, invalid, sendSymbol, receiveSymbol, handleReturnAddressValidation, handleReceiveAddressValidation }) => (
+})(({ handleSubmit, invalid, sendSymbol, receiveSymbol, handleReturnAddressValidation, handleReceiveAddressValidation, isLoadingSwap }) => (
   <Form onSubmit={handleSubmit}>
     <div className={section}>
     <ReduxFormField
@@ -168,8 +170,8 @@ const SwapForm = reduxForm({
         </Expandable>
       </div>
     </div>
-    <Button className={classNames('mt-2 mb-2 mx-auto', submitButton)} color='primary' type='submit' disabled={invalid}>
-      Create Swap
+    <Button className={classNames('mt-2 mb-2 mx-auto', submitButton)} color='primary' type='submit' disabled={invalid || isLoadingSwap}>
+      {!isLoadingSwap ? 'Create Swap' : 'Generating Swap...' }
     </Button>
   </Form>
 ))
@@ -183,6 +185,7 @@ export default compose(
     createSwap: createManualSwap,
     searchAddress: searchAddress,
     addWalletToPortfolio: addToPortfolio,
+    push: pushAction
   }),
   withProps(({ assets }) => {
     let supportedAssets = []
@@ -199,10 +202,14 @@ export default compose(
   ),
   withState('sendSymbol', 'handleSendSymbol', 'BTC'),
   withState('receiveSymbol', 'handleReceiveSymbol', 'ETH'),
+  withState('isLoadingSwap', 'handleLoading', false),
   connect(createStructuredSelector({
     deposit: (state, { sendSymbol }) => getAsset(state, sendSymbol),
     receive: (state, { receiveSymbol }) => getAsset(state, receiveSymbol)
   })),
+  withHandlers({
+    handleForward: ({ push }) => (orderId) => push(`/widget/swap?id=${orderId}`),
+  }),
   withHandlers({
     handleSelectedAsset: ({ assetType, handlePopUp, handleSendSymbol, handleReceiveSymbol, sendSymbol, receiveSymbol }) => (asset) => {
       const { symbol } = asset
@@ -241,19 +248,22 @@ export default compose(
         return `Please enter a valid ${symbol} wallet address`
       }
     },
-    handleSwapSubmit: ({ createSwap, searchAddress, isAlreadyInPortfolio, addWalletToPortfolio }) => (values) => {
+    handleSwapSubmit: ({ createSwap, searchAddress, isAlreadyInPortfolio, addWalletToPortfolio, receive, handleForward, handleLoading }) => (values) => {
       console.log('values!', values)
+      const { symbol, ERC20 } = receive
       const { sendAmount, receiveAddress, refundAddress, sendSymbol, receiveSymbol } = values
       let id = ''
+      handleLoading(true)
       createSwap({ id: uuid(), sendAmount: toBigNumber(sendAmount), receiveAddress, refundAddress, sendSymbol, receiveSymbol })
         .then((s) => { 
           id = s.id
           console.log('id!', id)
           return searchAddress(receiveAddress)})
-        .then(() => { 
-          if (!isAlreadyInPortfolio) { 
+        .then(() => {
+          if (!isAlreadyInPortfolio && symbol === 'ETH' || ERC20) { 
             return addWalletToPortfolio(`widget/swap?id=${id}`) 
           }
+          return handleForward(id)
         })
         .catch(e => console.log(e))
 

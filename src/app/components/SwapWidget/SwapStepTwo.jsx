@@ -26,7 +26,7 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap
   console.log(swap)
   return (
     <Fragment>
-        <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, 'Track Swap']} currentStep={1}/>
+        <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={1}/>
         <Card className={classNames('container justify-content-center p-0', container)}>
         <CardHeader className='text-center'>
             <h4> Deposit 
