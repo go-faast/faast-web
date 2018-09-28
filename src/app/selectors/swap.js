@@ -32,7 +32,7 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
 
   swap = {
     ...swap,
-    isManual: swap.isManual,
+    isManual: !swap.sendWalletId,
     sendWallet: allWallets[sendWalletId],
     receiveWallet,
     receiveWalletId,
@@ -73,7 +73,7 @@ export const getAllSwapsArray = createSelector(
 
 export const getSentSwaps = createSelector(
   getAllSwapsArray,
-  (allSwaps) => allSwaps.filter(({ orderStatus, tx, isManual }) => orderStatus !== 'awaiting deposit' || tx.sent || isManual)
+  (allSwaps) => allSwaps.filter(({ orderStatus, tx, isManual }) => orderStatus !== 'awaiting deposit' || tx.sent || (isManual && orderStatus !== 'awaiting deposit'))
 )
 
 export const getSwap = createItemSelector(

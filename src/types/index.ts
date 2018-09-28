@@ -28,5 +28,5 @@ export interface SwapOrder {
   backendOrderId?: string
   backendOrderState?: string
   receiveTxId?: string,
-  isManual?: boolean
+  refundAddress?: string
 }

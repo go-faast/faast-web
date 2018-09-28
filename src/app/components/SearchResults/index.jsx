@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, setPropTypes, lifecycle } from 'recompose'
 import { Row, Col, Button } from 'reactstrap'
+import routes from 'Routes'
 
 import {
   getAccountSearchError, getAccountSearchPending, getAccountSearchResultWalletWithHoldings,
@@ -63,7 +64,7 @@ export default compose(
               View in portfolio
             </Button>
           ) : (
-            <Button size='sm' color='primary' onClick={() => handleAddToPortfolio('dashboard')}>
+            <Button size='sm' color='primary' onClick={() => handleAddToPortfolio(routes.dashboard())}>
               Add to portfolio
             </Button>
           )}

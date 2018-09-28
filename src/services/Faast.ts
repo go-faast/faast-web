@@ -33,7 +33,15 @@ export const fetchAssetPrices = () => fetchGet(`${siteUrl}/app/portfolio-price`)
 
 export const fetchPriceChart = (symbol: string) => fetchGet(`${siteUrl}/app/portfolio-chart/${symbol}`)
 
-export const fetchSwap = (swapId: string) => fetchGet(`${apiUrl}/api/v2/public/swaps/${swapId}`)
+export const fetchSwap = (swapId: string): Promise<SwapOrder> => {
+  return fetchGet(`${apiUrl}/api/v2/public/swaps/${swapId}`)
+    .then((swap) => log.debugInline('fetch swap:', swap))
+    .then((swap) => formatOrderResult(swap))
+    .catch((e) => {
+      log.error(e)
+      throw e
+    })
+}
 
 export const fetchMarketInfo = (pair: string) => fetchGet(`${apiUrl}/api/v1/public/marketinfo/${pair}`)
   .then((result) => log.debugInline('fetchMarketInfo', result))
@@ -50,6 +58,7 @@ const formatOrderResult = (r: any): SwapOrder => ({
   receiveAddress: r.withdrawal_address,
   receiveAmount: r.withdrawal_amount,
   receiveSymbol: r.withdrawal_currency,
+  refundAddress: r.refund_address,
   spotRate: r.spot_price,
   rate: r.price,
   rateLockedAt: r.price_locked_at ? new Date(r.price_locked_at) : null,

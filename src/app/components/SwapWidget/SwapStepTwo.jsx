@@ -9,18 +9,18 @@ import Units from 'Components/Units'
 import CoinIcon from 'Components/CoinIcon'
 import ProgressBar from 'Components/ProgressBar'
 import { Button, Input, Col, Row, Card, CardHeader, CardBody, CardFooter } from 'reactstrap'
-import { container, submitButton, qr, scan, receipt } from './style.scss'
+import { container, qr, scan, receipt } from './style.scss'
 import QRCode from 'qrcode.react'
 import toastr from 'Utilities/toastrWrapper'
 import { fetchManualSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
 import PropTypes from 'prop-types'
 
-const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap, handleConnectWallet }) => {
+const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy }) => {
   swap = swap ? swap : {}
   const { id = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
-  amountDeposited = '', receiveAmount = '', receiveAsset = {}, inverseRate = '', orderStatus = '' } = swap
-  const { ERC20, symbol } = receiveAsset
+  sendAmount = '', receiveAmount = '', inverseRate = '', orderStatus = '', refundAddress = '' } = swap
+  console.log('swap refreshed', swap)
   return (
     <Fragment>
         <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={1}/>
@@ -28,7 +28,7 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap
         <CardHeader className='text-center'>
             <h4> Deposit 
            <CoinIcon key={sendSymbol} symbol={sendSymbol} size='sm' className='ml-2 mr-1 mb-1' inline/> 
-           {amountDeposited > 0 ? amountDeposited : null} {sendSymbol} to Address:</h4>
+           {sendAmount > 0 ? sendAmount : null} {sendSymbol} to Address:</h4>
         </CardHeader>
         <CardBody className='pt-1 text-center'>
         
@@ -52,7 +52,7 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap
               <tr>
                 <td><b>Status:</b></td>
                 <td colSpan='2' className='px-2' style={{ textTransform: 'capitalize' }}>
-                  {orderStatus} {orderStatus !== 'complete' ? <i className='fa fa-spinner fa-pulse'/> : null}
+                  {orderStatus} {orderStatus !== 'complete' && (<i className='fa fa-spinner fa-pulse'/>)}
                 </td>
               </tr>
               <tr>
@@ -63,40 +63,34 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTrackSwap
                 <td><b>Receive Address:</b></td>
                 <td colSpan='2' className='px-2'>{receiveAddress}</td>
               </tr>
+              {refundAddress && (
+              <tr>
+                <td><b>Refund Address:</b></td>
+                <td colSpan='2' className='px-2'>{refundAddress}</td>
+              </tr>
+              )}
               <tr>
                 <td><b>Rate:</b></td>
                 <td colSpan='2' className='px-2'>
-                  { isFinite(inverseRate) ? 
+                  { isFinite(inverseRate) ?
                   <span>1 {sendSymbol} = <Units value={inverseRate} precision={6}/> {receiveSymbol}</span> :
                     'Order will be fulfilled at the current market rate'}
                 </td>
               </tr>
-              { amountDeposited && amountDeposited > 0 ?
+              {(sendAmount && sendAmount > 0) && (
               <tr>
                 <td><b>Send Amount:</b></td>
-                <td colSpan='2' className='px-2'>{amountDeposited} {sendSymbol}</td>
-              </tr> :
-              null
-              }
-              { receiveAmount && receiveAmount > 0 ?
+                <td colSpan='2' className='px-2'>{sendAmount} {sendSymbol}</td>
+              </tr>
+              )}
+              {(receiveAmount && receiveAmount > 0) && (
               <tr>
                 <td><b>Receive Amount:</b></td>
                 <td colSpan='2' className='px-2'>{receiveAmount} {receiveSymbol}</td>
-              </tr> :
-              null
-              }
+              </tr>
+              )}
             </tbody>
           </table>
-          {(symbol == 'ETH' || ERC20) ?
-            <Fragment>
-              <Button onClick={() => handleTrackSwap(id)} className={classNames('mt-4 mb-2 mx-auto', submitButton)} color='primary' disabled={orderStatus === 'awaiting deposit'}>Track Swap</Button>
-              <small className='text-muted'>* You can track the status of the swap after your deposit of {sendSymbol} is detected</small>
-            </Fragment>
-            : <Fragment>
-                <Button onClick={handleConnectWallet} className={classNames('mt-4 mb-2 mx-auto', submitButton)} color='primary' disabled={orderStatus === 'awaiting deposit'}>Connect Wallet</Button>
-                <small className='text-muted'>* Track the swap by connecting your wallet <br/> <i>{receiveAddress}</i> after your deposit of {sendSymbol} is detected</small>
-              </Fragment>
-          }
         </CardFooter>
         </CardBody>
       </Card>
@@ -132,8 +126,17 @@ export default compose(
         document.execCommand('copy')
         toastr.info('Address copied to clipboard')
       },
-      handleTrackSwap: ({ push }) => (orderId) => push(routes.tradeDetail(orderId)),
-      handleConnectWallet: ({ push }) => () => push('/portfolio/connect')
+      handleTrackSwap: ({ push, swap }) => (orderId) => {
+        console.log('in handle forward')
+        swap = swap ? swap : {}
+        const { receiveAsset = {}, orderStatus = '' } = swap
+        const { symbol, ERC20 } = receiveAsset
+        console.log('order status in handler:', orderStatus)
+        if ((symbol === 'ETH' || ERC20) && orderStatus && orderStatus !== 'awaiting deposit') {
+          console.log('SHOULD BE FORWARDED TO ORDER HISTORY')
+          push(routes.tradeDetail(orderId))
+        }
+      }
     }
   }),
   lifecycle({
@@ -141,5 +144,15 @@ export default compose(
       const { swapId, fetchManualSwap } = this.props
       fetchManualSwap(swapId)
     },
+    componentWillReceiveProps() {
+      const { swapId, handleTrackSwap } = this.props
+      console.log('in receive props')
+      handleTrackSwap(swapId)
+    },
+    componentWillMount() {
+      const { swapId, handleTrackSwap } = this.props
+      console.log('in will mount')
+      handleTrackSwap(swapId)
+    }
   })
 )(SwapStepTwo)

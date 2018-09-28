@@ -267,7 +267,7 @@ export default compose(
           return searchAddress(receiveAddress)})
         .then(() => {
           if (!isAlreadyInPortfolio && symbol === 'ETH' || ERC20) { 
-            return addWalletToPortfolio(`swap?id=${id}`) 
+            return addWalletToPortfolio(`/swap?id=${id}`) 
           }
           return handleForward(id)
         })

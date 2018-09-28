@@ -103,14 +103,12 @@ export const createManualOrder = (swap) => (dispatch) => Promise.resolve().then(
   if (swap.error) return swap
   const finish = dispatch(createSwapFinish('createOrder', swap))
   const { receiveAddress, refundAddress, sendAmount, sendSymbol, receiveSymbol } = swap
-  const userId = receiveAddress
   return Faast.postFixedPriceSwap(
     toNumber(sendAmount),
     sendSymbol,
     receiveAddress,
     receiveSymbol,
     refundAddress,
-    userId,
   )
   .then((order) => { 
     finish(null, order)
@@ -168,29 +166,9 @@ export const createManualSwap = (swap) => (dispatch, getState) => {
 export const fetchManualSwap = (swapId) => (dispatch, getState) => {
   return Faast.fetchSwap(swapId)
     .then((swap) => { 
-      const { swap_id, created_at, user_id, deposit_address, deposit_amount, deposit_currency, 
-        spot_price, price, price_locked_at, price_locked_until, withdrawal_address, 
-        withdrawal_amount, withdrawal_currency, status } = swap
-      const stateSwap = {
-        id: swap_id,
-        orderId: swap_id,
-        createdAt: created_at,
-        userId: user_id,
-        depositAddress: deposit_address,
-        amountDeposited: deposit_amount,
-        sendAmount: deposit_amount,
-        sendSymbol: deposit_currency,
-        spotRate: spot_price,
-        rate: price,
-        rateLockedAt: price_locked_at,
-        rateLockedUntil: price_locked_until,
-        receiveAddress: withdrawal_address,
-        receiveAmount: withdrawal_amount,
-        receiveSymbol: withdrawal_currency,
-        orderStatus: status
-      }
-      dispatch(pollOrderStatus(stateSwap))
-      return dispatch(swapAdded(stateSwap))})
+      dispatch(pollOrderStatus(swap))
+      return dispatch(swapAdded(swap))
+    })
     .then(() => dispatch(addManualProperty(swapId)))
     .then(() => getSwap(getState(), swapId))
     .catch((e) => dispatch(swapInitFailed(swapId, e.message || e)))
