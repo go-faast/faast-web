@@ -20,7 +20,7 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy }) => {
   swap = swap ? swap : {}
   const { id = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
   sendAmount = '', receiveAmount = '', inverseRate = '', orderStatus = '', refundAddress = '' } = swap
-  console.log('swap refreshed', swap)
+  console.log('s', swap)
   return (
     <Fragment>
         <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={1}/>
@@ -126,15 +126,12 @@ export default compose(
         document.execCommand('copy')
         toastr.info('Address copied to clipboard')
       },
-      handleTrackSwap: ({ push, swap }) => (orderId) => {
-        console.log('in handle forward')
+      handleTrackSwap: ({ push }) => (props) => {
+        let { swap } = props
         swap = swap ? swap : {}
-        const { receiveAsset = {}, orderStatus = '' } = swap
-        const { symbol, ERC20 } = receiveAsset
-        console.log('order status in handler:', orderStatus)
-        if ((symbol === 'ETH' || ERC20) && orderStatus && orderStatus !== 'awaiting deposit') {
-          console.log('SHOULD BE FORWARDED TO ORDER HISTORY')
-          push(routes.tradeDetail(orderId))
+        let { orderStatus = '', id = '' } = swap
+        if (orderStatus && orderStatus !== 'awaiting deposit') {
+          push(routes.tradeDetail(id))
         }
       }
     }
@@ -144,15 +141,13 @@ export default compose(
       const { swapId, fetchManualSwap } = this.props
       fetchManualSwap(swapId)
     },
-    componentWillReceiveProps() {
-      const { swapId, handleTrackSwap } = this.props
-      console.log('in receive props')
-      handleTrackSwap(swapId)
+    componentWillReceiveProps(nextProps) {
+      const { handleTrackSwap } = this.props
+      handleTrackSwap(nextProps)
     },
     componentWillMount() {
-      const { swapId, handleTrackSwap } = this.props
-      console.log('in will mount')
-      handleTrackSwap(swapId)
+      const { handleTrackSwap } = this.props
+      handleTrackSwap(this.props)
     }
   })
 )(SwapStepTwo)

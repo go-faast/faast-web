@@ -26,12 +26,12 @@ const AppView = ({ hasNoWallets }) => (
       {/* Routes requiring a connected wallet */}
       <WalletOpened path={dashboard.path} component={Dashboard}/>
       <WalletOpened path={rebalance.path} component={Modify}/>
-      <WalletOpened path={tradeHistory.path} component={TradeHistory}/>
 
       {/* Routes that don't require a connected wallet */}
       <Route path={connect.path} component={Connect}/>
       <Route path={viewOnlyAddress.path} component={SearchResults}/>
       <Route path={swapWidget.path} component={SwapWidget}/>
+      <Route path={tradeHistory.path} component={TradeHistory}/>
 
       {/* Legacy routes */}
       <Redirect exact from='/balances' to={dashboard.path}/>
