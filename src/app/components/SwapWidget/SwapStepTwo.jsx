@@ -12,7 +12,7 @@ import { Button, Input, Col, Row, Card, CardHeader, CardBody, CardFooter } from 
 import { container, qr, scan, receipt } from './style.scss'
 import QRCode from 'qrcode.react'
 import toastr from 'Utilities/toastrWrapper'
-import { fetchManualSwap } from 'Actions/swap'
+import { retrieveSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
 import PropTypes from 'prop-types'
 
@@ -26,7 +26,7 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy }) => {
         <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={1}/>
         <Card className={classNames('container justify-content-center p-0', container)}>
         <CardHeader className='text-center'>
-            <h4> Deposit 
+            <h4> Send 
            <CoinIcon key={sendSymbol} symbol={sendSymbol} size='sm' className='ml-2 mr-1 mb-1' inline/> 
            {sendAmount > 0 ? sendAmount : null} {sendSymbol} to Address:</h4>
         </CardHeader>
@@ -36,7 +36,7 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy }) => {
            <div className={scan}></div>
            <QRCode size={150} level='L' value={depositAddress}/>
          </div>
-         <Row className='gutter-2 mb-4 mt-2'>
+         <Row className='gutter-2 my-2'>
            <Col>
              <Input type='text' autoFocus readOnly onFocus={handleFocus} innerRef={handleRef} value={depositAddress}/>
           </Col>
@@ -44,6 +44,7 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy }) => {
             <Button color='link' className='p-2' onClick={handleCopy}><i className='fa fa-copy'/></Button>
           </Col>
          </Row>
+        </CardBody>
         <CardFooter style={{ border: 'none', position: 'relative', wordBreak: 'break-word' }}>
           <div className={receipt}></div>
           <p className='mt-2' style={{ letterSpacing: 5 }}>ORDER DETAILS</p>
@@ -63,12 +64,12 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy }) => {
                 <td><b>Receive Address:</b></td>
                 <td colSpan='2' className='px-2'>{receiveAddress}</td>
               </tr>
-              {refundAddress && (
+              {refundAddress ? (
               <tr>
                 <td><b>Refund Address:</b></td>
                 <td colSpan='2' className='px-2'>{refundAddress}</td>
               </tr>
-              )}
+              ) : null}
               <tr>
                 <td><b>Rate:</b></td>
                 <td colSpan='2' className='px-2'>
@@ -77,22 +78,21 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy }) => {
                     'Order will be fulfilled at the current market rate'}
                 </td>
               </tr>
-              {(sendAmount && sendAmount > 0) && (
+              {(sendAmount && sendAmount > 0) ? (
               <tr>
-                <td><b>Send Amount:</b></td>
+                <td><b>Deposit Amount:</b></td>
                 <td colSpan='2' className='px-2'>{sendAmount} {sendSymbol}</td>
               </tr>
-              )}
-              {(receiveAmount && receiveAmount > 0) && (
+              ) : null}
+              {(receiveAmount && receiveAmount > 0) ? (
               <tr>
                 <td><b>Receive Amount:</b></td>
                 <td colSpan='2' className='px-2'>{receiveAmount} {receiveSymbol}</td>
               </tr>
-              )}
+              ) : null}
             </tbody>
           </table>
         </CardFooter>
-        </CardBody>
       </Card>
     </Fragment>
   )
@@ -103,7 +103,7 @@ export default compose(
   connect(createStructuredSelector({
     swap: (state, { swapId }) => getSwap(state, swapId)
   }), {
-    fetchManualSwap: fetchManualSwap,
+    retrieveSwap: retrieveSwap,
     push: pushAction
   }),
   setPropTypes({
@@ -126,10 +126,9 @@ export default compose(
         document.execCommand('copy')
         toastr.info('Address copied to clipboard')
       },
-      handleTrackSwap: ({ push }) => (props) => {
-        let { swap } = props
-        swap = swap ? swap : {}
-        let { orderStatus = '', id = '' } = swap
+      checkDepositStatus: ({ push, swap }) => () => {
+        swap = swap || {}
+        const { orderStatus = '', id = '' } = swap
         if (orderStatus && orderStatus !== 'awaiting deposit') {
           push(routes.tradeDetail(id))
         }
@@ -137,17 +136,17 @@ export default compose(
     }
   }),
   lifecycle({
-    componentDidMount() {
-      const { swapId, fetchManualSwap } = this.props
-      fetchManualSwap(swapId)
-    },
-    componentWillReceiveProps(nextProps) {
-      const { handleTrackSwap } = this.props
-      handleTrackSwap(nextProps)
+    componentDidUpdate() {
+      const { checkDepositStatus } = this.props
+      checkDepositStatus()
     },
     componentWillMount() {
-      const { handleTrackSwap } = this.props
-      handleTrackSwap(this.props)
+      const { swapId, swap, checkDepositStatus, retrieveSwap } = this.props
+      if (!swap) {
+        retrieveSwap(swapId)
+      } else {
+        checkDepositStatus()
+      }
     }
   })
 )(SwapStepTwo)

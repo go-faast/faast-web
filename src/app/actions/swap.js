@@ -22,7 +22,6 @@ export const swapError = createAction('ERROR', (id, error, errorType = '') => ({
 export const swapOrderStatusUpdated = createAction('STATUS_UPDATED', (id, status) => ({ id, orderStatus: status }))
 export const swapTxIdUpdated = createAction('TX_ID_UPDATED', (id, txId) => ({ id, txId }))
 
-export const addManualProperty = createAction('ADD_MANUAL_PROPERTY', idPayload)
 export const swapInitStarted = createAction('INIT_STARTED', idPayload)
 export const swapInitSuccess = createAction('INIT_SUCCESS', idPayload)
 export const swapInitFailed = createAction('INIT_FAILED', (id, errorMessage) => ({ id, error: errorMessage }))
@@ -154,22 +153,22 @@ export const createManualSwap = (swap) => (dispatch, getState) => {
   dispatch(swapInitStarted(swap.id))
   return dispatch(createManualOrder(swap))
     .then((s) => { 
+      s.id = s.orderId
       swapId = s.orderId 
       return dispatch(swapAdded(s))
     })
-    .then(() => dispatch(addManualProperty(swapId)))
     .then(() => dispatch(swapInitSuccess(swapId)))
     .then(() => getSwap(getState(), swapId))
     .catch((e) => dispatch(swapInitFailed(swapId, e.message || e)))
 }
 
-export const fetchManualSwap = (swapId) => (dispatch, getState) => {
+export const retrieveSwap = (swapId) => (dispatch, getState) => {
   return Faast.fetchSwap(swapId)
-    .then((swap) => { 
+    .then((swap) => {
+      swap.id = swap.orderId
       dispatch(pollOrderStatus(swap))
       return dispatch(swapAdded(swap))
     })
-    .then(() => dispatch(addManualProperty(swapId)))
     .then(() => getSwap(getState(), swapId))
     .catch((e) => dispatch(swapInitFailed(swapId, e.message || e)))
 }
@@ -214,9 +213,12 @@ const updateOrderStatus = (swap) => (dispatch) => {
 const isSwapFinalized = (swap) => swap && (swap.orderStatus === 'complete' || swap.orderStatus === 'failed')
 
 export const pollOrderStatus = (swap) => (dispatch) => {
-  const { id, orderId } = swap
+  const { id, orderId, orderStatus, tx } = swap
   if (!orderId) {
     log.info(`pollOrderStatus: swap ${id} has no orderId`)
+    return
+  }
+  if (isSwapFinalized(swap) || (tx && !tx.sent && orderStatus === 'awaiting deposit')) {
     return
   }
   const orderStatusInterval = window.setInterval(() => {
@@ -238,16 +240,14 @@ export const restoreSwapPolling = (swapId) => (dispatch, getState) => {
     return
   }
   return Promise.all([
-    updateTxReceipt(swap.txId),
+    swap.txId ? updateTxReceipt(swap.txId) : null,
     updateOrderStatus(swap)
   ]).then(() => {
     swap = getSwap(getState(), swap.id)
-    const { orderStatus, tx } = swap
-    if (tx.sent && !tx.receipt) {
+    const { tx } = swap
+    if (tx && tx.sent && !tx.receipt) {
       dispatch(pollTxReceipt(swap.txId))
     }
-    if (!isSwapFinalized(swap) && (orderStatus !== 'awaiting deposit' || tx.sent)) {
-      dispatch(pollOrderStatus(swap))
-    }
+    dispatch(pollOrderStatus(swap))
   })
 }
