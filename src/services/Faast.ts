@@ -105,12 +105,18 @@ export const fetchOrders = (
   page: number = 1,
   limit: number = 20,
 ): Promise<SwapOrder[]> =>
-  fetchGet(`${apiUrl}/api/v2/public/swaps`, {
-    user_id: walletId,
-    page,
-    limit,
-  }).then((r) => log.debugInline(`fetchOrders:${walletId}`, r))
-    .then((r) => r.orders.map(formatOrderResult))
+  Promise.all([
+    fetchGet(`${apiUrl}/api/v2/public/swaps`, {
+      user_id: walletId,
+      page,
+      limit,
+    }).then((r) => log.debugInline(`fetchOrders?user_id=${walletId}`, r)),
+    fetchGet(`${apiUrl}/api/v2/public/swaps`, {
+      withdrawal_address: walletId,
+      page,
+      limit,
+    }).then((r) => log.debugInline(`fetchOrders?withdrawal_address=${walletId}`, r)),
+  ]).then(([r1, r2]) => r1.orders.concat(r2.orders).map(formatOrderResult))
     .catch((e) => {
       log.error(e)
       throw e
