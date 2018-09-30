@@ -22,7 +22,7 @@ const TableRow = ({
     <td>{createStatusLabel(swap)}</td>
     <td>{formatDate(createdAt, 'yyyy-MM-dd hh:mm:ss')}</td>
     <td><CoinIcon className={tradeCoinIcon} symbol={sendSymbol} size='sm' inline/> {sendSymbol} <i style={{ color: '#777' }} className='fa fa-long-arrow-right'/> <CoinIcon className={tradeCoinIcon} symbol={receiveSymbol} size='sm' inline/> {receiveSymbol}</td>
-    <td><Units value={rate} precision={6}/></td>
+    <td>{rate > 0 ? (<Units value={rate} precision={6}/>) : '-----'}</td>
     <td><Units value={receiveAmount} symbol={receiveSymbol} showSymbol precision={6}/></td>
     <td><Units value={sendAmount} symbol={sendSymbol} showSymbol precision={6}/></td>
   </tr>

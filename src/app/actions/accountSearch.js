@@ -45,9 +45,9 @@ export const viewInPortfolio = () => (dispatch, getState) => Promise.resolve().t
   dispatch(push(routes.dashboard()))
 })
 
-export const addToPortfolio = () => (dispatch, getState) => Promise.resolve().then(() => {
+export const addToPortfolio = (forwardURL) => (dispatch, getState) => Promise.resolve().then(() => {
   const resultId = getAccountSearchResultId(getState())
   const walletInstance = walletService.get(resultId)
   walletInstance.setPersistAllowed(true)
-  return dispatch(openWalletAndRedirect(walletInstance))
+  return dispatch(openWalletAndRedirect(walletInstance, forwardURL))
 })

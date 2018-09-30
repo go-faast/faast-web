@@ -33,6 +33,16 @@ export const fetchAssetPrices = () => fetchGet(`${siteUrl}/app/portfolio-price`)
 
 export const fetchPriceChart = (symbol: string) => fetchGet(`${siteUrl}/app/portfolio-chart/${symbol}`)
 
+export const fetchSwap = (swapId: string): Promise<SwapOrder> => {
+  return fetchGet(`${apiUrl}/api/v2/public/swaps/${swapId}`)
+    .then((swap) => log.debugInline('fetch swap:', swap))
+    .then((swap) => formatOrderResult(swap))
+    .catch((e) => {
+      log.error(e)
+      throw e
+    })
+}
+
 export const fetchMarketInfo = (pair: string) => fetchGet(`${apiUrl}/api/v1/public/marketinfo/${pair}`)
   .then((result) => log.debugInline('fetchMarketInfo', result))
 
@@ -48,6 +58,7 @@ const formatOrderResult = (r: any): SwapOrder => ({
   receiveAddress: r.withdrawal_address,
   receiveAmount: r.withdrawal_amount,
   receiveSymbol: r.withdrawal_currency,
+  refundAddress: r.refund_address,
   spotRate: r.spot_price,
   rate: r.price,
   rateLockedAt: r.price_locked_at ? new Date(r.price_locked_at) : null,
@@ -94,12 +105,18 @@ export const fetchOrders = (
   page: number = 1,
   limit: number = 20,
 ): Promise<SwapOrder[]> =>
-  fetchGet(`${apiUrl}/api/v2/public/swaps`, {
-    user_id: walletId,
-    page,
-    limit,
-  }).then((r) => log.debugInline(`fetchOrders:${walletId}`, r))
-    .then((r) => r.orders.map(formatOrderResult))
+  Promise.all([
+    fetchGet(`${apiUrl}/api/v2/public/swaps`, {
+      user_id: walletId,
+      page,
+      limit,
+    }).then((r) => log.debugInline(`fetchOrders?user_id=${walletId}`, r)),
+    fetchGet(`${apiUrl}/api/v2/public/swaps`, {
+      withdrawal_address: walletId,
+      page,
+      limit,
+    }).then((r) => log.debugInline(`fetchOrders?withdrawal_address=${walletId}`, r)),
+  ]).then(([r1, r2]) => r1.orders.concat(r2.orders).map(formatOrderResult))
     .catch((e) => {
       log.error(e)
       throw e
@@ -114,4 +131,5 @@ export default {
   postFixedPriceSwap,
   fetchOrderStatus,
   fetchOrders,
+  fetchSwap,
 }

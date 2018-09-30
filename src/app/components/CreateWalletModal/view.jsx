@@ -108,7 +108,7 @@ let CreatePasswordForm = ({
         placeholder='Enter the password again...'
         autoComplete='new-password'
         validate={validatePasswordConfirm}
-        labelProps={{ xs: '12', md: '4'}}
+        labelProps={{ xs: '12', md: '4' }}
         inputCol={{ xs:'12', md: true }}
       />
     </ModalBody>

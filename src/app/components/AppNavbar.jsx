@@ -40,25 +40,33 @@ const AppNavbar = ({ disablePortfolioLinks, routerPush, children, isExpanded, to
               <span className='nav-link-label d-sm-inline'>Dashboard</span>
             </NavLink>
           </NavItem>,
+          <NavItem key='rebalance'>
+            <NavLink tag={RouterNavLink} to='/rebalance'>
+              <i className='nav-link-icon fa fa-sliders'/>
+              <span className='nav-link-label d-sm-inline'>Rebalance</span>
+            </NavLink>
+          </NavItem>
+        ])}
           <NavItem key='swap'>
             <NavLink tag={RouterNavLink} to='/swap'>
               <i className='nav-link-icon fa fa-exchange'/>
               <span className='nav-link-label d-sm-inline'>Swap</span>
             </NavLink>
-          </NavItem>,
-          <NavItem key='trades'>
-            <NavLink tag={RouterNavLink} to='/trades'>
+          </NavItem>
+        {!disablePortfolioLinks && (
+          <NavItem key='orders'>
+            <NavLink tag={RouterNavLink} to='/orders'>
               <i className='nav-link-icon fa fa-history'/>
-              <span className='nav-link-label d-sm-inline'>Trade History</span>
+              <span className='nav-link-label d-sm-inline'>Orders</span>
             </NavLink>
-          </NavItem>,
+          </NavItem>
+        )}
           <NavItem key='connect'>
             <NavLink tag={RouterNavLink} to='/connect'>
               <i className='nav-link-icon fa fa-plus'/>
               <span className='nav-link-label d-sm-inline'>Add wallet</span>
             </NavLink>
           </NavItem>
-        ])}
       </Nav>
       </Collapse>
       <AddressSearchForm

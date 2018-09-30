@@ -1,5 +1,6 @@
 import { push } from 'react-router-redux'
 import { isString } from 'lodash'
+import routes from 'Routes'
 
 import log from 'Utilities/log'
 import { filterUrl } from 'Utilities/helpers'
@@ -47,9 +48,9 @@ export const openWallet = (walletPromise) => (dispatch, getState) => Promise.res
   })
 
 /** Do everything in openWallet and then redirect to the dashboard */
-export const openWalletAndRedirect = (walletPromise) => (dispatch) => Promise.resolve(walletPromise)
+export const openWalletAndRedirect = (walletPromise, forwardURL = '/dashboard') => (dispatch) => Promise.resolve(walletPromise)
   .then((wallet) => dispatch(openWallet(wallet)))
-  .then(() => dispatch(push('/dashboard')))
+  .then(() => dispatch(push(forwardURL)))
   .catch((e) => {
     log.error(e)
     toastr.error(e.message)
@@ -71,7 +72,7 @@ export const openWeb3Wallet = () => (dispatch) => Promise.resolve().then(() => {
     if (id !== 1) {
       return toastr.error(`Please adjust ${name} to use the "Main Ethereum Network"`, { timeOut: 10000 })
     }
-    dispatch(openWalletAndRedirect(EthereumWalletWeb3.fromDefaultAccount()))
+    dispatch(openWalletAndRedirect(EthereumWalletWeb3.fromDefaultAccount(), routes.dashboard()))
   })
 })
 
@@ -85,7 +86,7 @@ export const openKeystoreFileWallet = (filesPromise) => (dispatch) => Promise.re
       if (!encryptedWalletString) return toastr.error('Unable to read keystore file')
 
       const wallet = new EthereumWalletKeystore(encryptedWalletString)
-      dispatch(openWalletAndRedirect(wallet))
+      dispatch(openWalletAndRedirect(wallet, routes.dashboard()))
     }
 
     reader.readAsText(file)
@@ -99,7 +100,7 @@ export const openBlockstackWallet = () => (dispatch) => Promise.resolve().then((
     if (!wallet) {
       return toastr.error('Unable to open Blockstack wallet')
     }
-    return dispatch(openWalletAndRedirect(wallet))
+    return dispatch(openWalletAndRedirect(wallet, routes.dashboard()))
   }
 })
 
@@ -112,5 +113,5 @@ export const openViewOnlyWallet = (addressPromise) => (dispatch) => Promise.reso
     } 
     address = toChecksumAddress(address)
     const wallet = new EthereumWalletViewOnly(address)
-    return dispatch(openWalletAndRedirect(wallet))
+    return dispatch(openWalletAndRedirect(wallet, routes.dashboard()))
   })

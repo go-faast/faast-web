@@ -39,7 +39,7 @@ export default compose(
     size='lg' toggle={toggle} className='mt-6 mx-md-auto' contentClassName='p-0'
     {...pick(props, Object.keys(Modal.propTypes))}>
     <ModalHeader tag='h4' toggle={toggle} className='text-primary'>
-      Trade Details
+      Order Details
     </ModalHeader>
     <ModalBody>
       <SwapStatusCard swap={swap} expanded/>

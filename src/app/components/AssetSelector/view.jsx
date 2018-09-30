@@ -19,7 +19,7 @@ const AssetSearchForm = reduxForm({
       autoFocus
       autoComplete='off'
       onChange={handleSearchChange}
-      inputClassName='border-primary'
+      inputClass='border-primary'
       addonAppend={(
         <Button color='primary' size='md' type='submit'>
           <i className='fa fa-search' />

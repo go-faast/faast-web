@@ -9,7 +9,7 @@ import TradeTable from 'Components/TradeTable'
 
 const TradeHistory = ({ swaps }) => (
   <Layout className='pt-3'>
-    <h4 className='mt-2 text-primary'>Trade History</h4>
+    <h4 className='mt-2 text-primary'>Order History</h4>
     <TradeTable swaps={swaps}/>
   </Layout>
 )
