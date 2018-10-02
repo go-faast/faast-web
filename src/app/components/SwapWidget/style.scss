@@ -38,6 +38,11 @@ button {
     max-width: 500px;
     padding: 20px 16px;
     min-height: 156px;
+    .expnd {
+      position: absolute;
+      right: 35px;
+      top: 16px;
+    }
     .icon {
         color: #05B8AB;
     }
@@ -115,5 +120,12 @@ button {
       display:block;
       margin: 15px auto 0 auto;
       transform: rotate(90deg)
+    }
+}
+@media screen and (max-width: 410px) {
+    .section {
+        .expnd {
+            right: -23px;
+        }
     }
 }

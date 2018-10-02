@@ -16,7 +16,7 @@ import AssetSelector from 'Components/AssetSelector'
 import ProgressBar from 'Components/ProgressBar'
 import { Form, Button, Modal, ModalHeader, ModalBody, Card, CardHeader, CardBody } from 'reactstrap'
 import web3 from 'Services/Web3'
-import { container, section, submitButton, asset, icon, receive, swap } from './style.scss'
+import { container, section, submitButton, asset, icon, receive, swap, expnd } from './style.scss'
 import { toBigNumber } from 'Utilities/convert'
 import SwapIcon from 'Img/swap-icon.svg?inline'
 import { Address } from 'bitcore-lib'
@@ -143,8 +143,8 @@ const SwapForm = reduxForm({
           validate={handleSendAmountValidation}
           inputClass='flat'
         />
-        <Expandable 
-          style={{ position: 'absolute', top: 16, right: 25 }} 
+        <Expandable
+          className={expnd}
           shrunk={<i className={classNames('fa fa-question-circle', icon)}></i>} 
           expanded={'If deposit amount is omitted, the amount you receive will be calculated based on amount you deposit'}>
         </Expandable>
@@ -167,7 +167,7 @@ const SwapForm = reduxForm({
           inputClass='flat'
         />
          <Expandable 
-          style={{ position: 'absolute', top: 16, right: 25 }} 
+          className={expnd}
           shrunk={<i className={classNames('fa fa-question-circle', icon)}></i>} 
           expanded={'This address will be used in the case that your funds need to be returned'}>
         </Expandable>
@@ -252,7 +252,7 @@ export default compose(
       }
     },
     handleSendAmountValidation: () => (sendAmount) => {
-      if (sendAmount && sendAmount <= 0) {
+      if (sendAmount && (sendAmount <= 0 || isNaN(sendAmount))) {
         return 'Please enter a deposit amount greater than 0 or omit'
       }
     },

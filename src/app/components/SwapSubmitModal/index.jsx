@@ -74,7 +74,7 @@ const SwapSubmitModal = ({
           : <Spinner inline size='sm'/>}
         </p>
         {(secondsUntilPriceExpiry > 0 && !timerExpired)
-          ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if submitted within:'} onTimerEnd={() => handleTimerEnd}/></small></span>)
+          ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if submitted within:'} onTimerEnd={handleTimerEnd}/></small></span>)
           : (timerExpired && (<span className='text-warning'><small>* Quoted rates are no longer guaranteed as the 15 minute guarantee window has expired. Orders will be filled using the latest variable rate when deposit is received.</small></span>))}
         <p><small className='text-muted'>
           {'** Additional fees may apply depending on '

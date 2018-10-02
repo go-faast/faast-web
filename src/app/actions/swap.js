@@ -163,12 +163,14 @@ export const createManualSwap = (swap) => (dispatch, getState) => {
 }
 
 export const retrieveSwap = (swapId) => (dispatch, getState) => {
+  let swapToPoll = {}
   return Faast.fetchSwap(swapId)
     .then((swap) => {
+      swapToPoll = swap
       swap.id = swap.orderId
-      dispatch(pollOrderStatus(swap))
       return dispatch(swapAdded(swap))
     })
+    .then(() => dispatch(pollOrderStatus(swapToPoll)))
     .then(() => getSwap(getState(), swapId))
     .catch((e) => dispatch(swapInitFailed(swapId, e.message || e)))
 }

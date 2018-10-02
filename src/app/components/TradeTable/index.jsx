@@ -9,6 +9,7 @@ import PropTypes from 'prop-types'
 import classNames from 'class-names'
 
 import Units from 'Components/Units'
+import UnitsLoading from 'Components/UnitsLoading'
 import Expandable from 'Components/Expandable'
 import CoinIcon from 'Components/CoinIcon'
 import { tradeTable, tradeCoinIcon } from './style'
@@ -23,8 +24,10 @@ const TableRow = ({
     <td>{formatDate(createdAt, 'yyyy-MM-dd hh:mm:ss')}</td>
     <td><CoinIcon className={tradeCoinIcon} symbol={sendSymbol} size='sm' inline/> {sendSymbol} <i style={{ color: '#777' }} className='fa fa-long-arrow-right'/> <CoinIcon className={tradeCoinIcon} symbol={receiveSymbol} size='sm' inline/> {receiveSymbol}</td>
     <td>{rate > 0 ? (<Units value={rate} precision={6}/>) : '-----'}</td>
-    <td><Units value={receiveAmount} symbol={receiveSymbol} showSymbol precision={6}/></td>
-    <td><Units value={sendAmount} symbol={sendSymbol} showSymbol precision={6}/></td>
+    <td>{(receiveAmount && receiveAmount > 0) ? (<Units value={receiveAmount} symbol={receiveSymbol} showSymbol precision={6}/>)
+    : <UnitsLoading value={receiveAmount} symbol={receiveSymbol} showSymbol precision={6} />}</td>
+    <td>{(sendAmount && sendAmount > 0) ? (<Units value={sendAmount} symbol={sendSymbol} showSymbol precision={6}/>)
+    : <UnitsLoading value={sendAmount} symbol={sendSymbol} showSymbol precision={6} />}</td>
   </tr>
 )
 
