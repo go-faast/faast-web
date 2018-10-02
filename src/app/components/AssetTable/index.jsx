@@ -86,7 +86,7 @@ export default compose(
     }
   )
 )(({ assetRows, openCharts, toggleChart }) => (
-  <Table hover striped className={classNames(tableStyle, 'table-accordian')}>
+  <Table hover striped responsive className={classNames(tableStyle, 'table-accordian')}>
     <thead>
       <tr>
         <th><h6>Asset</h6></th>
