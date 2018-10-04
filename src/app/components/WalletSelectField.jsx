@@ -18,7 +18,7 @@ const WalletSelectField = ({ valid, handleSelect, dropDownStyle, dropDownText,
     <ReduxFormField 
       addonAppend={(
         <InputGroupButtonDropdown addonType="append" isOpen={dropdownOpen} toggle={toggleDropDown}>
-          <DropdownToggle size='sm' color={valid ? 'ultra-dark' : 'danger'} style={dropDownStyle} caret>
+          <DropdownToggle size='sm' color={valid ? 'dark' : 'danger'} style={dropDownStyle} caret>
             {dropDownText}
           </DropdownToggle>
           <DropdownMenu>
