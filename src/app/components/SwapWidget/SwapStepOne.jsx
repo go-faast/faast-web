@@ -55,7 +55,7 @@ const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, handleSendAmou
             onSubmit={handleSwapSubmit} 
             receiveSymbol={receiveSymbol} 
             sendSymbol={sendSymbol}
-            initialValues={{ sendSymbol, receiveSymbol, receiveAddress: '', refundAddress: '' }}
+            initialValues={{ sendSymbol, receiveSymbol, receiveAddress: undefined, refundAddress: undefined }}
             handleReturnAddressValidation={handleReturnAddressValidation} 
             handleReceiveAddressValidation={handleReceiveAddressValidation}
             handleReceiveWalletSelect={handleReceiveWalletSelect}
@@ -86,8 +86,9 @@ const SwapForm = reduxForm({
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   updateUnregisteredFields: true
-})(({ handleSubmit, handleRefundWalletSelect, handleReceiveWalletSelect, invalid, sendSymbol, receiveSymbol, handleReturnAddressValidation, 
-  handleReceiveAddressValidation, isLoadingSwap, handleSendAmountValidation, formErrors, depositAsset, receiveAsset }) => (
+})(({ handleSubmit, handleRefundWalletSelect, handleReceiveWalletSelect, invalid, sendSymbol, receiveSymbol, 
+  handleReturnAddressValidation, handleReceiveAddressValidation, isLoadingSwap, handleSendAmountValidation, 
+  formErrors, depositAsset, receiveAsset, dirty }) => (
   <Form onSubmit={handleSubmit}>
     <div className={section}>
     <ReduxFormField
@@ -132,7 +133,7 @@ const SwapForm = reduxForm({
         inputClass={classNames('flat', receive)}
         dropDownText={`${receiveSymbol} Wallets`}
         handleSelect={handleReceiveWalletSelect}
-        valid={formErrors.receiveAddress ? false : true}
+        valid={(formErrors.receiveAddress && dirty) ? false : true}
         ERC20={(receiveAsset.ERC20 || receiveSymbol == 'ETH')}
       />
       <div style={{ position: 'relative' }}>
@@ -249,7 +250,7 @@ export default compose(
     handleReceiveAddressValidation: ({ receive }) => (address) => {
       const { symbol, ERC20 } = receive
       //if no address is valid
-      if (!web3.utils.isAddress(address) && !Address.isValid(address) && address) {
+      if (!web3.utils.isAddress(address) && !Address.isValid(address)) {
         return `Please enter a valid ${symbol} wallet address`
       }
       //if addresses are valid but wrong wallet
