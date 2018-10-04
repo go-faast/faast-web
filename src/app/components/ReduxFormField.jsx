@@ -8,7 +8,7 @@ import {
 
 const RenderInput = (props) => {
   const {
-    meta: { touched, error, warning, form: formName },
+    meta: { touched, dirty, error, warning, form: formName },
     label, type, placeholder, id, disabled, autoComplete, size,
     addonPrepend, addonAppend, row, className, inputClass,
     labelProps, labelClass, labelCol, inputCol,
@@ -19,7 +19,7 @@ const RenderInput = (props) => {
   if (!labelPosition) {
     labelPosition = check ? 'append' : 'prepend'
   }
-  const invalid = touched && (error || warning)
+  const invalid = dirty && (error || warning)
   const inputId = id || (label ? `form-${formName}-${inputProps.name}` : undefined)
   inputProps = {
     ...inputProps,

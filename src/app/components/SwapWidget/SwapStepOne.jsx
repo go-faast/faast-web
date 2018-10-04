@@ -55,7 +55,7 @@ const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, handleSendAmou
             onSubmit={handleSwapSubmit} 
             receiveSymbol={receiveSymbol} 
             sendSymbol={sendSymbol}
-            initialValues={{ sendSymbol, receiveSymbol, receiveAddress: undefined, refundAddress: undefined }}
+            initialValues={{ sendSymbol, receiveSymbol, receiveAddress: '' }}
             handleReturnAddressValidation={handleReturnAddressValidation} 
             handleReceiveAddressValidation={handleReceiveAddressValidation}
             handleReceiveWalletSelect={handleReceiveWalletSelect}
@@ -133,7 +133,7 @@ const SwapForm = reduxForm({
         inputClass={classNames('flat', receive)}
         dropDownText={`${receiveSymbol} Wallets`}
         handleSelect={handleReceiveWalletSelect}
-        valid={(formErrors.receiveAddress && dirty) ? false : true}
+        valid={formErrors.receiveAddress && dirty ? false : true}
         ERC20={(receiveAsset.ERC20 || receiveSymbol == 'ETH')}
       />
       <div style={{ position: 'relative' }}>
