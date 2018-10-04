@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { compose, setDisplayName, withProps, withState, withStateHandlers, withHandlers } from 'recompose'
 import classNames from 'class-names'
-import { reduxForm } from 'redux-form'
+import { reduxForm, change, getFormSyncErrors } from 'redux-form'
 import { push as pushAction } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
 import { getAllAssetsArray, getAsset } from 'Selectors/asset'
@@ -14,9 +14,10 @@ import Expandable from 'Components/Expandable'
 import CoinIcon from 'Components/CoinIcon'
 import AssetSelector from 'Components/AssetSelector'
 import ProgressBar from 'Components/ProgressBar'
-import { Form, Button, Modal, ModalHeader, ModalBody, Card, CardHeader, CardBody } from 'reactstrap'
+import WalletSelectField from 'Components/WalletSelectField'
+import { Form, Button, Modal, ModalHeader, ModalBody, Card, CardHeader, CardBody, InputGroupAddon } from 'reactstrap'
 import web3 from 'Services/Web3'
-import { container, section, submitButton, asset, icon, receive, swap, expnd } from './style.scss'
+import { container, section, submitButton, asset, icon, receive, swap, expnd, assetAddOnError, assetAddOn } from './style.scss'
 import { toBigNumber } from 'Utilities/convert'
 import SwapIcon from 'Img/swap-icon.svg?inline'
 import { Address } from 'bitcore-lib'
@@ -26,7 +27,8 @@ import { searchAddress, addToPortfolio } from 'Actions/accountSearch'
 
 const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, handleSendAmountValidation,
   sendSymbol, receiveSymbol, handleSelectedAsset, handleSendSymbol, handleReceiveSymbol, 
-  handleReceiveAddressValidation, handleReturnAddressValidation, handleSwapSubmit, isLoadingSwap }) => (
+  handleReceiveAddressValidation, handleReturnAddressValidation, handleSwapSubmit, isLoadingSwap,
+  handleReceiveWalletSelect, handleRefundWalletSelect, formErrors, deposit, receive }) => (
     <Fragment>
       <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
       <Card className={classNames('container justify-content-center p-0', container)}>
@@ -53,11 +55,16 @@ const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, handleSendAmou
             onSubmit={handleSwapSubmit} 
             receiveSymbol={receiveSymbol} 
             sendSymbol={sendSymbol}
-            initialValues={{ sendSymbol, receiveSymbol }}
+            initialValues={{ sendSymbol, receiveSymbol, receiveAddress: '', refundAddress: '' }}
             handleReturnAddressValidation={handleReturnAddressValidation} 
             handleReceiveAddressValidation={handleReceiveAddressValidation}
+            handleReceiveWalletSelect={handleReceiveWalletSelect}
+            handleRefundWalletSelect={handleRefundWalletSelect}
             handleSendAmountValidation={handleSendAmountValidation}
             isLoadingSwap={isLoadingSwap}
+            formErrors={formErrors}
+            depositAsset={deposit}
+            receiveAsset={receive}
           />
         </CardBody>
         <Modal size='lg' isOpen={isPopUpOpen} toggle={() => handlePopUp(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
@@ -79,8 +86,8 @@ const SwapForm = reduxForm({
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
   updateUnregisteredFields: true
-})(({ handleSubmit, invalid, sendSymbol, receiveSymbol, handleReturnAddressValidation, 
-  handleReceiveAddressValidation, isLoadingSwap, handleSendAmountValidation }) => (
+})(({ handleSubmit, handleRefundWalletSelect, handleReceiveWalletSelect, invalid, sendSymbol, receiveSymbol, handleReturnAddressValidation, 
+  handleReceiveAddressValidation, isLoadingSwap, handleSendAmountValidation, formErrors, depositAsset, receiveAsset }) => (
   <Form onSubmit={handleSubmit}>
     <div className={section}>
     <ReduxFormField
@@ -109,12 +116,11 @@ const SwapForm = reduxForm({
         labelProps={{ xs: '12', md: '4' }}
         inputClass='flat'
       />
-      <ReduxFormField
+      <WalletSelectField 
         row
         className='gutter-3 align-items-center'
         id='receiveAddress'
         name='receiveAddress'
-        type='text'
         placeholder={`${receiveSymbol} Receive Address`}
         autoFocus
         autoCorrect='false'
@@ -124,8 +130,11 @@ const SwapForm = reduxForm({
         inputCol={{ xs:'12', md: true }}
         validate={handleReceiveAddressValidation}
         inputClass={classNames('flat', receive)}
+        dropDownText={`${receiveSymbol} Wallets`}
+        handleSelect={handleReceiveWalletSelect}
+        valid={formErrors.receiveAddress ? false : true}
+        ERC20={(receiveAsset.ERC20 || receiveSymbol == 'ETH')}
       />
-
       <div style={{ position: 'relative' }}>
         <ReduxFormField
           row
@@ -142,6 +151,9 @@ const SwapForm = reduxForm({
           inputCol={{ xs:'12', md: true }}
           validate={handleSendAmountValidation}
           inputClass='flat'
+          addonAppend={(
+            <InputGroupAddon className={formErrors.sendAmount ? assetAddOnError : assetAddOn} addonType="append">{sendSymbol}</InputGroupAddon>
+          )}
         />
         <Expandable
           className={expnd}
@@ -150,12 +162,11 @@ const SwapForm = reduxForm({
         </Expandable>
       </div>
       <div style={{ position: 'relative' }}>
-        <ReduxFormField
+        <WalletSelectField 
           row
           className='gutter-3 align-items-center'
           id='refundAddress'
           name='refundAddress'
-          type='text'
           placeholder={`${sendSymbol} Return Address (optional)`}
           autoCorrect='false'
           autoCapitalize='false'
@@ -165,6 +176,10 @@ const SwapForm = reduxForm({
           inputCol={{ xs:'12', md: true }}
           validate={handleReturnAddressValidation}
           inputClass='flat'
+          dropDownText={`${sendSymbol} Wallets`}
+          handleSelect={handleRefundWalletSelect}
+          valid={formErrors.refundAddress ? false : true}
+          ERC20={(depositAsset.ERC20 || sendSymbol == 'ETH')}
         />
          <Expandable 
           className={expnd}
@@ -176,19 +191,21 @@ const SwapForm = reduxForm({
     <Button className={classNames('mt-2 mb-2 mx-auto', submitButton)} color='primary' type='submit' disabled={invalid || isLoadingSwap}>
       {!isLoadingSwap ? 'Create Swap' : 'Generating Swap...' }
     </Button>
-  </Form>
-))
+  </Form>)
+)
 
 export default compose(
   setDisplayName('SwapStepOne'),
   connect(createStructuredSelector({
     assets: getAllAssetsArray,
-    isAlreadyInPortfolio: isAccountSearchResultWalletInPortfolio
+    isAlreadyInPortfolio: isAccountSearchResultWalletInPortfolio,
+    formErrors: (state) => getFormSyncErrors('swapWidget')(state)
   }), {
     createSwap: createManualSwap,
     searchAddress: searchAddress,
     addWalletToPortfolio: addToPortfolio,
-    push: pushAction
+    push: pushAction,
+    change: change,
   }),
   withProps(({ assets }) => {
     let supportedAssets = []
@@ -232,7 +249,7 @@ export default compose(
     handleReceiveAddressValidation: ({ receive }) => (address) => {
       const { symbol, ERC20 } = receive
       //if no address is valid
-      if (!web3.utils.isAddress(address) && !Address.isValid(address)) {
+      if (!web3.utils.isAddress(address) && !Address.isValid(address) && address) {
         return `Please enter a valid ${symbol} wallet address`
       }
       //if addresses are valid but wrong wallet
@@ -255,6 +272,12 @@ export default compose(
       if (sendAmount && (sendAmount <= 0 || isNaN(sendAmount))) {
         return 'Please enter a deposit amount greater than 0 or omit'
       }
+    },
+    handleReceiveWalletSelect: ({ change }) => (address) => {
+      change('swapWidget', 'receiveAddress', address)
+    },
+    handleRefundWalletSelect: ({ change }) => (address) => {
+      change('swapWidget', 'refundAddress', address)
     },
     handleSwapSubmit: ({ createSwap, searchAddress, isAlreadyInPortfolio, addWalletToPortfolio, receive, handleForward, handleLoading }) => (values) => {
       const { symbol, ERC20 } = receive

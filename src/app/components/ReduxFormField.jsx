@@ -11,7 +11,7 @@ const RenderInput = (props) => {
     meta: { touched, error, warning, form: formName },
     label, type, placeholder, id, disabled, autoComplete, size,
     addonPrepend, addonAppend, row, className, inputClass,
-    labelProps, labelClass, labelCol, inputCol
+    labelProps, labelClass, labelCol, inputCol,
   } = props
   let { input: inputProps } = props
   const check = ['checkbox', 'radio'].includes(type)
@@ -86,7 +86,7 @@ ReduxFormField.propTypes = {
   inputClassName: PropTypes.string, // Additional classes for rendered Input
   inputCol: PropTypes.object, // Props to pass to Col surrounding Input
   labelProps: PropTypes.object,
-  labelPosition: PropTypes.oneOf(['prepend', 'append'])
+  labelPosition: PropTypes.oneOf(['prepend', 'append']),
 }
 
 export default ReduxFormField

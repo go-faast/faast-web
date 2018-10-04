@@ -1,8 +1,21 @@
 .container {
     background: #1C1C1C;
-    max-width: 600px;
+    max-width: 650px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     margin-top: 20px;
+}
+.assetAddOn {
+    span {
+        color: rgba(255, 255, 255, 0.9) !important;
+        background-color: #212121 !important;
+        border-color: #353535 !important;
+    }
+}
+.assetAddOnError {
+    span {
+        background-color: #BC1515 !important;
+        border-color: #e11919 !important;
+    }
 }
 button {
     cursor: pointer;
@@ -35,24 +48,24 @@ button {
 }
 .section {
     margin:10px auto 0 auto;
-    max-width: 500px;
+    max-width: 550px;
     padding: 20px 16px;
     min-height: 156px;
     .expnd {
       position: absolute;
-      right: 35px;
+      right: -38px;
       top: 16px;
     }
     .icon {
         color: #05B8AB;
     }
 }
-.receive {
-    border: 1px solid #6bada7;
-}
+// .receive {
+//     border: 1px solid #6bada7;
+// }
 .submitButton {
     display:block;
-    max-width: 468px;
+    max-width: 519px;
     width: 95%;
 }
 .fadedWhite {
@@ -122,7 +135,7 @@ button {
       transform: rotate(90deg)
     }
 }
-@media screen and (max-width: 410px) {
+@media screen and (max-width: 610px) {
     .section {
         .expnd {
             right: -23px;
