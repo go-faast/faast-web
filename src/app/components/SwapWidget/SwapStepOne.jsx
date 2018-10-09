@@ -21,7 +21,6 @@ import { container, section, submitButton, asset, icon, receive, swap, expnd, as
 import { toBigNumber } from 'Utilities/convert'
 import SwapIcon from 'Img/swap-icon.svg?inline'
 import { Address } from 'bitcore-lib'
-import uuid from 'uuid/v4'
 import { createManualSwap } from 'Actions/swap'
 import { searchAddress, addToPortfolio } from 'Actions/accountSearch'
 
@@ -283,19 +282,20 @@ export default compose(
     handleSwapSubmit: ({ createSwap, searchAddress, isAlreadyInPortfolio, addWalletToPortfolio, receive, handleForward, handleLoading }) => (values) => {
       const { symbol, ERC20 } = receive
       const { sendAmount, receiveAddress, refundAddress, sendSymbol, receiveSymbol } = values
-      let id = ''
       handleLoading(true)
-      createSwap({ id: uuid(), sendAmount: toBigNumber(sendAmount), receiveAddress, refundAddress, sendSymbol, receiveSymbol })
-        .then((s) => { 
-          id = s.id
-          return searchAddress(receiveAddress)})
-        .then(() => {
-          if (!isAlreadyInPortfolio && symbol === 'ETH' || ERC20) { 
-            return addWalletToPortfolio(`/swap?id=${id}`) 
-          }
-          return handleForward(id)
+      createSwap({ sendAmount: toBigNumber(sendAmount), receiveAddress, refundAddress, sendSymbol, receiveSymbol })
+        .then((swap) => { 
+          return searchAddress(receiveAddress)
+            .then(() => {
+              if (!isAlreadyInPortfolio && symbol === 'ETH' || ERC20) { 
+                return addWalletToPortfolio(`/swap?id=${swap.orderId}`) 
+              }
+              return handleForward(swap.orderId)
+            })
         })
-        .catch(e => console.log(e))
+        .catch(() => {
+          handleLoading(false)
+        })
 
     },
   })

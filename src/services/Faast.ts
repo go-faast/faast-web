@@ -70,21 +70,28 @@ const formatOrderResult = (r: any): SwapOrder => ({
   receiveTxId: r.txId,
 })
 
-export const postFixedPriceSwap = (
-  sendAmount: number,
+export const createNewOrder = ({
+  sendSymbol,
+  receiveSymbol,
+  receiveAddress,
+  refundAddress,
+  sendAmount,
+  userId,
+}: {
   sendSymbol: string,
-  receiveAddress: string,
   receiveSymbol: string,
-  refundAddress: string,
-  userId: string,
-): Promise<SwapOrder> => fetchPost(`${apiUrl}/api/v2/public/swap`, {
+  receiveAddress: string,
+  refundAddress?: string,
+  sendAmount?: number,
+  userId?: string,
+}): Promise<SwapOrder> => fetchPost(`${apiUrl}/api/v2/public/swap`, {
   user_id: userId,
   deposit_amount: sendAmount,
   deposit_currency: sendSymbol,
   withdrawal_address: receiveAddress,
   withdrawal_currency: receiveSymbol,
   refund_address: refundAddress,
-}).then((r) => log.debugInline('postFixedPriceSwap', r))
+}).then((r) => log.debugInline('createNewOrder', r))
   .then(formatOrderResult)
   .catch((err) => {
     log.error(err)
@@ -128,7 +135,7 @@ export default {
   fetchAssetPrices,
   fetchPriceChart,
   fetchMarketInfo,
-  postFixedPriceSwap,
+  createNewOrder,
   fetchOrderStatus,
   fetchOrders,
   fetchSwap,

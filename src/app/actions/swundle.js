@@ -8,7 +8,7 @@ import { ZERO, BigNumber } from 'Utilities/convert'
 
 import {
   addSwap, removeSwap, restoreSwapPolling,
-  createOrder, createSwapTx, signSwap, sendSwap, setSwapTx,
+  createOrderWithWallets, createSwapTx, signSwap, sendSwap, setSwapTx,
   swapError,
 } from 'Actions/swap'
 import { createAggregateTx } from 'Actions/tx'
@@ -156,7 +156,7 @@ export const initSwundle = (swundle) => (dispatch) => Promise.resolve().then(() 
   dispatch(initStarted(swundle.id))
   return Promise.resolve(swundle)
     .then((s) => dispatch(checkSufficientBalances(s)))
-    .then((s) => forEachSwap(s, (swap) => dispatch(createOrder(swap))))
+    .then((s) => forEachSwap(s, (swap) => dispatch(createOrderWithWallets(swap))))
     .then((s) => dispatch(createSwundleTxs(s)))
     .then((s) => {
       dispatch(initSuccess(swundle.id))

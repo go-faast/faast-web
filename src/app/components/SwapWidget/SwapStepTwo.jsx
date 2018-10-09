@@ -20,7 +20,7 @@ import PropTypes from 'prop-types'
 
 const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, timerExpired, handleTimerEnd, secondsUntilPriceExpiry }) => {
   swap = swap ? swap : {}
-  const { id = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
+  const { orderId = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
   sendAmount = '', receiveAmount = '', inverseRate = '', orderStatus = '', refundAddress = '' } = swap
   return (
     <Fragment>
@@ -59,7 +59,7 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, timerExpired, h
               </tr>
               <tr>
                 <td><b>Order ID:</b></td>
-                <td colSpan='2' className='px-2'>{id}</td>
+                <td colSpan='2' className='px-2'>{orderId}</td>
               </tr>
               <tr>
                 <td><b>Receive Address:</b></td>
@@ -94,7 +94,7 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, timerExpired, h
             </tbody>
           </table>
           {(secondsUntilPriceExpiry > 0 && !timerExpired)
-          ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if submitted within:'} onTimerEnd={handleTimerEnd}/></small></span>)
+          ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if deposit sent within:'} onTimerEnd={handleTimerEnd}/></small></span>)
           : (timerExpired && (<span className='text-warning'><small>* Quoted rates are no longer guaranteed as the 15 minute guarantee window has expired. Orders will be filled using the latest variable rate when deposit is received.</small></span>))}
         </CardFooter>
       </Card>
@@ -105,16 +105,16 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, timerExpired, h
 export default compose(
   setDisplayName('SwapStepTwo'),
   connect(createStructuredSelector({
-    swap: (state, { swapId }) => getSwap(state, swapId)
+    swap: (state, { orderId }) => getSwap(state, orderId)
   }), {
     retrieveSwap: retrieveSwap,
     push: pushAction
   }),
   setPropTypes({
-    swapId: PropTypes.string,
+    orderId: PropTypes.string,
   }),
   defaultProps({
-    swapId: ''
+    orderId: ''
   }),
   withProps(({ swap = {} }) => {
     const { rateLockedUntil } = swap
@@ -139,9 +139,9 @@ export default compose(
       },
       checkDepositStatus: ({ push, swap }) => () => {
         swap = swap || {}
-        const { orderStatus = '', id = '' } = swap
+        const { orderStatus = '', orderId = '' } = swap
         if (orderStatus && orderStatus !== 'awaiting deposit') {
-          push(routes.tradeDetail(id))
+          push(routes.tradeDetail(orderId))
         }
       }
     }
@@ -152,11 +152,11 @@ export default compose(
       checkDepositStatus()
     },
     componentWillMount() {
-      const { swapId, swap, checkDepositStatus, retrieveSwap } = this.props
+      const { orderId, swap, checkDepositStatus, retrieveSwap } = this.props
       if (!swap) {
-        retrieveSwap(swapId)
+        retrieveSwap(orderId)
       } else {
-        retrieveSwap(swapId)
+        retrieveSwap(orderId)
         checkDepositStatus()
       }
     }

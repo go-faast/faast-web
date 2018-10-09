@@ -1,10 +1,12 @@
 import { flatten } from 'lodash'
+import uuid from 'uuid/v4'
 import { toNumber } from 'Utilities/convert'
 
 import { newScopedCreateAction, idPayload } from 'Utilities/action'
 import log from 'Log'
 import walletService, { MultiWallet } from 'Services/Wallet'
 import Faast from 'Services/Faast'
+import toastr from 'Utilities/toastrWrapper'
 
 import { createTx, signTx, sendTx, updateTxReceipt, pollTxReceipt } from 'Actions/tx'
 import { defaultPortfolioId } from 'Actions/portfolio'
@@ -78,47 +80,49 @@ const getWalletForAsset = (walletId, assetSymbol) => {
 export const createOrder = (swap) => (dispatch) => Promise.resolve().then(() => {
   if (swap.error) return swap
   const finish = dispatch(createSwapFinish('createOrder', swap))
-  const { sendWalletId, sendAmount, sendSymbol, receiveWalletId, receiveSymbol } = swap
-  const sendWalletInstance = getWalletForAsset(sendWalletId, sendSymbol)
-  const receiveWalletInstance = getWalletForAsset(receiveWalletId, receiveSymbol)
-  const userId = sendWalletInstance.getId()
-  return Promise.all([
-    sendWalletInstance.getFreshAddress(sendSymbol),
-    receiveWalletInstance.getFreshAddress(receiveSymbol),
-  ])
-  .then(([refundAddress, receiveAddress]) => Faast.postFixedPriceSwap(
-    toNumber(sendAmount),
+  const { id, receiveAddress, refundAddress, sendAmount, sendSymbol, receiveSymbol, sendWalletId } = swap
+  log.info(`Creating faast order for swap ${id}`)
+  return Faast.createNewOrder({
     sendSymbol,
-    receiveAddress,
     receiveSymbol,
-    refundAddress,
-    userId,
-  ))
-  .then((order) => finish(null, order))
+    receiveAddress,
+    refundAddress,  // optional
+    sendAmount: toNumber(sendAmount), // optional
+    userId: sendWalletId, // optional
+  })
+  .then((order) => { 
+    finish(null, order)
+    return order
+  })
   .catch((e) => {
     log.error('createOrder', e)
     return finish(`Error creating swap for pair ${sendSymbol}->${receiveSymbol}, please contact support@faa.st`)
   })
 })
 
-export const createManualOrder = (swap) => (dispatch) => Promise.resolve().then(() => {
+export const createOrderWithWallets = (swap) => (dispatch) => Promise.resolve().then(() => {
   if (swap.error) return swap
-  const finish = dispatch(createSwapFinish('createOrder', swap))
-  const { receiveAddress, refundAddress, sendAmount, sendSymbol, receiveSymbol } = swap
-  return Faast.postFixedPriceSwap(
-    toNumber(sendAmount),
+  const finish = dispatch(createSwapFinish('createOrderWithWallets', swap))
+  const { sendAmount, sendSymbol, receiveSymbol } = swap
+  const sendWalletInstance = getWalletForAsset(swap.sendWalletId, sendSymbol)
+  const receiveWalletInstance = getWalletForAsset(swap.receiveWalletId, receiveSymbol)
+  const sendWalletId = sendWalletInstance.getId() // if original sendWalletId is a MultiWallet, this id will change
+  return Promise.all([
+    sendWalletInstance.getFreshAddress(sendSymbol),
+    receiveWalletInstance.getFreshAddress(receiveSymbol),
+  ])
+  .then(([refundAddress, receiveAddress]) => dispatch(createOrder({
+    id: swap.id,
+    sendAmount,
     sendSymbol,
-    receiveAddress,
     receiveSymbol,
+    receiveAddress,
     refundAddress,
-  )
-  .then((order) => { 
-    finish(null, order)
-    return order
-  })
+    sendWalletId,
+  })))
   .catch((e) => {
-    log.error('createManualOrder', e)
-    return finish(`Error creating manual swap for pair ${sendSymbol}->${receiveSymbol}, please contact support@faa.st`)
+    log.error('createOrderWithWallets', e)
+    return finish('Error creating swap for chosen wallets')
   })
 })
 
@@ -151,31 +155,38 @@ export const initiateSwap = (swap) => (dispatch, getState) => {
     .catch((e) => dispatch(swapInitFailed(swap.id, e.message || e)))
 }
 
-export const createManualSwap = (swap) => (dispatch, getState) => {
-  let swapId = ''
-  dispatch(swapInitStarted(swap.id))
-  return dispatch(createManualOrder(swap))
-    .then((s) => { 
-      s.id = s.orderId
-      swapId = s.orderId 
-      return dispatch(swapAdded(s))
+export const createManualSwap = (swapParams) => (dispatch, getState) => {
+  swapParams.id = swapParams.id || uuid()
+  dispatch(swapAdded(swapParams))
+  return dispatch(createOrder(swapParams))
+    .then((swap) => {
+      if (swap.error) {
+        throw new Error(swap.error)
+      }
+      swap.id = swapParams.id
+      return getSwap(getState(), swap.id)
     })
-    .then(() => dispatch(swapInitSuccess(swapId)))
-    .then(() => getSwap(getState(), swapId))
-    .catch((e) => dispatch(swapInitFailed(swapId, e.message || e)))
+    .catch((e) => {
+      log.error('Failed to create swap', swapParams, e)
+      toastr.error('Failed to create swap, please contact support@faa.st')
+      throw e
+    })
 }
 
-export const retrieveSwap = (swapId) => (dispatch, getState) => {
-  let swapToPoll = {}
-  return Faast.fetchSwap(swapId)
+export const retrieveSwap = (swapOrderId) => (dispatch, getState) => {
+  return Faast.fetchSwap(swapOrderId)
     .then((swap) => {
-      swapToPoll = swap
-      swap.id = swap.orderId
-      return dispatch(swapAdded(swap))
+      const existingSwap = getSwap(getState(), swapOrderId)
+      swap.id = existingSwap ? existingSwap.id : swap.orderId
+      dispatch(swapAdded(swap))
+      dispatch(pollOrderStatus(swap))
+      return getSwap(getState(), swap.id)
     })
-    .then(() => dispatch(pollOrderStatus(swapToPoll)))
-    .then(() => getSwap(getState(), swapId))
-    .catch((e) => dispatch(swapInitFailed(swapId, e.message || e)))
+    .catch((e) => {
+      log.error(`Failed to retrieve swap ${swapOrderId}`, e)
+      toastr.error(`Failed to retrieve swap ${swapOrderId}`)
+      throw e
+    })
 }
 
 export const signSwap = (swap, passwordCache = {}) => (dispatch, getState) => Promise.resolve()
@@ -220,10 +231,15 @@ const isSwapFinalized = (swap) => swap && (swap.orderStatus === 'complete' || sw
 export const pollOrderStatus = (swap) => (dispatch) => {
   const { id, orderId, orderStatus, tx } = swap
   if (!orderId) {
-    log.info(`pollOrderStatus: swap ${id} has no orderId`)
+    log.warn(`pollOrderStatus: swap ${id} has no orderId`)
     return
   }
-  if (isSwapFinalized(swap) || (tx && !tx.sent && orderStatus === 'awaiting deposit')) {
+  if (isSwapFinalized(swap)) {
+    log.debug(`pollOrderStatus: swap ${id} is finalized, won't poll`)
+    return
+  }
+  if (tx && !tx.sent && orderStatus === 'awaiting deposit') {
+    log.debug(`pollOrderStatus: swap ${id} has unsent tx, won't poll`)
     return
   }
   const orderStatusInterval = window.setInterval(() => {
