@@ -85,7 +85,8 @@ export default compose(
               <Col xs='12' sm='auto'><CoinIcon symbol={sendSymbol}/></Col>
               <Col xs='12' sm>
                 <Row className='gutter-2'>
-                  <Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, sendAsset)}</Col>
+                  {sendAsset ? (<Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, sendAsset)}</Col>)
+                  : null}
                   <Col xs='12' className='order-sm-2 font-size-sm pt-0'>{sendAsset.name}</Col>
                   {sendAmount ? (<Col xs='12' className='text-white'>
                     <Units value={sendAmount} symbol={sendSymbol} prefix='-'/>
@@ -103,8 +104,9 @@ export default compose(
               <Col xs='12' sm='auto' className='order-sm-2'><CoinIcon symbol={receiveSymbol}/></Col>
               <Col xs='12' sm>
                 <Row className='gutter-2'>
-                  <Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, receiveAsset)}</Col>
-                  <Col xs='12' className='order-sm-2 font-size-sm pt-0'>{receiveAsset.name}</Col>
+                  {receiveAsset ? (<Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, receiveAsset)}</Col>)
+                  : null}
+                  <Col xs='12' className='order-sm-2 font-size-sm pt-0'>{receiveAsset ? receiveAsset.name : receiveSymbol}</Col>
                   {receiveAmount ? (<Col xs='12' className='text-white'>
                     <UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} prefix='+'/>
                   </Col>) : null}
