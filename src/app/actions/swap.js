@@ -28,7 +28,10 @@ export const swapInitFailed = createAction('INIT_FAILED', (id, errorMessage) => 
 
 export const retrieveSwaps = (walletId) => (dispatch, getState) => {
   const wallet = getWallet(getState(), walletId)
-  if (!wallet) { return }
+  if (!wallet) {
+    log.warn(`Cannot retrieve swaps for unknown wallet ${walletId}`)
+    return
+  }
   if (wallet.type.includes(MultiWallet.type)) {
     return Promise.all(wallet.nestedWalletIds.map((nestedWalletId) => dispatch(retrieveSwaps(nestedWalletId))))
       .then(flatten)
