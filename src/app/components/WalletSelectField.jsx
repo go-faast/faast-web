@@ -22,22 +22,27 @@ const WalletSelectField = ({ valid, handleSelect, dropDownStyle, dropDownText,
             {dropDownText}
           </DropdownToggle>
           <DropdownMenu>
-            {hasWallets ? connectedWallets.map(wallet => {
-              const { id } = wallet
-              if (id !== 'default' && ((web3.utils.isAddress(id) && ERC20) || Address.isValid(id) && !ERC20)) {
-                return (
-                  <Fragment key={id}>
-                    <DropdownItem header><small>Connected Wallets</small></DropdownItem> 
-                    <DropdownItem onClick={() => handleSelect(id)}>{id}</DropdownItem>
-                  </Fragment>
-                )
-              }
-            }) : (
+            {hasWallets ? (
               <Fragment>
-                <DropdownItem header><small>No Connected Wallets</small></DropdownItem>
+                <DropdownItem header><small>Connected Wallets</small></DropdownItem> 
+                {connectedWallets.map(wallet => {
+                  const { id } = wallet
+                  if (id !== 'default' && ((web3.utils.isAddress(id) && ERC20) || Address.isValid(id) && !ERC20)) {
+                    return (
+                      <DropdownItem onClick={() => handleSelect(id)}>{id}</DropdownItem>
+                    )
+                  }
+                })}
+                <DropdownItem divider/>
+              </Fragment>
+            ) : (
+              <Fragment>
+                <DropdownItem><small>No Connected Wallets</small></DropdownItem>
               </Fragment>
             )}
-            <DropdownItem style={{ color: 'rgba(255, 255, 255, 0.5)' }} onClick={handleConnect}><i className='nav-link-icon fa fa-plus'></i> Connect Your Wallet</DropdownItem>
+            <DropdownItem className='text-primary' onClick={handleConnect}>
+              <i className='nav-link-icon fa fa-plus'></i> Connect Your Wallet
+            </DropdownItem>
           </DropdownMenu>
         </InputGroupButtonDropdown>
       )}
