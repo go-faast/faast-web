@@ -23,11 +23,12 @@ import SwapIcon from 'Img/swap-icon.svg?inline'
 import { Address } from 'bitcore-lib'
 import { createManualSwap } from 'Actions/swap'
 import { searchAddress, addToPortfolio } from 'Actions/accountSearch'
+import { getWalletForAsset } from 'Utilities/wallet'
 
 const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, handleSendAmountValidation,
   sendSymbol, receiveSymbol, handleSelectedAsset, handleSendSymbol, handleReceiveSymbol, 
   handleReceiveAddressValidation, handleReturnAddressValidation, handleSwapSubmit, isLoadingSwap,
-  handleReceiveWalletSelect, handleRefundWalletSelect, formErrors, deposit, receive }) => (
+  handleReceiveWalletSelect, handleRefundWalletSelect, formErrors }) => (
     <Fragment>
       <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
       <Card className={classNames('container justify-content-center p-0', container)}>
@@ -62,8 +63,6 @@ const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, handleSendAmou
             handleSendAmountValidation={handleSendAmountValidation}
             isLoadingSwap={isLoadingSwap}
             formErrors={formErrors}
-            depositAsset={deposit}
-            receiveAsset={receive}
           />
         </CardBody>
         <Modal size='lg' isOpen={isPopUpOpen} toggle={() => handlePopUp(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
@@ -87,7 +86,7 @@ const SwapForm = reduxForm({
   updateUnregisteredFields: true
 })(({ handleSubmit, handleRefundWalletSelect, handleReceiveWalletSelect, invalid, sendSymbol, receiveSymbol, 
   handleReturnAddressValidation, handleReceiveAddressValidation, isLoadingSwap, handleSendAmountValidation, 
-  formErrors, depositAsset, receiveAsset, dirty }) => (
+  formErrors, dirty }) => (
   <Form onSubmit={handleSubmit}>
     <div className={section}>
     <ReduxFormField
@@ -133,7 +132,7 @@ const SwapForm = reduxForm({
         dropDownText={`${receiveSymbol} Wallets`}
         handleSelect={handleReceiveWalletSelect}
         valid={formErrors.receiveAddress && dirty ? false : true}
-        ERC20={(receiveAsset.ERC20 || receiveSymbol == 'ETH')}
+        symbol={receiveSymbol}
       />
       <div style={{ position: 'relative' }}>
         <ReduxFormField
@@ -179,7 +178,7 @@ const SwapForm = reduxForm({
           dropDownText={`${sendSymbol} Wallets`}
           handleSelect={handleRefundWalletSelect}
           valid={formErrors.refundAddress ? false : true}
-          ERC20={(depositAsset.ERC20 || sendSymbol == 'ETH')}
+          symbol={sendSymbol}
         />
          <Expandable 
           className={expnd}
@@ -199,7 +198,7 @@ export default compose(
   connect(createStructuredSelector({
     assets: getAllAssetsArray,
     isAlreadyInPortfolio: isAccountSearchResultWalletInPortfolio,
-    formErrors: (state) => getFormSyncErrors('swapWidget')(state)
+    formErrors: (state) => getFormSyncErrors('swapWidget')(state),
   }), {
     createSwap: createManualSwap,
     searchAddress: searchAddress,
@@ -217,11 +216,21 @@ export default compose(
     }
   }),
   withStateHandlers(
-    { isPopUpOpen: false, assetType: null, deposit: {}, receive: {} },
-    { handlePopUp: ({ isPopUpOpen }) => (type) => ({ isPopUpOpen: !isPopUpOpen, assetType: type }) },
-  ),
-  withState('sendSymbol', 'handleSendSymbol', 'BTC'),
-  withState('receiveSymbol', 'handleReceiveSymbol', 'ETH'),
+    { isPopUpOpen: false, assetType: null, deposit: {}, receive: {}, sendSymbol: 'BTC', receiveSymbol: 'ETH' },
+    { 
+      handlePopUp: ({ isPopUpOpen }) => (type) => ({ isPopUpOpen: !isPopUpOpen, assetType: type }),
+      handleSendSymbol: (state, { change }) => (symbol) => {
+        change('swapWidget', 'sendAmount', '')
+        return ({
+          sendSymbol: symbol
+        })
+      },
+      handleReceiveSymbol: (state, { change }) => (symbol) => {
+        change('swapWidget', 'sendAmount', '')
+        return ({
+          receiveSymbol: symbol
+        })} 
+    }),
   withState('isLoadingSwap', 'handleLoading', false),
   connect(createStructuredSelector({
     deposit: (state, { sendSymbol }) => getAsset(state, sendSymbol),
@@ -273,11 +282,28 @@ export default compose(
         return 'Please enter a deposit amount greater than 0 or omit'
       }
     },
-    handleReceiveWalletSelect: ({ change }) => (address) => {
-      change('swapWidget', 'receiveAddress', address)
+    handleReceiveWalletSelect: ({ change }) => (symbol, address) => {
+      if (symbol === 'BTC') {
+        const walletInstance = getWalletForAsset(address, symbol)
+        return walletInstance.getFreshAddress(symbol)
+        .then((wallet) => {
+          change('swapWidget', 'receiveAddress', wallet)
+        })
+      } else {
+        change('swapWidget', 'receiveAddress', address)
+      }
     },
-    handleRefundWalletSelect: ({ change }) => (address) => {
-      change('swapWidget', 'refundAddress', address)
+    handleRefundWalletSelect: ({ change }) => (symbol, address) => {
+      if (symbol === 'BTC') {
+        const walletInstance = getWalletForAsset(address, symbol)
+        return walletInstance.getFreshAddress(symbol)
+        .then((wallet) => {
+          change('swapWidget', 'refundAddress', wallet)
+        })
+      } else {
+        change('swapWidget', 'refundAddress', address)
+      }
+     
     },
     handleSwapSubmit: ({ createSwap, searchAddress, isAlreadyInPortfolio, addWalletToPortfolio, receive, handleForward, handleLoading }) => (values) => {
       const { symbol, ERC20 } = receive

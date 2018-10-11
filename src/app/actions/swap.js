@@ -1,10 +1,10 @@
 import { flatten } from 'lodash'
 import uuid from 'uuid/v4'
 import { toNumber } from 'Utilities/convert'
-
+import { MultiWallet } from 'Services/Wallet'
 import { newScopedCreateAction, idPayload } from 'Utilities/action'
+import { getWalletForAsset } from 'Utilities/wallet'
 import log from 'Log'
-import walletService, { MultiWallet } from 'Services/Wallet'
 import Faast from 'Services/Faast'
 import toastr from 'Utilities/toastrWrapper'
 
@@ -67,14 +67,6 @@ const createSwapFinish = (type, swap) => (dispatch, getState) => (errorMessage, 
     dispatch(swapUpdated(swap.id, updatedFields))
   }
   return getSwap(getState(), swap.id)
-}
-
-const getWalletForAsset = (walletId, assetSymbol) => {
-  const walletInstance = walletService.get(walletId)
-  if (walletInstance instanceof MultiWallet) {
-    return walletInstance.getWalletForAsset(assetSymbol)
-  }
-  return walletInstance
 }
 
 export const createOrder = (swap) => (dispatch) => Promise.resolve().then(() => {
