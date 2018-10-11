@@ -78,7 +78,7 @@ export default abstract class BitcoinWallet extends Wallet {
       .then(() => this._getDiscoveryResult())
       .then(({ unusedAddresses }) => unusedAddresses[index])
       .catch((e) => {
-        toastr.error('Failed to get retrieve bitcoin address from wallet. Please try again.')
+        toastr.error('Failed to get bitcoin address from wallet. Please try again.')
         throw new Error(`Failed to get fresh bitcoin address: ${e.message || e}`)
       })
   }
