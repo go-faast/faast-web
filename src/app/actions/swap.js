@@ -84,7 +84,7 @@ export const createOrder = (swap) => (dispatch) => Promise.resolve().then(() => 
   })
   .then((order) => { 
     finish(null, order)
-    return order
+    return { id, ...order }
   })
   .catch((e) => {
     log.error('createOrder', e)
