@@ -10,7 +10,7 @@ const SwapWidget = ({ urlParams }) => {
   const { id } = urlParams
   return (
   <Layout className='pt-3'>
-  {!id ? <SwapStepOne/> : <SwapStepTwo swapId={id} />}
+  {!id ? <SwapStepOne/> : <SwapStepTwo orderId={id} />}
   </Layout>
   )
 }

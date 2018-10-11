@@ -1,11 +1,13 @@
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { push as pushAction } from 'react-router-redux'
-import { compose, setDisplayName, lifecycle, setPropTypes, defaultProps, withHandlers } from 'recompose'
+import { compose, setDisplayName, lifecycle, setPropTypes, defaultProps, withHandlers, withStateHandlers, withProps } from 'recompose'
 import classNames from 'class-names'
 import { createStructuredSelector } from 'reselect'
 import routes from 'Routes'
 import Units from 'Components/Units'
+import Timer from 'Components/Timer'
+import Expandable from 'Components/Expandable'
 import CoinIcon from 'Components/CoinIcon'
 import ProgressBar from 'Components/ProgressBar'
 import { Button, Input, Col, Row, Card, CardHeader, CardBody, CardFooter } from 'reactstrap'
@@ -16,11 +18,10 @@ import { retrieveSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
 import PropTypes from 'prop-types'
 
-const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy }) => {
+const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, timerExpired, handleTimerEnd, secondsUntilPriceExpiry }) => {
   swap = swap ? swap : {}
-  const { id = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
+  const { orderId = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
   sendAmount = '', receiveAmount = '', inverseRate = '', orderStatus = '', refundAddress = '' } = swap
-  console.log('s', swap)
   return (
     <Fragment>
         <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={1}/>
@@ -47,18 +48,18 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy }) => {
         </CardBody>
         <CardFooter style={{ border: 'none', position: 'relative', wordBreak: 'break-word' }}>
           <div className={receipt}></div>
-          <p className='mt-2' style={{ letterSpacing: 5 }}>ORDER DETAILS</p>
+          <p className='mt-2 text-center' style={{ letterSpacing: 5 }}>ORDER DETAILS</p>
           <table style={{ lineHeight: 1.25, textAlign: 'left' }}>
             <tbody>
               <tr>
                 <td><b>Status:</b></td>
                 <td colSpan='2' className='px-2' style={{ textTransform: 'capitalize' }}>
-                  {orderStatus} {orderStatus !== 'complete' && (<i className='fa fa-spinner fa-pulse'/>)}
+                  {orderStatus} {orderStatus !== 'complete' && (<Expandable shrunk={<i className='fa fa-spinner fa-pulse'/>} expanded={'Order status is updated automatically. You do not need to refresh.'}></Expandable>)}
                 </td>
               </tr>
               <tr>
                 <td><b>Order ID:</b></td>
-                <td colSpan='2' className='px-2'>{id}</td>
+                <td colSpan='2' className='px-2'>{orderId}</td>
               </tr>
               <tr>
                 <td><b>Receive Address:</b></td>
@@ -73,7 +74,7 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy }) => {
               <tr>
                 <td><b>Rate:</b></td>
                 <td colSpan='2' className='px-2'>
-                  { isFinite(inverseRate) ?
+                  {isFinite(inverseRate) ?
                   <span>1 {sendSymbol} = <Units value={inverseRate} precision={6}/> {receiveSymbol}</span> :
                     'Order will be fulfilled at the current market rate'}
                 </td>
@@ -92,6 +93,9 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy }) => {
               ) : null}
             </tbody>
           </table>
+          {(secondsUntilPriceExpiry > 0 && !timerExpired)
+          ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if deposit sent within:'} onTimerEnd={handleTimerEnd}/></small></span>)
+          : (timerExpired && (<span className='text-warning'><small>* Quoted rates are no longer guaranteed as the 15 minute guarantee window has expired. Orders will be filled using the latest variable rate when deposit is received.</small></span>))}
         </CardFooter>
       </Card>
     </Fragment>
@@ -101,16 +105,23 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy }) => {
 export default compose(
   setDisplayName('SwapStepTwo'),
   connect(createStructuredSelector({
-    swap: (state, { swapId }) => getSwap(state, swapId)
+    swap: (state, { orderId }) => getSwap(state, orderId)
   }), {
     retrieveSwap: retrieveSwap,
     push: pushAction
   }),
   setPropTypes({
-    swapId: PropTypes.string,
+    orderId: PropTypes.string,
   }),
   defaultProps({
-    swapId: ''
+    orderId: ''
+  }),
+  withProps(({ swap = {} }) => {
+    const { rateLockedUntil } = swap
+    const secondsUntilPriceExpiry = (Date.parse(rateLockedUntil) - Date.now()) / 1000
+    return {
+      secondsUntilPriceExpiry,
+    }
   }),
   withHandlers(() => {
     let inputRef
@@ -128,9 +139,9 @@ export default compose(
       },
       checkDepositStatus: ({ push, swap }) => () => {
         swap = swap || {}
-        const { orderStatus = '', id = '' } = swap
+        const { orderStatus = '', orderId = '' } = swap
         if (orderStatus && orderStatus !== 'awaiting deposit') {
-          push(routes.tradeDetail(id))
+          push(routes.tradeDetail(orderId))
         }
       }
     }
@@ -141,12 +152,17 @@ export default compose(
       checkDepositStatus()
     },
     componentWillMount() {
-      const { swapId, swap, checkDepositStatus, retrieveSwap } = this.props
+      const { orderId, swap, checkDepositStatus, retrieveSwap } = this.props
       if (!swap) {
-        retrieveSwap(swapId)
+        retrieveSwap(orderId)
       } else {
+        retrieveSwap(orderId)
         checkDepositStatus()
       }
     }
-  })
+  }),
+  withStateHandlers(
+    { timerExpired: false },
+    { handleTimerEnd: () => () => ({ timerExpired: true }) },
+  ),
 )(SwapStepTwo)
