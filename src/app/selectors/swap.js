@@ -4,6 +4,7 @@ import { getSwapStatus, getSwapFriendlyError } from 'Utilities/swap'
 import { createItemSelector, selectItemId } from 'Utilities/selector'
 import { toBigNumber } from 'Utilities/convert'
 import { MultiWallet } from 'Services/Wallet'
+import { getAllWalletIds } from 'Selectors/wallet'
 
 import { getAllAssets } from './asset'
 import { getAllWallets } from './wallet'
@@ -74,6 +75,12 @@ export const getAllSwapsArray = createSelector(
 export const getSentSwaps = createSelector(
   getAllSwapsArray,
   (allSwaps) => allSwaps.filter(({ orderStatus, tx, isManual }) => orderStatus !== 'awaiting deposit' || tx.sent || (isManual && orderStatus !== 'awaiting deposit'))
+)
+
+export const getConnectedWalletsSentSwaps = createSelector(
+  getSentSwaps,
+  getAllWalletIds,
+  (sentSwaps, walletIds) => sentSwaps.filter(({ receiveWalletId }) => walletIds.some((id) => id === receiveWalletId))
 )
 
 export const getSwap = createItemSelector(
