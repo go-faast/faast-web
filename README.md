@@ -96,6 +96,7 @@ npm run test
 1. Update `src/app/components/ConfirmTransactionModal/index.jsx`
 1. Update `src/app/actions/connectHardwareWallet.js` if hardware wallet based
 1. Update `src/config/walletTypes.js`
+1. Update `src/config/index.js` explorer URLs
   
 
 ## Security

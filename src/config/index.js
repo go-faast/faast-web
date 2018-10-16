@@ -40,6 +40,8 @@ export default {
   explorerUrls: {
     BTC: 'https://blockchain.info',
     ETH: 'https://etherscan.io',
+    LTC: 'https://live.blockcypher.com/ltc/',
+    BCH: 'https://explorer.bitcoin.com/bch',
   },
   walletTypes,
   highCharts,
