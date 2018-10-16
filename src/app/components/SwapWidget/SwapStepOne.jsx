@@ -261,11 +261,11 @@ export default compose(
         sendSymbol = to
         receiveSymbol = symbol
       }
-      updateQueryString({ search: `to=${receiveSymbol}&from=${sendSymbol}` })
+      updateQueryString({ search: `from=${sendSymbol}&to=${receiveSymbol}` })
       handlePopUp()
     },
     handleSwitchAssets: ({ updateQueryString, sendSymbol, receiveSymbol }) => () => {
-      updateQueryString({ search: `to=${sendSymbol}&from=${receiveSymbol}` })
+      updateQueryString({ search: `from=${receiveSymbol}&to=${sendSymbol}` })
     },
     handleReceiveAddressValidation: ({ receive }) => (address) => {
       const { symbol, ERC20 } = receive
