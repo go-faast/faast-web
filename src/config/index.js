@@ -1,10 +1,8 @@
 /* global SITE_URL, API_URL */
 import highCharts from './highCharts'
 import tokenFunctionSignatures from './tokenFunctionSignatures'
+import walletTypes from './walletTypes'
 import BigNumber from 'bignumber.js'
-
-import ledgerLogo from 'Img/wallet/ledger-logo.png'
-import trezorLogo from 'Img/wallet/trezor-logo.png'
 
 BigNumber.config({ FORMAT: {
   decimalSeparator: '.',
@@ -43,34 +41,7 @@ export default {
     BTC: 'https://blockchain.info',
     ETH: 'https://etherscan.io',
   },
-  walletTypes: {
-    ledger: {
-      name: 'Ledger Wallet',
-      icon: ledgerLogo,
-      supportedAssets: {
-        ETH: {
-          derivationPath: 'm/44\'/60\'/0\''
-        },
-        BTC: {
-          derivationPath: 'm/49\'/0\'/0\'',
-          segwitPrefix: 'm/49',
-          legacyPrefix: 'm/44',
-        }
-      }
-    },
-    trezor: {
-      name: 'TREZOR',
-      icon: trezorLogo,
-      supportedAssets: {
-        ETH: {
-          derivationPath: 'm/44\'/60\'/0\'/0'
-        },
-        BTC: {
-          derivationPath: null
-        }
-      }
-    }
-  },
+  walletTypes,
   highCharts,
   tokenFunctionSignatures
 }
