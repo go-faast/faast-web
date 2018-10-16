@@ -1,17 +1,16 @@
 import { isFunction } from 'lodash'
 import {
   MultiWallet,
-  BitcoinWallet,
+  BitcoreWallet,
   EthereumWallet,
   EthereumWalletKeystore,
   EthereumWalletWeb3,
 } from 'Services/Wallet'
+import config from 'Config'
 
 import PortfolioIcon from 'Img/wallet/portfolio.svg?inline'
 import ViewOnlyIcon from 'Img/wallet/view-only.svg?inline'
-
-import EthereumIcon from 'Img/coin/ETH.png'
-import BitcoinIcon from 'Img/coin/BTC.png'
+import UnknownIcon from 'Img/wallet/question-mark-white.svg?inline'
 
 import TrezorLogo from 'Img/wallet/trezor-logo.png'
 import LedgerLogo from 'Img/wallet/ledger-logo.png'
@@ -19,6 +18,10 @@ import MetaMaskLogo from 'Img/wallet/metamask-logo.png'
 import ParityLogo from 'Img/wallet/parity-logo.svg'
 import MistLogo from 'Img/wallet/mist-logo.png'
 import BlockstackLogo from 'Img/wallet/blockstack-logo.png'
+
+const coinIcon = (symbol) => `${config.apiUrl}/api/v1/public/static/img/coins/icon_${symbol}.png`
+
+const EthereumIcon = coinIcon('ETH')
 
 const web3ProviderToIconProps = {
   MetaMask: { src: MetaMaskLogo },
@@ -53,11 +56,11 @@ export const getWalletIconProps = (walletInstance) => {
     return { src: ViewOnlyIcon, color: 'primary' }
   }
   // Fallbacks
-  if (walletInstance instanceof BitcoinWallet || type.includes('bitcoin')) {
-    return { src: BitcoinIcon }
-  }
   if (walletInstance instanceof EthereumWallet || type.includes('ethereum')) {
     return { src: EthereumIcon }
   }
-  return null
+  if (walletInstance instanceof BitcoreWallet || walletInstance.assetSymbol) {
+    return { src: coinIcon(walletInstance.assetSymbol) }
+  }
+  return { src: UnknownIcon }
 }
