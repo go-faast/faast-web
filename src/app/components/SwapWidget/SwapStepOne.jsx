@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
-import { compose, setDisplayName, withProps, withState, withStateHandlers, withHandlers } from 'recompose'
+import { compose, setDisplayName, withProps, withState, withStateHandlers, withHandlers, setPropTypes, defaultProps, lifecycle } from 'recompose'
 import classNames from 'class-names'
 import { reduxForm, change, getFormSyncErrors } from 'redux-form'
 import { push as pushAction } from 'react-router-redux'
@@ -22,13 +22,16 @@ import { toBigNumber } from 'Utilities/convert'
 import SwapIcon from 'Img/swap-icon.svg?inline'
 import { Address } from 'bitcore-lib'
 import { createManualSwap } from 'Actions/swap'
+import { updateQueryStringReplace } from 'Actions/router'
 import { searchAddress, addToPortfolio } from 'Actions/accountSearch'
 import { getWalletForAsset } from 'Utilities/wallet'
+import PropTypes from 'prop-types'
+
 
 const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, handleSendAmountValidation,
-  sendSymbol, receiveSymbol, handleSelectedAsset, handleSendSymbol, handleReceiveSymbol, 
-  handleReceiveAddressValidation, handleReturnAddressValidation, handleSwapSubmit, isLoadingSwap,
-  handleReceiveWalletSelect, handleRefundWalletSelect, formErrors }) => (
+  sendSymbol, receiveSymbol, handleSelectedAsset, handleSwitchAssets,handleReceiveAddressValidation, 
+  handleReturnAddressValidation, handleSwapSubmit, isLoadingSwap,handleReceiveWalletSelect, 
+  handleRefundWalletSelect, formErrors }) => (
     <Fragment>
       <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
       <Card className={classNames('container justify-content-center p-0', container)}>
@@ -41,7 +44,7 @@ const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, handleSendAmou
               <p>Deposit</p>
             </div>
           </Button>
-          <Button color='ultra-dark' className={classNames('flat', swap)} onClick={() => { handleSendSymbol(receiveSymbol); handleReceiveSymbol(sendSymbol) }}><SwapIcon/></Button>
+          <Button color='ultra-dark' className={classNames('flat', swap)} onClick={handleSwitchAssets}><SwapIcon/></Button>
           <Button color='ultra-dark' className='flat mb-3 p-0' onClick={() => handlePopUp('receive')}>
             <div className={asset}>
               <CoinIcon key={receiveSymbol} symbol={receiveSymbol} style={{ width: 48, height: 48 }} className='m-1'/>
@@ -55,7 +58,7 @@ const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, handleSendAmou
             onSubmit={handleSwapSubmit} 
             receiveSymbol={receiveSymbol} 
             sendSymbol={sendSymbol}
-            initialValues={{ sendSymbol, receiveSymbol, receiveAddress: '' }}
+            initialValues={{ sendSymbol, receiveSymbol }}
             handleReturnAddressValidation={handleReturnAddressValidation} 
             handleReceiveAddressValidation={handleReceiveAddressValidation}
             handleReceiveWalletSelect={handleReceiveWalletSelect}
@@ -71,7 +74,7 @@ const SwapStepOne = ({ isPopUpOpen, handlePopUp, supportedAssets, handleSendAmou
           </ModalHeader>
           <ModalBody>
             {isPopUpOpen && (
-              <AssetSelector selectAsset={handleSelectedAsset} supportedAssetSymbols={supportedAssets}/>
+              <AssetSelector selectAsset={(asset) => handleSelectedAsset(asset, sendSymbol, receiveSymbol)} supportedAssetSymbols={supportedAssets}/>
             )}
           </ModalBody>
         </Modal>
@@ -83,10 +86,10 @@ const SwapForm = reduxForm({
   form: 'swapWidget',
   enableReinitialize: true,
   keepDirtyOnReinitialize: true,
-  updateUnregisteredFields: true
+  updateUnregisteredFields: true,
 })(({ handleSubmit, handleRefundWalletSelect, handleReceiveWalletSelect, invalid, sendSymbol, receiveSymbol, 
   handleReturnAddressValidation, handleReceiveAddressValidation, isLoadingSwap, handleSendAmountValidation, 
-  formErrors, dirty }) => (
+  formErrors }) => (
   <Form onSubmit={handleSubmit}>
     <div className={section}>
     <ReduxFormField
@@ -131,7 +134,6 @@ const SwapForm = reduxForm({
         inputClass={classNames('flat', receive)}
         dropDownText={`${receiveSymbol} Wallets`}
         handleSelect={handleReceiveWalletSelect}
-        valid={formErrors.receiveAddress && dirty ? false : true}
         symbol={receiveSymbol}
       />
       <div style={{ position: 'relative' }}>
@@ -177,7 +179,6 @@ const SwapForm = reduxForm({
           inputClass='flat'
           dropDownText={`${sendSymbol} Wallets`}
           handleSelect={handleRefundWalletSelect}
-          valid={formErrors.refundAddress ? false : true}
           symbol={sendSymbol}
         />
          <Expandable 
@@ -190,7 +191,8 @@ const SwapForm = reduxForm({
     <Button className={classNames('mt-2 mb-2 mx-auto', submitButton)} color='primary' type='submit' disabled={invalid || isLoadingSwap}>
       {!isLoadingSwap ? 'Create Swap' : 'Generating Swap...' }
     </Button>
-  </Form>)
+  </Form>
+  )
 )
 
 export default compose(
@@ -205,6 +207,21 @@ export default compose(
     addWalletToPortfolio: addToPortfolio,
     push: pushAction,
     change: change,
+    updateQueryString: updateQueryStringReplace,
+  }),
+  setPropTypes({
+    sendSymbol: PropTypes.string, 
+    receiveSymbol: PropTypes.string,
+    depositAmount: PropTypes.number,
+    receiveAddr: PropTypes.string,
+    refundAddr: PropTypes.string,
+  }),
+  defaultProps({
+    sendSymbol: 'BTC',
+    receiveSymbol: 'ETH',
+    depositAmount: null,
+    receiveAddr: undefined,
+    refundAddr: undefined,
   }),
   withProps(({ assets }) => {
     let supportedAssets = []
@@ -216,20 +233,9 @@ export default compose(
     }
   }),
   withStateHandlers(
-    { isPopUpOpen: false, assetType: null, deposit: {}, receive: {}, sendSymbol: 'BTC', receiveSymbol: 'ETH' },
+    { isPopUpOpen: false, assetType: null },
     { 
       handlePopUp: ({ isPopUpOpen }) => (type) => ({ isPopUpOpen: !isPopUpOpen, assetType: type }),
-      handleSendSymbol: (state, { change }) => (symbol) => {
-        change('swapWidget', 'sendAmount', '')
-        return ({
-          sendSymbol: symbol
-        })
-      },
-      handleReceiveSymbol: (state, { change }) => (symbol) => {
-        change('swapWidget', 'sendAmount', '')
-        return ({
-          receiveSymbol: symbol
-        })} 
     }),
   withState('isLoadingSwap', 'handleLoading', false),
   connect(createStructuredSelector({
@@ -240,20 +246,26 @@ export default compose(
     handleForward: ({ push }) => (orderId) => push(`/swap?id=${orderId}`),
   }),
   withHandlers({
-    handleSelectedAsset: ({ assetType, handlePopUp, handleSendSymbol, handleReceiveSymbol, sendSymbol, receiveSymbol }) => (asset) => {
+    handleSelectedAsset: ({ assetType, updateQueryString, handlePopUp }) => (asset, to, from) => {
       const { symbol } = asset
+      let receiveSymbol = from
+      let sendSymbol = to
       if (assetType === 'deposit' && (symbol != receiveSymbol)) {
-        handleSendSymbol(symbol)
+        sendSymbol = symbol
       } else if (assetType === 'deposit' && (symbol === receiveSymbol)) {
-        handleReceiveSymbol(sendSymbol)
-        handleSendSymbol(symbol)
+        sendSymbol = symbol
+        receiveSymbol = from
       } else if (assetType === 'receive' && (symbol != sendSymbol)) {
-        handleReceiveSymbol(symbol)
+        receiveSymbol = symbol
       } else {
-        handleSendSymbol(receiveSymbol)
-        handleReceiveSymbol(symbol)
+        sendSymbol = to
+        receiveSymbol = symbol
       }
+      updateQueryString({ search: `to=${receiveSymbol}&from=${sendSymbol}` })
       handlePopUp()
+    },
+    handleSwitchAssets: ({ updateQueryString, sendSymbol, receiveSymbol }) => () => {
+      updateQueryString({ search: `to=${sendSymbol}&from=${receiveSymbol}` })
     },
     handleReceiveAddressValidation: ({ receive }) => (address) => {
       const { symbol, ERC20 } = receive
@@ -322,7 +334,14 @@ export default compose(
         .catch(() => {
           handleLoading(false)
         })
-
     },
+  }),
+  lifecycle({
+    componentWillUpdate() {
+      const { receiveAddr, depositAmount, refundAddr, change } = this.props
+      change('swapWidget', 'receiveAddress', receiveAddr)
+      change('swapWidget', 'sendAmount', depositAmount)
+      change('swapWidget', 'refundAddress', refundAddr)
+    }
   })
 )(SwapStepOne)
