@@ -3,22 +3,22 @@ import log from 'Utilities/log'
 import Ledger from 'Services/Ledger'
 import networks from 'Utilities/networks'
 
-import BitcoinWallet from './BitcoinWallet'
+import BitcoinCashWallet from './BitcoinCashWallet'
 import { BitcoreTransaction } from '../types'
 
 const typeLabel = config.walletTypes.ledger.name
 
-export default class BitcoinWalletLedger extends BitcoinWallet {
+export default class BitcoinCashWalletLedger extends BitcoinCashWallet {
 
-  static type = 'BitcoinWalletLedger'
+  static type = 'BitcoinCashWalletLedger'
 
-  getType() { return BitcoinWalletLedger.type }
+  getType() { return BitcoinCashWalletLedger.type }
 
   getTypeLabel() { return typeLabel }
 
-  static fromPath(derivationPath: string): Promise<BitcoinWalletLedger> {
-    return Ledger.btc.getHdAccount(networks.BTC, derivationPath)
-      .then(({ xpub, path }) => new BitcoinWalletLedger(xpub, path))
+  static fromPath(derivationPath: string): Promise<BitcoinCashWalletLedger> {
+    return Ledger.btc.getHdAccount(networks.BCH, derivationPath)
+      .then(({ xpub, path }) => new BitcoinCashWalletLedger(xpub, path))
   }
 
   _signTx({ txData }: BitcoreTransaction): Promise<Partial<BitcoreTransaction>> {

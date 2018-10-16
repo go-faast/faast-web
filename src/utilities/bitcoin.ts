@@ -2,11 +2,13 @@ import b58 from 'bs58check'
 import { payments, bip32, Network as BitcoinJsNetwork } from 'bitcoinjs-lib'
 import networks, { NetworkConfig, PaymentType, AddressEncoding, BTC } from 'Utilities/networks'
 
-const getHdKeyPrefix = (hdKey: string): string => hdKey.slice(0, 4)
+export const getHdKeyPrefix = (hdKey: string): string => hdKey.slice(0, 4)
+
+const isPrefixForPaymentType = (bip32Prefix: string, paymentType: PaymentType) =>
+  paymentType.bip32.publicPrefix === bip32Prefix || paymentType.bip32.privatePrefix === bip32Prefix
 
 export function getPaymentTypeForPrefix(bip32Prefix: string, network: NetworkConfig): PaymentType {
-  const paymentType = network.paymentTypes.find((pt) =>
-    bip32Prefix === pt.bip32.publicPrefix || bip32Prefix === pt.bip32.privatePrefix)
+  const paymentType = network.paymentTypes.find((pt) => isPrefixForPaymentType(bip32Prefix, pt))
   if (!paymentType) {
     throw new Error(`Cannot find ${network.name} PaymentType for prefix ${bip32Prefix}`)
   }
@@ -17,6 +19,14 @@ export function getPaymentTypeForEncoding(encoding: AddressEncoding, network: Ne
   const paymentType = network.paymentTypes.find((pt) => pt.addressEncoding === encoding)
   if (!paymentType) {
     throw new Error(`Cannot find ${network.name} PaymentType for encoding ${encoding}`)
+  }
+  return paymentType
+}
+
+export function getPaymentTypeForPath(bip44Path: string, network: NetworkConfig): PaymentType {
+  const paymentType = network.paymentTypes.find(((pt) => bip44Path.startsWith(pt.bip44Path)))
+  if (!paymentType) {
+    throw new Error(`Cannot find ${network.name} PaymentType for bip44 path ${bip44Path}`)
   }
   return paymentType
 }
@@ -41,24 +51,53 @@ const bufferFromUInt32 = (x: number) => {
  * Converts prefix of bip32 extended public/private keys
  * Source: https://github.com/bitcoinjs/bitcoinjs-lib/issues/966
  */
+export function convertHdKeyPaymentType(
+  hdKey: string,
+  newPaymentType: PaymentType,
+  network: NetworkConfig,
+): string {
+  const prefix = getHdKeyPrefix(hdKey)
+  if (isPrefixForPaymentType(prefix, newPaymentType)) {
+    // Key already converted to correct format
+    return hdKey
+  }
+  const currentPaymentType = getPaymentTypeForPrefix(prefix, network)
+  const isPublic = isPublicPrefix(prefix, currentPaymentType)
+  const newMagicNumber = bufferFromUInt32(isPublic ? newPaymentType.bip32.public : newPaymentType.bip32.private)
+  let data = b58.decode(hdKey)
+  data = data.slice(4)
+  data = Buffer.concat([newMagicNumber, data])
+  return b58.encode(data)
+}
+
 export function convertHdKeyAddressEncoding(
   hdKey: string,
   newEncoding: AddressEncoding,
   network: NetworkConfig,
 ): string {
-  let data = b58.decode(hdKey)
-  data = data.slice(4)
-  const prefix = getHdKeyPrefix(hdKey)
-  const currentPaymentType = getPaymentTypeForPrefix(prefix, network)
   const newPaymentType = getPaymentTypeForEncoding(newEncoding, network)
-  const isPublic = isPublicPrefix(prefix, currentPaymentType)
-  const newMagicNumber = bufferFromUInt32(isPublic ? newPaymentType.bip32.public : newPaymentType.bip32.private)
-  data = Buffer.concat([newMagicNumber, data])
-  return b58.encode(data)
+  return convertHdKeyPaymentType(hdKey, newPaymentType, network)
+}
+
+export function convertHdKeyPrefixForPath(
+  hdKey: string,
+  bip44Path: string,
+  network: NetworkConfig,
+): string {
+  const newPaymentType = getPaymentTypeForPath(bip44Path, network)
+  return convertHdKeyPaymentType(hdKey, newPaymentType, network)
 }
 
 export const toXpub = (hdKey: string) => convertHdKeyAddressEncoding(hdKey, 'P2PKH', BTC)
 export const toYpub = (hdKey: string) => convertHdKeyAddressEncoding(hdKey, 'P2SH-P2WPKH', BTC)
+
+export function getNetworkConfig(symbol: string) {
+  const network = networks[symbol]
+  if (!network) {
+    throw new Error(`No network config for asset ${symbol}`)
+  }
+  return network
+}
 
 const paymentEncoders: {
   [encoding in AddressEncoding]: (args: object, opts?: payments.PaymentOpts) => { address?: string }
@@ -177,12 +216,4 @@ export function derivationPathStringToArray(derivationPath: string): number[] {
     .map((index) => index.endsWith('\'')
       ? Number.parseInt(index.substring(0, index.length - 1)) | 0x80000000
       : Number.parseInt(index))
-}
-
-export default {
-  toXpub,
-  toYpub,
-  estimateTxSize,
-  estimateTxFee,
-  joinDerivationPath,
 }

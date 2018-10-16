@@ -1,13 +1,21 @@
 import BigNumber from 'bignumber.js'
 import Wallet from './Wallet'
 import { Asset } from 'Types'
+import { PaymentTx } from 'Services/Bitcore'
+
+export type Amount = BigNumber
+
+export type TransactionOutput = {
+  address: string,
+  amount: Amount,
+}
 
 export type Transaction = {
   walletId: string,
   type: string,
   outputs: TransactionOutput[],
   assetSymbol: string,
-  feeAmount: BigNumber,
+  feeAmount: Amount,
   feeSymbol: string,
   hash: string | null,
   signed: boolean,
@@ -16,11 +24,9 @@ export type Transaction = {
   signedTxData?: any,
 }
 
-export type Amount = BigNumber
-
-export type TransactionOutput = {
-  address: string,
-  amount: Amount,
+export type BitcoreTransaction = Transaction & {
+  txData?: PaymentTx | null,
+  signedTxData?: string | null,
 }
 
 export type Balances = {

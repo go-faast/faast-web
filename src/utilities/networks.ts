@@ -2,6 +2,7 @@
  * Config for bitcoin like networks.
  *
  * paymentTypes sourced from: https://github.com/satoshilabs/slips/blob/master/slip-0132.md
+ * bip44Path sourced from: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
  */
 import coininfo from 'coininfo'
 import { Network as BitcoinJsNetwork } from 'bitcoinjs-lib'
@@ -166,6 +167,24 @@ export const BTC_TEST = network({
         publicPrefix: 'Vpub',
         private: 0x02575048,
         privatePrefix: 'Vprv',
+      },
+    },
+  ],
+})
+
+export const BCH = network({
+  symbol: 'BCH',
+  name: 'Bitcoin Cash',
+  bitcoreUrls: ['https://bitcoincash.blockexplorer.com'],
+  paymentTypes: [
+    {
+      addressEncoding: 'P2PKH',
+      bip44Path: "m/44'/145'",
+      bip32: {
+        public: 0x0488b21e,
+        publicPrefix: 'xpub',
+        private: 0x0488ade4,
+        privatePrefix: 'xprv',
       },
     },
   ],
