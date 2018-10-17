@@ -8,9 +8,9 @@ import {
 } from 'Services/Wallet'
 import config from 'Config'
 
+import UnknownIcon from 'Img/question-mark-white.svg?inline'
 import PortfolioIcon from 'Img/wallet/portfolio.svg?inline'
 import ViewOnlyIcon from 'Img/wallet/view-only.svg?inline'
-import UnknownIcon from 'Img/wallet/question-mark-white.svg?inline'
 
 import TrezorLogo from 'Img/wallet/trezor-logo.png'
 import LedgerLogo from 'Img/wallet/ledger-logo.png'
