@@ -38,11 +38,15 @@ type StaticNetworkConfig = BaseNetworkConfig & {
 
 function network(config: StaticNetworkConfig): NetworkConfig {
   const { symbol, bitcoinJsNetwork } = config
+  const coinInfo = coininfo(symbol)
+  if (!coinInfo) {
+    throw new Error(`Cannot get coininfo for ${symbol}`)
+  }
   return {
     ...config,
     bitcoinJsNetwork: {
       // Base config
-      ...pick(coininfo(symbol).toBitcoinJS(), 'bech32', 'bip32', 'messagePrefix', 'pubKeyHash', 'scriptHash', 'wif'),
+      ...pick(coinInfo.toBitcoinJS(), 'bech32', 'bip32', 'messagePrefix', 'pubKeyHash', 'scriptHash', 'wif'),
       // Overrides
       ...(bitcoinJsNetwork || {}),
     },
