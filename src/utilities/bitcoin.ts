@@ -15,6 +15,11 @@ export function getPaymentTypeForPrefix(bip32Prefix: string, network: NetworkCon
   return paymentType
 }
 
+export function getPaymentTypeForHdKey(hdKey: string, network: NetworkConfig): PaymentType {
+  const prefix = getHdKeyPrefix(hdKey)
+  return getPaymentTypeForPrefix(prefix, network)
+}
+
 export function getPaymentTypeForEncoding(encoding: AddressEncoding, network: NetworkConfig): PaymentType {
   const paymentType = network.paymentTypes.find((pt) => pt.addressEncoding === encoding)
   if (!paymentType) {

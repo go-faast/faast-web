@@ -15,7 +15,7 @@ import SocketWorker from 'hd-wallet/lib/socketio-worker/inside?worker'
 import DiscoveryWorker from 'hd-wallet/lib/discovery/worker/inside?worker'
 
 import log from 'Utilities/log'
-import { toXpub, estimateTxFee } from 'Utilities/bitcoin'
+import { toXpub, estimateTxFee, getPaymentTypeForHdKey} from 'Utilities/bitcoin'
 import networks, { NetworkConfig } from 'Utilities/networks'
 
 // setting up workers
@@ -97,12 +97,13 @@ export class Bitcore extends BitcoreBlockchain {
   discoverAccount(xpub: string, onUpdate?: (status: AccountLoadStatus) => void): Promise<AccountInfo> {
     return Promise.resolve()
       .then(() => {
-        let segwit: 'off' | 'p2sh' = 'off'
-        if (xpub.startsWith('ypub')) {
-          segwit = 'p2sh'
-          xpub = toXpub(xpub)
+        const paymentType = getPaymentTypeForHdKey(xpub, this.network)
+        const segwit: 'off' | 'p2sh' = paymentType.addressEncoding === 'P2SH-P2WPKH' ? 'p2sh' : 'off'
+        const bitcoinJsNetwork = {
+          ...this.network.bitcoinJsNetwork,
+          bip32: paymentType.bip32,
         }
-        const process = this.discovery.discoverAccount(null, xpub, this.network.bitcoinJsNetwork, segwit)
+        const process = this.discovery.discoverAccount(null, xpub, bitcoinJsNetwork, segwit)
         if (onUpdate) {
           process.stream.values.attach(onUpdate)
         }
