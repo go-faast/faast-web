@@ -4,6 +4,7 @@ import {
 } from 'hd-wallet'
 import { TransactionBuilder } from 'bitcoinjs-lib'
 import { pick, omit } from 'lodash'
+import b58 from 'bs58check'
 
 // @ts-ignore
 import xpubWasmFile from 'hd-wallet/lib/fastxpub/fastxpub.wasm?file'
@@ -15,7 +16,7 @@ import SocketWorker from 'hd-wallet/lib/socketio-worker/inside?worker'
 import DiscoveryWorker from 'hd-wallet/lib/discovery/worker/inside?worker'
 
 import log from 'Utilities/log'
-import { toXpub, estimateTxFee, getPaymentTypeForHdKey } from 'Utilities/bitcoin'
+import { toXpub, estimateTxFee, getPaymentTypeForHdKey, convertHdKeyAddressEncoding } from 'Utilities/bitcoin'
 import networks, { NetworkConfig } from 'Utilities/networks'
 
 // setting up workers
@@ -87,32 +88,52 @@ export class Bitcore extends BitcoreBlockchain {
   }
 
   /**
-   * Discover the balance, transactions, unused addresses, etc of an xpub.
+   * Discover the balance, transactions, unused addresses, etc of an extended public key.
    *
-   * @param xpub - The xpub or ypub to discover
+   * @param hdKey - The extended public key to discover
    * @param [onUpdate] - Callback for partial updates to discover result
    * @returns Account info promise
    */
-  discoverAccount(xpub: string, onUpdate?: (status: AccountLoadStatus) => void): Promise<AccountInfo> {
+  discoverAccount(hdKey: string, onUpdate?: (status: AccountLoadStatus) => void): Promise<AccountInfo> {
     return Promise.resolve()
       .then(() => {
-        const paymentType = getPaymentTypeForHdKey(xpub, this.network)
-        const segwit: 'off' | 'p2sh' = paymentType.addressEncoding === 'P2SH-P2WPKH' ? 'p2sh' : 'off'
-        const bitcoinJsNetwork = {
-          ...this.network.bitcoinJsNetwork,
-          bip32: paymentType.bip32,
+        const paymentType = getPaymentTypeForHdKey(hdKey, this.network)
+        const { addressEncoding } = paymentType
+        if (!(['P2PKH', 'P2SH-P2WPKH']).includes(addressEncoding)) {
+          throw new Error(`discoverAccount does not support ${addressEncoding} addressEncoding`)
         }
-        const process = this.discovery.discoverAccount(null, xpub, bitcoinJsNetwork, segwit)
+
+        /*
+         * I noticed that while discovering a bitcoin and litecoin account simultaneously, the call to deriveXpub
+         * used by discoverAccount returned the same result for both calls resulting in one of them throwing an
+         * "Invalid network version" error as the invalid key was passed into HDNode.fromBase58.
+         * From this is was able to determine that the xpub derivation library used by discoverAccount is
+         * stateful in some way and doesn't support simultaneous derivations with different bip32 versions.
+         * I was able to work around this issue by always passing in a new XpubWorker when creating WorkerDiscovery
+         * but this only helped with collisions between currencies. I believe the issue is still present if you were
+         * to try deriving an bitcoin xpub and ypub simultaneously because they use different bip32 versions.
+         * To work around this we can convert all hd keys into their xpub or P2PKH format so that the bip32
+         * versions used are the same for all accounts of a specific currency.
+         */
+        const segwit: 'off' | 'p2sh' = addressEncoding === 'P2SH-P2WPKH' ? 'p2sh' : 'off'
+        const xpub = addressEncoding === 'P2PKH' ? hdKey : convertHdKeyAddressEncoding(hdKey, 'P2PKH', this.network)
+
+        const process = this.discovery.discoverAccount(null, xpub, this.network.bitcoinJsNetwork, segwit)
         if (onUpdate) {
           process.stream.values.attach(onUpdate)
         }
-        return process.ending.then((result: BaseAccountInfo) => ({
-          ...result,
-          utxos: result.utxos.map((utxo: BaseUtxoInfo) => ({
-            ...utxo,
-            confirmations: utxo.height ? result.lastBlock.height - utxo.height : 0,
-          })),
-        }))
+        return process.ending
+          .then((result: BaseAccountInfo) => ({
+            ...result,
+            utxos: result.utxos.map((utxo: BaseUtxoInfo) => ({
+              ...utxo,
+              confirmations: utxo.height ? result.lastBlock.height - utxo.height : 0,
+            })),
+          }))
+          .catch((e: Error) => {
+            log.error(`${this.network.symbol} discoverAccount error for ${paymentType.bip32.publicPrefix} key`, e)
+            throw e
+          })
       })
   }
 
