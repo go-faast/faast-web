@@ -1,30 +1,21 @@
 import { push, replace } from 'react-router-redux'
 import equal from 'fast-deep-equal'
+import qs from 'qs'
 
-import { getRouterLocation } from 'Selectors'
+import { getRouterQueryParams } from 'Selectors'
 
 const updateQueryString = (historyAction) => (newParams) =>
   (dispatch, getState) => {
-    const current = getRouterLocation(getState())
+    const current = getRouterQueryParams(getState())
     const updated = {
       ...current,
       ...newParams,
     }
     if (!equal(current, updated)) {
       dispatch(historyAction({
-        search: updated.search
+        search: qs.stringify(updated)
       }))
     }
-    return Promise.resolve()
-  }
-
-export const removeQueryString = () =>
-  (dispatch, getState) => {
-    const current = getRouterLocation(getState())
-    dispatch(push({
-      pathname: current.pathname,
-      search: ''
-    }))
     return Promise.resolve()
   }
 
