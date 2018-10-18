@@ -100,7 +100,7 @@ export default abstract class BitcoreWallet extends Wallet {
     { feeRate: feeRateOption }: { feeRate?: number },
   ): Promise<BitcoreTransaction> {
     return Promise.all([
-      this._getDiscoveryResult(),
+      this._performDiscovery(),
       feeRateOption || this._getDefaultFeeRate(asset).then(({ rate }) => toNumber(rate)),
     ]).then(([discoverResult, feeRate]) => {
       const isSegwit = !this.isLegacyAccount()
