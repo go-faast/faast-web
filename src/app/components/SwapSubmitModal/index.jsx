@@ -1,7 +1,7 @@
 import React from 'react'
 import {
   Row, Col, Button, Alert,
-  Modal, ModalHeader, ModalBody, ModalFooter
+  Modal, ModalHeader, ModalBody, ModalFooter, Input, Label
 } from 'reactstrap'
 import {
   getCurrentSwundle, 
@@ -27,7 +27,8 @@ import log from 'Utilities/log'
 
 const SwapSubmitModal = ({
   isOpen, swundle, headerText, continueText, continueDisabled, continueLoading,
-  errorMessage, handleContinue, handleCancel, currentSwap, secondsUntilPriceExpiry, timerExpired, handleTimerEnd
+  errorMessage, handleContinue, handleCancel, currentSwap, secondsUntilPriceExpiry, timerExpired, 
+  handleTimerEnd, termsChecked, handleCheckBox
 }) => (
   <div>
     <Modal size='lg' backdrop='static' isOpen={isOpen} toggle={handleCancel}>
@@ -80,6 +81,10 @@ const SwapSubmitModal = ({
           {'** Additional fees may apply depending on '
           + 'the asset being sent and the wallet you\'re using.'}
         </small></p>
+        <div className='pl-3'>
+          <Input type='checkbox' onChange={() => handleCheckBox(termsChecked)}/>
+          <small><Label>I agree to the <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'>Faa.st Terms & Conditions</a></Label></small>
+        </div>
       </ModalBody>
       <ModalFooter className='justify-content-between'>
         <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
@@ -143,7 +148,14 @@ export default compose(
     ({ swundle }) => !swundle,
     renderNothing
   ),
-  withProps(({ swundle, requiresSigning, readyToSign, readyToSend, startedSigning, startedSending, handleSendTxs, handleSignTxs }) => {
+  withStateHandlers(
+    { timerExpired: false, termsChecked: false },
+    { 
+      handleTimerEnd: () => () => ({ timerExpired: true }),
+      handleCheckBox: () => (checked) => ({ termsChecked: !checked })
+    },
+  ),
+  withProps(({ swundle, requiresSigning, readyToSign, readyToSend, startedSigning, startedSending, handleSendTxs, handleSignTxs, termsChecked }) => {
     let errorMessage = swundle.error
     const soonestPriceExpiry = min(swundle.swaps.map(swap => swap.rateLockedUntil))
     const secondsUntilPriceExpiry = (Date.parse(soonestPriceExpiry) - Date.now()) / 1000
@@ -151,7 +163,7 @@ export default compose(
       txSigning || (txSending && sendWallet && !sendWallet.isSignTxSupported))
     const showSubmit = !requiresSigning || startedSigning // True if continue button triggers tx sending, false for signing
     const handleContinue = showSubmit ? handleSendTxs : handleSignTxs
-    const continueDisabled = showSubmit ? (!readyToSend || startedSending) : (!readyToSign || startedSigning)
+    const continueDisabled = showSubmit ? (!readyToSend || startedSending || !termsChecked) : (!readyToSign || startedSigning || !termsChecked)
     const continueLoading = showSubmit ? startedSending : startedSigning
     const continueText = showSubmit ? 'Submit all' : 'Begin signing'
     const headerText = showSubmit ? 'Confirm and Submit' : 'Review and Sign'
@@ -166,9 +178,5 @@ export default compose(
       continueText,
       headerText
     }
-  }),
-  withStateHandlers(
-    { timerExpired: false },
-    { handleTimerEnd: () => () => ({ timerExpired: true }) },
-  )
+  })
 )(SwapSubmitModal)
