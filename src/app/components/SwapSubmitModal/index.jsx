@@ -1,8 +1,10 @@
 import React from 'react'
 import {
   Row, Col, Button, Alert,
-  Modal, ModalHeader, ModalBody, ModalFooter, Input, Label
+  Modal, ModalHeader, ModalBody, ModalFooter, Label, Form
 } from 'reactstrap'
+import { reduxForm, getFormSyncErrors } from 'redux-form'
+import ReduxFormField from 'Components/ReduxFormField'
 import {
   getCurrentSwundle, 
   isCurrentSwundleReadyToSign, isCurrentSwundleReadyToSend,
@@ -28,7 +30,7 @@ import log from 'Utilities/log'
 const SwapSubmitModal = ({
   isOpen, swundle, headerText, continueText, continueDisabled, continueLoading,
   errorMessage, handleContinue, handleCancel, currentSwap, secondsUntilPriceExpiry, timerExpired, 
-  handleTimerEnd, termsChecked, handleCheckBox
+  handleTimerEnd, handleCheckBoxValidation
 }) => (
   <div>
     <Modal size='lg' backdrop='static' isOpen={isOpen} toggle={handleCancel}>
@@ -81,10 +83,9 @@ const SwapSubmitModal = ({
           {'** Additional fees may apply depending on '
           + 'the asset being sent and the wallet you\'re using.'}
         </small></p>
-        <div className='pl-3'>
-          <Input type='checkbox' onChange={() => handleCheckBox(termsChecked)}/>
-          <small><Label>I agree to the <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'>Faa.st Terms & Conditions</a></Label></small>
-        </div>
+        <TermsForm
+          handleCheckBoxValidation={handleCheckBoxValidation}
+        />
       </ModalBody>
       <ModalFooter className='justify-content-between'>
         <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
@@ -98,6 +99,30 @@ const SwapSubmitModal = ({
   </div>
 )
 
+const TermsForm = reduxForm({
+  form: 'termsForm',
+})(({ handleCheckBoxValidation }) => (
+  <Form className='pl-2'>
+     <ReduxFormField
+        row
+        className='gutter-3 align-items-center'
+        id='acceptTerms'
+        name='acceptTerms'
+        type='checkbox'
+        autoFocus
+        autoCorrect='false'
+        autoCapitalize='false'
+        spellCheck='false'
+        labelProps={{ xs: '12', md: '4' }}
+        inputClass='flat'
+        validate={handleCheckBoxValidation}
+      />
+    <small>
+      <Label className='pl-3'>I accept the <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'>Faast Terms & Conditions</a></Label>
+    </small>
+  </Form>)
+)
+
 export default compose(
   setDisplayName('SwapSubmitModal'),
   connect(createStructuredSelector({
@@ -107,7 +132,8 @@ export default compose(
     readyToSend: isCurrentSwundleReadyToSend,
     startedSigning: isCurrentSwundleSigning,
     startedSending: isCurrentSwundleSending,
-    isOpen: ({ orderModal: { show } }) => show
+    isOpen: ({ orderModal: { show } }) => show,
+    formErrors: (state) => getFormSyncErrors('termsForm')(state),
   }), {
     toggle: toggleOrderModal,
     removeSwundle,
@@ -142,6 +168,11 @@ export default compose(
         toastr.error(e.message || e)
         log.error(e)
       })
+    },
+    handleCheckBoxValidation: () => (checked) => {
+      if (!checked) {
+        return 'Please accept the Faast Terms in order to submit your swap.'
+      }
     }
   }),
   branch(
@@ -149,13 +180,12 @@ export default compose(
     renderNothing
   ),
   withStateHandlers(
-    { timerExpired: false, termsChecked: false },
+    { timerExpired: false },
     { 
-      handleTimerEnd: () => () => ({ timerExpired: true }),
-      handleCheckBox: () => (checked) => ({ termsChecked: !checked })
+      handleTimerEnd: () => () => ({ timerExpired: true })
     },
   ),
-  withProps(({ swundle, requiresSigning, readyToSign, readyToSend, startedSigning, startedSending, handleSendTxs, handleSignTxs, termsChecked }) => {
+  withProps(({ swundle, requiresSigning, readyToSign, readyToSend, startedSigning, startedSending, handleSendTxs, handleSignTxs, formErrors }) => {
     let errorMessage = swundle.error
     const soonestPriceExpiry = min(swundle.swaps.map(swap => swap.rateLockedUntil))
     const secondsUntilPriceExpiry = (Date.parse(soonestPriceExpiry) - Date.now()) / 1000
@@ -163,7 +193,7 @@ export default compose(
       txSigning || (txSending && sendWallet && !sendWallet.isSignTxSupported))
     const showSubmit = !requiresSigning || startedSigning // True if continue button triggers tx sending, false for signing
     const handleContinue = showSubmit ? handleSendTxs : handleSignTxs
-    const continueDisabled = showSubmit ? (!readyToSend || startedSending || !termsChecked) : (!readyToSign || startedSigning || !termsChecked)
+    const continueDisabled = showSubmit ? (!readyToSend || startedSending || Boolean(formErrors.acceptTerms)) : (!readyToSign || startedSigning || Boolean(formErrors.acceptTerms))
     const continueLoading = showSubmit ? startedSending : startedSigning
     const continueText = showSubmit ? 'Submit all' : 'Begin signing'
     const headerText = showSubmit ? 'Confirm and Submit' : 'Review and Sign'
