@@ -15,11 +15,10 @@ import SocketWorker from 'hd-wallet/lib/socketio-worker/inside?worker'
 import DiscoveryWorker from 'hd-wallet/lib/discovery/worker/inside?worker'
 
 import log from 'Utilities/log'
-import { toXpub, estimateTxFee, getPaymentTypeForHdKey} from 'Utilities/bitcoin'
+import { toXpub, estimateTxFee, getPaymentTypeForHdKey } from 'Utilities/bitcoin'
 import networks, { NetworkConfig } from 'Utilities/networks'
 
 // setting up workers
-const xpubWorker = new XpubWorker()
 const xpubWasmFilePromise = fetch(xpubWasmFile)
     .then((response) => response.ok ? response.arrayBuffer() : Promise.reject('failed to load fastxpub.wasm'))
 
@@ -78,7 +77,7 @@ export class Bitcore extends BitcoreBlockchain {
     super(config.bitcoreUrls, socketWorkerFactory)
     this.assetSymbol = config.symbol
     this.network = config
-    this.discovery = new WorkerDiscovery(discoveryWorkerFactory, xpubWorker, xpubWasmFilePromise, this)
+    this.discovery = new WorkerDiscovery(discoveryWorkerFactory, new XpubWorker(), xpubWasmFilePromise, this)
   }
 
   toJSON() {
