@@ -29,4 +29,6 @@ export default abstract class BitcoinCashWallet extends BitcoreWallet {
     })
   }
 
+  isReadOnly() { return true }
+
 }

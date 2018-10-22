@@ -21,6 +21,7 @@ export default abstract class Wallet {
   getLabel(): string { return this.label || this.getType() }
   setLabel(label: string): void { this.label = label }
 
+  /** Return true if this wallet can be saved to session storage */
   isPersistAllowed(): boolean { return this._persistAllowed }
   setPersistAllowed(persistAllowed: boolean): void { this._persistAllowed = persistAllowed }
 
@@ -55,12 +56,17 @@ export default abstract class Wallet {
     options: object,
   ): Promise<Transaction>
 
-  /* The following methods return default values and can be overriden by subclass where applicable */
+  /** Return true if this wallet does not support sending transactions, only reading balances. */
   isReadOnly(): boolean { return false }
+  /** Return true if this wallet requires a password when signing transactions */
   isPasswordProtected(): boolean { return false }
+  /** Return true if the provided password is correct */
   checkPasswordCorrect(password: string): boolean { return true }
+  /** Return true if this wallet supports the signTx method. If false, signAndSend transaction must be used instead. */
   isSignTransactionSupported(): boolean { return true }
+  /** Return true if this wallet supports transactions with multiple outputs (e.g. anything UTXO based, like Bitcoin) */
   _isAggregateTransactionSupported(aos: Asset): boolean { return true }
+
 
   setAssetProvider(assetProvider: AssetProvider): void {
     if (typeof assetProvider !== 'function') {
