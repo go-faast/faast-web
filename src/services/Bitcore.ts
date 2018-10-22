@@ -5,6 +5,7 @@ import {
 import { TransactionBuilder } from 'bitcoinjs-lib'
 import { pick, omit } from 'lodash'
 import b58 from 'bs58check'
+import bchaddr from 'bchaddrjs'
 
 // @ts-ignore
 import xpubWasmFile from 'hd-wallet/lib/fastxpub/fastxpub.wasm?file'
@@ -16,7 +17,9 @@ import SocketWorker from 'hd-wallet/lib/socketio-worker/inside?worker'
 import DiscoveryWorker from 'hd-wallet/lib/discovery/worker/inside?worker'
 
 import log from 'Utilities/log'
-import { toXpub, estimateTxFee, getPaymentTypeForHdKey, convertHdKeyAddressEncoding } from 'Utilities/bitcoin'
+import {
+  estimateTxFee, getPaymentTypeForHdKey, convertHdKeyAddressEncoding, isSegwitSupported,
+} from 'Utilities/bitcoin'
 import networks, { NetworkConfig } from 'Utilities/networks'
 
 // setting up workers
@@ -118,7 +121,8 @@ export class Bitcore extends BitcoreBlockchain {
         const segwit: 'off' | 'p2sh' = addressEncoding === 'P2SH-P2WPKH' ? 'p2sh' : 'off'
         const xpub = addressEncoding === 'P2PKH' ? hdKey : convertHdKeyAddressEncoding(hdKey, 'P2PKH', this.network)
 
-        const process = this.discovery.discoverAccount(null, xpub, this.network.bitcoinJsNetwork, segwit)
+        const cashAddress = false // To maintain compatability with bitcoinjs-lib don't use bchaddr format
+        const process = this.discovery.discoverAccount(null, xpub, this.network.bitcoinJsNetwork, segwit, cashAddress)
         if (onUpdate) {
           process.stream.values.attach(onUpdate)
         }
@@ -170,6 +174,10 @@ export class Bitcore extends BitcoreBlockchain {
     let changeAddress = changeAddresses[changeIndex]
     const sortedUtxos = sortUtxos(utxos)
 
+    if (isSegwit && !isSegwitSupported(this.network)) {
+      throw new Error(`Segwit not supported for ${this.network.symbol}`)
+    }
+
     const outputs = desiredOutputs
       .map(({ address, amount }, i) => {
         // validate
@@ -179,7 +187,11 @@ export class Bitcore extends BitcoreBlockchain {
         if (typeof amount !== 'number') {
           throw new Error(`Invalid amount ${amount} provided for output ${i}`)
         }
-        // clone
+        if (this.network.symbol === 'BCH') {
+          // Convert to legacy for compatability with bitcoinjs-lib
+          address = bchaddr.toLegacyAddress(address)
+        }
+        // return copy
         return { address, amount }
       })
     const outputCount = outputs.length + 1 // Plus one for change output

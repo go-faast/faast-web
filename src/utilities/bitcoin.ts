@@ -20,8 +20,12 @@ export function getPaymentTypeForHdKey(hdKey: string, network: NetworkConfig): P
   return getPaymentTypeForPrefix(prefix, network)
 }
 
+function findPaymentTypeForEncoding(encoding: AddressEncoding, network: NetworkConfig): PaymentType | null {
+  return network.paymentTypes.find((pt) => pt.addressEncoding === encoding) || null
+}
+
 export function getPaymentTypeForEncoding(encoding: AddressEncoding, network: NetworkConfig): PaymentType {
-  const paymentType = network.paymentTypes.find((pt) => pt.addressEncoding === encoding)
+  const paymentType = findPaymentTypeForEncoding(encoding, network)
   if (!paymentType) {
     throw new Error(`Cannot find ${network.name} PaymentType for encoding ${encoding}`)
   }
@@ -44,6 +48,10 @@ export function isPublicPrefix(bip32Prefix: string, paymentType: PaymentType): b
     return false
   }
   throw new Error(`PaymentType ${paymentType.addressEncoding} not compatible with bip32 prefix ${bip32Prefix}`)
+}
+
+export function isSegwitSupported(network: NetworkConfig): boolean {
+  return Boolean(findPaymentTypeForEncoding('P2SH-P2WPKH', network))
 }
 
 const bufferFromUInt32 = (x: number) => {
