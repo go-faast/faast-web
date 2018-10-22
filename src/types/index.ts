@@ -30,3 +30,8 @@ export interface SwapOrder {
   receiveTxId?: string,
   refundAddress?: string
 }
+
+export type HdAccount = {
+  xpub: string, // xpub, ypub, etc
+  path: string, // derivation path
+}

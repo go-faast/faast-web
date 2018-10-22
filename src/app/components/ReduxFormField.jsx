@@ -38,7 +38,7 @@ const RenderInput = (props) => {
   ])
 
   const useInputGroup = Boolean(addonPrepend || addonAppend)
-  const renderAddon = (addon) => typeof addon === 'function' ? addon(props) : addon
+  const renderAddon = (addon) => typeof addon === 'function' ? addon(inputProps) : addon
 
   const inputGroupElement = !useInputGroup ? [inputElement, !check && feedbackElement] : (
     <div>

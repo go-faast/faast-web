@@ -7,6 +7,12 @@
 import Transport from '@ledgerhq/hw-transport-u2f'
 import AppEth from '@ledgerhq/hw-app-eth'
 import AppBtc from '@ledgerhq/hw-app-btc'
+import HDKey from 'hdkey'
+import { NetworkConfig } from 'Utilities/networks'
+import { convertHdKeyPrefixForPath, getHdKeyPrefix, joinDerivationPath } from 'Utilities/bitcoin'
+import { HdAccount } from 'Types'
+import log from 'Log'
+import { getBitcore, PaymentTx, UtxoInfo } from 'Services/Bitcore'
 
 const EXCHANGE_TIMEOUT = 120000 // ms user has to approve/deny transaction
 
@@ -29,6 +35,91 @@ function proxy(appType: any, methodName: string) {
   })
 }
 
+const proxiedBtcMethods = [
+  'getWalletPublicKey',
+  'signMessageNew',
+  'createPaymentTransactionNew',
+  'signP2SHTransaction',
+  'splitTransaction',
+  'serializeTransactionOutputs',
+  'serializeTransaction',
+  'displayTransactionDebug',
+]
+
+class LedgerBtc {
+
+  getWalletPublicKey: (derivationPath: string) => Promise<{
+    publicKey: string,
+    chainCode: string,
+  }>
+
+  [key: string]: (...args: any[]) => any
+
+  constructor() {
+    proxiedBtcMethods.forEach((methodName) => this[methodName] = proxy(AppBtc, methodName))
+  }
+
+  getHdAccount(network: NetworkConfig, derivationPath: string): Promise<HdAccount> {
+    return this.getWalletPublicKey(derivationPath)
+      .then(({ publicKey, chainCode }) => {
+        log.debug('Ledger.btc.getWalletPublicKey success')
+        const hdKey = new HDKey()
+        hdKey.publicKey = Buffer.from(publicKey, 'hex')
+        hdKey.chainCode = Buffer.from(chainCode, 'hex')
+        const xpubkey = hdKey.publicExtendedKey
+        const normalizedXpub = convertHdKeyPrefixForPath(xpubkey, derivationPath, network)
+        if (normalizedXpub !== xpubkey) {
+          log.debug(`Converted Trezor xpubkey from ${getHdKeyPrefix(xpubkey)} to ${getHdKeyPrefix(normalizedXpub)}`)
+        }
+        return {
+          xpub: normalizedXpub,
+          path: derivationPath,
+        }
+      })
+  }
+
+  signPaymentTx(
+    network: NetworkConfig,
+    derivationPath: string,
+    txData: PaymentTx,
+  ): Promise<{ signedTxData: string }> {
+    return Promise.resolve().then(() => {
+      const bitcore = getBitcore(network.symbol)
+      return Promise.all(txData.inputUtxos.map((utxo) =>
+        bitcore.lookupTransaction(utxo.transactionHash)
+          .then((txInfo) => this.splitTransaction(txInfo.hex, true, false))
+          .then((splitTx) => ({
+            ...utxo,
+            splitTx,
+          }))))
+        .then((inputUtxos: Array<UtxoInfo & { splitTx: object }>) => {
+          log.debug('inputUtxos', inputUtxos)
+
+          const { changePath, outputScript, isSegwit } = txData
+          const inputs: Array<[object, number]> = []
+          const paths: string[] = []
+          inputUtxos.forEach((utxo) => {
+            inputs.push([utxo.splitTx, utxo.index])
+            paths.push(joinDerivationPath(derivationPath, utxo.addressPath))
+          })
+
+          const changePathString = changePath ? joinDerivationPath(derivationPath, changePath) : undefined
+          return this.createPaymentTransactionNew(
+            inputs,
+            paths,
+            changePathString,
+            outputScript,
+            undefined, // lockTime, default (0)
+            undefined, // sigHashType, default (all)
+            isSegwit)
+        })
+        .then((signedTxHex) => ({
+          signedTxData: signedTxHex,
+        }))
+    })
+  }
+}
+
 export default {
   eth: {
     getAddress: proxy(AppEth, 'getAddress'),
@@ -36,14 +127,5 @@ export default {
     getAppConfiguration: proxy(AppEth, 'getAppConfiguration'),
     signPersonalMessage: proxy(AppEth, 'signPersonalMessage'),
   },
-  btc: {
-    getWalletPublicKey: proxy(AppBtc, 'getWalletPublicKey'),
-    signMessageNew: proxy(AppBtc, 'signMessageNew'),
-    createPaymentTransactionNew: proxy(AppBtc, 'createPaymentTransactionNew'),
-    signP2SHTransaction: proxy(AppBtc, 'signP2SHTransaction'),
-    splitTransaction: proxy(AppBtc, 'splitTransaction'),
-    serializeTransactionOutputs: proxy(AppBtc, 'serializeTransactionOutputs'),
-    serializeTransaction: proxy(AppBtc, 'serializeTransaction'),
-    displayTransactionDebug: proxy(AppBtc, 'displayTransactionDebug'),
-  },
+  btc: new LedgerBtc(),
 }

@@ -91,8 +91,8 @@ const SwapStepOne = ({
                 inputCol={{ xs:'12', md: true }}
                 validate={validateDepositAmount}
                 inputClass='flat'
-                addonAppend={({ meta: { touched, error } }) => (
-                  <InputGroupAddon className={touched && error ? assetAddOnError : assetAddOn} addonType="append">{depositSymbol}</InputGroupAddon>
+                addonAppend={({ invalid }) => (
+                  <InputGroupAddon className={invalid ? assetAddOnError : assetAddOn} addonType="append">{depositSymbol}</InputGroupAddon>
                 )}
               />
               <Expandable

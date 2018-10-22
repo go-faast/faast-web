@@ -9,12 +9,12 @@ import { BitcoreTransaction, FeeRate } from '../types'
 
 const DEFAULT_FEE_PER_BYTE = 10
 
-export default abstract class BitcoinWallet extends BitcoreWallet {
+export default abstract class LitecoinWallet extends BitcoreWallet {
 
-  static type = 'BitcoinWallet'
+  static type = 'LitecoinWallet'
 
   constructor(xpub: string, derivationPath: string, label?: string) {
-    super(networks.BTC, xpub, derivationPath, label)
+    super(networks.LTC, xpub, derivationPath, label)
   }
 
   getLabel() {
@@ -26,7 +26,7 @@ export default abstract class BitcoinWallet extends BitcoreWallet {
     asset: Asset,
     { level = 'medium' }: { level?: 'high' | 'medium' | 'low' } = {},
   ): Promise<FeeRate> {
-    return fetchGet('https://api.blockcypher.com/v1/btc/main')
+    return fetchGet('https://api.blockcypher.com/v1/ltc/main')
       .then((result) => {
         const feePerKb = result[`${level}_fee_per_kb`] || (DEFAULT_FEE_PER_BYTE * 1000)
         return feePerKb / 1000
@@ -40,5 +40,7 @@ export default abstract class BitcoinWallet extends BitcoreWallet {
         unit: 'sat/byte',
       }))
   }
+
+  isReadOnly() { return true }
 
 }

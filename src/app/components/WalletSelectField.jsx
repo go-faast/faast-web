@@ -19,9 +19,9 @@ const WalletSelectField = ({
   const hasWallets = connectedWallets.length > 0
   return (
     <ReduxFormField 
-      addonAppend={({ meta: { touched, error } }) => (
+      addonAppend={({ invalid }) => (
         <InputGroupButtonDropdown addonType='append' isOpen={isDropdownOpen} toggle={toggleDropdownOpen}>
-          <DropdownToggle size='sm' color={touched && error ? 'danger' : 'dark'} style={dropDownStyle} caret>
+          <DropdownToggle size='sm' color={invalid ? 'danger' : 'dark'} style={dropDownStyle} caret>
             {dropDownText}
           </DropdownToggle>
           <DropdownMenu>
