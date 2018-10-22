@@ -94,9 +94,14 @@ npm run test
 1. Update `src/services/Wallet/lib/WalletSerializer.ts`
 1. Update `src/utilities/walletIcon.js`
 1. Update `src/app/components/ConfirmTransactionModal/index.jsx`
-1. Update `src/app/actions/connectHardwareWallet.js` if hardware wallet based
-1. Update `src/config/walletTypes.js`
-1. Update `src/config/index.js` explorer URLs
+1. Update explorer URLs `src/config/index.js`
+1. If hardware wallet based:
+    - Update `src/app/actions/connectHardwareWallet.js`
+    - Add default derivation path `src/config/walletTypes.js`
+    - If export flow differs from Bitcoin, add instruction override in `src/app/components/HardwareWalletModal/ConnectionInstructions.jsx`
+1. If not hardware wallet based:
+    - Add new access tile `src/app/components/Access`
+    - Create custom action to connect to the wallet `src/app/actions/access.js`
   
 
 ## Security
