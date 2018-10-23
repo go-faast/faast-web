@@ -169,7 +169,7 @@ export default compose(
     receiveSymbol: DEFAULT_RECEIVE,
     depositAmount: null,
     receiveAddress: null,
-    refundAddress: null,
+    refundAddress: undefined,
   }),
   connect(createStructuredSelector({
     assets: getAllAssetsArray,

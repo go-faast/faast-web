@@ -101,8 +101,8 @@ const SwapSubmitModal = ({
           </Button>
         </ModalFooter>
       </Modal>
+      </Form>
       <ConfirmTransactionModal swap={currentSwap} handleCancel={handleCancel}/>
-    </Form>
   </div>
 )
 
