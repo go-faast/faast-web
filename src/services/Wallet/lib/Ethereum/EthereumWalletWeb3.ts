@@ -10,17 +10,6 @@ import EthereumWallet from './EthereumWallet'
 import { Transaction } from '../types'
 import { EthTransaction } from './types'
 
-const checkAccountAvailable = (address: string) => Promise.resolve(address)
-  .then((resolvedAddress) => web3.eth.getAccounts()
-    .then((accounts) => accounts
-      .map((account) => account.toLowerCase())
-      .includes(resolvedAddress.toLowerCase()))
-    .then((isAvailable) => {
-      if (!isAvailable) {
-        throw new Error(`Could not find web3 Ethereum account ${resolvedAddress}`)
-      }
-    }))
-
 const VALID_PROVIDER_NAMES = ['faast', ...config.web3WalletTypes]
 
 export default class EthereumWalletWeb3 extends EthereumWallet {
@@ -45,8 +34,6 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
   // Most popular web3 wallets don't currently support signTransaction even though it's part of the web3 1.0 interface
   isSignTransactionSupported() { return false }
 
-  _checkAvailable() { return checkAccountAvailable(this.address) }
-
   _signAndSendTx(tx: Transaction, options: object): Promise<Partial<EthTransaction>> {
     return web3SendTx(tx.txData, options)
       .then((hash) => ({ hash }));
@@ -68,11 +55,11 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
       addressPromise = getAccounts()
         .catch((err) => {
           log.error(err)
-          throw new Error(`Error retrieving ${web3.providerName} account`)
+          throw new Error(`Error retrieving ${providerName} account`)
         })
         .then(([address]) => {
           if (!address) {
-            throw new Error(`Unable to retrieve ${web3.providerName} account. Please ensure your account is unlocked.`)
+            throw new Error(`Unable to retrieve ${providerName} account. Please ensure your account is unlocked.`)
           }
           return address
         })

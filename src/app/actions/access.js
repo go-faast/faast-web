@@ -56,25 +56,12 @@ export const openWalletAndRedirect = (walletPromise, forwardURL = '/dashboard') 
     toastr.error(e.message)
   })
 
-export const openWeb3Wallet = (selectedProvider) => (dispatch) => Promise.resolve().then(() => {
-  if (web3.providerType !== 'user') {
-    return toastr.error(`Please enable the ${name} extension`)
-  }
-
-  if (!web3.version || !web3.eth.net.getId) {
-    return toastr.error('Unable to determine network ID')
-  }
-  web3.eth.net.getId((err, id) => {
-    if (err) {
-      log.error(err)
-      return toastr.error('Error getting network ID')
-    }
-    if (id !== 1) {
-      return toastr.error(`Please adjust ${name} to use the "Main Ethereum Network"`, { timeOut: 10000 })
-    }
-    dispatch(openWalletAndRedirect(EthereumWalletWeb3.fromDefaultAccount(selectedProvider), routes.dashboard()))
-  })
-})
+export const openWeb3Wallet = (selectedProvider) => (dispatch) => {
+  return web3.enableUserProvider()
+    .then(() => dispatch(openWalletAndRedirect(
+      EthereumWalletWeb3.fromDefaultAccount(selectedProvider),
+      routes.dashboard())))
+}
 
 export const openKeystoreFileWallet = (filesPromise) => (dispatch) => Promise.resolve(filesPromise)
   .then((files) => {
