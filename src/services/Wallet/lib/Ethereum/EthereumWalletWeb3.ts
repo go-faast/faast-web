@@ -21,6 +21,7 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
     if (!VALID_PROVIDER_NAMES.includes(providerName)) {
       throw new Error(`Unsupported web3 provider ${providerName}`)
     }
+    web3.enableUserProvider()
   }
 
   getType() { return EthereumWalletWeb3.type }
@@ -47,24 +48,26 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
   }
 
   static fromDefaultAccount(providerName?: string) {
-    const { defaultAccount, getAccounts } = web3.eth
-    let addressPromise
-    if (defaultAccount) {
-      addressPromise = Promise.resolve(toChecksumAddress(defaultAccount))
-    } else {
-      addressPromise = getAccounts()
-        .catch((err) => {
-          log.error(err)
-          throw new Error(`Error retrieving ${providerName} account`)
-        })
-        .then(([address]) => {
-          if (!address) {
-            throw new Error(`Unable to retrieve ${providerName} account. Please ensure your account is unlocked.`)
-          }
-          return address
-        })
-    }
-    return addressPromise.then((address) => new EthereumWalletWeb3(address, providerName))
+    return web3.enableUserProvider().then(() => {
+      const { defaultAccount, getAccounts } = web3.eth
+      let addressPromise
+      if (defaultAccount) {
+        addressPromise = Promise.resolve(toChecksumAddress(defaultAccount))
+      } else {
+        addressPromise = getAccounts()
+          .catch((err) => {
+            log.error(err)
+            throw new Error(`Error retrieving ${providerName} account`)
+          })
+          .then(([address]) => {
+            if (!address) {
+              throw new Error(`Unable to retrieve ${providerName} account. Please ensure your account is unlocked.`)
+            }
+            return address
+          })
+      }
+      return addressPromise.then((address) => new EthereumWalletWeb3(address, providerName))
+    })
   }
 
 }
