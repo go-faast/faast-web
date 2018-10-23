@@ -36,7 +36,11 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
 
   getType() { return EthereumWalletWeb3.type }
 
-  getTypeLabel(): string { return this.providerName === 'faast' ? 'Web3 Wallet' : this.providerName }
+  getTypeLabel(): string {
+    return this.providerName === 'faast'
+      ? 'Web3 Wallet'
+      : ((config.walletTypes[this.providerName] || {}).name || this.providerName)
+  }
 
   // Most popular web3 wallets don't currently support signTransaction even though it's part of the web3 1.0 interface
   isSignTransactionSupported() { return false }
