@@ -10,6 +10,7 @@ import {
   isAccountSearchResultWalletInPortfolio,
 } from 'Selectors'
 import ReduxFormField from 'Components/ReduxFormField'
+import Checkbox from 'Components/Checkbox'
 import Expandable from 'Components/Expandable'
 import CoinIcon from 'Components/CoinIcon'
 import AssetSelector from 'Components/AssetSelector'
@@ -124,6 +125,15 @@ const SwapStepOne = ({
                 shrunk={<i className={classNames('fa fa-question-circle', icon)}></i>} 
                 expanded={'This address will be used in the case that your funds need to be returned'}>
               </Expandable>
+              <Checkbox
+                inputClass='mt-3'
+                label={
+                  <small className='pl-1 text-white'>I accept the 
+                    <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'> Faast Terms & Conditions</a>
+                  </small>
+                }
+                labelClass='p-0 pt-2 mt-1'
+              />
             </div>
           </div>
           <Button className={classNames('mt-2 mb-2 mx-auto', submitButton)} color='primary' type='submit' disabled={invalid || submitting}>
