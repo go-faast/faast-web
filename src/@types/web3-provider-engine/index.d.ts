@@ -128,3 +128,19 @@ declare module 'web3-provider-engine/subproviders/provider' {
 
   export = ProviderSubprovider
 }
+
+declare module 'web3-provider-engine/subproviders/rpc' {
+  import Subprovider from 'web3-provider-engine/subproviders/subprovider'
+
+  class RpcSubprovider extends Subprovider {
+    constructor (opts: RpcSubprovider.Options)
+  }
+
+  namespace RpcSubprovider {
+    export interface Options {
+      rpcUrl: string
+    }
+  }
+
+  export = RpcSubprovider
+}
