@@ -91,6 +91,7 @@ export const createNewOrder = ({
   withdrawal_address: receiveAddress,
   withdrawal_currency: receiveSymbol,
   refund_address: refundAddress,
+  ...config.affiliateSettings,
 }).then((r) => log.debugInline('createNewOrder', r))
   .then(formatOrderResult)
   .catch((err) => {

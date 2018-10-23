@@ -37,10 +37,14 @@ export default {
   navbar: {
     expand: 'md',
   },
+  affiliateSettings: {
+    affiliate_margin: 0.1, 
+    affiliate_payment_address: '33WKJWf2iyJHUaRjoHmF7x4rKnENPHC9G8',
+  },
   explorerUrls: {
     BTC: 'https://blockchain.info',
     ETH: 'https://etherscan.io',
-    LTC: 'https://live.blockcypher.com/ltc/',
+    LTC: 'https://live.blockcypher.com/ltc',
     BCH: 'https://explorer.bitcoin.com/bch',
   },
   walletTypes,
