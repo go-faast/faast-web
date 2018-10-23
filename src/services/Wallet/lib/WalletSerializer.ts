@@ -32,7 +32,6 @@ const parseWalletObject = (wallet: Wallet | SerializedWallet): Wallet | null => 
   }
   const { type, label } = wallet
   switch (type) {
-    // New formats
     case 'MultiWallet': return new MultiWallet(wallet.id, wallet.walletIds, label)
     case 'MultiWalletTrezor': return new MultiWalletTrezor(wallet.id, wallet.walletIds, label)
     case 'MultiWalletLedger': return new MultiWalletLedger(wallet.id, wallet.walletIds, label)

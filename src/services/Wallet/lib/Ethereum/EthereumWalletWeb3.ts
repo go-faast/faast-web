@@ -1,5 +1,6 @@
 import { omit } from 'lodash'
 
+import config from 'Config'
 import web3 from 'Services/Web3'
 import log from 'Utilities/log'
 import { toChecksumAddress, toBigNumber } from 'Utilities/convert'
@@ -20,17 +21,22 @@ const checkAccountAvailable = (address: string) => Promise.resolve(address)
       }
     }))
 
+const VALID_PROVIDER_NAMES = ['faast', ...config.web3WalletTypes]
+
 export default class EthereumWalletWeb3 extends EthereumWallet {
 
   static type = 'EthereumWalletWeb3';
 
-  constructor(address: string, public providerName: string = web3.providerName, label?: string) {
+  constructor(address: string, public providerName: string = 'faast', label?: string) {
     super(address, label)
+    if (!VALID_PROVIDER_NAMES.includes(providerName)) {
+      throw new Error(`Unsupported web3 provider ${providerName}`)
+    }
   }
 
   getType() { return EthereumWalletWeb3.type }
 
-  getTypeLabel() { return this.providerName === 'faast' ? 'Web3 Wallet' : this.providerName }
+  getTypeLabel(): string { return this.providerName === 'faast' ? 'Web3 Wallet' : this.providerName }
 
   // Most popular web3 wallets don't currently support signTransaction even though it's part of the web3 1.0 interface
   isSignTransactionSupported() { return false }
@@ -49,7 +55,7 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
       .then((signedTxData) => ({ signedTxData }))
   }
 
-  static fromDefaultAccount() {
+  static fromDefaultAccount(providerName?: string) {
     const { defaultAccount, getAccounts } = web3.eth
     let addressPromise
     if (defaultAccount) {
@@ -67,7 +73,7 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
           return address
         })
     }
-    return addressPromise.then((address) => new EthereumWalletWeb3(address))
+    return addressPromise.then((address) => new EthereumWalletWeb3(address, providerName))
   }
 
 }

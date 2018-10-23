@@ -44,6 +44,9 @@ export default {
     BCH: 'https://explorer.bitcoin.com/bch',
   },
   walletTypes,
+  web3WalletTypes: Object.entries(walletTypes)
+    .filter(([, { web3 }]) => web3)
+    .map(([type]) => type),
   highCharts,
   tokenFunctionSignatures
 }

@@ -56,7 +56,7 @@ export const openWalletAndRedirect = (walletPromise, forwardURL = '/dashboard') 
     toastr.error(e.message)
   })
 
-export const openWeb3Wallet = () => (dispatch) => Promise.resolve().then(() => {
+export const openWeb3Wallet = (selectedProvider) => (dispatch) => Promise.resolve().then(() => {
   if (web3.providerType !== 'user') {
     return toastr.error(`Please enable the ${name} extension`)
   }
@@ -72,7 +72,7 @@ export const openWeb3Wallet = () => (dispatch) => Promise.resolve().then(() => {
     if (id !== 1) {
       return toastr.error(`Please adjust ${name} to use the "Main Ethereum Network"`, { timeOut: 10000 })
     }
-    dispatch(openWalletAndRedirect(EthereumWalletWeb3.fromDefaultAccount(), routes.dashboard()))
+    dispatch(openWalletAndRedirect(EthereumWalletWeb3.fromDefaultAccount(selectedProvider), routes.dashboard()))
   })
 })
 

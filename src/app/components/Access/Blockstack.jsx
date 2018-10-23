@@ -1,14 +1,13 @@
 import React from 'react'
 import { connect } from 'react-redux'
 
-import blockstackLogo from 'Img/wallet/blockstack-logo.png'
-
+import config from 'Config'
 import { openBlockstackWallet } from 'Actions/access'
 
 import AccessTile from './AccessTile'
 
 const Blockstack = ({ handleClick }) => (
-  <AccessTile name='Blockstack' icon={blockstackLogo} onClick={handleClick}/>
+  <AccessTile name='Blockstack' icon={config.walletTypes.blockstack.icon} onClick={handleClick}/>
 )
 
 const mapDispatchToProps = {
