@@ -49,7 +49,9 @@ Files will be built to the **dist** folder. They can be served from your machine
 npm start
 ```
 
-### Development
+## Contributing
+
+### Development Server
 
 The faast Portfolio is a React app that is bundled with Webpack. For easier development, the application can be run with the Webpack Dev Server. This allows live reloading on code changes. To start, run:
 
@@ -85,7 +87,24 @@ Run:
 npm run test
 ```
 
-### Security
+### New Currency Checklist
+
+1. Implement the `Wallet` abstraction which specifies how to load balances, generate/sign transactions, etc. (see `src/services/Wallet/lib/Wallet.ts`)
+    - If the currency is Bitcoin based and has bitcore support, you can implement `BitcoreWallet` instead. For an example refer to one of the existing implementations for Bitcoin/Litecoin.
+1. Update `src/services/Wallet/lib/WalletSerializer.ts`
+1. Update `src/utilities/walletIcon.js`
+1. Update `src/app/components/ConfirmTransactionModal/index.jsx`
+1. Update explorer URLs `src/config/index.js`
+1. If hardware wallet based:
+    - Update `src/app/actions/connectHardwareWallet.js`
+    - Add default derivation path `src/config/walletTypes.js`
+    - If export flow differs from Bitcoin, add instruction override in `src/app/components/HardwareWalletModal/ConnectionInstructions.jsx`
+1. If not hardware wallet based:
+    - Add new access tile `src/app/components/Access`
+    - Create custom action to connect to the wallet `src/app/actions/access.js`
+  
+
+## Security
 
 Faast is a fully client side application. Faast is never in control of user funds, and private keys never leave the browser, they are only used to sign transactions. This is similar to myetherwallet.com
 

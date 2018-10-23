@@ -251,7 +251,8 @@ if (!isDev) {
       historyApiFallback: {
         index: publicPath
       },
-      headers: { 'Access-Control-Allow-Origin': '*' }
+      headers: { 'Access-Control-Allow-Origin': '*' },
+      disableHostCheck: true,
     },
     plugins: [
       new webpack.DefinePlugin({

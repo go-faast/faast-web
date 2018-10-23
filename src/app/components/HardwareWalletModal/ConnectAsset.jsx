@@ -8,10 +8,12 @@ import { Link } from 'react-router-dom'
 import { push } from 'react-router-redux'
 
 import routes from 'Routes'
+import { getAsset } from 'Selectors/asset'
 import { isStatusConnected, isStatusReset } from 'Selectors/connectHardwareWallet'
 import {
   startConnect, retryConnect, cancelConnect,
 } from 'Actions/connectHardwareWallet'
+import conditionalRedirect from 'Hoc/conditionalRedirect'
 
 import DerivationPathChanger from './DerivationPathChanger'
 import BackButton from './BackButton'
@@ -26,7 +28,8 @@ export default compose(
   }),
   connect(createStructuredSelector({
     isConnected: isStatusConnected,
-    isReset: isStatusReset
+    isReset: isStatusReset,
+    asset: (state, { assetSymbol }) => getAsset(state, assetSymbol)
   }), {
     start: startConnect,
     retry: retryConnect,
@@ -36,6 +39,9 @@ export default compose(
   withProps(({ walletType, assetSymbol }) => ({
     continuePath: routes.connectHwWalletAssetConfirm(walletType, assetSymbol),
   })),
+  conditionalRedirect(
+    ({ walletType }) => routes.connectHwWallet(walletType),
+    ({ asset }) => !asset),
   lifecycle({
     componentWillMount() {
       const { isReset, start, walletType, assetSymbol } = this.props
@@ -45,12 +51,12 @@ export default compose(
     }
   })
 )(({
-  walletType, assetSymbol, handleBack, continuePath, isConnected,
+  walletType, asset, handleBack, continuePath, isConnected,
 }) => (
   <div>
     <ModalBody className='py-4'>
       <ConnectionStatus />
-      <ConnectionInstructions type={walletType} symbol={assetSymbol}/>
+      <ConnectionInstructions type={walletType} asset={asset}/>
       <div className='my-3 w-50 mx-auto'>
         <DerivationPathChanger />
       </div>

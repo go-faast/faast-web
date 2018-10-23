@@ -4,7 +4,7 @@ import routes from 'Routes'
 import config from 'Config'
 import { newScopedCreateAction } from 'Utilities/action'
 import toastr from 'Utilities/toastrWrapper'
-import { timer } from 'Utilities/helpers'
+import { timer, mapValues } from 'Utilities/helpers'
 import log from 'Utilities/log'
 
 import Trezor from 'Services/Trezor'
@@ -13,6 +13,8 @@ import walletService, {
   Wallet, MultiWallet, MultiWalletLedger, MultiWalletTrezor,
   EthereumWalletLedger, EthereumWalletTrezor,
   BitcoinWalletLedger, BitcoinWalletTrezor,
+  BitcoinCashWalletLedger, BitcoinCashWalletTrezor,
+  LitecoinWalletLedger, LitecoinWalletTrezor,
 } from 'Services/Wallet'
 
 import { getAsset } from 'Selectors'
@@ -26,6 +28,11 @@ import { openWallet } from 'Actions/access'
 import { addWallet, removeWallet, addNestedWallets, updateWallet } from 'Actions/wallet'
 
 const CONNECT_RETRY_SECONDS = 10
+
+const multiWalletTypes = {
+  ledger: MultiWalletLedger,
+  trezor: MultiWalletTrezor,
+}
 
 const createAction = newScopedCreateAction(__filename)
 
@@ -208,14 +215,18 @@ export const createConnectTrezor = (startConnecting) => (walletType, assetSymbol
 }
 
 const connectActions = {
-  ledger: {
-    ETH: createConnectLedger(createStartConnecting(EthereumWalletLedger.connect)),
-    BTC: createConnectLedger(createStartConnecting(BitcoinWalletLedger.fromPath)),
-  },
-  trezor: {
-    ETH: createConnectTrezor(createStartConnecting(EthereumWalletTrezor.connect)),
-    BTC: createConnectTrezor(createStartConnecting(BitcoinWalletTrezor.fromPath)),
-  },
+  ledger: mapValues({
+    ETH: EthereumWalletLedger.connect,
+    BTC: BitcoinWalletLedger.fromPath,
+    BCH: BitcoinCashWalletLedger.fromPath,
+    LTC: LitecoinWalletLedger.fromPath,
+  }, (connectFn) => createConnectLedger(createStartConnecting(connectFn))),
+  trezor: mapValues({
+    ETH: EthereumWalletTrezor.connect,
+    BTC: BitcoinWalletTrezor.fromPath,
+    BCH: BitcoinCashWalletTrezor.fromPath,
+    LTC: LitecoinWalletTrezor.fromPath,
+  }, (connectFn) => createConnectTrezor(createStartConnecting(connectFn))),
 }
 
 export const startConnect = (walletType, assetSymbol) => (dispatch) => {
@@ -308,11 +319,6 @@ export const removeConnectedAccount = (assetSymbol) => (dispatch, getState) => {
   }
   dispatch(removeWallet(accountId))
   dispatch(accountRemoved(assetSymbol))
-}
-
-const multiWalletTypes = {
-  ledger: MultiWalletLedger,
-  trezor: MultiWalletTrezor,
 }
 
 export const saveConnectedAccounts = () => (dispatch, getState) => {

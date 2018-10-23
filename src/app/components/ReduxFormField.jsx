@@ -8,10 +8,10 @@ import {
 
 const RenderInput = (props) => {
   const {
-    meta: { touched, dirty, error, warning, form: formName },
+    meta: { touched, error, warning, form: formName },
     label, type, placeholder, id, disabled, autoComplete, size,
     addonPrepend, addonAppend, row, className, inputClass,
-    labelProps, labelClass, labelCol, inputCol,
+    labelProps, labelClass, labelCol, inputCol
   } = props
   let { input: inputProps } = props
   const check = ['checkbox', 'radio'].includes(type)
@@ -19,7 +19,7 @@ const RenderInput = (props) => {
   if (!labelPosition) {
     labelPosition = check ? 'append' : 'prepend'
   }
-  const invalid = dirty && (error || warning)
+  const invalid = touched && (error || warning)
   const inputId = id || (label ? `form-${formName}-${inputProps.name}` : undefined)
   inputProps = {
     ...inputProps,
@@ -38,13 +38,14 @@ const RenderInput = (props) => {
   ])
 
   const useInputGroup = Boolean(addonPrepend || addonAppend)
+  const renderAddon = (addon) => typeof addon === 'function' ? addon(inputProps) : addon
 
   const inputGroupElement = !useInputGroup ? [inputElement, !check && feedbackElement] : (
     <div>
       <InputGroup key='input-group' size={size}>
-        {addonPrepend}
+        {renderAddon(addonPrepend)}
         {inputElement}
-        {addonAppend}
+        {renderAddon(addonAppend)}
       </InputGroup>
       {feedbackElement}
     </div>

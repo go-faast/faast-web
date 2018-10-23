@@ -1,4 +1,11 @@
 import log from 'Utilities/log'
+import { NetworkConfig } from 'Utilities/networks'
+import {
+  convertHdKeyPrefixForPath, getHdKeyPrefix,
+  derivationPathStringToArray, getPaymentTypeForPath,
+} from 'Utilities/bitcoin'
+import { PaymentTx } from 'Services/Bitcore'
+import { HdAccount } from 'Types'
 
 const callbackIndices: { [fnName: string]: number } = {
   open: 0,
@@ -117,6 +124,75 @@ class PromisifiedTrezorConnect {
 
   constructor(tc: TrezorConnectType) {
     Object.entries(tc).forEach(([key, val]) => this[key] = proxy(tc, key, val))
+  }
+
+  getHdAccount(network: NetworkConfig, derivationPath: string | null = null): Promise<HdAccount> {
+    const assetSymbol = network.symbol
+    this.setCurrency(assetSymbol)
+    return this.getXPubKey(derivationPath)
+      .then((result) => {
+        log.debug(`Trezor.getXPubKey for ${assetSymbol} success`)
+        const { xpubkey, serializedPath } = result
+        let normalizedPath = serializedPath
+        if (!normalizedPath.startsWith('m/') && /^\d/.test(normalizedPath)) {
+          normalizedPath = `m/${normalizedPath}`
+        }
+        const normalizedXpub = convertHdKeyPrefixForPath(xpubkey, normalizedPath, network)
+        if (normalizedXpub !== xpubkey) {
+          log.debug(`Converted Trezor xpubkey from ${getHdKeyPrefix(xpubkey)} to ${getHdKeyPrefix(normalizedXpub)}`)
+        }
+        return {
+          xpub: normalizedXpub,
+          path: normalizedPath,
+        }
+      })
+  }
+
+  signPaymentTx(
+    network: NetworkConfig,
+    derivationPath: string,
+    txData: PaymentTx,
+  ): Promise<{ signedTxData: string }> {
+    return Promise.resolve().then(() => {
+      const { inputUtxos, outputs, change, changePath } = txData
+      const baseDerivationPathArray = derivationPathStringToArray(derivationPath)
+      const addressEncoding = getPaymentTypeForPath(derivationPath, network).addressEncoding
+      if (!(['P2PKH', 'P2SH-P2WSH'].includes(addressEncoding))) {
+        throw new Error(`Trezor.signBitcoreTx does not support ${network.symbol} `
+          + `accounts using ${addressEncoding} encoding`)
+      }
+      const isSegwit = addressEncoding !== 'P2PKH'
+      const trezorInputs = inputUtxos.map(({ addressPath, transactionHash, index, value }) => ({
+        address_n: baseDerivationPathArray.concat(addressPath),
+        prev_hash: transactionHash,
+        prev_index: index,
+        ...(isSegwit ? {
+          amount: value,
+          script_type: 'SPENDP2SHWITNESS',
+        } : {}),
+      }))
+      const trezorOutputs: TrezorOutput[] = outputs.map(({ address, amount }) => ({
+        address,
+        amount,
+        script_type: 'PAYTOADDRESS',
+      }))
+      if (change > 0) {
+        trezorOutputs.push({
+          address_n: baseDerivationPathArray.concat(changePath),
+          amount: change,
+          script_type: isSegwit ? 'PAYTOP2SHWITNESS' : 'PAYTOADDRESS',
+        })
+      }
+      log.debug('signBitcoreTx inputs outputs', trezorInputs, trezorOutputs)
+      return this.signTx(trezorInputs, trezorOutputs)
+        .then((result) => {
+          log.info('Trezor transaction signed', result)
+          const { serialized_tx: signedTxData } = result
+          return {
+            signedTxData,
+          }
+        })
+    })
   }
 }
 

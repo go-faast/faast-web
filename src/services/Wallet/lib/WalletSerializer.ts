@@ -8,6 +8,8 @@ import {
   EthereumWalletKeystore, EthereumWalletViewOnly,
 } from './Ethereum'
 import { BitcoinWalletTrezor, BitcoinWalletLedger } from './Bitcoin'
+import { BitcoinCashWalletTrezor, BitcoinCashWalletLedger } from './BitcoinCash'
+import { LitecoinWalletTrezor, LitecoinWalletLedger } from './Litecoin'
 
 interface SerializedWallet {
   id: string,
@@ -41,6 +43,10 @@ const parseWalletObject = (wallet: Wallet | SerializedWallet): Wallet | null => 
     case 'EthereumWalletLedger': return new EthereumWalletLedger(wallet.address, wallet.derivationPath, label)
     case 'BitcoinWalletTrezor': return new BitcoinWalletTrezor(wallet.xpub, wallet.derivationPath, label)
     case 'BitcoinWalletLedger': return new BitcoinWalletLedger(wallet.xpub, wallet.derivationPath, label)
+    case 'BitcoinCashWalletTrezor': return new BitcoinCashWalletTrezor(wallet.xpub, wallet.derivationPath, label)
+    case 'BitcoinCashWalletLedger': return new BitcoinCashWalletLedger(wallet.xpub, wallet.derivationPath, label)
+    case 'LitecoinWalletTrezor': return new LitecoinWalletTrezor(wallet.xpub, wallet.derivationPath, label)
+    case 'LitecoinWalletLedger': return new LitecoinWalletLedger(wallet.xpub, wallet.derivationPath, label)
     default: log.error(`Cannot parse wallet: invalid type '${type}'`, wallet)
   }
   return null

@@ -4,8 +4,7 @@ import { compose, setDisplayName, setPropTypes, defaultProps, withProps } from '
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap'
 
 import {
-  EthereumWalletLedger, EthereumWalletTrezor,
-  BitcoinWalletLedger, BitcoinWalletTrezor, EthereumWalletWeb3
+  EthereumWalletWeb3, EthereumWalletLedger, EthereumWalletTrezor,
 } from 'Services/Wallet'
 
 import LedgerEthInstructions from './LedgerEthInstructions'
@@ -14,12 +13,24 @@ import TrezorEthInstructions from './TrezorEthInstructions'
 import TrezorBtcInstructions from './TrezorBtcInstructions'
 import Web3Instructions from './Web3Instructions'
 
-const supportedTypes = {
+const instructionComponentMap = {
+  [EthereumWalletWeb3.type]: Web3Instructions,
   [EthereumWalletLedger.type]: LedgerEthInstructions,
-  [BitcoinWalletLedger.type]: LedgerBtcInstructions,
   [EthereumWalletTrezor.type]: TrezorEthInstructions,
-  [BitcoinWalletTrezor.type]: TrezorBtcInstructions,
-  [EthereumWalletWeb3.type]: Web3Instructions
+}
+
+function getInstructionComponent(walletType) {
+  const instructionComponent = instructionComponentMap[walletType]
+  if (instructionComponent) {
+    return instructionComponent
+  }
+  walletType = walletType.toLowerCase()
+  if (walletType.includes('ledger')) {
+    return LedgerBtcInstructions
+  }
+  if (walletType.includes('trezor')) {
+    return TrezorBtcInstructions
+  }
 }
 
 export default compose(
@@ -31,7 +42,7 @@ export default compose(
     swap: null,
   }),
   withProps(({ swap }) => {
-    const InstructionComponent = swap && swap.tx && swap.tx.type && supportedTypes[swap.tx.type]
+    const InstructionComponent = swap && swap.tx && swap.tx.type && getInstructionComponent(swap.tx.type)
     return {
       InstructionComponent,
       isOpen: Boolean(swap && InstructionComponent),

@@ -2,6 +2,7 @@
  * Config for bitcoin like networks.
  *
  * paymentTypes sourced from: https://github.com/satoshilabs/slips/blob/master/slip-0132.md
+ * bip44Path sourced from: https://github.com/satoshilabs/slips/blob/master/slip-0044.md
  */
 import coininfo from 'coininfo'
 import { Network as BitcoinJsNetwork } from 'bitcoinjs-lib'
@@ -37,11 +38,15 @@ type StaticNetworkConfig = BaseNetworkConfig & {
 
 function network(config: StaticNetworkConfig): NetworkConfig {
   const { symbol, bitcoinJsNetwork } = config
+  const coinInfo = coininfo(symbol)
+  if (!coinInfo) {
+    throw new Error(`Cannot get coininfo for ${symbol}`)
+  }
   return {
     ...config,
     bitcoinJsNetwork: {
       // Base config
-      ...pick(coininfo(symbol).toBitcoinJS(), 'bech32', 'bip32', 'messagePrefix', 'pubKeyHash', 'scriptHash', 'wif'),
+      ...pick(coinInfo.toBitcoinJS(), 'bech32', 'bip32', 'messagePrefix', 'pubKeyHash', 'scriptHash', 'wif'),
       // Overrides
       ...(bitcoinJsNetwork || {}),
     },
@@ -171,10 +176,34 @@ export const BTC_TEST = network({
   ],
 })
 
+export const BCH = network({
+  symbol: 'BCH',
+  name: 'Bitcoin Cash',
+  bitcoreUrls: [
+    'https://bitcoincash.blockexplorer.com', 'https://bch1.trezor.io', 'https://bch2.trezor.io',
+    'https://bch3.trezor.io', 'https://bch4.trezor.io', 'https://bch5.trezor.io',
+  ],
+  paymentTypes: [
+    {
+      addressEncoding: 'P2PKH',
+      bip44Path: "m/44'/145'",
+      bip32: {
+        public: 0x0488b21e,
+        publicPrefix: 'xpub',
+        private: 0x0488ade4,
+        privatePrefix: 'xprv',
+      },
+    },
+  ],
+})
+
 export const LTC = network({
   symbol: 'LTC',
   name: 'Litecoin',
-  bitcoreUrls: ['https://ltc-bitcore3.trezor.io'],
+  bitcoreUrls: [
+    'https://ltc1.trezor.io', 'https://ltc2.trezor.io',
+    'https://ltc3.trezor.io', 'https://ltc4.trezor.io', 'https://ltc5.trezor.io',
+  ],
   paymentTypes: [
     {
       addressEncoding: 'P2PKH',
@@ -188,7 +217,7 @@ export const LTC = network({
     },
     {
       addressEncoding: 'P2SH-P2WPKH',
-      bip44Path: "m/49'/1'",
+      bip44Path: "m/49'/2'",
       bip32: {
         public: 0x01b26ef6,
         publicPrefix: 'Mtub',
@@ -220,7 +249,10 @@ export const LTC_TEST = network({
 export const VTC = network({
   symbol: 'VTC',
   name: 'Vertcoin',
-  bitcoreUrls: [],
+  bitcoreUrls: [
+    'https://vtc1.trezor.io', 'https://vtc2.trezor.io',
+    'https://vtc3.trezor.io', 'https://vtc4.trezor.io', 'https://vtc5.trezor.io',
+  ],
   paymentTypes: [
     {
       addressEncoding: 'P2PKH',
@@ -235,13 +267,13 @@ export const VTC = network({
   ],
 })
 
-/** Networks by symbol */
-const networkConfigs: { [symbol: string]: NetworkConfig } = [
+const allConfigs: { [symbol: string]: NetworkConfig } = {
   BTC,
   BTC_TEST,
+  BCH,
   LTC,
   LTC_TEST,
   VTC,
-].reduce((bySymbol, config) => ({ ...bySymbol, [config.symbol]: config }), {})
+}
 
-export default networkConfigs
+export default allConfigs
