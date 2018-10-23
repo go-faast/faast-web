@@ -44,7 +44,8 @@
     ]
   },
   "dependencies": {
-    "bchaddrjs": "^0.2.2"
+    "bchaddrjs": "^0.2.2",
+    "web3-provider-engine": "^14.1.0"
   },
   "devDependencies": {
     "@ledgerhq/hw-app-btc": "^4.15.0",
