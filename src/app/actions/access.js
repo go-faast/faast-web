@@ -1,7 +1,8 @@
 import { push } from 'react-router-redux'
 import { isString } from 'lodash'
-import routes from 'Routes'
 
+import routes from 'Routes'
+import config from 'Config'
 import log from 'Utilities/log'
 import { filterUrl } from 'Utilities/helpers'
 import blockstack from 'Utilities/blockstack'
@@ -61,6 +62,19 @@ export const openWeb3Wallet = (selectedProvider) => (dispatch) => {
     .then(() => dispatch(openWalletAndRedirect(
       EthereumWalletWeb3.fromDefaultAccount(selectedProvider),
       routes.dashboard())))
+    .catch((e) => {
+      log.error(e)
+      const providerName = config.walletTypes[selectedProvider].name
+      let message = e.message
+      if (message === 'No web3 provider detected') {
+        message = `Cannot connect to ${providerName}`
+      } else if (message === 'Unsupported network') {
+        message = `Please adjust ${providerName} to use the Main Ethereum Network`
+      } else {
+        message = `Error connecting to ${providerName}: ${message}`
+      }
+      toastr.error(message)
+    })
 }
 
 export const openKeystoreFileWallet = (filesPromise) => (dispatch) => Promise.resolve(filesPromise)

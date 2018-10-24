@@ -45,7 +45,7 @@ class FaastWeb3 extends Web3 {
         log.debug('using legacy window.web3 provider')
         return window.web3.currentProvider
       } else {
-        throw new Error('No user web3 provider detected')
+        throw new Error('No web3 provider detected')
       }
     }).then((provider) => {
       const userWeb3 = new Web3(provider)
@@ -55,7 +55,7 @@ class FaastWeb3 extends Web3 {
       return userWeb3.eth.net.getId()
         .then((id) => {
           if (id !== 1) {
-            throw new Error('Please adjust your wallet to use the Main Ethereum Network')
+            throw new Error('Unsupported network')
           }
           userProvider = provider
           userSubprovider = new ProviderSubprovider(provider)
