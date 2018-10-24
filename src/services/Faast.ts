@@ -33,6 +33,8 @@ export const fetchAssetPrices = () => fetchGet(`${siteUrl}/app/portfolio-price`)
 
 export const fetchPriceChart = (symbol: string) => fetchGet(`${siteUrl}/app/portfolio-chart/${symbol}`)
 
+export const fetchPairData = (pair: string) => fetchGet(`${apiUrl}/api/v2/public/price/${pair}`)
+
 export const fetchSwap = (swapId: string): Promise<SwapOrder> => {
   return fetchGet(`${apiUrl}/api/v2/public/swaps/${swapId}`)
     .then((swap) => log.debugInline('fetch swap:', swap))
@@ -140,4 +142,5 @@ export default {
   fetchOrderStatus,
   fetchOrders,
   fetchSwap,
+  fetchPairData,
 }

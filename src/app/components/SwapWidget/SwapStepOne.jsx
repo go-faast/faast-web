@@ -65,7 +65,6 @@ const SwapStepOne = ({
               id='receiveAddress'
               name='receiveAddress'
               placeholder={`${receiveSymbol} Receive Address`}
-              autoFocus
               autoCorrect='false'
               autoCapitalize='false'
               spellCheck='false'
@@ -141,7 +140,7 @@ const SwapStepOne = ({
           </Button>
         </Form>
       </CardBody>
-      <Modal size='lg' isOpen={assetSelect} toggle={() => setAssetSelect(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
+      <Modal size='lg' isOpen={Boolean(assetSelect)} toggle={() => setAssetSelect(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
         <ModalHeader toggle={() => setAssetSelect(null)} tag='h4' className='text-primary'>
           Add Asset
         </ModalHeader>

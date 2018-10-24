@@ -15,10 +15,12 @@ import { container, qr, scan, receipt } from './style.scss'
 import QRCode from 'qrcode.react'
 import toastr from 'Utilities/toastrWrapper'
 import { retrieveSwap } from 'Actions/swap'
+import { retrievePairData } from 'Actions/rate'
 import { getSwap } from 'Selectors/swap'
+import { getRateMinimumDeposit, isRateLoading } from 'Selectors/rate'
 import PropTypes from 'prop-types'
 
-const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, timerExpired, handleTimerEnd, secondsUntilPriceExpiry }) => {
+const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, timerExpired, handleTimerEnd, secondsUntilPriceExpiry, minimumDeposit }) => {
   swap = swap ? swap : {}
   const { orderId = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
   sendAmount = '', receiveAmount = '', inverseRate = '', orderStatus = '', refundAddress = '' } = swap
@@ -93,9 +95,14 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, timerExpired, h
               ) : null}
             </tbody>
           </table>
-          {(secondsUntilPriceExpiry > 0 && !timerExpired)
-          ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if deposit sent within:'} onTimerEnd={handleTimerEnd}/></small></span>)
-          : (timerExpired && (<span className='text-warning'><small>* Quoted rates are no longer guaranteed as the 15 minute guarantee window has expired. Orders will be filled using the latest variable rate when deposit is received.</small></span>))}
+          <div className='mt-2'>
+            {(secondsUntilPriceExpiry > 0 && !timerExpired)
+            ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if your deposit is sent within:'} onTimerEnd={handleTimerEnd}/></small></span>)
+            : (timerExpired && (<span className='text-warning'><small>* Quoted rates are no longer guaranteed as the 15 minute guarantee window has expired. Orders will be filled using the latest variable rate when deposit is received.</small></span>))}
+            <p><small className='text-muted'>
+              {`** The minimum amount of ${sendSymbol} that must be deposited is ${minimumDeposit} ${sendSymbol}`}
+            </small></p>
+          </div>
         </CardFooter>
       </Card>
     </Fragment>
@@ -105,9 +112,10 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, timerExpired, h
 export default compose(
   setDisplayName('SwapStepTwo'),
   connect(createStructuredSelector({
-    swap: (state, { orderId }) => getSwap(state, orderId)
+    swap: (state, { orderId }) => getSwap(state, orderId),
   }), {
     retrieveSwap: retrieveSwap,
+    retrievePairData: retrievePairData,
     push: pushAction
   }),
   setPropTypes({
@@ -117,11 +125,18 @@ export default compose(
     orderId: ''
   }),
   withProps(({ swap = {} }) => {
-    const { rateLockedUntil } = swap
+    const { rateLockedUntil, sendSymbol, receiveSymbol } = swap
     const secondsUntilPriceExpiry = (Date.parse(rateLockedUntil) - Date.now()) / 1000
+    const pair = `${sendSymbol}_${receiveSymbol}`
     return {
       secondsUntilPriceExpiry,
+      pair
     }
+  }),
+  connect(createStructuredSelector({
+    minimumDeposit: (state, { pair }) => getRateMinimumDeposit(state, pair),
+    isRateLoading: (state, { pair }) => isRateLoading(state, pair),
+  }), {
   }),
   withHandlers(() => {
     let inputRef
@@ -148,11 +163,14 @@ export default compose(
   }),
   lifecycle({
     componentDidUpdate() {
-      const { checkDepositStatus } = this.props
+      const { checkDepositStatus, pair, retrievePairData, minimumDeposit, isRateLoading } = this.props
+      if (!minimumDeposit && !isRateLoading) {
+        retrievePairData(pair)
+      }
       checkDepositStatus()
     },
     componentWillMount() {
-      const { orderId, swap, checkDepositStatus, retrieveSwap } = this.props
+      const { orderId, swap, checkDepositStatus, retrieveSwap, } = this.props
       if (!swap) {
         retrieveSwap(orderId)
       } else {

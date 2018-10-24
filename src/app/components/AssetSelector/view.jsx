@@ -10,13 +10,14 @@ import style from './style'
 
 const AssetSearchForm = reduxForm({
   form: 'assetForm'
-})(({ handleSubmit, handleSearchChange }) => (
+})(({ handleSubmit, handleSearchChange, inputRef }) => (
   <Form onSubmit={handleSubmit}>
     <ReduxFormField
       name='searchAsset'
       placeholder='Search by name or symbol...'
       type='search'
-      autoFocus
+      autofocus
+      createRef={inputRef}
       autoComplete='off'
       onChange={handleSearchChange}
       inputClass='border-primary'
@@ -47,9 +48,9 @@ const AssetCol = ({
   )
 }
 
-const AssetSelectorView = ({ assetList, handleSearchSubmit, handleSearchChange, handleSelect }) => (
+const AssetSelectorView = ({ assetList, handleSearchSubmit, handleSearchChange, handleSelect, inputRef }) => (
   <div>
-    <AssetSearchForm onSubmit={handleSearchSubmit} handleSearchChange={handleSearchChange}/>
+    <AssetSearchForm inputRef={inputRef} onSubmit={handleSearchSubmit} handleSearchChange={handleSearchChange}/>
     <div className={style.assetButtonContainer}>
       <Row className='gutter-1'>
         {assetList.map((a) => (<AssetCol key={a.symbol} asset={a} handleSelect={handleSelect}/>))}
@@ -62,7 +63,8 @@ AssetSelectorView.propTypes = {
   assetList: PropTypes.array,
   handleSelect: PropTypes.func,
   handleSearchSubmit: PropTypes.func,
-  handleSearchChange: PropTypes.func
+  handleSearchChange: PropTypes.func,
+  inputRef: PropTypes.shape({ current: PropTypes.instanceOf(Element) })
 }
 
 export default AssetSelectorView
