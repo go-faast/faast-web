@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import {
   Row, Col, Button, Alert,
   Modal, ModalHeader, ModalBody, ModalFooter, Form
 } from 'reactstrap'
-import { reduxForm, getFormSyncErrors } from 'redux-form'
+import { reduxForm } from 'redux-form'
 import Checkbox from 'Components/Checkbox'
 import {
   getCurrentSwundle, 
@@ -31,10 +31,11 @@ const SwapSubmitModal = ({
   isOpen, swundle, headerText, continueText, continueDisabled, continueLoading,
   errorMessage, handleCancel, currentSwap, secondsUntilPriceExpiry, timerExpired, 
   handleTimerEnd, handleSubmit, invalid, submitting
-}) => (
-  <div>
-    <Form onSubmit={handleSubmit}>
+}) => { 
+  return (
+    <Fragment>
       <Modal size='lg' backdrop='static' isOpen={isOpen} toggle={handleCancel}>
+      <Form onSubmit={handleSubmit}>
         <ModalHeader className='text-primary' toggle={handleCancel}>
           {headerText}
         </ModalHeader>
@@ -100,11 +101,11 @@ const SwapSubmitModal = ({
             {continueLoading && (<i className='fa fa-spinner fa-pulse ml-2'/>)}
           </Button>
         </ModalFooter>
+        </Form>
       </Modal>
-      </Form>
       <ConfirmTransactionModal swap={currentSwap} handleCancel={handleCancel}/>
-  </div>
-)
+      </Fragment>
+  )}
 
 export default compose(
   setDisplayName('SwapSubmitModal'),
@@ -116,7 +117,6 @@ export default compose(
     startedSigning: isCurrentSwundleSigning,
     startedSending: isCurrentSwundleSending,
     isOpen: ({ orderModal: { show } }) => show,
-    formErrors: (state) => getFormSyncErrors('termsForm')(state),
   }), {
     toggle: toggleOrderModal,
     removeSwundle,
@@ -176,6 +176,7 @@ export default compose(
     const headerText = showSubmit ? 'Confirm and Submit' : 'Review and Sign'
     return {
       errorMessage,
+      showSubmit,
       soonestPriceExpiry,
       secondsUntilPriceExpiry,
       currentSwap,
@@ -186,12 +187,9 @@ export default compose(
     }
   }),
   withHandlers({
-    onSubmit: ({ showSubmit, handleSendTxs, handleSignTxs }) => () => { 
-      console.log('in submit')
-      return showSubmit ? handleSendTxs : handleSignTxs
-    }
+    onSubmit: ({ showSubmit, handleSendTxs, handleSignTxs }) => () => showSubmit ? handleSendTxs() : handleSignTxs()
   }),
   reduxForm({
-    form: 'termsForm',
+    form: 'termsForm'
   })
 )(SwapSubmitModal)
