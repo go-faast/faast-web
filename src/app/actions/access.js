@@ -43,9 +43,12 @@ export const openWallet = (walletPromise) => (dispatch, getState) => Promise.res
         if (portfolioType === MultiWallet.type && portfolioId !== defaultPortfolioId) {
           return dispatch(addNestedWallet(portfolioId, walletId))
         }
-        dispatch(updateWalletBalances(walletId))
       })
-      .then(() => dispatch(retrieveSwaps(walletId)))
+      .then(() => {
+        // Background tasks
+        dispatch(updateWalletBalances(walletId))
+        dispatch(retrieveSwaps(walletId))
+      })
   })
 
 /** Do everything in openWallet and then redirect to the dashboard */
