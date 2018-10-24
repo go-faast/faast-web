@@ -2,6 +2,7 @@ import web3 from 'Services/Web3'
 import { Address } from 'bitcore-lib'
 
 const isProvided = (x) => typeof x !== 'undefined' && x !== null && x !== ''
+const isChecked = (x) => typeof x !== 'undefined' && x !== null && x !== false
 const isNumber = (x) => !Number.isNaN(Number.parseFloat(x))
 
 /**
@@ -27,9 +28,16 @@ export function required(errorMessage = 'Required.') {
   }
 }
 
+export function checked(errorMessage = 'Required.') {
+  return (value) => {
+    if (!isChecked(value)) {
+      return errorMessage
+    }
+  }
+}
+
 export function number() {
   return (value) => {
-    console.log(typeof value, value)
     if (isProvided(value) && !isNumber(value)) {
       return 'Must be a number.'
     }
