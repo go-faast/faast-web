@@ -61,7 +61,6 @@ class AssetSelector extends Component {
     this.handleSearchChange = this.handleSearchChange.bind(this)
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this)
     this.state = getInitState(props)
-    this.searchInput = React.createRef()
   }
 
   handleSearchChange (event) {
@@ -103,16 +102,8 @@ class AssetSelector extends Component {
         handleSelect={handleSelect}
         handleSearchSubmit={handleSearchSubmit}
         handleSearchChange={handleSearchChange}
-        inputRef={this.searchInput}
       />
     )
-  }
-
-  componentDidMount() {
-    console.log(this.searchInput);
-    if (this.searchInput.current) {
-      this.searchInput.current.focus()
-    }
   }
 }
 

@@ -100,7 +100,7 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, timerExpired, h
             ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if your deposit is sent within:'} onTimerEnd={handleTimerEnd}/></small></span>)
             : (timerExpired && (<span className='text-warning'><small>* Quoted rates are no longer guaranteed as the 15 minute guarantee window has expired. Orders will be filled using the latest variable rate when deposit is received.</small></span>))}
             <p><small className='text-muted'>
-              {`** The minimum amount of ${sendSymbol} that must be deposited is ${minimumDeposit} ${sendSymbol}`}
+              {`** You must send at least ${minimumDeposit} ${sendSymbol} for your swap to be processed.`}
             </small></p>
           </div>
         </CardFooter>
