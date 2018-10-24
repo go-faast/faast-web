@@ -176,26 +176,26 @@ export const BTC_TEST = network({
   ],
 })
 
-// export const BCH = network({
-//   symbol: 'BCH',
-//   name: 'Bitcoin Cash',
-//   bitcoreUrls: [
-//     'https://bitcoincash.blockexplorer.com', 'https://bch1.trezor.io', 'https://bch2.trezor.io',
-//     'https://bch3.trezor.io', 'https://bch4.trezor.io', 'https://bch5.trezor.io',
-//   ],
-//   paymentTypes: [
-//     {
-//       addressEncoding: 'P2PKH',
-//       bip44Path: "m/44'/145'",
-//       bip32: {
-//         public: 0x0488b21e,
-//         publicPrefix: 'xpub',
-//         private: 0x0488ade4,
-//         privatePrefix: 'xprv',
-//       },
-//     },
-//   ],
-// })
+export const BCH = network({
+  symbol: 'BCH',
+  name: 'Bitcoin Cash',
+  bitcoreUrls: [
+    'https://bitcoincash.blockexplorer.com', 'https://bch1.trezor.io', 'https://bch2.trezor.io',
+    'https://bch3.trezor.io', 'https://bch4.trezor.io', 'https://bch5.trezor.io',
+  ],
+  paymentTypes: [
+    {
+      addressEncoding: 'P2PKH',
+      bip44Path: "m/44'/145'",
+      bip32: {
+        public: 0x0488b21e,
+        publicPrefix: 'xpub',
+        private: 0x0488ade4,
+        privatePrefix: 'xprv',
+      },
+    },
+  ],
+})
 
 export const LTC = network({
   symbol: 'LTC',
@@ -270,7 +270,7 @@ export const VTC = network({
 const allConfigs: { [symbol: string]: NetworkConfig } = {
   BTC,
   BTC_TEST,
-  // BCH,
+  BCH,
   LTC,
   LTC_TEST,
   VTC,
