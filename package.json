@@ -45,7 +45,12 @@
       "res/"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "axios": "^0.18.0",
+    "bchaddrjs": "^0.2.2",
+    "convert-tsconfig-paths-to-webpack-aliases": "^0.9.2",
+    "web3-provider-engine": "^14.1.0"
+  },
   "devDependencies": {
     "@ledgerhq/hw-app-btc": "^4.27.0",
     "@ledgerhq/hw-app-eth": "^4.15.0",
