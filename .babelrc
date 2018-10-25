@@ -1,7 +1,6 @@
 {
-  "presets": ["react", "env"],
+  "extends": "react-static/.babelrc",
   "plugins": [
-    "react-hot-loader/babel",
     "transform-object-rest-spread",
     "transform-decorators-legacy",
     "transform-class-properties",
