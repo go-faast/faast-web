@@ -12,7 +12,28 @@
     "sourceMap": true,
     "noImplicitAny": true,
     "noErrorTruncation": true,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "paths": {
+      "Pkg": ["package.json"],
+      "Src/*": ["src/*"],
+      "Res/*": ["res/*"],
+      "Test/*": ["test/*"],
+      "Img/*": ["res/img/*"],
+      "Mock/*": ["test/mock/*"],
+      "Config/*": ["src/config/*"],
+      "Utilities/*": ["src/utilities/*"],
+      "Services/*": ["src/services/*"],
+      "App/*": ["src/app/*"],
+      "Components/*": ["src/app/components/*"],
+      "Styles/*": ["src/app/styles/*"],
+      "Actions/*": ["src/app/actions/*"],
+      "Hoc/*": ["src/app/hoc/*"],
+      "Selectors/*": ["src/app/selectors/*"],
+      "Routes/*": ["src/app/routes/*"],
+      "Log/*": ["src/utilities/log/*"],
+      "Types/*": ["src/types/*"]
+    }
   },
   "exclude": [
     "node_modules"

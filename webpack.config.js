@@ -9,6 +9,12 @@ const CleanPlugin = require('clean-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const IncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
+const convPaths = require('convert-tsconfig-paths-to-webpack-aliases').default
+
+// Needs to be valid JSON. All comments in tsconfig.json must be removed.
+const tsconfig = require('./tsconfig.json')
+
+const aliases = convPaths(tsconfig)
 
 const pkg = require('./package.json')
 
@@ -150,26 +156,7 @@ let config = {
     }]
   },
   resolve: {
-    alias: {
-      Pkg: path.join(projectRoot, 'package.json'),
-      Src: src,
-      Res: res,
-      Test: test,
-      Img: 'Res/img',
-      Mock: 'Test/mock',
-      Config: 'Src/config',
-      Utilities: 'Src/utilities',
-      Services: isMocking ? 'Mock/services' : 'Src/services',
-      App: 'Src/app',
-      Components: 'App/components',
-      Styles: 'App/styles',
-      Actions: 'App/actions',
-      Hoc: 'App/hoc',
-      Selectors: 'App/selectors',
-      Routes: 'App/routes',
-      Log: 'Utilities/log',
-      Types: 'Src/types',
-    },
+    alias: aliases,
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.scss', '.css']
   },
   plugins: [
