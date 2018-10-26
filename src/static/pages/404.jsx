@@ -1,4 +1,4 @@
-import React from 'react'
+import * as React from 'react'
 import { compose, setDisplayName } from 'recompose'
 
 export default compose(

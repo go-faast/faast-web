@@ -1,8 +1,19 @@
+import React from 'react'
 import path from 'path'
 import axios from 'axios'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 
 const webpackConfig = require('./webpack.config.js')
+
+const Document = ({ Html, Head, Body, children }) => (
+  <Html lang="en-US">
+    <Head>
+      <meta charSet="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1" />
+    </Head>
+    <Body>{children}</Body>
+  </Html>
+)
 
 export default {
   entry: path.join(__dirname, 'src', 'static', 'index.tsx'),
@@ -10,8 +21,9 @@ export default {
   getSiteData: () => ({
     title: 'Trade Crypto - Faast',
   }),
+  Document,
   getRoutes: async () => {
-    const assets = await axios.get('https://api.faa.st/api/v2/public/currencies')
+    const { data: assets } = await axios.get('https://api.faa.st/api/v2/public/currencies')
     return [
       {
         path: '/',

@@ -1,18 +1,18 @@
 {
   "compilerOptions": {
-    "lib": [
-        "dom",
-        "es2015",
-        "es2016",
-        "es2017"
-    ],
+    "target": "esnext",
+    "module": "esnext",
     "jsx": "preserve",
-    "target": "es5",
     "allowJs": true,
     "sourceMap": true,
     "noImplicitAny": true,
     "noErrorTruncation": true,
     "esModuleInterop": true,
+    "skipLibCheck": true,
+    "removeComments": false,
+    "preserveConstEnums": true,
+    "allowSyntheticDefaultImports": true,
+    "moduleResolution": "node",
     "baseUrl": ".",
     "paths": {
       "Pkg": ["package.json"],
@@ -33,7 +33,13 @@
       "Routes/*": ["src/app/routes/*"],
       "Log/*": ["src/utilities/log/*"],
       "Types/*": ["src/types/*"]
-    }
+    },
+    "lib": [
+        "dom",
+        "es2015",
+        "es2016",
+        "es2017"
+    ]
   },
   "exclude": [
     "node_modules"
