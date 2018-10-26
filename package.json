@@ -58,6 +58,7 @@
     "@types/react-dom": "^16.0.9",
     "@types/uuid": "^3.4.3",
     "@types/web3": "^1.0.3",
+    "@types/webpack-env": "^1.13.6",
     "accounting": "^0.4.1",
     "autoprefixer": "^7.2.4",
     "axios": "^0.18.0",
