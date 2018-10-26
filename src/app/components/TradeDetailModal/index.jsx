@@ -6,14 +6,9 @@ import { createStructuredSelector } from 'reselect'
 import { Modal, ModalBody, ModalHeader } from 'reactstrap'
 import { pick } from 'lodash'
 
+import { retrieveSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
 import SwapStatusCard from 'Components/SwapStatusCard'
-
-const handleRedirect = (props) => {
-  if (props.isOpen && !props.swap) {
-    props.toggle(null, true)
-  }
-}
 
 export default compose(
   setDisplayName('TradeDetailModal'),
@@ -22,14 +17,16 @@ export default compose(
     ...Modal.propTypes,
   }),
   connect(createStructuredSelector({
-    swap: (state, props) => getSwap(state, props.tradeId)
-  })),
+    swap: (state, { tradeId }) => getSwap(state, tradeId)
+  }), {
+    retrieveSwap: retrieveSwap
+  }),
   lifecycle({
     componentWillMount() {
-      handleRedirect(this.props)
-    },
-    componentWillReceiveProps(next) {
-      handleRedirect(next)
+      const { swap, tradeId, retrieveSwap } = this.props
+      if (!swap) {
+        retrieveSwap(tradeId)
+      }
     }
   })
 )(({
