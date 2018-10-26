@@ -45,14 +45,7 @@
       "res/"
     ]
   },
-  "dependencies": {
-    "@types/react-dom": "^16.0.9",
-    "axios": "^0.18.0",
-    "bchaddrjs": "^0.2.2",
-    "convert-tsconfig-paths-to-webpack-aliases": "^0.9.2",
-    "react-static": "^5.9.12",
-    "web3-provider-engine": "^14.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@ledgerhq/hw-app-btc": "^4.27.0",
     "@ledgerhq/hw-app-eth": "^4.15.0",
@@ -62,10 +55,12 @@
     "@types/lodash": "^4.14.116",
     "@types/query-string": "^6.1.0",
     "@types/react": "^16.4.18",
+    "@types/react-dom": "^16.0.9",
     "@types/uuid": "^3.4.3",
     "@types/web3": "^1.0.3",
     "accounting": "^0.4.1",
     "autoprefixer": "^7.2.4",
+    "axios": "^0.18.0",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.3",
     "babel-loader": "^7.1.2",
@@ -87,6 +82,7 @@
     "class-names": "^1.0.0",
     "clean-webpack-plugin": "^0.1.19",
     "coininfo": "github:go-faast/coininfo",
+    "concurrently": "^3.5.0",
     "convert-tsconfig-paths-to-webpack-aliases": "^0.9.2",
     "copy-webpack-plugin": "^4.5.1",
     "cross-env": "^5.0.5",
@@ -131,6 +127,7 @@
     "react-redux-toastr": "^7.4.0",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.6",
+    "react-static": "^5.9.12",
     "react-stickynode": "^1.4.0",
     "react-toolbox": "^2.0.0-beta.13",
     "react-transition-group": "^2.4.0",
