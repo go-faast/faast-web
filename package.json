@@ -56,6 +56,7 @@
     "@types/query-string": "^6.1.0",
     "@types/react": "^16.4.18",
     "@types/react-dom": "^16.0.9",
+    "@types/recompose": "^0.27.0",
     "@types/uuid": "^3.4.3",
     "@types/web3": "^1.0.3",
     "@types/webpack-env": "^1.13.6",
