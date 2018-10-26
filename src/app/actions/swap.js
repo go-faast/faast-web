@@ -184,7 +184,6 @@ export const retrieveSwap = (swapOrderId) => (dispatch, getState) => {
 export const refreshSwap = (swapOrderId) => (dispatch, getState) => {
   return Faast.refreshSwap(swapOrderId)
     .then((swap) => {
-      console.log('refreshed swap', swap)
       const existingSwap = getSwap(getState(), swapOrderId)
       swap.id = existingSwap ? existingSwap.id : swap.orderId
       dispatch(swapUpdated(swap.id, swap))
