@@ -14,7 +14,7 @@ import { Button, Input, Col, Row, Card, CardHeader, CardBody, CardFooter } from 
 import { container, qr, scan, receipt } from './style.scss'
 import QRCode from 'qrcode.react'
 import toastr from 'Utilities/toastrWrapper'
-import { retrieveSwap } from 'Actions/swap'
+import { retrieveSwap, refreshSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
 import PropTypes from 'prop-types'
 
@@ -108,7 +108,8 @@ export default compose(
     swap: (state, { orderId }) => getSwap(state, orderId)
   }), {
     retrieveSwap: retrieveSwap,
-    push: pushAction
+    push: pushAction,
+    refreshSwap
   }),
   setPropTypes({
     orderId: PropTypes.string,
@@ -143,6 +144,10 @@ export default compose(
         if (orderStatus && orderStatus !== 'awaiting deposit') {
           push(routes.tradeDetail(orderId))
         }
+      },
+      handleTimerEnd: ({ refreshSwap, swap }) => () => {
+        console.log('in handle timer end')
+        refreshSwap(swap.orderId)
       }
     }
   }),
@@ -163,6 +168,6 @@ export default compose(
   }),
   withStateHandlers(
     { timerExpired: false },
-    { handleTimerEnd: () => () => ({ timerExpired: true }) },
+    // { handleTimerEnd: () => () => ({ timerExpired: true }) },
   ),
 )(SwapStepTwo)
