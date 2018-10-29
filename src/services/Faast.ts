@@ -45,6 +45,11 @@ export const fetchSwap = (swapId: string): Promise<SwapOrder> => {
     })
 }
 
+export const refreshSwap = (id: string) =>
+  fetchPost(`${apiUrl}/api/v2/public/swaps/${id}/refresh`, null, { swapId: id })
+    .then((r) => log.debugInline('refresh swap', r))
+    .then(formatOrderResult)
+
 export const fetchMarketInfo = (pair: string) => fetchGet(`${apiUrl}/api/v1/public/marketinfo/${pair}`)
   .then((result) => log.debugInline('fetchMarketInfo', result))
 
@@ -143,4 +148,5 @@ export default {
   fetchOrders,
   fetchSwap,
   fetchPairData,
+  refreshSwap,
 }
