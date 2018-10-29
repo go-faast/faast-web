@@ -65,18 +65,18 @@ const removeOld = (storeName) => {
     if (!stores[storeName] || !stores[storeName].ready) return reject(new Error('store not ready'))
 
     getAll(storeName)
-    .then((result) => {
-      const day = 1000 * 60 * 60 * 24
-      const date = new Date()
-      const minTime = date.getTime() - (day * DAYS_TO_STORE)
-      const tooOld = result.map((r) => {
-        if (r.id && typeof r.id === 'number' && r.id < minTime) return r.id
-      }).filter(a => a)
-      Promise.all(tooOld.map(key => remove(storeName, key)))
-      .then(resolve)
+      .then((result) => {
+        const day = 1000 * 60 * 60 * 24
+        const date = new Date()
+        const minTime = date.getTime() - (day * DAYS_TO_STORE)
+        const tooOld = result.map((r) => {
+          if (r.id && typeof r.id === 'number' && r.id < minTime) return r.id
+        }).filter(a => a)
+        Promise.all(tooOld.map(key => remove(storeName, key)))
+          .then(resolve)
+          .catch(reject)
+      })
       .catch(reject)
-    })
-    .catch(reject)
   })
 }
 
@@ -85,17 +85,17 @@ const exportDb = (storeName) => {
     if (!stores[storeName] || !stores[storeName].ready) return reject(new Error('store not ready'))
 
     getAll(storeName)
-    .then((result) => {
-      return downloadJson({
-        [storeName]: result
-      }, `faast-portfolio-${storeName}-${dateNowString('_', '-')}`)
-    })
-    .then((jsonString) => {
-      resolve(jsonString)
-    })
-    .catch((e) => {
-      reject(e)
-    })
+      .then((result) => {
+        return downloadJson({
+          [storeName]: result
+        }, `faast-portfolio-${storeName}-${dateNowString('_', '-')}`)
+      })
+      .then((jsonString) => {
+        resolve(jsonString)
+      })
+      .catch((e) => {
+        reject(e)
+      })
   })
 }
 

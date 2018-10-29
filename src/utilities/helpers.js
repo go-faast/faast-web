@@ -88,7 +88,7 @@ export const processArray = (array, fn) => {
       results.push(data)
       return results
     }),
-    Promise.resolve())
+  Promise.resolve())
 }
 
 export const stripHexPrefix = (hex) => {

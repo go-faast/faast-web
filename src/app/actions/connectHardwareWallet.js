@@ -113,7 +113,7 @@ const loadAccountBalance = (index = 0) => (dispatch, getState) => {
         return dispatch(accountLoadError(index, e.message))
       })
   ]))
-  .catch(log.error)
+    .catch(log.error)
 }
 
 const loadAccountPage = (page = 0) => (dispatch, getState) => {

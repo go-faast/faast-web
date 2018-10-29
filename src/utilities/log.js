@@ -22,8 +22,8 @@ idb.setup([storeName])
   .then(() => idb.removeOld(storeName))
   // Push any log messages that occurred while setting up store
   .then(() => idbNotReadyQueue.reduce(
-      (prev, message) => prev.then(() => idb.put(storeName, message)),
-      Promise.resolve())
+    (prev, message) => prev.then(() => idb.put(storeName, message)),
+    Promise.resolve())
     .then(() => {
       console.log(`Pushed ${idbNotReadyQueue.length} log messages to IDB`)
       idbNotReadyQueue = []

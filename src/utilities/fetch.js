@@ -37,19 +37,19 @@ export const fetchJson = (method, path, body, params = {}) => {
   }
   log.debug(`requesting ${method} ${fullPath}`)
   return fetch(fullPath, options)
-  .then((response) => {
-    try {
-      return response.json()
-    } catch (err) {
-      throw new Error(response.status)
-    }
-  })
-  .then((data) => {
-    if (data.error) {
-      throw new Error(data.error)
-    }
-    return data
-  })
+    .then((response) => {
+      try {
+        return response.json()
+      } catch (err) {
+        throw new Error(response.status)
+      }
+    })
+    .then((data) => {
+      if (data.error) {
+        throw new Error(data.error)
+      }
+      return data
+    })
 }
 
 export const fetchGet = (path, params) => fetchJson('GET', path, null, params)

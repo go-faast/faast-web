@@ -82,14 +82,14 @@ export const createOrder = (swap) => (dispatch) => Promise.resolve().then(() => 
     sendAmount: toNumber(sendAmount), // optional
     userId: sendWalletId, // optional
   })
-  .then((order) => { 
-    finish(null, order)
-    return { id, ...order }
-  })
-  .catch((e) => {
-    log.error('createOrder', e)
-    return finish(`Error creating swap for pair ${sendSymbol}->${receiveSymbol}, please contact support@faa.st`)
-  })
+    .then((order) => { 
+      finish(null, order)
+      return { id, ...order }
+    })
+    .catch((e) => {
+      log.error('createOrder', e)
+      return finish(`Error creating swap for pair ${sendSymbol}->${receiveSymbol}, please contact support@faa.st`)
+    })
 })
 
 export const createOrderWithWallets = (swap) => (dispatch) => Promise.resolve().then(() => {
@@ -103,19 +103,19 @@ export const createOrderWithWallets = (swap) => (dispatch) => Promise.resolve().
     sendWalletInstance.getFreshAddress(sendSymbol),
     receiveWalletInstance.getFreshAddress(receiveSymbol),
   ])
-  .then(([refundAddress, receiveAddress]) => dispatch(createOrder({
-    id: swap.id,
-    sendAmount,
-    sendSymbol,
-    receiveSymbol,
-    receiveAddress,
-    refundAddress,
-    sendWalletId,
-  })))
-  .catch((e) => {
-    log.error('createOrderWithWallets', e)
-    return finish('Error creating swap for chosen wallets')
-  })
+    .then(([refundAddress, receiveAddress]) => dispatch(createOrder({
+      id: swap.id,
+      sendAmount,
+      sendSymbol,
+      receiveSymbol,
+      receiveAddress,
+      refundAddress,
+      sendWalletId,
+    })))
+    .catch((e) => {
+      log.error('createOrderWithWallets', e)
+      return finish('Error creating swap for chosen wallets')
+    })
 })
 
 export const setSwapTx = (swapId, tx, outputIndex = 0) => (dispatch) => {
