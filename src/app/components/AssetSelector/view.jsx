@@ -16,7 +16,7 @@ const AssetSearchForm = reduxForm({
       name='searchAsset'
       placeholder='Search by name or symbol...'
       type='search'
-      autoFocus
+      autofocus
       autoComplete='off'
       onChange={handleSearchChange}
       inputClass='border-primary'
@@ -62,7 +62,7 @@ AssetSelectorView.propTypes = {
   assetList: PropTypes.array,
   handleSelect: PropTypes.func,
   handleSearchSubmit: PropTypes.func,
-  handleSearchChange: PropTypes.func
+  handleSearchChange: PropTypes.func,
 }
 
 export default AssetSelectorView

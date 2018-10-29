@@ -14,8 +14,8 @@ export const getPriceChartData = createItemSelector(getPriceChart, fieldSelector
 export const isPriceChartLoading = createItemSelector(getPriceChart, fieldSelector('loading'))
 export const isPriceChartStale = createItemSelector(getPriceChart, priceChart => {
   if (priceChart) {
-    const { lastUpdatedPrice } = priceChart
-    const isStale = (Date.now() - lastUpdatedPrice) >= 300000 ? true : false
+    const { lastUpdated } = priceChart
+    const isStale = (Date.now() - lastUpdated) >= 300000
     return isStale
   } else {
     return true

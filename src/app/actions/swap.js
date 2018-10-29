@@ -165,21 +165,22 @@ export const createManualSwap = (swapParams) => (dispatch, getState) => {
     })
 }
 
-export const retrieveSwap = (swapOrderId) => (dispatch, getState) => {
-  return Faast.fetchSwap(swapOrderId)
-    .then((swap) => {
-      const existingSwap = getSwap(getState(), swapOrderId)
-      swap.id = existingSwap ? existingSwap.id : swap.orderId
-      dispatch(swapAdded(swap))
-      dispatch(pollOrderStatus(swap))
-      return getSwap(getState(), swap.id)
-    })
-    .catch((e) => {
-      log.error(`Failed to retrieve swap ${swapOrderId}`, e)
-      toastr.error(`Failed to retrieve swap ${swapOrderId}`)
-      throw e
-    })
-}
+export const retrieveSwap = (swapOrderId) => (dispatch, getState)  => Promise.resolve()
+  .then(() => {
+    return Faast.fetchSwap(swapOrderId)
+      .then((swap) => {
+        const existingSwap = getSwap(getState(), swapOrderId)
+        swap.id = existingSwap ? existingSwap.id : swap.orderId
+        dispatch(swapAdded(swap))
+        dispatch(pollOrderStatus(swap))
+        return getSwap(getState(), swap.id)
+      })
+      .catch((e) => {
+        log.error(`Failed to retrieve swap ${swapOrderId}`, e)
+        toastr.error(`Failed to retrieve swap ${swapOrderId}`)
+        throw e
+      })
+  })
 
 export const refreshSwap = (swapOrderId) => (dispatch, getState) => {
   return Faast.refreshSwap(swapOrderId)

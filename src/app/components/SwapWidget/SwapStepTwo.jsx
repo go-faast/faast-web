@@ -14,8 +14,10 @@ import { Button, Input, Col, Row, Card, CardHeader, CardBody, CardFooter } from 
 import { container, qr, scan, receipt } from './style.scss'
 import QRCode from 'qrcode.react'
 import toastr from 'Utilities/toastrWrapper'
+import { retrievePairData } from 'Actions/rate'
 import { retrieveSwap, refreshSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
+import { getRateMinimumDeposit, isRateLoading } from 'Selectors/rate'
 import PropTypes from 'prop-types'
 
 const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTimerEnd, secondsUntilPriceExpiry }) => {
@@ -93,9 +95,14 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTimerEnd,
               ) : null}
             </tbody>
           </table>
-          {(secondsUntilPriceExpiry > 0)
-          ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if deposit sent within:'} onTimerEnd={handleTimerEnd}/></small></span>)
-          : null}
+         <div className='mt-2'>
+            {(secondsUntilPriceExpiry > 0)
+            ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if deposit sent within:'} onTimerEnd={handleTimerEnd}/></small></span>)
+            : null}
+            <p><small className='text-muted'>
+              {`** You must send at least ${minimumDeposit} ${sendSymbol} for your swap to be processed.`}
+            </small></p>
+          </div>
         </CardFooter>
       </Card>
     </Fragment>
@@ -105,11 +112,12 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTimerEnd,
 export default compose(
   setDisplayName('SwapStepTwo'),
   connect(createStructuredSelector({
-    swap: (state, { orderId }) => getSwap(state, orderId)
+    swap: (state, { orderId }) => getSwap(state, orderId),
   }), {
     retrieveSwap: retrieveSwap,
     push: pushAction,
-    refreshSwap
+    refreshSwap,
+    retrievePairData: retrievePairData,
   }),
   setPropTypes({
     orderId: PropTypes.string,
@@ -118,11 +126,18 @@ export default compose(
     orderId: ''
   }),
   withProps(({ swap = {} }) => {
-    const { rateLockedUntil } = swap
+    const { rateLockedUntil, sendSymbol, receiveSymbol } = swap
     const secondsUntilPriceExpiry = (Date.parse(rateLockedUntil) - Date.now()) / 1000
+    const pair = `${sendSymbol}_${receiveSymbol}`
     return {
       secondsUntilPriceExpiry,
+      pair
     }
+  }),
+  connect(createStructuredSelector({
+    minimumDeposit: (state, { pair }) => getRateMinimumDeposit(state, pair),
+    isRateLoading: (state, { pair }) => isRateLoading(state, pair),
+  }), {
   }),
   withHandlers(() => {
     let inputRef
@@ -152,11 +167,14 @@ export default compose(
   }),
   lifecycle({
     componentDidUpdate() {
-      const { checkDepositStatus } = this.props
+      const { checkDepositStatus, pair, retrievePairData, minimumDeposit, isRateLoading } = this.props
+      if (!minimumDeposit && !isRateLoading) {
+        retrievePairData(pair)
+      }
       checkDepositStatus()
     },
     componentWillMount() {
-      const { orderId, swap, checkDepositStatus, retrieveSwap } = this.props
+      const { orderId, swap, checkDepositStatus, retrieveSwap, } = this.props
       if (!swap) {
         retrieveSwap(orderId)
       } else {
