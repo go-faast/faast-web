@@ -220,14 +220,16 @@ export const sendSwap = (swap, sendOptions) => (dispatch, getState) => Promise.r
   .then(() => dispatch(pollOrderStatus(swap)))
 
 const updateOrderStatus = (swap) => (dispatch) => {
-  const { id, orderId } = swap
+  const { id, orderId, orderStatus } = swap
   if (!orderId) {
     log.info(`updateOrderStatus: swap ${id} has no orderId`)
     return
   }
-  return Faast.fetchOrderStatus(orderId)
+  return Faast.fetchSwap(orderId)
     .then((order) => {
-      dispatch(swapOrderStatusUpdated(id, order.status))
+      if (order.orderStatus !== orderStatus) {
+        dispatch(swapOrderStatusUpdated(id, order.orderStatus))
+      }
       return order
     })
     .catch(log.error)

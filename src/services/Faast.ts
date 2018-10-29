@@ -107,14 +107,6 @@ export const createNewOrder = ({
     throw new Error(errMsg)
   })
 
-export const fetchOrderStatus = (swapOrderId: string) => fetchGet(`${apiUrl}/api/v1/public/txStat/${swapOrderId}`)
-  .then((result) => log.debugInline('fetchOrderStatus', result))
-  .catch((err) => {
-    log.error(err)
-    const errMsg = filterErrors(err)
-    throw new Error(errMsg)
-  })
-
 export const fetchOrders = (
   walletId: string,
   page: number = 1,
@@ -144,7 +136,6 @@ export default {
   fetchPriceChart,
   fetchMarketInfo,
   createNewOrder,
-  fetchOrderStatus,
   fetchOrders,
   fetchSwap,
   fetchPairData,
