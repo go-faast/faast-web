@@ -20,11 +20,20 @@ const rateInitialState = {
   loading: false
 }
 
-const upsert = createUpserter('pair', rateInitialState)
-const update = createUpdater('pair')
+const normalizeKey = (pair) => pair.toLowerCase()
+const upsert = createUpserter('pair', rateInitialState, normalizeKey)
+const update = createUpdater('pair', normalizeKey)
 
 export default createReducer({
-  [rateLoading]: (state, { pair }) => upsert(state, { pair , loading: true, lastUpdated: Date.now() }),
-  [rateUpdated]: (state, data) => update(state, { ...data, loading: false, lastUpdated: Date.now() }),
+  [rateLoading]: (state, { pair }) => upsert(state, {
+    pair,
+    loading: true,
+    lastUpdated: Date.now()
+  }),
+  [rateUpdated]: (state, data) => update(state, {
+    ...data,
+    loading: false,
+    lastUpdated: Date.now(),
+  }),
   [rateError]: (state, { pair, error }) => update(state, { pair, error }),
 }, initialState)

@@ -35,7 +35,7 @@ const Icon = ({ src, tag: Tag, inline, block, width, height, size: scale, rotate
   }
   if (scale && !(width || height)) {
     width = '1rem'
-    height= '1rem'
+    height = '1rem'
   }
   return (
     <Tag style={reduceStyles(
@@ -60,7 +60,8 @@ Icon.stylePropTypes = {
   height: PropTypes.string, // Valid css unit (2rem, 16px, etc)
   size: PropTypes.oneOfType([PropTypes.number, PropTypes.string]), // Width/height scale factor or abbreviation (sm, md, lg)
   rotate: PropTypes.string, // Degrees (90deg, 135deg, etc) or direction (up, right, down, left)
-  color: PropTypes.string // Hex color (#123abc) or theme-color (primary, success, grey, etc). Only applies if src from svg-react-loader
+  color: PropTypes.string, // Hex color (#123abc) or theme-color (primary, success, grey, etc). Only applies if src from svg-react-loader
+  style: PropTypes.object, // Additional style
 }
 
 Icon.propTypes = {
@@ -77,7 +78,8 @@ Icon.defaultProps = {
   width: null,
   height: null,
   rotate: null,
-  color: null
+  color: null,
+  style: {},
 }
 
 export default Icon

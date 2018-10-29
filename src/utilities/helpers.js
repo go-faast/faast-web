@@ -1,6 +1,6 @@
 import pad from 'pad-left'
 import queryString from 'query-string'
-import { mergeWith, union, without, omit } from 'lodash'
+import { mergeWith, union, without, omit, identity } from 'lodash'
 import sha256 from 'hash.js/lib/hash/sha/256'
 import baseX from 'base-x'
 import urlJoin from 'url-join'
@@ -302,22 +302,27 @@ export const createMergeByField = (field) => (state, ...items) => merge(state, .
 
 export const mergeById = createMergeByField('id')
 
-export const createUpserter = (indexField, defaultItemState) => (state, item) => ({
-  ...state,
-  [item[indexField]]: {
-    ...(state[item[indexField]] || defaultItemState),
-    ...item,
+export const createUpserter = (indexField, defaultItemState, normalizeKey = identity) => (state, item) => {
+  const id = normalizeKey(item[indexField])
+  return {
+    ...state,
+    [id]: {
+      ...(state[item[indexField]] || defaultItemState),
+      ...item,
+      [indexField]: id,
+    }
   }
-})
+}
 
-export const createUpdater = (indexField) => (state, item) => {
-  const id = item[indexField]
+export const createUpdater = (indexField, normalizeKey = identity) => (state, item) => {
+  const id = normalizeKey(item[indexField])
   const existingItem = state[id]
   return !existingItem ? state : {
     ...state,
     [id]: {
       ...existingItem,
       ...item,
+      [indexField]: id,
     }
   }
 }

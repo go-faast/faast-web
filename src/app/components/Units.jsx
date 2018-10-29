@@ -1,16 +1,17 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
 import { omit } from 'lodash'
 
 import { toBigNumber } from 'Utilities/convert'
-import { tag as tagPropType, numberish } from 'Utilities/propTypes'
+import { numberish } from 'Utilities/propTypes'
 import Expandable from 'Components/Expandable'
+import CoinIcon from 'Components/CoinIcon'
 
 class Units extends React.Component {
   render() {
     const {
-      tag: Tag, value: propValue, symbol, showSymbol, prefixSymbol,
+      value: propValue, symbol, showSymbol, prefixSymbol, showIcon,
       precision, maxDigits, prefix, suffix, roundingMode, roundingType, ...props
     } = this.props
     const value = toBigNumber(propValue)
@@ -32,20 +33,21 @@ class Units extends React.Component {
         shrunk = prefixSymbol ? `${symbol} ${shrunk}` : `${shrunk} ${symbol}`
       }
     }
-    const expandable = (<Expandable tag={Tag} shrunk={shrunk} expanded={expanded} {...props}/>)
-    if (prefix || suffix) {
-      return (<Tag>{prefix}{expandable}{suffix}</Tag>)
-    }
-    return expandable
+    const expandable = (<Expandable shrunk={shrunk} expanded={expanded} {...props}/>)
+    return (<Fragment>
+      {prefix}{showIcon && (
+        <Fragment><CoinIcon symbol={symbol} size='sm' inline style={{ verticalAlign: 'baseline' }}/>{' '}</Fragment>
+      )}{expandable}{suffix}
+    </Fragment>)
   }
 }
 
 Units.propTypes = {
-  ...omit(Expandable.propTypes, 'tag', 'shrunk', 'expanded'),
-  tag: tagPropType, // Component or HTML tag to wrap the value in
+  ...omit(Expandable.propTypes, 'shrunk', 'expanded'),
   value: numberish.isRequired, // Value of the unit
   symbol: PropTypes.string, // Symbol to show next to value
   showSymbol: PropTypes.bool, // True if symbol should be shown
+  showIcon: PropTypes.bool, // True if asset icon should be shown
   prefixSymbol: PropTypes.bool, // True if symbol should be shown before value rather than after
   precision: PropTypes.number, // Maximum number of significant digits to show. Null to use maximum precision.
   maxDigits: PropTypes.number, // Maximum number of digits allowed (including zeros) before using exponential form
@@ -64,14 +66,14 @@ Units.propTypes = {
 
 Units.defaultProps = {
   ...Expandable.defaultProps,
-  tag: 'span',
   symbol: '',
   showSymbol: true,
+  showIcon: false,
   prefixSymbol: false,
   precision: 4,
   maxDigits: 10,
-  prefix: '',
-  suffix: '',
+  prefix: null,
+  suffix: null,
   roundingMode: BigNumber.ROUND_HALF_UP,
   roundingType: 'sd'
 }

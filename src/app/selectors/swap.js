@@ -13,7 +13,7 @@ import { getAllTxs } from './tx'
 export const getSwapState = ({ swap }) => swap
 
 const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
-  const { sendSymbol, receiveSymbol, txId, rate, receiveAddress, sendWalletId } = swap
+  const { sendSymbol, receiveSymbol, txId, rate, receiveAddress, sendWalletId, rateLockedUntil } = swap
   const sendAsset = allAssets[sendSymbol]
   const receiveAsset = allAssets[receiveSymbol]
   const tx = allTxs[txId] || {}
@@ -34,6 +34,7 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
   swap = {
     ...swap,
     isManual: !swap.sendWalletId,
+    isFixedPrice: Boolean(rateLockedUntil),
     sendWallet: allWallets[sendWalletId],
     receiveWallet,
     receiveWalletId,

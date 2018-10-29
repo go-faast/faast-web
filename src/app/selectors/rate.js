@@ -3,13 +3,14 @@ import { createItemSelector, selectItemId, fieldSelector } from 'Utilities/selec
 
 export const getRateState = ({ rate }) => rate
 
-export const getAllRates = createSelector(getRateState, (rates) => {
-  return {
-    ...rates
-  }
-})
+export const getAllRates = createSelector(getRateState, (rates) => rates)
 
-export const getRate = createItemSelector(getAllRates, selectItemId, (allCharts, symbol) => allCharts[symbol])
+export const getRate = createItemSelector(
+  getAllRates,
+  selectItemId,
+  (allRates, pair) => typeof pair === 'string'
+    ? allRates[pair.toLowerCase()]
+    : null)
 export const getRatePrice = createItemSelector(getRate, fieldSelector('price'))
 export const getRateMinimumDeposit = createItemSelector(getRate, fieldSelector('minimum_deposit'))
 export const isRateLoading = createItemSelector(getRate, fieldSelector('loading'))
