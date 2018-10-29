@@ -1,16 +1,17 @@
 import pad from 'pad-left'
 
 import config from 'Config'
-import web3 from 'Services/Web3'
+import { Web3 } from 'Services/Web3'
 import { BatchRequest, Tx as Web3Tx } from 'web3/eth/types'
 import { toBigNumber, TEN } from 'Utilities/convert'
+import { isValidAddress } from 'Utilities/wallet'
 import { Web3Receipt, Receipt, Amount } from '../types'
 import { BatchableFn, SendOptions } from './types'
 
 export function tokenSendData(address: string, amount: Amount, decimals: number) {
   amount = toBigNumber(amount)
 
-  if (!web3.utils.isAddress(address)) { throw new Error('invalid address') }
+  if (!isValidAddress(address)) { throw new Error('invalid address') }
   if (amount.lessThan(0)) { throw new Error('invalid amount') }
   if (typeof decimals !== 'number') { throw new Error('invalid decimals') }
 
@@ -53,7 +54,7 @@ export function toUniversalReceipt(receipt: Web3Receipt): Receipt {
 /** Send the transaction and return a promise that resolves to the txHash after the
  * transaction is broadcast to the network.
  */
-export function web3SendTx(txData: Web3Tx | string, options: SendOptions = {}): Promise<string> {
+export function web3SendTx(userWeb3: Web3, txData: Web3Tx | string, options: SendOptions = {}): Promise<string> {
   return new Promise((resolve, reject) => {
     const { onTxHash, onReceipt, onConfirmation, onError } = options
     // sendSignedTransaction resolves when the tx receipt is available, which occurs after
@@ -62,8 +63,8 @@ export function web3SendTx(txData: Web3Tx | string, options: SendOptions = {}): 
     let resolved = false
 
     const sendStatus = typeof txData === 'string'
-      ? web3.eth.sendSignedTransaction(txData)
-      : web3.eth.sendTransaction(txData)
+      ? userWeb3.eth.sendSignedTransaction(txData)
+      : userWeb3.eth.sendTransaction(txData)
 
     sendStatus
       .once('transactionHash', (txHash: string) => {

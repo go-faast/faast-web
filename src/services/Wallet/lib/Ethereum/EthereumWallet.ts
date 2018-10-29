@@ -2,7 +2,7 @@ import { difference } from 'lodash'
 import EthJsTx from 'ethereumjs-tx'
 
 import config from 'Config'
-import web3 from 'Services/Web3'
+import { getWeb3 } from 'Services/Web3'
 import { addHexPrefix, toHashId } from 'Utilities/helpers'
 import {
   ZERO, BigNumber, Numerical, toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee, toNumber,
@@ -27,7 +27,7 @@ function estimateGasLimit(txData: Partial<TxData>): Promise<BigNumber> {
     return Promise.resolve(txData.data ? DEFAULT_GAS_LIMIT_TOKEN : DEFAULT_GAS_LIMIT_ETH)
   }
   try {
-    return web3.eth.estimateGas(txData)
+    return getWeb3().eth.estimateGas(txData)
       .then(toBigNumber)
       .catch(errorFallback)
   } catch (e) {
@@ -66,7 +66,7 @@ export default abstract class EthereumWallet extends Wallet {
   }
 
   _getDefaultFeeRate() {
-    return web3.eth.getGasPrice()
+    return getWeb3().eth.getGasPrice()
       .catch((e) => {
         log.error(`Failed to get ethereum dynamic fee, using default of ${DEFAULT_GAS_PRICE} wei`, e)
         return DEFAULT_GAS_PRICE
@@ -78,6 +78,7 @@ export default abstract class EthereumWallet extends Wallet {
   }
 
   _getBalance(asset: Asset, { web3Batch = null }: GetBalanceOptions): Promise<Amount> {
+    const web3 = getWeb3()
     const address = this.getAddress()
     let request: Promise<Numerical>
     if (asset.symbol === 'ETH') {
@@ -92,6 +93,7 @@ export default abstract class EthereumWallet extends Wallet {
   }
 
   getAllBalances({ web3Batch = null }: GetBalanceOptions = {}): Promise<Balances> {
+    const web3 = getWeb3()
     return Promise.resolve(this.getSupportedAssets())
       .then((assets) => {
         const batch = web3Batch || new web3.BatchRequest()
@@ -118,6 +120,7 @@ export default abstract class EthereumWallet extends Wallet {
     gas?: Numerical, // Alias for gasLimit
   }): Promise<EthTransaction> {
     return Promise.resolve().then(() => {
+      const web3 = getWeb3()
       log.debug(`Creating transaction sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${address}`)
       const txData = {
         chainId: config.ethereumChainId,
@@ -168,12 +171,12 @@ export default abstract class EthereumWallet extends Wallet {
   }
 
   _getTransactionReceipt(tx: EthTransaction): Promise<Receipt> {
-    return web3.eth.getTransactionReceipt(tx.hash)
+    return getWeb3().eth.getTransactionReceipt(tx.hash)
       .then(toUniversalReceipt)
   }
 
   _sendSignedTx(tx: EthTransaction, options: object): Promise<Partial<EthTransaction>> {
-    return web3SendTx(tx.signedTxData.raw, options)
+    return web3SendTx(getWeb3(), tx.signedTxData.raw, options)
       .then((hash) => ({ hash }))
   }
 

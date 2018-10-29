@@ -1,7 +1,6 @@
 import BigNumber from 'bignumber.js'
 import EthereumjsUtil from 'ethereumjs-util'
 import padLeft from 'pad-left'
-import web3 from 'Services/Web3'
 import config from 'Config'
 import { addHexPrefix } from 'Utilities/helpers'
 

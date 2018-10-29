@@ -10,7 +10,7 @@ import toastr from 'Utilities/toastrWrapper'
 import { isValidAddress } from 'Utilities/wallet'
 import { toChecksumAddress } from 'Utilities/convert'
 
-import web3 from 'Services/Web3'
+import { getUserWeb3 } from 'Services/Web3'
 import {
   Wallet, MultiWallet, EthereumWalletKeystore,
   EthereumWalletWeb3, EthereumWalletViewOnly
@@ -61,7 +61,7 @@ export const openWalletAndRedirect = (walletPromise, forwardURL = '/dashboard') 
   })
 
 export const openWeb3Wallet = (selectedProvider) => (dispatch) => {
-  return web3.enableUserProvider()
+  return getUserWeb3()
     .then(() => dispatch(openWalletAndRedirect(
       EthereumWalletWeb3.fromDefaultAccount(selectedProvider),
       routes.dashboard())))
