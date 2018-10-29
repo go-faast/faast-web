@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { push as pushAction } from 'react-router-redux'
-import { compose, setDisplayName, lifecycle, setPropTypes, defaultProps, withHandlers, withStateHandlers, withProps } from 'recompose'
+import { compose, setDisplayName, lifecycle, setPropTypes, defaultProps, withHandlers, withProps } from 'recompose'
 import classNames from 'class-names'
 import { createStructuredSelector } from 'reselect'
 import routes from 'Routes'
@@ -14,11 +14,11 @@ import { Button, Input, Col, Row, Card, CardHeader, CardBody, CardFooter } from 
 import { container, qr, scan, receipt } from './style.scss'
 import QRCode from 'qrcode.react'
 import toastr from 'Utilities/toastrWrapper'
-import { retrieveSwap } from 'Actions/swap'
+import { retrieveSwap, refreshSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
 import PropTypes from 'prop-types'
 
-const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, timerExpired, handleTimerEnd, secondsUntilPriceExpiry }) => {
+const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTimerEnd, secondsUntilPriceExpiry }) => {
   swap = swap ? swap : {}
   const { orderId = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
   sendAmount = '', receiveAmount = '', inverseRate = '', orderStatus = '', refundAddress = '' } = swap
@@ -93,9 +93,9 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, timerExpired, h
               ) : null}
             </tbody>
           </table>
-          {(secondsUntilPriceExpiry > 0 && !timerExpired)
+          {(secondsUntilPriceExpiry > 0)
           ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if deposit sent within:'} onTimerEnd={handleTimerEnd}/></small></span>)
-          : (timerExpired && (<span className='text-warning'><small>* Quoted rates are no longer guaranteed as the 15 minute guarantee window has expired. Orders will be filled using the latest variable rate when deposit is received.</small></span>))}
+          : null}
         </CardFooter>
       </Card>
     </Fragment>
@@ -108,7 +108,8 @@ export default compose(
     swap: (state, { orderId }) => getSwap(state, orderId)
   }), {
     retrieveSwap: retrieveSwap,
-    push: pushAction
+    push: pushAction,
+    refreshSwap
   }),
   setPropTypes({
     orderId: PropTypes.string,
@@ -143,6 +144,9 @@ export default compose(
         if (orderStatus && orderStatus !== 'awaiting deposit') {
           push(routes.tradeDetail(orderId))
         }
+      },
+      handleTimerEnd: ({ refreshSwap, swap }) => () => {
+        refreshSwap(swap.orderId)
       }
     }
   }),
@@ -160,9 +164,5 @@ export default compose(
         checkDepositStatus()
       }
     }
-  }),
-  withStateHandlers(
-    { timerExpired: false },
-    { handleTimerEnd: () => () => ({ timerExpired: true }) },
-  ),
+  })
 )(SwapStepTwo)

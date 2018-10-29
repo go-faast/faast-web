@@ -11,7 +11,7 @@ import {
   isCurrentSwundleSigning, isCurrentSwundleSending,
   doesCurrentSwundleRequireSigning,
 } from 'Selectors'
-import { compose, setDisplayName, withStateHandlers, withProps, branch, withHandlers, renderNothing } from 'recompose'
+import { compose, setDisplayName, withProps, branch, withHandlers, renderNothing } from 'recompose'
 import { closeTrezorWindow } from 'Utilities/wallet'
 import { min } from 'lodash'
 import display from 'Utilities/display'
@@ -23,13 +23,14 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { signSwundle, sendSwundle, removeSwundle } from 'Actions/swundle'
 import { toggleOrderModal } from 'Actions/orderModal'
+import { refreshSwap } from 'Actions/swap'
 import { push } from 'react-router-redux'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 
 const SwapSubmitModal = ({
   isOpen, swundle, headerText, continueText, continueDisabled, continueLoading,
-  errorMessage, handleCancel, currentSwap, secondsUntilPriceExpiry, timerExpired, 
+  errorMessage, handleCancel, currentSwap, secondsUntilPriceExpiry, 
   handleTimerEnd, handleSubmit, invalid, submitting
 }) => { 
   return (
@@ -78,9 +79,9 @@ const SwapSubmitModal = ({
             ? display.fiat(swundle.totalTxFee)
             : <Spinner inline size='sm'/>}
           </p>
-          {(secondsUntilPriceExpiry > 0 && !timerExpired)
+          {(secondsUntilPriceExpiry > 0)
             ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if submitted within:'} onTimerEnd={handleTimerEnd}/></small></span>)
-            : (timerExpired && (<span className='text-warning'><small>* Quoted rates are no longer guaranteed as the 15 minute guarantee window has expired. Orders will be filled using the latest variable rate when deposit is received.</small></span>))}
+            : null}
           <p><small className='text-muted'>
             {'** Additional fees may apply depending on '
             + 'the asset being sent and the wallet you\'re using.'}
@@ -123,6 +124,7 @@ export default compose(
     signSwundle,
     sendSwundle,
     routerPush: push,
+    refreshSwap,
   }),
   withHandlers({
     handleCancel: ({ swundle, toggle, removeSwundle }) => () => {
@@ -157,12 +159,6 @@ export default compose(
     ({ swundle }) => !swundle,
     renderNothing
   ),
-  withStateHandlers(
-    { timerExpired: false },
-    { 
-      handleTimerEnd: () => () => ({ timerExpired: true })
-    },
-  ),
   withProps(({ swundle, requiresSigning, readyToSign, readyToSend, startedSigning, startedSending }) => {
     let errorMessage = swundle.error
     const soonestPriceExpiry = min(swundle.swaps.map(swap => swap.rateLockedUntil))
@@ -187,7 +183,10 @@ export default compose(
     }
   }),
   withHandlers({
-    onSubmit: ({ showSubmit, handleSendTxs, handleSignTxs }) => () => showSubmit ? handleSendTxs() : handleSignTxs()
+    onSubmit: ({ showSubmit, handleSendTxs, handleSignTxs }) => () => showSubmit ? handleSendTxs() : handleSignTxs(),
+    handleTimerEnd: ({ refreshSwap, swundle }) => () => {
+      swundle.swaps.map(swap => refreshSwap(swap.orderId))
+    }
   }),
   reduxForm({
     form: 'termsForm'
