@@ -20,7 +20,7 @@ import { getSwap } from 'Selectors/swap'
 import { getRateMinimumDeposit, isRateLoading } from 'Selectors/rate'
 import PropTypes from 'prop-types'
 
-const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTimerEnd, secondsUntilPriceExpiry }) => {
+const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTimerEnd, secondsUntilPriceExpiry, minimumDeposit }) => {
   swap = swap ? swap : {}
   const { orderId = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
   sendAmount = '', receiveAmount = '', inverseRate = '', orderStatus = '', refundAddress = '' } = swap
@@ -100,7 +100,7 @@ const SwapStepTwo = ({ swap, handleRef, handleFocus, handleCopy, handleTimerEnd,
             ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if deposit sent within:'} onTimerEnd={handleTimerEnd}/></small></span>)
             : null}
             <p><small className='text-muted'>
-              {`** You must send at least ${minimumDeposit} ${sendSymbol} for your swap to be processed.`}
+              ** The minimum deposit for this swap is <Units value={minimumDeposit} precision={null}/> {sendSymbol}
             </small></p>
           </div>
         </CardFooter>
