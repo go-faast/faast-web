@@ -102,7 +102,12 @@ export const fetchJson = (
         return data
       })
     const requestId = `[${uuid().slice(0, 8)}]`
-    log.debug(`${requestId} Requesting ${method} ${fullPath}`, body)
+    const requestMessage = `${requestId} Requesting ${method} ${fullPath}`
+    if (body) {
+      log.debug(requestMessage, body)
+    } else {
+      log.debug(requestMessage)
+    }
     const beforeRetry = (attemptsLeft: number, delay: number, e: Error) => log.debug(
       `${requestId} Request failed. Waiting ${delay}ms then retrying ${attemptsLeft} more times. ` +
       `Caused by error: ${e.message}`)
