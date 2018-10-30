@@ -28,7 +28,6 @@
     "dev-server": "cross-env NODE_ENV=development webpack-dev-server --progress",
     "ngrok": "ngrok http 8080",
     "dev": "npm run dev-server -- --https",
-    "dev:ngrok": "concurrently \"npm:dev-server\" \"npm:ngrok\"",
     "lint": "eslint src/ && tslint -p .",
     "test": "npm run lint",
     "build:webpack": "webpack --progress",
