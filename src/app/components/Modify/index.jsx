@@ -45,6 +45,7 @@ const initialState = {
   assetListWalletId: '',
   walletHoldingsLoaded: {}, // By walletId
   walletHoldings: {}, // By walletId
+  addButtonLocation: 'top'
 }
 
 class Modify extends Component {
@@ -287,8 +288,8 @@ class Modify extends Component {
     this.setState({ isAssetListOpen: false })
   }
 
-  _showAssetList (walletId) {
-    this.setState({ isAssetListOpen: true, assetListWalletId: walletId })
+  _showAssetList (walletId, location) {
+    this.setState({ isAssetListOpen: true, assetListWalletId: walletId, addButtonLocation: location })
   }
 
   _toggleAssetList () {
@@ -297,7 +298,7 @@ class Modify extends Component {
 
   _handleSelectAsset ({ symbol }) {
     const { allAssets } = this.props
-    let { walletHoldings, assetListWalletId: walletId } = this.state
+    let { walletHoldings, addButtonLocation, assetListWalletId: walletId } = this.state
     let holdings = walletHoldings[walletId]
     let selectedHolding
     let existingHoldingIndex = holdings.findIndex((a) => a.symbol === symbol)
@@ -313,7 +314,7 @@ class Modify extends Component {
     this.setState({
       walletHoldings: {
         ...walletHoldings,
-        [walletId]: holdings.concat([selectedHolding])
+        [walletId]: addButtonLocation === 'bottom' ? holdings.concat([selectedHolding]) : [selectedHolding].concat(holdings)
       }
     })
     this._hideAssetList()
@@ -350,8 +351,8 @@ class Modify extends Component {
     const assetListProps = {
       supportedAssetSymbols: ((portfolio.nestedWallets.find(({ id }) => id === assetListWalletId) || {}).supportedAssets || []),
       portfolioSymbols: (walletHoldings[assetListWalletId] || []).filter(({ shown }) => shown).map(({ symbol }) => symbol),
-      selectAsset: this._handleSelectAsset,
-      ignoreUnavailable: false
+      selectAsset: (asset) => this._handleSelectAsset(asset,),
+      ignoreUnavailable: false,
     }
     let disableSave
     const adjustedHoldings = filterAdjustedHoldings(walletHoldings)
