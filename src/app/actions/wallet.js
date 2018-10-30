@@ -135,8 +135,7 @@ export const updateWalletBalances = (walletId) => (dispatch, getState) => Promis
     }
     dispatch(walletBalancesUpdating(walletId))
     return retry(() => walletInstance.getAllBalances(), {
-      retries: 3,
-      delay: 500,
+      retries: 5,
       before: (attempts, delay, e) => log.debug(
         `Failed balance request for wallet ${walletId}. ` +
         `Waiting ${delay}ms then retrying ${attempts} more times. ` +
