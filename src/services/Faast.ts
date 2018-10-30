@@ -60,7 +60,7 @@ const formatOrderResult = (r: any): SwapOrder => ({
 })
 
 export const fetchSwap = (swapId: string): Promise<SwapOrder> => {
-  return fetchGet(`${apiUrl}/api/v2/public/swaps/${swapId}`)
+  return fetchGet(`${apiUrl}/api/v2/public/swaps/${swapId}`, null, { allowConcurrent: false })
     .then(formatOrderResult)
     .catch((e: any) => {
       log.error(e)
