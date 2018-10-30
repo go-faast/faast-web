@@ -20,6 +20,12 @@ const DEFAULT_GAS_PRICE = 21e9 // 21 Gwei
 const DEFAULT_GAS_LIMIT_ETH = toBigNumber(21000)
 const DEFAULT_GAS_LIMIT_TOKEN = toBigNumber(100000)
 
+/**
+ * Batch size used when loaded token balances. Anything greater than 646 will exceed the
+ * maximum request body size of 128KiB and cause the request to fail.
+ */
+const GET_BALANCES_BATCH_SIZE = 500
+
 function estimateGasLimit(txData: Partial<TxData>): Promise<BigNumber> {
   log.debug('estimateGasLimit', txData)
   const errorFallback = (e: any) => {
@@ -92,18 +98,22 @@ export default abstract class EthereumWallet extends Wallet {
     return request.then((balance) => toMainDenomination(balance, asset.decimals))
   }
 
-  getAllBalances({ web3Batch = null }: GetBalanceOptions = {}): Promise<Balances> {
+  getAllBalances(): Promise<Balances> {
     const web3 = getWeb3()
     return Promise.resolve(this.getSupportedAssets())
       .then((assets) => {
-        const batch = web3Batch || new web3.BatchRequest()
-        const balanceRequests = assets.map((asset) =>
-          this._getBalance(asset, { web3Batch: batch })
-            .then((balance) => ({ symbol: asset.symbol, balance })))
-        if (!web3Batch) {
-          // Don't execute batch if passed in as option
-          batch.execute()
-        }
+        const batches: any[] = []
+        const balanceRequests = assets.map((asset, i) => {
+          const batchNumber = Math.floor(i / GET_BALANCES_BATCH_SIZE)
+          let batch = batches[batchNumber]
+          if (!batch) {
+            batch = new web3.BatchRequest()
+            batches[batchNumber] = batch
+          }
+          return this._getBalance(asset, { web3Batch: batch })
+            .then((balance) => ({ symbol: asset.symbol, balance }))
+        })
+        batches.forEach((batch) => batch.execute())
         return Promise.all(balanceRequests)
       }).then((balances) => balances.reduce(
         (result, { symbol, balance }) => (balance.gt(ZERO) || symbol === 'ETH')
