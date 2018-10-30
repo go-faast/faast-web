@@ -8,7 +8,7 @@ import { Asset, SwapOrder } from 'Types'
 const { siteUrl, apiUrl } = config
 
 export function fetchAssets(): Promise<Asset[]> {
-  return fetchGet(`${apiUrl}/api/v1/public/currencies`)
+  return fetchGet(`${apiUrl}/api/v1/public/currencies`, null, { retries: 2 })
     .then((assets: Array<Partial<Asset>>) => assets.filter((asset) => {
       if (!asset.symbol) {
         log.warn('omitting asset without symbol', asset)
@@ -29,29 +29,11 @@ export function fetchAssets(): Promise<Asset[]> {
 
 export const fetchAssetPrice = (symbol: string) => fetchGet(`${siteUrl}/app/portfolio-price/${symbol}`)
 
-export const fetchAssetPrices = () => fetchGet(`${siteUrl}/app/portfolio-price`)
+export const fetchAssetPrices = () => fetchGet(`${siteUrl}/app/portfolio-price`, null, { retries: 2 })
 
 export const fetchPriceChart = (symbol: string) => fetchGet(`${siteUrl}/app/portfolio-chart/${symbol}`)
 
 export const fetchPairData = (pair: string) => fetchGet(`${apiUrl}/api/v2/public/price/${pair}`)
-
-export const fetchSwap = (swapId: string): Promise<SwapOrder> => {
-  return fetchGet(`${apiUrl}/api/v2/public/swaps/${swapId}`)
-    .then((swap) => log.debugInline('fetch swap:', swap))
-    .then((swap) => formatOrderResult(swap))
-    .catch((e) => {
-      log.error(e)
-      throw e
-    })
-}
-
-export const refreshSwap = (id: string) =>
-  fetchPost(`${apiUrl}/api/v2/public/swaps/${id}/refresh`, null, { swapId: id })
-    .then((r) => log.debugInline('refresh swap', r))
-    .then(formatOrderResult)
-
-export const fetchMarketInfo = (pair: string) => fetchGet(`${apiUrl}/api/v1/public/marketinfo/${pair}`)
-  .then((result) => log.debugInline('fetchMarketInfo', result))
 
 const formatOrderResult = (r: any): SwapOrder => ({
   orderId: r.swap_id,
@@ -77,6 +59,19 @@ const formatOrderResult = (r: any): SwapOrder => ({
   receiveTxId: r.txId,
 })
 
+export const fetchSwap = (swapId: string): Promise<SwapOrder> => {
+  return fetchGet(`${apiUrl}/api/v2/public/swaps/${swapId}`)
+    .then(formatOrderResult)
+    .catch((e: any) => {
+      log.error(e)
+      throw e
+    })
+}
+
+export const refreshSwap = (id: string) =>
+  fetchPost(`${apiUrl}/api/v2/public/swaps/${id}/refresh`, null, { swapId: id })
+    .then(formatOrderResult)
+
 export const createNewOrder = ({
   sendSymbol,
   receiveSymbol,
@@ -99,11 +94,10 @@ export const createNewOrder = ({
   withdrawal_currency: receiveSymbol,
   refund_address: refundAddress,
   ...config.affiliateSettings,
-}).then((r) => log.debugInline('createNewOrder', r))
-  .then(formatOrderResult)
-  .catch((err) => {
-    log.error(err)
-    const errMsg = filterErrors(err)
+}).then(formatOrderResult)
+  .catch((e: any) => {
+    log.error(e)
+    const errMsg = filterErrors(e)
     throw new Error(errMsg)
   })
 
@@ -117,14 +111,14 @@ export const fetchOrders = (
       user_id: walletId,
       page,
       limit,
-    }).then((r) => log.debugInline(`fetchOrders?user_id=${walletId}`, r)),
+    }),
     fetchGet(`${apiUrl}/api/v2/public/swaps`, {
       withdrawal_address: walletId,
       page,
       limit,
-    }).then((r) => log.debugInline(`fetchOrders?withdrawal_address=${walletId}`, r)),
+    }),
   ]).then(([r1, r2]) => r1.orders.concat(r2.orders).map(formatOrderResult))
-    .catch((e) => {
+    .catch((e: any) => {
       log.error(e)
       throw e
     })
@@ -134,7 +128,6 @@ export default {
   fetchAssetPrice,
   fetchAssetPrices,
   fetchPriceChart,
-  fetchMarketInfo,
   createNewOrder,
   fetchOrders,
   fetchSwap,

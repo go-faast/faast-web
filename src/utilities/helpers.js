@@ -5,6 +5,8 @@ import sha256 from 'hash.js/lib/hash/sha/256'
 import baseX from 'base-x'
 import urlJoin from 'url-join'
 
+export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+
 const getDate = (item, dateField) => {
   let d = typeof item === 'object' && item !== null && item[dateField]
   if (!d) { return 0 }
