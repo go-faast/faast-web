@@ -25,7 +25,10 @@
   },
   "scripts": {
     "start": "ws --https --spa dist/index.html --rewrite '/portfolio/* -> /dist/$1'",
-    "dev": "cross-env NODE_ENV=development webpack-dev-server --progress --https",
+    "dev-server": "cross-env NODE_ENV=development webpack-dev-server --progress",
+    "ngrok": "ngrok http 8080",
+    "dev": "npm run dev-server -- --https",
+    "dev:ngrok": "concurrently \"npm:dev-server\" \"npm:ngrok\"",
     "lint": "eslint src/ && tslint -p .",
     "test": "npm run lint",
     "build:webpack": "webpack --progress",
@@ -43,10 +46,7 @@
       "res/"
     ]
   },
-  "dependencies": {
-    "bchaddrjs": "^0.2.2",
-    "web3-provider-engine": "^14.1.0"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@ledgerhq/hw-app-btc": "^4.15.0",
     "@ledgerhq/hw-app-eth": "^4.15.0",
@@ -69,6 +69,7 @@
     "babel-preset-flow": "^6.23.0",
     "babel-preset-react": "^6.24.1",
     "base-x": "^3.0.4",
+    "bchaddrjs": "^0.2.2",
     "bignumber.js": "^4.0.4",
     "bitcoinjs-lib": "^4.0.1",
     "bitcore-lib": "^0.15.0",
@@ -77,7 +78,6 @@
     "class-names": "^1.0.0",
     "clean-webpack-plugin": "^0.1.19",
     "coininfo": "github:go-faast/coininfo",
-    "concurrently": "^3.5.0",
     "copy-webpack-plugin": "^4.5.1",
     "cross-env": "^5.0.5",
     "css-loader": "^0.28.7",
@@ -101,6 +101,7 @@
     "idb-wrapper": "^1.7.1",
     "local-web-server": "^2.5.2",
     "lodash": "^4.17.5",
+    "ngrok": "^3.1.0",
     "node-sass": "^4.9.2",
     "optimize-css-assets-webpack-plugin": "^3.2.0",
     "pad-left": "^2.1.0",
