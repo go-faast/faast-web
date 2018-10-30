@@ -6,9 +6,9 @@ import qs from 'query-string'
 import log from 'Utilities/log'
 import { retry } from 'Utilities/helpers'
 
-const concurrentTracker = {}
+const concurrentTracker: { [id: string]: Promise<any> } = {}
 
-function dropConcurrent(promiseCreator, id) {
+function dropConcurrent(promiseCreator: () => Promise<any>, id: string) {
   let current = concurrentTracker[id]
   if (current) {
     log.debug(`Dropping concurrent request ${id}`)
@@ -27,13 +27,28 @@ function dropConcurrent(promiseCreator, id) {
   return current
 }
 
+export type FetchBody = { [k: string]: any } | null
+
+export type FetchParams = { [k: string]: any } | null
+
+export type FetchHeaders = { [k: string]: string }
+
+export interface FetchOptions {
+  retries?: number
+  retryDelay?: number
+  retryMultiplier?: number
+  allowConcurrent?: boolean
+  headers?: FetchHeaders
+}
+
 export const fetchJson = (
-  method,
-  path,
-  body,
-  params = {},
-  options = {},
-) => {
+  method: string,
+  path: string,
+  body?: FetchBody,
+  params?: FetchParams,
+  options: FetchOptions = {},
+): Promise<any> => {
+  params = params || {}
   const {
     retries = 0,
     retryDelay = 1000,
@@ -48,20 +63,20 @@ export const fetchJson = (
       encodedParams = parsed.query || {}
     }
     const allParams = {
-      ...(method === 'GET' ? { '_': Date.now() } : {}),
+      ...(method === 'GET' ? { _: Date.now() } : {}),
       ...encodedParams,
       ...params,
     }
     const allParamsString = qs.stringify(allParams)
     const fullPath = path + (allParamsString ? '?' + allParamsString : '')
-    const fetchOptions = {
-      method: method,
-      headers: {
-        'Accept': 'application/json'
-      }
+
+    const headers: FetchHeaders = {
+      ...(options.headers || {}),
+      Accept: 'application/json',
     }
+    let bodyString: string
     if (method !== 'GET' && body) {
-      const newBody = {}
+      const newBody: FetchBody = {}
       for (const key in body) {
         if (typeof body[key] === 'string') {
           newBody[key] = body[key].trim()
@@ -69,15 +84,15 @@ export const fetchJson = (
           newBody[key] = body[key]
         }
       }
-      fetchOptions.body = JSON.stringify(newBody)
-      fetchOptions.headers['Content-Type'] = 'application/json'
+      bodyString = JSON.stringify(newBody)
+      headers['Content-Type'] = 'application/json'
     }
-    const performFetch = () => fetch(fullPath, fetchOptions)
+    const performFetch = () => fetch(fullPath, { method, headers, body: bodyString })
       .then((response) => {
         try {
           return response.json()
         } catch (err) {
-          throw new Error(response.status)
+          throw new Error(`${response.status}: ${response.statusText}`)
         }
       })
       .then((data) => {
@@ -88,13 +103,15 @@ export const fetchJson = (
       })
     const requestId = `[${uuid().slice(0, 8)}]`
     log.debug(`${requestId} Requesting ${method} ${fullPath}`, body)
-    const beforeRetry = (attemptsLeft, delay, e) => log.debug(`${requestId} Request failed. Waiting ${delay}ms then retrying ${attemptsLeft} more times. Caused by error: ${e.message}`)
+    const beforeRetry = (attemptsLeft: number, delay: number, e: Error) => log.debug(
+      `${requestId} Request failed. Waiting ${delay}ms then retrying ${attemptsLeft} more times. ` +
+      `Caused by error: ${e.message}`)
     return retry(performFetch, { retries, delay: retryDelay, multiplier: retryMultiplier, before: beforeRetry })
-      .then((result) => {
+      .then((result: any) => {
         log.debug(`${requestId} Request success.`, result)
         return result
       })
-      .catch((e) => {
+      .catch((e: Error) => {
         log.error(`${requestId} Request failed. Error: ${e.message}`)
         throw e
       })
@@ -105,8 +122,11 @@ export const fetchJson = (
   return doFetchJson()
 }
 
-export const fetchGet = (path, params, options) => fetchJson('GET', path, null, params, options)
+export const fetchGet = (path: string, params?: FetchParams, options?: FetchOptions) =>
+  fetchJson('GET', path, undefined, params, options)
 
-export const fetchPost = (path, body, params, options) => fetchJson('POST', path, body, params, options)
+export const fetchPost = (path: string, body?: FetchBody, params?: FetchParams, options?: FetchOptions) =>
+  fetchJson('POST', path, body, params, options)
 
-export const fetchDelete = (path, body, params, options) => fetchJson('DELETE', path, body, params, options)
+export const fetchDelete = (path: string, body?: FetchBody, params?: FetchParams, options?: FetchOptions) =>
+  fetchJson('DELETE', path, body, params, options)

@@ -101,6 +101,13 @@ export const createNewOrder = ({
     throw new Error(errMsg)
   })
 
+type OrdersResult = {
+  page: number,
+  limit: number,
+  total: number,
+  orders: object[],
+}
+
 export const fetchOrders = (
   walletId: string,
   page: number = 1,
@@ -117,7 +124,7 @@ export const fetchOrders = (
       page,
       limit,
     }),
-  ]).then(([r1, r2]) => r1.orders.concat(r2.orders).map(formatOrderResult))
+  ]).then(([r1, r2]: OrdersResult[]) => r1.orders.concat(r2.orders).map(formatOrderResult))
     .catch((e: any) => {
       log.error(e)
       throw e
