@@ -7,6 +7,25 @@ import urlJoin from 'url-join'
 
 export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
+export function retry(promiseCreator, { retries = 3, delay = 1000, multiplier = 2, before } = {}) {
+  if (retries <= 0) {
+    return promiseCreator()
+  }
+  return promiseCreator()
+    .catch((e) => {
+      if (typeof before === 'function') {
+        before(retries, delay, e)
+      }
+      return delay(delay)
+        .then(() => retry(promiseCreator, {
+          retries: retries - 1,
+          delay: delay * multiplier,
+          multiplier,
+          before
+        }))
+    })
+}
+
 const getDate = (item, dateField) => {
   let d = typeof item === 'object' && item !== null && item[dateField]
   if (!d) { return 0 }

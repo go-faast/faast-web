@@ -4,21 +4,7 @@ import uuid from 'uuid/v4'
 import qs from 'query-string'
 
 import log from 'Utilities/log'
-import { delay } from 'Utilities/helpers'
-
-function retry(promiseCreator, retryCount, retryDelay, retryMultiplier, beforeRetry) {
-  if (retryCount <= 0) {
-    return promiseCreator()
-  }
-  return promiseCreator()
-    .catch((e) => {
-      if (typeof beforeRetry === 'function') {
-        beforeRetry(retryCount, retryDelay, e)
-      }
-      return delay(retryDelay)
-        .then(() => retry(promiseCreator, retryCount - 1, retryDelay * retryMultiplier, retryMultiplier, beforeRetry))
-    })
-}
+import { retry } from 'Utilities/helpers'
 
 const concurrentTracker = {}
 
@@ -103,7 +89,7 @@ export const fetchJson = (
     const requestId = `[${uuid().slice(0, 8)}]`
     log.debug(`${requestId} Requesting ${method} ${fullPath}`, body)
     const beforeRetry = (attemptsLeft, delay, e) => log.debug(`${requestId} Request failed. Waiting ${delay}ms then retrying ${attemptsLeft} more times. Caused by error: ${e.message}`)
-    return retry(performFetch, retries, retryDelay, retryMultiplier, beforeRetry)
+    return retry(performFetch, { retries, delay: retryDelay, multiplier: retryMultiplier, before: beforeRetry })
       .then((result) => {
         log.debug(`${requestId} Request success.`, result)
         return result

@@ -4,6 +4,7 @@ import log from 'Utilities/log'
 import walletService, { Wallet, MultiWallet, EthereumWalletBlockstack } from 'Services/Wallet'
 import { getAllAssets, getWalletParents, areWalletBalancesUpdating } from 'Selectors'
 import { getWalletIconProps } from 'Utilities/walletIcon'
+import { retry } from 'Utilities/helpers'
 
 const createAction = newScopedCreateAction(__filename)
 
@@ -132,7 +133,14 @@ export const updateWalletBalances = (walletId) => (dispatch, getState) => Promis
       return Promise.all(walletInstance.getWalletIds().map((nestedId) => dispatch(updateWalletBalances(nestedId))))
     }
     dispatch(walletBalancesUpdating(walletId))
-    return walletInstance.getAllBalances()
+    return retry(() => walletInstance.getAllBalances(), {
+      retries: 3,
+      delay: 500,
+      before: (attempts, delay, e) => log.debug(
+        `Failed balance request for wallet ${walletId}. ` +
+        `Waiting ${delay } then retrying ${attempts} more times. ` +
+        `Caused by error: ${e.message}`)
+    })
       .then((symbolToBalance) => {
         dispatch(walletBalancesUpdated(walletId, symbolToBalance))
 
