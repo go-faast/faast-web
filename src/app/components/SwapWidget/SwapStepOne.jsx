@@ -33,7 +33,7 @@ const SwapStepOne = ({
   change, submitting, invalid,
   depositSymbol, receiveSymbol, supportedAssets, assetSelect, setAssetSelect, 
   validateReceiveAddress, validateRefundAddress, validateDepositAmount,
-  handleSubmit, handleSelectedAsset, handleSwitchAssets, 
+  handleSubmit, handleSelectedAsset, handleSwitchAssets, handleDisabledAssets
 }) => (
   <Fragment>
     <ProgressBar steps={['Create Swap', `Deposit ${depositSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
@@ -146,7 +146,11 @@ const SwapStepOne = ({
         </ModalHeader>
         <ModalBody>
           {assetSelect && (
-            <AssetSelector selectAsset={handleSelectedAsset} supportedAssetSymbols={supportedAssets}/>
+            <AssetSelector 
+              selectAsset={handleSelectedAsset} 
+              supportedAssetSymbols={supportedAssets}
+              handleDisabledAssets={handleDisabledAssets}
+            />
           )}
         </ModalBody>
       </Modal>
@@ -192,6 +196,10 @@ export default compose(
   })),
   withState('assetSelect', 'setAssetSelect', null), // deposit, receive, or null
   withHandlers({
+    handleDisabledAssets: ({ assetSelect }) => (asset) => (
+      (assetSelect === 'deposit' && asset.deposit) || 
+      (assetSelect === 'receive' && asset.receive)) ? false
+      : true,
     handleSelectedAsset: ({ assetSelect, updateQueryString, setAssetSelect, depositSymbol, receiveSymbol }) => (asset) => {
       const { symbol } = asset
       let from = depositSymbol

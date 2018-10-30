@@ -13,12 +13,12 @@ function applySortOrder (list) {
 }
 
 function getInitState (props) {
-  const { assets, supportedAssetSymbols, portfolioSymbols } = props
+  const { assets, supportedAssetSymbols, portfolioSymbols, handleDisabledAssets } = props
   let assetList = [...assets]
     .map((a) => {
       const unsupportedWallet = !supportedAssetSymbols.includes(a.symbol)
       const alreadyInPortfolio = portfolioSymbols.includes(a.symbol)
-      const swapDisabled = !a.swapEnabled
+      const swapDisabled = handleDisabledAssets(a)
       const disabled = swapDisabled || unsupportedWallet || alreadyInPortfolio
       const disabledMessage = swapDisabled
         ? 'coming soon'
@@ -112,11 +112,13 @@ AssetSelector.propTypes = {
   selectAsset: PropTypes.func.isRequired,
   supportedAssetSymbols: PropTypes.arrayOf(PropTypes.string),
   portfolioSymbols: PropTypes.arrayOf(PropTypes.string),
+  handleDisabledAssets: PropTypes.func
 }
 
 AssetSelector.defaultProps = {
   supportedAssetSymbols: [],
   portfolioSymbols: [],
+  handleDisabledAssets: (asset) => !asset.swapEnabled
 }
 
 export default connect(createStructuredSelector({
