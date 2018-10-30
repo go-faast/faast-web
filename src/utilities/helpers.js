@@ -7,19 +7,19 @@ import urlJoin from 'url-join'
 
 export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
-export function retry(promiseCreator, { retries = 3, delay = 1000, multiplier = 2, before } = {}) {
+export function retry(promiseCreator, { retries = 3, delay: retryDelay = 1000, multiplier = 2, before } = {}) {
   if (retries <= 0) {
     return promiseCreator()
   }
   return promiseCreator()
     .catch((e) => {
       if (typeof before === 'function') {
-        before(retries, delay, e)
+        before(retries, retryDelay, e)
       }
-      return delay(delay)
+      return delay(retryDelay)
         .then(() => retry(promiseCreator, {
           retries: retries - 1,
-          delay: delay * multiplier,
+          delay: retryDelay * multiplier,
           multiplier,
           before
         }))

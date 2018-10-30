@@ -121,6 +121,7 @@ export const restoreAllWallets = () => (dispatch, getState) => Promise.resolve()
 export const updateWalletBalances = (walletId) => (dispatch, getState) => Promise.resolve()
   .then(() => {
     if (areWalletBalancesUpdating(getState(), walletId)) {
+      log.debug(`Wallet balances already updating ${walletId}`)
       return
     }
     const walletInstance = walletService.get(walletId)
@@ -138,7 +139,7 @@ export const updateWalletBalances = (walletId) => (dispatch, getState) => Promis
       delay: 500,
       before: (attempts, delay, e) => log.debug(
         `Failed balance request for wallet ${walletId}. ` +
-        `Waiting ${delay } then retrying ${attempts} more times. ` +
+        `Waiting ${delay}ms then retrying ${attempts} more times. ` +
         `Caused by error: ${e.message}`)
     })
       .then((symbolToBalance) => {
