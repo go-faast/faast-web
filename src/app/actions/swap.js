@@ -235,7 +235,7 @@ const updateOrderStatus = (swap) => (dispatch) => {
     .catch(log.error)
 }
 
-const isSwapFinalized = (swap) => swap && (swap.orderStatus === 'complete' || swap.orderStatus === 'failed')
+const isSwapFinalized = (swap) => swap && (swap.orderStatus === 'complete' || swap.orderStatus === 'failed' || swap.orderStatus === 'cancelled')
 
 export const pollOrderStatus = (swap) => (dispatch) => {
   const { id, orderId, orderStatus, tx } = swap
