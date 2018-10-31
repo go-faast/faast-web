@@ -3,9 +3,17 @@ import log from 'Utilities/log'
 
 import { Asset } from 'Types'
 import {
-  Transaction, TransactionOutput, Receipt,
+  Transaction, TransactionOutput, Receipt, AddressFormat, AddressFormatOption,
   Amount, Balances, FeeRate, AssetProvider, WalletGetter,
 } from './types'
+
+const DEFAULT_ADDRESS_FORMAT: AddressFormat = {
+  type: 'default',
+  label: 'Default',
+  description: 'Default address format',
+  test: () => true,
+  convert: (address) => address,
+}
 
 export default abstract class Wallet {
 
@@ -25,37 +33,6 @@ export default abstract class Wallet {
   isPersistAllowed(): boolean { return this._persistAllowed }
   setPersistAllowed(persistAllowed: boolean): void { this._persistAllowed = persistAllowed }
 
-  /** The type of this wallet. Generally the class name should is used. */
-  abstract getType(): string
-
-  /** A user friendly label for this type of wallet. (e.g. MetaMask, TREZOR) */
-  abstract getTypeLabel(): string
-
-  /** Return true if only one address used (e.g. Ethereum), false multiple (e.g. Bitcoin) */
-  abstract isSingleAddress(): boolean
-
-  /** Return a list of all addresses used by this wallet */
-  abstract getUsedAddresses(): Promise<string[]>
-
-  /** Return true if the asset is supported */
-  abstract _isAssetSupported(asset: Asset): boolean
-
-  abstract _getFreshAddress(asset: Asset, options: object): Promise<string>
-  abstract _getBalance(asset: Asset, options: object): Promise<Amount>
-  abstract _createTransaction(
-    address: string, amount: Amount, asset: Asset, options: object,
-  ): Promise<Transaction>
-  abstract _signTx(tx: Transaction, options: object): Promise<Partial<Transaction>>
-  abstract _sendSignedTx(tx: Transaction, options: object): Promise<Partial<Transaction>>
-  abstract _getTransactionReceipt(tx: Transaction, options: object): Promise<Receipt>
-  abstract _getDefaultFeeRate(asset: Asset, options: object): Promise<FeeRate>
-
-  abstract _createAggregateTransaction(
-    outputs: TransactionOutput[],
-    asset: Asset,
-    options: object,
-  ): Promise<Transaction>
-
   /** Return true if this wallet does not support sending transactions, only reading balances. */
   isReadOnly(): boolean { return false }
   /** Return true if this wallet requires a password when signing transactions */
@@ -67,6 +44,60 @@ export default abstract class Wallet {
   /** Return true if this wallet supports transactions with multiple outputs (e.g. anything UTXO based, like Bitcoin) */
   _isAggregateTransactionSupported(aos: Asset): boolean { return true }
 
+  /** The type of this wallet. Generally the class name should is used. */
+  abstract getType(): string
+
+  /** A user friendly label for this type of wallet. (e.g. MetaMask, TREZOR) */
+  abstract getTypeLabel(): string
+
+  /** Return true if only one address used (e.g. Ethereum), false multiple (e.g. Bitcoin) */
+  abstract isSingleAddress(): boolean
+
+  /** Return true if the asset is supported */
+  abstract _isAssetSupported(asset: Asset): boolean
+
+  /** Return a list of all addresses used by this wallet */
+  abstract _getUsedAddresses(options: AddressFormatOption): Promise<string[]>
+
+  /** Return a fresh address for the provided asset */
+  abstract _getFreshAddress(asset: Asset, options: AddressFormatOption): Promise<string>
+
+  /** Return the balance for the provided asset */
+  abstract _getBalance(asset: Asset, options: object): Promise<Amount>
+
+  /** Create a new transaction that can be passed into signTx or signAndSendTx */
+  abstract _createTransaction(
+    address: string, amount: Amount, asset: Asset, options: object,
+  ): Promise<Transaction>
+
+  /** Sign the provided transaction. Returns the fields to update in the original transaction. */
+  abstract _signTx(tx: Transaction, options: object): Promise<Partial<Transaction>>
+
+  /** Send the provided transaction. Returns the fields to update in the original transaction. */
+  abstract _sendSignedTx(tx: Transaction, options: object): Promise<Partial<Transaction>>
+
+  /** Get the receipt for the provided transaction. */
+  abstract _getTransactionReceipt(tx: Transaction, options: object): Promise<Receipt>
+
+  /** Get the default fee rate */
+  abstract _getDefaultFeeRate(asset: Asset, options: object): Promise<FeeRate>
+
+  /** Create a new transaction with multiple outputs */
+  abstract _createAggregateTransaction(
+    outputs: TransactionOutput[],
+    asset: Asset,
+    options: object,
+  ): Promise<Transaction>
+
+  /** Return the default address format */
+  _getDefaultAddressFormat(): AddressFormat {
+    return DEFAULT_ADDRESS_FORMAT
+  }
+
+  /** Return the supported address formats */
+  _getAddressFormats(): AddressFormat[] {
+    return [this._getDefaultAddressFormat()]
+  }
 
   setAssetProvider(assetProvider: AssetProvider): void {
     if (typeof assetProvider !== 'function') {
@@ -155,9 +186,59 @@ export default abstract class Wallet {
     return this.getUnsendableAssets().map(({ symbol }) => symbol)
   }
 
+  _getAddressFormat(formatOrType: AddressFormat | string): AddressFormat {
+    let type = formatOrType
+    if (typeof formatOrType !== 'string') {
+      type = formatOrType.type
+    }
+    const format = this._getAddressFormats().find((f) => f.type === type)
+    if (!format) {
+      throw new Error(`${this.getType()}: Unsupported address format ${formatOrType}`)
+    }
+    return format
+  }
+
+  _resolveAddressFormatOption(options: AddressFormatOption = {}): AddressFormat {
+    const { addressFormat: formatOption } = options
+    if (formatOption) {
+      return this._getAddressFormat(formatOption)
+    }
+    return this._getDefaultAddressFormat()
+  }
+
+  /** Return true if the address is in the specified format */
+  isAddressFormat(address: string, formatOrType: AddressFormat | string): boolean {
+    return this._getAddressFormat(formatOrType).test(address)
+  }
+
+  /** Convert the address to the specified format */
+  toAddressFormat(address: string, formatOrType: AddressFormat | string): string {
+    return this._getAddressFormat(formatOrType).convert(address)
+  }
+
+  getDefaultAddressFormat(): AddressFormat {
+    return this._getDefaultAddressFormat()
+  }
+
+  getAddressFormats(): AddressFormat[] {
+    return this._getAddressFormats()
+  }
+
+  getUsedAddresses(options: AddressFormatOption = {}): Promise<string[]> {
+    return Promise.resolve().then(() => {
+      const format = this._resolveAddressFormatOption(options)
+      return this._getUsedAddresses(options)
+        .then((addresses) => addresses.map(format.convert))
+    })
+  }
+
   /** Get a fresh address for the provided asset */
-  getFreshAddress(aos: Asset | string, options: object = {}): Promise<string> {
-    return this._getFreshAddress(this.assertAssetSupported(aos), options)
+  getFreshAddress(aos: Asset | string, options: AddressFormatOption = {}): Promise<string> {
+    return Promise.resolve().then(() => {
+      const format = this._resolveAddressFormatOption(options)
+      return this._getFreshAddress(this.assertAssetSupported(aos), options)
+        .then(format.convert)
+    })
   }
 
   getDefaultFeeRate(aos: Asset | string, options: object = {}): Promise<FeeRate> {

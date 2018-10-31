@@ -7,7 +7,7 @@ import { reduceByKey, toHashId } from 'Utilities/helpers'
 import Wallet from './Wallet'
 import { Asset } from 'Types'
 import {
-  Transaction, Amount, Balances, FeeRate, TransactionOutput, Receipt,
+  Transaction, Amount, Balances, FeeRate, TransactionOutput, Receipt, AddressFormatOption,
 } from './types'
 
 const selectFirst = (wallets: Wallet[]) => wallets[0]
@@ -18,8 +18,8 @@ const ZERO = toBigNumber(0)
 
 const plus = (x: BigNumber, y: BigNumber) => x.plus(y)
 
-type Options = {
-  selectWalletCallback?: (wallet: Wallet[]) => Wallet,
+interface Options {
+  selectWalletCallback?: (wallet: Wallet[]) => Wallet
 }
 
 export default class MultiWallet extends Wallet {
@@ -111,8 +111,8 @@ export default class MultiWallet extends Wallet {
     return selectedWallet
   }
 
-  getUsedAddresses() {
-    return Promise.all(this.getWallets().map((wallet) => wallet.getUsedAddresses())).then(flatten)
+  _getUsedAddresses(options: AddressFormatOption) {
+    return Promise.all(this.getWallets().map((wallet) => wallet.getUsedAddresses(options))).then(flatten)
   }
 
   _chooseWallet<T>(
@@ -131,7 +131,7 @@ export default class MultiWallet extends Wallet {
     return Promise.resolve().then(() => this._chooseWallet(asset, options, applyToWallet))
   }
 
-  _getFreshAddress(asset: Asset, options: object): Promise<string> {
+  _getFreshAddress(asset: Asset, options: Options & AddressFormatOption): Promise<string> {
     return this._chooseWalletPromise(
       asset,
       options,

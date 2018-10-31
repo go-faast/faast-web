@@ -55,7 +55,7 @@ export default abstract class EthereumWallet extends Wallet {
 
   isSingleAddress() { return true }
 
-  getUsedAddresses() { return Promise.resolve([this.getAddress()]) }
+  _getUsedAddresses() { return Promise.resolve([this.getAddress()]) }
 
   _isAggregateTransactionSupported() { return false }
 

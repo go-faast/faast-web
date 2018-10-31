@@ -5,55 +5,68 @@ import { PaymentTx } from 'Services/Bitcore'
 
 export type Amount = BigNumber
 
-export type TransactionOutput = {
-  address: string,
-  amount: Amount,
+export interface TransactionOutput {
+  address: string
+  amount: Amount
 }
 
-export type Transaction = {
-  walletId: string,
-  type: string,
-  outputs: TransactionOutput[],
-  assetSymbol: string,
-  feeAmount: Amount,
-  feeSymbol: string,
-  hash: string | null,
-  signed: boolean,
-  sent: boolean,
-  txData?: object | null,
-  signedTxData?: any,
+export interface Transaction {
+  walletId: string
+  type: string
+  outputs: TransactionOutput[]
+  assetSymbol: string
+  feeAmount: Amount
+  feeSymbol: string
+  hash: string | null
+  signed: boolean
+  sent: boolean
+  txData?: object | null
+  signedTxData?: any
 }
 
-export type BitcoreTransaction = Transaction & {
-  txData?: PaymentTx | null,
-  signedTxData?: string | null,
+export interface BitcoreTransaction extends Transaction {
+  txData?: PaymentTx | null
+  signedTxData?: string | null
 }
 
-export type Balances = {
-  [symbol: string]: Amount,
+export interface Balances {
+  [symbol: string]: Amount
 }
 
-export type FeeRate = {
-  rate: Amount | number,
-  unit: string,
+export interface FeeRate {
+  rate: Amount | number
+  unit: string
 }
 
 export type AssetProvider = () => (Asset[] | { [symbol: string]: Asset })
 export type WalletGetter = (id: string) => Wallet | null
 
-export type Web3Receipt = {
-  blockNumber: number,
-  status: boolean | number | string,
+export interface Web3Receipt {
+  blockNumber: number
+  status: boolean | number | string
 }
 
-export type Receipt = {
-  confirmed: boolean,
-  succeeded: boolean,
-  blockNumber: number,
-  raw: object,
+export interface Receipt {
+  confirmed: boolean
+  succeeded: boolean
+  blockNumber: number
+  raw: object
 }
 
-export type ConnectResult = {
-  derivationPath: string,
-  getAccount: (index: number) => Promise<Wallet>,
+export interface ConnectResult {
+  derivationPath: string
+  getAccount: (index: number) => Promise<Wallet>
+}
+
+export interface AddressFormat {
+  type: string // format identifier (e.g. 'legacy', 'cashaddr', etc)
+  label: string // human friendly label
+  description: string // human friendly description
+  test: (address: string) => boolean
+  convert: (address: string) => string
+}
+
+// Used to specify address format to functions that return addresses
+export interface AddressFormatOption {
+  addressFormat?: AddressFormat | string // string for AddressFormat.type
 }

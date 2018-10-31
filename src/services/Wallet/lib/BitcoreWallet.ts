@@ -11,10 +11,16 @@ import toastr from 'Utilities/toastrWrapper'
 import Wallet from './Wallet'
 
 import { Asset } from 'Types'
-import { TransactionOutput, Transaction, BitcoreTransaction, Amount, FeeRate, Receipt } from './types'
+import {
+  TransactionOutput, Transaction, BitcoreTransaction, Amount, FeeRate, Receipt, AddressFormatOption,
+} from './types'
 
 const ID_DERIVATION_PATH = [26, 5, 172, 179] // Arbitrary bip32 path used to identify an HD wallet
 const DEFAULT_FEE_PER_BYTE = 10
+
+export interface GetFreshAddressOption extends AddressFormatOption {
+  index?: number
+}
 
 export default abstract class BitcoreWallet extends Wallet {
 
@@ -70,12 +76,12 @@ export default abstract class BitcoreWallet extends Wallet {
       })
   }
 
-  getUsedAddresses() {
+  _getUsedAddresses() {
     return this._getDiscoveryResult()
       .then((result) => result.usedAddresses.map(({ address }: { address: string }) => address))
   }
 
-  _getFreshAddress(asset: Asset, { index = 0 }) {
+  _getFreshAddress(asset: Asset, { index = 0 }: GetFreshAddressOption) {
     return Promise.resolve()
       .then(() => this._getDiscoveryResult())
       .then(({ unusedAddresses }) => unusedAddresses[index])
