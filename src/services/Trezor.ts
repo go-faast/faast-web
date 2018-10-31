@@ -154,11 +154,12 @@ class PromisifiedTrezorConnect {
     txData: PaymentTx,
   ): Promise<{ signedTxData: string }> {
     return Promise.resolve().then(() => {
+      const assetSymbol = network.symbol
       const { inputUtxos, outputs, change, changePath } = txData
       const baseDerivationPathArray = derivationPathStringToArray(derivationPath)
       const addressEncoding = getPaymentTypeForPath(derivationPath, network).addressEncoding
       if (!(['P2PKH', 'P2SH-P2WSH'].includes(addressEncoding))) {
-        throw new Error(`Trezor.signBitcoreTx does not support ${network.symbol} `
+        throw new Error(`Trezor.signBitcoreTx does not support ${assetSymbol} `
           + `accounts using ${addressEncoding} encoding`)
       }
       const isSegwit = addressEncoding !== 'P2PKH'
@@ -166,8 +167,8 @@ class PromisifiedTrezorConnect {
         address_n: baseDerivationPathArray.concat(addressPath),
         prev_hash: transactionHash,
         prev_index: index,
+        amount: value,
         ...(isSegwit ? {
-          amount: value,
           script_type: 'SPENDP2SHWITNESS',
         } : {}),
       }))
@@ -184,6 +185,7 @@ class PromisifiedTrezorConnect {
         })
       }
       log.debug('signBitcoreTx inputs outputs', trezorInputs, trezorOutputs)
+      this.setCurrency(assetSymbol)
       return this.signTx(trezorInputs, trezorOutputs)
         .then((result) => {
           log.info('Trezor transaction signed', result)
