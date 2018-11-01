@@ -196,9 +196,9 @@ export default compose(
   })),
   withState('assetSelect', 'setAssetSelect', null), // deposit, receive, or null
   withHandlers({
-    handleDisabledAssets: ({ assetSelect }) => (asset) => 
-      !((assetSelect === 'deposit' && asset.deposit) || 
-      (assetSelect === 'receive' && asset.receive)),
+    handleDisabledAssets: ({ assetSelect }) => ({ deposit, receive }) =>
+      !((assetSelect === 'deposit' && deposit) || 
+      (assetSelect === 'receive' && receive)),
     handleSelectedAsset: ({ assetSelect, updateQueryString, setAssetSelect, depositSymbol, receiveSymbol }) => (asset) => {
       const { symbol } = asset
       let from = depositSymbol
