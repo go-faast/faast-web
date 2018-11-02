@@ -2,6 +2,7 @@ import bchaddr from 'bchaddrjs'
 
 import log from 'Utilities/log'
 import networks from 'Utilities/networks'
+import { fetchGet } from 'Utilities/fetch'
 
 import BitcoreWallet from '../BitcoreWallet'
 
@@ -49,10 +50,22 @@ export default abstract class BitcoinCashWallet extends BitcoreWallet {
   _getDefaultFeeRate(
     asset: Asset,
   ): Promise<FeeRate> {
-    return Promise.resolve({
-      rate: DEFAULT_FEE_PER_BYTE,
-      unit: 'sat/byte',
-    })
+    return fetchGet('https://bitcoincash.blockexplorer.com/api/utils/estimatefee')
+      .then((result) => {
+        const feePerKb = result['2']
+        if (feePerKb) {
+          return feePerKb * 1e8 / 1000
+        }
+        return DEFAULT_FEE_PER_BYTE
+      })
+      .catch((e) => {
+        log.error(`Failed to get ${this._network.name} dynamic fee, using default`, e)
+        return DEFAULT_FEE_PER_BYTE
+      })
+      .then((feePerByte) => ({
+        rate: feePerByte,
+        unit: 'sat/byte',
+      }))
   }
 
   _getDefaultAddressFormat() {
