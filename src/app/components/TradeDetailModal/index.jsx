@@ -10,6 +10,8 @@ import { retrieveSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
 import SwapStatusCard from 'Components/SwapStatusCard'
 
+import { p0Small } from './style'
+
 export default compose(
   setDisplayName('TradeDetailModal'),
   setPropTypes({
@@ -38,7 +40,7 @@ export default compose(
     <ModalHeader tag='h4' toggle={toggle} className='text-primary'>
       Order Details
     </ModalHeader>
-    <ModalBody>
+    <ModalBody className={p0Small}>
       <SwapStatusCard swap={swap} expanded/>
     </ModalBody>
   </Modal>

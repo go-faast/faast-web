@@ -21,8 +21,10 @@ const TableRow = ({
 }) => (
   <tr {...props}>
     <td>{createStatusLabel(swap)}</td>
-    <td>{formatDate(createdAt, 'yyyy-MM-dd hh:mm:ss')}</td>
-    <td><CoinIcon className={tradeCoinIcon} symbol={sendSymbol} size='sm' inline/> {sendSymbol} <i style={{ color: '#777' }} className='fa fa-long-arrow-right'/> <CoinIcon className={tradeCoinIcon} symbol={receiveSymbol} size='sm' inline/> {receiveSymbol}</td>
+    <td className='d-none d-xs-table-cell'>{formatDate(createdAt, 'yyyy-MM-dd hh:mm:ss')}</td>
+    <td>
+      <CoinIcon className={classNames('d-none d-xs-inline', tradeCoinIcon)} symbol={sendSymbol} size='sm' inline/> {sendSymbol} <i style={{ color: '#777' }} className='fa fa-long-arrow-right'/> 
+      <CoinIcon className={classNames('d-none d-xs-inline', tradeCoinIcon)} symbol={receiveSymbol} size='sm' inline/> {receiveSymbol}</td>
     <td>{rate > 0 ? (<Units value={rate} precision={6}/>) : '-----'}</td>
     <td>{(receiveAmount && receiveAmount > 0) ? (<Units value={receiveAmount} symbol={receiveSymbol} showSymbol precision={6}/>)
     : <UnitsLoading value={receiveAmount} symbol={receiveSymbol} showSymbol precision={6} />}</td>
@@ -36,11 +38,11 @@ const TradeTable = ({ swaps, handleClick }) => (
     <thead>
       <tr>
         <th></th>
-        <th>Date</th>
+        <th className='d-none d-xs-table-cell'>Date</th>
         <th>Pair</th>
         <th>Rate</th>
-        <th>Amount Received</th>
-        <th>Total Cost</th>
+        <th><span className='d-none d-xs-inline'>Amount</span> Received</th>
+        <th><span className='d-none d-xs-inline'>Total</span> Cost</th>
       </tr>
     </thead>
     <tbody>
