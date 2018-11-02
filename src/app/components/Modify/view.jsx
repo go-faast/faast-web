@@ -186,7 +186,7 @@ const ModifyView = (props) => {
                   <WalletLabel wallet={wallet} tag='h4' />
                 </Col>
                 <Col xs='auto'>
-                  <Button color='success' size='sm' className='flat' disabled={!holdingsLoaded} onClick={() => props.showAssetList(id)}>
+                  <Button color='success' size='sm' className='flat' disabled={!holdingsLoaded} onClick={() => props.showAssetList(id, 'top')}>
                     <i className='fa fa-plus'/> add asset
                   </Button>
                 </Col>
@@ -200,7 +200,7 @@ const ModifyView = (props) => {
               <ListGroup>
                 {!holdingsLoaded && (<LoadingFullscreen center />)}
                 {renderAssetRows(assetHoldings.filter(({ shown }) => shown))}
-                <ListGroupButton action onClick={() => props.showAssetList(id)} className='text-center text-success'>
+                <ListGroupButton action onClick={() => props.showAssetList(id, 'bottom')} className='text-center text-success'>
                   <i className='fa fa-plus fa-2x align-middle' />
                   <span className='pl-2 h5'>add asset</span>
                 </ListGroupButton>
