@@ -9,7 +9,6 @@ const CleanPlugin = require('clean-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const IncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
-const HardSourcePlugin = require('hard-source-webpack-plugin')
 
 const pkg = require('./package.json')
 
@@ -221,7 +220,6 @@ let config = {
     new webpack.optimize.CommonsChunkPlugin({
       name: 'manifest'
     }),
-    new HardSourcePlugin(),
   ]
 }
 
