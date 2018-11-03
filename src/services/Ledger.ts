@@ -21,6 +21,7 @@ type AppType = AppEth | AppBtc
 function createApp(appType: any): Promise<AppType> {
   return Transport.create().then((transport: Transport) => {
     transport.setExchangeTimeout(EXCHANGE_TIMEOUT)
+    transport.setDebugMode(false)
     return new appType(transport)
   })
 }
@@ -104,14 +105,24 @@ class LedgerBtc {
           })
 
           const changePathString = changePath ? joinDerivationPath(derivationPath, changePath) : undefined
-          return this.createPaymentTransactionNew(
+          let sigHashType // undefined -> default (all)
+          const additionals = []
+          if (network.symbol === 'BCH') {
+            // https://github.com/LedgerHQ/ledgerjs/issues/160#issuecomment-395634819
+            additionals.push('abc')
+            sigHashType = 0x41
+          } else if (network.symbol === 'BTG') {
+            additionals.push('gold')
+          }
+          return this.createPaymentTransactionNew(...log.debugInline('createPaymentTransactionNew', [
             inputs,
             paths,
             changePathString,
             outputScript,
             undefined, // lockTime, default (0)
-            undefined, // sigHashType, default (all)
-            isSegwit)
+            sigHashType,
+            isSegwit,
+            additionals]))
         })
         .then((signedTxHex) => ({
           signedTxData: signedTxHex,

@@ -22,6 +22,6 @@ export default class BitcoinCashWalletLedger extends BitcoinCashWallet {
   }
 
   _signTx({ txData }: BitcoreTransaction): Promise<Partial<BitcoreTransaction>> {
-    return Ledger.btc.signPaymentTransaction(this._network, this.derivationPath, txData)
+    return Ledger.btc.signPaymentTx(this._network, this.derivationPath, txData)
   }
 }
