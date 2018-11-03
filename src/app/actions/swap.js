@@ -238,7 +238,7 @@ const updateOrderStatus = (swap) => (dispatch) => {
 const isSwapFinalized = (swap) => swap && (swap.orderStatus === 'complete' || swap.orderStatus === 'failed' || swap.orderStatus === 'cancelled')
 
 export const pollOrderStatus = (swap) => (dispatch) => {
-  const { id, orderId, orderStatus, tx } = swap
+  const { id, orderId, orderStatus, tx, errorType } = swap
   if (!orderId) {
     log.warn(`pollOrderStatus: swap ${id} has no orderId`)
     return
@@ -247,7 +247,7 @@ export const pollOrderStatus = (swap) => (dispatch) => {
     log.debug(`pollOrderStatus: swap ${id} is finalized, won't poll`)
     return
   }
-  if (tx && !tx.sent && orderStatus === 'awaiting deposit') {
+  if (orderStatus === 'awaiting deposit' && (errorType === 'createSwapTx' || (tx && !tx.sent))) {
     log.debug(`pollOrderStatus: swap ${id} has unsent tx, won't poll`)
     return
   }
