@@ -92,7 +92,7 @@ const fileAssetLoader = assetLoader('file')
 
 let config = {
   context: projectRoot,
-  entry: path.join(src, 'index.jsx'),
+  entry: ['babel-polyfill', path.join(src, 'index.jsx')],
   output: {
     path: dist,
     publicPath,
