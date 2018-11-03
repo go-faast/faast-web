@@ -44,7 +44,7 @@ export const restoreState = (dispatch) => Promise.resolve()
   })
   .catch((e) => {
     log.error(e)
-    throw new Error('Failed to restore app state')
+    throw new Error('Error loading app: ' + e.message)
   })
 
 export const setupBlockstack = (dispatch) => Promise.resolve()
