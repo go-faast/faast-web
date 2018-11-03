@@ -158,7 +158,7 @@ class PromisifiedTrezorConnect {
       const { inputUtxos, outputs, change, changePath } = txData
       const baseDerivationPathArray = derivationPathStringToArray(derivationPath)
       const addressEncoding = getPaymentTypeForPath(derivationPath, network).addressEncoding
-      if (!(['P2PKH', 'P2SH-P2WSH'].includes(addressEncoding))) {
+      if (!(['P2PKH', 'P2SH-P2WPKH'].includes(addressEncoding))) {
         throw new Error(`Trezor.signBitcoreTx does not support ${assetSymbol} `
           + `accounts using ${addressEncoding} encoding`)
       }
