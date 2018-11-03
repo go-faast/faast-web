@@ -122,7 +122,10 @@ class LedgerBtc {
             undefined, // lockTime, default (0)
             sigHashType,
             isSegwit,
-            additionals]))
+            undefined, // initialTimestamp
+            additionals,
+            undefined, // expiryHeight
+          ]))
         })
         .then((signedTxHex) => ({
           signedTxData: signedTxHex,
