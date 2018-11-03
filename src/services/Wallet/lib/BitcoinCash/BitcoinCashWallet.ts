@@ -11,6 +11,9 @@ import { BitcoreTransaction, FeeRate, AddressFormat } from '../types'
 
 const DEFAULT_FEE_PER_BYTE = 10
 
+// Adjust recommended dynamic fee by manual factor
+const FEE_ADJUSTMENT_FACTOR = 2
+
 const LEGACY_FORMAT: AddressFormat = {
   type: bchaddr.Format.Legacy,
   label: 'Legacy',
@@ -54,7 +57,7 @@ export default abstract class BitcoinCashWallet extends BitcoreWallet {
       .then((result) => {
         const feePerKb = result['2']
         if (feePerKb) {
-          return feePerKb * 1e8 / 1000
+          return (feePerKb * 1e8 / 1000) * FEE_ADJUSTMENT_FACTOR
         }
         return DEFAULT_FEE_PER_BYTE
       })
