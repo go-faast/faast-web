@@ -3,7 +3,7 @@ import { mergeWith, groupBy } from 'lodash'
 
 import log from 'Utilities/log'
 import { newScopedCreateAction, idPayload } from 'Utilities/action'
-import { processArray } from 'Utilities/helpers'
+import { processArray, delay } from 'Utilities/helpers'
 import { ZERO, BigNumber } from 'Utilities/convert'
 
 import {
@@ -193,7 +193,9 @@ export const signSwundle = (swundle) => (dispatch, getState) => {
   log.debug('signSwundle', swundle.id)
   const passwordCache = {}
   dispatch(signStarted(swundle.id))
-  return forEachSwap(swundle, (swap) => dispatch(signSwap(swap, passwordCache)))
+  return forEachSwap(swundle, (swap) => dispatch(signSwap(swap, passwordCache))
+      // Add a delay between signing swaps to avoid Trezor closing window race condition
+      .then(() => delay(500)))
     .then(() => {
       dispatch(signSuccess(swundle.id))
       return getSwundle(getState(), swundle.id)
