@@ -213,8 +213,8 @@ export function estimateTxFee(
   handleSegwit: boolean,
 ): number {
   const { min, max } = estimateTxSize(inputsCount, outputsCount, handleSegwit)
-  const mean = Math.ceil((min + max) / 2)
-  return mean * satPerByte
+  const mean = (min + max) / 2
+  return Math.ceil(mean * satPerByte)
 }
 
 /** Join a base derivation path string with an integer array subpath */
