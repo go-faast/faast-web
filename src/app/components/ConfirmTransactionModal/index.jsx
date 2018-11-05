@@ -4,32 +4,38 @@ import { compose, setDisplayName, setPropTypes, defaultProps, withProps } from '
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap'
 
 import {
-  EthereumWalletWeb3, EthereumWalletLedger, EthereumWalletTrezor,
+  EthereumWalletLedger, EthereumWalletTrezor,
 } from 'Services/Wallet'
 
 import LedgerEthInstructions from './LedgerEthInstructions'
 import LedgerBtcInstructions from './LedgerBtcInstructions'
 import TrezorEthInstructions from './TrezorEthInstructions'
 import TrezorBtcInstructions from './TrezorBtcInstructions'
-import Web3Instructions from './Web3Instructions'
+import MetaMaskInstructions from './MetaMaskInstructions'
+import EthereumInstructions from './EthereumInstructions'
 
 const instructionComponentMap = {
-  [EthereumWalletWeb3.type]: Web3Instructions,
   [EthereumWalletLedger.type]: LedgerEthInstructions,
   [EthereumWalletTrezor.type]: TrezorEthInstructions,
 }
 
-function getInstructionComponent(walletType) {
-  const instructionComponent = instructionComponentMap[walletType]
+function getInstructionComponent(tx, wallet) {
+  const instructionComponent = instructionComponentMap[wallet.type]
   if (instructionComponent) {
     return instructionComponent
   }
-  walletType = walletType.toLowerCase()
+  const walletType = wallet.type.toLowerCase()
   if (walletType.includes('ledger')) {
     return LedgerBtcInstructions
   }
   if (walletType.includes('trezor')) {
     return TrezorBtcInstructions
+  }
+  if (walletType.includes('ethereum')) {
+    if (wallet.typeLabel.toLowerCase().includes('metamask')) {
+      return MetaMaskInstructions
+    }
+    return EthereumInstructions
   }
 }
 
@@ -42,7 +48,7 @@ export default compose(
     swap: null,
   }),
   withProps(({ swap }) => {
-    const InstructionComponent = swap && swap.tx && swap.tx.type && getInstructionComponent(swap.tx.type)
+    const InstructionComponent = swap && getInstructionComponent(swap.tx, swap.sendWallet)
     return {
       InstructionComponent,
       isOpen: Boolean(swap && InstructionComponent),

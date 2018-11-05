@@ -22,7 +22,7 @@ class Units extends React.Component {
         ? value.toFormat(precision, roundingMode)
         : value.toDigits(precision, roundingMode).toFormat()
       const digitCount = shrunk.replace(/\D/g, '').length
-      if (digitCount > maxDigits) {
+      if (maxDigits >= 0 && digitCount > maxDigits) {
         shrunk = value.toExponential(precision)
       }
     }
