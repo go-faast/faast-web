@@ -20,12 +20,12 @@ const TableRow = ({
   <tr {...props}>
     <td>{createStatusLabel(swap)}</td>
     <td className='d-none d-xs-table-cell'>{createdAtFormatted}</td>
-    <td>{sendAmount
-      ? (<Units value={sendAmount} symbol={sendSymbol} showSymbol showIcon precision={6}/>)
-      : NODATA}
-    </td>
     <td>{receiveAmount
       ? (<Units value={receiveAmount} symbol={receiveSymbol} showSymbol showIcon precision={6}/>)
+      : NODATA}
+    </td>
+    <td>{sendAmount
+      ? (<Units value={sendAmount} symbol={sendSymbol} showSymbol showIcon precision={6}/>)
       : NODATA}
     </td>
     <td>{rate > 0
@@ -41,8 +41,8 @@ const TradeTable = ({ swaps, handleClick }) => (
       <tr>
         <th></th>
         <th className='d-none d-xs-table-cell'>Date</th>
-        <th>Sent</th>
         <th>Received</th>
+        <th>Cost</th>
         <th>Rate</th>
       </tr>
     </thead>
