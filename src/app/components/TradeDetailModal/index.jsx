@@ -38,7 +38,7 @@ export default compose(
     <ModalHeader tag='h4' toggle={toggle} className='text-primary'>
       Order Details
     </ModalHeader>
-    <ModalBody>
+    <ModalBody className='p-0 p-sm-3'>
       <SwapStatusCard swap={swap} expanded/>
     </ModalBody>
   </Modal>

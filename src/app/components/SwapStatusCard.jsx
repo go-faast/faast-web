@@ -85,12 +85,12 @@ export default compose(
               <Col xs='12' sm='auto'><CoinIcon symbol={sendSymbol}/></Col>
               <Col xs='12' sm>
                 <Row className='gutter-2'>
-                  {sendAsset ? (<Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, sendAsset)}</Col>)
-                  : null}
                   <Col xs='12' className='order-sm-2 font-size-sm pt-0'>{sendAsset.name}</Col>
                   {sendAmount ? (<Col xs='12' className='text-white'>
                     <Units value={sendAmount} symbol={sendSymbol} prefix='-'/>
                   </Col>) : null}
+                  {sendAsset ? (<Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, sendAsset)}</Col>)
+                  : null}
                 </Row>
               </Col>
             </Row>
@@ -104,12 +104,12 @@ export default compose(
               <Col xs='12' sm='auto' className='order-sm-2'><CoinIcon symbol={receiveSymbol}/></Col>
               <Col xs='12' sm>
                 <Row className='gutter-2'>
-                  {receiveAsset ? (<Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, receiveAsset)}</Col>)
-                  : null}
                   <Col xs='12' className='order-sm-2 font-size-sm pt-0'>{receiveAsset ? receiveAsset.name : receiveSymbol}</Col>
                   {receiveAmount ? (<Col xs='12' className='text-white'>
                     <UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} prefix='+'/>
                   </Col>) : null}
+                  {receiveAsset ? (<Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, receiveAsset)}</Col>)
+                  : null}
                 </Row>
               </Col>
             </Row>
@@ -127,7 +127,7 @@ export default compose(
             <tbody>
               <tr>
                 <td><b>Status:</b></td>
-                <td colSpan='2' className={classNames('px-2', {
+                <td colSpan='4' className={classNames('px-2', {
                   'text-success': code === 'complete',
                   'text-warning': detailsCode === 'contact_support',
                   'text-danger': code === 'failed'
@@ -160,20 +160,20 @@ export default compose(
                 <td><b>Sending:</b></td>
                 <td className='px-2'><UnitsLoading value={sendAmount} symbol={sendSymbol} error={error} precision={null}/></td>
                 { sendWalletId ? (
-                  <td><i>using wallet</i> <WalletLabel.Connected id={sendWalletId} tag='span' hideIcon/></td>
+                  <td className='d-none d-xs-table-cell'><i>using wallet</i> <WalletLabel.Connected id={sendWalletId} tag='span' hideIcon/></td>
                 ) : null}
               </tr>
               <tr>
                 <td><b>Receiving:</b></td>
                 <td className='px-2'><UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} precision={null}/></td>
                 { receiveWalletId ? (
-                  <td><i>using wallet</i> <WalletLabel.Connected id={receiveWalletId} tag='span' hideIcon/></td>
+                  <td className='d-none d-xs-table-cell'><i>using wallet</i> <WalletLabel.Connected id={receiveWalletId} tag='span' hideIcon/></td>
                 ) : (
-                  <td><i>at address</i> {receiveAddress}</td>
+                  <td className='d-none d-xs-table-cell'><i>at address</i> {receiveAddress}</td>
                 )}
               </tr>
               <tr>
-                <td><b>Date Created:</b></td>
+                <td><b>Date<span className='d-none d-xs-inline'> Created</span>:</b></td>
                 <td colSpan='2' className='px-2'>{createdAt
                   ? formatDate(createdAt, 'yyyy-MM-dd hh:mm:ss')
                   : loadingValue}
