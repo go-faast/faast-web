@@ -3,7 +3,6 @@ import { push as pushAction } from 'react-router-redux'
 import { connect } from 'react-redux'
 import { Table } from 'reactstrap'
 import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers } from 'recompose'
-import { formatDate } from 'Utilities/display'
 import routes from 'Routes'
 import PropTypes from 'prop-types'
 
@@ -15,12 +14,12 @@ const NODATA = '-----'
 
 const TableRow = ({
   swap,
-  swap: { sendAmount, sendSymbol, receiveAmount, receiveSymbol, rate, createdAt },
+  swap: { sendAmount, sendSymbol, receiveAmount, receiveSymbol, rate, createdAtFormatted },
   ...props
 }) => (
   <tr {...props}>
     <td>{createStatusLabel(swap)}</td>
-    <td className='d-none d-xs-table-cell'>{formatDate(createdAt, 'yyyy-MM-dd hh:mm:ss')}</td>
+    <td className='d-none d-xs-table-cell'>{createdAtFormatted}</td>
     <td>{sendAmount
       ? (<Units value={sendAmount} symbol={sendSymbol} showSymbol showIcon precision={6}/>)
       : NODATA}

@@ -2,7 +2,6 @@ import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { compose, setDisplayName, setPropTypes, defaultProps, withProps } from 'recompose'
 import { Row, Col, Card, CardBody, CardFooter, Alert, Collapse, Button } from 'reactstrap'
-import { formatDate } from 'Utilities/display'
 import classNames from 'class-names'
 import config from 'Config'
 import withToggle from '../hoc/withToggle'
@@ -68,7 +67,7 @@ export default compose(
     receiveWalletId, receiveSymbol, receiveAsset, receiveAmount, receiveAddress,
     error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee,
     tx: { confirmed, succeeded, hash: txHash, feeAmount: txFee, feeSymbol: txFeeSymbol },
-    status: { code, details, detailsCode }, createdAt, initializing, isManual
+    status: { code, details, detailsCode }, createdAt, createdAtFormatted, initializing, isManual
   },
   statusText, showDetails, isExpanded, togglerProps, expanded
 }) => {
@@ -172,7 +171,7 @@ export default compose(
             ],
             [
               'Date:',
-              !createdAt ? loadingValue : formatDate(createdAt, 'yyyy-MM-dd hh:mm:ss')
+              !createdAtFormatted ? loadingValue : createdAtFormatted
             ],
             [
               'Order ID:',

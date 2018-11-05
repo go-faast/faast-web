@@ -5,6 +5,7 @@ import { createItemSelector, selectItemId } from 'Utilities/selector'
 import { toBigNumber } from 'Utilities/convert'
 import { MultiWallet } from 'Services/Wallet'
 import { getAllWalletIds } from 'Selectors/wallet'
+import { formatDate } from 'Utilities/display'
 
 import { getAllAssets } from './asset'
 import { getAllWallets } from './wallet'
@@ -44,6 +45,7 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
     receiveAsset,
     fee,
     hasFee: fee && toBigNumber(fee).gt(0),
+    createdAtFormatted: formatDate(swap.createdAt, 'yyyy-MM-dd hh:mm:ss'),
     tx,
     txSigning: tx.signing,
     txSigned: tx.signed,
