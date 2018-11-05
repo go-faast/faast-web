@@ -150,7 +150,7 @@ export default compose(
               <Fragment>
                 <UnitsLoading value={sendAmount} symbol={sendSymbol} error={error} precision={null}/>
                 {sendWalletId && (
-                  <span className='d-none d-xs-table-cell'>
+                  <span className='d-none d-xs-inline ml-2'>
                     <i>using wallet</i> <WalletLabel.Connected id={sendWalletId} tag='span' hideIcon/>
                   </span>
                 )}
@@ -160,7 +160,7 @@ export default compose(
               'Receiving:',
               <Fragment>
                 <UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} precision={null}/>
-                <span className='d-none d-xs-table-cell'>
+                <span className='d-none d-xs-inline ml-2'>
                   {receiveWalletId ? (
                     <Fragment><i>using wallet</i> <WalletLabel.Connected id={receiveWalletId} tag='span' hideIcon/></Fragment>
                   ) : (
