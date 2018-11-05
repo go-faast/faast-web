@@ -6,13 +6,12 @@ import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers } fro
 import { formatDate } from 'Utilities/display'
 import routes from 'Routes'
 import PropTypes from 'prop-types'
-import classNames from 'class-names'
 
 import Units from 'Components/Units'
-import UnitsLoading from 'Components/UnitsLoading'
 import Expandable from 'Components/Expandable'
-import CoinIcon from 'Components/CoinIcon'
-import { tradeTable, tradeCoinIcon } from './style'
+import { tradeTable } from './style'
+
+const NODATA = '-----'
 
 const TableRow = ({
   swap,
@@ -22,27 +21,30 @@ const TableRow = ({
   <tr {...props}>
     <td>{createStatusLabel(swap)}</td>
     <td className='d-none d-xs-table-cell'>{formatDate(createdAt, 'yyyy-MM-dd hh:mm:ss')}</td>
-    <td>
-      <CoinIcon className={classNames('d-none d-xs-inline', tradeCoinIcon)} symbol={sendSymbol} size='sm' inline/> {sendSymbol} <i style={{ color: '#777' }} className='fa fa-long-arrow-right'/> 
-      <CoinIcon className={classNames('d-none d-xs-inline', tradeCoinIcon)} symbol={receiveSymbol} size='sm' inline/> {receiveSymbol}</td>
-    <td>{rate > 0 ? (<Units value={rate} precision={6}/>) : '-----'}</td>
-    <td>{(receiveAmount && receiveAmount > 0) ? (<Units value={receiveAmount} symbol={receiveSymbol} showSymbol precision={6}/>)
-    : <UnitsLoading value={receiveAmount} symbol={receiveSymbol} showSymbol precision={6} />}</td>
-    <td>{(sendAmount && sendAmount > 0) ? (<Units value={sendAmount} symbol={sendSymbol} showSymbol precision={6}/>)
-    : <UnitsLoading value={sendAmount} symbol={sendSymbol} showSymbol precision={6} />}</td>
+    <td>{sendAmount
+      ? (<Units value={sendAmount} symbol={sendSymbol} showSymbol showIcon precision={6}/>)
+      : NODATA}
+    </td>
+    <td>{receiveAmount
+      ? (<Units value={receiveAmount} symbol={receiveSymbol} showSymbol showIcon precision={6}/>)
+      : NODATA}
+    </td>
+    <td>{rate > 0
+      ? (<Units value={rate} precision={6}/>)
+      : NODATA}
+    </td>
   </tr>
 )
 
 const TradeTable = ({ swaps, handleClick }) => (
-  <Table hover striped responsive className={classNames(tradeTable, 'table-accordian')}>
+  <Table hover striped responsive className={tradeTable}>
     <thead>
       <tr>
         <th></th>
         <th className='d-none d-xs-table-cell'>Date</th>
-        <th>Pair</th>
+        <th>Sent</th>
+        <th>Received</th>
         <th>Rate</th>
-        <th><span className='d-none d-xs-inline'>Amount</span> Received</th>
-        <th><span className='d-none d-xs-inline'>Total</span> Cost</th>
       </tr>
     </thead>
     <tbody>
