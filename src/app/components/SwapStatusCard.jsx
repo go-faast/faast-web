@@ -173,7 +173,7 @@ export default compose(
                 )}
               </tr>
               <tr>
-                <td><b>Date Created:</b></td>
+                <td><b>Date<span className='d-none d-xs-inline'> Created</span>:</b></td>
                 <td colSpan='2' className='px-2'>{createdAt
                   ? formatDate(createdAt, 'yyyy-MM-dd hh:mm:ss')
                   : loadingValue}
