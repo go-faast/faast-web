@@ -17,9 +17,9 @@ const EthereumInstructions = ({
     <p>Please confirm the following transaction details when prompted by your wallet.</p>
     <DataLayout rows={[
       ['To:', <Fragment><span className='text-monospace'>{txData.to}</span> {assetSymbol !== 'ETH' && (<i>({assetSymbol} contract)</i>)}</Fragment>],
-      ['Value:', <Units value={txData.value} precision={8} symbol={'ETH'}/>],
-      ['Gas:', <Units value={txData.gas} maxDigits={-1}/>],
-      ['Gas price:', <Units value={toBigNumber(txData.gasPrice).div(1e9)} maxDigits={-1} symbol={'GWei'}/>],
+      ['Value:', <Units value={txData.value} precision={null} symbol={'ETH'}/>],
+      ['Gas:', <Units value={txData.gas} maxDigits={null}/>],
+      ['Gas price:', <Units value={toBigNumber(txData.gasPrice).div(1e9)} maxDigits={null} symbol={'GWei'}/>],
       ['Data:', <span className='text-monospace'>{txData.data}</span>],
     ]}/>
   </div>

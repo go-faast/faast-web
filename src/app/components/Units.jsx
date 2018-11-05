@@ -22,7 +22,7 @@ class Units extends React.Component {
         ? value.toFormat(precision, roundingMode)
         : value.toDigits(precision, roundingMode).toFormat()
       const digitCount = shrunk.replace(/\D/g, '').length
-      if (maxDigits >= 0 && digitCount > maxDigits) {
+      if (maxDigits && digitCount > maxDigits) {
         shrunk = value.toExponential(precision)
       }
     }
@@ -71,7 +71,7 @@ Units.defaultProps = {
   showIcon: false,
   prefixSymbol: false,
   precision: 4,
-  maxDigits: -1,
+  maxDigits: null,
   prefix: null,
   suffix: null,
   roundingMode: BigNumber.ROUND_HALF_UP,
