@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { compose, setDisplayName, setPropTypes, defaultProps, withProps } from 'recompose'
 import { Row, Col, Card, CardBody, CardFooter, Alert, Collapse, Button } from 'reactstrap'
@@ -14,6 +14,7 @@ import Units from 'Components/Units'
 import UnitsLoading from 'Components/UnitsLoading'
 import WalletLabel from 'Components/WalletLabel'
 import Spinner from 'Components/Spinner'
+import DataLayout from 'Components/DataLayout'
 
 const StatusFooter = ({ className, children, ...props }) => (
   <CardFooter className={classNames('font-size-xs py-2 px-3', className)} {...props}>
@@ -40,6 +41,7 @@ const priceChange = (date, asset) => {
   )
 }
 
+/* eslint-disable react/jsx-key */
 export default compose(
   setDisplayName('SwapStatusCard'),
   setPropTypes({
@@ -123,83 +125,73 @@ export default compose(
           ))}
       <Collapse isOpen={isExpanded}>
         <StatusFooter>
-          <table style={{ lineHeight: 1.25 }}>
-            <tbody>
-              <tr>
-                <td><b>Status:</b></td>
-                <td colSpan='4' className={classNames('px-2', {
-                  'text-success': code === 'complete',
-                  'text-warning': detailsCode === 'contact_support',
-                  'text-danger': code === 'failed'
-                })}>
-                  {details}
-                </td>
-              </tr>
-              {(!isManual || rate) ? 
-              (<tr>
-                <td><b>Rate:</b></td>
-                <td colSpan='2' className='px-2'>
-                  <UnitsLoading value={rate} symbol={sendSymbol} error={error} precision={null} prefix={`1 ${receiveSymbol} = `}/>
-                </td>
-              </tr>) : null }
-              { (txFee || initializing) && (
-                <tr>
-                  <td><b>Network fee:</b></td>
-                  <td colSpan='2' className='px-2'>
-                    <UnitsLoading value={txFee} symbol={txFeeSymbol} error={error} precision={null} showFiat/>
-                  </td>
-                </tr>
-              )}
-              {hasSwapFee && (
-                <tr>
-                  <td><b>Swap fee:</b></td>
-                  <td colSpan='2' className='px-2'><UnitsLoading value={swapFee} symbol={receiveSymbol} error={error} precision={null}/></td>
-                </tr>
-              )}
-              <tr>
-                <td><b>Sending:</b></td>
-                <td className='px-2'><UnitsLoading value={sendAmount} symbol={sendSymbol} error={error} precision={null}/></td>
-                { sendWalletId ? (
-                  <td className='d-none d-xs-table-cell'><i>using wallet</i> <WalletLabel.Connected id={sendWalletId} tag='span' hideIcon/></td>
-                ) : null}
-              </tr>
-              <tr>
-                <td><b>Receiving:</b></td>
-                <td className='px-2'><UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} precision={null}/></td>
-                { receiveWalletId ? (
-                  <td className='d-none d-xs-table-cell'><i>using wallet</i> <WalletLabel.Connected id={receiveWalletId} tag='span' hideIcon/></td>
-                ) : (
-                  <td className='d-none d-xs-table-cell'><i>at address</i> {receiveAddress}</td>
+          <DataLayout rows={[
+            [
+              'Status:',
+              <span className={classNames({
+                'text-success': code === 'complete',
+                'text-warning': detailsCode === 'contact_support',
+                'text-danger': code === 'failed'
+              })}>{details}</span>
+            ],
+            (!isManual || rate) && [
+              'Rate:',
+              <UnitsLoading value={rate} symbol={sendSymbol} error={error} precision={null} prefix={`1 ${receiveSymbol} = `}/>
+            ],
+            (txFee || initializing) && [
+              'Network fee:',
+              <UnitsLoading value={txFee} symbol={txFeeSymbol} error={error} precision={null} showFiat/>
+            ],
+            hasSwapFee && [
+              'Swap fee:',
+              <UnitsLoading value={swapFee} symbol={receiveSymbol} error={error} precision={null}/>
+            ],
+            [
+              'Sending:',
+              <Fragment>
+                <UnitsLoading value={sendAmount} symbol={sendSymbol} error={error} precision={null}/>
+                {sendWalletId && (
+                  <span className='d-none d-xs-table-cell'>
+                    <i>using wallet</i> <WalletLabel.Connected id={sendWalletId} tag='span' hideIcon/>
+                  </span>
                 )}
-              </tr>
-              <tr>
-                <td><b>Date<span className='d-none d-xs-inline'> Created</span>:</b></td>
-                <td colSpan='2' className='px-2'>{createdAt
-                  ? formatDate(createdAt, 'yyyy-MM-dd hh:mm:ss')
-                  : loadingValue}
-                </td>
-              </tr>
-              <tr>
-                <td><b>Order ID:</b></td>
-                <td colSpan='2' className='px-2'>{orderId ? orderId : loadingValue}</td>
-              </tr>
-              {txHash && (
-                <tr>
-                  <td><b>Sent txn:</b></td>
-                  <td colSpan='2' className='px-2'>
-                    <a href={`${config.explorerUrls[txFeeSymbol]}/tx/${txHash}`} target='_blank' rel='noopener' className='word-break-all mr-2'>{txHash}</a> 
-                    {!confirmed ? (
-                      <i className='fa fa-spinner fa-pulse'/>
-                    ) : (succeeded ? (
-                      <i className='fa fa-check-circle-o text-success'/>
-                    ) : (
-                      <i className='fa fa-exclamation-circle text-danger'/>
-                    ))}
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+              </Fragment>
+            ],
+            [
+              'Receiving:',
+              <Fragment>
+                <UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} precision={null}/>
+                <span className='d-none d-xs-table-cell'>
+                  {receiveWalletId ? (
+                    <Fragment><i>using wallet</i> <WalletLabel.Connected id={receiveWalletId} tag='span' hideIcon/></Fragment>
+                  ) : (
+                    <Fragment><i>at address</i> {receiveAddress}</Fragment>
+                  )}
+                </span>
+              </Fragment>
+            ],
+            [
+              'Date:',
+              !createdAt ? loadingValue : formatDate(createdAt, 'yyyy-MM-dd hh:mm:ss')
+            ],
+            [
+              'Order ID:',
+              orderId ? orderId : loadingValue
+            ],
+            txHash && [
+              'Sent txn:',
+              <Fragment>
+                <a href={`${config.explorerUrls[txFeeSymbol]}/tx/${txHash}`} target='_blank' rel='noopener' className='word-break-all mr-2'>{txHash}</a> 
+                {!confirmed ? (
+                  <i className='fa fa-spinner fa-pulse'/>
+                ) : (succeeded ? (
+                  <i className='fa fa-check-circle-o text-success'/>
+                ) : (
+                  <i className='fa fa-exclamation-circle text-danger'/>
+                ))}
+              </Fragment>
+            ]
+          ]}/>
         </StatusFooter>
       </Collapse>
     </Card>
