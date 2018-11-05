@@ -76,7 +76,7 @@ export default compose(
     ? (<span className='text-danger'>-</span>)
     : (<Spinner inline size='sm'/>))
   return (
-    <Card className='flat border-0'>
+    <Card className='flat'>
       <CardBody className={`py-2 pr-3 pl-2 ${receiveAmount ? 'lh-0' : 'pt-3 pb-3'}`} {...togglerProps} style={{ minHeight: '4rem' }}>
         <Row className='gutter-0 align-items-center font-size-small text-muted'>
           <Col xs='auto'>

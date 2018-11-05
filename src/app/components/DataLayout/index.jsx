@@ -1,6 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { compose, setDisplayName, setPropTypes } from 'recompose'
+import { Row, Col } from 'reactstrap'
 
 import styles from './style'
 
@@ -14,15 +15,18 @@ export default compose(
     ]))
   })
 )(({ rows }) => (
-  <table className={styles.tableLayout}>
-    <tbody>
-      {rows.map((row, i) => !Array.isArray(row) ? null : (
-        <tr key={i}>
-          {row.map((cell, i) => (
-            <td key={i}>{cell}</td>
-          ))}
-        </tr>
-      ))}
-    </tbody>
-  </table>
+  <div className={styles.dataLayout}>
+    {rows.map((row, i) => !Array.isArray(row) ? null : (
+      <Row className='gutter-x-2 mb-1' key={i}>
+        <Col xs='12' sm='3' lg='2' className={styles.dataLabel}>
+          {row[0]}
+        </Col>
+        {row.slice(1).map((cell, i) => (
+          <Col xs='12' sm key={i} className={styles.dataValue}>
+            {cell}
+          </Col>
+        ))}
+      </Row>
+    ))}
+  </div>
 ))

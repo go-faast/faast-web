@@ -1,12 +1,14 @@
-.tableLayout {
+.dataLayout {
   line-height: 1.25;
-  td:first-child {
-    white-space: nowrap;
-    padding-right: 8px;
-    vertical-align: top;
-    font-weight: bold;
-  }
-  td:not(:first-child) {
-    word-break: break-all;
-  }
+}
+
+.dataLabel {
+  white-space: nowrap;
+  padding-right: 8px;
+  vertical-align: top;
+  font-weight: bold;
+}
+
+.dataValue {
+  word-break: break-all;
 }
