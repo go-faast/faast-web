@@ -71,12 +71,13 @@ export default compose(
   },
   statusText, showDetails, isExpanded, togglerProps, expanded
 }) => {
+  const isComplete = code === 'complete'
   const loadingValue = (error
     ? (<span className='text-danger'>-</span>)
     : (<Spinner inline size='sm'/>))
   return (
-    <Card className='flat'>
-      <CardBody className={`py-2 pr-3 pl-2 border-0 ${receiveAmount ? 'lh-0' : 'pt-3 pb-3'}`} {...togglerProps} style={{ minHeight: '4rem' }}>
+    <Card className='flat border-0'>
+      <CardBody className={`py-2 pr-3 pl-2 ${receiveAmount ? 'lh-0' : 'pt-3 pb-3'}`} {...togglerProps} style={{ minHeight: '4rem' }}>
         <Row className='gutter-0 align-items-center font-size-small text-muted'>
           <Col xs='auto'>
             { expanded === null ? <i style={{ transition: 'all .15s ease-in-out' }} className={classNames('fa fa-chevron-circle-down text-primary px-2 mr-2', { ['fa-rotate-180']: isExpanded })}/> : false }
@@ -128,7 +129,7 @@ export default compose(
             [
               'Status:',
               <span className={classNames({
-                'text-success': code === 'complete',
+                'text-success': isComplete,
                 'text-warning': detailsCode === 'contact_support',
                 'text-danger': code === 'failed'
               })}>{details}</span>
@@ -146,7 +147,7 @@ export default compose(
               <UnitsLoading value={swapFee} symbol={receiveSymbol} error={error} precision={null}/>
             ],
             [
-              'Sending:',
+              isComplete ? 'Sent:' : 'Sending:',
               <Fragment>
                 <UnitsLoading value={sendAmount} symbol={sendSymbol} error={error} precision={null}/>
                 {sendWalletId && (
@@ -157,7 +158,7 @@ export default compose(
               </Fragment>
             ],
             [
-              'Receiving:',
+              isComplete ? 'Received:' : 'Receiving:',
               <Fragment>
                 <UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} precision={null}/>
                 <span className='d-none d-xs-inline ml-2'>
