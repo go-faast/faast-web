@@ -20,9 +20,11 @@ import { retrievePairData } from 'Actions/rate'
 import { retrieveSwap, refreshSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
 import { getRateMinimumDeposit, getRatePrice } from 'Selectors/rate'
+import DataLayout from 'Components/DataLayout'
 
 import { container, qr, scan, receipt } from './style.scss'
 
+/* eslint-disable react/jsx-key */
 const SwapStepTwo = ({
   swap, handleRef, handleFocus, handleCopy, handleTimerEnd, secondsUntilPriceExpiry, 
   minimumDeposit, estimatedRate,
@@ -64,59 +66,23 @@ const SwapStepTwo = ({
         <CardFooter style={{ border: 'none', position: 'relative', wordBreak: 'break-word' }}>
           <div className={receipt}></div>
           <p className='mt-2 text-center' style={{ letterSpacing: 5 }}>ORDER DETAILS</p>
-          <table style={{ lineHeight: 1.25, textAlign: 'left' }}>
-            <tbody>
-              <tr>
-                <td><b>Status:</b></td>
-                <td colSpan='2' className='px-2' style={{ textTransform: 'capitalize' }}>
-                  {orderStatus} {orderStatus !== 'complete' && (<Expandable shrunk={<i className='fa fa-spinner fa-pulse'/>} expanded={'Order status is updated automatically. You do not need to refresh.'}></Expandable>)}
-                </td>
-              </tr>
-              <tr>
-                <td><b>Order ID:</b></td>
-                <td colSpan='2' className='px-2'>{orderId}</td>
-              </tr>
-              <tr>
-                <td><b>Receive Address:</b></td>
-                <td colSpan='2' className='px-2'>{receiveAddress}</td>
-              </tr>
-              {refundAddress ? (
-                <tr>
-                  <td><b>Refund Address:</b></td>
-                  <td colSpan='2' className='px-2'>{refundAddress}</td>
-                </tr>
-              ) : null}
-
-              {quotedRate ? (
-                <tr>
-                  <td><b>Rate:</b></td>
-                  <td colSpan='2' className='px-2'>
-                    <Rate rate={quotedRate} from={sendSymbol} to={receiveSymbol}/>
-                  </td>
-                </tr>
-              ) : null}
-
-              {sendAmount ? (
-                <tr>
-                  <td><b>Deposit Amount:</b></td>
-                  <td colSpan='2' className='px-2'>{sendAmount} {sendSymbol}</td>
-                </tr>
-              ) : (
-                minimumDeposit ? (
-                  <tr>
-                    <td><b>Minimum Deposit:</b></td>
-                    <td colSpan='2' className='px-2'>{minimumDeposit} {sendSymbol}</td>
-                  </tr>
-                ) : null)}
-
-              {receiveAmount ? (
-                <tr>
-                  <td><b>Receive Amount:</b></td>
-                  <td colSpan='2' className='px-2'>{receiveAmount} {receiveSymbol}</td>
-                </tr>
-              ) : null}
-            </tbody>
-          </table>
+          <DataLayout rows={[
+            ['Status:', <span className='text-capitalize'>
+              {orderStatus} {orderStatus !== 'complete' && (
+                <Expandable
+                  shrunk={<i className='fa fa-spinner fa-pulse'/>}
+                  expanded={'Order status is updated automatically. You do not need to refresh.'}/>
+              )}
+            </span>],
+            ['Order ID:', <span className='text-monospace'>{orderId}</span>],
+            ['Receive address:', <span className='text-monospace'>{receiveAddress}</span>],
+            refundAddress && ['RefundAddress:', <span className='text-monospace'>{refundAddress}</span>],
+            quotedRate && ['Rate:', <Rate rate={quotedRate} from={sendSymbol} to={receiveSymbol}/>],
+            sendAmount
+              ? ['Deposit amount:', <Units value={sendAmount} symbol={sendSymbol} precision={8}/>]
+              : (minimumDeposit && ['Minimum deposit:', <Units value={minimumDeposit} symbol={sendSymbol} precision={8}/>]),
+            receiveAmount && ['Receive amount:', <Units value={receiveAmount} symbol={receiveSymbol} precision={8}/>]
+          ]}/>
           <div className='mt-2'>
             <small className='text-muted'>
               {!isFixedPrice ? (

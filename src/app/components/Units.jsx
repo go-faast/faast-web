@@ -71,7 +71,7 @@ Units.defaultProps = {
   showIcon: false,
   prefixSymbol: false,
   precision: 4,
-  maxDigits: 10,
+  maxDigits: -1,
   prefix: null,
   suffix: null,
   roundingMode: BigNumber.ROUND_HALF_UP,
