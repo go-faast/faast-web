@@ -11,7 +11,7 @@ import CoinIcon from 'Components/CoinIcon'
 class Units extends React.Component {
   render() {
     const {
-      value: propValue, symbol, showSymbol, prefixSymbol, showIcon,
+      value: propValue, symbol, showSymbol, prefixSymbol, showIcon, iconProps,
       precision, maxDigits, prefix, suffix, roundingMode, roundingType, ...props
     } = this.props
     const value = toBigNumber(propValue)
@@ -36,7 +36,7 @@ class Units extends React.Component {
     const expandable = (<Expandable shrunk={shrunk} expanded={expanded} {...props}/>)
     return (<Fragment>
       {prefix}{showIcon && (
-        <Fragment><CoinIcon symbol={symbol} size='sm' inline style={{ verticalAlign: 'baseline' }}/>{' '}</Fragment>
+        <Fragment><CoinIcon symbol={symbol} size='sm' inline style={{ verticalAlign: 'baseline' }} {...iconProps}/>{' '}</Fragment>
       )}{expandable}{suffix}
     </Fragment>)
   }
@@ -61,7 +61,8 @@ Units.propTypes = {
   roundingType: PropTypes.oneOf([
     'dp', // Round to 'precision' decimal places
     'sd', // Round to 'precision' significant digits
-  ])
+  ]),
+  iconProps: PropTypes.object,
 }
 
 Units.defaultProps = {
@@ -75,7 +76,8 @@ Units.defaultProps = {
   prefix: null,
   suffix: null,
   roundingMode: BigNumber.ROUND_HALF_UP,
-  roundingType: 'sd'
+  roundingType: 'sd',
+  iconProps: {},
 }
 
 export default Units

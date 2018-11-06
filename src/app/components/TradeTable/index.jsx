@@ -1,16 +1,26 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { push as pushAction } from 'react-router-redux'
 import { connect } from 'react-redux'
 import { Table } from 'reactstrap'
 import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers } from 'recompose'
-import routes from 'Routes'
 import PropTypes from 'prop-types'
+import classNames from 'class-names'
 
+import routes from 'Routes'
 import Units from 'Components/Units'
 import Expandable from 'Components/Expandable'
-import { tradeTable } from './style'
+import CoinIcon from 'Components/CoinIcon'
+
+import { tradeTable, tradeCoinIcon } from './style'
 
 const NODATA = '-----'
+
+const CoinSymbol = ({ symbol, ...props }) => (
+  <Fragment>
+    <CoinIcon className={classNames(tradeCoinIcon, 'mr-1')} symbol={symbol} size='sm' inline {...props}/>
+    {symbol}
+  </Fragment>
+)
 
 const TableRow = ({
   swap,
@@ -19,13 +29,18 @@ const TableRow = ({
 }) => (
   <tr {...props}>
     <td>{createStatusLabel(swap)}</td>
-    <td className='d-none d-xs-table-cell'>{createdAtFormatted}</td>
+    <td className='d-none d-sm-table-cell'>{createdAtFormatted}</td>
+    <td className='d-none d-sm-table-cell'>
+      <CoinSymbol symbol={sendSymbol}/>
+      <i className='fa fa-long-arrow-right text-grey mx-2'/> 
+      <CoinSymbol symbol={receiveSymbol}/>
+    </td>
     <td>{receiveAmount
-      ? (<Units value={receiveAmount} symbol={receiveSymbol} showSymbol showIcon precision={6}/>)
+      ? (<Units value={receiveAmount} symbol={receiveSymbol} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>)
       : NODATA}
     </td>
     <td>{sendAmount
-      ? (<Units value={sendAmount} symbol={sendSymbol} showSymbol showIcon precision={6}/>)
+      ? (<Units value={sendAmount} symbol={sendSymbol} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>)
       : NODATA}
     </td>
     <td>{rate > 0
@@ -40,7 +55,8 @@ const TradeTable = ({ swaps, handleClick }) => (
     <thead>
       <tr>
         <th></th>
-        <th className='d-none d-xs-table-cell'>Date</th>
+        <th className='d-none d-sm-table-cell'>Date</th>
+        <th className='d-none d-sm-table-cell'>Pair</th>
         <th>Received</th>
         <th>Cost</th>
         <th>Rate</th>
