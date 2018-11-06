@@ -12,6 +12,7 @@ release=$1
 currentBranch=$(git branch | grep \* | cut -d ' ' -f2)
 git checkout master
 git merge --ff-only $release
+git push
 if [ "$currentBranch" != "master" ]; then
   git checkout $currentBranch
 fi
