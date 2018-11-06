@@ -6,7 +6,6 @@ import { createStructuredSelector } from 'reselect'
 import { Row, Col, Button, Card, CardBody, CardFooter, Alert, ModalBody, ModalFooter } from 'reactstrap'
 import { Link } from 'react-router-dom'
 
-import config from 'Config'
 import routes from 'Routes'
 
 import {
@@ -20,7 +19,7 @@ import AddressLink from 'Components/AddressLink'
 import BackButton from './BackButton'
 import ConnectionStatus from './ConnectionStatus'
 import redirectNotConnected from './redirectNotConnected'
-import ToggleSegwitButton from './ToggleSegwitButton'
+import SwitchPathButton from './SwitchPathButton'
 import DerivationPathChanger from './DerivationPathChanger'
 
 export default compose(
@@ -28,6 +27,7 @@ export default compose(
   setPropTypes({
     walletType: PropTypes.string.isRequired,
     assetSymbol: PropTypes.string.isRequired,
+    assetConfig: PropTypes.object.isRequired,
   }),
   redirectNotConnected,
   connect(createStructuredSelector({
@@ -39,10 +39,9 @@ export default compose(
   withProps(({ walletType, assetSymbol, account }) => ({
     disableConfirm: !account.label,
     backPath: routes.connectHwWalletAsset(walletType, assetSymbol),
-    assetConfig: ((config.walletTypes[walletType] || {}).supportedAssets || {})[assetSymbol] || {}
   }))
 )(({
-  account: { index, label, address, balance, error }, assetConfig: { segwitPrefix, legacyPrefix },
+  account: { index, label, address, balance, error },
   walletType, assetSymbol, accountSelectEnabled, backPath, handleConfirm, disableConfirm,
 }) => (
   <div>
@@ -75,11 +74,9 @@ export default compose(
           </Col>
         )}
         <div className='w-100'/>
-        {segwitPrefix && legacyPrefix && (
-          <Col xs='auto'>
-            <ToggleSegwitButton segwitPrefix={segwitPrefix} legacyPrefix={legacyPrefix}/>
-          </Col>
-        )}
+        <Col xs='auto'>
+          <SwitchPathButton walletType={walletType} assetSymbol={assetSymbol}/>
+        </Col>
         <div className='w-100'/>
         <Col xs='auto'>
           <DerivationPathChanger />

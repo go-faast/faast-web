@@ -15,6 +15,7 @@ import {
 } from 'Actions/connectHardwareWallet'
 import conditionalRedirect from 'Hoc/conditionalRedirect'
 
+import SwitchPathButton from './SwitchPathButton'
 import DerivationPathChanger from './DerivationPathChanger'
 import BackButton from './BackButton'
 import ConnectionStatus from './ConnectionStatus'
@@ -25,6 +26,7 @@ export default compose(
   setPropTypes({
     walletType: PropTypes.string.isRequired,
     assetSymbol: PropTypes.string.isRequired,
+    assetConfig: PropTypes.object.isRequired,
   }),
   connect(createStructuredSelector({
     isConnected: isStatusConnected,
@@ -51,13 +53,16 @@ export default compose(
     }
   })
 )(({
-  walletType, asset, handleBack, continuePath, isConnected,
+  walletType, assetSymbol, asset, handleBack, continuePath, isConnected, 
 }) => (
   <div>
     <ModalBody className='py-4'>
       <ConnectionStatus />
       <ConnectionInstructions type={walletType} asset={asset}/>
       <div className='my-3 w-50 mx-auto'>
+        <div className='mb-3'>
+          <SwitchPathButton walletType={walletType} assetSymbol={assetSymbol}/>
+        </div>
         <DerivationPathChanger />
       </div>
     </ModalBody>
