@@ -2,6 +2,10 @@ import b58 from 'bs58check'
 import bitcoin, { payments, bip32, Network as BitcoinJsNetwork } from 'bitcoinjs-lib'
 import networks, { NetworkConfig, PaymentType, AddressEncoding, BTC } from 'Utilities/networks'
 
+function arrayify<T>(x: T | T[]): T[] {
+  return Array.isArray(x) ? x : [x]
+}
+
 export function isValidAddress(address: string, network: NetworkConfig): boolean {
   try {
     bitcoin.address.toOutputScript(address, network.bitcoinJsNetwork)
@@ -42,7 +46,8 @@ export function getPaymentTypeForEncoding(encoding: AddressEncoding, network: Ne
 }
 
 export function getPaymentTypeForPath(bip44Path: string, network: NetworkConfig): PaymentType {
-  const paymentType = network.paymentTypes.find(((pt) => bip44Path.startsWith(pt.bip44Path)))
+  const paymentType = network.paymentTypes.find(((pt) => pt.bip44Path &&
+    arrayify(pt.bip44Path).some((p) => bip44Path.startsWith(p))))
   if (!paymentType) {
     throw new Error(`Cannot find ${network.name} PaymentType for bip44 path ${bip44Path}`)
   }

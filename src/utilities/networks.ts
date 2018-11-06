@@ -12,7 +12,7 @@ export type AddressEncoding = 'P2PKH' | 'P2SH-P2WPKH' | 'P2WPKH' | 'P2SH-P2WSH' 
 
 export type PaymentType = {
   addressEncoding: AddressEncoding,
-  bip44Path: string | null,
+  bip44Path: string[] | string | null,
   bip32: {
     public: number,
     publicPrefix: string,
@@ -183,7 +183,7 @@ export const BCH = network({
   paymentTypes: [
     {
       addressEncoding: 'P2PKH',
-      bip44Path: "m/44'/145'",
+      bip44Path: ["m/44'/145'", "m/44'/0'"],
       bip32: {
         public: 0x0488b21e,
         publicPrefix: 'xpub',
