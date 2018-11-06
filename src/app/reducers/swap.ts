@@ -2,6 +2,7 @@ import { createReducer } from 'redux-act'
 import { omit, pick } from 'lodash'
 
 import { createUpdater, createUpserter } from 'Utilities/helpers'
+import { BigNumber, ZERO } from 'Utilities/convert'
 import { SwapOrder } from 'Types'
 import { resetAll } from 'Actions/app'
 import {
@@ -11,6 +12,7 @@ import {
 
 type SwapState = SwapOrder & {
   id: string,
+  sendAmount: BigNumber,
   receiveWalletId: string,
   txId: string,
   error: string,
@@ -23,6 +25,7 @@ const initialState = {}
 const swapInitialState: SwapState = {
   // Frontend fields
   id: '',
+  sendAmount: undefined, // Used to specify swap tx amount with full precision. If undefined use depositAmount
   receiveWalletId: '', // derived from receiveAddress
   txId: '', // txId of deposit transaction
   error: '',
@@ -36,7 +39,7 @@ const swapInitialState: SwapState = {
   updatedAt: null,
   depositAddress: '',
   sendWalletId: '',
-  sendAmount: 0,
+  depositAmount: ZERO, // Equivalent to sendAmount but backend loses precision so keep separate
   sendSymbol: '',
   receiveAddress: '',
   receiveAmount: undefined,

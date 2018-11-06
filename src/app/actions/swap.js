@@ -69,7 +69,7 @@ const createSwapFinish = (type, swap) => (dispatch, getState) => (errorMessage, 
   return getSwap(getState(), swap.id)
 }
 
-export const createOrder = (swap) => (dispatch) => Promise.resolve().then(() => {
+export const createOrder = (swap) => (dispatch, getState) => Promise.resolve().then(() => {
   if (swap.error) return swap
   const finish = dispatch(createSwapFinish('createOrder', swap))
   const { id, receiveAddress, refundAddress, sendAmount, sendSymbol, receiveSymbol, sendWalletId } = swap
@@ -82,9 +82,9 @@ export const createOrder = (swap) => (dispatch) => Promise.resolve().then(() => 
     sendAmount: toNumber(sendAmount), // optional
     userId: sendWalletId, // optional
   })
-    .then((order) => { 
+    .then((order) => {
       finish(null, order)
-      return { id, ...order }
+      return getSwap(getState(), swap.id)
     })
     .catch((e) => {
       log.error('createOrder', e)

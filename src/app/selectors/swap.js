@@ -34,6 +34,7 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
 
   swap = {
     ...swap,
+    sendAmount: swap.sendAmount || swap.depositAmount,
     isManual: !swap.sendWalletId,
     isFixedPrice: Boolean(rateLockedUntil),
     sendWallet: allWallets[sendWalletId],
@@ -44,7 +45,7 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
     sendAsset,
     receiveAsset,
     fee,
-    hasFee: fee && toBigNumber(fee).gt(0),
+    hasFee: fee && fee.gt(0),
     createdAtFormatted: formatDate(swap.createdAt, 'yyyy-MM-dd hh:mm:ss'),
     tx,
     txSigning: tx.signing,

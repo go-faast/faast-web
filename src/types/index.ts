@@ -1,3 +1,4 @@
+import BigNumber from 'bignumber.js'
 
 export interface Asset {
   symbol: string
@@ -14,17 +15,17 @@ export interface SwapOrder {
   updatedAt: Date
   depositAddress: string
   sendWalletId: string
-  sendAmount: number
+  depositAmount: BigNumber
   sendSymbol: string
   receiveAddress: string
-  receiveAmount: number
+  receiveAmount: BigNumber
   receiveSymbol: string
-  spotRate: number
-  rate: number
+  spotRate: BigNumber
+  rate: BigNumber
   rateLockedAt: Date
   rateLockedUntil: Date
-  amountDeposited?: number
-  amountWithdrawn?: number
+  amountDeposited?: BigNumber
+  amountWithdrawn?: BigNumber
   backendOrderId?: string
   backendOrderState?: string
   receiveTxId?: string,

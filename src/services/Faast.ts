@@ -1,5 +1,6 @@
 import { fetchGet, fetchPost, fetchDelete } from 'Utilities/fetch'
 import { filterErrors } from 'Utilities/helpers'
+import { toBigNumber } from 'Utilities/convert'
 import log from 'Log'
 import config from 'Config'
 
@@ -42,18 +43,18 @@ const formatOrderResult = (r: any): SwapOrder => ({
   updatedAt: r.updated_at ? new Date(r.updated_at) : null,
   depositAddress: r.deposit_address,
   sendWalletId: r.user_id,
-  sendAmount: r.deposit_amount,
+  depositAmount: toBigNumber(r.deposit_amount),
   sendSymbol: r.deposit_currency,
   receiveAddress: r.withdrawal_address,
-  receiveAmount: r.withdrawal_amount,
+  receiveAmount: toBigNumber(r.withdrawal_amount),
   receiveSymbol: r.withdrawal_currency,
   refundAddress: r.refund_address,
-  spotRate: r.spot_price,
-  rate: r.price,
+  spotRate: toBigNumber(r.spot_price),
+  rate: toBigNumber(r.price),
   rateLockedAt: r.price_locked_at ? new Date(r.price_locked_at) : null,
   rateLockedUntil: r.price_locked_until ? new Date(r.price_locked_until) : null,
-  amountDeposited: r.amount_deposited,
-  amountWithdrawn: r.amount_withdrawn,
+  amountDeposited: toBigNumber(r.amount_deposited),
+  amountWithdrawn: toBigNumber(r.amount_withdrawn),
   backendOrderId: r.order_id,
   backendOrderState: r.order_state,
   receiveTxId: r.txId,
