@@ -33,7 +33,7 @@ export default compose(
   swap, toggle, ...props,
 }) => !swap ? null : (
   <Modal
-    size='lg' toggle={toggle} className='mt-6 mx-md-auto' contentClassName='p-0'
+    size='md' toggle={toggle} className='mt-6 mx-md-auto' contentClassName='p-0'
     {...pick(props, Object.keys(Modal.propTypes))}>
     <ModalHeader tag='h4' toggle={toggle} className='text-primary'>
       Order Details
