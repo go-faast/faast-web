@@ -12,7 +12,7 @@ import {
   doesCurrentSwundleRequireSigning,
 } from 'Selectors'
 import { compose, setDisplayName, withProps, branch, withHandlers, renderNothing } from 'recompose'
-import { closeTrezorWindow } from 'Utilities/wallet'
+import Trezor from 'Services/Trezor'
 import { min } from 'lodash'
 import display from 'Utilities/display'
 import SwapStatusCard from 'Components/SwapStatusCard'
@@ -128,17 +128,17 @@ export default compose(
   }),
   withHandlers({
     handleCancel: ({ swundle, toggle, removeSwundle }) => () => {
-      closeTrezorWindow()
+      Trezor.close()
       toggle()
       removeSwundle(swundle)
     },
     handleSignTxs: ({ swundle, signSwundle }) => () => {
       signSwundle(swundle)
-      .then(() => closeTrezorWindow())
+      .then(() => Trezor.close())
       .catch((e) => {
         toastr.error(e.message || e)
         log.error(e)
-        closeTrezorWindow()
+        Trezor.close()
       })
     },
     handleSendTxs: ({ swundle, sendSwundle, toggle, routerPush }) => () => {
