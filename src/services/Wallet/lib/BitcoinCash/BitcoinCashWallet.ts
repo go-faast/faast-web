@@ -72,7 +72,7 @@ export default abstract class BitcoinCashWallet extends BitcoreWallet {
   }
 
   _getDefaultAddressFormat() {
-    return LEGACY_FORMAT
+    return CASH_ADDR_FORMAT
   }
 
   _getAddressFormats() {

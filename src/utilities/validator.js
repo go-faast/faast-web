@@ -1,5 +1,6 @@
 import web3 from 'Services/Web3'
 import { Address } from 'bitcore-lib'
+import cashaddr from 'cashaddrjs'
 
 const isProvided = (x) => typeof x !== 'undefined' && x !== null && x !== ''
 const isChecked = (x) => typeof x !== 'undefined' && x !== null && x !== false
@@ -57,6 +58,7 @@ const defaultAddressValidator = () => true
 const addressValidators = {
   ETH: web3.utils.isAddress,
   BTC: Address.isValid,
+  BCH: cashaddr.isCashAddress,
 }
 
 function getAddressValidator(asset) {
