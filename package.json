@@ -50,6 +50,7 @@
     "@ledgerhq/hw-app-btc": "^4.27.0",
     "@ledgerhq/hw-app-eth": "^4.15.0",
     "@ledgerhq/hw-transport-u2f": "^4.28.0",
+    "@types/bitcore-lib": "^0.15.1",
     "@types/ethereumjs-util": "^5.2.0",
     "@types/lodash": "^4.14.116",
     "@types/query-string": "^6.1.0",
