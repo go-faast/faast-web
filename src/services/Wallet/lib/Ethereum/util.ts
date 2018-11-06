@@ -4,14 +4,14 @@ import config from 'Config'
 import { Web3 } from 'Services/Web3'
 import { BatchRequest, Tx as Web3Tx } from 'web3/eth/types'
 import { toBigNumber, TEN } from 'Utilities/convert'
-import { isValidAddress } from 'Utilities/wallet'
+import { isValidAddress } from 'Utilities/addressFormat'
 import { Web3Receipt, Receipt, Amount } from '../types'
 import { BatchableFn, SendOptions } from './types'
 
 export function tokenSendData(address: string, amount: Amount, decimals: number) {
   amount = toBigNumber(amount)
 
-  if (!isValidAddress(address)) { throw new Error('invalid address') }
+  if (!isValidAddress(address, 'ETH')) { throw new Error('invalid address') }
   if (amount.lessThan(0)) { throw new Error('invalid amount') }
   if (typeof decimals !== 'number') { throw new Error('invalid decimals') }
 

@@ -2,6 +2,7 @@ import BigNumber from 'bignumber.js'
 import Wallet from './Wallet'
 import { Asset } from 'Types'
 import { PaymentTx } from 'Services/Bitcore'
+import { AddressFormat } from 'Utilities/addressFormat'
 
 export type Amount = BigNumber
 
@@ -56,14 +57,6 @@ export interface Receipt {
 export interface ConnectResult {
   derivationPath: string
   getAccount: (index: number) => Promise<Wallet>
-}
-
-export interface AddressFormat {
-  type: string // format identifier (e.g. 'legacy', 'cashaddr', etc)
-  label: string // human friendly label
-  description: string // human friendly description
-  test: (address: string) => boolean
-  convert: (address: string) => string
 }
 
 // Used to specify address format to functions that return addresses

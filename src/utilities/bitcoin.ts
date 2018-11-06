@@ -1,6 +1,15 @@
 import b58 from 'bs58check'
-import { payments, bip32, Network as BitcoinJsNetwork } from 'bitcoinjs-lib'
+import bitcoin, { payments, bip32, Network as BitcoinJsNetwork } from 'bitcoinjs-lib'
 import networks, { NetworkConfig, PaymentType, AddressEncoding, BTC } from 'Utilities/networks'
+
+export function isValidAddress(address: string, network: NetworkConfig): boolean {
+  try {
+    bitcoin.address.toOutputScript(address, network.bitcoinJsNetwork)
+    return true
+  } catch (e) {
+    return false
+  }
+}
 
 export const getHdKeyPrefix = (hdKey: string): string => hdKey.slice(0, 4)
 

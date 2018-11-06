@@ -1,6 +1,4 @@
-import web3 from 'Services/Web3'
-import { Address } from 'bitcore-lib'
-import cashaddr from 'cashaddrjs'
+import { getDefaultFormat } from 'Utilities/addressFormat'
 
 const isProvided = (x) => typeof x !== 'undefined' && x !== null && x !== ''
 const isChecked = (x) => typeof x !== 'undefined' && x !== null && x !== false
@@ -53,25 +51,18 @@ export function greaterThan(x) {
   }
 }
 
-const defaultAddressValidator = () => true
-
-const addressValidators = {
-  ETH: web3.utils.isAddress,
-  BTC: Address.isValid,
-  BCH: cashaddr.isCashAddress,
-}
-
-function getAddressValidator(asset) {
+function getAddressTester(asset) {
   const { symbol, ERC20 } = asset
+  let networkSymbol = symbol
   if (ERC20) {
-    return addressValidators.ETH
+    return networkSymbol = 'ETH'
   }
-  return addressValidators[symbol] || defaultAddressValidator
+  return getDefaultFormat(networkSymbol).test
 }
 
 export function walletAddress(asset) {
   const { symbol } = asset
-  const isValidAddress = getAddressValidator(asset)
+  const isValidAddress = getAddressTester(asset)
   return (value) => {
     if (isProvided(value) && !isValidAddress(value)) {
       return `Invalid ${symbol} address.`

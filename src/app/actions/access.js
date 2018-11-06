@@ -7,7 +7,7 @@ import log from 'Utilities/log'
 import { filterUrl } from 'Utilities/helpers'
 import blockstack from 'Utilities/blockstack'
 import toastr from 'Utilities/toastrWrapper'
-import { isValidAddress } from 'Utilities/wallet'
+import { isValidAddress } from 'Utilities/addressFormat'
 import { toChecksumAddress } from 'Utilities/convert'
 
 import { getUserWeb3 } from 'Services/Web3'
@@ -112,7 +112,7 @@ export const openBlockstackWallet = () => (dispatch) => Promise.resolve().then((
 export const openViewOnlyWallet = (addressPromise) => (dispatch) => Promise.resolve(addressPromise)
   .then((address) => {
     address = typeof address === 'string' ? address.trim() : ''
-    if (!isValidAddress(address)) {
+    if (!isValidAddress(address, 'ETH')) {
       return toastr.error('Not a valid address')
     } 
     address = toChecksumAddress(address)

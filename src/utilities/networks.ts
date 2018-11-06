@@ -53,10 +53,6 @@ function network(config: StaticNetworkConfig): NetworkConfig {
   }
 }
 
-const addressEncoders = {
-  // 'P2PKH': (pubkey: Buffer, network: NetworkConfig) => bitcoin.payments.p2pkh({ pubkey, network }).address,
-}
-
 export const BTC = network({
   symbol: 'BTC',
   name: 'Bitcoin',

@@ -7,36 +7,12 @@ import { fetchGet } from 'Utilities/fetch'
 import BitcoreWallet from '../BitcoreWallet'
 
 import { Asset } from 'Types'
-import { BitcoreTransaction, FeeRate, AddressFormat } from '../types'
+import { BitcoreTransaction, FeeRate } from '../types'
 
 const DEFAULT_FEE_PER_BYTE = 10
 
 // Adjust recommended dynamic fee by manual factor
 const FEE_ADJUSTMENT_FACTOR = 2
-
-const LEGACY_FORMAT: AddressFormat = {
-  type: bchaddr.Format.Legacy,
-  label: 'Legacy',
-  description: 'Legacy address format. Inherited from forking Bitcoin.',
-  test: bchaddr.isLegacyAddress,
-  convert: bchaddr.toLegacyAddress,
-}
-
-const CASH_ADDR_FORMAT: AddressFormat = {
-  type: bchaddr.Format.Cashaddr,
-  label: 'Cash Address',
-  description: 'New Bitcoin Cash address format introduced in 2018.',
-  test: bchaddr.isCashAddress,
-  convert: bchaddr.toCashAddress,
-}
-
-const COPAY_FORMAT: AddressFormat = {
-  type: bchaddr.Format.Bitpay,
-  label: 'BitPay',
-  description: 'Proprietary format created by BitPay for their Copay app. Not widely used.',
-  test: bchaddr.isBitpayAddress,
-  convert: bchaddr.toBitpayAddress,
-}
 
 export default abstract class BitcoinCashWallet extends BitcoreWallet {
 
@@ -69,14 +45,6 @@ export default abstract class BitcoinCashWallet extends BitcoreWallet {
         rate: feePerByte,
         unit: 'sat/byte',
       }))
-  }
-
-  _getDefaultAddressFormat() {
-    return CASH_ADDR_FORMAT
-  }
-
-  _getAddressFormats() {
-    return [CASH_ADDR_FORMAT, LEGACY_FORMAT, COPAY_FORMAT]
   }
 
 }

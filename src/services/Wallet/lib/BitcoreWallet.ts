@@ -7,6 +7,7 @@ import { getBitcore, Bitcore, AccountInfo } from 'Services/Bitcore'
 import { deriveAddress, getNetworkConfig } from 'Utilities/bitcoin'
 import { NetworkConfig } from 'Utilities/networks'
 import toastr from 'Utilities/toastrWrapper'
+import { AddressFormat, getDefaultFormat, getFormats } from 'Utilities/addressFormat'
 
 import Wallet from './Wallet'
 
@@ -74,6 +75,14 @@ export default abstract class BitcoreWallet extends Wallet {
         }
         return result
       })
+  }
+
+  _getDefaultAddressFormat() {
+    return getDefaultFormat(this.assetSymbol)
+  }
+
+  _getAddressFormats() {
+    return getFormats(this.assetSymbol)
   }
 
   _getUsedAddresses() {

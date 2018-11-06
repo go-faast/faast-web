@@ -4,8 +4,8 @@ import { push } from 'react-router-redux'
 import routes from 'Routes'
 
 import { newScopedCreateAction } from 'Utilities/action'
-import { isValidAddress } from 'Utilities/wallet'
 import walletService, { EthereumWalletViewOnly } from 'Services/Wallet'
+import { isValidAddress } from 'Utilities/addressFormat'
 
 import { getWallet, getAccountSearchResultId } from 'Selectors'
 import { addWallet, updateWalletBalances } from 'Actions/wallet'
@@ -22,7 +22,7 @@ export const setAccountSearchResult = createAction('SET_RESULT')
 export const searchAddress = (addressPromise) => (dispatch, getState) => Promise.resolve(addressPromise)
   .then((address) => {
     dispatch(setAccountSearchQuery(address))
-    if (!(address && isValidAddress(address))) {
+    if (!(address && isValidAddress(address, 'ETH'))) {
       return dispatch(setAccountSearchError('Invalid address'))
     }
     const walletInstance = new EthereumWalletViewOnly(address)

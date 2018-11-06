@@ -3,17 +3,10 @@ import log from 'Utilities/log'
 
 import { Asset } from 'Types'
 import {
-  Transaction, TransactionOutput, Receipt, AddressFormat, AddressFormatOption,
+  Transaction, TransactionOutput, Receipt, AddressFormatOption,
   Amount, Balances, FeeRate, AssetProvider, WalletGetter,
 } from './types'
-
-const DEFAULT_ADDRESS_FORMAT: AddressFormat = {
-  type: 'default',
-  label: 'Default',
-  description: 'Default address format',
-  test: () => true,
-  convert: (address) => address,
-}
+import { AddressFormat, DEFAULT_FORMAT as DEFAULT_ADDRESS_FORMAT } from 'Utilities/addressFormat'
 
 export default abstract class Wallet {
 
