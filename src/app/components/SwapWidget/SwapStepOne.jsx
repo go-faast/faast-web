@@ -229,7 +229,13 @@ export default compose(
     }) => (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
       const { depositAmount, receiveAddress, refundAddress } = values
-      return createSwap({ sendAmount: toBigNumber(depositAmount), receiveAddress, refundAddress, sendSymbol: depositSymbol, receiveSymbol })
+      return createSwap({
+        sendAmount: depositAmount ? toBigNumber(depositAmount) : undefined,
+        receiveAddress,
+        refundAddress,
+        sendSymbol: depositSymbol,
+        receiveSymbol,
+      })
         .then((swap) => { 
           return searchAddress(receiveAddress)
             .then(() => {
