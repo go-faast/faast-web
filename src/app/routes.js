@@ -35,6 +35,7 @@ export const viewOnlyAddress = createPath('/address/:addressQuery')
 export const tradeHistory = createPath('/orders')
 export const tradeDetail = createPath('/orders/:tradeId')
 export const swapWidget = createPath('/swap')
+export const assetDetail = createPath('/asset/:symbol')
 
 export const connect = createPath('/connect')
 export const connectHwWallet = createPath(connect, '/hw/:walletType')
@@ -49,6 +50,7 @@ export default {
   tradeHistory,
   tradeDetail,
   swapWidget,
+  assetDetail,
   connect,
   connectHwWallet,
   connectHwWalletAsset,

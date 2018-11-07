@@ -59,7 +59,7 @@ const renderAssetRows = ({ assetRows, openCharts, toggleChart }) => {
               </a>
               <Button color='link' size='sm' onClick={() => toggleChart(symbol)} className='float-right p-0'>close chart</Button>
             </h5>
-            <PriceChart symbol={symbol} chartOpen={chartOpen} />
+            <PriceChart symbol={symbol} chartOpen={chartOpen} toggle />
           </Collapse>
         </td>
       </tr>
