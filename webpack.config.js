@@ -89,7 +89,7 @@ const assetLoader = (subDir) => ({
   options: {
     context: projectRoot,
     outputPath: assetOutputPath,
-    name: isDev ? '[path][name].[ext]' : `${subDir}/[hash].[ext]`
+    name: `${subDir}/[name].[hash:8].[ext]`
   }
 })
 const imgAssetLoader = assetLoader('img')
@@ -102,7 +102,7 @@ let config = {
   output: {
     path: dist,
     publicPath,
-    filename: bundleOutputPath + (isDev ? '[name].js' : '[name].[chunkhash].js')
+    filename: bundleOutputPath + (isDev ? '[name].js' : '[name].[chunkhash:8].js')
   },
   node: {
     fs: 'empty',
@@ -122,7 +122,7 @@ let config = {
         resourceQuery: /worker/,
         loader: 'worker-loader',
         options: {
-          name: bundleOutputPath + 'worker.[hash].js'
+          name: bundleOutputPath + 'worker.[hash:8].js'
         }
       }, {
         exclude: /node_modules/,
@@ -179,7 +179,7 @@ let config = {
       }
     }),
     new ExtractTextPlugin({
-      filename: bundleOutputPath + (isDev ? '[name].css' : '[name].[contenthash].css'),
+      filename: bundleOutputPath + (isDev ? '[name].css' : '[name].[contenthash:8].css'),
       ignoreOrder: true,
       disable: isDev
     }),
