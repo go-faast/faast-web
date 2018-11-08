@@ -14,7 +14,7 @@ class Units extends React.Component {
       value: propValue, symbol, showSymbol, prefixSymbol, showIcon, iconProps,
       precision, abbreviate, maxDigits, prefix, suffix, roundingMode, roundingType, ...props
     } = this.props
-    const value = toBigNumber(propValue)
+    let value = toBigNumber(propValue)
     let expanded = value.toFormat()
     let shrunk = expanded
     let abbrevSuffix
@@ -22,8 +22,9 @@ class Units extends React.Component {
       const abbreviated = abbreviateNumber(value, precision)
       shrunk = abbreviated.value
       abbrevSuffix = abbreviated.suffix
+      value = abbreviated.value
     }
-    if (precision && !abbreviate) {
+    if (precision) {
       shrunk = roundingType === 'dp'
         ? value.toFormat(precision, roundingMode)
         : value.toDigits(precision, roundingMode).toFormat()
