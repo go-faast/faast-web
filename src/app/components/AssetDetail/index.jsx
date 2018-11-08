@@ -1,19 +1,22 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, setPropTypes, withProps } from 'recompose'
-import { Card, CardHeader, Row, Col, CardBody, Media } from 'reactstrap'
+import { Card, CardHeader, Row, Col, CardBody, Media, Button } from 'reactstrap'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
 
 import { getAsset } from 'Selectors/asset'
+import { getHoldingsByAsset } from 'Selectors/wallet'
+import { isPriceChartLoading } from 'Selectors/priceChart'
+
 import Layout from 'Components/Layout'
 import PriceChart from 'Components/PriceChart'
 import CoinIcon from 'Components/CoinIcon'
 import Units from 'Components/Units'
 import ChangePercent from 'Components/ChangePercent'
 import ArrowIcon from 'Components/ArrowIcon'
-
 
 const getQuery = ({ match }) => match.params.symbol
 
@@ -27,74 +30,78 @@ const marketData = [
     key: 'volume24',
   },
   {
-    title: 'Available Supply',
+    title: 'Supply',
     key: 'availableSupply',
   }
 ]
 
-const AssetDetail = ({ symbol, asset }) => {
-  console.log(asset)
+const AssetDetail = ({ symbol, asset, assetHoldings, isPriceChartLoading }) => {
+  const { name, price, change24 } = asset
   return (
     <Layout className='pt-3 p-0 p-sm-3'>
       <Card>
       <CardHeader className='grid-group'>
-        <Row className='gutter-3 p-sm-0 p-3'>
+        <Row className='gutter-3 p-sm-0 p-3 d-flex'>
           <Col className='d-flex align-items-center pl-4 py-2 col-auto' size='sm'>
             <Media>
               <Media left>
-                <CoinIcon className='mr-2' symbol={symbol} style={{ width: '40px', height: '40px' }} inline/> 
+                <CoinIcon 
+                  className='mr-2 mt-1' 
+                  symbol={symbol} 
+                  style={{ width: '40px', height: '40px', position: 'relative', top: '2px' }} 
+                  inline
+                /> 
               </Media>
               <Media body>
-                <Media className='m-0 font-weight-bold' heading>
-                  {asset.name}
+                <Media className='m-0 mt-1 font-weight-bold' heading>
+                  {name}
                 </Media>
-                <small className='text-muted'>[{symbol}]</small>
+                <small style={{ position: 'relative', top: '-5px' }} className='text-muted'>[{symbol}]</small>
               </Media>
             </Media>
           </Col>
-          <Col size='sm'>
+          <Col className='col-sm-8 col-md-8 col-lg-2 col-6'>
             <div className='pl-4 py-2'>
               <div className='mb-0'>
                 <Units 
                   className='mt-1 d-inline-block font-weight-bold'
-                  value={asset.price} 
+                  value={price} 
                   symbol={'$'} 
                   precision={6} 
                   prefixSymbol
                 />
               </div>
-              <small style={{ position: 'relative', top: '-5px' }}><ChangePercent>{asset.change24}</ChangePercent></small>
+              <small style={{ position: 'relative', top: '-5px' }}><ChangePercent>{change24}</ChangePercent></small>
               <ArrowIcon
                 style={{ position: 'relative', top: '-5px' }}
-                className={classNames('swapChangeArrow', asset.change24.isZero() ? 'd-none' : null)} 
-                size={.58} dir={asset.change24 < 0 ? 'down' : 'up'} 
-                color={asset.change24 < 0 ? 'danger' : asset.change24 > 0 ? 'success' : null}
+                className={classNames('swapChangeArrow', change24.isZero() ? 'd-none' : null)} 
+                size={.58} dir={change24 < 0 ? 'down' : 'up'} 
+                color={change24 < 0 ? 'danger' : change24 > 0 ? 'success' : null}
               />
             </div>
           </Col>
-          <Col className='d-flex align-items-center'>
-            <div className='py-2'>
-              <div className='d-flex flex-nowrap text-muted mb-0'>
-                <span>Buy </span>
-                <span>Sell</span>
-              </div>
-            </div>
-          </Col>
-          <Col className='col-auto mr-5' size='sm'>
+          <Col className='col-auto ml-3 mr-3' size='sm'>
             <div className='py-2'>
               <div className='text-muted mb-0'>
-                Holdings
+                <small>Holdings</small>
               </div>
-              <small className={classNames('mb-0')}>{symbol}</small>
+                <Units 
+                  value={assetHoldings || 0} 
+                  symbol={symbol} 
+                  precision={6}
+                />
             </div>
           </Col>
-          {marketData.map(({ title, key }) => {
+          {marketData.map(({ title, key }, i) => {
             const flag = (key !== 'availableSupply')
             return (
-              <Col key={title} className='col-auto ml-2 mr-3' size='sm'>
+              <Col 
+                key={i} 
+                className={classNames('ml-3 mr-3 d-flex', marketData.length - 1 == i ? 'col-2' : 'col-auto')}
+              >
                 <div className='py-2'>
                   <div className='text-muted mb-0'>
-                    {title}
+                    <small>{title}</small>
                   </div>
                   <Units 
                     value={asset[key]} 
@@ -106,10 +113,25 @@ const AssetDetail = ({ symbol, asset }) => {
               </Col>
             )
           })}
+          <Col className='d-flex align-items-center flex-row-reverse ml-2 mr-2'>
+            <div className='py-2'>
+              <div className='d-flex flex-nowrap text-muted mb-0'>
+                <Link to={`/swap?to=${symbol}&from=ETH`}>
+                  <Button className='mr-2' color='success' size='sm'>Buy {symbol}</Button>
+                </Link>
+                <Link to={`/swap?to=BTC&from=${symbol}`}>
+                  <Button color='danger' size='sm'>Sell {symbol}</Button>
+                </Link>
+              </div>
+            </div>
+          </Col>
         </Row>
       </CardHeader>
-      <CardBody>
-        <PriceChart symbol={symbol} chartOpen/>
+      <CardBody className='text-center'>
+        {isPriceChartLoading ? 
+          <i className='fa fa-spinner fa-pulse'/> :
+          <PriceChart symbol={symbol} chartOpen/> 
+        }
       </CardBody>
     </Card>
     </Layout>
@@ -129,7 +151,8 @@ export default compose(
     }),
     connect(createStructuredSelector({
       asset: (state, { symbol }) => getAsset(state, symbol),
-
+      assetHoldings: (state, { symbol }) => getHoldingsByAsset(state, symbol),
+      isPriceChartLoading: (state, { symbol }) => isPriceChartLoading(state, symbol)
     }), {
-    }),
+    })
   )(AssetDetail)
