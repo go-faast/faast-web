@@ -110,7 +110,7 @@ const AssetDetail = ({ symbol, asset, assetHoldings, isPriceChartLoading }) => {
                     className='text-nowrap'
                     value={asset[jsonKey]} 
                     symbol={fiat ? '$' : asset.symbol} 
-                    precision={6} 
+                    precision={2} 
                     prefixSymbol={fiat}
                     abbreviate
                   />

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
 import { omit } from 'lodash'
 
-import { toBigNumber, abbreviateNumbers } from 'Utilities/convert'
+import { toBigNumber, abbreviateNumber } from 'Utilities/convert'
 import { numberish } from 'Utilities/propTypes'
 import Expandable from 'Components/Expandable'
 import CoinIcon from 'Components/CoinIcon'
@@ -16,10 +16,14 @@ class Units extends React.Component {
     } = this.props
     const value = toBigNumber(propValue)
     let expanded = value.toFormat()
-    let shrunk = abbreviate ? abbreviateNumbers(value) : expanded
-    if (precision && (!abbreviate || (typeof shrunk == 'object' && abbreviate))) {
-      // if statement === true:  if precise && not abbr. 
-      // if precise && _cannot_ be abbr. (ex: 500.18) => returns BigNumber object
+    let shrunk = expanded
+    let abbrevSuffix
+    if (abbreviate) {
+      const abbreviated = abbreviateNumber(value, precision)
+      shrunk = abbreviated.value
+      abbrevSuffix = abbreviated.suffix
+    }
+    if (precision && !abbreviate) {
       shrunk = roundingType === 'dp'
         ? value.toFormat(precision, roundingMode)
         : value.toDigits(precision, roundingMode).toFormat()
@@ -27,6 +31,9 @@ class Units extends React.Component {
       if (maxDigits && digitCount > maxDigits) {
         shrunk = value.toExponential(precision)
       }
+    }
+    if (abbrevSuffix) {
+      shrunk = `${shrunk}${abbrevSuffix}`
     }
     if (symbol) {
       // Expanded form should always include symbol

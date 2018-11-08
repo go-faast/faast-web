@@ -104,10 +104,17 @@ export function secondsToTime(secs: number): { hours: string, minutes: string, s
   return timeObj
 }
 
-export function abbreviateNumbers(n: any) {
-  const m = n.toNumber()
-  const base = Math.floor(Math.log(Math.abs(m)) / Math.log(1000))
-  const suffix = 'KMBT'[base - 1]
-  const numerical = toPrecision(m / Math.pow(1000, base) , 2)
-  return suffix ? numerical + suffix : n
+const abbreviateSuffixes =  'KMBT'
+const THOUSAND = toBigNumber(1000)
+export function abbreviateNumber(n: Numerical, precision: number): { value: BigNumber, suffix?: string } {
+  n = toBigNumber(n)
+  if (n.lt(THOUSAND)) {
+    return { value: n }
+  }
+  const digits = n.abs().floor().sd()
+  const base = Math.min(Math.ceil(digits / 3), abbreviateSuffixes.length)
+  const suffix = abbreviateSuffixes[base - 2]
+  const abbreviated = n.div(THOUSAND.pow(base - 1))
+  abbreviated = toPrecision(abbreviated, precision)
+  return { value: abbreviated, suffix }
 }
