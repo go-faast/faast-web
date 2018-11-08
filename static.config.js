@@ -1,9 +1,9 @@
 import React from 'react'
 import path from 'path'
 import axios from 'axios'
-import ExtractTextPlugin from 'extract-text-webpack-plugin'
 
 const webpackConfig = require('./webpack.config.js')
+const { getRules } = require('./etc/webpack.common.js')
 
 const Document = ({ Html, Head, Body, children }) => (
   <Html lang="en-US">
@@ -38,7 +38,7 @@ export default {
       },
     ]
   },
-  webpack: (config, { defaultLoaders, stage }) => {
+  webpack: (config, { stage }) => {
     config.resolve.extensions = webpackConfig.resolve.extensions
     config.resolve.alias = webpackConfig.resolve.alias
     config.node = {
@@ -46,82 +46,7 @@ export default {
       ...webpackConfig.node,
     }
 
-    let sassLoaders = []
-    if (stage === 'dev') {
-      sassLoaders = [{ loader: 'style-loader' }, { loader: 'css-loader' }, { loader: 'sass-loader' }]
-    } else {
-      sassLoaders = [
-        {
-          loader: 'css-loader',
-          options: {
-            importLoaders: 1,
-            minimize: stage === 'prod',
-            sourceMap: true,
-          },
-        },
-        {
-          loader: 'postcss-loader',
-          options: {
-            sourceMap: true,
-            config: {
-              path: path.resolve(__dirname, './postcss.config.js'),
-            }
-          }
-        },
-        {
-          loader: 'sass-loader',
-          options: {
-            sourceMap: true,
-            includePaths: [path.join(__dirname, 'node_modules')],
-            sourceMapContents: true,
-            outputStyle: 'expanded',
-            precision: 6,
-          },
-        },
-      ]
-
-      // Don't extract css to file during node build process
-      if (stage !== 'node') {
-        sassLoaders = ExtractTextPlugin.extract({
-          fallback: {
-            loader: 'style-loader',
-            options: {
-              sourceMap: true,
-              hmr: false,
-            },
-          },
-          use: sassLoaders,
-        })
-      }
-    }
-
-    config.module.rules = [
-      {
-        oneOf: [
-          {
-            test: /\.s(a|c)ss$/,
-            use: sassLoaders,
-          },
-          {
-            test: /\.(js|jsx|ts|tsx)$/,
-            exclude: defaultLoaders.jsLoader.exclude, // as std jsLoader exclude
-            use: [
-              {
-                loader: 'babel-loader',
-              },
-              {
-                loader: require.resolve('ts-loader'),
-                options: {
-                  transpileOnly: true,
-                },
-              },
-            ],
-          },
-          defaultLoaders.cssLoader,
-          defaultLoaders.fileLoader,
-        ],
-      },
-    ]
+    config.module.rules = getRules(stage)
     return config
   },
 }
