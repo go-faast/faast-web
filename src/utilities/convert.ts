@@ -104,7 +104,7 @@ export function secondsToTime(secs: number): { hours: string, minutes: string, s
   return timeObj
 }
 
-const abbreviateSuffixes =  'KMBT'
+const abbreviateSuffixes = 'KMBT'
 const THOUSAND = toBigNumber(1000)
 export function abbreviateNumber(n: Numerical): { value: BigNumber, suffix?: string } {
   n = toBigNumber(n)
