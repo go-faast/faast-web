@@ -16,8 +16,8 @@ class Units extends React.Component {
     } = this.props
     const value = toBigNumber(propValue)
     let expanded = value.toFormat()
-    let shrunk = expanded
-    if (precision) {
+    let shrunk = abbreviate ? abbreviateNumbers(value) : expanded
+    if (precision && !abbreviate) {
       shrunk = roundingType === 'dp'
         ? value.toFormat(precision, roundingMode)
         : value.toDigits(precision, roundingMode).toFormat()
@@ -26,7 +26,6 @@ class Units extends React.Component {
         shrunk = value.toExponential(precision)
       }
     }
-    shrunk = abbreviate ? abbreviateNumbers(value) : shrunk
     if (symbol) {
       // Expanded form should always include symbol
       expanded = prefixSymbol ? `${symbol} ${expanded}` : `${expanded} ${symbol}`
