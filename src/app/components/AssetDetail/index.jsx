@@ -36,7 +36,7 @@ const marketData = [
 ]
 
 const AssetDetail = ({ symbol, asset, assetHoldings, isPriceChartLoading }) => {
-  const { name, price, change24 } = asset
+  const { name, price, change24, deposit, receive } = asset
   return (
     <Layout className='pt-3 p-0 p-sm-3'>
       <Card>
@@ -118,10 +118,10 @@ const AssetDetail = ({ symbol, asset, assetHoldings, isPriceChartLoading }) => {
             <div className='py-2'>
               <div className='d-flex flex-nowrap text-muted mb-0'>
                 <Link to={`/swap?to=${symbol}&from=ETH`}>
-                  <Button className='mr-2' color='success' size='sm'>Buy {symbol}</Button>
+                  <Button className='mr-2' color='success' size='sm' disabled={!receive}>Buy {symbol}</Button>
                 </Link>
                 <Link to={`/swap?to=BTC&from=${symbol}`}>
-                  <Button color='danger' size='sm'>Sell {symbol}</Button>
+                  <Button color='danger' size='sm' disabled={!deposit}>Sell {symbol}</Button>
                 </Link>
               </div>
             </div>
