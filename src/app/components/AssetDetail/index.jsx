@@ -103,7 +103,8 @@ const AssetDetail = ({ symbol, asset, assetHoldings, isPriceChartLoading }) => {
                   <div className='text-muted mb-0'>
                     <small>{title}</small>
                   </div>
-                  <Units 
+                  <Units
+                    class='text-nowrap'
                     value={asset[key]} 
                     symbol={flag ? '$' : asset.symbol} 
                     precision={6} 
