@@ -112,8 +112,8 @@ export function abbreviateNumber(n: Numerical): { value: BigNumber, suffix?: str
     return { value: n }
   }
   const digits = n.abs().floor().sd()
-  const base = Math.min(Math.ceil(digits / 3), abbreviateSuffixes.length)
-  const suffix = abbreviateSuffixes[base - 2]
-  const abbreviated = n.div(THOUSAND.pow(base - 1))
+  const base = Math.min(Math.ceil(digits / 3), abbreviateSuffixes.length) - 1
+  const suffix = abbreviateSuffixes[base - 1]
+  const abbreviated = n.div(THOUSAND.pow(base))
   return { value: abbreviated, suffix }
 }
