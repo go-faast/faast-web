@@ -62,7 +62,7 @@ function getAddressTester(asset) {
 
 export function walletAddress(asset) {
   const { symbol } = asset
-  const isValidAddress = getAddressTester(asset)
+  const isValidAddress = (asset) => getAddressTester(asset)
   return (value) => {
     if (isProvided(value) && !isValidAddress(value)) {
       return `Invalid ${symbol} address.`
