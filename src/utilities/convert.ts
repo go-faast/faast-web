@@ -104,15 +104,10 @@ export function secondsToTime(secs: number): { hours: string, minutes: string, s
   return timeObj
 }
 
-function round(n: number, precision: number): number {
-  const prec = Math.pow(10, precision);
-  return Math.round(n * prec) / prec;
-}
-
 export function abbreviateNumbers(n: any) {
-  n = n.replace(/\D/g, '');
-  n = parseInt(n)
-  const base = Math.floor(Math.log(Math.abs(n)) / Math.log(1000))
+  const m = n.toNumber()
+  const base = Math.floor(Math.log(Math.abs(m)) / Math.log(1000))
   const suffix = 'KMBT'[base - 1]
-  return suffix ? round(n / Math.pow(1000, base), 2) + suffix : '' + n
+  const numerical = toPrecision(m / Math.pow(1000, base) , 2)
+  return suffix ? numerical + suffix : '' + n
 }

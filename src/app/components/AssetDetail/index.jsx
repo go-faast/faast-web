@@ -11,6 +11,9 @@ import { getAsset } from 'Selectors/asset'
 import { getHoldingsByAsset } from 'Selectors/wallet'
 import { isPriceChartLoading } from 'Selectors/priceChart'
 
+import conditionalRedirect from 'Hoc/conditionalRedirect'
+import routes from 'Routes'
+
 import Layout from 'Components/Layout'
 import PriceChart from 'Components/PriceChart'
 import CoinIcon from 'Components/CoinIcon'
@@ -23,25 +26,23 @@ const getQuery = ({ match }) => match.params.symbol
 const marketData = [
   {
     title: 'Market Cap',
-    key: 'marketCap',
+    jsonKey: 'marketCap',
+    fiat: true,
   },
   {
     title: '24hr Volume',
-    key: 'volume24',
+    jsonKey: 'volume24',
+    fiat: true,
   },
   {
     title: 'Supply',
-    key: 'availableSupply',
+    jsonKey: 'availableSupply',
+    fiat: false,
   }
 ]
 
-let TO_ASSET = 'BTC'
-let FROM_ASSET = 'ETH'
-
 const AssetDetail = ({ symbol, asset, assetHoldings, isPriceChartLoading }) => {
   const { name, price, change24, deposit, receive } = asset
-  if (symbol === 'BTC') { TO_ASSET = 'ETH' }
-  if (symbol === 'ETH') { FROM_ASSET = 'BTC' }
   return (
     <Layout className='pt-3 p-0 p-sm-3'>
       <Card>
@@ -85,10 +86,11 @@ const AssetDetail = ({ symbol, asset, assetHoldings, isPriceChartLoading }) => {
               />
             </div>
           </Col>
+          {assetHoldings ? (
           <Col className='col-auto ml-3 mr-3' size='sm'>
             <div className='py-2'>
               <div className='text-muted mb-0'>
-                <small>Holdings</small>
+                <small>Your Holdings</small>
               </div>
                 <Units 
                   value={assetHoldings || 0} 
@@ -96,9 +98,8 @@ const AssetDetail = ({ symbol, asset, assetHoldings, isPriceChartLoading }) => {
                   precision={6}
                 />
             </div>
-          </Col>
-          {marketData.map(({ title, key }, i) => {
-            const flag = (key !== 'availableSupply')
+          </Col>) : null}
+          {marketData.map(({ title, jsonKey, fiat }, i) => {
             return (
               <Col key={i} className='ml-3 mr-3 d-flex col-auto'>
                 <div className='py-2'>
@@ -107,10 +108,10 @@ const AssetDetail = ({ symbol, asset, assetHoldings, isPriceChartLoading }) => {
                   </div>
                   <Units
                     className='text-nowrap'
-                    value={asset[key]} 
-                    symbol={flag ? '$' : asset.symbol} 
+                    value={asset[jsonKey]} 
+                    symbol={fiat ? '$' : asset.symbol} 
                     precision={6} 
-                    prefixSymbol={flag}
+                    prefixSymbol={fiat}
                     abbreviate
                   />
                 </div>
@@ -120,10 +121,10 @@ const AssetDetail = ({ symbol, asset, assetHoldings, isPriceChartLoading }) => {
           <Col className='d-flex align-items-center flex-row-reverse ml-2 mr-2'>
             <div className='py-2'>
               <div className='d-flex flex-nowrap text-muted mb-0'>
-                <Link to={`/swap?to=${symbol}&from=${FROM_ASSET}`}>
+                <Link to={`/swap?to=${symbol}`}>
                   <Button className='mr-2' color='success' size='sm' disabled={!receive}>Buy {symbol}</Button>
                 </Link>
-                <Link to={`/swap?to=${TO_ASSET}&from=${symbol}`}>
+                <Link to={`/swap?from=${symbol}`}>
                   <Button color='danger' size='sm' disabled={!deposit}>Sell {symbol}</Button>
                 </Link>
               </div>
@@ -150,7 +151,7 @@ export default compose(
   withProps((props) => {
     const symbol = getQuery(props).toUpperCase()
     return ({
-      symbol
+      symbol,
     })
   }),
   connect(createStructuredSelector({
@@ -158,5 +159,9 @@ export default compose(
     assetHoldings: (state, { symbol }) => getHoldingsByAsset(state, symbol),
     isPriceChartLoading: (state, { symbol }) => isPriceChartLoading(state, symbol)
   }), {
-  })
+  }),
+  conditionalRedirect(
+    routes.dashboard(),
+    ({ asset }) => !asset
+  ),
 )(AssetDetail)

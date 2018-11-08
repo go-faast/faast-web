@@ -11,6 +11,10 @@
   word-break: break-all;
 }
 
+.highcharts-credits {
+  display: none !important;
+}
+
 @-webkit-keyframes blinker {
   from { opacity: 1.0; }
   to { opacity: 0.0; }

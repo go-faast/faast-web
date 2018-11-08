@@ -26,7 +26,7 @@ class Units extends React.Component {
         shrunk = value.toExponential(precision)
       }
     }
-    if (abbreviate) { shrunk = abbreviateNumbers(shrunk); console.log(shrunk) }
+    shrunk = abbreviate ? abbreviateNumbers(value) : shrunk
     if (symbol) {
       // Expanded form should always include symbol
       expanded = prefixSymbol ? `${symbol} ${expanded}` : `${expanded} ${symbol}`
