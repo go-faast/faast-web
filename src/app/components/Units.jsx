@@ -17,7 +17,9 @@ class Units extends React.Component {
     const value = toBigNumber(propValue)
     let expanded = value.toFormat()
     let shrunk = abbreviate ? abbreviateNumbers(value) : expanded
-    if (precision && !abbreviate) {
+    if (precision && (!abbreviate || (typeof shrunk == 'object' && abbreviate))) {
+      // if statement === true:  if precise && not abbr. 
+      // if precise && _cannot_ be abbr. (ex: 500.18) => returns BigNumber object
       shrunk = roundingType === 'dp'
         ? value.toFormat(precision, roundingMode)
         : value.toDigits(precision, roundingMode).toFormat()

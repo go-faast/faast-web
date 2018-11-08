@@ -109,5 +109,5 @@ export function abbreviateNumbers(n: any) {
   const base = Math.floor(Math.log(Math.abs(m)) / Math.log(1000))
   const suffix = 'KMBT'[base - 1]
   const numerical = toPrecision(m / Math.pow(1000, base) , 2)
-  return suffix ? numerical + suffix : '' + n
+  return suffix ? numerical + suffix : n
 }
