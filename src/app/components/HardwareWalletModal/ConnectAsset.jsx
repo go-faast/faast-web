@@ -26,7 +26,6 @@ export default compose(
   setPropTypes({
     walletType: PropTypes.string.isRequired,
     assetSymbol: PropTypes.string.isRequired,
-    assetConfig: PropTypes.object.isRequired,
   }),
   connect(createStructuredSelector({
     isConnected: isStatusConnected,
