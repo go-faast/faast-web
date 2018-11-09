@@ -25,7 +25,7 @@ import { updateQueryStringReplace } from 'Actions/router'
 import { retrievePairData } from 'Actions/rate'
 import { searchAddress, addToPortfolio } from 'Actions/accountSearch'
 import PropTypes from 'prop-types'
-import { getRateMinimumDeposit, getRatePrice } from 'Selectors/rate'
+import { getRateMinimumDeposit, getRatePrice, isRateLoaded } from 'Selectors/rate'
 import * as validator from 'Utilities/validator'
 
 const DEFAULT_DEPOSIT = 'BTC'
@@ -199,6 +199,7 @@ export default compose(
     },
   })),
   connect(createStructuredSelector({
+    rateLoaded: (state, { pair }) => isRateLoaded(state, pair),
     minimumDeposit: (state, { pair }) => getRateMinimumDeposit(state, pair),
     estimatedRate: (state, { pair }) => getRatePrice(state, pair),
   }), {
@@ -258,8 +259,8 @@ export default compose(
   }),
   lifecycle({
     componentDidUpdate() {
-      const { minimumDeposit, pair, retrievePairData } = this.props
-      if (pair && !minimumDeposit) {
+      const { rateLoaded, pair, retrievePairData } = this.props
+      if (pair && !rateLoaded) {
         retrievePairData(pair)
       }
     },
