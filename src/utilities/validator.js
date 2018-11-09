@@ -51,21 +51,23 @@ export function greaterThan(x) {
   }
 }
 
-function getAddressTester(asset) {
+function getAddressValidator(asset) {
   const { symbol, ERC20 } = asset
   let networkSymbol = symbol
   if (ERC20) {
-    return networkSymbol = 'ETH'
+    networkSymbol = 'ETH'
   }
-  return getDefaultFormat(networkSymbol).test
+  return getDefaultFormat(networkSymbol).validate
 }
 
 export function walletAddress(asset) {
-  const { symbol } = asset
-  const isValidAddress = (asset) => getAddressTester(asset)
+  const validateAddress = getAddressValidator(asset)
   return (value) => {
-    if (isProvided(value) && !isValidAddress(value)) {
-      return `Invalid ${symbol} address.`
+    if (isProvided(value)) {
+      const error = validateAddress(value)
+      if (error) {
+        return error
+      }
     }
   }
 }
