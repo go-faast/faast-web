@@ -252,10 +252,12 @@ export default compose(
       const { updateQueryString, depositSymbol, receiveSymbol } = this.props
       if (depositSymbol === receiveSymbol) {
         let to = DEFAULT_RECEIVE
-        if (to === depositSymbol) {
+        let from = DEFAULT_DEPOSIT
+        if (to === depositSymbol || from === receiveSymbol) {
+          from = to
           to = DEFAULT_DEPOSIT
         }
-        updateQueryString({ to })
+        updateQueryString({ to, from })
       }
     }
   }),
