@@ -232,7 +232,7 @@ export default compose(
     },
     validateReceiveAddress: ({ receiveAsset }) => validator.all(validator.required('A valid wallet address is required.'), validator.walletAddress(receiveAsset)),
     validateRefundAddress: ({ depositAsset }) => validator.walletAddress(depositAsset),
-    validateDepositAmount: ({ minimumDeposit, depositSymbol }) => validator.all(validator.number(), validator.greaterThan(minimumDeposit, `The minimum deposit for this swap is ${minimumDeposit} ${depositSymbol}.`)),
+    validateDepositAmount: ({ minimumDeposit, depositSymbol }) => validator.all(validator.number(), validator.greaterThan(minimumDeposit, `Deposit amount must be at least ${minimumDeposit} ${depositSymbol}.`)),
     onSubmit: ({
       depositSymbol, receiveAsset, 
       createSwap, searchAddress, isAlreadyInPortfolio, addWalletToPortfolio, push
@@ -274,6 +274,7 @@ export default compose(
           to = DEFAULT_DEPOSIT
         }
         updateQueryString({ to, from })
+      } else {
         retrievePairData(pair)
       }
     }
