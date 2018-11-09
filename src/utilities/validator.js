@@ -43,10 +43,10 @@ export function number() {
   }
 }
 
-export function greaterThan(x) {
+export function greaterThan(x, errorMessage = `Must be greater than ${x}`) {
   return (value) => {
     if (isNumber(value) && value <= x) {
-      return `Must be greater than ${x}`
+      return errorMessage
     }
   }
 }
