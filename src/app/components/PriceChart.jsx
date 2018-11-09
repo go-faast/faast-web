@@ -151,10 +151,12 @@ export default compose(
   }),
   setPropTypes({
     symbol: PropTypes.string.isRequired,
-    chartOpen: PropTypes.bool
+    chartOpen: PropTypes.bool,
+    toggle: PropTypes.bool
   }),
   defaultProps({
-    chartOpen: false
+    chartOpen: false,
+    toggle: false
   }),
   withProps(({ data }) => {
     const config = (data 
@@ -170,8 +172,14 @@ export default compose(
   }),
   lifecycle({
     componentDidUpdate (prevProps) {
-      const { symbol, chartOpen, fetchPriceChart } = this.props
-      if (!prevProps.chartOpen && chartOpen) {
+      const { symbol, chartOpen, fetchPriceChart, toggle } = this.props
+      if (!prevProps.chartOpen && chartOpen || !toggle && chartOpen) {
+        fetchPriceChart(symbol)
+      }
+    },
+    componentWillMount() {
+      const { symbol, chartOpen, fetchPriceChart, toggle } = this.props
+      if (!toggle && chartOpen) {
         fetchPriceChart(symbol)
       }
     }

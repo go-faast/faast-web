@@ -137,3 +137,17 @@ export const getWalletWithHoldings = createItemSelector(
     return result
   }
 )
+
+export const getHoldingsByAsset = createItemSelector(
+  getAllWalletsArray,
+  selectItemId,
+  (wallets, symbol) => {
+    let balance = undefined;
+    wallets.map(({ id, balances }) => {
+      if (id === 'default') {
+        balance = balances[symbol]
+      }
+    })
+    return balance
+  }
+)

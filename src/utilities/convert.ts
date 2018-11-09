@@ -103,3 +103,17 @@ export function secondsToTime(secs: number): { hours: string, minutes: string, s
   if (parseInt(seconds) < 0) { timeObj = { hours: '0', minutes: '00', seconds: '00' } }
   return timeObj
 }
+
+const abbreviateSuffixes = 'KMBT'
+const THOUSAND = toBigNumber(1000)
+export function abbreviateNumber(n: Numerical): { value: BigNumber, suffix?: string } {
+  n = toBigNumber(n)
+  if (n.lt(THOUSAND)) {
+    return { value: n }
+  }
+  const digits = n.abs().floor().toString().length
+  const base = Math.min(Math.ceil(digits / 3), abbreviateSuffixes.length) - 1
+  const suffix = abbreviateSuffixes[base - 1]
+  const abbreviated = n.div(THOUSAND.pow(base))
+  return { value: abbreviated, suffix }
+}
