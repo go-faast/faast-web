@@ -22,7 +22,7 @@ import { defaultPortfolioId } from 'Actions/portfolio'
 import { retrieveSwaps } from 'Actions/swap'
 
 /** Add a wallet, add it to the current portfolio, and restore swap status */
-export const openWallet = (walletPromise) => (dispatch, getState) => Promise.resolve(walletPromise)
+export const openWallet = (walletPromise, forwardUrl = null) => (dispatch, getState) => Promise.resolve(walletPromise)
   .then((wallet) => {
     if (isString(wallet)) {
       wallet = getWallet(getState(), wallet)
@@ -50,21 +50,25 @@ export const openWallet = (walletPromise) => (dispatch, getState) => Promise.res
         dispatch(retrieveSwaps(walletId))
       })
   })
-
-/** Do everything in openWallet and then redirect to the dashboard */
-export const openWalletAndRedirect = (walletPromise, forwardURL = '/dashboard') => (dispatch) => Promise.resolve(walletPromise)
-  .then((wallet) => dispatch(openWallet(wallet)))
-  .then(() => dispatch(push(forwardURL)))
-  .catch((e) => {
-    log.error(e)
-    toastr.error(e.message)
+  .then(() => {
+    if (forwardUrl) {
+      dispatch(push(forwardUrl))
+    }
   })
 
-export const openWeb3Wallet = (selectedProvider) => (dispatch) => {
+/** Do everything in openWallet and then redirect to the dashboard */
+export const openWalletAndRedirect = (walletPromise, forwardUrl = routes.dashboard()) => (dispatch) =>
+  dispatch(openWallet(walletPromise, forwardUrl))
+    .catch((e) => {
+      log.error(e)
+      toastr.error(e.message)
+    })
+
+export const openWeb3Wallet = (selectedProvider, forwardUrl) => (dispatch) => {
   return getUserWeb3()
     .then(() => dispatch(openWalletAndRedirect(
       EthereumWalletWeb3.fromDefaultAccount(selectedProvider),
-      routes.dashboard())))
+      forwardUrl)))
     .catch((e) => {
       log.error(e)
       const providerName = config.walletTypes[selectedProvider].name
@@ -80,7 +84,7 @@ export const openWeb3Wallet = (selectedProvider) => (dispatch) => {
     })
 }
 
-export const openKeystoreFileWallet = (filesPromise) => (dispatch) => Promise.resolve(filesPromise)
+export const openKeystoreFileWallet = (filesPromise, forwardUrl) => (dispatch) => Promise.resolve(filesPromise)
   .then((files) => {
     const file = files[0]
     const reader = new window.FileReader()
@@ -90,13 +94,13 @@ export const openKeystoreFileWallet = (filesPromise) => (dispatch) => Promise.re
       if (!encryptedWalletString) return toastr.error('Unable to read keystore file')
 
       const wallet = new EthereumWalletKeystore(encryptedWalletString)
-      dispatch(openWalletAndRedirect(wallet, routes.dashboard()))
+      dispatch(openWalletAndRedirect(wallet, forwardUrl))
     }
 
     reader.readAsText(file)
   })
 
-export const openBlockstackWallet = () => (dispatch) => Promise.resolve().then(() => {
+export const openBlockstackWallet = (forwardUrl) => (dispatch) => Promise.resolve().then(() => {
   if (!blockstack.isUserSignedIn()) {
     blockstack.redirectToSignIn(filterUrl())
   } else {
@@ -104,12 +108,12 @@ export const openBlockstackWallet = () => (dispatch) => Promise.resolve().then((
     if (!wallet) {
       return toastr.error('Unable to open Blockstack wallet')
     }
-    return dispatch(openWalletAndRedirect(wallet, routes.dashboard()))
+    return dispatch(openWalletAndRedirect(wallet, forwardUrl))
   }
 })
 
 /** Opens a view only wallet and adds it to the current portfolio */
-export const openViewOnlyWallet = (addressPromise) => (dispatch) => Promise.resolve(addressPromise)
+export const openViewOnlyWallet = (addressPromise, forwardUrl) => (dispatch) => Promise.resolve(addressPromise)
   .then((address) => {
     address = typeof address === 'string' ? address.trim() : ''
     if (!isValidAddress(address, 'ETH')) {
@@ -117,5 +121,5 @@ export const openViewOnlyWallet = (addressPromise) => (dispatch) => Promise.reso
     } 
     address = toChecksumAddress(address)
     const wallet = new EthereumWalletViewOnly(address)
-    return dispatch(openWalletAndRedirect(wallet, routes.dashboard()))
+    return dispatch(openWalletAndRedirect(wallet, forwardUrl))
   })

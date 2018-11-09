@@ -22,15 +22,17 @@ import { toBigNumber } from 'Utilities/convert'
 import SwapIcon from 'Img/swap-icon.svg?inline'
 import { createManualSwap } from 'Actions/swap'
 import { updateQueryStringReplace } from 'Actions/router'
-import { searchAddress, addToPortfolio } from 'Actions/accountSearch'
+import { retrievePairData } from 'Actions/rate'
+import { openViewOnlyWallet } from 'Actions/access'
 import PropTypes from 'prop-types'
+import { getRateMinimumDeposit, getRatePrice, isRateLoaded } from 'Selectors/rate'
 import * as validator from 'Utilities/validator'
 
 const DEFAULT_DEPOSIT = 'BTC'
 const DEFAULT_RECEIVE = 'ETH'
 
 const SwapStepOne = ({
-  change, submitting, invalid,
+  change, submitting,
   depositSymbol, receiveSymbol, supportedAssets, assetSelect, setAssetSelect, 
   validateReceiveAddress, validateRefundAddress, validateDepositAmount,
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled
@@ -135,7 +137,7 @@ const SwapStepOne = ({
               />
             </div>
           </div>
-          <Button className={classNames('mt-2 mb-2 mx-auto', submitButton)} color='primary' type='submit' disabled={invalid || submitting}>
+          <Button className={classNames('mt-2 mb-2 mx-auto', submitButton)} color='primary' type='submit' disabled={submitting}>
             {!submitting ? 'Create Swap' : 'Generating Swap...' }
           </Button>
         </Form>
@@ -181,19 +183,26 @@ export default compose(
     receiveAsset: (state, { receiveSymbol }) => getAsset(state, receiveSymbol),
   }), {
     createSwap: createManualSwap,
-    searchAddress: searchAddress,
-    addWalletToPortfolio: addToPortfolio,
     push: pushAction,
     updateQueryString: updateQueryStringReplace,
+    retrievePairData: retrievePairData,
+    openViewOnly: openViewOnlyWallet,
   }),
-  withProps(({ assets, receiveAddress, depositAmount, refundAddress }) => ({
+  withProps(({ assets, receiveAddress, depositAmount, refundAddress, depositSymbol, receiveSymbol }) => ({
     supportedAssets: assets.map(({ symbol }) => symbol),
+    pair: `${depositSymbol}_${receiveSymbol}`,
     initialValues: {
       receiveAddress,
       depositAmount,
       refundAddress
     },
   })),
+  connect(createStructuredSelector({
+    rateLoaded: (state, { pair }) => isRateLoaded(state, pair),
+    minimumDeposit: (state, { pair }) => getRateMinimumDeposit(state, pair),
+    estimatedRate: (state, { pair }) => getRatePrice(state, pair),
+  }), {
+  }),
   withState('assetSelect', 'setAssetSelect', null), // deposit, receive, or null
   withHandlers({
     isAssetDisabled: ({ assetSelect }) => ({ deposit, receive }) =>
@@ -220,12 +229,12 @@ export default compose(
     handleSwitchAssets: ({ updateQueryString, depositSymbol, receiveSymbol }) => () => {
       updateQueryString({ from: receiveSymbol, to: depositSymbol })
     },
-    validateReceiveAddress: ({ receiveAsset }) => validator.all(validator.required(), validator.walletAddress(receiveAsset)),
+    validateReceiveAddress: ({ receiveAsset }) => validator.all(validator.required('A valid wallet address is required.'), validator.walletAddress(receiveAsset)),
     validateRefundAddress: ({ depositAsset }) => validator.walletAddress(depositAsset),
-    validateDepositAmount: () => validator.all(validator.number(), validator.greaterThan(0)),
+    validateDepositAmount: ({ minimumDeposit, depositSymbol }) => validator.all(validator.number(), validator.greaterThan(minimumDeposit, `Deposit amount must be at least ${minimumDeposit} ${depositSymbol}.`)),
     onSubmit: ({
       depositSymbol, receiveAsset, 
-      createSwap, searchAddress, isAlreadyInPortfolio, addWalletToPortfolio, push
+      createSwap, openViewOnly, isAlreadyInPortfolio, push
     }) => (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
       const { depositAmount, receiveAddress, refundAddress } = values
@@ -236,20 +245,23 @@ export default compose(
         sendSymbol: depositSymbol,
         receiveSymbol,
       })
-        .then((swap) => { 
-          return searchAddress(receiveAddress)
-            .then(() => {
-              if (!isAlreadyInPortfolio && receiveSymbol === 'ETH' || ERC20) { 
-                return addWalletToPortfolio(`/swap?id=${swap.orderId}`) 
-              }
-              return push(`/swap?id=${swap.orderId}`)
-            })
+        .then((swap) => {
+          push(`/swap?id=${swap.orderId}`)
+          if (!isAlreadyInPortfolio && (receiveSymbol === 'ETH' || ERC20)) { 
+            return openViewOnly(receiveAddress, null)
+          }
         })
     },
   }),
   lifecycle({
+    componentDidUpdate() {
+      const { rateLoaded, pair, retrievePairData } = this.props
+      if (pair && !rateLoaded) {
+        retrievePairData(pair)
+      }
+    },
     componentWillMount() {
-      const { updateQueryString, depositSymbol, receiveSymbol } = this.props
+      const { updateQueryString, depositSymbol, receiveSymbol, retrievePairData, pair } = this.props
       if (depositSymbol === receiveSymbol) {
         let to = DEFAULT_RECEIVE
         let from = DEFAULT_DEPOSIT
@@ -258,6 +270,8 @@ export default compose(
           to = DEFAULT_DEPOSIT
         }
         updateQueryString({ to, from })
+      } else {
+        retrievePairData(pair)
       }
     }
   }),

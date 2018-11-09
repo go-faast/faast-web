@@ -8,8 +8,8 @@ import CoinIcon from 'Components/CoinIcon'
 
 import AccessTile from './AccessTile'
 
-const ImportKeystore = ({ handleDrop }) => (
-  <Dropzone className='p-0' multiple={false} onDrop={handleDrop}>
+const ImportKeystore = ({ openKeystoreFile }) => (
+  <Dropzone className='p-0' multiple={false} onDrop={(f) => openKeystoreFile(f)}>
     <AccessTile className='border-dashed'>
       <h5 className='text-primary'><i className='fa fa-sign-in mr-2'/>Import wallet</h5>
       <h6>Drag and drop your keystore file</h6>
@@ -19,7 +19,7 @@ const ImportKeystore = ({ handleDrop }) => (
 )
 
 const mapDispatchToProps = {
-  handleDrop: openKeystoreFileWallet,
+  openKeystoreFile: openKeystoreFileWallet,
 }
 
 export default connect(null, mapDispatchToProps)(ImportKeystore)
