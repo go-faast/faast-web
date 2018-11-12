@@ -1,0 +1,11 @@
+@import '~Styles/variables';
+
+.indexTable {
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  td {
+    vertical-align: middle;
+    padding: .6rem;
+  }
+}

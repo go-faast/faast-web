@@ -36,6 +36,8 @@ export const tradeHistory = createPath('/orders')
 export const tradeDetail = createPath('/orders/:tradeId')
 export const swapWidget = createPath('/swap')
 export const assetDetail = createPath('/asset/:symbol')
+export const assetIndexPagination = createPath('/assets/:pageNumber')
+export const assetIndex = createPath('/assets')
 
 export const connect = createPath('/connect')
 export const connectHwWallet = createPath(connect, '/hw/:walletType')
@@ -57,4 +59,6 @@ export default {
   connectHwWalletAssetConfirm,
   connectHwWalletAssetAccounts,
   viewOnlyAddress,
+  assetIndex,
+  assetIndexPagination
 }
