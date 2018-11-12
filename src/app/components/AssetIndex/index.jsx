@@ -12,8 +12,8 @@ import Paginator from 'Components/Paginator'
 const AssetIndex = ({ assets, currentPage, numberOfAssets }) => {
   return (
     <Layout>
-       <h4 className='mt-5 pt-4 mb-2 text-primary'>Faast Coin Index 
-        {currentPage > 1 ? (<span>- Page {currentPage}</span>) : null}
+       <h4 className='mt-5 pt-4 mb-2 text-primary'>All Coins 
+        {currentPage > 1 ? (<span> - Page {currentPage}</span>) : null}
       </h4>
       <AssetIndexTable assets={assets}/>
       <Paginator page={currentPage} pages={Math.ceil(numberOfAssets / 50)}/>

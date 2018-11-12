@@ -21,10 +21,9 @@ import { isDefaultPortfolioEmpty } from 'Selectors'
 import withToggle from 'Hoc/withToggle'
 
 import Icon from 'Components/Icon'
-import AddressSearchForm from 'Components/AddressSearchForm'
 import FaastLogo from 'Img/faast-logo.png'
 
-const AppNavbar = ({ disablePortfolioLinks, routerPush, children, isExpanded, toggleExpanded, ...props }) => (
+const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, toggleExpanded, ...props }) => (
   <Navbar {...pick(props, Object.keys(Navbar.propTypes))}>
     <Container>
       <NavbarBrand tag={Link} to='/' className='mr-auto'>
@@ -33,13 +32,21 @@ const AppNavbar = ({ disablePortfolioLinks, routerPush, children, isExpanded, to
       <NavbarToggler onClick={toggleExpanded} />
       <Collapse isOpen={isExpanded} navbar>
       <Nav navbar>
+        {!disablePortfolioLinks && (
+        <NavItem key='dashboard'>
+          <NavLink tag={RouterNavLink} to='/dashboard'>
+            <i className='nav-link-icon fa fa-pie-chart'/>
+            <span className='nav-link-label d-sm-inline'>Dashboard</span>
+          </NavLink>
+        </NavItem>
+        )}
+        <NavItem key='coins'>
+          <NavLink tag={RouterNavLink} to='/assets'>
+            <i className="nav-link-icon fa fa-align-left" aria-hidden="true"></i>
+            <span className='nav-link-label d-sm-inline'>Coins</span>
+          </NavLink>
+        </NavItem>
         {!disablePortfolioLinks && ([
-          <NavItem key='dashboard'>
-            <NavLink tag={RouterNavLink} to='/dashboard'>
-              <i className='nav-link-icon fa fa-pie-chart'/>
-              <span className='nav-link-label d-sm-inline'>Dashboard</span>
-            </NavLink>
-          </NavItem>,
           <NavItem key='rebalance'>
             <NavLink tag={RouterNavLink} to='/rebalance'>
               <i className='nav-link-icon fa fa-sliders'/>
@@ -69,9 +76,9 @@ const AppNavbar = ({ disablePortfolioLinks, routerPush, children, isExpanded, to
           </NavItem>
       </Nav>
       </Collapse>
-      <AddressSearchForm
+      {/* <AddressSearchForm
         className='d-none d-lg-inline mx-3_4r' size='md' formProps={{ inline: true }} inputGroupProps={{ className: 'flat' }}
-        onSubmit={({ address }) => address && routerPush(`/address/${address}`)}/>
+        onSubmit={({ address }) => address && routerPush(`/address/${address}`)}/> */}
     </Container>
     {children}
   </Navbar>
@@ -93,7 +100,6 @@ export default compose(
   connect(createStructuredSelector({
     disablePortfolioLinks: isDefaultPortfolioEmpty,
   }), {
-    routerPush: push,
   }),
   withToggle('expanded')
 )(AppNavbar)
