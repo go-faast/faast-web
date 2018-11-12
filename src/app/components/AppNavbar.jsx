@@ -76,9 +76,6 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, toggleExpanded
           </NavItem>
       </Nav>
       </Collapse>
-      {/* <AddressSearchForm
-        className='d-none d-lg-inline mx-3_4r' size='md' formProps={{ inline: true }} inputGroupProps={{ className: 'flat' }}
-        onSubmit={({ address }) => address && routerPush(`/address/${address}`)}/> */}
     </Container>
     {children}
   </Navbar>
