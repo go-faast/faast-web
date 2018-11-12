@@ -17,7 +17,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
   marketCap, price, change24, volume24 }, push, ...props }) => {
   return (
     <tr onClick={() => push(`/asset/${symbol}`)} {...props}>
-      <td className='pl-5'>
+      <td className='pl-3 pl-md-5'>
         <Media>
           <Media left>
             <CoinIcon 
@@ -28,7 +28,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
             /> 
           </Media>
           <Media className={mediaBody} body>
-              <h6 className='m-0 mt-1 text-white'>{name}</h6>
+            <h6 className='m-0 mt-1 text-white'>{name}</h6>
             <small style={{ position: 'relative', top: '-2px' }} className='text-muted'>[{symbol}]</small>
           </Media>
         </Media>
@@ -88,7 +88,7 @@ const AssetIndexTable = ({ assets, push }) => (
   <Table hover striped responsive className={indexTable}>
     <thead>
       <tr>
-        <th className='pl-5'>Coin</th>
+        <th className='pl-3 pl-md-5'>Coin</th>
         <th>Market Cap</th>
         <th>Volume</th>
         <th>Supply</th>
