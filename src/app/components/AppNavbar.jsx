@@ -25,7 +25,7 @@ import FaastLogo from 'Img/faast-logo.png'
 
 const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, toggleExpanded, ...props }) => (
   <Navbar {...pick(props, Object.keys(Navbar.propTypes))}>
-    <Container className='mx-lg-2 mx-md-0 p-md-0'>
+    <Container>
       <NavbarBrand tag={Link} to='/' className='mr-auto'>
         <Icon src={FaastLogo} height='1.5rem' width='1.5rem' inline className='mx-3'/>Faast Portfolio <sup className='beta-tag'>beta</sup>
       </NavbarBrand>
