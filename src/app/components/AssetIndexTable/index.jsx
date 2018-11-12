@@ -11,15 +11,13 @@ import ChangePercent from 'Components/ChangePercent'
 import ArrowIcon from 'Components/ArrowIcon'
 import CoinIcon from 'Components/CoinIcon'
 
-import { indexTable } from './style'
+import { indexTable, mediaBody } from './style'
 
 const TableRow = ({ asset: { symbol, availableSupply, name, 
-  marketCap, price, change24, volume24 }, 
-  rank, push, ...props }) => {
+  marketCap, price, change24, volume24 }, push, ...props }) => {
   return (
     <tr onClick={() => push(`/asset/${symbol}`)} {...props}>
-      <td>{rank}</td>
-      <td colSpan='1'>
+      <td className='pl-5'>
         <Media>
           <Media left>
             <CoinIcon 
@@ -29,7 +27,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
               inline
             /> 
           </Media>
-          <Media style={{ position: 'relative', top: '-2px' }} body>
+          <Media className={mediaBody} body>
               <h6 className='m-0 mt-1 text-white'>{name}</h6>
             <small style={{ position: 'relative', top: '-2px' }} className='text-muted'>[{symbol}]</small>
           </Media>
@@ -64,7 +62,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           abbreviate
         />
       </td>
-      <td colSpan='1'>
+      <td>
         <Units 
           className='mt-1 d-inline-block'
           value={price} 
@@ -90,8 +88,7 @@ const AssetIndexTable = ({ assets, push }) => (
   <Table hover striped responsive className={indexTable}>
     <thead>
       <tr>
-        <th>#</th>
-        <th>Coin</th>
+        <th className='pl-5'>Coin</th>
         <th>Market Cap</th>
         <th>Volume</th>
         <th>Supply</th>
@@ -105,11 +102,10 @@ const AssetIndexTable = ({ assets, push }) => (
             <i>No assets to show. Please refresh.</i>
           </td>
         </tr>
-      ) : assets.map((asset, i) => (
+      ) : assets.map((asset) => (
         <TableRow 
           key={asset.symbol} 
           asset={asset} 
-          rank={i + 1}
           push={push}
           />
         )

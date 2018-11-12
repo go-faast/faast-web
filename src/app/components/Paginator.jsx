@@ -45,7 +45,7 @@ const PageLink = compose(
 )(({ page, active, disabled, next, previous }) => 
   typeof page === 'number' ? (
     <PaginationItem disabled={disabled} active={active}>
-      <PaginationLink tag={Link} merge to={{ search: { page } }} next={next} previous={previous}>
+      <PaginationLink onClick={() => window.scroll(0,0)} tag={Link} merge to={{ search: { page } }} next={next} previous={previous}>
         {!(next || previous) && page}
       </PaginationLink>
     </PaginationItem>

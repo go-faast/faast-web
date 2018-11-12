@@ -15,6 +15,13 @@
   display: none !important;
 }
 
+.page-item.disabled .page-link {
+  color: #05B8AB !important;
+  background-color: #212121 !important;
+  border: 1px solid #353535 !important;
+  opacity: .5;
+}
+
 @-webkit-keyframes blinker {
   from { opacity: 1.0; }
   to { opacity: 0.0; }

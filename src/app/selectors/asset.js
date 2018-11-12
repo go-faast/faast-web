@@ -30,6 +30,8 @@ export const areAssetPricesLoading = createSelector(getAssetState, ({ pricesLoad
 export const areAssetPricesLoaded = createSelector(getAssetState, ({ loaded, pricesLoaded }) => loaded && pricesLoaded)
 export const getAssetPricesError = createSelector(getAssetState, ({ loadingError, pricesError }) => loadingError || pricesError)
 
+export const getNumberOfAssets = createSelector(getAllAssetsArray, (assets) => assets.length)
+
 export const getAssetIndexPage = createItemSelector(
   getAllAssetsArray,
   selectItemId, 

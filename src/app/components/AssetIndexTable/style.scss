@@ -1,5 +1,11 @@
 @import '~Styles/variables';
 
+.mediaBody {
+  position: relative; 
+  top: -2px;
+  max-width: 100px;
+}
+
 .indexTable {
   line-height: 1;
   white-space: nowrap;

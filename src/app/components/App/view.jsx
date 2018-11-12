@@ -38,7 +38,6 @@ const AppView = ({ hasNoWallets }) => (
       <Route path={tradeHistory.path} component={TradeHistory}/>
       <Route path={assetDetail.path} component={AssetDetail}/>
       <Route path={assetIndex.path} component={AssetIndex}/>
-      <Route path={assetIndexPagination.path} component={AssetIndex}/>
 
       {/* Legacy routes */}
       <Redirect exact from='/balances' to={dashboard.path}/>
