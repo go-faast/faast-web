@@ -11,6 +11,12 @@
   word-break: break-all;
 }
 
+.textEllipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .highcharts-credits {
   display: none !important;
 }

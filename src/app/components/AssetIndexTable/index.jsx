@@ -10,6 +10,7 @@ import Units from 'Components/Units'
 import ChangePercent from 'Components/ChangePercent'
 import ArrowIcon from 'Components/ArrowIcon'
 import CoinIcon from 'Components/CoinIcon'
+import Expandable from 'Components/Expandable'
 
 import { indexTable, mediaBody } from './style'
 
@@ -28,7 +29,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
             /> 
           </Media>
           <Media className={mediaBody} body>
-            <h6 className='m-0 mt-1 text-white'>{name}</h6>
+            <Expandable shrunk={<h6 className='textEllipsis m-0 mt-1 text-white'>{name}</h6>} expanded={name}></Expandable>
             <small style={{ position: 'relative', top: '-2px' }} className='text-muted'>[{symbol}]</small>
           </Media>
         </Media>
