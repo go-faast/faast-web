@@ -11,5 +11,6 @@ export default compose(
   <div>
     <h1 style={{ textAlign: 'center' }}>Welcome to Faast</h1>
     <img src={''} alt='' style={{ display: 'block', margin: '0 auto' }} />
+    <a href='./app'>Portfolio</a>
   </div>
 ))
