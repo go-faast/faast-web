@@ -3,8 +3,8 @@ import path from 'path'
 import axios from 'axios'
 import merge from 'webpack-merge'
 
-const { dirs } = require('./common.js')
-const getBaseConfig = require('./webpack.config.base.js')
+const { dirs } = require('./etc/common.js')
+const getBaseConfig = require('./etc/webpack.config.base.js')
 
 const Document = ({ Html, Head, Body, children }) => (
   <Html lang="en-US">

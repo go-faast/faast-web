@@ -24,14 +24,14 @@
     "url": "git+https://github.com/go-faast/faast-portfolio.git"
   },
   "scripts": {
-    "start": "ws --https --spa dist/index.html --rewrite '/portfolio/* -> /dist/$1'",
+    "start": "ws --https -d dist --rewrite '/app/* -> /app/index.html'",
     "dev:app": "npm run dev-server -- --https",
     "dev:site": "react-static start",
     "test": "npm run lint",
     "lint": "eslint src/ && tslint -p .",
     "dist": "gulp dist",
     "build:app": "webpack --config etc/webpack.config.app.js --progress",
-    "build:site": "ls etc && react-static build",
+    "build:site": "react-static build",
     "build:ipfs": "cross-env IPFS=true npm run build",
     "build": "npm run lint && npm run build:site && npm run build:app && npm run dist",
     "dev-server": "cross-env NODE_ENV=development webpack-dev-server --config etc/webpack.config.app.js --progress",
