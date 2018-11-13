@@ -3,15 +3,16 @@ import PropTypes from 'prop-types'
 import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withProps } from 'recompose'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { getPriceChartData } from 'Selectors'
+import { getPriceChartData, isPriceChartLoading } from 'Selectors'
 import { fetchPriceChartData } from 'Actions/priceChart'
 import ReactHighstock from 'react-highcharts/ReactHighstock.src'
 import { themeColor } from 'Utilities/style'
 
 const priceSeriesName = 'Price (USD)'
 
-const PriceChart = ({ config }) => {
-  return <ReactHighstock config={config}/>
+const PriceChart = ({ config, isPriceChartLoading }) => {
+  return  isPriceChartLoading ? 
+    <i className='fa fa-spinner fa-pulse'/> : <ReactHighstock config={config}/>
 }
 
 const initialConfig = {
@@ -145,7 +146,8 @@ const initialConfig = {
 export default compose(
   setDisplayName('PriceChart'),
   connect(createStructuredSelector({
-    data: (state, { symbol }) => getPriceChartData(state, symbol)
+    data: (state, { symbol }) => getPriceChartData(state, symbol),
+    isPriceChartLoading: (state, { symbol }) => isPriceChartLoading(state, symbol)
   }), {
     fetchPriceChart: fetchPriceChartData
   }),
