@@ -2,41 +2,15 @@ const path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const convPaths = require('convert-tsconfig-paths-to-webpack-aliases').default
 
-const isIpfs = process.env.IPFS === 'true'
-const isMocking = Boolean(process.env.MOCK)
+const {
+  dirs, imgOutputPath, fontOutputPath, fileOutputPath, bundleOutputPath, 
+} = require('./common.js')
 
 // Needs to be valid JSON. All comments in tsconfig.json must be removed.
 const tsconfig = require('../tsconfig.json')
 const aliases = convPaths(tsconfig)
-const extensions = ['.ts', '.tsx', '.js', '.jsx', '.json', '.scss', '.css']
 
-const dirs = {
-  root: path.resolve(__dirname, '..')
-}
-
-dirs.dist = path.join(dirs.root, 'dist')
-dirs.src = path.join(dirs.root, 'src')
-dirs.res = path.join(dirs.root, 'res')
-dirs.test = path.join(dirs.root, 'test')
-dirs.nodeModules = path.join(dirs.root, 'node_modules')
-dirs.site = path.join(dirs.src, 'site')
-dirs.app = path.join(dirs.src, 'app')
-
-dirs.build = path.join(dirs.root, 'build')
-dirs.buildApp = path.join(dirs.build, 'app')
-dirs.buildSite = path.join(dirs.build, 'site')
-
-const appPath = 'app'
-
-const staticOutputPath = 'static'
-const imgOutputPath = path.join(staticOutputPath, 'img')
-const fontOutputPath = path.join(staticOutputPath, 'font')
-const fileOutputPath = path.join(staticOutputPath, 'file')
-const vendorOutputPath = path.join(staticOutputPath, 'vendor')
-const faviconOutputPath = 'favicon'
-const bundleOutputPath = 'bundle'
-
-function getConfig(stage) {
+module.exports = function (stage) {
   const isDev = stage === 'dev'
 
   const jsLoader = {
@@ -150,7 +124,7 @@ function getConfig(stage) {
       rules,
     },
     resolve: {
-      extensions,
+      extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.scss', '.css'],
       alias: aliases,
     },
     node: {
@@ -158,15 +132,4 @@ function getConfig(stage) {
       __filename: true,
     }
   }
-}
-
-module.exports = {
-  isIpfs,
-  isMocking,
-  getConfig,
-  dirs,
-  appPath,
-  bundleOutputPath,
-  vendorOutputPath,
-  faviconOutputPath,
 }

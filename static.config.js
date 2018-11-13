@@ -3,9 +3,8 @@ import path from 'path'
 import axios from 'axios'
 import merge from 'webpack-merge'
 
-const {
-  dirs, getConfig,
-} = require('./etc/webpack.common.js')
+const { dirs } = require('./common.js')
+const getBaseConfig = require('./webpack.config.base.js')
 
 const Document = ({ Html, Head, Body, children }) => (
   <Html lang="en-US">
@@ -44,7 +43,7 @@ export default {
     dist: dirs.buildSite,
   },
   webpack: (defaultConfig, { stage }) => {
-    const baseConfig = getConfig(stage)
+    const baseConfig = getBaseConfig(stage)
     const config = merge.strategy({
       'module.rules': 'replace',
     })(defaultConfig, baseConfig)

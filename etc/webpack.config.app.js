@@ -10,12 +10,13 @@ const CopyPlugin = require('copy-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const IncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 
-const pkg = require('./package.json')
+const pkg = require('../package.json')
 
 const {
-  isIpfs, getConfig, dirs, bundleOutputPath,
-  appPath, vendorOutputPath, faviconOutputPath,
-} = require('./etc/webpack.common.js')
+  isIpfs, dirs, appPath, bundleOutputPath, vendorOutputPath, faviconOutputPath,
+} = require('./common.js')
+
+const getBaseConfig = require('./webpack.config.base.js')
 
 const DEFAULT_NODE_ENV = 'production'
 let NODE_ENV = process.env.NODE_ENV
@@ -29,7 +30,7 @@ const publicPath = isIpfs ? './' : '/'
 const vendorDeps = ['font-awesome/css/font-awesome.min.css']
 
 const routerBaseName = path.join('/', appPath)
-const baseConfig = getConfig(isDev ? 'dev' : 'prod')
+const baseConfig = getBaseConfig(isDev ? 'dev' : 'prod')
 
 let config = merge.strategy({
   'module.rules': 'replace',
