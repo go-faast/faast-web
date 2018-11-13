@@ -46,6 +46,12 @@ export default {
     LTC: 'https://live.blockcypher.com/ltc',
     BCH: 'https://explorer.bitcoin.com/bch',
   },
+  bip21Prefixes: {
+    BTC: 'bitcoin',
+    BCH: 'bitcoincash',
+    LTC: 'litecoin',
+    ETH: 'ethereum'
+  },
   walletTypes,
   web3WalletTypes: Object.entries(walletTypes)
     .filter(([, { web3 }]) => web3)
