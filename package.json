@@ -26,7 +26,7 @@
   "scripts": {
     "start": "ws --https -d dist --rewrite '/app/* -> /app/index.html'",
     "dev:app": "npm run dev-server -- --https",
-    "dev:site": "react-static start",
+    "dev:site": "cross-env NODE_ENV=development react-static start",
     "test": "npm run lint",
     "lint": "eslint src/ && tslint -p .",
     "dist": "gulp dist",
