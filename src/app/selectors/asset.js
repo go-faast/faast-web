@@ -8,7 +8,8 @@ import Config from 'Config'
 export const getAssetState = ({ asset }) => asset
 
 export const getAllAssets = createSelector(getAssetState, ({ data }) => mapValues(data, (asset) => {
-  const { price, change1, change24, change7d, volume24, marketCap, availableSupply, lastUpdatedPrice, symbol, ERC20, validate } = asset
+  const { price, change1, change24, change7d, volume24, marketCap, 
+    availableSupply, lastUpdatedPrice, symbol, ERC20, validate } = asset
   const bip21Prefix = !ERC20 ? Config.bip21Prefixes[symbol] : Config.bip21Prefixes[validate]
   return {
     ...asset,
