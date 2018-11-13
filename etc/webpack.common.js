@@ -1,18 +1,42 @@
 const path = require('path')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const convPaths = require('convert-tsconfig-paths-to-webpack-aliases').default
 
-const root = path.resolve(__dirname, '..')
-const src = path.join(root, 'src')
-const res = path.join(root, 'res')
-const test = path.join(root, 'test')
-const nodeModules = path.join(root, 'node_modules')
+const isIpfs = process.env.IPFS === 'true'
+const isMocking = Boolean(process.env.MOCK)
 
-const assetOutputPath = 'asset/'
-const vendorOutputPath = 'vendor/'
-const workerOutputPath = 'worker/'
-const faviconOutputPath = 'favicon/'
+// Needs to be valid JSON. All comments in tsconfig.json must be removed.
+const tsconfig = require('../tsconfig.json')
+const aliases = convPaths(tsconfig)
+const extensions = ['.ts', '.tsx', '.js', '.jsx', '.json', '.scss', '.css']
 
-function getRules(stage) {
+const dirs = {
+  root: path.resolve(__dirname, '..')
+}
+
+dirs.dist = path.join(dirs.root, 'dist')
+dirs.src = path.join(dirs.root, 'src')
+dirs.res = path.join(dirs.root, 'res')
+dirs.test = path.join(dirs.root, 'test')
+dirs.nodeModules = path.join(dirs.root, 'node_modules')
+dirs.site = path.join(dirs.src, 'site')
+dirs.app = path.join(dirs.src, 'app')
+
+dirs.build = path.join(dirs.root, 'build')
+dirs.buildApp = path.join(dirs.build, 'app')
+dirs.buildSite = path.join(dirs.build, 'site')
+
+const appPath = 'app'
+
+const staticOutputPath = 'static'
+const imgOutputPath = path.join(staticOutputPath, 'img')
+const fontOutputPath = path.join(staticOutputPath, 'font')
+const fileOutputPath = path.join(staticOutputPath, 'file')
+const vendorOutputPath = path.join(staticOutputPath, 'vendor')
+const faviconOutputPath = 'favicon'
+const bundleOutputPath = 'bundle'
+
+function getConfig(stage) {
   const isDev = stage === 'dev'
 
   const jsLoader = {
@@ -44,7 +68,7 @@ function getRules(stage) {
       loader: 'sass-loader', // compiles SASS to CSS
       options: { 
         sourceMap,
-        includePaths: [nodeModules],
+        includePaths: [dirs.nodeModules],
         sourceMapContents: true,
         outputStyle: 'expanded',
         precision: 6,
@@ -63,19 +87,19 @@ function getRules(stage) {
     return primaryCssLoaders
   }
 
-  const assetLoader = (subDir) => ({
+  const assetLoader = (outputPath) => ({
     loader: 'file-loader',
     options: {
-      context: root,
-      outputPath: assetOutputPath,
-      name: `${subDir}/[name].[hash:8].[ext]`
+      context: dirs.root,
+      outputPath: outputPath.endsWith('/') ? outputPath : outputPath + '/',
+      name: '[name].[hash:8].[ext]'
     }
   })
-  const imgAssetLoader = assetLoader('img')
-  const fontAssetLoader = assetLoader('font')
-  const fileAssetLoader = assetLoader('file')
+  const imgAssetLoader = assetLoader(imgOutputPath)
+  const fontAssetLoader = assetLoader(fontOutputPath)
+  const fileAssetLoader = assetLoader(fileOutputPath)
 
-  return [{
+  const rules = [{
     test: /\.tsx?$/,
     exclude: /node_modules/,
     use: [
@@ -88,7 +112,7 @@ function getRules(stage) {
       resourceQuery: /worker/,
       loader: 'worker-loader',
       options: {
-        name: workerOutputPath + 'worker.[hash:8].js'
+        name: path.join(bundleOutputPath, 'worker.[hash:8].js')
       }
     }, {
       exclude: /node_modules/,
@@ -120,19 +144,29 @@ function getRules(stage) {
     test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
     use: fontAssetLoader
   }]
+
+  return {
+    module: {
+      rules,
+    },
+    resolve: {
+      extensions,
+      alias: aliases,
+    },
+    node: {
+      fs: 'empty',
+      __filename: true,
+    }
+  }
 }
 
 module.exports = {
-  getRules,
-  dirs: {
-    root,
-    src,
-    res,
-    test,
-    nodeModules,
-  },
-  workerOutputPath,
+  isIpfs,
+  isMocking,
+  getConfig,
+  dirs,
+  appPath,
+  bundleOutputPath,
   vendorOutputPath,
   faviconOutputPath,
-  assetOutputPath,
 }

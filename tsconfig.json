@@ -24,6 +24,7 @@
       "Config/*": ["src/config/*"],
       "Utilities/*": ["src/utilities/*"],
       "Services/*": ["src/services/*"],
+      "Site/*": ["src/site/*"],
       "App/*": ["src/app/*"],
       "Components/*": ["src/app/components/*"],
       "Styles/*": ["src/app/styles/*"],

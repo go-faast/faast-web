@@ -1,9 +1,11 @@
 import React from 'react'
 import path from 'path'
 import axios from 'axios'
+import merge from 'webpack-merge'
 
-const webpackConfig = require('./webpack.config.js')
-const { getRules } = require('./etc/webpack.common.js')
+const {
+  dirs, getConfig,
+} = require('./etc/webpack.common.js')
 
 const Document = ({ Html, Head, Body, children }) => (
   <Html lang="en-US">
@@ -16,7 +18,7 @@ const Document = ({ Html, Head, Body, children }) => (
 )
 
 export default {
-  entry: path.join(__dirname, 'src', 'static', 'index.tsx'),
+  entry: path.join(dirs.site, 'index.tsx'),
   siteRoot: 'https://faa.st',
   getSiteData: () => ({
     title: 'Trade Crypto - Faast',
@@ -27,26 +29,25 @@ export default {
     return [
       {
         path: '/',
-        component: 'src/static/pages/Home',
+        component: 'src/site/pages/Home',
         getData: () => ({
           assets
         })
       },
       {
         is404: true,
-        component: 'src/static/pages/404',
+        component: 'src/site/pages/404',
       },
     ]
   },
-  webpack: (config, { stage }) => {
-    config.resolve.extensions = webpackConfig.resolve.extensions
-    config.resolve.alias = webpackConfig.resolve.alias
-    config.node = {
-      ...config.node,
-      ...webpackConfig.node,
-    }
-
-    config.module.rules = getRules(stage)
+  paths: {
+    dist: dirs.buildSite,
+  },
+  webpack: (defaultConfig, { stage }) => {
+    const baseConfig = getConfig(stage)
+    const config = merge.strategy({
+      'module.rules': 'replace',
+    })(defaultConfig, baseConfig)
     return config
   },
 }
