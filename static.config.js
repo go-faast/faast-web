@@ -20,14 +20,15 @@ const analyticsCode = `
 `
 
 const Document = ({ Html, Head, Body, children }) => (
-  <Html lang="en">
+  <Html lang='en'>
     <Head>
-      <meta charSet="utf-8" />
-      <meta name="viewport" content="width=device-width, initial-scale=1" />
-      <meta name="description" content={siteConfig.description}/>
-      <meta name="author" content={siteConfig.author}/>
-      <meta name="referrer" content="origin-when-cross-origin"/>
-      <link href="static/vendor/ionicons/css/ionicons.min.css" rel="stylesheet"/>
+      <meta charSet='utf-8' />
+      <meta name='viewport' content='width=device-width, initial-scale=1' />
+      <meta name='description' content={siteConfig.description}/>
+      <meta name='author' content={siteConfig.author}/>
+      <meta name='referrer' content='origin-when-cross-origin'/>
+      <link href='static/vendor/ionicons/css/ionicons.min.css' rel='stylesheet'/>
+      <link href='static/vendor/fontawesome/css/all.min.css' rel='stylesheet'/>
 
       {/* Hotjar Tracking Code */}
       {!isDev && (
