@@ -95,7 +95,7 @@ module.exports = function (stage) {
   }, {
     test: /(\.css|\.scss)$/,
     oneOf: [{
-      resourceQuery: /nsm/,
+      resourceQuery: /(nsm|global)/,
       use: cssLoader({ modules: false })
     }, {
       use: cssLoader(),

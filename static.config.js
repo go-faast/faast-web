@@ -27,6 +27,7 @@ const Document = ({ Html, Head, Body, children }) => (
       <meta name="description" content={siteConfig.description}/>
       <meta name="author" content={siteConfig.author}/>
       <meta name="referrer" content="origin-when-cross-origin"/>
+      <link href="static/vendor/ionicons/css/ionicons.min.css" rel="stylesheet"/>
 
       {/* Hotjar Tracking Code */}
       {!isDev && (

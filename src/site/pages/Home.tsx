@@ -1,27 +1,56 @@
 import * as React from 'react'
-import { withRouteData } from 'react-static'
-import { compose, setDisplayName } from 'recompose'
+import { withRouteData, Link } from 'react-static'
+import { compose, setDisplayName, withProps } from 'recompose'
 import siteConfig from 'Site/config'
+import { Asset } from 'Types'
 
 // import logoImg from 'Img/faast-logo.png'
 import EmailSubscriptionForm from 'Site/components/EmailSubscriptionForm'
 
-interface Props {
-  assets: any[]
-}
+import TrezorWalletLogo from 'Img/wallet/trezor.png'
+import LedgerWalletLogo from 'Img/wallet/ledger.png'
+import MistLogo from 'Img/wallet/mist.png'
+import MetaMaskLogo from 'Img/wallet/metamask.png'
+import StatusWalletLogo from 'Img/wallet/status.png'
+import CoinbaseWalletLogo from 'Img/wallet/coinbase.png'
+import TrustWalletLogo from 'Img/wallet/trust.png'
+import MewLogo from 'Img/wallet/mew.svg'
 
+import SecureIcon from 'Img/secure.svg'
+import SimpleIcon from 'Img/simple.svg'
+import PrivacyIcon from 'Img/privacy.svg'
+
+import AddWalletIcon from 'Img/add-wallet.svg'
+import ViewDashboardIcon from 'Img/view-dashboard.svg'
+import SwapFundsIcon from 'Img/swap-funds.svg'
+
+import MoonBackground from 'Img/moon-background.jpg'
+import MacbookScreenshot1 from 'Img/macbook-screenshot-01.png'
+import MacbookScreenshot2 from 'Img/macbook-screenshot-02.png'
+
+import BitaccessLogo from 'Img/bitaccess.svg'
+import FaastLogo64x64 from 'Img/faast-logo-64x64.png'
+
+interface Props {
+  assets: Asset[]
+  supportedAssets: Asset[]
+}
+/* tslint:disable:max-line-length */
 export default compose<Props, {}>(
   setDisplayName('Home'),
   withRouteData,
-)(({ assets }: Props) => (
+  withProps(({ assets }: Props) => ({
+    supportedAssets: assets.filter(({ deposit, receive }) => deposit || receive),
+  })),
+)(({ supportedAssets }: Props) => (
   <div>
     <div>
       <nav className='navbar navbar-dark navbar-expand-md navigation-clean-button'
         style={{ backgroundColor: 'transparent', paddingLeft: '12px' }}>
         <div className='container'>
-          <a className='navbar-brand text-white' href='/' style={{ fontWeight: 400 }}>
-            <img src='/img/faast-logo-64x64.png' style={{ height: '32px', marginRight: '16px' }}/>{siteConfig.name}
-          </a>
+          <Link exact to='/' className='navbar-brand text-white' style={{ fontWeight: 400 }}>
+            <img src={FaastLogo64x64} style={{ height: '32px', marginRight: '16px' }}/>{siteConfig.name}
+          </Link>
           <button className='navbar-toggler' data-toggle='collapse' data-target='#navcol-1'>
             <span className='sr-only'>Toggle navigation</span>
             <span className='navbar-toggler-icon text-white'></span>
@@ -29,49 +58,62 @@ export default compose<Props, {}>(
           <div className='collapse navbar-collapse' id='navcol-1'>
             <ul className='nav navbar-nav ml-auto'>
               <li className='nav-item' role='presentation'>
-                <a className='nav-link text-light' href='/portfolio/swap'>Swap</a>
+                <a className='nav-link text-light' href='/app/swap'>Swap</a>
               </li>
               <li className='nav-item' role='presentation'>
                 <a className='nav-link text-light' href='https://medium.com/faast' target='_blank' rel='noopener'>Blog</a>
               </li>
               <li className='nav-item' role='presentation'>
-                <a className='nav-link py-1' href='/portfolio'><button className='btn btn-light'>Portfolio</button></a>
+                <a className='nav-link py-1' href='/app'><button className='btn btn-light'>Portfolio</button></a>
               </li>
             </ul>
           </div>
         </div>
       </nav>
       <div className='jumbotron jumbotron-fluid hero-technology mb-0' style={{
-          backgroundImage: 'url(/img/moon-background.jpg)', 
-          height: '759px', 
-          backgroundPosition: '50% 25px', 
-          backgroundSize: '1400px', 
-          backgroundRepeat: 'no-repeat', 
-          marginTop: '-160px', 
-          paddingTop: '220px', 
+          backgroundImage: `url(${MoonBackground})`,
+          height: '759px',
+          backgroundPosition: '50% 25px',
+          backgroundSize: '1400px',
+          backgroundRepeat: 'no-repeat',
+          marginTop: '-160px',
+          paddingTop: '220px',
           backgroundColor: 'rgba(0,26,23)',
         }}>
         <h1 className='hero-title' style={{ fontWeight: 'normal' }}>Trade Crypto</h1>
-        <p className='hero-subtitle' style={{ fontWeight: 'normal', width: '90%' }}>It’s never been this easy to build a diversified cryptocurrency portfolio<br/></p>
-        <p><a className='btn btn-light btn-lg hero-button py-2' role='button' href='/portfolio'>Create A Portfolio</a></p>
+        <p className='hero-subtitle' style={{ fontWeight: 'normal', width: '90%' }}>
+          It’s never been this easy to build a diversified cryptocurrency portfolio<br/>
+        </p>
+        <p><a className='btn btn-light btn-lg hero-button py-2' role='button' href='/portfolio'>
+          Create A Portfolio
+        </a></p>
         <div className='intro' style={{ paddingTop: '60px' }}>
-          <img className='img-fluid' src='/img/macbook-screenshot-01.png' style={{ height: '100%', width: '730px' }}/>
+          <img className='img-fluid' src={MacbookScreenshot1} style={{ height: '100%', width: '730px' }}/>
         </div>
       </div>
     </div>
     <div className='features-clean'>
       <div className='container' style={{ paddingTop: '100px' }}>
-        <h2 className='text-center' style={{ marginBottom: '75px', fontWeight: 'normal' }}>Instantly build a cryptocurrency portfolio</h2>
+        <h2 className='text-center' style={{ marginBottom: '75px', fontWeight: 'normal' }}>
+          Instantly build a cryptocurrency portfolio
+        </h2>
         <div className='row features'>
-          <div className='col-sm-12 col-md-4 col-lg-4 item'><i className='far fa-check-circle icon' style={{ color: '#01B69B' }}></i>
+          <div className='col-sm-12 col-md-4 col-lg-4 item'>
+            <i className='far fa-check-circle icon' style={{ color: '#01B69B' }}></i>
             <h3 className='name' style={{ fontWeight: 'normal' }}>Safe &amp; Secure<br/></h3>
-            <p className='description' style={{ fontSize: '16px' }}>Trade directly from your wallet— we never control your funds or see your private key.<br/></p>
+            <p className='description' style={{ fontSize: '16px' }}>
+              Trade directly from your wallet— we never control your funds or see your private key.<br/>
+            </p>
           </div>
-          <div className='col-sm-12 col-md-4 col-lg-4 item'><i className='far fa-check-circle icon' style={{ color: '#01B69B' }}></i>
+          <div className='col-sm-12 col-md-4 col-lg-4 item'>
+            <i className='far fa-check-circle icon' style={{ color: '#01B69B' }}></i>
             <h3 className='name' style={{ fontWeight: 'normal' }}>No Sign Up Required<br/></h3>
-            <p className='description' style={{ fontSize: '16px' }}>No need to register or share any personal info.<br/></p>
+            <p className='description' style={{ fontSize: '16px' }}>
+              No need to register or share any personal info.<br/>
+            </p>
           </div>
-          <div className='col-sm-12 col-md-4 col-lg-4 item'><i className='far fa-check-circle icon' style={{ color: '#01B69B' }}></i>
+          <div className='col-sm-12 col-md-4 col-lg-4 item'>
+            <i className='far fa-check-circle icon' style={{ color: '#01B69B' }}></i>
             <h3 className='name' style={{ fontWeight: 'normal' }}>Lightning Fast<br/></h3>
             <p className='description' style={{ fontSize: '16px' }}>With instant access to over 100+ coins!<br/></p>
           </div>
@@ -87,7 +129,9 @@ export default compose<Props, {}>(
           <div className='w-100'></div>
           <div className='col-12 col-md-12 col-lg-8 col-xl-8'>
             <h3 className='text-center text-dark' style={{ marginTop: '3rem' }}>Leave more in your wallet</h3>
-            <p className='text-center' style={{ marginTop: '0.5rem', marginBottom: '2rem' }}>Amount received from trading $100 of Aragon for Aeternity</p>
+            <p className='text-center' style={{ marginTop: '0.5rem', marginBottom: '2rem' }}>
+              Amount received from trading $100 of Aragon for Aeternity
+            </p>
             <div style={{ height: '64px', backgroundColor: '#00d7b8', marginBottom: '20px', width: '90%' }}>
               <h6 className='text-dark mb-2' style={{ marginLeft: '8px', paddingTop: '8px' }}>Faast</h6>
               <p className='text-dark' style={{ marginLeft: '8px' }}><strong>$95.80</strong><br/></p>
@@ -103,7 +147,7 @@ export default compose<Props, {}>(
             <p className='text-center' style={{ marginTop: '2rem', marginBottom: '3rem' }}>
               <small>
                 Method: this graph shows the estimated amount received from trading $100 worth of Aragon (ANT) for Aeternity (AE) using Faast versus other popular cryptocurrency providers.
-                Click 
+                Click&nbsp;
                 <a className='text-dark' href='https://medium.com/faast/binance-vs-kyber-vs-faast-which-exchange-will-save-you-the-most-money-e19972dd11df' target='_blank'>
                   here
                 </a>
@@ -124,11 +168,11 @@ export default compose<Props, {}>(
       <div className='container'>
         <div className='row align-items-center'>
           <div className='col-auto text-center px-5 py-4 d-none d-md-block' style={{ borderRight: 'solid 2px #0D342E' }}>
-            <h1 className='currency-count text-white font-weight-bold'>{assets.length}</h1>
+            <h1 className='currency-count text-white font-weight-bold'>{supportedAssets.length}</h1>
             <h4 className='text-light mb-0'>Coins Supported</h4>
           </div>
           <div className='col-12 text-center py-3 d-md-none'>
-            <h1 className='currency-count text-white font-weight-bold'>{assets.length} <small>Coins Supported</small></h1>
+            <h1 className='currency-count text-white font-weight-bold'>{supportedAssets.length} <small>Coins Supported</small></h1>
           </div>
           <div className='col px-2'>
             <div id='currency-icons-wrapper'>
@@ -139,8 +183,8 @@ export default compose<Props, {}>(
                 <h2 className='fa fa-caret-right'></h2>
               </div>
               <div id='currency-icons' className='row align-items-center px-5 m-0'>
-                {assets.map((asset) => (
-                  <div className='col-auto currency-icon'>
+                {supportedAssets.map((asset) => (
+                  <div key={asset.symbol} className='col-auto currency-icon'>
                     <a className='d-block text-white' href={`/app/assets/${asset.symbol}`}>
                       <img className='currency-icon-img' src={asset.iconUrl}/>
                       <div className='d-flex flex-column justify-content-center currency-icon-label'>
@@ -165,7 +209,7 @@ export default compose<Props, {}>(
                 seconds with only a single transaction.<br/></p><a className='btn btn-light active' role='button' href='/portfolio'>Start Trading</a></div>
           </div>
           <div className='col-sm-12 col-md-6 col-lg-7 col-xl-6 offset-md-0 offset-lg-0 offset-xl-0 align-self-center' style={{ paddingTop: '30px' }}>
-            <img className='img-fluid' src='/img/macbook-screenshot-02.png' style={{ marginTop: '0px' }}/>
+            <img className='img-fluid' src={MacbookScreenshot2} style={{ marginTop: '0px' }}/>
           </div>
         </div>
       </div>
@@ -175,37 +219,49 @@ export default compose<Props, {}>(
       <div className='row no-gutters justify-content-center'>
         <div className='col-auto'>
           <a className='d-block text-white' href='/portfolio/connect/hw/trezor'>
-            <img className='rounded' src='/img/trezor.svg' alt='trezor' style={{ backgroundColor: '#212121', paddingRight: '54px', paddingLeft: '54px', paddingBottom: '13px', paddingTop: '13px', marginRight: '10px', marginLeft: '10px' }}/>
+            <img className='rounded wallet-logo' src={TrezorWalletLogo} alt='trezor'/>
             <p className='text-center pt-2'>TREZOR</p>
           </a>
         </div>
         <div className='col-auto'>
           <a className='d-block text-white' href='/portfolio/connect/hw/ledger'>
-            <img className='rounded' src='/img/ledger.png' alt='ledger' style={{ paddingBottom: '13px', backgroundColor: '#212121', paddingTop: '13px', paddingRight: '47px', paddingLeft: '47px', marginLeft: '10px', marginRight: '10px' }}/>
-            <p className='text-center pt-2'>Ledger</p>
+            <img className='rounded wallet-logo' src={LedgerWalletLogo} alt='ledger logo'/>
+            <p className='text-center pt-2'>Ledger Wallet</p>
           </a>
         </div>
         <div className='col-auto'>
           <a className='d-block text-white' href='/portfolio/connect'>
-            <img className='rounded' src='/img/metamask.png' alt='metamask' style={{ paddingRight: '48px', backgroundColor: '#212121', paddingBottom: '13px', paddingLeft: '48px', paddingTop: '13px', marginRight: '10px', marginLeft: '10px' }}/>
+            <img className='rounded wallet-logo' src={MetaMaskLogo} alt='metamask logo'/>
             <p className='text-center pt-2'>MetaMask</p>
           </a>
         </div>
         <div className='col-auto'>
           <a className='d-block text-white' href='/portfolio/connect'>
-            <img className='rounded' src='/img/mist.png' alt='mist' style={{ paddingRight: '55px', paddingLeft: '55px', backgroundColor: '#212121', paddingBottom: '13px', paddingTop: '13px', marginLeft: '10px', marginRight: '10px' }}/>
+            <img className='rounded wallet-logo' src={MistLogo} alt='mist logo'/>
             <p className='text-center pt-2'>Mist</p>
           </a>
         </div>
         <div className='col-auto'>
           <a className='d-block text-white' href='/portfolio/connect'>
-            <img className='rounded' src='/img/parity.png' alt='parity' style={{ backgroundColor: '#212121', paddingBottom: '13px', paddingTop: '13px', marginLeft: '10px', marginRight: '10px', paddingRight: '48px', paddingLeft: '48px', width: '137px', height: '69px' }}/>
-            <p className='text-center pt-2'>Parity</p>
+            <img className='rounded wallet-logo' src={TrustWalletLogo} alt='trust wallet logo'/>
+            <p className='text-center pt-2'>Trust Wallet</p>
           </a>
         </div>
         <div className='col-auto'>
           <a className='d-block text-white' href='/portfolio/connect'>
-            <img className='rounded' src='/img/mew.svg' alt='my ether wallet' style={{ backgroundColor: '#212121', marginRight: '10px', marginLeft: '10px', paddingBottom: '13px', paddingTop: '13px', paddingRight: '48px', paddingLeft: '48px', width: '137px', height: '69px' }}/>
+            <img className='rounded wallet-logo' src={CoinbaseWalletLogo} alt='coinbase wallet logo'/>
+            <p className='text-center pt-2'>Coinbase Wallet</p>
+          </a>
+        </div>
+        <div className='col-auto'>
+          <a className='d-block text-white' href='/portfolio/connect'>
+            <img className='rounded wallet-logo' src={StatusWalletLogo} alt='status logo'/>
+            <p className='text-center pt-2'>Status</p>
+          </a>
+        </div>
+        <div className='col-auto'>
+          <a className='d-block text-white' href='/portfolio/connect'>
+            <img className='rounded wallet-logo' src={MewLogo} alt='my ether wallet logo'/>
             <p className='text-center pt-2'>Keystore</p>
           </a>
         </div>
@@ -215,16 +271,19 @@ export default compose<Props, {}>(
       <div className='container'>
         <div className='intro'></div>
         <div className='row people'>
-          <div className='col-sm-4 col-md-4 col-lg-4 item' style={{ paddingTop: '30px' }}><img src='/img/secure.svg' style={{ height: '161px', width: '316px', backgroundColor: 'rgba(243,245,248,0)', padding: '25px' }}/>
+          <div className='col-sm-4 col-md-4 col-lg-4 item pt-2r'>
+            <img src={SecureIcon} style={{ height: '161px', width: '316px', backgroundColor: 'rgba(243,245,248,0)', padding: '25px' }}/>
             <h5 className='name' style={{ fontWeight: 'normal' }}>Secure</h5>
             <p className='description'>The safest trading method in the world— we don’t have your money; if we got hacked, you’d lose nothing.<br/></p>
           </div>
-          <div className='col-sm-4 col-md-4 col-lg-4 offset-md-3 offset-lg-0 item' style={{ paddingTop: '30px', marginLeft: '0px' }}><img src='/img/simple.svg' style={{ width: '306px', padding: '36px', backgroundColor: 'rgba(243,245,248,0)', height: '161px' }}/>
+          <div className='col-sm-4 col-md-4 col-lg-4 offset-md-3 offset-lg-0 item ml-0 pt-2r'>
+            <img src={SimpleIcon} style={{ width: '306px', padding: '36px', backgroundColor: 'rgba(243,245,248,0)', height: '161px' }}/>
             <h5 className='name' style={{ fontWeight: 'normal' }}>Simple</h5>
             <p className='title'></p>
             <p className='description'>Intuitive and mobile friendly UI makes crypto trading simple and easy.<br/></p>
           </div>
-          <div className='col-sm-4 col-md-4 col-lg-4 item' style={{ paddingTop: '30px' }}><img className='rounded-circle' src='/img/privacy.svg' style={{ width: '234px', height: '161px', padding: '36px', backgroundColor: 'rgba(243,245,248,0)' }}/>
+          <div className='col-sm-4 col-md-4 col-lg-4 item pt-2r'>
+            <img className='rounded-circle' src={PrivacyIcon} style={{ width: '234px', height: '161px', padding: '36px', backgroundColor: 'rgba(243,245,248,0)' }}/>
             <h5 className='name' style={{ fontWeight: 'normal' }}>Private</h5>
             <p className='description'>You don’t need to share personal data, photo ID, or anything else— just safe and confidential trades.<br/></p>
           </div>
@@ -240,17 +299,17 @@ export default compose<Props, {}>(
         <div className='intro'></div>
         <div className='row justify-content-center features' style={{ paddingTop: '0px', marginTop: '-60px' }}>
           <div className='col-sm-4 col-md-4 col-lg-3 item'>
-            <div className='box'><img src='/img/wallet.svg' style={{ marginBottom: '23px' }}/>
+            <div className='box'><img src={AddWalletIcon} style={{ marginBottom: '23px' }}/>
               <h3 className='name' style={{ fontWeight: 'normal' }}>Add Wallet</h3>
             </div>
           </div>
           <div className='col-sm-4 col-md-4 col-lg-3 item'>
-            <div className='box'><img src='/img/portfolio.svg' style={{ marginBottom: '30px' }}/>
+            <div className='box'><img src={ViewDashboardIcon} style={{ marginBottom: '30px' }}/>
               <h3 className='name' style={{ fontWeight: 'normal' }}>View Dashboard</h3>
             </div>
           </div>
           <div className='col-sm-4 col-md-4 col-lg-3 item'>
-            <div className='box'><img src='/img/swap.svg' style={{ marginBottom: '20px' }}/>
+            <div className='box'><img src={SwapFundsIcon} style={{ marginBottom: '20px' }}/>
               <h3 className='name' style={{ fontWeight: 'normal' }}>Swap Funds</h3>
             </div>
           </div>
@@ -263,7 +322,7 @@ export default compose<Props, {}>(
         <div className='text-center w-100 mb-4'>
           <p className='text-white'>Vote for us on Product Hunt</p>
           <iframe src='https://yvoschaap.com/producthunt/counter.html#href=https%3A%2F%2Fwww.producthunt.com%2Fr%2Fp%2F114880&layout=tall'
-            width='56px' height='65px' scrolling='no' frameBorder={0} allowTransparency={true}></iframe>
+            width='56px' height='65px' scrolling='no' frameBorder={0}></iframe>
         </div>
 
         <EmailSubscriptionForm/>
@@ -271,7 +330,7 @@ export default compose<Props, {}>(
     </div>
     <div className='brands'>
       <a className='text-white-50' href='https://bitaccess.ca/' target='_blank' style={{ backgroundColor: '#364B5E', height: '185px', textDecoration: 'none' }}>
-        <p className='text-center text-white'>Made by the team at<br/></p><img src='/img/bitaccess.svg' style={{ marginTop: '0px' }}/>
+        <p className='text-center text-white'>Made by the team at<br/></p><img src={BitaccessLogo} style={{ marginTop: '0px' }}/>
       </a>
     </div>
     <div className='footer-clean' style={{ backgroundColor: 'rgb(24,24,24)', paddingTop: '0px', height: '394px' }}>

@@ -5,20 +5,13 @@ import { compose, setDisplayName } from 'recompose'
 
 import Routes from 'react-static-routes'
 
-import './styles/index.scss'
+import './styles/index.scss?global'
 
 export default compose(
   setDisplayName('Root'),
   hot(module),
 )(() => (
   <Router>
-    <div>
-      <nav>
-        <Link exact to='/'>Home</Link>
-      </nav>
-      <div className='content'>
-        <Routes />
-      </div>
-    </div>
+    <Routes />
   </Router>
 ))

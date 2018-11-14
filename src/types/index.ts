@@ -4,8 +4,15 @@ export interface Asset {
   symbol: string
   name: string
   decimals: number
+  deposit: boolean
+  receive: boolean
+  cmcID: string
+  iconUrl: string
+  walletUrl?: string
+  infoUrl?: string
   contractAddress?: string
   ERC20?: boolean
+  restricted?: boolean
 }
 
 export interface SwapOrder {
