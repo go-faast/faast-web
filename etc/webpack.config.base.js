@@ -10,7 +10,7 @@ const {
 const tsconfig = require('../tsconfig.json')
 const aliases = convPaths(tsconfig)
 
-module.exports = function (stage) {
+module.exports = function (stage, outputPathPrefix = '') {
   const isDev = stage === 'dev'
 
   const jsLoader = {
@@ -65,7 +65,7 @@ module.exports = function (stage) {
     loader: 'file-loader',
     options: {
       context: dirs.root,
-      outputPath: outputPath.endsWith('/') ? outputPath : outputPath + '/',
+      outputPath: path.join(outputPathPrefix, outputPath.endsWith('/') ? outputPath : outputPath + '/'),
       name: '[name].[hash:8].[ext]'
     }
   })
@@ -86,7 +86,7 @@ module.exports = function (stage) {
       resourceQuery: /worker/,
       loader: 'worker-loader',
       options: {
-        name: path.join(bundleOutputPath, 'worker.[hash:8].js')
+        name: path.join(outputPathPrefix, bundleOutputPath, 'worker.[hash:8].js')
       }
     }, {
       exclude: /node_modules/,

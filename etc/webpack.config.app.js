@@ -30,7 +30,8 @@ const publicPath = isIpfs ? './' : '/'
 const vendorDeps = ['font-awesome/css/font-awesome.min.css']
 
 const routerBaseName = path.join('/', appPath)
-const baseConfig = getBaseConfig(isDev ? 'dev' : 'prod')
+const outputPathPrefix = isDev ? appPath : '' // Prefix output path during development for proxy purposes
+const baseConfig = getBaseConfig(isDev ? 'dev' : 'prod', outputPathPrefix)
 
 let config = merge.strategy({
   'module.rules': 'replace',
@@ -38,7 +39,7 @@ let config = merge.strategy({
   context: dirs.root,
   entry: ['babel-polyfill', path.join(dirs.app, 'index.jsx')],
   output: {
-    filename: path.join(bundleOutputPath, isDev ? '[name].[hash:8].js' : '[name].[chunkHash:8].js'),
+    filename: path.join(outputPathPrefix, bundleOutputPath, isDev ? '[name].[hash:8].js' : '[name].[chunkHash:8].js'),
     path: dirs.buildApp,
     publicPath: publicPath,
   },
@@ -62,14 +63,14 @@ let config = merge.strategy({
       }
     }),
     new ExtractTextPlugin({
-      filename: path.join(bundleOutputPath, '[name].[contenthash:8].css'),
+      filename: path.join(outputPathPrefix, bundleOutputPath, '[name].[contenthash:8].css'),
       ignoreOrder: true,
       disable: isDev
     }),
     new OptimizeCssAssetsPlugin(),
     new FaviconPlugin({
       logo: path.join(dirs.res, 'img', 'faast-logo.png'),
-      prefix: path.join(faviconOutputPath, '[hash:8]/'),
+      prefix: path.join(outputPathPrefix, faviconOutputPath, '[hash:8]/'),
       title: pkg.productName,
       description: pkg.description,
       background: '#181818',
@@ -77,9 +78,9 @@ let config = merge.strategy({
       cache: true,
       inject: true
     }),
-    new CopyPlugin([{ from: path.join(dirs.res, 'vendor'), to: vendorOutputPath }]),
+    new CopyPlugin([{ from: path.join(dirs.res, 'vendor'), to: path.join(outputPathPrefix, vendorOutputPath) }]),
     new IncludeAssetsPlugin({
-      assets: vendorDeps.map((vendorDep) => path.join(vendorOutputPath, vendorDep)),
+      assets: vendorDeps.map((vendorDep) => path.join(outputPathPrefix, vendorOutputPath, vendorDep)),
       append: false,
       hash: true
     }),
