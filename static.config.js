@@ -27,12 +27,12 @@ const Document = ({ Html, Head, Body, children }) => (
       <meta name='description' content={siteConfig.description}/>
       <meta name='author' content={siteConfig.author}/>
       <meta name='referrer' content='origin-when-cross-origin'/>
-      <link href='static/vendor/ionicons/css/ionicons.min.css' rel='stylesheet'/>
-      <link href='static/vendor/fontawesome/css/all.min.css' rel='stylesheet'/>
+      <link href='static/vendor/ionicons-2.0/css/ionicons.min.css' rel='stylesheet'/>
+      <link href='static/vendor/font-awesome-5.5/css/all.min.css' rel='stylesheet'/>
 
       {/* Hotjar Tracking Code */}
       {!isDev && (
-        <script dangerouslySetInnerHTML={{ _html: analyticsCode }}/>
+        <script dangerouslySetInnerHTML={{ __html: analyticsCode }}/>
       )}
     </Head>
     <Body>{children}</Body>

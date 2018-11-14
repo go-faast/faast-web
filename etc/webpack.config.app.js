@@ -27,7 +27,7 @@ if (!NODE_ENV) {
 const isDev = NODE_ENV === 'development'
 const publicPath = isIpfs ? './' : '/'
 
-const vendorDeps = ['font-awesome/css/font-awesome.min.css']
+const vendorDeps = ['font-awesome/css/font-awesome-4.7.min.css']
 
 const routerBaseName = path.join('/', appPath)
 const outputPathPrefix = isDev ? appPath : '' // Prefix output path during development for proxy purposes
