@@ -1,11 +1,13 @@
-# Faast Portfolio
+# Faast
 
 [![Package version](https://img.shields.io/badge/dynamic/json.svg?label=version&url=https%3A%2F%2Fraw.githubusercontent.com%2Fgo-faast%2Ffaast-portfolio%2Fdevelop%2Fpackage.json&query=%24.version&colorB=blue&prefix=v)](https://github.com/go-faast/faast-portfolio/blob/develop/package.json)
 [![GitHub license](https://img.shields.io/github/license/go-faast/faast-portfolio.svg)](https://github.com/go-faast/faast-portfolio/blob/develop/LICENSE)
 [![Build Status](https://travis-ci.org/go-faast/faast-portfolio.svg?branch=develop)](https://travis-ci.org/go-faast/faast-portfolio)
 
-A decentralized cryptocurrency portfolio manager and exchange interface
-<https://faa.st/portfolio>
+A decentralized cryptocurrency portfolio manager and exchange.
+<https://faa.st>
+
+This repository contains code for both the Faast [static website](https://faa.st) and [single page application](https://faa.st/app). Both are built using React.
 
 ## Usage
 
@@ -31,7 +33,7 @@ Then open [https://localhost:8000](https://localhost:8000). To resolve the SSL w
 
 ### Building
 
-For development and to build the application, you will need to install all of the modules:
+To build the application, you will need to install all of the modules:
 
 ```bash
 npm install
@@ -53,27 +55,25 @@ npm start
 
 ### Development Server
 
-The faast Portfolio is a React app that is bundled with Webpack. For easier development, the application can be run with the Webpack Dev Server. This allows live reloading on code changes. To start, run:
+The static website is built using react-static, which uses webpack under the hood. And the single page app is built directly with Webpack. For easier development, both can be run with webpack dev server. This allows live reloading on code changes. To start both dev servers behind a frontend proxy, run:
 
 ```bash
 npm run dev
 ```
 
-Once compiled, open [https://localhost:8080/portfolio](https://localhost:8080/portfolio) in your browser.
+Once compiled, open [https://localhost:8000](https://localhost:8080) in your browser.
 
-To resolve the SSL warning you have the following options:
+This concurrently runs the following:
 
-#### On MacOS
+- `npm run dev:site` -> Start dev server for static website at <http://localhost:3000>
+- `npm run dev:app` -> Start dev server for single page app at <http://localhost:8080/app>
+- `npm run dev:proxy` -> Provide a proxy to both dev servers at <https://localhost:8000>
 
-1. Go to `Applications -> Keychain Access`
-2. `File -> Import Items`
-3. Import `faast-portfolio -> node_modules -> webpack-dev-server -> ssl -> server.pem`
-4. Double click newly imported item in Keychain Access (most likely named 'localhost') to open options
-5. `Trust -> Set: When using this certificate to 'Always Trust'`
+#### SSL warnings
 
-#### On Google Chrome Browser
+To resolve the SSL warning follow [these steps](https://github.com/lwsjs/local-web-server/wiki/How-to-get-the-%22green-padlock%22-using-the-built-in-certificate).
 
-1. Visit [chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost) and set the property to `Enabled`.
+or on Google Chrome Browser visit [chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost) and set the property to `Enabled`.
 
 ### Branches
 

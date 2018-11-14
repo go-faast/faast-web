@@ -1,8 +1,8 @@
 {
   "name": "faast-portfolio",
-  "productName": "Faast Portfolio",
+  "productName": "Faast",
   "version": "2.11.11",
-  "description": "A decentralized cryptocurrency portfolio manager and exchange",
+  "description": "A decentralized cryptocurrency portfolio manager and exchange.",
   "contributors": [
     "Nathan Wood <nathan@bitaccess.co>",
     "Dylan Seago <dylan@bitaccess.co>",
