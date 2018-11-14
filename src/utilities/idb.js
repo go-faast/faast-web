@@ -1,4 +1,5 @@
 import IDBStore from 'idb-wrapper'
+import pkg from 'Pkg'
 import { dateNowString, downloadJson } from './helpers'
 
 const DAYS_TO_STORE = 5
@@ -88,7 +89,7 @@ const exportDb = (storeName) => {
       .then((result) => {
         return downloadJson({
           [storeName]: result
-        }, `faast-portfolio-${storeName}-${dateNowString('_', '-')}`)
+        }, `${pkg.name}-${storeName}-${dateNowString('_', '-')}`)
       })
       .then((jsonString) => {
         resolve(jsonString)
