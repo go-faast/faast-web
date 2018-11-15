@@ -19,7 +19,7 @@ const analyticsCode = `
 })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
 `
 
-const Document = ({ Html, Head, Body, children }) => (
+const Document = ({ Html, Head, Body, children, siteData }) => (
   <Html lang='en'>
     <Head>
       <meta charSet='utf-8' />
@@ -27,8 +27,10 @@ const Document = ({ Html, Head, Body, children }) => (
       <meta name='description' content={siteConfig.description}/>
       <meta name='author' content={siteConfig.author}/>
       <meta name='referrer' content='origin-when-cross-origin'/>
-      <link href='static/vendor/ionicons-2.0/css/ionicons.min.css' rel='stylesheet'/>
-      <link href='static/vendor/font-awesome-5.5/css/all.min.css' rel='stylesheet'/>
+      <link href='/static/vendor/ionicons-2.0/css/ionicons.min.css' rel='stylesheet'/>
+      <link href='/static/vendor/font-awesome-5.5/css/all.min.css' rel='stylesheet'/>
+      <link rel="icon" href="/favicon.png"/>
+      <title>{siteData.title}</title>
 
       {/* Hotjar Tracking Code */}
       {!isDev && (
@@ -44,6 +46,7 @@ export default {
   siteRoot: 'https://faa.st',
   getSiteData: () => ({
     title: 'Trade Crypto - Faast',
+    lastBuilt: Date.now(),
   }),
   Document,
   getRoutes: async () => {
