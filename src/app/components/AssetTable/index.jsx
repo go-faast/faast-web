@@ -6,6 +6,7 @@ import { compose, setDisplayName, setPropTypes } from 'recompose'
 import { Table } from 'reactstrap'
 import classNames from 'class-names'
 
+import routes from 'Routes'
 import display from 'Utilities/display'
 
 import ChangePercent from 'Components/ChangePercent'
@@ -24,7 +25,7 @@ const renderAssetRows = ({ assetRows, push }) => {
     const fiatValue = display.fiat(fiat)
     const fiatPrice = display.fiat(price)
     return (
-      <tr key={symbol} onClick={() => push(`/asset/${symbol}`)} tabIndex='0'>
+      <tr key={symbol} onClick={() => push(routes.assetDetail(symbol))} tabIndex='0'>
         <td>
           <CoinIcon symbol={symbol} width='1.5em' height='1.5em' size={1} inline/>
           <span className='mx-2 text-truncate'>{displayName}</span>

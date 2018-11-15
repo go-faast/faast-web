@@ -6,6 +6,7 @@ import { Table, Media } from 'reactstrap'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
 
+import routes from 'Routes'
 import Units from 'Components/Units'
 import ChangePercent from 'Components/ChangePercent'
 import ArrowIcon from 'Components/ArrowIcon'
@@ -17,7 +18,7 @@ import { indexTable, mediaBody } from './style'
 const TableRow = ({ asset: { symbol, availableSupply, name, 
   marketCap, price, change24, volume24 }, push, ...props }) => {
   return (
-    <tr onClick={() => push(`/asset/${symbol}`)} {...props}>
+    <tr onClick={() => push(routes.assetDetail(symbol))} {...props}>
       <td className='pl-3 pl-md-5'>
         <Media>
           <Media left>
@@ -108,26 +109,26 @@ const AssetIndexTable = ({ assets, push }) => (
           key={asset.symbol} 
           asset={asset} 
           push={push}
-          />
-        )
+        />
+      )
       )}
     </tbody>
   </Table>
 )
 
 export default compose(
-    setDisplayName('AssetIndexTable'),
-    connect(null, {
-      push: pushAction
-    }),
-    setPropTypes({
-      assets: PropTypes.arrayOf(PropTypes.object).isRequired
-    }),
-    defaultProps({
-      assets: []
-    }),
-    withHandlers({
-    }),
-    lifecycle({
-    }),
-  )(AssetIndexTable)
+  setDisplayName('AssetIndexTable'),
+  connect(null, {
+    push: pushAction
+  }),
+  setPropTypes({
+    assets: PropTypes.arrayOf(PropTypes.object).isRequired
+  }),
+  defaultProps({
+    assets: []
+  }),
+  withHandlers({
+  }),
+  lifecycle({
+  }),
+)(AssetIndexTable)
