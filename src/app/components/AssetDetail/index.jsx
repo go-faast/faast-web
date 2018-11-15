@@ -9,7 +9,6 @@ import classNames from 'class-names'
 
 import { getAsset } from 'Selectors/asset'
 import { getHoldingsByAsset } from 'Selectors/wallet'
-import { isPriceChartLoading } from 'Selectors/priceChart'
 
 import conditionalRedirect from 'Hoc/conditionalRedirect'
 import routes from 'Routes'
@@ -41,7 +40,7 @@ const marketData = [
   }
 ]
 
-const AssetDetail = ({ symbol, asset, assetHoldings, isPriceChartLoading }) => {
+const AssetDetail = ({ symbol, asset, assetHoldings }) => {
   const { name, price, change24, deposit, receive } = asset
   return (
     <Layout className='pt-3 p-0 p-sm-3'>
@@ -133,10 +132,7 @@ const AssetDetail = ({ symbol, asset, assetHoldings, isPriceChartLoading }) => {
         </Row>
       </CardHeader>
       <CardBody className='text-center'>
-        {isPriceChartLoading ? 
-          <i className='fa fa-spinner fa-pulse'/> :
-          <PriceChart symbol={symbol} chartOpen/> 
-        }
+        <PriceChart symbol={symbol} chartOpen/> 
       </CardBody>
     </Card>
     </Layout>
@@ -157,7 +153,6 @@ export default compose(
   connect(createStructuredSelector({
     asset: (state, { symbol }) => getAsset(state, symbol),
     assetHoldings: (state, { symbol }) => getHoldingsByAsset(state, symbol),
-    isPriceChartLoading: (state, { symbol }) => isPriceChartLoading(state, symbol)
   }), {
   }),
   conditionalRedirect(

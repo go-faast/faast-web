@@ -1,19 +1,18 @@
 import React from 'react'
 import { connect } from 'react-redux'
-
-import { openViewOnlyWallet } from 'Actions/access'
+import { push } from 'react-router-redux'
 
 import AddressSearchForm from 'Components/AddressSearchForm'
 
-const AddressSearch = ({ openWallet, ...props }) => (
+const AddressSearch = ({ routerPush, ...props }) => (
   <AddressSearchForm
-    onSubmit={({ address }) => openWallet(address)}
+    onSubmit={({ address }) => address && routerPush(`/address/${address}`)}
     {...props}
   />
 )
 
 const mapDispatchToProps = {
-  openWallet: openViewOnlyWallet,
+  routerPush: push
 }
 
 export default connect(null, mapDispatchToProps)(AddressSearch)

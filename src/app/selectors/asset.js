@@ -30,6 +30,15 @@ export const areAssetPricesLoading = createSelector(getAssetState, ({ pricesLoad
 export const areAssetPricesLoaded = createSelector(getAssetState, ({ loaded, pricesLoaded }) => loaded && pricesLoaded)
 export const getAssetPricesError = createSelector(getAssetState, ({ loadingError, pricesError }) => loadingError || pricesError)
 
+export const getNumberOfAssets = createSelector(getAllAssetsArray, (assets) => assets.length)
+
+export const getAssetIndexPage = createItemSelector(
+  getAllAssetsArray,
+  selectItemId, 
+  (allAssets, { page, limit, sortField }) => {
+    return allAssets.sort((a, b) => b[sortField].comparedTo(a[sortField])).slice(page * limit, page * limit + limit)
+  })
+
 export const getAsset = createItemSelector(getAllAssets, selectItemId, (allAssets, id) => allAssets[id])
 export const getAssetPrice = createItemSelector(getAsset, fieldSelector('price'))
 export const getAssetIconUrl = createItemSelector(getAsset, fieldSelector('iconUrl'))

@@ -1,11 +1,11 @@
 import PropTypes from 'prop-types'
-import { compose, setDisplayName, setPropTypes, defaultProps, withProps } from 'recompose'
+import { compose, setDisplayName, setPropTypes, defaultProps, withProps, mapProps } from 'recompose'
 import { withRouter } from 'react-router'
 import { Link } from 'react-router-dom'
 import qs from 'query-string'
 import { createLocation, parsePath } from 'history'
 
-import omitProps from 'Utilities/omitProps'
+import { omit } from 'lodash'
 const parseQs = (o) => typeof o === 'string' ? qs.parse(o, { ignoreQueryPrefix: true }) : (typeof o === 'object' ? o : {})
 const stringifyQs = (o) => typeof o === 'object' ? qs.stringify(o, { addQueryPrefix: true }) : (typeof o === 'string' ? o : '')
 const stringifyLocationQs = (o) => typeof o === 'object' ? ({ ...o, search: stringifyQs(o.search) }) : o
@@ -37,5 +37,5 @@ export default compose(
   withProps(({ to, merge, location: current }) => ({
     to: stringifyLocationQs(merge ? mergeLocations(to, current) : to)
   })),
-  omitProps('merge', 'match', 'location', 'history', 'staticContext')
+  mapProps((props) => omit(props, 'merge', 'match', 'location', 'history', 'staticContext'))
 )(Link)

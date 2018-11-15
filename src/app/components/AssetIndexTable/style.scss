@@ -1,0 +1,18 @@
+@import '~Styles/variables';
+
+.mediaBody {
+  position: relative; 
+  top: -2px;
+  width: 100%;
+  max-width: 175px;
+}
+
+.indexTable {
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  td {
+    vertical-align: middle;
+    padding: .6rem;
+  }
+}

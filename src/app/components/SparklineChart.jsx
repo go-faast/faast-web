@@ -3,21 +3,21 @@ import PropTypes from 'prop-types'
 import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withProps } from 'recompose'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { getPriceChartData, isPriceChartLoading } from 'Selectors'
+import { getPriceChartData } from 'Selectors'
 import { fetchPriceChartData } from 'Actions/priceChart'
 import ReactHighstock from 'react-highcharts/ReactHighstock.src'
 import { themeColor } from 'Utilities/style'
 
-const priceSeriesName = 'Price (USD)'
-
-const PriceChart = ({ config, isPriceChartLoading }) => {
-  return  isPriceChartLoading ? 
-    <i className='fa fa-spinner fa-pulse'/> : <ReactHighstock config={config}/>
+const SparklineChart = ({ config }) => {
+  return <ReactHighstock config={config}/>
 }
 
 const initialConfig = {
   chart: {
-    height: 350,
+    width: 120,
+    height: 60,
+    skipClone: true,
+    type: 'area'
   },
   colors: [themeColor.primary],
   navigator: {
@@ -36,7 +36,7 @@ const initialConfig = {
         radius: 2,
         fillColor: themeColor.ultraDark,
       },
-      lineWidth: 2,
+      lineWidth: 1,
       states: {
         hover: {
           lineWidth: 2
@@ -46,11 +46,20 @@ const initialConfig = {
     }
   },
   rangeSelector: {
+    enabled: true,
+    selected: 0,
+    height: 0,
+    buttons: [{
+      type: 'month',
+      count: 3,
+      text: '3m'
+    }],
     buttonTheme: {
       fill: '#505053',
       stroke: '#000000',
       style: {
-        color: '#CCC'
+        color: '#CCC',
+        display: 'none'
       },
       states: {
         hover: {
@@ -72,10 +81,12 @@ const initialConfig = {
     inputBoxBorderColor: '#505053',
     inputStyle: {
       backgroundColor: '#333',
-      color: 'silver'
+      color: 'silver',
+      display: 'none',
     },
     labelStyle: {
-      color: 'silver'
+      color: 'silver',
+      display: 'none'
     }
   },
   scrollbar: {
@@ -87,22 +98,24 @@ const initialConfig = {
     text: '',
     style: {
       color: '#E0E0E3',
-      fontSize: '20px'
+      fontSize: '20px',
+      display: 'none'
     }
   },
   xAxis: {
-    gridLineColor: '#707073',
+    gridLineColor: 'transparent',
     labels: {
+      enabled: false,
       style: {
         color: '#E0E0E3'
       }
     },
-    lineColor: '#707073',
-    minorGridLineColor: '#505053',
-    tickColor: '#707073'
+    lineColor: 'transparent',
+    minorGridLineColor: 'transparent',
+    tickColor: 'transparent'
   },
   series: [{
-    name: priceSeriesName,
+    name: '',
     data: [],
     type: 'area',
     tooltip: {
@@ -112,17 +125,21 @@ const initialConfig = {
     },
     threshold: null
   }],
+  legend: {
+    enabled: false
+  },
   yAxis: {
     min: 0,
     opposite: false,
-    gridLineColor: '#707073',
+    gridLineColor: 'transparent',
     title: {
-      text: priceSeriesName,
+      text: '',
       style: {
         color: themeColor.primary
       }
     },
     labels: {
+      enabled: false,
       y: null, // Center vertically
       format: '${value}',
       align: 'right',
@@ -131,23 +148,22 @@ const initialConfig = {
         fontSize: '12px'
       }
     },
-    lineColor: '#707073',
-    minorGridLineColor: '#505053',
-    tickColor: '#707073',
+    lineColor: 'transparent',
+    minorGridLineColor: 'transparent',
+    tickColor: 'transparent',
     tickWidth: 1,
     plotLines: [{
       value: 0,
       width: 1,
-      color: '#808080'
+      color: 'transparent'
     }]
   }
 }
 
 export default compose(
-  setDisplayName('PriceChart'),
+  setDisplayName('SparklineChart'),
   connect(createStructuredSelector({
-    data: (state, { symbol }) => getPriceChartData(state, symbol),
-    isPriceChartLoading: (state, { symbol }) => isPriceChartLoading(state, symbol)
+    data: (state, { symbol }) => getPriceChartData(state, symbol)
   }), {
     fetchPriceChart: fetchPriceChartData
   }),
@@ -186,4 +202,4 @@ export default compose(
       }
     }
   }),
-)(PriceChart)
+)(SparklineChart)
