@@ -15,7 +15,7 @@
       "interface-name": [true, "never-prefix"],
       "interface-over-type-literal": false,
       "member-ordering": false,
-      "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+      "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"],
       "member-access": false,
       "radix": false,
       "new-parens": true,

@@ -193,7 +193,8 @@ export const signSwundle = (swundle) => (dispatch, getState) => {
   log.debug('signSwundle', swundle.id)
   const passwordCache = {}
   dispatch(signStarted(swundle.id))
-  return forEachSwap(swundle, (swap) => dispatch(signSwap(swap, passwordCache))
+  return forEachSwap(swundle, (swap) =>
+    dispatch(signSwap(swap, passwordCache))
       // Add a delay between signing swaps to avoid Trezor closing window race condition
       .then(() => delay(500)))
     .then(() => {

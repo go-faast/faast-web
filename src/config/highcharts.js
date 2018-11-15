@@ -1,6 +1,6 @@
 import ReactHighcharts from 'react-highcharts'
 import ReactHighstock from 'react-highcharts/ReactHighstock'
-import { styleVars } from 'Utilities/style'
+import * as styleVars from 'faast-ui/src/style/variables'
 
 const globalConfig = {
   chart: {
