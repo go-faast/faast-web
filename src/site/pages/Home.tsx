@@ -6,6 +6,7 @@ import { Asset } from 'Types'
 
 // import logoImg from 'Img/faast-logo.png'
 import EmailSubscriptionForm from 'Site/components/EmailSubscriptionForm'
+import IconCarousel from 'Site/components/IconCarousel'
 
 import TrezorWalletLogo from 'Img/wallet/trezor.png'
 import LedgerWalletLogo from 'Img/wallet/ledger.png'
@@ -175,26 +176,12 @@ export default compose<Props, {}>(
             <h1 className='currency-count text-white font-weight-bold'>{supportedAssets.length} <small>Coins Supported</small></h1>
           </div>
           <div className='col px-2'>
-            <div id='currency-icons-wrapper'>
-              <div id='currency-icons-left' className='currency-icons-arrow d-flex justify-content-center align-items-center'>
-                <h2 className='fa fa-caret-left'></h2>
-              </div>
-              <div id='currency-icons-right' className='currency-icons-arrow d-flex justify-content-center align-items-center'>
-                <h2 className='fa fa-caret-right'></h2>
-              </div>
-              <div id='currency-icons' className='row align-items-center px-5 m-0'>
-                {supportedAssets.map((asset) => (
-                  <div key={asset.symbol} className='col-auto currency-icon'>
-                    <a className='d-block text-white' href={`/app/assets/${asset.symbol}`}>
-                      <img className='currency-icon-img' src={asset.iconUrl}/>
-                      <div className='d-flex flex-column justify-content-center currency-icon-label'>
-                        <p>{asset.name}</p>
-                      </div>
-                    </a>
-                  </div>
-                ))}
-              </div>
-            </div>
+            <IconCarousel items={supportedAssets.map(({ symbol, name, iconUrl }) => ({
+              key: symbol,
+              label: (<p>{name}</p>),
+              iconUrl,
+              link: `/app/assets/${symbol}`,
+            }))}/>
           </div>
         </div>
       </div>
