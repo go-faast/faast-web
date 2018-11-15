@@ -148,11 +148,9 @@ export default compose<Props, {}>(
             <p className='text-center' style={{ marginTop: '2rem', marginBottom: '3rem' }}>
               <small>
                 Method: this graph shows the estimated amount received from trading $100 worth of Aragon (ANT) for Aeternity (AE) using Faast versus other popular cryptocurrency providers.
-                Click&nbsp;
-                <a className='text-dark' href='https://medium.com/faast/binance-vs-kyber-vs-faast-which-exchange-will-save-you-the-most-money-e19972dd11df' target='_blank'>
+                Click <a className='text-dark' href='https://medium.com/faast/binance-vs-kyber-vs-faast-which-exchange-will-save-you-the-most-money-e19972dd11df' target='_blank'>
                   here
-                </a>
-                to learn more.
+                </a> to learn more.
               </small>
             </p>
             <p className='lead text-center py-3 px-3 mb-4' style={{ backgroundColor: '#F3F5F8' }}>
