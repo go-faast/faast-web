@@ -38,8 +38,7 @@ const SwapStepTwo = ({
   const quotedRate = rate || estimatedRate
   const qrAddress = bip21Prefix && depositAddress.indexOf(bip21Prefix) < 0 
     ? `${bip21Prefix}:${depositAddress}` : depositAddress
-  const qrQueryString = !sendAmount ? qrAddress : bip21Prefix === 'ethereum' 
-    ? `${qrAddress}?value=${sendAmount}` : `${qrAddress}?amount=${sendAmount}`
+  const qrQueryString = !sendAmount || bip21Prefix === 'ethereum' ? qrAddress : `${qrAddress}?amount=${sendAmount}`
   return (
     <Fragment>
       <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={1}/>
