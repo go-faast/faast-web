@@ -1,5 +1,11 @@
 const path = require('path')
 
+const DEFAULT_NODE_ENV = 'production'
+let NODE_ENV = process.env.NODE_ENV
+if (!NODE_ENV) {
+  NODE_ENV = DEFAULT_NODE_ENV
+}
+const isDev = NODE_ENV === 'development'
 const isIpfs = process.env.IPFS === 'true'
 const isMocking = Boolean(process.env.MOCK)
 
@@ -30,6 +36,8 @@ const fileOutputPath = path.join(staticOutputPath, 'file')
 const vendorOutputPath = path.join(staticOutputPath, 'vendor')
 
 module.exports = {
+  NODE_ENV,
+  isDev,
   isIpfs,
   isMocking,
   dirs,

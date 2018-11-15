@@ -7,24 +7,15 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const FaviconPlugin = require('favicons-webpack-plugin')
 const CleanPlugin = require('clean-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
-const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const IncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 
 const pkg = require('../package.json')
 
 const {
-  isIpfs, dirs, appPath, bundleOutputPath, vendorOutputPath, faviconOutputPath,
+  isDev, isIpfs, dirs, appPath, bundleOutputPath, vendorOutputPath, faviconOutputPath,
 } = require('./common.js')
 
 const getBaseConfig = require('./webpack.config.base.js')
-
-const DEFAULT_NODE_ENV = 'production'
-let NODE_ENV = process.env.NODE_ENV
-if (!NODE_ENV) {
-  console.log(`NODE_ENV not specified, using ${DEFAULT_NODE_ENV}`)
-  NODE_ENV = DEFAULT_NODE_ENV
-}
-const isDev = NODE_ENV === 'development'
 const publicPath = isIpfs ? './' : '/'
 
 const vendorDeps = ['font-awesome-4.7/css/font-awesome.min.css']
@@ -45,9 +36,7 @@ let config = merge.strategy({
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
       'process.env.ROUTER_BASE_NAME': JSON.stringify(routerBaseName),
-      'process.env.IPFS': JSON.stringify(isIpfs),
     }),
     new HtmlPlugin({
       template: path.join(dirs.app, 'index.html'),
@@ -62,12 +51,6 @@ let config = merge.strategy({
         removeEmptyAttributes: true,
       }
     }),
-    new ExtractTextPlugin({
-      filename: path.join(outputPathPrefix, bundleOutputPath, '[name].[contenthash:8].css'),
-      ignoreOrder: true,
-      disable: isDev
-    }),
-    new OptimizeCssAssetsPlugin(),
     new FaviconPlugin({
       logo: path.join(dirs.res, 'img', 'faast-logo.png'),
       prefix: path.join(outputPathPrefix, faviconOutputPath, '[hash:8]/'),
@@ -106,6 +89,10 @@ if (!isDev) {
             reserved: ['BigInteger', 'ECPair', 'Point']
           }
         }
+      }),
+      new ExtractTextPlugin({
+        filename: path.join(outputPathPrefix, bundleOutputPath, '[name].[contenthash:8].css'),
+        ignoreOrder: true,
       }),
       new webpack.optimize.ModuleConcatenationPlugin(),
       new webpack.HashedModuleIdsPlugin(),

@@ -2,6 +2,7 @@ import React from 'react'
 import path from 'path'
 import axios from 'axios'
 import merge from 'webpack-merge'
+import ExtractTextPlugin from 'extract-text-webpack-plugin'
 
 const { dirs } = require('./etc/common.js')
 const getBaseConfig = require('./etc/webpack.config.base.js')
@@ -43,7 +44,7 @@ const Document = ({ Html, Head, Body, children, siteData }) => (
 
 export default {
   entry: path.join(dirs.site, 'index.tsx'),
-  siteRoot: 'https://faa.st',
+  siteRoot: process.env.SITE_ROOT || '', // Leave empty to build for all environments
   getSiteData: () => ({
     title: 'Trade Crypto - Faast',
     lastBuilt: Date.now(),
@@ -73,6 +74,12 @@ export default {
     const config = merge.strategy({
       'module.rules': 'replace',
     })(defaultConfig, baseConfig)
+    if (stage === 'node') {
+      // Needed for css modules to work. See https://github.com/nozzle/react-static/issues/601#issuecomment-429574588
+      config.plugins.push(new ExtractTextPlugin({
+        filename: path.join(dirs.root, 'tmp/[name].css'),
+      }))
+    }
     return config
   },
 }

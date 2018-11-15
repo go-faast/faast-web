@@ -1,9 +1,11 @@
 const path = require('path')
+const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const convPaths = require('convert-tsconfig-paths-to-webpack-aliases').default
 
 const {
-  dirs, imgOutputPath, fontOutputPath, fileOutputPath, bundleOutputPath, 
+  NODE_ENV, isIpfs, dirs, imgOutputPath, fontOutputPath, fileOutputPath, bundleOutputPath, 
 } = require('./common.js')
 
 // Needs to be valid JSON. All comments in tsconfig.json must be removed.
@@ -28,7 +30,7 @@ module.exports = function (stage, outputPathPrefix = '') {
         modules,
         minimize: false, // CSS minification handled by OptimizeCssAssetsPlugin
         importLoaders: 2,
-        localIdentName: isDev ? '[name]__[local]__[hash:base64:5]' : '[hash:base64]'
+        localIdentName: isDev ? '[name]__[local]__[hash:base64:5]' : '[hash:base64:12]'
       }
     }, {
       loader: 'postcss-loader', // Run post css actions
@@ -42,23 +44,25 @@ module.exports = function (stage, outputPathPrefix = '') {
       loader: 'sass-loader', // compiles SASS to CSS
       options: { 
         sourceMap,
-        includePaths: [dirs.nodeModules],
+        includePaths: [dirs.nodeModules, dirs.src],
         sourceMapContents: true,
         outputStyle: 'expanded',
         precision: 6,
       }
     }]
-    if (stage === 'prod') {
-      return ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: primaryCssLoaders,
-      })
-    }
     if (stage === 'dev') {
       return ['style-loader', ...primaryCssLoaders]
     }
-    // -> stage === 'node'
-    return primaryCssLoaders
+    return ExtractTextPlugin.extract({
+      fallback: {
+        loader: 'style-loader',
+        options: {
+          sourceMap,
+          hmr: false,
+        },
+      },
+      use: primaryCssLoaders,
+    })
   }
 
   const assetLoader = (outputPath) => ({
@@ -130,6 +134,13 @@ module.exports = function (stage, outputPathPrefix = '') {
     node: {
       fs: 'empty',
       __filename: true,
-    }
+    },
+    plugins: [
+      new OptimizeCssAssetsPlugin(),
+      new webpack.DefinePlugin({
+        'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
+        'process.env.IPFS': JSON.stringify(isIpfs),
+      }),
+    ]
   }
 }
