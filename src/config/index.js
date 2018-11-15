@@ -1,5 +1,5 @@
 /* global SITE_URL, API_URL */
-import highCharts from './highCharts'
+import highCharts from './highcharts'
 import tokenFunctionSignatures from './tokenFunctionSignatures'
 import walletTypes from './walletTypes'
 import BigNumber from 'bignumber.js'
