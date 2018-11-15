@@ -35,7 +35,6 @@ export const areAssetPricesLoaded = createSelector(getAssetState, ({ loaded, pri
 export const getAssetPricesError = createSelector(getAssetState, ({ loadingError, pricesError }) => loadingError || pricesError)
 
 export const getAsset = createItemSelector(getAllAssets, selectItemId, (allAssets, id) => allAssets[id])
-export const getBip21Prefix = createItemSelector(getAsset, fieldSelector('bip21Prefix'))
 export const getAssetPrice = createItemSelector(getAsset, fieldSelector('price'))
 export const getAssetIconUrl = createItemSelector(getAsset, fieldSelector('iconUrl'))
 export const isAssetPriceLoading = createItemSelector(getAsset, fieldSelector('priceLoading'))

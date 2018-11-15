@@ -20,7 +20,6 @@ import { retrievePairData } from 'Actions/rate'
 import { retrieveSwap, refreshSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
 import { getRateMinimumDeposit, getRatePrice } from 'Selectors/rate'
-import { getBip21Prefix } from 'Selectors/asset'
 import DataLayout from 'Components/DataLayout'
 
 import { container, qr, scan, receipt } from './style.scss'
@@ -28,17 +27,19 @@ import { container, qr, scan, receipt } from './style.scss'
 /* eslint-disable react/jsx-key */
 const SwapStepTwo = ({
   swap, handleRef, handleFocus, handleCopy, handleTimerEnd, secondsUntilPriceExpiry, 
-  minimumDeposit, estimatedRate, bip21Prefix
+  minimumDeposit, estimatedRate
 }) => {
   swap = swap || {}
-  const {
+  let {
     orderId = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
-    sendAmount, receiveAmount, rate, orderStatus = '', refundAddress = '', isFixedPrice, 
-    sendAsset: { ERC20 }
+    sendAmount, receiveAmount, rate, orderStatus = '', refundAddress = '', isFixedPrice,
+    sendAsset: { bip21Prefix }
   } = swap
   const quotedRate = rate || estimatedRate
-  const qrAddress = bip21Prefix ? `${bip21Prefix}:${depositAddress}` : depositAddress
-  const qrQueryString = !sendAmount || ERC20 ? qrAddress : `${qrAddress}?amount=${sendAmount}`
+  const qrAddress = bip21Prefix && depositAddress.indexOf(bip21Prefix) < 0 
+    ? `${bip21Prefix}:${depositAddress}` : depositAddress
+  const qrQueryString = !sendAmount ? qrAddress : bip21Prefix === 'ethereum' 
+    ? `${qrAddress}?value=${sendAmount}` : `${qrAddress}?amount=${sendAmount}`
   return (
     <Fragment>
       <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={1}/>
@@ -131,7 +132,6 @@ export default compose(
   connect(createStructuredSelector({
     minimumDeposit: (state, { pair }) => getRateMinimumDeposit(state, pair),
     estimatedRate: (state, { pair }) => getRatePrice(state, pair),
-    bip21Prefix: (state, { swap: { sendSymbol } }) => getBip21Prefix(state, sendSymbol),
   })),
   withHandlers(() => {
     let inputRef
