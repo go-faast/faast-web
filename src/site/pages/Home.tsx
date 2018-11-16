@@ -83,7 +83,7 @@ export default compose<Props, {}>(
         <p className='hero-subtitle' style={{ fontWeight: 'normal', width: '90%' }}>
           It’s never been this easy to build a diversified cryptocurrency portfolio<br/>
         </p>
-        <p><a className='btn btn-light btn-lg hero-button py-2' role='button' href='/portfolio'>
+        <p><a className='btn btn-light btn-lg hero-button py-2' role='button' href='/app'>
           Create A Portfolio
         </a></p>
         <div className='intro' style={{ paddingTop: '60px' }}>
@@ -189,7 +189,7 @@ export default compose<Props, {}>(
             <div className='intro'>
               <h2 className='text-white' style={{ fontWeight: 'normal', marginBottom: '20px' }}>Slick &amp; Simple Interface</h2>
               <p className='text-white' style={{ marginBottom: '30px' }}>With our unique and intuitive <strong>‘click-and-drag’ slider&nbsp;interface</strong>, you can visually allocate how much of any coin you want to toward a trade— swap multiple coins at once, and build a diversified portfolio in
-                seconds with only a single transaction.<br/></p><a className='btn btn-light active' role='button' href='/portfolio'>Start Trading</a></div>
+                seconds with only a single transaction.<br/></p><a className='btn btn-light active' role='button' href='/app'>Start Trading</a></div>
           </div>
           <div className='col-sm-12 col-md-6 col-lg-7 col-xl-6 offset-md-0 offset-lg-0 offset-xl-0 align-self-center' style={{ paddingTop: '30px' }}>
             <img className='img-fluid' src={MacbookScreenshot2} style={{ marginTop: '0px' }}/>
@@ -201,49 +201,49 @@ export default compose<Props, {}>(
       <p className='lead text-center text-muted' style={{ marginTop: '0px', marginBottom: '20px' }}>Supported Wallets<br/></p>
       <div className='row no-gutters justify-content-center'>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/portfolio/connect/hw/trezor'>
+          <a className='d-block text-white' href='/app/connect/hw/trezor'>
             <img className='rounded wallet-logo' src={TrezorWalletLogo} alt='trezor'/>
             <p className='text-center pt-2'>TREZOR</p>
           </a>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/portfolio/connect/hw/ledger'>
+          <a className='d-block text-white' href='/app/connect/hw/ledger'>
             <img className='rounded wallet-logo' src={LedgerWalletLogo} alt='ledger logo'/>
             <p className='text-center pt-2'>Ledger Wallet</p>
           </a>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/portfolio/connect'>
+          <a className='d-block text-white' href='/app/connect'>
             <img className='rounded wallet-logo' src={MetaMaskLogo} alt='metamask logo'/>
             <p className='text-center pt-2'>MetaMask</p>
           </a>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/portfolio/connect'>
+          <a className='d-block text-white' href='/app/connect'>
             <img className='rounded wallet-logo' src={MistLogo} alt='mist logo'/>
             <p className='text-center pt-2'>Mist</p>
           </a>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/portfolio/connect'>
+          <a className='d-block text-white' href='/app/connect'>
             <img className='rounded wallet-logo' src={TrustWalletLogo} alt='trust wallet logo'/>
             <p className='text-center pt-2'>Trust Wallet</p>
           </a>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/portfolio/connect'>
+          <a className='d-block text-white' href='/app/connect'>
             <img className='rounded wallet-logo' src={CoinbaseWalletLogo} alt='coinbase wallet logo'/>
             <p className='text-center pt-2'>Coinbase Wallet</p>
           </a>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/portfolio/connect'>
+          <a className='d-block text-white' href='/app/connect'>
             <img className='rounded wallet-logo' src={StatusWalletLogo} alt='status logo'/>
             <p className='text-center pt-2'>Status</p>
           </a>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/portfolio/connect'>
+          <a className='d-block text-white' href='/app/connect'>
             <img className='rounded wallet-logo' src={MewLogo} alt='my ether wallet logo'/>
             <p className='text-center pt-2'>Keystore</p>
           </a>
@@ -296,7 +296,7 @@ export default compose<Props, {}>(
               <h3 className='name' style={{ fontWeight: 'normal' }}>Swap Funds</h3>
             </div>
           </div>
-          <div className='col-md-4 col-lg-4 col-xl-4 offset-md-0 offset-lg-0 offset-xl-0' style={{ paddingTop: '10px' }}><a className='btn btn-dark btn-block btn-lg hero-button' role='button' href='/portfolio'>Get Started</a></div>
+          <div className='col-md-4 col-lg-4 col-xl-4 offset-md-0 offset-lg-0 offset-xl-0' style={{ paddingTop: '10px' }}><a className='btn btn-dark btn-block btn-lg hero-button' role='button' href='/app'>Get Started</a></div>
         </div>
       </div>
     </div>
@@ -323,8 +323,8 @@ export default compose<Props, {}>(
             <div className='col-6 col-sm-6 col-md-2 col-xl-2 offset-xl-1 item'>
               <h3 style={{ fontWeight: 'normal', color: '#00d7b8' }}>Faast</h3>
               <ul>
-                <li><a className='text-white' href='/portfolio' target='_blank'>Portfolio</a></li>
-                <li><a className='text-white' href='/portfolio/swap' target='_blank'>Swap</a></li>
+                <li><a className='text-white' href='/app' target='_blank'>Portfolio</a></li>
+                <li><a className='text-white' href='/app/swap' target='_blank'>Swap</a></li>
                 <li><a className='text-white' href='https://medium.com/faast' target='_blank'>Blog</a></li>
               </ul>
             </div>
