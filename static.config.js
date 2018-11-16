@@ -64,6 +64,14 @@ export default {
         })
       },
       {
+        path: '/terms',
+        component: 'src/site/pages/Terms',
+      },
+      {
+        path: '/privacy',
+        component: 'src/site/pages/Privacy',
+      },
+      {
         is404: true,
         component: 'src/site/pages/404',
       },
