@@ -32,17 +32,15 @@ import MacbookScreenshot2 from 'Img/macbook-screenshot-02.png'
 import BitaccessLogo from 'Img/bitaccess.svg'
 import FaastLogo64x64 from 'Img/faast-logo-64x64.png'
 
+type PrunedAsset = Pick<Asset, 'symbol' | 'name' | 'iconUrl'>
+
 interface Props {
-  assets: Asset[]
-  supportedAssets: Asset[]
+  supportedAssets: PrunedAsset[]
 }
 /* tslint:disable:max-line-length */
 export default compose<Props, {}>(
   setDisplayName('Home'),
   withRouteData,
-  withProps(({ assets }: Props) => ({
-    supportedAssets: assets.filter(({ deposit, receive }) => deposit || receive),
-  })),
 )(({ supportedAssets }: Props) => (
   <div>
     <div>

@@ -3,6 +3,7 @@ import path from 'path'
 import axios from 'axios'
 import merge from 'webpack-merge'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
+import { pick } from 'lodash'
 
 const { dirs } = require('./etc/common.js')
 const getBaseConfig = require('./etc/webpack.config.base.js')
@@ -52,12 +53,14 @@ export default {
   Document,
   getRoutes: async () => {
     const { data: assets } = await axios.get('https://api.faa.st/api/v2/public/currencies')
+    const supportedAssets = assets.filter(({ deposit, receive }) => deposit || receive)
+      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl'))
     return [
       {
         path: '/',
         component: 'src/site/pages/Home',
         getData: () => ({
-          assets
+          supportedAssets
         })
       },
       {
@@ -76,9 +79,12 @@ export default {
     })(defaultConfig, baseConfig)
     if (stage === 'node') {
       // Needed for css modules to work. See https://github.com/nozzle/react-static/issues/601#issuecomment-429574588
-      config.plugins.push(new ExtractTextPlugin({
-        filename: path.join(dirs.root, 'tmp/[name].css'),
-      }))
+      config.plugins = [
+        ...config.plugins,
+        new ExtractTextPlugin({
+          filename: '_tmp/static.css',
+        }),
+      ]
     }
     return config
   },
