@@ -27,14 +27,18 @@ import { container, qr, scan, receipt } from './style.scss'
 /* eslint-disable react/jsx-key */
 const SwapStepTwo = ({
   swap, handleRef, handleFocus, handleCopy, handleTimerEnd, secondsUntilPriceExpiry, 
-  minimumDeposit, estimatedRate,
+  minimumDeposit, estimatedRate
 }) => {
   swap = swap || {}
-  const {
+  let {
     orderId = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
     sendAmount, receiveAmount, rate, orderStatus = '', refundAddress = '', isFixedPrice,
+    sendAsset: { bip21Prefix }
   } = swap
   const quotedRate = rate || estimatedRate
+  const qrAddress = bip21Prefix && depositAddress.indexOf(bip21Prefix) < 0 
+    ? `${bip21Prefix}:${depositAddress}` : depositAddress
+  const qrQueryString = !sendAmount || bip21Prefix === 'ethereum' ? qrAddress : `${qrAddress}?amount=${sendAmount}`
   return (
     <Fragment>
       <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={1}/>
@@ -52,7 +56,7 @@ const SwapStepTwo = ({
         <CardBody className='pt-1 text-center'>
           <div className={classNames('mt-3', qr)}>
             <div className={scan}></div>
-            <QRCode size={150} level='L' value={depositAddress}/>
+            <QRCode size={150} level='L' value={qrQueryString}/>
           </div>
           <Row className='gutter-2 my-2'>
             <Col>
@@ -109,7 +113,7 @@ export default compose(
     orderId: ''
   }),
   connect(createStructuredSelector({
-    swap: (state, { orderId }) => getSwap(state, orderId),
+    swap: (state, { orderId }) => getSwap(state, orderId)
   }), {
     retrieveSwap: retrieveSwap,
     push: pushAction,
