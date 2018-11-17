@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
-import { compose, setDisplayName, setPropTypes, lifecycle,
+import { compose, setDisplayName, setPropTypes,
    defaultProps, withProps, withHandlers, withState } from 'recompose'
 import { Input, InputGroup, InputGroupAddon, Button, ListGroup, ListGroupItem } from 'reactstrap'
 import PropTypes from 'prop-types'
@@ -44,7 +44,8 @@ const AssetSearch = ({ size, placeholder,
                   {name}
                 </ListGroupItem>)
             })}
-        </ListGroup>) : null}
+          </ListGroup>) : null
+        }
       </InputGroup>
     </Fragment>
   )
@@ -65,7 +66,7 @@ export default compose(
       buttonProps: PropTypes.object,
     }),
     defaultProps({
-      sortBy: 'name',
+      sortBy: 'marketCap',
       displayResults: (results) => results,
       size: 'sm',
       placeholder: 'Search assets...',
@@ -90,9 +91,7 @@ export default compose(
       })
     }),
     withHandlers({
-      applySortOrder: ({ sortBy }) => (list) => {
-        return sortByProperty(list, sortBy)
-      },
+      applySortOrder: ({ sortBy }) => (list) => sortByProperty(list, sortBy)
     }),
     withHandlers({
       handleSearchChange: ({ updateQuery, updateResults, assets, fuse, applySortOrder }) => (event) => {
@@ -107,7 +106,5 @@ export default compose(
         updateQuery(query)
         updateResults(results)
       }
-    }),
-    lifecycle({
     }),
   )(AssetSearch)
