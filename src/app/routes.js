@@ -39,6 +39,7 @@ export const assetDetail = createPath('/assets/:symbol')
 export const assetIndex = createPath('/assets')
 
 export const connect = createPath('/connect')
+export const walletInfoModal = createPath('/connect/:walletType')
 export const connectHwWallet = createPath(connect, '/hw/:walletType')
 export const connectHwWalletAsset = createPath(connectHwWallet, '/:assetSymbol')
 export const connectHwWalletAssetConfirm = createPath(connectHwWalletAsset, '/confirm')
@@ -59,4 +60,5 @@ export default {
   connectHwWalletAssetAccounts,
   viewOnlyAddress,
   assetIndex,
+  walletInfoModal
 }
