@@ -14,7 +14,8 @@ import { getAllAssetsArray } from 'Selectors'
 import Fuse from 'fuse.js'
 
 const AssetSearch = ({ size, placeholder, 
-  inputProps, buttonProps, inputGroupProps, handleSearchChange, results, query }) => {
+  inputProps, buttonProps, inputGroupProps, handleSearchChange, results, 
+  query, updateQuery }) => {
   return (
     <Fragment>
       <InputGroup className='position-relative' {...inputGroupProps}>
@@ -27,6 +28,7 @@ const AssetSearch = ({ size, placeholder,
           spellCheck='false'
           placeholder={placeholder}
           onChange={handleSearchChange}
+          value={query}
           {...inputProps}
         />
         <InputGroupAddon addonType="append">
@@ -39,7 +41,13 @@ const AssetSearch = ({ size, placeholder,
           >
             {results.map(({ name, symbol }) => { 
               return (
-                <ListGroupItem className='text-white' tag={Link} to={`/assets/${symbol}`} key={name}>
+                <ListGroupItem 
+                  onClick={() => updateQuery('')}
+                  className='text-white' 
+                  tag={Link} 
+                  to={`/assets/${symbol}`} 
+                  key={name}
+                >
                   <CoinIcon symbol={symbol} inline size='sm' className='m-1'/>
                   {name}
                 </ListGroupItem>)
