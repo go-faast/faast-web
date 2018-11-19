@@ -1,19 +1,18 @@
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
+import { debounce } from 'debounce'
 import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, setPropTypes,
    defaultProps, withProps, withHandlers, withState } from 'recompose'
 import { Input, InputGroup, InputGroupAddon, Button, ListGroup, ListGroupItem } from 'reactstrap'
 import PropTypes from 'prop-types'
-
-import { debounce } from 'debounce'
+import Fuse from 'fuse.js'
 
 import CoinIcon from 'Components/CoinIcon'
 
 import { sortByProperty } from 'Utilities/helpers'
 import { getAllAssetsArray } from 'Selectors'
-import Fuse from 'fuse.js'
 
 const AssetSearch = ({ size, placeholder, 
   inputProps, buttonProps, inputGroupProps, handleSearchChange, results, 
