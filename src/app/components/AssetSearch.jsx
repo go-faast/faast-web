@@ -7,6 +7,8 @@ import { compose, setDisplayName, setPropTypes,
 import { Input, InputGroup, InputGroupAddon, Button, ListGroup, ListGroupItem } from 'reactstrap'
 import PropTypes from 'prop-types'
 
+import { debounce } from 'debounce'
+
 import CoinIcon from 'Components/CoinIcon'
 
 import { sortByProperty } from 'Utilities/helpers'
@@ -27,7 +29,7 @@ const AssetSearch = ({ size, placeholder,
           autoCapitalize='false'
           spellCheck='false'
           placeholder={placeholder}
-          onChange={handleSearchChange}
+          onChange={(e) => debounce(handleSearchChange(e), 400)}
           value={query}
           {...inputProps}
         />
@@ -77,7 +79,7 @@ export default compose(
       sortBy: 'marketCap',
       displayResults: (results) => results,
       size: 'sm',
-      placeholder: 'Search assets...',
+      placeholder: 'Search coins...',
       formProps: {},
       inputProps: {},
       inputGroupProps: {},
@@ -92,7 +94,7 @@ export default compose(
         location: 0,
         distance: 100,
         minMatchCharLength: 2,
-        keys: ['symbol', 'name']
+        keys: ['name', 'symbol']
       })
       return ({
         fuse
@@ -108,7 +110,7 @@ export default compose(
         if (!query) {
           results = assets
         } else {
-          results = fuse.search(query)
+          results = fuse.search(query).slice(0,10)
           results = applySortOrder(results)
         }
         updateQuery(query)
