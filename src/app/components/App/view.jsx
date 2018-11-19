@@ -53,7 +53,7 @@ const AppView = ({ hasNoWallets }) => (
       <TradeDetailModal tradeId={props.match.params.tradeId} {...props}/>
     )}/>
     <ModalRoute closePath={connect.path} path={walletInfoModal.path} render={(props) => (
-      <WalletInfoModal {...props}/>
+      <WalletInfoModal walletType={props.match.params.walletType} {...props}/>
     )}/>
   </Fragment>
 )

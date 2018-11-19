@@ -9,6 +9,7 @@ import { pick } from 'lodash'
 export default compose(
   setDisplayName('WalletInfoModal'),
   setPropTypes({
+    walletType: PropTypes.string.isRequired,
     ...Modal.propTypes,
   }),
   connect(createStructuredSelector({
@@ -19,13 +20,13 @@ export default compose(
     }
   })
 )(({
-  toggle, ...props,
+  walletType, toggle, ...props,
 }) => (
   <Modal
     size='md' toggle={toggle} className='mt-6 mx-md-auto' contentClassName='p-0'
     {...pick(props, Object.keys(Modal.propTypes))}>
     <ModalHeader tag='h4' toggle={toggle} className='text-primary'>
-      Wallet Info Modal
+      {walletType}
     </ModalHeader>
     <ModalBody className='p-0 p-sm-3'>
     </ModalBody>
