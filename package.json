@@ -24,10 +24,10 @@
     "url": "git+https://github.com/go-faast/faast-portfolio.git"
   },
   "scripts": {
-    "start": "ws --https -d dist --rewrite '/app/* -> /app/index.html'",
+    "start": "ws --config-file etc/lws.config.prod.js",
     "dev:app": "cross-env NODE_ENV=development webpack-dev-server --config etc/webpack.config.app.js --progress",
     "dev:site": "cross-env NODE_ENV=development react-static start",
-    "dev:proxy": "ws --https --rewrite '/app -> http://localhost:8080/app' --rewrite '/app/* -> http://localhost:8080/app/$1' --rewrite '/* -> http://localhost:3000/$1'",
+    "dev:proxy": "ws --config-file etc/lws.config.dev.js",
     "dev": "concurrently -c blue,green,yellow -n app,site,proxy \"npm:dev:app\" \"npm:dev:site\" \"npm:dev:proxy\"",
     "test": "npm run lint",
     "lint": "gulp lint",
@@ -35,7 +35,7 @@
     "build:site": "gulp build:site",
     "build:ipfs": "cross-env IPFS=true npm run build",
     "build": "gulp build",
-    "ngrok": "ngrok http 8080",
+    "ngrok": "ngrok http 8000",
     "preversion": "git checkout develop",
     "version": "npm run build && git add -A dist",
     "postversion": "git push && git push --tags",
