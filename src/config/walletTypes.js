@@ -20,6 +20,7 @@ export default {
   ledger: {
     name: 'Ledger Wallet',
     icon: ledgerLogo,
+    website: 'https://www.ledger.com/',
     hardware: true,
     supportedAssets: {
       ETH: {
@@ -47,6 +48,7 @@ export default {
   trezor: {
     name: 'TREZOR',
     icon: trezorLogo,
+    website: 'https://trezor.io/',
     hardware: true,
     supportedAssets: {
       ETH: {
@@ -69,11 +71,13 @@ export default {
   },
   metamask: {
     name: 'MetaMask',
+    website: 'https://metamask.io/',
     icon: metamaskLogo,
     web3: true,
   },
   mist: {
     name: 'Mist Browser',
+    website: 'https://github.com/ethereum/mist',
     icon: mistLogo,
     web3: true,
   },
@@ -84,16 +88,19 @@ export default {
   },
   coinbase: {
     name: 'Coinbase Wallet',
+    website: 'https://wallet.coinbase.com/',
     icon: coinbaseLogo,
     web3: true,
   },
   trust: {
     name: 'Trust Wallet',
+    website: 'https://trustwalletapp.com/',
     icon: trustLogo,
     web3: true,
   },
   status: {
     name: 'Status',
+    website: 'https://status.im/',
     icon: statusLogo,
     web3: true,
   }
