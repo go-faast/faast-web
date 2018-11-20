@@ -37,11 +37,7 @@ const Access = () => (
       <Col xs='12' className={classNames('d-lg-none d-block', MOBILE_ORDER)}>
         <h4 className='text-muted'><CoinIcon symbol='ETH' size='sm' inline /> Ethereum Mobile Wallets</h4>
         <TileRow>
-          <TileCol>
-            <a href='https://links.trustwalletapp.com/SBr41u7nVR?&event=openURL&url=https://faa.st/app/connect'>
-              <Web3Wallet type='trust' />
-            </a>
-          </TileCol>
+          <TileCol><Web3Wallet type='trust' /></TileCol>
           <TileCol><Web3Wallet type='coinbase' /></TileCol>
           <TileCol><Web3Wallet type='status' /></TileCol>
         </TileRow>

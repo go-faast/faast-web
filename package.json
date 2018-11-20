@@ -35,7 +35,7 @@
     "build:site": "gulp build:site",
     "build:ipfs": "cross-env IPFS=true npm run build",
     "build": "gulp build",
-    "ngrok": "ngrok http 8080",
+    "ngrok": "ngrok http 8000",
     "preversion": "git checkout develop",
     "version": "npm run build && git add -A dist",
     "postversion": "git push && git push --tags",

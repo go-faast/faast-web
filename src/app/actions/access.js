@@ -73,19 +73,18 @@ export const openWeb3Wallet = (selectedProvider, forwardUrl) => (dispatch) => {
       log.error(e)
       const providerName = config.walletTypes[selectedProvider].name
       let message = e.message
-      message = 'No web3 provider detected'
       if (message === 'No web3 provider detected') {
-        if (providerName !== 'Trust Wallet') {
-          dispatch(push(`/connect/${providerName}`))
-        }
         message = `Cannot connect to ${providerName}`
       } else if (message === 'Unsupported network') {
         message = `Please adjust ${providerName} to use the Main Ethereum Network`
       } else {
-        if (providerName !== 'Trust Wallet') {
-          dispatch(push(`/connect/${providerName}`))
-        }
         message = `Error connecting to ${providerName}: ${message}`
+      }
+      // wallet info modal if no web3 instance, if trust use deep linking
+      if (providerName !== 'Trust Wallet' && message !== 'Unsupported network') {
+        dispatch(push(`/connect/${providerName}`))
+      } else {
+        window.location.href = 'https://links.trustwalletapp.com/SBr41u7nVR?&event=openURL&url=https://faa.st/app/connect'
       }
       toastr.error(message)
     })
