@@ -1,8 +1,6 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { compose, setDisplayName, setPropTypes, lifecycle } from 'recompose'
-import { connect } from 'react-redux'
-import { createStructuredSelector } from 'reselect'
+import { compose, setDisplayName, setPropTypes } from 'recompose'
 import { Modal, ModalBody, ModalHeader } from 'reactstrap'
 import { pick } from 'lodash'
 
@@ -51,13 +49,6 @@ export default compose(
   setPropTypes({
     walletType: PropTypes.string.isRequired,
     ...Modal.propTypes,
-  }),
-  connect(createStructuredSelector({
-  }), {
-  }),
-  lifecycle({
-    componentWillMount() {
-    }
   })
 )(({
   walletType, toggle, ...props,
