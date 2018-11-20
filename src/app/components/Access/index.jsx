@@ -1,9 +1,8 @@
 import React from 'react'
 import { Row, Col, Button } from 'reactstrap'
-
 import { name as appName, version as appVersion } from 'Pkg'
 import CoinIcon from 'Components/CoinIcon'
-
+import classNames from 'class-names'
 import Web3Wallet from './Web3Wallet'
 import CreateWallet from './CreateWallet'
 import ImportKeystore from './ImportKeystore'
@@ -35,10 +34,14 @@ const Access = () => (
           <TileCol><Web3Wallet type='mist' /></TileCol>
         </TileRow>
       </Col>
-      <Col xs='12' className={MOBILE_ORDER}>
+      <Col xs='12' className={classNames('d-lg-none d-block', MOBILE_ORDER)}>
         <h4 className='text-muted'><CoinIcon symbol='ETH' size='sm' inline /> Ethereum Mobile Wallets</h4>
         <TileRow>
-          <TileCol><Web3Wallet type='trust' /></TileCol>
+          <TileCol>
+            <a href='https://links.trustwalletapp.com/SBr41u7nVR?&event=openURL&url=https://faa.st/app/connect'>
+              <Web3Wallet type='trust' />
+            </a>
+          </TileCol>
           <TileCol><Web3Wallet type='coinbase' /></TileCol>
           <TileCol><Web3Wallet type='status' /></TileCol>
         </TileRow>
