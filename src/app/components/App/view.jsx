@@ -11,7 +11,6 @@ import TradeDetailModal from 'Components/TradeDetailModal'
 import SwapWidget from 'Components/SwapWidget'
 import AssetDetail from 'Components/AssetDetail'
 import AssetIndex from 'Components/AssetIndex'
-import WalletInfoModal from 'Components/WalletInfoModal'
 
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
@@ -51,9 +50,6 @@ const AppView = ({ hasNoWallets }) => (
     {/* Routes that show a modal over one of the above pages */}
     <ModalRoute closePath={tradeHistory.path} path={tradeDetail.path} render={(props) => (
       <TradeDetailModal tradeId={props.match.params.tradeId} {...props}/>
-    )}/>
-    <ModalRoute closePath={connect.path} path={walletInfoModal.path} render={(props) => (
-      <WalletInfoModal walletType={props.match.params.walletType} {...props}/>
     )}/>
   </Fragment>
 )
