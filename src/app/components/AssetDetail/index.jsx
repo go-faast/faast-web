@@ -19,6 +19,7 @@ import CoinIcon from 'Components/CoinIcon'
 import Units from 'Components/Units'
 import ChangePercent from 'Components/ChangePercent'
 import ArrowIcon from 'Components/ArrowIcon'
+import AssetSearch from 'Components/AssetSearch'
 
 const getQuery = ({ match }) => match.params.symbol
 
@@ -44,6 +45,11 @@ const AssetDetail = ({ symbol, asset, assetHoldings }) => {
   const { name, price, change24, deposit, receive } = asset
   return (
     <Layout className='pt-3 p-0 p-sm-3'>
+      <div className='d-flex justify-content-end'>
+        <AssetSearch 
+          inputGroupProps={{ style: { width: '100%', maxWidth: '300px' }, className: 'pl-3 pl-md-0 mb-3' }}
+        />
+      </div>
       <Card>
         <CardHeader className='grid-group'>
           <Row className='gutter-3 p-sm-0 p-3 d-flex'>
