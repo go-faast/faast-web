@@ -31,6 +31,7 @@ const createPath = (...paths) => {
 export const root = createPath('/')
 export const dashboard = createPath('/dashboard')
 export const rebalance = createPath('/rebalance')
+export const rebalanceInstructions = createPath(rebalance, '/instructions')
 export const viewOnlyAddress = createPath('/address/:addressQuery')
 export const tradeHistory = createPath('/orders')
 export const tradeDetail = createPath('/orders/:tradeId')
@@ -48,6 +49,7 @@ export default {
   root,
   dashboard,
   rebalance,
+  rebalanceInstructions,
   tradeHistory,
   tradeDetail,
   swapWidget,
