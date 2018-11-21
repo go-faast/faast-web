@@ -285,7 +285,7 @@ const ModifyView = (props) => {
           </Row>
         </Fragment>
       )}
-      <Modal size='lg' isOpen={props.isAssetListOpen} toggle={props.toggleAssetList} className='m-0 mx-md-auto' contentClassName='p-0'>
+      <Modal size='lg' isOpen={props.isAssetListOpen} toggle={props.toggleAssetList} className='m-0 mx-md-auto' contentClassName='p-0' autoFocus={false}>
         <ModalHeader toggle={props.toggleAssetList} tag='h4' className='text-primary'>
           Add Asset
         </ModalHeader>

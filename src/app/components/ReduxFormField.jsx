@@ -11,7 +11,7 @@ const RenderInput = (props) => {
     meta: { touched, error, warning, form: formName },
     label, type, placeholder, id, disabled, autoComplete, size,
     addonPrepend, addonAppend, row, className, inputClass,
-    labelProps, labelClass, labelCol, inputCol, input
+    labelProps, labelClass, labelCol, inputCol, input, autoFocus,
   } = props
   let { input: inputProps } = props
   const check = ['checkbox', 'radio'].includes(type)
@@ -27,6 +27,7 @@ const RenderInput = (props) => {
     disabled, autoComplete,
     invalid: Boolean(invalid),
     className: inputClass,
+    autoFocus,
   }
   const inputElement = (
     <Input key='input' {...input} {...inputProps} />
