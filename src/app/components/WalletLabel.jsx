@@ -10,29 +10,31 @@ import { getWallet } from 'Selectors'
 
 import IconLabel from 'Components/IconLabel'
 
-export const WalletLabel = ({ hideIcon, wallet, id, ...props }) => (
+export const WalletLabel = ({ hideIcon, wallet, iconProps, id, ...props }) => (
   <IconLabel
     label={wallet ? wallet.label : ellipsize(id, 8, 6)}
-    iconProps={!hideIcon && wallet && wallet.iconProps}
+    iconProps={{ ...((!hideIcon && wallet && wallet.iconProps) || {}), ...iconProps }}
     {...omit(props, 'id', 'dispatch')}/>
 )
 
 WalletLabel.propTypes = {
   wallet: PropTypes.object,
   hideIcon: PropTypes.bool,
+  iconProps: PropTypes.object,
   tag: tagPropType,
 }
 
 WalletLabel.defaultProps = {
   wallet: null,
   hideIcon: false,
+  iconProps: {},
   tag: 'div',
 }
 
-export const ConnectedWalletSummary = connect(createStructuredSelector({
+export const ConnectedWalletLabel = connect(createStructuredSelector({
   wallet: (state, { id }) => getWallet(state, id),
 }))(WalletLabel)
 
-WalletLabel.Connected = ConnectedWalletSummary
+WalletLabel.Connected = ConnectedWalletLabel
 
 export default WalletLabel

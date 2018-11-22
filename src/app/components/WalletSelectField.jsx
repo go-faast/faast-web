@@ -1,61 +1,72 @@
 import React, { Fragment } from 'react'
-import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers } from 'recompose'
+import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers, withState } from 'recompose'
 import { connect } from 'react-redux'
-import { InputGroupButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import {
+  ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap'
 import { createStructuredSelector } from 'reselect'
-import ReduxFormField from 'Components/ReduxFormField'
 import PropTypes from 'prop-types'
 import { push as pushAction } from 'react-router-redux'
-import { getWalletForAsset } from 'Utilities/wallet'
-import withToggle from 'Hoc/withToggle'
+import classNames from 'class-names'
 
+import { getWalletForAsset } from 'Utilities/wallet'
 import { getAllWalletsBasedOnSymbol } from 'Selectors/wallet'
 
+import withToggle from 'Hoc/withToggle'
+import ReduxFormField from 'Components/ReduxFormField'
+import WalletLabel from 'Components/WalletLabel'
+
 const WalletSelectField = ({
-  symbol, handleSelect, dropDownStyle, dropDownText, 
+  symbol, handleSelect, dropDownStyle, dropDownText,
   toggleDropdownOpen, isDropdownOpen, connectedWallets, handleConnect,
+  selectedWallet, handleSelectManual, 
   ...props,
 }) => {
   const hasWallets = connectedWallets.length > 0
+  const renderInput = ({ className }) => (
+    <WalletLabel
+      wallet={selectedWallet}
+      className={classNames('form-control', className, 'lh-0')} verticalAlign='middle'
+      iconProps={{ width: '1.5em', height: '1.5em' }}/>
+  )
   return (
-    <ReduxFormField 
+    <ReduxFormField {...props} renderInput={selectedWallet && renderInput}
       addonAppend={({ invalid }) => (
-        <InputGroupButtonDropdown addonType='append' isOpen={isDropdownOpen} toggle={toggleDropdownOpen}>
+        <ButtonDropdown addonType='append' isOpen={isDropdownOpen} toggle={toggleDropdownOpen}>
           <DropdownToggle size='sm' color={invalid ? 'danger' : 'dark'} style={dropDownStyle} caret>
             {dropDownText}
           </DropdownToggle>
           <DropdownMenu>
             {hasWallets ? (
               <Fragment>
-                <DropdownItem header><small>Connected {symbol} Wallets</small></DropdownItem> 
-                {connectedWallets.map(({ id, label }) => (
-                  <DropdownItem key={id} onClick={() => handleSelect(symbol, id)}>{label}</DropdownItem>
+                {connectedWallets.map((wallet) => (
+                  <DropdownItem key={wallet.id}
+                    onClick={() => handleSelect(symbol, wallet)}
+                    active={selectedWallet && selectedWallet.id === wallet.id}>
+                    <WalletLabel wallet={wallet}/>
+                  </DropdownItem>
                 ))}
+                <DropdownItem onClick={handleSelectManual} active={!selectedWallet}>
+                  External {symbol} wallet
+                </DropdownItem>
                 <DropdownItem divider/>
               </Fragment>
             ) : (
               <Fragment>
-                <DropdownItem><small>No Connected {symbol} Wallets</small></DropdownItem>
+                <DropdownItem disabled><small><i>No Connected {symbol} wallets</i></small></DropdownItem>
               </Fragment>
             )}
             <DropdownItem className='text-primary' onClick={handleConnect}>
               <i className='nav-link-icon fa fa-plus'></i> Connect Your Wallet
             </DropdownItem>
           </DropdownMenu>
-        </InputGroupButtonDropdown>
-      )}
-      {...props} 
-    />
+        </ButtonDropdown>
+      )}/>
   )
 }
 
 export default compose(
   setDisplayName('WalletSelectField'),
-  connect(createStructuredSelector({
-    connectedWallets: (state, { symbol }) => getAllWalletsBasedOnSymbol(state, symbol),
-  }), {
-    push: pushAction
-  }),
   setPropTypes({
     name: PropTypes.string.isRequired,
     change: PropTypes.func.isRequired, // change prop passed into decorated redux-form component
@@ -69,13 +80,24 @@ export default compose(
     dropDownStyle: {},
     symbol: '',
   }),
+  connect(createStructuredSelector({
+    connectedWallets: (state, { symbol }) => getAllWalletsBasedOnSymbol(state, symbol),
+  }), {
+    push: pushAction
+  }),
+  withState('selectedWallet', 'setSelectedWallet', ({ connectedWallets }) => connectedWallets[0] || null),
   withToggle('dropdownOpen'),
   withHandlers({
     handleConnect: ({ push }) => () => {
       push('/connect')
     },
-    handleSelect: ({ change, name }) => (symbol, walletId) => {
-      const walletInstance = getWalletForAsset(walletId, symbol)
+    handleSelectManual: ({ setSelectedWallet, change, name }) => () => {
+      setSelectedWallet(null)
+      change(name, '')
+    },
+    handleSelect: ({ setSelectedWallet, change, name }) => (symbol, wallet) => {
+      const walletInstance = getWalletForAsset(wallet.id, symbol)
+      setSelectedWallet(wallet)
       return walletInstance.getFreshAddress(symbol)
         .then((address) => change(name, address))
     }

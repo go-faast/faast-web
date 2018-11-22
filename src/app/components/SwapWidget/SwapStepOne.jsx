@@ -62,16 +62,12 @@ const SwapStepOne = ({
         <Form onSubmit={handleSubmit}>
           <div className={section}>
             <WalletSelectField 
-              row
-              className='gutter-3 align-items-center'
               id='receiveAddress'
               name='receiveAddress'
               placeholder={`${receiveSymbol} Receive Address`}
               autoCorrect='false'
               autoCapitalize='false'
               spellCheck='false'
-              labelProps={{ xs: '12', md: '4' }}
-              inputCol={{ xs:'12', md: true }}
               validate={validateReceiveAddress}
               inputClass={classNames('flat', receive)}
               dropDownText={`${receiveSymbol} Wallets`}
@@ -80,8 +76,6 @@ const SwapStepOne = ({
             />
             <div style={{ position: 'relative' }}>
               <ReduxFormField
-                row
-                className='gutter-3 align-items-center'
                 id='depositAmount'
                 name='depositAmount'
                 type='number'
@@ -89,8 +83,6 @@ const SwapStepOne = ({
                 autoCorrect='false'
                 autoCapitalize='false'
                 spellCheck='false'
-                labelProps={{ xs: '12', md: '4' }}
-                inputCol={{ xs:'12', md: true }}
                 validate={validateDepositAmount}
                 inputClass='flat'
                 addonAppend={({ invalid }) => (
@@ -105,16 +97,12 @@ const SwapStepOne = ({
             </div>
             <div style={{ position: 'relative' }}>
               <WalletSelectField 
-                row
-                className='gutter-3 align-items-center'
                 id='refundAddress'
                 name='refundAddress'
                 placeholder={`${depositSymbol} Return Address (optional)`}
                 autoCorrect='false'
                 autoCapitalize='false'
                 spellCheck='false'
-                labelProps={{ xs: '12', md: '4' }}
-                inputCol={{ xs:'12', md: true }}
                 validate={validateRefundAddress}
                 inputClass='flat'
                 dropDownText={`${depositSymbol} Wallets`}
