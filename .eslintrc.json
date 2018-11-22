@@ -8,6 +8,11 @@
         "eslint:recommended",
         "plugin:react/recommended"
     ],
+    "settings": {
+      "react": {
+        "version": "16.0"
+      }
+    },
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true,
