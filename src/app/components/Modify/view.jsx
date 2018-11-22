@@ -262,19 +262,19 @@ const ModifyView = (props) => {
                 Instructions
               </ModalHeader>
               <ModalBody>
-                <p className='mb-2'><b>Rebalance your portfolio in 3 simple steps:</b></p>
+                <p className='mb-2'><b>Rebalance your Portfolio - 3 simple steps:</b></p>
                 <ol>
                   <li className='mb-1'>
-                    Drag the slider left or decrease the weight of any assets you want to sell to free up a balance in your portfolio.<br/>
-                    Use <span className='text-danger'>{removeButtonContent}</span> to free up the entire asset.
+                    Drag a slider left to decrease weight of an asset.
+                    Use <span className='text-danger'>{removeButtonContent}</span> to remove entire asset.
                   </li>
                   <li className='mb-1'>
-                    Drag the slider right or increase the weight of any assets you want to buy to reallocate balance to them.<br/>
-                    Use <span className='text-success'>{addButtonContent}</span> to add a new asset to your portfolio.
+                    Drag a slider right to increase weight of an asset.
+                    Use <span className='text-success'>{addButtonContent}</span> to add a new asset.<br/>
+                    <i>(Note: To increase weight, you must have decreased weight of another asset)</i>
                   </li>
                   <li>
-                    When finished click <span className='text-primary'>{saveButtonContent}</span> to review changes and
-                    submit swaps to rebalance your portfolio.
+                    Click <span className='text-primary'>{saveButtonContent}</span> when finished to review changes.
                   </li>
                 </ol>
               </ModalBody>
