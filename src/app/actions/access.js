@@ -73,6 +73,13 @@ export const openWeb3Wallet = (selectedProvider, forwardUrl) => (dispatch) => {
       log.error(e)
       const providerName = config.walletTypes[selectedProvider].name
       let message = e.message
+      if (message !== 'Unsupported network') {
+        if (selectedProvider !== 'trust') {
+          dispatch(push(routes.walletInfoModal(selectedProvider)))
+        } else {
+          window.location.href = 'https://links.trustwalletapp.com/SBr41u7nVR?&event=openURL&url=https://faa.st/app/connect'
+        }
+      }
       if (message === 'No web3 provider detected') {
         message = `Cannot connect to ${providerName}`
       } else if (message === 'Unsupported network') {
