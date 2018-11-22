@@ -1,14 +1,15 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import {
   Container, Row, Col, Button, Alert,
   Modal, ModalHeader, ModalBody,
   Card, CardHeader, ListGroup, ListGroupItem,
-  Navbar
+  Navbar,
 } from 'reactstrap'
 import accounting from 'accounting'
 import { RIENumber } from 'riek'
 import { Link } from 'react-router-dom'
 
+import routes from 'Routes'
 import config from 'Config'
 import display from 'Utilities/display'
 
@@ -24,6 +25,7 @@ import CoinIcon from 'Components/CoinIcon'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import WalletLabel from 'Components/WalletLabel'
 import WalletPasswordPrompt from 'Components/WalletPasswordPrompt'
+import ModalRoute from 'Components/ModalRoute'
 
 import styles from './style'
 
@@ -157,7 +159,7 @@ const ModifyView = (props) => {
           </Col>
           <Col xs='auto' className='align-self-start order-2 order-lg-3'>
             <Button color='danger' size='sm' disabled={disabled} className='flat' onClick={() => props.handleRemove(walletId, symbol)}>
-              <i className='fa fa-times' /> remove
+              {removeButtonContent}
             </Button>
           </Col>
         </Row>
@@ -174,9 +176,14 @@ const ModifyView = (props) => {
     )
   })
 
+  const saveButtonContent = (<Fragment><i className='fa fa-check mr-2' />Save Changes</Fragment>)
+  const addButtonContent = (<Fragment><i className='fa fa-plus'/> add asset</Fragment>)
+  const removeButtonContent = (<Fragment><i className='fa fa-times'/> remove</Fragment>)
+
   const renderHoldings = (wallets) => wallets
     .map((wallet) => {
       const { id, isReadOnly, holdingsLoaded, assetHoldings } = wallet
+      const addAssetDisabled = !holdingsLoaded
       return (
         <Col xs='12' key={id}>
           <Card>
@@ -186,8 +193,8 @@ const ModifyView = (props) => {
                   <WalletLabel wallet={wallet} tag='h4' />
                 </Col>
                 <Col xs='auto'>
-                  <Button color='success' size='sm' className='flat' disabled={!holdingsLoaded} onClick={() => props.showAssetList(id, 'top')}>
-                    <i className='fa fa-plus'/> add asset
+                  <Button color='success' size='sm' className='flat' disabled={addAssetDisabled} onClick={() => props.showAssetList(id, 'top')}>
+                    {addButtonContent}
                   </Button>
                 </Col>
               </Row>
@@ -221,10 +228,10 @@ const ModifyView = (props) => {
           </Col>
           <Col xs='auto' className='text-left text-md-right mr-auto mr-md-0 ml-md-auto'>
             <h4 className='m-0 text-primary font-weight-bold'>{display.fiat(props.allowance.fiat)} <small className='text-muted'>{display.percentage(props.allowance.weight)}</small></h4>
-            <small className='text-muted'>available to swap</small>
+            <small className='text-muted'>available balance</small>
           </Col>
           <Col xs='auto' className='text-right'>
-            <Button color='primary' onClick={handleSave} disabled={Boolean(disableSave)} className='flat'><i className='fa fa-check mr-2' />Save Changes</Button>
+            <Button color='primary' onClick={handleSave} disabled={Boolean(disableSave)} className='flat'>{saveButtonContent}</Button>
           </Col>
           {typeof disableSave === 'string' && (
             <Col xs='12'>
@@ -245,11 +252,40 @@ const ModifyView = (props) => {
           This portfolio is empty. To begin swapping you must <Link to='/connect' className='alert-link'>add a wallet</Link> first.
         </Alert>
       ) : (
-        <Row className='gutter-x-0 gutter-y-3'>
-          {renderHoldings(portfolio.nestedWallets)}
-        </Row>
+        <Fragment>
+          <Button color='link' className='mb-3' tag={Link} to={routes.rebalanceInstructions()}>
+            <i className='fa fa-question-circle'/> How do I use this?
+          </Button>
+          <ModalRoute closePath={routes.rebalance.path} path={routes.rebalanceInstructions.path} render={({ isOpen, toggle }) => (
+            <Modal isOpen={isOpen} toggle={toggle}>
+              <ModalHeader toggle={toggle}>
+                Instructions
+              </ModalHeader>
+              <ModalBody>
+                <p className='mb-2'><b>Rebalance your portfolio in 3 simple steps:</b></p>
+                <ol>
+                  <li className='mb-1'>
+                    Drag the slider left or decrease the weight of any assets you want to sell to free up a balance in your portfolio.<br/>
+                    Use <span className='text-danger'>{removeButtonContent}</span> to free up the entire asset.
+                  </li>
+                  <li className='mb-1'>
+                    Drag the slider right or increase the weight of any assets you want to buy to reallocate balance to them.<br/>
+                    Use <span className='text-success'>{addButtonContent}</span> to add a new asset to your portfolio.
+                  </li>
+                  <li>
+                    When finished click <span className='text-primary'>{saveButtonContent}</span> to review changes and
+                    submit swaps to rebalance your portfolio.
+                  </li>
+                </ol>
+              </ModalBody>
+            </Modal>
+          )}/>
+          <Row className='gutter-x-0 gutter-y-3'>
+            {renderHoldings(portfolio.nestedWallets)}
+          </Row>
+        </Fragment>
       )}
-      <Modal size='lg' isOpen={props.isAssetListOpen} toggle={props.toggleAssetList} className='m-0 mx-md-auto' contentClassName='p-0'>
+      <Modal size='lg' isOpen={props.isAssetListOpen} toggle={props.toggleAssetList} className='m-0 mx-md-auto' contentClassName='p-0' autoFocus={false}>
         <ModalHeader toggle={props.toggleAssetList} tag='h4' className='text-primary'>
           Add Asset
         </ModalHeader>

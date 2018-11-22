@@ -61,15 +61,17 @@ The static website is built using react-static, which uses webpack under the hoo
 npm run dev
 ```
 
-Once compiled, open [https://localhost:8000](https://localhost:8080) in your browser.
+Once compiled, open [http://localhost:8000](http://localhost:8080) in your browser.
 
 This concurrently runs the following:
 
 - `npm run dev:site` -> Start dev server for static website at <http://localhost:3000>
 - `npm run dev:app` -> Start dev server for single page app at <http://localhost:8080/app>
-- `npm run dev:proxy` -> Provide a proxy to both dev servers at <https://localhost:8000>
+- `npm run dev:proxy` -> Provide a proxy to both dev servers at <http://localhost:8000>
 
-#### SSL warnings
+#### HTTPS
+
+To run the development server over https use `HTTPS=true npm run dev`
 
 To resolve the SSL warning follow [these steps](https://github.com/lwsjs/local-web-server/wiki/How-to-get-the-%22green-padlock%22-using-the-built-in-certificate).
 

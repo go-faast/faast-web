@@ -8,6 +8,7 @@ if (!NODE_ENV) {
 const isDev = NODE_ENV === 'development'
 const isIpfs = process.env.IPFS === 'true'
 const isMocking = Boolean(process.env.MOCK)
+const useHttps = Boolean(process.env.HTTPS)
 
 const dirs = {
   root: path.resolve(__dirname, '..')
@@ -40,6 +41,7 @@ module.exports = {
   isDev,
   isIpfs,
   isMocking,
+  useHttps,
   dirs,
   appPath,
   bundleOutputPath,

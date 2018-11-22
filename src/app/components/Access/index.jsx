@@ -18,7 +18,7 @@ const DESKTOP_ORDER = 'order-2 order-md-1'
 
 const Access = () => (
   <div className='text-center'>
-    <h3 className='mt-lg-3'>Select your wallet</h3>
+    <h3 className='mt-lg-3'>Select your wallets</h3>
     <Row className='no-gutters'>
       <Col xs='12' className={DESKTOP_ORDER}>
         <h4 className='text-muted mt-4'>Hardware Wallets</h4>
