@@ -20,6 +20,7 @@ import Units from 'Components/Units'
 import ChangePercent from 'Components/ChangePercent'
 import ArrowIcon from 'Components/ArrowIcon'
 import AssetSearch from 'Components/AssetSearch'
+import WatchlistStar from 'Components/WatchlistStar'
 
 const getQuery = ({ match }) => match.params.symbol
 
@@ -68,6 +69,11 @@ const AssetDetail = ({ symbol, asset, assetHoldings }) => {
                     {name}
                   </Media>
                   <small style={{ position: 'relative', top: '-5px' }} className='text-muted'>[{symbol}]</small>
+                  <WatchlistStar
+                    className='position-relative ml-1'
+                    style={{ top: '-2px' }} 
+                    symbol={symbol}
+                  />
                 </Media>
               </Media>
             </Col>
@@ -160,7 +166,8 @@ export default compose(
   connect(createStructuredSelector({
     asset: (state, { symbol }) => getAsset(state, symbol),
     assetHoldings: (state, { symbol }) => getHoldingsByAsset(state, symbol),
-  })),
+  }),{
+  }),
   conditionalRedirect(
     routes.assetIndex(),
     ({ asset }) => !asset

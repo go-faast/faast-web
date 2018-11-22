@@ -10,8 +10,10 @@ if (!config.isDev) {
 
 const ZERO = new BigNumber(0)
 const TEN = new BigNumber(10)
+const ONE = new BigNumber(1)
+const ONE_HUNDRED = new BigNumber(100)
 
-export { ZERO, TEN, BigNumber }
+export { ZERO, TEN, BigNumber, ONE_HUNDRED, ONE }
 
 export type Numerical = BigNumber | number | string
 

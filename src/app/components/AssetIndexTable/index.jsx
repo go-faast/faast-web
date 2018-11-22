@@ -12,6 +12,7 @@ import ChangePercent from 'Components/ChangePercent'
 import ArrowIcon from 'Components/ArrowIcon'
 import CoinIcon from 'Components/CoinIcon'
 import Expandable from 'Components/Expandable'
+import WatchlistStar from 'Components/WatchlistStar'
 
 import { indexTable, mediaBody } from './style'
 
@@ -19,7 +20,12 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
   marketCap, price, change24, volume24 }, push, ...props }) => {
   return (
     <tr onClick={() => push(routes.assetDetail(symbol))} {...props}>
-      <td className='pl-3 pl-md-5'>
+      <td className='pl-3 pl-md-4'>
+        <WatchlistStar
+          symbol={symbol}
+        />
+      </td>
+      <td>
         <Media>
           <Media left>
             <CoinIcon 
@@ -90,6 +96,7 @@ const AssetIndexTable = ({ assets, push }) => (
   <Table hover striped responsive className={indexTable}>
     <thead>
       <tr>
+        <th></th>
         <th className='pl-3 pl-md-5'>Coin</th>
         <th>Market Cap</th>
         <th>Volume</th>

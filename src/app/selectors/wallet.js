@@ -96,25 +96,36 @@ export const getWalletWithHoldings = createItemSelector(
     if (!wallet) return null
     let totalFiat = ZERO
     let totalFiat24hAgo = ZERO
+    let totalFiat7dAgo = ZERO
+    let totalFiat1hAgo = ZERO
     const balances = wallet.balances || {}
     let assetHoldings = wallet.supportedAssets
       .map((symbol) => assets[symbol])
       .filter((asset) => typeof asset === 'object' && asset !== null)
       .map((asset) => {
-        const { symbol, price = ZERO, change24 = ZERO } = asset
+        const { symbol, price = ZERO, change24 = ZERO, change7d = ZERO, change1 = ZERO } = asset
         const balance = balances[symbol] || ZERO
         const shown = balance.greaterThan(0)
         const fiat = toUnit(balance, price, 2)
         const price24hAgo = price.div(change24.plus(100).div(100))
         const fiat24hAgo = toUnit(balance, price24hAgo, 2)
+        const price7dAgo = price.div(change7d.plus(100).div(100))
+        const fiat7dAgo = toUnit(balance, price7dAgo, 2)
+        const price1hAgo = price.div(change1.plus(100).div(100))
+        const fiat1hAgo = toUnit(balance, price1hAgo, 2)
         totalFiat = totalFiat.plus(fiat)
         totalFiat24hAgo = totalFiat24hAgo.plus(fiat24hAgo)
+        totalFiat7dAgo = totalFiat7dAgo.plus(fiat7dAgo)
+        totalFiat1hAgo = totalFiat1hAgo.plus(fiat1hAgo)
+
         return {
           ...asset,
           balance,
           shown,
           fiat,
           fiat24hAgo,
+          fiat7dAgo,
+          fiat1hAgo
         }
       })
       .filter(({ shown }) => shown)
@@ -129,6 +140,8 @@ export const getWalletWithHoldings = createItemSelector(
       ...wallet,
       totalFiat,
       totalFiat24hAgo,
+      totalFiat7dAgo,
+      totalFiat1hAgo,
       totalChange,
       assetHoldings,
       holdingsLoaded,

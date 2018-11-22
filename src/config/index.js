@@ -52,6 +52,7 @@ export default {
     LTC: 'litecoin',
     ETH: 'ethereum'
   },
+  defaultWatchlist: ['BTC', 'ETH', 'BCH', 'EOS', 'LTC', 'USDT', 'XMR', 'TRX', 'DASH', 'MIOTA'],
   walletTypes,
   web3WalletTypes: Object.entries(walletTypes)
     .filter(([, { web3 }]) => web3)
