@@ -166,16 +166,19 @@ export class WalletService {
 
   /** Parse the wallet from url query string and store in session */
   restoreQueryString = () => {
-    const query = queryString.parse(window.location.search)
-    if (query.wallet) {
-      const encryptedWalletString = Buffer.from(query.wallet, 'base64').toString()
-      const wallet = WalletSerializer.parse(encryptedWalletString)
-      if (wallet) {
-        log.debug('restored querystring wallet', wallet.getId())
-        this.saveToStorage(wallet)
-        this.put(wallet)
-        return wallet
-      }
+    const { wallet: walletParam } = queryString.parse(window.location.search)
+    if (walletParam) {
+      const encodedWallets = Array.isArray(walletParam) ? walletParam : [walletParam]
+      return encodedWallets.map((encoded) => {
+        const encryptedWalletString = Buffer.from(encoded, 'base64').toString()
+        const wallet = WalletSerializer.parse(encryptedWalletString)
+        if (wallet) {
+          log.debug('restored querystring wallet', wallet.getId())
+          this.saveToStorage(wallet)
+          this.put(wallet)
+          return wallet
+        }
+      })
     }
   }
 
