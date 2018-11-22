@@ -1,7 +1,9 @@
 #!/bin/bash
 
 RELEASE=$(git tag -l | grep $(git describe --tags))
+echo $RELEASE
 if [ -n "$RELEASE"]; then
+  echo npm run release
   npm run release
 
   echo npm run release done, now triggering build on faast-swap
