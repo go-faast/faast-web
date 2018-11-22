@@ -76,6 +76,7 @@ export const openWeb3Wallet = (selectedProvider, forwardUrl) => (dispatch) => {
       if (message !== 'Unsupported network') {
         if (selectedProvider !== 'trust') {
           dispatch(push(routes.walletInfoModal(selectedProvider)))
+          return
         } else {
           window.location.href = 'https://links.trustwalletapp.com/SBr41u7nVR?&event=openURL&url=https://faa.st/app/connect'
         }
