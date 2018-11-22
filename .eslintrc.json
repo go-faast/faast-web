@@ -35,7 +35,8 @@
         ],
         "quotes": [
             "error",
-            "single"
+            "single",
+            { "avoidEscape": true }
         ],
         "react/jsx-uses-vars": "error",
         "react/jsx-uses-react": "error",
