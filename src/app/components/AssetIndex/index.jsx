@@ -15,7 +15,7 @@ import { getAssetIndexPage, getNumberOfAssets } from 'Selectors/asset'
 const AssetIndex = ({ assets, currentPage, numberOfAssets }) => {
   return (
     <Layout>
-       <h4 className='pt-4 mt-3 mb-0 text-primary d-inline-block float-left'>All Coins 
+      <h4 className='pt-4 mt-3 mb-0 text-primary d-inline-block float-left'>All Coins 
         {currentPage > 1 ? (<span> - Page {currentPage}</span>) : null}
       </h4>
       <AssetSearch 
@@ -28,25 +28,25 @@ const AssetIndex = ({ assets, currentPage, numberOfAssets }) => {
 }
 
 export default compose(
-    setDisplayName('AssetIndex'),
-    withRouter,
-    withProps(({ location }) => {
-      const urlParams = qs.parse(location.search)
-      let { page: currentPage = 1 } = urlParams
-      currentPage = parseInt(currentPage)
-      const page = currentPage - 1
-      const sortField = 'marketCap'
-      const limit = 50
-      return ({
-        currentPage,
-        page,
-        limit,
-        sortField 
-      })
-    }),
-    connect(createStructuredSelector({
-      assets: (state, { page, limit, sortField }) => getAssetIndexPage(state, { page, limit, sortField }),
-      numberOfAssets: getNumberOfAssets
-    }), {
-    }),
-  )(AssetIndex)
+  setDisplayName('AssetIndex'),
+  withRouter,
+  withProps(({ location }) => {
+    const urlParams = qs.parse(location.search)
+    let { page: currentPage = 1 } = urlParams
+    currentPage = parseInt(currentPage)
+    const page = currentPage - 1
+    const sortField = 'marketCap'
+    const limit = 50
+    return ({
+      currentPage,
+      page,
+      limit,
+      sortField 
+    })
+  }),
+  connect(createStructuredSelector({
+    assets: (state, { page, limit, sortField }) => getAssetIndexPage(state, { page, limit, sortField }),
+    numberOfAssets: getNumberOfAssets
+  }), {
+  }),
+)(AssetIndex)

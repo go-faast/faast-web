@@ -34,10 +34,10 @@ const WalletSelector = ({
           <ListGroupItem className='p-1'/>
           {portfolioWalletIds.length > 0
             ? portfolioWalletIds.map((walletId) => (
-                <WalletListButton key={walletId} id={walletId} nested
-                  active={currentWalletId === walletId}
-                  onClick={() => setCurrentPortfolioAndWallet(portfolioId, walletId)}/>
-              ))
+              <WalletListButton key={walletId} id={walletId} nested
+                active={currentWalletId === walletId}
+                onClick={() => setCurrentPortfolioAndWallet(portfolioId, walletId)}/>
+            ))
             : (<ListGroupItem><i className='text-muted'>No wallets in this portfolio</i></ListGroupItem>)}
         </ListGroup>
       </Card>

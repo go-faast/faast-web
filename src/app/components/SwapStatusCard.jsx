@@ -95,7 +95,7 @@ export default compose(
                     <Units value={sendAmount} symbol={sendSymbol} prefix='-'/>
                   </Col>) : null}
                   {sendAsset ? (<Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, sendAsset)}</Col>)
-                  : null}
+                    : null}
                 </Row>
               </Col>
             </Row>
@@ -114,7 +114,7 @@ export default compose(
                     <UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} prefix='+'/>
                   </Col>) : null}
                   {receiveAsset ? (<Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, receiveAsset)}</Col>)
-                  : null}
+                    : null}
                 </Row>
               </Col>
             </Row>
@@ -124,8 +124,8 @@ export default compose(
       {error 
         ? (<StatusFooter tag={Alert} color='danger' className='m-0 text-center'>{friendlyError || error}</StatusFooter>)
         : (showDetails && details && (
-            <StatusFooter className='text-center text-muted'>{details}</StatusFooter>
-          ))}
+          <StatusFooter className='text-center text-muted'>{details}</StatusFooter>
+        ))}
       <Collapse isOpen={isExpanded}>
         <StatusFooter>
           <DataLayout rows={[
@@ -184,7 +184,7 @@ export default compose(
             txHash && [
               'Sent txn:',
               <Fragment>
-                <a href={`${config.explorerUrls[txFeeSymbol]}/tx/${txHash}`} target='_blank' rel='noopener' className='word-break-all mr-2'>{txHash}</a> 
+                <a href={`${config.explorerUrls[txFeeSymbol]}/tx/${txHash}`} target='_blank' rel='noopener noreferrer' className='word-break-all mr-2'>{txHash}</a> 
                 {!confirmed ? (
                   <i className='fa fa-spinner fa-pulse'/>
                 ) : (succeeded ? (

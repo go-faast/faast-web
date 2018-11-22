@@ -11,7 +11,6 @@ import {
 } from 'reactstrap'
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { push } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
 import { setDisplayName, compose } from 'recompose'
 import { pick } from 'lodash'
@@ -31,50 +30,50 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, toggleExpanded
       </NavbarBrand>
       <NavbarToggler onClick={toggleExpanded} />
       <Collapse isOpen={isExpanded} navbar>
-      <Nav navbar>
-        {!disablePortfolioLinks && (
-        <NavItem key='dashboard'>
-          <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/dashboard'>
-            <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-pie-chart'/>
-            <span className='nav-link-label d-sm-inline'>Dashboard</span>
-          </NavLink>
-        </NavItem>
-        )}
-        <NavItem key='coins'>
-          <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/assets'>
-            <i className="d-inline d-md-none d-lg-inline nav-link-icon fa fa-align-left" aria-hidden="true"></i>
-            <span className='nav-link-label d-sm-inline'>Coins</span>
-          </NavLink>
-        </NavItem>
-        {!disablePortfolioLinks && ([
-          <NavItem key='rebalance'>
-            <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/rebalance'>
-              <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-sliders'/>
-              <span className='nav-link-label d-sm-inline'>Rebalance</span>
+        <Nav navbar>
+          {!disablePortfolioLinks && (
+            <NavItem key='dashboard'>
+              <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/dashboard'>
+                <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-pie-chart'/>
+                <span className='nav-link-label d-sm-inline'>Dashboard</span>
+              </NavLink>
+            </NavItem>
+          )}
+          <NavItem key='coins'>
+            <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/assets'>
+              <i className="d-inline d-md-none d-lg-inline nav-link-icon fa fa-align-left" aria-hidden="true"></i>
+              <span className='nav-link-label d-sm-inline'>Coins</span>
             </NavLink>
           </NavItem>
-        ])}
+          {!disablePortfolioLinks && ([
+            <NavItem key='rebalance'>
+              <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/rebalance'>
+                <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-sliders'/>
+                <span className='nav-link-label d-sm-inline'>Rebalance</span>
+              </NavLink>
+            </NavItem>
+          ])}
           <NavItem key='swap'>
             <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/swap'>
               <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-exchange'/>
               <span className='nav-link-label d-sm-inline'>Swap</span>
             </NavLink>
           </NavItem>
-        {!disablePortfolioLinks && (
-          <NavItem key='orders'>
-            <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/orders'>
-              <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-history'/>
-              <span className='nav-link-label d-sm-inline'>Orders</span>
-            </NavLink>
-          </NavItem>
-        )}
+          {!disablePortfolioLinks && (
+            <NavItem key='orders'>
+              <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/orders'>
+                <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-history'/>
+                <span className='nav-link-label d-sm-inline'>Orders</span>
+              </NavLink>
+            </NavItem>
+          )}
           <NavItem key='connect'>
             <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/connect'>
               <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-plus'/>
               <span className='nav-link-label d-sm-inline'>Add wallet</span>
             </NavLink>
           </NavItem>
-      </Nav>
+        </Nav>
       </Collapse>
     </Container>
     {children}

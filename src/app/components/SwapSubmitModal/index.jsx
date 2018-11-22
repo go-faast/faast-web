@@ -36,76 +36,76 @@ const SwapSubmitModal = ({
   return (
     <Fragment>
       <Modal size='lg' backdrop='static' isOpen={isOpen} toggle={handleCancel}>
-      <Form onSubmit={handleSubmit}>
-        <ModalHeader className='text-primary' toggle={handleCancel}>
-          {headerText}
-        </ModalHeader>
-        <ModalBody className='modal-text'>
-          {errorMessage && (
-            <Alert color='danger'>{errorMessage}</Alert>
-          )}
-          <p>
+        <Form onSubmit={handleSubmit}>
+          <ModalHeader className='text-primary' toggle={handleCancel}>
+            {headerText}
+          </ModalHeader>
+          <ModalBody className='modal-text'>
+            {errorMessage && (
+              <Alert color='danger'>{errorMessage}</Alert>
+            )}
+            <p>
             The following swaps will take place to save the changes you made to your portfolio. Please review them and click {`"${continueText}"`} to proceed.
-          </p>
-          <div className='my-3'>
-            <Row className='gutter-2'>
-              {swundle.swaps.map((swap) => {
-                const { id, tx, status: { code, detailsCode, labelClass, label } } = swap
-                let statusText
-                if (detailsCode === 'signed') {
-                  statusText = (<span className='text-success'>Signed</span>)
-                } else if (detailsCode === 'signing_unsupported') {
-                  statusText = (<span className='text-success'>Ready</span>)
-                } else if (detailsCode === 'signing') {
-                  statusText = (<span className='text-warning blink'>Awaiting signature</span>)
-                } else if (detailsCode.includes('error')) {
-                  statusText = (<span className='text-danger'>Failed</span>)
-                } else if (detailsCode === 'sending') {
-                  statusText = (<span className='text-primary'>Sending</span>)
-                } else if ((tx && tx.sent) || code === 'failed') {
-                  statusText = (<span className={labelClass}>{label}</span>)
-                } else if (detailsCode !== 'unsigned') {
-                  statusText = (<Spinner size='sm' inline/>)
-                }
-                return (
-                  <Col xs='12' key={id}>
-                    <SwapStatusCard swap={swap} statusText={statusText} />
-                  </Col>
-                )
-              })}
-            </Row>
-          </div>
-          <p>Total network fee: {swundle.totalTxFee
-            ? display.fiat(swundle.totalTxFee)
-            : <Spinner inline size='sm'/>}
-          </p>
-          {(secondsUntilPriceExpiry > 0)
-            ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if submitted within:'} onTimerEnd={handleTimerEnd}/></small></span>)
-            : null}
-          <p><small className='text-muted'>
-            {'** Additional fees may apply depending on '
+            </p>
+            <div className='my-3'>
+              <Row className='gutter-2'>
+                {swundle.swaps.map((swap) => {
+                  const { id, tx, status: { code, detailsCode, labelClass, label } } = swap
+                  let statusText
+                  if (detailsCode === 'signed') {
+                    statusText = (<span className='text-success'>Signed</span>)
+                  } else if (detailsCode === 'signing_unsupported') {
+                    statusText = (<span className='text-success'>Ready</span>)
+                  } else if (detailsCode === 'signing') {
+                    statusText = (<span className='text-warning blink'>Awaiting signature</span>)
+                  } else if (detailsCode.includes('error')) {
+                    statusText = (<span className='text-danger'>Failed</span>)
+                  } else if (detailsCode === 'sending') {
+                    statusText = (<span className='text-primary'>Sending</span>)
+                  } else if ((tx && tx.sent) || code === 'failed') {
+                    statusText = (<span className={labelClass}>{label}</span>)
+                  } else if (detailsCode !== 'unsigned') {
+                    statusText = (<Spinner size='sm' inline/>)
+                  }
+                  return (
+                    <Col xs='12' key={id}>
+                      <SwapStatusCard swap={swap} statusText={statusText} />
+                    </Col>
+                  )
+                })}
+              </Row>
+            </div>
+            <p>Total network fee: {swundle.totalTxFee
+              ? display.fiat(swundle.totalTxFee)
+              : <Spinner inline size='sm'/>}
+            </p>
+            {(secondsUntilPriceExpiry > 0)
+              ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if submitted within:'} onTimerEnd={handleTimerEnd}/></small></span>)
+              : null}
+            <p><small className='text-muted'>
+              {'** Additional fees may apply depending on '
             + 'the asset being sent and the wallet you\'re using.'}
-          </small></p>
-          <Checkbox
-            label={
-              <small className='pl-1 text-white'>I accept the 
-                <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'> Faast Terms & Conditions</a>
-              </small>
-            }
-            labelClass='p-0'
-          />
-        </ModalBody>
-        <ModalFooter className='justify-content-between'>
-          <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
-          <Button type='submit' color='primary' disabled={continueDisabled || invalid || submitting}>
-            {continueText}
-            {continueLoading && (<i className='fa fa-spinner fa-pulse ml-2'/>)}
-          </Button>
-        </ModalFooter>
+            </small></p>
+            <Checkbox
+              label={
+                <small className='pl-1 text-white'>I accept the 
+                  <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'> Faast Terms & Conditions</a>
+                </small>
+              }
+              labelClass='p-0'
+            />
+          </ModalBody>
+          <ModalFooter className='justify-content-between'>
+            <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
+            <Button type='submit' color='primary' disabled={continueDisabled || invalid || submitting}>
+              {continueText}
+              {continueLoading && (<i className='fa fa-spinner fa-pulse ml-2'/>)}
+            </Button>
+          </ModalFooter>
         </Form>
       </Modal>
       <ConfirmTransactionModal swap={currentSwap} handleCancel={handleCancel}/>
-      </Fragment>
+    </Fragment>
   )}
 
 export default compose(
@@ -134,25 +134,25 @@ export default compose(
     },
     handleSignTxs: ({ swundle, signSwundle }) => () => {
       signSwundle(swundle)
-      .then(() => Trezor.close())
-      .catch((e) => {
-        toastr.error(e.message || e)
-        log.error(e)
-        Trezor.close()
-      })
+        .then(() => Trezor.close())
+        .catch((e) => {
+          toastr.error(e.message || e)
+          log.error(e)
+          Trezor.close()
+        })
     },
     handleSendTxs: ({ swundle, sendSwundle, toggle, routerPush }) => () => {
       sendSwundle(swundle)
-      .then((updatedSwundle) => {
-        if (updatedSwundle.swaps.every((swap) => swap.tx.sent)) {
-          toggle()
-          routerPush('/dashboard')
-        }
-      })
-      .catch((e) => {
-        toastr.error(e.message || e)
-        log.error(e)
-      })
+        .then((updatedSwundle) => {
+          if (updatedSwundle.swaps.every((swap) => swap.tx.sent)) {
+            toggle()
+            routerPush('/dashboard')
+          }
+        })
+        .catch((e) => {
+          toastr.error(e.message || e)
+          log.error(e)
+        })
     }
   }),
   branch(

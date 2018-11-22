@@ -95,7 +95,7 @@ let CreatePasswordForm = ({
         autoFocus
         autoComplete='new-password'
         validate={validatePassword}
-        labelProps={{ xs: '12', md: '4'}}
+        labelProps={{ xs: '12', md: '4' }}
         inputCol={{ xs:'12', md: true }}
       />
       <ReduxFormField

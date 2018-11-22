@@ -46,10 +46,10 @@ const SwapStepTwo = ({
         <CardHeader className='text-center'>
           <h4>
             Send {(sendAmount && sendAmount > 0)
-            ? (<Units value={sendAmount} symbol={sendSymbol} precision={8} showIcon/>)
-            : (minimumDeposit ? (
-              <Fragment>at least <Units value={minimumDeposit} symbol={sendSymbol} precision={8} showIcon/></Fragment>
-            ) : null)} to address:
+              ? (<Units value={sendAmount} symbol={sendSymbol} precision={8} showIcon/>)
+              : (minimumDeposit ? (
+                <Fragment>at least <Units value={minimumDeposit} symbol={sendSymbol} precision={8} showIcon/></Fragment>
+              ) : null)} to address:
           </h4>
         </CardHeader>
 
@@ -92,9 +92,9 @@ const SwapStepTwo = ({
               {!isFixedPrice ? (
                 '* Quoted rate is an estimate based on current market conditions. Actual rate may vary.'
               ) : (secondsUntilPriceExpiry > 0 && (
-                  <Timer className='text-warning' seconds={secondsUntilPriceExpiry}
-                    label={'* Quoted rate is guaranteed if deposit is sent within:'}
-                    onTimerEnd={handleTimerEnd}/>
+                <Timer className='text-warning' seconds={secondsUntilPriceExpiry}
+                  label={'* Quoted rate is guaranteed if deposit is sent within:'}
+                  onTimerEnd={handleTimerEnd}/>
               ))}
             </small>
           </div>

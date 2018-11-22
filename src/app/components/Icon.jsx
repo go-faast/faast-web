@@ -39,15 +39,15 @@ const Icon = ({ src, tag: Tag, inline, block, width, height, size: scale, rotate
   }
   return (
     <Tag style={reduceStyles(
-        { width, height },
-        resize(scale),
-        rotate(rotation),
-        fill(fillColor),
-        inline && inlineStyle,
-        block && blockStyle,
-        style
-      )}
-      {...props}
+      { width, height },
+      resize(scale),
+      rotate(rotation),
+      fill(fillColor),
+      inline && inlineStyle,
+      block && blockStyle,
+      style
+    )}
+    {...props}
     />
   )
 }
