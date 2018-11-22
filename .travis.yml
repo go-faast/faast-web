@@ -3,7 +3,8 @@ node_js:
 - '8'
 before_install:
 - npm install -g "npm@$(jq -r '.engines.npm' package.json)"
-- npm i
+install:
+- npm test  
 after_success:
 - git fetch
 - "./bin/upgrade.sh"
