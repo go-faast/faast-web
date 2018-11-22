@@ -12,11 +12,12 @@ const IncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 const pkg = require('../package.json')
 
 const {
-  isDev, isIpfs, dirs, appPath, bundleOutputPath, vendorOutputPath, faviconOutputPath,
+  isDev, isIpfs, useHttps, dirs, appPath, bundleOutputPath, vendorOutputPath, faviconOutputPath,
 } = require('./common.js')
 
 const getBaseConfig = require('./webpack.config.base.js')
-const publicPath = isIpfs ? './' : '/'
+
+const APP_PORT = process.env.APP_PORT || 8080
 
 const vendorDeps = ['font-awesome-4.7/css/font-awesome.min.css']
 
@@ -32,7 +33,7 @@ let config = merge.strategy({
   output: {
     filename: path.join(outputPathPrefix, bundleOutputPath, isDev ? '[name].[hash:8].js' : '[name].[chunkHash:8].js'),
     path: dirs.buildApp,
-    publicPath: publicPath,
+    publicPath: isIpfs ? './' : '/',
   },
   plugins: [
     new webpack.DefinePlugin({
@@ -100,8 +101,12 @@ if (!isDev) {
   })
 } else {
   config = merge(config, {
+    output: {
+      publicPath: `${useHttps ? 'https' : 'http'}://localhost:${APP_PORT}/`, // Required for HMR behind proxy
+    },
     devtool: 'eval-source-map',
     devServer: {
+      port: APP_PORT,
       contentBase: dirs.buildApp,
       hot: true,
       historyApiFallback: {
