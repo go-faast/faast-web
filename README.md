@@ -77,6 +77,10 @@ To resolve the SSL warning follow [these steps](https://github.com/lwsjs/local-w
 
 or on Google Chrome Browser visit [chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost) and set the property to `Enabled`.
 
+#### Ngrok
+
+For mobile development you can run the development server behind ngrok by running `npm run ngrok` in a separate terminal.
+
 ### Branches
 
 The [OneFlow](http://endoflineblog.com/oneflow-a-git-branching-model-and-workflow) model will be followed as best as possible, with **develop** being the working branch and **master** pointing to the latest release tag.

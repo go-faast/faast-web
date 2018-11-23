@@ -1,7 +1,7 @@
-const { dirs } = require('./common.js')
+const { dirs, useHttp } = require('./common.js')
 
 module.exports = {
-  https: true,
+  https: !useHttp,
   directory: dirs.dist,
   rewrite: [{
     from: '/app/*',
