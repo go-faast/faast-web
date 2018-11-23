@@ -82,7 +82,7 @@ export default compose(
   }), {
     push: pushAction
   }),
-  withState('selectedWallet', 'setSelectedWallet', ({ connectedWallets }) => connectedWallets[0] || null),
+  withState('selectedWallet', 'setSelectedWallet', null),
   withToggle('dropdownOpen'),
   withHandlers({
     handleConnect: ({ push }) => () => {
@@ -103,13 +103,17 @@ export default compose(
     },
   }),
   withHandlers({
-    handleSelectManual: ({ handleSelect }) => () => handleSelect(null)
+    handleSelectManual: ({ handleSelect }) => () => handleSelect(null),
+    selectDefault: ({ connectedWallets, handleSelect }) => () => handleSelect(connectedWallets[0] || null)
   }),
   lifecycle({
+    componentWillMount() {
+      this.props.selectDefault()
+    },
     componentDidUpdate(prevProps) {
-      const { symbol, selectedWallet, connectedWallets, handleSelect } = this.props
+      const { symbol, selectedWallet, connectedWallets, selectDefault } = this.props
       if (prevProps.symbol !== symbol && !connectedWallets.includes(selectedWallet)) {
-        handleSelect(connectedWallets[0] || null)
+        selectDefault()
       }
     }
   })
