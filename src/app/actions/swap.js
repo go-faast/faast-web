@@ -69,19 +69,28 @@ const createSwapFinish = (type, swap) => (dispatch, getState) => (errorMessage, 
   return getSwap(getState(), swap.id)
 }
 
+const getFreshAddress = (walletId, symbol) => getWalletForAsset(walletId, symbol).getFreshAddress(symbol)
+
 export const createOrder = (swap) => (dispatch, getState) => Promise.resolve().then(() => {
   if (swap.error) return swap
   const finish = dispatch(createSwapFinish('createOrder', swap))
-  const { id, receiveAddress, refundAddress, sendAmount, sendSymbol, receiveSymbol, sendWalletId } = swap
+  const { id, sendAmount, sendSymbol, receiveSymbol, sendWalletId, receiveWalletId } = swap
+  if (!receiveWalletId && !swap.receiveAddress) {
+    throw new Error('Must specify receive wallet or receive address')
+  }
+  const userId = sendWalletId ? getWalletForAsset(sendWalletId, sendSymbol).getId() : undefined
   log.info(`Creating faast order for swap ${id}`)
-  return Faast.createNewOrder({
+  return Promise.resolve([
+    swap.receiveAddress || (receiveWalletId ? getFreshAddress(receiveWalletId) : undefined),
+    swap.refundAddress || (sendWalletId ? getFreshAddress(sendWalletId) : undefined),
+  ]).then(([receiveAddress, refundAddress]) => Faast.createNewOrder({
     sendSymbol,
     receiveSymbol,
     receiveAddress,
     refundAddress,  // optional
     sendAmount: toNumber(sendAmount), // optional
-    userId: sendWalletId, // optional
-  })
+    userId, // optional
+  }))
     .then((order) => {
       finish(null, order)
       return getSwap(getState(), swap.id)
@@ -89,32 +98,6 @@ export const createOrder = (swap) => (dispatch, getState) => Promise.resolve().t
     .catch((e) => {
       log.error('createOrder', e)
       return finish(`Error creating swap for pair ${sendSymbol}->${receiveSymbol}, please contact support@faa.st`)
-    })
-})
-
-export const createOrderWithWallets = (swap) => (dispatch) => Promise.resolve().then(() => {
-  if (swap.error) return swap
-  const finish = dispatch(createSwapFinish('createOrderWithWallets', swap))
-  const { sendAmount, sendSymbol, receiveSymbol } = swap
-  const sendWalletInstance = getWalletForAsset(swap.sendWalletId, sendSymbol)
-  const receiveWalletInstance = getWalletForAsset(swap.receiveWalletId, receiveSymbol)
-  const sendWalletId = sendWalletInstance.getId() // if original sendWalletId is a MultiWallet, this id will change
-  return Promise.all([
-    sendWalletInstance.getFreshAddress(sendSymbol),
-    receiveWalletInstance.getFreshAddress(receiveSymbol),
-  ])
-    .then(([refundAddress, receiveAddress]) => dispatch(createOrder({
-      id: swap.id,
-      sendAmount,
-      sendSymbol,
-      receiveSymbol,
-      receiveAddress,
-      refundAddress,
-      sendWalletId,
-    })))
-    .catch((e) => {
-      log.error('createOrderWithWallets', e)
-      return finish('Error creating swap for chosen wallets')
     })
 })
 
@@ -147,20 +130,27 @@ export const initiateSwap = (swap) => (dispatch, getState) => {
     .catch((e) => dispatch(swapInitFailed(swap.id, e.message || e)))
 }
 
-export const createManualSwap = (swapParams) => (dispatch, getState) => {
-  swapParams.id = swapParams.id || uuid()
+export const createSwap = (swapParams) => (dispatch, getState) => {
+  const swapId = (swapParams.id = swapParams.id || uuid())
   dispatch(swapAdded(swapParams))
+  dispatch(swapInitStarted(swapParams.id))
   return dispatch(createOrder(swapParams))
     .then((swap) => {
       if (swap.error) {
         throw new Error(swap.error)
       }
-      swap.id = swapParams.id
-      return getSwap(getState(), swap.id)
+      swap.id = swapId
+      if (swap.sendWalletId) {
+        return dispatch(createSwapTx(swap))
+      }
+      return swap
     })
+    .then(() => dispatch(swapInitSuccess(swapId)))
+    .then(() => getSwap(getState(), swapId))
     .catch((e) => {
       log.error('Failed to create swap', swapParams, e)
       toastr.error('Failed to create swap, please contact support@faa.st')
+      dispatch(swapInitFailed(swapId, e.message || e))
       throw e
     })
 }
