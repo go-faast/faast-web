@@ -1,6 +1,6 @@
 .container {
     background: #1C1C1C;
-    max-width: 650px;
+    max-width: 960px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     margin-top: 20px;
 }
@@ -34,12 +34,12 @@ button {
         margin: 0;
     }
 }
-.swap {
+.reverse {
     border: none !important;
     margin: 0;
     background: transparent !important;
 }
-.swap {
+.reverse {
     svg {
         fill: #565656;
     }
@@ -61,9 +61,6 @@ button {
         color: #05B8AB;
     }
 }
-// .receive {
-//     border: 1px solid #6bada7;
-// }
 .submitButton {
     display:block;
     max-width: 519px;
@@ -130,7 +127,7 @@ button {
       display: block !important;
       margin: 25px auto 25px auto;
     }
-    .swap {
+    .reverse {
       display:block;
       margin: 15px auto 0 auto;
       transform: rotate(90deg)

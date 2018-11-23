@@ -1,5 +1,7 @@
 import React, { Fragment } from 'react'
-import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers, withState } from 'recompose'
+import {
+  compose, setDisplayName, setPropTypes, defaultProps, withHandlers, withState, lifecycle,
+} from 'recompose'
 import { connect } from 'react-redux'
 import {
   ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
@@ -19,10 +21,9 @@ import WalletLabel from 'Components/WalletLabel'
 const WalletSelectField = ({
   symbol, handleSelect, dropDownStyle, dropDownText,
   toggleDropdownOpen, isDropdownOpen, connectedWallets, handleConnect,
-  selectedWallet, handleSelectManual, 
+  selectedWallet, handleSelectManual, addressFieldName, walletIdFieldName, 
   ...props,
 }) => {
-  const hasWallets = connectedWallets.length > 0
   const renderInput = ({ className }) => (
     <WalletLabel
       wallet={selectedWallet}
@@ -30,45 +31,41 @@ const WalletSelectField = ({
       iconProps={{ width: '1.5em', height: '1.5em' }}/>
   )
   return (
-    <ReduxFormField {...props} renderInput={selectedWallet && renderInput}
-      addonAppend={({ invalid }) => (
-        <ButtonDropdown addonType='append' isOpen={isDropdownOpen} toggle={toggleDropdownOpen}>
-          <DropdownToggle size='sm' color={invalid ? 'danger' : 'dark'} style={dropDownStyle} caret>
-            {dropDownText}
-          </DropdownToggle>
-          <DropdownMenu>
-            {hasWallets ? (
-              <Fragment>
-                {connectedWallets.map((wallet) => (
-                  <DropdownItem key={wallet.id}
-                    onClick={() => handleSelect(symbol, wallet)}
-                    active={selectedWallet && selectedWallet.id === wallet.id}>
-                    <WalletLabel wallet={wallet}/>
-                  </DropdownItem>
-                ))}
-                <DropdownItem onClick={handleSelectManual} active={!selectedWallet}>
-                  External {symbol} wallet
+    <Fragment>
+      <ReduxFormField {...props} name={addressFieldName} renderInput={selectedWallet && renderInput}
+        addonAppend={({ invalid }) => (
+          <ButtonDropdown addonType='append' isOpen={isDropdownOpen} toggle={toggleDropdownOpen}>
+            <DropdownToggle size='sm' color={invalid ? 'danger' : 'dark'} style={dropDownStyle} caret>
+              {dropDownText}
+            </DropdownToggle>
+            <DropdownMenu right>
+              {connectedWallets.map((wallet) => (
+                <DropdownItem key={wallet.id}
+                  onClick={() => handleSelect(wallet)}
+                  active={selectedWallet && selectedWallet.id === wallet.id}>
+                  <WalletLabel wallet={wallet}/>
                 </DropdownItem>
-                <DropdownItem divider/>
-              </Fragment>
-            ) : (
-              <Fragment>
-                <DropdownItem disabled><small><i>No Connected {symbol} wallets</i></small></DropdownItem>
-              </Fragment>
-            )}
-            <DropdownItem className='text-primary' onClick={handleConnect}>
-              <i className='nav-link-icon fa fa-plus'></i> Connect Your Wallet
-            </DropdownItem>
-          </DropdownMenu>
-        </ButtonDropdown>
-      )}/>
+              ))}
+              <DropdownItem onClick={handleSelectManual} active={!selectedWallet}>
+                External {symbol} wallet
+              </DropdownItem>
+              <DropdownItem divider/>
+              <DropdownItem className='text-primary' onClick={handleConnect}>
+                <i className='nav-link-icon fa fa-plus'></i> Connect Your Wallet
+              </DropdownItem>
+            </DropdownMenu>
+          </ButtonDropdown>
+        )}/>
+      <ReduxFormField name={walletIdFieldName} type='hidden'/>
+    </Fragment>
   )
 }
 
 export default compose(
   setDisplayName('WalletSelectField'),
   setPropTypes({
-    name: PropTypes.string.isRequired,
+    addressFieldName: PropTypes.string.isRequired,
+    walletIdFieldName: PropTypes.string.isRequired,
     change: PropTypes.func.isRequired, // change prop passed into decorated redux-form component
     dropDownText: PropTypes.string,
     dropDownStyle: PropTypes.object,
@@ -76,7 +73,7 @@ export default compose(
     symbol: PropTypes.string,
   }),
   defaultProps({
-    dropDownText: 'Select Wallet',
+    dropDownText: 'Wallet',
     dropDownStyle: {},
     symbol: '',
   }),
@@ -91,15 +88,29 @@ export default compose(
     handleConnect: ({ push }) => () => {
       push('/connect')
     },
-    handleSelectManual: ({ setSelectedWallet, change, name }) => () => {
-      setSelectedWallet(null)
-      change(name, '')
-    },
-    handleSelect: ({ setSelectedWallet, change, name }) => (symbol, wallet) => {
-      const walletInstance = getWalletForAsset(wallet.id, symbol)
+    handleSelect: ({ setSelectedWallet, change, addressFieldName, walletIdFieldName, symbol }) => (wallet) => {
+      if (!wallet) {
+        setSelectedWallet(null)
+        change(addressFieldName, '')
+        change(walletIdFieldName, null)
+        return
+      }
       setSelectedWallet(wallet)
+      change(walletIdFieldName, wallet.id)
+      const walletInstance = getWalletForAsset(wallet.id, symbol)
       return walletInstance.getFreshAddress(symbol)
-        .then((address) => change(name, address))
+        .then((address) => change(addressFieldName, address))
+    },
+  }),
+  withHandlers({
+    handleSelectManual: ({ handleSelect }) => () => handleSelect(null)
+  }),
+  lifecycle({
+    componentDidUpdate(prevProps) {
+      const { symbol, selectedWallet, connectedWallets, handleSelect } = this.props
+      if (prevProps.symbol !== symbol && !connectedWallets.includes(selectedWallet)) {
+        handleSelect(connectedWallets[0] || null)
+      }
     }
   })
 )(WalletSelectField)

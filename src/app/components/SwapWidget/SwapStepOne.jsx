@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { compose, setDisplayName, withProps, withState, withHandlers, setPropTypes, defaultProps, lifecycle } from 'recompose'
 import classNames from 'class-names'
-import { reduxForm } from 'redux-form'
+import { reduxForm, formValueSelector } from 'redux-form'
 import { push as pushAction } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
 import { getAllAssetsArray, getAsset } from 'Selectors/asset'
@@ -11,16 +11,17 @@ import {
 } from 'Selectors'
 import ReduxFormField from 'Components/ReduxFormField'
 import Checkbox from 'Components/Checkbox'
-import Expandable from 'Components/Expandable'
 import CoinIcon from 'Components/CoinIcon'
 import AssetSelector from 'Components/AssetSelector'
 import ProgressBar from 'Components/ProgressBar'
 import WalletSelectField from 'Components/WalletSelectField'
-import { Form, Button, Modal, ModalHeader, ModalBody, Card, CardHeader, CardBody, InputGroupAddon } from 'reactstrap'
-import { container, section, submitButton, asset, icon, receive, swap, expnd, assetAddOnError, assetAddOn } from './style.scss'
+import {
+  Form, Button, Modal, ModalHeader, ModalBody, Card, CardHeader, CardBody, InputGroupAddon, Row, Col,
+} from 'reactstrap'
+import { container, submitButton, reverse, assetAddOnError, assetAddOn } from './style.scss'
 import { toBigNumber } from 'Utilities/convert'
 import SwapIcon from 'Img/swap-icon.svg?inline'
-import { createManualSwap } from 'Actions/swap'
+import { createSwap as createSwapAction } from 'Actions/swap'
 import { updateQueryStringReplace } from 'Actions/router'
 import { retrievePairData } from 'Actions/rate'
 import { openViewOnlyWallet } from 'Actions/access'
@@ -30,121 +31,146 @@ import * as validator from 'Utilities/validator'
 
 const DEFAULT_DEPOSIT = 'BTC'
 const DEFAULT_RECEIVE = 'ETH'
+const FORM_NAME = 'swapWidget'
+
+const formValue = formValueSelector(FORM_NAME)
 
 const SwapStepOne = ({
   change, submitting,
   depositSymbol, receiveSymbol, supportedAssets, assetSelect, setAssetSelect, 
   validateReceiveAddress, validateRefundAddress, validateDepositAmount,
-  handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled
+  handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
+  onChangeDepositAmount,
 }) => (
   <Fragment>
     <ProgressBar steps={['Create Swap', `Deposit ${depositSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
-    <Card className={classNames('container justify-content-center p-0', container)}>
-      <CardHeader className='text-center pb-4'>
-        <h4 className='mb-3 mt-1'>Swap Instantly</h4>
-        <Button color='ultra-dark' className='flat mb-3 p-0' onClick={() => setAssetSelect('deposit')}>
-          <div className={asset}>
-            <CoinIcon key={depositSymbol} symbol={depositSymbol} style={{ width: 48, height: 48 }} className='m-1'/>
-            <h4 className='m-0'>{depositSymbol}</h4>
-            <p>Deposit</p>
-          </div>
-        </Button>
-        <Button color='ultra-dark' className={classNames('flat', swap)} onClick={handleSwitchAssets}><SwapIcon/></Button>
-        <Button color='ultra-dark' className='flat mb-3 p-0' onClick={() => setAssetSelect('receive')}>
-          <div className={asset}>
-            <CoinIcon key={receiveSymbol} symbol={receiveSymbol} style={{ width: 48, height: 48 }} className='m-1'/>
-            <h4 className='m-0'>{receiveSymbol}</h4>
-            <p>Receive</p>
-          </div>
-        </Button>
-      </CardHeader>
-      <CardBody className='pt-1'>
-        <Form onSubmit={handleSubmit}>
-          <div className={section}>
-            <WalletSelectField 
-              id='receiveAddress'
-              name='receiveAddress'
-              placeholder={`${receiveSymbol} Receive Address`}
-              autoCorrect='false'
-              autoCapitalize='false'
-              spellCheck='false'
-              validate={validateReceiveAddress}
-              inputClass={classNames('flat', receive)}
-              dropDownText={`${receiveSymbol} Wallets`}
-              symbol={receiveSymbol}
-              change={change}
-            />
-            <div style={{ position: 'relative' }}>
+    <Form onSubmit={handleSubmit}>
+      <Card className={classNames('container justify-content-center p-0', container)}>
+        <CardHeader className='text-center'>
+          <h4 className='my-1'>Swap Instantly</h4>
+        </CardHeader>
+        <CardBody className='pt-3'>
+          <Row className='gutter-0 align-items-center justify-content-center'>
+            <Col className='text-center'>
+              <p>Sell</p>
+            </Col>
+            <Col xs='1'/>
+            <Col className='text-center'>
+              <p>Buy</p>
+            </Col>
+          </Row>
+          <Row className='gutter-0'>
+            <Col>
               <ReduxFormField
                 id='depositAmount'
                 name='depositAmount'
                 type='number'
-                placeholder={`${depositSymbol} Deposit Amount (optional)`}
-                autoCorrect='false'
-                autoCapitalize='false'
-                spellCheck='false'
+                placeholder={'Sell amount (optional)'}
                 validate={validateDepositAmount}
                 inputClass='flat'
+                className='mb-0'
+                onChange={onChangeDepositAmount}
                 addonAppend={({ invalid }) => (
-                  <InputGroupAddon className={invalid ? assetAddOnError : assetAddOn} addonType="append">{depositSymbol}</InputGroupAddon>
+                  <InputGroupAddon className={invalid ? assetAddOnError : assetAddOn} addonType="append">
+                    <Button color='dark' size='sm' onClick={() => setAssetSelect('deposit')}>
+                      <CoinIcon key={depositSymbol} symbol={depositSymbol} size={1.25} className='mr-2'/>
+                      {depositSymbol} <i className='fa fa-caret-down'/>
+                    </Button>
+                  </InputGroupAddon>
                 )}
               />
-              <Expandable
-                className={expnd}
-                shrunk={<i className={classNames('fa fa-question-circle', icon)}></i>} 
-                expanded={'If deposit amount is omitted, the amount you receive will be calculated based on amount you deposit'}>
-              </Expandable>
-            </div>
-            <div style={{ position: 'relative' }}>
+              <small className='text-muted'>If omitted, a variable market rate is used.</small>
+            </Col>
+            <Col xs='1' className='text-center'>
+              <Button color='ultra-dark' onClick={handleSwitchAssets}
+                className={classNames('flat', reverse)}>
+                <SwapIcon/>
+              </Button>
+            </Col>
+            <Col>
+              <ReduxFormField
+                id='receiveAmount'
+                name='receiveAmount'
+                type='number'
+                disabled
+                placeholder='Estimated buy amount'
+                inputClass='flat'
+                className='mb-0'
+                addonAppend={({ invalid }) => (
+                  <InputGroupAddon className={invalid ? assetAddOnError : assetAddOn} addonType="append">
+                    <Button color='dark' size='sm' onClick={() => setAssetSelect('receive')}>
+                      <CoinIcon key={receiveSymbol} symbol={receiveSymbol} size={1.25} className='mr-2'/>
+                      {receiveSymbol} <i className='fa fa-caret-down'/>
+                    </Button>
+                  </InputGroupAddon>
+                )}
+              />
+              <small className='text-muted'>Only an estimate. Not a guaranteed quote.</small>
+            </Col>
+          </Row>
+          <Row className='gutter-0'>
+            <Col>
               <WalletSelectField 
-                id='refundAddress'
-                name='refundAddress'
+                addressFieldName='refundAddress'
+                walletIdFieldName='sendWalletId'
                 placeholder={`${depositSymbol} Return Address (optional)`}
                 autoCorrect='false'
                 autoCapitalize='false'
                 spellCheck='false'
                 validate={validateRefundAddress}
                 inputClass='flat'
-                dropDownText={`${depositSymbol} Wallets`}
                 symbol={depositSymbol}
                 change={change}
+                className='mb-0 mt-3'
               />
-              <Expandable 
-                className={expnd}
-                shrunk={<i className={classNames('fa fa-question-circle', icon)}></i>} 
-                expanded={'This address will be used in the case that your funds need to be returned'}>
-              </Expandable>
-              <Checkbox
-                inputClass='mt-3'
-                label={
-                  <small className='pl-1 text-white'>I accept the 
-                    <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'> Faast Terms & Conditions</a>
-                  </small>
-                }
-                labelClass='p-0 pt-2 mt-1'
+            </Col>
+            <Col xs='1'/>
+            <Col>
+              <WalletSelectField 
+                addressFieldName='receiveAddress'
+                walletIdFieldName='receiveWalletId'
+                placeholder={`${receiveSymbol} Receive Address`}
+                autoCorrect='false'
+                autoCapitalize='false'
+                spellCheck='false'
+                validate={validateReceiveAddress}
+                inputClass='flat'
+                symbol={receiveSymbol}
+                change={change}
+                className='mb-0 mt-3'
               />
-            </div>
+            </Col>
+          </Row>
+          <div className='my-4'>
+            <Checkbox
+              label={
+                <small className='pl-1 text-white'>I accept the 
+                  <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'> Faast Terms & Conditions</a>
+                </small>
+              }
+              labelClass='p-0'
+            />
           </div>
           <Button className={classNames('mt-2 mb-2 mx-auto', submitButton)} color='primary' type='submit' disabled={submitting}>
             {!submitting ? 'Create Swap' : 'Generating Swap...' }
           </Button>
-        </Form>
-      </CardBody>
-      <Modal size='lg' isOpen={Boolean(assetSelect)} toggle={() => setAssetSelect(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
-        <ModalHeader toggle={() => setAssetSelect(null)} tag='h4' className='text-primary'>
-          Add Asset
-        </ModalHeader>
-        <ModalBody>
-          {assetSelect && (
-            <AssetSelector 
-              selectAsset={handleSelectedAsset} 
-              supportedAssetSymbols={supportedAssets}
-              isAssetDisabled={isAssetDisabled}
-            />
-          )}
-        </ModalBody>
-      </Modal>
-    </Card>
+        </CardBody>
+      </Card>
+    </Form>
+    <Modal size='lg' isOpen={Boolean(assetSelect)} toggle={() => setAssetSelect(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
+      <ModalHeader toggle={() => setAssetSelect(null)} tag='h4' className='text-primary'>
+        Add Asset
+      </ModalHeader>
+      <ModalBody>
+        {assetSelect && (
+          <AssetSelector 
+            selectAsset={handleSelectedAsset} 
+            supportedAssetSymbols={supportedAssets}
+            isAssetDisabled={isAssetDisabled}
+          />
+        )}
+      </ModalBody>
+    </Modal>
   </Fragment>
 )
 
@@ -170,7 +196,7 @@ export default compose(
     depositAsset: (state, { depositSymbol }) => getAsset(state, depositSymbol),
     receiveAsset: (state, { receiveSymbol }) => getAsset(state, receiveSymbol),
   }), {
-    createSwap: createManualSwap,
+    createSwap: createSwapAction,
     push: pushAction,
     updateQueryString: updateQueryStringReplace,
     retrievePairData: retrievePairData,
@@ -189,8 +215,8 @@ export default compose(
     rateLoaded: (state, { pair }) => isRateLoaded(state, pair),
     minimumDeposit: (state, { pair }) => getRateMinimumDeposit(state, pair),
     estimatedRate: (state, { pair }) => getRatePrice(state, pair),
-  }), {
-  }),
+    depositAmount: (state) => formValue(state, 'depositAmount')
+  })),
   withState('assetSelect', 'setAssetSelect', null), // deposit, receive, or null
   withHandlers({
     isAssetDisabled: ({ assetSelect }) => ({ deposit, receive }) =>
@@ -239,13 +265,39 @@ export default compose(
             return openViewOnly(receiveAddress, null)
           }
         })
-    },
+    }
+  }),
+  reduxForm({
+    form: FORM_NAME,
+    enableReinitialize: true,
+    keepDirtyOnReinitialize: true,
+    updateUnregisteredFields: true,
+  }),
+  withHandlers(({ change }) => {
+    const setEstimatedReceiveAmount = (x) => change('receiveAmount', x)
+    return {
+      setEstimatedReceiveAmount,
+      calculateReceiveAmount: ({ depositAmount, estimatedRate }) => () => {
+        console.log(estimatedRate, depositAmount)
+        if (estimatedRate && depositAmount) {
+          depositAmount = toBigNumber(depositAmount)
+          const estimatedReceiveAmount = depositAmount.div(estimatedRate)
+          console.log(estimatedReceiveAmount)
+          setEstimatedReceiveAmount(estimatedReceiveAmount.toNumber())
+        } else {
+          setEstimatedReceiveAmount('')
+        }
+      }
+    }
   }),
   lifecycle({
-    componentDidUpdate() {
-      const { rateLoaded, pair, retrievePairData } = this.props
+    componentDidUpdate(prevProps) {
+      const { rateLoaded, pair, retrievePairData, depositAmount, estimatedRate, calculateReceiveAmount } = this.props
       if (pair && !rateLoaded) {
         retrievePairData(pair)
+      }
+      if (prevProps.depositAmount !== depositAmount || prevProps.estimatedRate !== estimatedRate) {
+        calculateReceiveAmount()
       }
     },
     componentWillMount() {
@@ -262,11 +314,5 @@ export default compose(
         retrievePairData(pair)
       }
     }
-  }),
-  reduxForm({
-    form: 'swapWidget',
-    enableReinitialize: true,
-    keepDirtyOnReinitialize: true,
-    updateUnregisteredFields: true,
   }),
 )(SwapStepOne)
