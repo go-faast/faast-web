@@ -83,7 +83,7 @@ const SwapStepOne = ({
                   </InputGroupAddon>
                 )}
               />
-              {sendWallet && (
+              {sendWallet ? (
                 <p className='text-muted mb-0'><small>
                   You have {maxSendAmountLoaded ? (
                     <Button color='link-plain' onClick={handleSelectMax} className='align-baseline'>
@@ -93,8 +93,9 @@ const SwapStepOne = ({
                     <i className='fa fa-spinner fa-pulse'/>
                   )} {depositSymbol}
                 </small></p>
+              ) : (
+                <p className='text-muted'><small>If omitted, a variable market rate is used.</small></p>
               )}
-              <p className='text-muted'><small>If omitted, a variable market rate is used.</small></p>
             </Col>
             <Col xs='1' className='text-center'>
               <Button color='ultra-dark' onClick={handleSwitchAssets}
