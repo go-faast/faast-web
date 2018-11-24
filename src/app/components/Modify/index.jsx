@@ -10,7 +10,7 @@ import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
 import { ZERO, toBigNumber } from 'Utilities/convert'
 
-import { getCurrentPortfolioWithWalletHoldings, getAllAssets } from 'Selectors'
+import { getCurrentPortfolioWithWalletHoldings, getAllAssets, isAppRestricted } from 'Selectors'
 import { toggleOrderModal, showOrderModal } from 'Actions/orderModal'
 import { createSwundle } from 'Actions/swundle'
 
@@ -334,7 +334,7 @@ class Modify extends Component {
   }
 
   render () {
-    const { portfolio } = this.props
+    const { portfolio, isAppRestricted } = this.props
     const { walletHoldings, assetListWalletId, allowance, isAssetListOpen } = this.state
     const adjustedPortfolio = {
       ...portfolio,
@@ -374,6 +374,7 @@ class Modify extends Component {
         handleWeightChange={this._handleWeightChange}
         handleSave={this._handleSave}
         disableSave={disableSave}
+        isAppRestricted={isAppRestricted}
       />
     )
   }
@@ -382,6 +383,7 @@ class Modify extends Component {
 const mapStateToProps = createStructuredSelector({
   portfolio: getCurrentPortfolioWithWalletHoldings,
   allAssets: getAllAssets,
+  isAppRestricted: isAppRestricted,
 })
 
 const mapDispatchToProps = {

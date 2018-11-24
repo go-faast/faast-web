@@ -9,7 +9,7 @@ import { Asset, SwapOrder } from 'Types'
 const { siteUrl, apiUrl } = config
 
 export function fetchAssets(): Promise<Asset[]> {
-  return fetchGet(`${apiUrl}/api/v1/public/currencies`, null, { retries: 2 })
+  return fetchGet(`${apiUrl}/api/v2/public/currencies`, null, { retries: 2 })
     .then((assets: Array<Partial<Asset>>) => assets.filter((asset) => {
       if (!asset.symbol) {
         log.warn('omitting asset without symbol', asset)

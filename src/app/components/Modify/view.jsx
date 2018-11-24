@@ -30,15 +30,18 @@ import ModalRoute from 'Components/ModalRoute'
 import styles from './style'
 
 const ModifyView = (props) => {
-  const { portfolio, handleSave, disableSave } = props
+  const { portfolio, handleSave, disableSave, isAppRestricted } = props
 
   const renderAssetRows = (assetHoldings) => assetHoldings.map((a) => {
     const { walletId, symbol, name, change24, price, units, fiat, weight, swapEnabled, priceDecrease } = a
     const wallet = portfolio.nestedWallets.find(w => w.id === walletId);
     let unsendable = wallet.unsendableAssets.includes(symbol)
+    const restricted = a.restricted && isAppRestricted
     let disabledMessage
     if (!swapEnabled) {
       disabledMessage = `Swapping ${name} is currently unavailable`
+    } else if (restricted) {
+      disabledMessage = `Swapping ${name} is unavailable in your location`
     } else if (unsendable) {
       disabledMessage = `Sending ${name} from this wallet currently unsupported`
     }
