@@ -47,6 +47,7 @@ export const getAssetPricesError = createSelector(getAssetState, ({ loadingError
 export const getNumberOfAssets = createSelector(getAllAssetsArray, (assets) => assets.length)
 
 export const getWatchlist = createSelector(getAllAssetsArray, (assets) => assets.filter(asset => asset.onWatchlist))
+
 export const getTrendingPositive = createSelector(getAllAssetsArray, (assets) => {
   return assets.sort((a, b) => b.change24.comparedTo(a.change24)).slice(0,5)
 })

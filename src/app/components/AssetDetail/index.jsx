@@ -71,7 +71,7 @@ const AssetDetail = ({ symbol, asset, assetHoldings }) => {
                   <small style={{ position: 'relative', top: '-5px' }} className='text-muted'>[{symbol}]</small>
                   <WatchlistStar
                     className='position-relative ml-1'
-                    style={{ top: '-2px' }} 
+                    style={{ top: '-3px' }} 
                     symbol={symbol}
                   />
                 </Media>

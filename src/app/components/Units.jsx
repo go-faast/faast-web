@@ -12,12 +12,13 @@ class Units extends React.Component {
   render() {
     const {
       value: propValue, symbol, showSymbol, prefixSymbol, showIcon, iconProps,
-      precision, abbreviate, maxDigits, prefix, suffix, roundingMode, roundingType, ...props
+      precision, abbreviate, maxDigits, prefix, suffix, roundingMode, roundingType, symbolSpaced, ...props
     } = this.props
     let value = toBigNumber(propValue)
     let expanded = value.toFormat()
     let shrunk = expanded
     let abbrevSuffix
+    let space = symbolSpaced ? ' ' : ''
     if (abbreviate) {
       const abbreviated = abbreviateNumber(value, precision)
       shrunk = abbreviated.value
@@ -38,9 +39,9 @@ class Units extends React.Component {
     }
     if (symbol) {
       // Expanded form should always include symbol
-      expanded = prefixSymbol ? `${symbol} ${expanded}` : `${expanded} ${symbol}`
+      expanded = prefixSymbol ? `${symbol}${space}${expanded}` : `${expanded}${space}${symbol}`
       if (showSymbol) {
-        shrunk = prefixSymbol ? `${symbol} ${shrunk}` : `${shrunk} ${symbol}`
+        shrunk = prefixSymbol ? `${symbol}${space}${shrunk}` : `${shrunk}${space}${symbol}`
       }
     }
     const expandable = (<Expandable shrunk={shrunk} expanded={expanded} {...props}/>)
@@ -74,6 +75,7 @@ Units.propTypes = {
     'sd', // Round to 'precision' significant digits
   ]),
   iconProps: PropTypes.object,
+  symbolSpaced: PropTypes.bool
 }
 
 Units.defaultProps = {
@@ -90,6 +92,7 @@ Units.defaultProps = {
   roundingMode: BigNumber.ROUND_HALF_UP,
   roundingType: 'sd',
   iconProps: {},
+  symbolSpaced: true
 }
 
 export default Units

@@ -7,13 +7,16 @@ import { ListGroup, ListGroupItem, Row, Col, Card,
   Media, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Badge } from 'reactstrap'
 import { compose, setDisplayName, withState } from 'recompose'
 import { getWatchlist, getTrendingPositive, getTrendingNegative, 
-  getAllWalletsArray, getWalletWithHoldings } from 'Selectors'
+  getAllWalletsArray, getWalletWithHoldings, getCurrentPortfolioId } from 'Selectors'
+import { setCurrentPortfolioAndWallet } from 'Actions/portfolio'
 
 import ChangePercent from 'Components/ChangePercent'
 import ChangeFiat from 'Components/ChangeFiat'
 import WatchlistStar from 'Components/WatchlistStar'
 import CoinIcon from 'Components/CoinIcon'
 import Icon from 'Components/Icon'
+import IconLabel from 'Components/IconLabel'
+import Units from 'Components/Units'
 
 import chart from 'Img/chart.svg?inline'
 import display from 'Utilities/display'
@@ -23,9 +26,9 @@ import classNames from 'class-names'
 import { sidebarLabel } from './style'
 
 const Sidebar = ({ watchlist, trendingPositive, 
-  trendingNegative, toggleDropdownOpen, isDropdownOpen, wallets, selectWallet, selectedWallet,
-  timeFrame, updateTimeFrame, className, push }) => {
-  const { totalFiat, totalChange, totalFiat24hAgo, label } = selectedWallet
+  trendingNegative, toggleDropdownOpen, isDropdownOpen, wallets, portfolioId, selectWallet, selectedWallet,
+  timeFrame, updateTimeFrame, className, push, setCurrentPortfolioAndWallet }) => {
+  const { id: walletId, totalFiat, totalChange, totalFiat24hAgo, label } = selectedWallet
   return (
     <Row style={{ maxWidth: '275px', flex: '0 0 100%' }} className={classNames('gutter-3 align-items-end', className)}>
       <Col xs='12'>
@@ -35,11 +38,23 @@ const Sidebar = ({ watchlist, trendingPositive,
               <Icon style={{ top: '2px', left: 0, width: '100%', zIndex: 0 }} className='position-absolute' src={chart} />
               <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
                 <DropdownToggle className='m-0 cursor-pointer' tag='p' caret>
-                  <small>{label}</small>
+                  <small><Badge 
+                    className='mr-2 cursor-pointer font-size-xxs' 
+                    color='light'
+                  >
+                    {wallets.length}
+                  </Badge>{label}</small>
                 </DropdownToggle>
                 <DropdownMenu>
-                  {wallets.map(({ label, id }) => (
-                    <DropdownItem key={label} onClick={() => selectWallet(id)}>{label}</DropdownItem>
+                  {wallets.map(({ label, id, iconProps, typeLabel }) => (
+                    <DropdownItem 
+                      key={label} 
+                      onClick={() => { selectWallet(id); return setCurrentPortfolioAndWallet(portfolioId,id)}}
+                      disabled={walletId == id}
+                    >
+                      <IconLabel label={label} iconProps={iconProps}/>
+                      <p className='font-xxs text-muted m-0'>{typeLabel}</p>
+                    </DropdownItem>
                   ))}
                 </DropdownMenu>
               </Dropdown>
@@ -129,7 +144,7 @@ const Sidebar = ({ watchlist, trendingPositive,
                         <Media left>
                           <small className='pt-2 mt-1 d-inline-block'>{i + 1}</small>
                         </Media>
-                        <Media className='ml-3 mr-4 text-center' left>
+                        <Media style={{ width: '35px' }} className='ml-4 mr-3' left>
                           <CoinIcon 
                             symbol={symbol} 
                             inline
@@ -141,7 +156,9 @@ const Sidebar = ({ watchlist, trendingPositive,
                         </Media>
                         <Media body>
                           <Media style={{ top: '1px' }} className='m-0 position-relative' heading>
-                            <small className='font-xs'>{display.fiat(price)}</small>
+                            <small>
+                              <Units className='font-xs' symbol={'$'} value={price} symbolSpaced={false} prefixSymbol></Units>
+                            </small>
                           </Media>
                           <Media style={{ top: '-2px' }} className='position-relative'>
                             <span className='font-xs mr-1'><ChangeFiat>{price.minus(priceChangeBasedOnTime)}</ChangeFiat></span>
@@ -157,11 +174,15 @@ const Sidebar = ({ watchlist, trendingPositive,
                     const { symbol, price, change24, price24hAgo } = asset
                     return (
                       <Fragment key={symbol}>
-                        <Media style={{ borderBottom: '1px solid #292929' }} className='text-left px-3 py-0'>
+                        <Media 
+                          onClick={() => push(`/assets/${symbol}`)}
+                          style={{ borderBottom: '1px solid #292929' }} 
+                          className='text-left px-3 py-0 cursor-pointer'
+                        >
                           <Media left>
                             <small className='pt-2 mt-1 d-inline-block'>{i + 1}</small>
                           </Media>
-                          <Media className='ml-3 mr-4 text-center' left>
+                          <Media style={{ width: '35px' }} className='ml-4 mr-3' left>
                             <CoinIcon 
                               symbol={symbol} 
                               inline
@@ -173,7 +194,9 @@ const Sidebar = ({ watchlist, trendingPositive,
                           </Media>
                           <Media body>
                             <Media style={{ top: '1px' }} className='m-0 position-relative' heading>
-                              <small className='font-xs'>{display.fiat(price)}</small>
+                              <small>
+                                <Units className='font-xs' symbol={'$'} value={price} prefixSymbol symbolSpaced={false}></Units>
+                              </small>
                             </Media>
                             <Media style={{ top: '-2px' }} className='position-relative'>
                               <span className='font-xs mr-1'><ChangeFiat>{price24hAgo.minus(price)}</ChangeFiat></span>
@@ -204,8 +227,10 @@ export default compose(
     watchlist: getWatchlist,
     trendingPositive: getTrendingPositive,
     trendingNegative: getTrendingNegative,
-    wallets: getAllWalletsArray
+    portfolioId: getCurrentPortfolioId,
+    wallets: getAllWalletsArray,
   }), {
+    setCurrentPortfolioAndWallet: setCurrentPortfolioAndWallet,
     push: push,
   }),
 )(Sidebar)

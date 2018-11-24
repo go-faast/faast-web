@@ -78,7 +78,7 @@ export const handleWatchlist = (symbol) => (dispatch) => {
   const index = watchlist.indexOf(symbol)
   let added
   if (index < 0) {
-    watchlist.push(symbol)
+    watchlist.unshift(symbol)
     added = true
   } else {
     watchlist.splice(index, 1)
