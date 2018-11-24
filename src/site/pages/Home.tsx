@@ -7,6 +7,7 @@ import { Asset } from 'Types'
 // import logoImg from 'Img/faast-logo.png'
 import EmailSubscriptionForm from 'Site/components/EmailSubscriptionForm'
 import IconCarousel from 'Site/components/IconCarousel'
+import Header from 'Site/components/Header'
 
 import TrezorWalletLogo from 'Img/wallet/trezor.png'
 import LedgerWalletLogo from 'Img/wallet/ledger.png'
@@ -30,7 +31,6 @@ import MacbookScreenshot1 from 'Img/macbook-screenshot-01.png'
 import MacbookScreenshot2 from 'Img/macbook-screenshot-02.png'
 
 import BitaccessLogo from 'Img/bitaccess.svg'
-import FaastLogo64x64 from 'Img/faast-logo-64x64.png'
 
 type PrunedAsset = Pick<Asset, 'symbol' | 'name' | 'iconUrl'>
 
@@ -44,31 +44,7 @@ export default compose<Props, {}>(
 )(({ supportedAssets }: Props) => (
   <div>
     <div>
-      <nav className='navbar navbar-dark navbar-expand-md navigation-clean-button'
-        style={{ backgroundColor: 'transparent', paddingLeft: '12px' }}>
-        <div className='container'>
-          <Link exact to='/' className='navbar-brand text-white' style={{ fontWeight: 400 }}>
-            <img src={FaastLogo64x64} style={{ height: '32px', marginRight: '16px' }}/>{siteConfig.name}
-          </Link>
-          <button className='navbar-toggler' data-toggle='collapse' data-target='#navcol-1'>
-            <span className='sr-only'>Toggle navigation</span>
-            <span className='navbar-toggler-icon text-white'></span>
-          </button>
-          <div className='collapse navbar-collapse' id='navcol-1'>
-            <ul className='nav navbar-nav ml-auto'>
-              <li className='nav-item' role='presentation'>
-                <a className='nav-link text-light' href='/app/swap'>Swap</a>
-              </li>
-              <li className='nav-item' role='presentation'>
-                <a className='nav-link text-light' href='https://medium.com/faast' target='_blank' rel='noopener'>Blog</a>
-              </li>
-              <li className='nav-item' role='presentation'>
-                <a className='nav-link py-1' href='/app'><button className='btn btn-light'>Portfolio</button></a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+      <Header/>
       <div className='jumbotron jumbotron-fluid hero-technology mb-0' style={{
           backgroundImage: `url(${MoonBackground})`,
           height: '759px',

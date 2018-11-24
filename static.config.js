@@ -72,6 +72,10 @@ export default {
         component: 'src/site/pages/Privacy',
       },
       {
+        path: '/pricing',
+        component: 'src/site/pages/Pricing',
+      },
+      {
         is404: true,
         component: 'src/site/pages/404',
       },
