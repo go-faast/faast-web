@@ -6,8 +6,9 @@ import { hot } from 'react-hot-loader'
 import { withRouter } from 'react-router'
 
 import { init } from 'Actions/app'
-import { isAppReady, getAppError, isDefaultPortfolioEmpty } from 'Selectors'
+import { isAppReady, getAppError, isDefaultPortfolioEmpty, isAppBlocked } from 'Selectors'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
+import Blocked from 'Components/Blocked'
 
 // Import stylesheets here so they're noticed by HMR
 import 'react-redux-toastr/src/styles/index.scss?nsm'
@@ -22,6 +23,7 @@ export default compose(
   connect(createStructuredSelector({
     ready: isAppReady,
     error: getAppError,
+    blocked: isAppBlocked,
     hasNoWallets: isDefaultPortfolioEmpty,
   }), {
     initApp: init
@@ -32,10 +34,13 @@ export default compose(
     }
   }),
   hot(module)
-)(({ ready, error }) => (
-  ready ? (
-    <AppView/>
-  ) : (
-    <LoadingFullscreen error={error}/>
-  )
+)(({ ready, error, blocked }) => (
+  blocked ? (
+    <Blocked />
+  ) :
+    ready ? (
+      <AppView/>
+    ) : (
+      <LoadingFullscreen error={error}/>
+    )
 ))

@@ -36,6 +36,8 @@ export const fetchPriceChart = (symbol: string) => fetchGet(`${siteUrl}/app/port
 
 export const fetchPairData = (pair: string) => fetchGet(`${apiUrl}/api/v2/public/price/${pair}`)
 
+export const fetchRestrictionsByIp = () => fetchGet(`${apiUrl}/api/v2/public/geoinfo`)
+
 const formatOrderResult = (r: any): SwapOrder => ({
   orderId: r.swap_id,
   orderStatus: r.status,
@@ -153,4 +155,5 @@ export default {
   fetchPairData,
   refreshSwap,
   provideSwapDepositTx,
+  fetchRestrictionsByIp,
 }
