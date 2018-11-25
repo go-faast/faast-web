@@ -7,6 +7,7 @@ import { Asset } from 'Types'
 // import logoImg from 'Img/faast-logo.png'
 import EmailSubscriptionForm from 'Site/components/EmailSubscriptionForm'
 import IconCarousel from 'Site/components/IconCarousel'
+import SwapWidget from 'Site/components/SwapWidget'
 
 import TrezorWalletLogo from 'Img/wallet/trezor.png'
 import LedgerWalletLogo from 'Img/wallet/ledger.png'
