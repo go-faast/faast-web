@@ -9,8 +9,8 @@ export default compose(
   setDisplayName('DataLayout'),
   setPropTypes({
     rows: PropTypes.arrayOf(PropTypes.oneOfType([
-      PropTypes.bool,
       PropTypes.arrayOf(PropTypes.node),
+      PropTypes.node,
     ]))
   })
 )(({ rows }) => (

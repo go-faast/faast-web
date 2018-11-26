@@ -33,7 +33,7 @@ const SwapStepTwo = ({
   let {
     orderId = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
     sendAmount, receiveAmount, rate, orderStatus = '', refundAddress = '', isFixedPrice,
-    sendAsset: { bip21Prefix }
+    sendAsset: { bip21Prefix } = {},
   } = swap
   const quotedRate = rate || estimatedRate
   const qrAddress = bip21Prefix && depositAddress.indexOf(bip21Prefix) < 0 

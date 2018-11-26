@@ -82,9 +82,9 @@ export const createOrder = (swap) => (dispatch) => Promise.resolve().then(() => 
   }
   const userId = sendWalletId ? getWalletForAsset(sendWalletId, sendSymbol).getId() : undefined
   log.info(`Creating faast order for swap ${id}`)
-  return Promise.resolve([
-    swap.receiveAddress || getFreshAddress(receiveWalletId),
-    swap.refundAddress || getFreshAddress(sendWalletId),
+  return Promise.all([
+    swap.receiveAddress || getFreshAddress(receiveWalletId, receiveSymbol),
+    swap.refundAddress || getFreshAddress(sendWalletId, sendSymbol),
   ]).then(([receiveAddress, refundAddress]) => Faast.createNewOrder({
     sendSymbol,
     receiveSymbol,
