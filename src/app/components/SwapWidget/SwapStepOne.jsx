@@ -1,42 +1,46 @@
 import React, { Fragment } from 'react'
+import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose, setDisplayName, withProps, withState, withHandlers, setPropTypes, defaultProps, lifecycle } from 'recompose'
 import classNames from 'class-names'
 import { reduxForm, formValueSelector } from 'redux-form'
 import { push as pushAction } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
-import { getAllAssetsArray, getAsset } from 'Selectors/asset'
 import {
-  isAccountSearchResultWalletInPortfolio, getWallet,
-} from 'Selectors'
+  Form, Button, Modal, ModalHeader, ModalBody, Card, CardHeader, CardBody, InputGroupAddon, Row, Col,
+  FormText,
+} from 'reactstrap'
+
+import log from 'Log'
+import { toBigNumber } from 'Utilities/convert'
+import * as validator from 'Utilities/validator'
+
+import { createSwap as createSwapAction } from 'Actions/swap'
+import { updateQueryStringReplace } from 'Actions/router'
+import { retrievePairData } from 'Actions/rate'
+import { openViewOnlyWallet } from 'Actions/access'
+
+import { getRateMinimumDeposit, getRatePrice, isRateLoaded } from 'Selectors/rate'
+import { getAllAssetsArray, getAsset } from 'Selectors/asset'
+import { getWallet } from 'Selectors/wallet'
+
 import ReduxFormField from 'Components/ReduxFormField'
 import Checkbox from 'Components/Checkbox'
 import CoinIcon from 'Components/CoinIcon'
 import AssetSelector from 'Components/AssetSelector'
 import ProgressBar from 'Components/ProgressBar'
 import WalletSelectField from 'Components/WalletSelectField'
-import {
-  Form, Button, Modal, ModalHeader, ModalBody, Card, CardHeader, CardBody, InputGroupAddon, Row, Col,
-  FormText,
-} from 'reactstrap'
-import { container, submitButton, reverse } from './style.scss'
-import { toBigNumber } from 'Utilities/convert'
-import SwapIcon from 'Img/swap-icon.svg?inline'
-import { createSwap as createSwapAction } from 'Actions/swap'
-import { updateQueryStringReplace } from 'Actions/router'
-import { retrievePairData } from 'Actions/rate'
-import { openViewOnlyWallet } from 'Actions/access'
-import PropTypes from 'prop-types'
-import { getRateMinimumDeposit, getRatePrice, isRateLoaded } from 'Selectors/rate'
-import * as validator from 'Utilities/validator'
 import Units from 'Components/Units'
-import log from 'Log'
+
+import SwapIcon from 'Img/swap-icon.svg?inline'
+
+import { container, submitButton, reverse } from './style.scss'
 
 const DEFAULT_DEPOSIT = 'BTC'
 const DEFAULT_RECEIVE = 'ETH'
 const FORM_NAME = 'swapWidget'
 
-const formValue = formValueSelector(FORM_NAME)
+const getFormValue = formValueSelector(FORM_NAME)
 
 const SwapStepOne = ({
   change, untouch, submitting,
@@ -215,11 +219,10 @@ export default compose(
   }),
   connect(createStructuredSelector({
     assets: getAllAssetsArray,
-    isAlreadyInPortfolio: isAccountSearchResultWalletInPortfolio,
     depositAsset: (state, { depositSymbol }) => getAsset(state, depositSymbol),
     receiveAsset: (state, { receiveSymbol }) => getAsset(state, receiveSymbol),
-    depositAmount: (state) => formValue(state, 'depositAmount'),
-    sendWallet: (state) => getWallet(state, formValue(state, 'sendWalletId')),
+    depositAmount: (state) => getFormValue(state, 'depositAmount'),
+    sendWallet: (state) => getWallet(state, getFormValue(state, 'sendWalletId')),
   }), {
     createSwap: createSwapAction,
     push: pushAction,
@@ -282,20 +285,22 @@ export default compose(
     ),
     onSubmit: ({
       depositSymbol, receiveAsset, 
-      createSwap, openViewOnly, isAlreadyInPortfolio, push
+      createSwap, openViewOnly, push
     }) => (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
-      const { depositAmount, receiveAddress, refundAddress } = values
+      const { depositAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId } = values
       return createSwap({
+        sendSymbol: depositSymbol,
         sendAmount: depositAmount ? toBigNumber(depositAmount) : undefined,
+        sendWalletId,
+        receiveSymbol,
+        receiveWalletId,
         receiveAddress,
         refundAddress,
-        sendSymbol: depositSymbol,
-        receiveSymbol,
       })
         .then((swap) => {
           push(`/swap?id=${swap.orderId}`)
-          if (!isAlreadyInPortfolio && (receiveSymbol === 'ETH' || ERC20)) { 
+          if (receiveSymbol === 'ETH' || ERC20) { 
             return openViewOnly(receiveAddress, null)
           }
         })
