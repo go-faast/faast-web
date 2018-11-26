@@ -72,7 +72,7 @@ export default compose(
     addressFieldName: PropTypes.string.isRequired,
     walletIdFieldName: PropTypes.string.isRequired,
     change: PropTypes.func.isRequired, // change prop passed into decorated redux-form component
-    untouch: PropTypes.func.isRequirex, // untouch prop passed into decorated redux-form component
+    untouch: PropTypes.func.isRequired, // untouch prop passed into decorated redux-form component
     dropDownText: PropTypes.string,
     dropDownStyle: PropTypes.object,
     handleSelect: PropTypes.func,
