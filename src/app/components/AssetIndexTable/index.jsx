@@ -1,12 +1,13 @@
 import React from 'react'
+import routes from 'Routes'
 import { connect } from 'react-redux'
 import { push as pushAction } from 'react-router-redux'
-import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withHandlers } from 'recompose'
-import { Table, Media } from 'reactstrap'
+import { compose, setDisplayName, setPropTypes, defaultProps, withState } from 'recompose'
+import { Table, Media, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
+import withToggle from 'Hoc/withToggle'
 
-import routes from 'Routes'
 import Units from 'Components/Units'
 import ChangePercent from 'Components/ChangePercent'
 import ArrowIcon from 'Components/ArrowIcon'
@@ -17,7 +18,8 @@ import WatchlistStar from 'Components/WatchlistStar'
 import { indexTable, mediaBody } from './style'
 
 const TableRow = ({ asset: { symbol, availableSupply, name, 
-  marketCap, price, change24, volume24 }, push, ...props }) => {
+  marketCap, price, change24, volume24, change7d, change1 }, timeFrame, push, ...props }) => {
+  const percentChange = timeFrame === '1d' ? change24 : timeFrame === '7d' ? change7d : change1
   return (
     <tr {...props}>
       <td className='pl-3 pl-md-4'>
@@ -79,12 +81,12 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           prefixSymbol
         />
         <div>
-          <small><ChangePercent>{change24}</ChangePercent></small>
+          <small><ChangePercent>{percentChange}</ChangePercent></small>
           <ArrowIcon
             style={{ position: 'relative', top: '0px' }}
-            className={classNames('swapChangeArrow', change24.isZero() ? 'd-none' : null)} 
-            size={.58} dir={change24 < 0 ? 'down' : 'up'} 
-            color={change24 < 0 ? 'danger' : change24 > 0 ? 'success' : null}
+            className={classNames('swapChangeArrow', percentChange.isZero() ? 'd-none' : null)} 
+            size={.58} dir={percentChange < 0 ? 'down' : 'up'} 
+            color={percentChange < 0 ? 'danger' : percentChange > 0 ? 'success' : null}
           />
         </div>
       </td>
@@ -92,7 +94,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
   )
 }
 
-const AssetIndexTable = ({ assets, push }) => (
+const AssetIndexTable = ({ assets, push, toggleDropdownOpen, isDropdownOpen, updateTimeFrame, timeFrame }) => (
   <Table hover striped responsive className={indexTable}>
     <thead>
       <tr>
@@ -101,7 +103,19 @@ const AssetIndexTable = ({ assets, push }) => (
         <th>Market Cap</th>
         <th>Volume</th>
         <th>Supply</th>
-        <th>Price</th>
+        <th>
+          Price
+          <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
+            <DropdownToggle className='py-0 px-2 ml-2 flat' color='dark' caret>
+              {timeFrame}
+            </DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem onClick={() => updateTimeFrame('7d')}>7d</DropdownItem>
+              <DropdownItem onClick={() => updateTimeFrame('1d')}>1d</DropdownItem>
+              <DropdownItem onClick={() => updateTimeFrame('1h')}>1h</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
+        </th>
       </tr>
     </thead>
     <tbody>
@@ -116,6 +130,7 @@ const AssetIndexTable = ({ assets, push }) => (
           key={asset.symbol} 
           asset={asset} 
           push={push}
+          timeFrame={timeFrame}
         />
       )
       )}
@@ -134,8 +149,6 @@ export default compose(
   defaultProps({
     assets: []
   }),
-  withHandlers({
-  }),
-  lifecycle({
-  }),
+  withState('timeFrame', 'updateTimeFrame', '1d'),
+  withToggle('dropdownOpen'),
 )(AssetIndexTable)
