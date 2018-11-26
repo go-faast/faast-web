@@ -3,14 +3,14 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push as pushAction } from 'react-router-redux'
 import { compose, setDisplayName, lifecycle, setPropTypes, defaultProps, withHandlers, withProps } from 'recompose'
-import { Button, Input, Col, Row, Card, CardHeader, CardBody, CardFooter } from 'reactstrap'
+import { Card, CardHeader, CardBody, CardFooter } from 'reactstrap'
 import classNames from 'class-names'
 import { createStructuredSelector } from 'reselect'
-import QRCode from 'qrcode.react'
 
 import routes from 'Routes'
-import toastr from 'Utilities/toastrWrapper'
 
+import DepositQRCode from 'Components/DepositQRCode'
+import ClipboardCopyField from 'Components/ClipboardCopyField'
 import Rate from 'Components/Rate'
 import Timer from 'Components/Timer'
 import Expandable from 'Components/Expandable'
@@ -26,19 +26,16 @@ import { container, qr, scan, receipt } from './style.scss'
 
 /* eslint-disable react/jsx-key */
 const SwapStepTwo = ({
-  swap, handleRef, handleFocus, handleCopy, handleTimerEnd, secondsUntilPriceExpiry, 
+  swap, handleTimerEnd, secondsUntilPriceExpiry, 
   minimumDeposit, estimatedRate
 }) => {
   swap = swap || {}
   let {
     orderId = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
     sendAmount, receiveAmount, rate, orderStatus = '', refundAddress = '', isFixedPrice,
-    sendAsset: { bip21Prefix } = {},
+    sendAsset,
   } = swap
   const quotedRate = rate || estimatedRate
-  const qrAddress = bip21Prefix && depositAddress.indexOf(bip21Prefix) < 0 
-    ? `${bip21Prefix}:${depositAddress}` : depositAddress
-  const qrQueryString = !sendAmount || bip21Prefix === 'ethereum' ? qrAddress : `${qrAddress}?amount=${sendAmount}`
   return (
     <Fragment>
       <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={1}/>
@@ -56,16 +53,9 @@ const SwapStepTwo = ({
         <CardBody className='pt-1 text-center'>
           <div className={classNames('mt-3', qr)}>
             <div className={scan}></div>
-            <QRCode size={150} level='L' value={qrQueryString}/>
+            <DepositQRCode size={150} address={depositAddress} asset={sendAsset} amount={sendAmount}/>
           </div>
-          <Row className='gutter-2 my-2'>
-            <Col>
-              <Input type='text' autoFocus readOnly onFocus={handleFocus} innerRef={handleRef} value={depositAddress}/>
-            </Col>
-            <Col xs='auto'>
-              <Button color='link' className='p-2' onClick={handleCopy}><i className='fa fa-copy'/></Button>
-            </Col>
-          </Row>
+          <ClipboardCopyField value={depositAddress}/>
         </CardBody>
         <CardFooter style={{ border: 'none', position: 'relative', wordBreak: 'break-word' }}>
           <div className={receipt}></div>
@@ -132,31 +122,17 @@ export default compose(
     minimumDeposit: (state, { pair }) => getRateMinimumDeposit(state, pair),
     estimatedRate: (state, { pair }) => getRatePrice(state, pair),
   })),
-  withHandlers(() => {
-    let inputRef
-    return {
-      handleRef: () => (ref) => {
-        inputRef = ref
-      },
-      handleFocus: () => (event) => {
-        event.target.select()
-      },
-      handleCopy: () => () => {
-        inputRef.select()
-        document.execCommand('copy')
-        toastr.info('Address copied to clipboard')
-      },
-      checkDepositStatus: ({ push, swap }) => () => {
-        swap = swap || {}
-        const { orderStatus = '', orderId = '' } = swap
-        if (orderStatus && orderStatus !== 'awaiting deposit') {
-          push(routes.tradeDetail(orderId))
-        }
-      },
-      handleTimerEnd: ({ refreshSwap, swap }) => () => {
-        refreshSwap(swap.orderId)
+  withHandlers({
+    checkDepositStatus: ({ push, swap }) => () => {
+      swap = swap || {}
+      const { orderStatus = '', orderId = '' } = swap
+      if (orderStatus && orderStatus !== 'awaiting deposit') {
+        push(routes.tradeDetail(orderId))
       }
-    }
+    },
+    handleTimerEnd: ({ refreshSwap, swap }) => () => {
+      refreshSwap(swap.orderId)
+    },
   }),
   lifecycle({
     componentDidUpdate() {
