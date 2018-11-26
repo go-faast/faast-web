@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { ListGroup, ListGroupItem, Row, Col, Card, 
   Media, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Badge } from 'reactstrap'
-import { compose, setDisplayName, withState } from 'recompose'
+import { compose, setDisplayName, withState, withProps } from 'recompose'
 import { getWatchlist, getTrendingPositive, getTrendingNegative, 
   getAllWalletsArray, getWalletWithHoldings, getCurrentPortfolioId } from 'Selectors'
 import { setCurrentPortfolioAndWallet } from 'Actions/portfolio'
@@ -229,11 +229,17 @@ export default compose(
   withToggle('dropdownOpen'),
   withState('selectedWalletId', 'selectWallet', 'default'),
   withState('timeFrame', 'updateTimeFrame', '1d'),
+  withProps(({ timeFrame }) => {
+    const sortField = timeFrame === '7d' ? 'change7d' : timeFrame === '1d' ? 'change24' : 'change1'
+    return ({
+      sortField 
+    })
+  }),
   connect(createStructuredSelector({
     selectedWallet: (state, { selectedWalletId }) => getWalletWithHoldings(state, selectedWalletId),
+    trendingPositive: (state, { sortField }) => getTrendingPositive(state, { sortField }),
+    trendingNegative: (state, { sortField }) => getTrendingNegative(state, { sortField }),
     watchlist: getWatchlist,
-    trendingPositive: getTrendingPositive,
-    trendingNegative: getTrendingNegative,
     portfolioId: getCurrentPortfolioId,
     wallets: getAllWalletsArray,
   }), {

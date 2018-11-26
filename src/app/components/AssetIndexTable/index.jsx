@@ -110,9 +110,9 @@ const AssetIndexTable = ({ assets, push, toggleDropdownOpen, isDropdownOpen, upd
               {timeFrame}
             </DropdownToggle>
             <DropdownMenu>
-              <DropdownItem onClick={() => updateTimeFrame('7d')}>7d</DropdownItem>
-              <DropdownItem onClick={() => updateTimeFrame('1d')}>1d</DropdownItem>
-              <DropdownItem onClick={() => updateTimeFrame('1h')}>1h</DropdownItem>
+              <DropdownItem className={timeFrame === '7d' ? 'text-primary' : null} onClick={() => updateTimeFrame('7d')}>7d</DropdownItem>
+              <DropdownItem className={timeFrame === '1d' ? 'text-primary' : null} onClick={() => updateTimeFrame('1d')}>1d</DropdownItem>
+              <DropdownItem className={timeFrame === '1h' ? 'text-primary' : null} onClick={() => updateTimeFrame('1h')}>1h</DropdownItem>
             </DropdownMenu>
           </Dropdown>
         </th>

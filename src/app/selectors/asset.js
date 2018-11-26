@@ -48,12 +48,19 @@ export const getNumberOfAssets = createSelector(getAllAssetsArray, (assets) => a
 
 export const getWatchlist = createSelector(getAllAssetsArray, (assets) => assets.filter(asset => asset.onWatchlist))
 
-export const getTrendingPositive = createSelector(getAllAssetsArray, (assets) => {
-  return assets.sort((a, b) => b.change24.comparedTo(a.change24)).slice(0,5)
-})
-export const getTrendingNegative = createSelector(getAllAssetsArray, (assets) => {
-  return assets.sort((a, b) => a.change24.comparedTo(b.change24)).slice(0,5)
-})
+export const getTrendingPositive = createItemSelector(
+  getAllAssetsArray, 
+  selectItemId,
+  (assets, { sortField }) => {
+    return assets.sort((a, b) => b[sortField].comparedTo(a[sortField])).slice(0,5)
+  })
+
+export const getTrendingNegative = createItemSelector(
+  getAllAssetsArray, 
+  selectItemId,
+  (assets, { sortField }) => {
+    return assets.sort((a, b) => a[sortField].comparedTo(b[sortField])).slice(0,5)
+  })
 
 export const getAssetIndexPage = createItemSelector(
   getAllAssetsArray,
