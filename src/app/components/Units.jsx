@@ -12,7 +12,8 @@ class Units extends React.Component {
   render() {
     const {
       value: propValue, symbol, showSymbol, prefixSymbol, showIcon, iconProps,
-      precision, abbreviate, maxDigits, prefix, suffix, roundingMode, roundingType, symbolSpaced, ...props
+      precision, abbreviate, maxDigits, prefix, suffix, roundingMode, roundingType, 
+      expand, symbolSpaced, ...props
     } = this.props
     let value = toBigNumber(propValue)
     let expanded = value.toFormat()
@@ -44,7 +45,7 @@ class Units extends React.Component {
         shrunk = prefixSymbol ? `${symbol}${space}${shrunk}` : `${shrunk}${space}${symbol}`
       }
     }
-    const expandable = (<Expandable shrunk={shrunk} expanded={expanded} {...props}/>)
+    const expandable = expand ? (<Expandable shrunk={shrunk} expanded={expanded} {...props}/>) : <span {...props}>{shrunk}</span>
     return (<Fragment>
       {prefix}{showIcon && (
         <Fragment><CoinIcon symbol={symbol} size='sm' inline style={{ verticalAlign: 'baseline' }} {...iconProps}/>{' '}</Fragment>
@@ -75,7 +76,8 @@ Units.propTypes = {
     'sd', // Round to 'precision' significant digits
   ]),
   iconProps: PropTypes.object,
-  symbolSpaced: PropTypes.bool
+  symbolSpaced: PropTypes.bool,
+  expand: PropTypes.bool
 }
 
 Units.defaultProps = {
@@ -92,7 +94,8 @@ Units.defaultProps = {
   roundingMode: BigNumber.ROUND_HALF_UP,
   roundingType: 'sd',
   iconProps: {},
-  symbolSpaced: true
+  symbolSpaced: true,
+  expand: true,
 }
 
 export default Units

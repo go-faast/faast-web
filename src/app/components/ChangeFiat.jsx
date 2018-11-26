@@ -2,23 +2,30 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
 
+import Units from 'Components/Units'
+
 import { tag as tagPropType } from 'Utilities/propTypes'
 import { ZERO, BigNumber } from 'Utilities/convert'
 import display from 'Utilities/display'
 
-const ChangeFiat = ({ tag: Tag, className, children: change }) => (
-  <Tag className={classNames(className, change.isNegative() ? 'text-negative' : change > 0 ? 'text-positive' : null)}>
-    {display.fiat(change)}
-  </Tag>
+const ChangeFiat = ({ className, children: change }) => (
+  <Units 
+    className={classNames(className, change.isNegative() ?
+      'text-negative' : change > 0 ? 'text-positive' : null)}
+    value={change}
+    symbolSpaced={false}
+    symbol='$'
+    prefixSymbol
+    expand={false}
+  >
+  </Units>
 )
 
 ChangeFiat.propTypes = {
-  tag: tagPropType,
   children: PropTypes.instanceOf(BigNumber)
 }
 
 ChangeFiat.defaultProps = {
-  tag: 'span',
   children: ZERO
 }
 

@@ -28,7 +28,12 @@ import { sidebarLabel } from './style'
 const Sidebar = ({ watchlist, trendingPositive, 
   trendingNegative, toggleDropdownOpen, isDropdownOpen, wallets, portfolioId, selectWallet, selectedWallet,
   timeFrame, updateTimeFrame, className, push, setCurrentPortfolioAndWallet }) => {
-  const { id: walletId, totalFiat, totalChange, totalFiat24hAgo, label } = selectedWallet
+  const { id: walletId, totalFiat, totalChange, totalFiat24hAgo, 
+    totalFiat7dAgo, totalFiat1hAgo, totalChange1h, totalChange7d, label } = selectedWallet
+
+  const portfolioPercentChange = timeFrame === '1d' ? totalChange : timeFrame === '7d' ? totalChange7d : totalChange1h
+  const portfolioBasedOnTimeFrame = timeFrame === '1d' ? totalFiat24hAgo : timeFrame === '7d' ? totalFiat7dAgo : totalFiat1hAgo
+
   return (
     <Row style={{ maxWidth: '275px', flex: '0 0 100%' }} className={classNames('gutter-3 align-items-end', className)}>
       <Col xs='12'>
@@ -60,8 +65,8 @@ const Sidebar = ({ watchlist, trendingPositive,
               </Dropdown>
               <div style={{ zIndex: 99 }} className='position-relative'>
                 <h2 className='m-0 mt-2 font-weight-bold'>{display.fiat(totalFiat)}</h2>
-                <ChangeFiat>{totalFiat.minus(totalFiat24hAgo)}</ChangeFiat>
-                <small> <ChangePercent parentheses>{totalChange}</ChangePercent></small>
+                <ChangeFiat>{totalFiat.minus(portfolioBasedOnTimeFrame)}</ChangeFiat>
+                <small> <ChangePercent parentheses>{portfolioPercentChange}</ChangePercent></small>
                 <div>
                   <Badge 
                     className='mr-2 cursor-pointer' 
@@ -100,7 +105,7 @@ const Sidebar = ({ watchlist, trendingPositive,
                         <Media left>
                           <WatchlistStar className='pt-2 mt-1' symbol={symbol}/>
                         </Media>
-                        <Media onClick={() => push(`/assets/${symbol}`)}>
+                        <Media style={{ flex: '0 0 100%' }} onClick={() => push(`/assets/${symbol}`)}>
                           <Media style={{ width: '35px' }} className='ml-4 mr-3' left>
                             <CoinIcon 
                               symbol={symbol} 
@@ -113,7 +118,7 @@ const Sidebar = ({ watchlist, trendingPositive,
                           </Media>
                           <Media body>
                             <Media className='m-0' heading>
-                              <span className='font-xxs'>{display.fiat(price)}</span>
+                              <Units className='font-xxs' symbol={'$'} value={price} symbolSpaced={false} expand={false} prefixSymbol></Units>
                             </Media>
                             <Media style={{ top: '-2px' }} className='position-relative'>
                               <span className='font-xs mr-1'><ChangeFiat>{price.minus(priceChangeBasedOnTime)}</ChangeFiat></span>
@@ -157,7 +162,7 @@ const Sidebar = ({ watchlist, trendingPositive,
                         <Media body>
                           <Media style={{ top: '1px' }} className='m-0 position-relative' heading>
                             <small>
-                              <Units className='font-xs' symbol={'$'} value={price} symbolSpaced={false} prefixSymbol></Units>
+                              <Units className='font-xs' symbol={'$'} value={price} expand={false} symbolSpaced={false} prefixSymbol></Units>
                             </small>
                           </Media>
                           <Media style={{ top: '-2px' }} className='position-relative'>
@@ -171,7 +176,9 @@ const Sidebar = ({ watchlist, trendingPositive,
                 })}
                 <div style={{ borderTop: '1px dashed #292929' }} className='p-0 text-center'>
                   {trendingNegative.map((asset, i) => {
-                    const { symbol, price, change24, price24hAgo } = asset
+                    const { symbol, price, change24, change7d, change1, price24hAgo, price7dAgo, price1hAgo } = asset
+                    const percentChange = timeFrame === '1d' ? change24 : timeFrame === '7d' ? change7d : change1
+                    const priceChangeBasedOnTime = timeFrame === '1d' ? price24hAgo : timeFrame === '7d' ? price7dAgo : price1hAgo
                     return (
                       <Fragment key={symbol}>
                         <Media 
@@ -195,12 +202,12 @@ const Sidebar = ({ watchlist, trendingPositive,
                           <Media body>
                             <Media style={{ top: '1px' }} className='m-0 position-relative' heading>
                               <small>
-                                <Units className='font-xs' symbol={'$'} value={price} prefixSymbol symbolSpaced={false}></Units>
+                                <Units className='font-xs' symbol={'$'} value={price} expand={false} symbolSpaced={false} prefixSymbol></Units>
                               </small>
                             </Media>
                             <Media style={{ top: '-2px' }} className='position-relative'>
-                              <span className='font-xs mr-1'><ChangeFiat>{price24hAgo.minus(price)}</ChangeFiat></span>
-                              <span className='font-xs'><ChangePercent parentheses>{change24}</ChangePercent></span>
+                              <span className='font-xs mr-1'><ChangeFiat>{price.minus(priceChangeBasedOnTime)}</ChangeFiat></span>
+                              <span className='font-xs'><ChangePercent parentheses>{percentChange}</ChangePercent></span>
                             </Media>
                           </Media>
                         </Media>

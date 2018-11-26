@@ -19,13 +19,13 @@ import { indexTable, mediaBody } from './style'
 const TableRow = ({ asset: { symbol, availableSupply, name, 
   marketCap, price, change24, volume24 }, push, ...props }) => {
   return (
-    <tr onClick={() => push(routes.assetDetail(symbol))} {...props}>
+    <tr {...props}>
       <td className='pl-3 pl-md-4'>
         <WatchlistStar
           symbol={symbol}
         />
       </td>
-      <td>
+      <td onClick={() => push(routes.assetDetail(symbol))}>
         <Media>
           <Media left>
             <CoinIcon 
@@ -41,7 +41,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           </Media>
         </Media>
       </td>
-      <td>
+      <td onClick={() => push(routes.assetDetail(symbol))}>
         <Units
           className='text-nowrap'
           value={marketCap} 
@@ -51,7 +51,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           abbreviate
         />
       </td>
-      <td>
+      <td onClick={() => push(routes.assetDetail(symbol))}>
         <Units
           className='text-nowrap'
           value={volume24} 
@@ -61,7 +61,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           abbreviate
         />
       </td>
-      <td>
+      <td onClick={() => push(routes.assetDetail(symbol))}>
         <Units
           className='text-nowrap'
           value={availableSupply} 
@@ -70,7 +70,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           abbreviate
         />
       </td>
-      <td>
+      <td onClick={() => push(routes.assetDetail(symbol))}>
         <Units 
           className='mt-1 d-inline-block'
           value={price} 

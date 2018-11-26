@@ -136,6 +136,8 @@ export const getWalletWithHoldings = createItemSelector(
       .sort((a, b) => b.fiat.minus(a.fiat).toNumber())
     assetHoldings = fixPercentageRounding(assetHoldings, totalFiat)
     const totalChange = totalFiat.minus(totalFiat24hAgo).div(totalFiat24hAgo).times(100)
+    const totalChange7d = totalFiat.minus(totalFiat7dAgo).div(totalFiat7dAgo).times(100)
+    const totalChange1h = totalFiat.minus(totalFiat1hAgo).div(totalFiat1hAgo).times(100)
     const result = {
       ...wallet,
       totalFiat,
@@ -143,6 +145,8 @@ export const getWalletWithHoldings = createItemSelector(
       totalFiat7dAgo,
       totalFiat1hAgo,
       totalChange,
+      totalChange7d,
+      totalChange1h,
       assetHoldings,
       holdingsLoaded,
       holdingsError,
