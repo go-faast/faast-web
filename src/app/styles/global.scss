@@ -1,6 +1,31 @@
 @import '~faast-ui/src/style/index.scss';
 @import 'variables';
 
+.watchlist-unselected {
+  color: #d0d7df;
+  transition: all .2s ease-in-out;
+  cursor: pointer;
+  &:hover {
+    color: #ffef94;
+  }
+}
+
+.font-xs {
+  font-size: 75%;
+}
+.font-xxs {
+  font-size: 60%;
+}
+
+.watchlist-selected {
+  color: #ffef94;
+  transition: all .2s ease-in-out;
+  cursor: pointer;
+  &:hover {
+    color: #f9db2d
+  }
+}
+
 .swapChangeArrow {
   position:relative;
   vertical-align: middle;

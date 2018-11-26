@@ -5,6 +5,7 @@ import {
   assetsLoading, assetsLoaded, assetsLoadingError,
   assetPriceLoading, assetPriceUpdated, assetPriceError,
   assetPricesLoading, assetPricesUpdated, assetPricesError,
+  watchlistUpdated
 } from 'Actions/asset'
 import { toBigNumber, ZERO } from 'Utilities/convert'
 import { createUpserter, createUpdater, mapValues } from 'Utilities/helpers'
@@ -38,6 +39,7 @@ const assetInitialState = {
   priceLoading: false,
   priceLoaded: false,
   priceError: '',
+  onWatchlist: false
 }
 
 const priceDataToAsset = (priceData) => {
@@ -98,6 +100,10 @@ export default createReducer({
   [assetPriceError]: (state, { symbol, priceError }) => ({
     ...state,
     data: updateAsset(state.data, { symbol, priceLoading: false, priceError }),
+  }),
+  [watchlistUpdated]: (state, { symbol, onWatchlist }) => ({
+    ...state,
+    data: updateAsset(state.data, { symbol, onWatchlist }),
   }),
   [assetPricesLoading]: (state) => ({
     ...state,

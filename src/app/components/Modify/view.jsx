@@ -34,7 +34,8 @@ const ModifyView = (props) => {
 
   const renderAssetRows = (assetHoldings) => assetHoldings.map((a) => {
     const { walletId, symbol, name, change24, price, units, fiat, weight, swapEnabled, priceDecrease } = a
-    const unsendable = portfolio.unsendableAssets.includes(symbol)
+    const wallet = portfolio.nestedWallets.find(w => w.id === walletId);
+    let unsendable = wallet.unsendableAssets.includes(symbol)
     let disabledMessage
     if (!swapEnabled) {
       disabledMessage = `Swapping ${name} is currently unavailable`

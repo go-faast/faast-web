@@ -16,9 +16,9 @@ const WalletListButton = ({ id, active, nested, onClick, className, ...props }) 
 )
 
 const WalletSelector = ({
-  portfolioId, portfolioWalletIds, currentWalletId, setCurrentPortfolioAndWallet
+  portfolioId, portfolioWalletIds, currentWalletId, setCurrentPortfolioAndWallet, className
 }) => (
-  <Row className='gutter-3 align-items-end'>
+  <Row className={classNames('gutter-3 align-items-end', className)}>
     <Col>
       <h4 className='m-0 text-primary'>Wallets</h4>
     </Col>

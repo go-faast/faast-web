@@ -1,0 +1,18 @@
+<svg width="276px" height="150px" viewBox="0 0 276 150" version="1.1">
+  <desc>Created with Sketch.</desc>
+  <defs>
+    <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
+      <stop stopColor="#FFFFFF" offset="0%"></stop>
+      <stop stopColor="#979797" stopOpacity="0" offset="100%"></stop>
+    </linearGradient>
+  </defs>
+  <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" opacity="0.046897">
+    <g id="mac-browser" transform="translate(0.000000, -63.000000)" fill="#FFFFFF" stroke="url(#linearGradient-1)">
+      <g id="Top-sidebar" transform="translate(0.000000, 64.000000)">
+        <g id="Area-chart">
+          <path d="M0,74.5 C15.2777778,74.5 15.2777778,55.875 30.5555556,55.875 C45.8333333,55.875 45.8333333,67.05 61.1111111,67.05 C76.3888889,67.05 76.3888889,37.25 91.6666667,37.25 C106.944444,37.25 106.944444,0 122.222222,0 C137.5,0 137.5,18.625 152.777778,18.625 C168.055556,18.625 168.055556,26.075 183.333333,26.075 C198.611111,26.075 198.611111,37.25 213.888889,37.25 C229.166667,37.25 229.166667,14.9 244.444444,14.9 C259.722222,14.9 259.722222,0 275,0 L275,149 L0,149 L0,74.5 Z" id="area_1"></path>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

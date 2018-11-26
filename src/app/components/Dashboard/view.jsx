@@ -5,10 +5,11 @@ import {
 
 import Layout from 'Components/Layout'
 import BlockstackWelcome from 'Components/BlockstackWelcome'
-import WalletSelector from 'Components/WalletSelector'
 import OrderStatus from 'Components/OrderStatus'
 import Balances from 'Components/Balances'
 import ShareButton from 'Components/ShareButton'
+import Sidebar from 'Components/Sidebar'
+import WalleSelector from 'Components/WalletSelector'
 
 const DashboardView = (props) => {
   const {
@@ -26,8 +27,9 @@ const DashboardView = (props) => {
       }
       <Row className='gutter-3'>
         {!isDefaultPortfolioEmpty && (
-          <Col xs='12' md='5' lg='4' xl='3'>
-            <WalletSelector/>
+          <Col className='mt-2' xs='12' md='5' lg='4' xl='3'>
+            <Sidebar className='d-none d-md-block'/>
+            <WalleSelector className='d-flex d-md-none'/>
           </Col>
         )}
         <Col xs='12' md='7' lg='8' xl='9'>
