@@ -39,7 +39,7 @@ const FORM_NAME = 'swapWidget'
 const formValue = formValueSelector(FORM_NAME)
 
 const SwapStepOne = ({
-  change, submitting,
+  change, untouch, submitting,
   depositSymbol, receiveSymbol, supportedAssets, assetSelect, setAssetSelect, 
   validateReceiveAddress, validateRefundAddress, validateDepositAmount,
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
@@ -54,22 +54,24 @@ const SwapStepOne = ({
           <h4 className='my-1'>Swap Instantly</h4>
         </CardHeader>
         <CardBody className='pt-3'>
-          <Row className='gutter-0 align-items-center justify-content-center'>
-            <Col className='text-center'>
-              <p>Sell</p>
+          <Row className='gutter-0'>
+            <Col xs='12'>
+              <h3>Select Assets</h3>
+            </Col>
+            <Col>
+              <p className='text-center'>You send</p>
             </Col>
             <Col xs='1'/>
-            <Col className='text-center'>
-              <p>Buy</p>
+            <Col>
+              <p className='text-center'>You receive</p>
             </Col>
-          </Row>
-          <Row className='gutter-0'>
+            <div className='w-100'/>
             <Col>
               <ReduxFormField
                 id='depositAmount'
                 name='depositAmount'
                 type='number'
-                placeholder={`Sell amount${sendWallet ? '' : ' (optional)'}`}
+                placeholder={`Send amount${sendWallet ? '' : ' (optional)'}`}
                 validate={validateDepositAmount}
                 inputClass='flat'
                 className='mb-2'
@@ -84,17 +86,17 @@ const SwapStepOne = ({
                 )}
               />
               {sendWallet ? (
-                <p className='text-muted mb-0'><small>
+                <FormText color="muted">
                   You have {maxSendAmountLoaded ? (
-                    <Button color='link-plain' onClick={handleSelectMax} className='align-baseline'>
-                      <small><Units precision={8} value={maxSendAmount}/></small>
+                    <Button color='link-plain' onClick={handleSelectMax}>
+                      <Units precision={8} value={maxSendAmount}/>
                     </Button>
                   ) : (
                     <i className='fa fa-spinner fa-pulse'/>
                   )} {depositSymbol}
-                </small></p>
+                </FormText>
               ) : (
-                <p className='text-muted'><small>If omitted, a variable market rate is used.</small></p>
+                <FormText color="muted">If omitted, a variable market rate is used.</FormText>
               )}
             </Col>
             <Col xs='1' className='text-center'>
@@ -109,7 +111,7 @@ const SwapStepOne = ({
                 name='receiveAmount'
                 type='number'
                 disabled
-                placeholder='Estimated buy amount'
+                placeholder='Estimated receive amount'
                 inputClass='flat'
                 className='mb-2'
                 addonAppend={({ invalid }) => (
@@ -123,21 +125,28 @@ const SwapStepOne = ({
               />
               <FormText color="muted">Only an estimate. Not a guaranteed quote.</FormText>
             </Col>
-          </Row>
-          <Row className='gutter-0'>
+            <Col xs='12'>
+              <h3 className='mt-2r'>Select Wallets</h3>
+            </Col>
+            <Col>
+              <p className='text-center'>From...</p>
+            </Col>
+            <Col xs='1'/>
+            <Col>
+              <p className='text-center'>To...</p>
+            </Col>
+            <div className='w-100'/>
             <Col>
               <WalletSelectField 
                 addressFieldName='refundAddress'
                 walletIdFieldName='sendWalletId'
-                placeholder={`${depositSymbol} Return Address (optional)`}
-                autoCorrect='false'
-                autoCapitalize='false'
-                spellCheck='false'
+                placeholder={`${depositSymbol} return address (optional)`}
                 validate={validateRefundAddress}
                 inputClass='flat'
+                className='mb-2'
                 symbol={depositSymbol}
                 change={change}
-                className='mb-2 mt-3'
+                untouch={untouch}
               />
             </Col>
             <Col xs='1'/>
@@ -145,15 +154,13 @@ const SwapStepOne = ({
               <WalletSelectField 
                 addressFieldName='receiveAddress'
                 walletIdFieldName='receiveWalletId'
-                placeholder={`${receiveSymbol} Receive Address`}
-                autoCorrect='false'
-                autoCapitalize='false'
-                spellCheck='false'
+                placeholder={`${receiveSymbol} receive address`}
                 validate={validateReceiveAddress}
                 inputClass='flat'
+                className='mb-2'
                 symbol={receiveSymbol}
                 change={change}
-                className='mb-2 mt-3'
+                untouch={untouch}
               />
             </Col>
           </Row>
@@ -175,7 +182,7 @@ const SwapStepOne = ({
     </Form>
     <Modal size='lg' isOpen={Boolean(assetSelect)} toggle={() => setAssetSelect(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
       <ModalHeader toggle={() => setAssetSelect(null)} tag='h4' className='text-primary'>
-        Choose Asset to {assetSelect === 'deposit' ? 'Sell' : 'Buy'}
+        Choose Asset to {assetSelect === 'deposit' ? 'Send' : 'Receive'}
       </ModalHeader>
       <ModalBody>
         {assetSelect && (
@@ -262,13 +269,16 @@ export default compose(
     handleSwitchAssets: ({ updateQueryString, depositSymbol, receiveSymbol }) => () => {
       updateQueryString({ from: receiveSymbol, to: depositSymbol })
     },
-    validateReceiveAddress: ({ receiveAsset }) => validator.all(validator.required('A valid wallet address is required.'), validator.walletAddress(receiveAsset)),
+    validateReceiveAddress: ({ receiveAsset }) => validator.all(
+      validator.required(),
+      validator.walletAddress(receiveAsset)
+    ),
     validateRefundAddress: ({ depositAsset }) => validator.walletAddress(depositAsset),
     validateDepositAmount: ({ minimumDeposit, depositSymbol, sendWallet, maxSendAmount }) => validator.all(
       ...(sendWallet ? [validator.required()] : []),
       validator.number(),
-      validator.gt(minimumDeposit, `Sell amount must be at least ${minimumDeposit} ${depositSymbol}.`),
-      ...(sendWallet ? [validator.lte(maxSendAmount, 'Cannot sell more than you have')] : []),
+      validator.gt(minimumDeposit, `Send amount must be at least ${minimumDeposit} ${depositSymbol}.`),
+      ...(sendWallet ? [validator.lte(maxSendAmount, 'Cannot send more than you have.')] : []),
     ),
     onSubmit: ({
       depositSymbol, receiveAsset, 
@@ -309,10 +319,10 @@ export default compose(
       handleSelectMax: ({ maxSendAmount }) => () => {
         setDepositAmount(maxSendAmount)
       },
-      calculateReceiveAmount: ({ depositAmount, estimatedRate }) => () => {
+      calculateReceiveAmount: ({ depositAmount, receiveAsset, estimatedRate }) => () => {
         if (estimatedRate && depositAmount) {
           depositAmount = toBigNumber(depositAmount)
-          const estimatedReceiveAmount = depositAmount.div(estimatedRate)
+          const estimatedReceiveAmount = depositAmount.div(estimatedRate).round(receiveAsset.decimals)
           setEstimatedReceiveAmount(estimatedReceiveAmount.toNumber())
         } else {
           setEstimatedReceiveAmount('')

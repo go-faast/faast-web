@@ -69,9 +69,11 @@ const createSwapFinish = (type, swap) => (dispatch, getState) => (errorMessage, 
   return getSwap(getState(), swap.id)
 }
 
-const getFreshAddress = (walletId, symbol) => getWalletForAsset(walletId, symbol).getFreshAddress(symbol)
+const getFreshAddress = (walletId, symbol) => walletId
+  ? getWalletForAsset(walletId, symbol).getFreshAddress(symbol)
+  : undefined
 
-export const createOrder = (swap) => (dispatch, getState) => Promise.resolve().then(() => {
+export const createOrder = (swap) => (dispatch) => Promise.resolve().then(() => {
   if (swap.error) return swap
   const finish = dispatch(createSwapFinish('createOrder', swap))
   const { id, sendAmount, sendSymbol, receiveSymbol, sendWalletId, receiveWalletId } = swap
@@ -81,19 +83,18 @@ export const createOrder = (swap) => (dispatch, getState) => Promise.resolve().t
   const userId = sendWalletId ? getWalletForAsset(sendWalletId, sendSymbol).getId() : undefined
   log.info(`Creating faast order for swap ${id}`)
   return Promise.resolve([
-    swap.receiveAddress || (receiveWalletId ? getFreshAddress(receiveWalletId) : undefined),
-    swap.refundAddress || (sendWalletId ? getFreshAddress(sendWalletId) : undefined),
+    swap.receiveAddress || getFreshAddress(receiveWalletId),
+    swap.refundAddress || getFreshAddress(sendWalletId),
   ]).then(([receiveAddress, refundAddress]) => Faast.createNewOrder({
     sendSymbol,
     receiveSymbol,
     receiveAddress,
     refundAddress,  // optional
-    sendAmount: toNumber(sendAmount), // optional
+    sendAmount: sendAmount ? toNumber(sendAmount) : undefined, // optional
     userId, // optional
   }))
     .then((order) => {
-      finish(null, order)
-      return getSwap(getState(), swap.id)
+      return finish(null, order)
     })
     .catch((e) => {
       log.error('createOrder', e)
@@ -120,15 +121,6 @@ export const createSwapTx = (swap, options) => (dispatch) => Promise.resolve().t
       return finish('Error creating deposit transaction')
     })
 })
-
-export const initiateSwap = (swap) => (dispatch, getState) => {
-  dispatch(swapInitStarted(swap.id))
-  return dispatch(createOrder(swap))
-    .then((s) => dispatch(createSwapTx(s)))
-    .then(() => dispatch(swapInitSuccess(swap.id)))
-    .then(() => getSwap(getState(), swap.id))
-    .catch((e) => dispatch(swapInitFailed(swap.id, e.message || e)))
-}
 
 export const createSwap = (swapParams) => (dispatch, getState) => {
   const swapId = (swapParams.id = swapParams.id || uuid())

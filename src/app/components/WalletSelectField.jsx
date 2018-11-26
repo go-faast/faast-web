@@ -32,7 +32,12 @@ const WalletSelectField = ({
   )
   return (
     <Fragment>
-      <ReduxFormField {...props} name={addressFieldName} renderInput={selectedWallet && renderInput}
+      <ReduxFormField {...props}
+        name={addressFieldName}
+        autoCorrect='false'
+        autoCapitalize='false'
+        spellCheck='false'
+        renderInput={selectedWallet && renderInput}
         addonAppend={({ invalid }) => (
           <ButtonDropdown addonType='append' isOpen={isDropdownOpen} toggle={toggleDropdownOpen}>
             <DropdownToggle size='sm' color={invalid ? 'danger' : 'dark'} style={dropDownStyle} caret>
@@ -67,6 +72,7 @@ export default compose(
     addressFieldName: PropTypes.string.isRequired,
     walletIdFieldName: PropTypes.string.isRequired,
     change: PropTypes.func.isRequired, // change prop passed into decorated redux-form component
+    untouch: PropTypes.func.isRequirex, // untouch prop passed into decorated redux-form component
     dropDownText: PropTypes.string,
     dropDownStyle: PropTypes.object,
     handleSelect: PropTypes.func,
@@ -88,11 +94,12 @@ export default compose(
     handleConnect: ({ push }) => () => {
       push('/connect')
     },
-    handleSelect: ({ setSelectedWallet, change, addressFieldName, walletIdFieldName, symbol }) => (wallet) => {
+    handleSelect: ({ setSelectedWallet, change, untouch, addressFieldName, walletIdFieldName, symbol }) => (wallet) => {
       if (!wallet) {
         setSelectedWallet(null)
-        change(addressFieldName, '')
         change(walletIdFieldName, null)
+        change(addressFieldName, '')
+        untouch(addressFieldName)
         return
       }
       setSelectedWallet(wallet)
