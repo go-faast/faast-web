@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react'
 import { compose, setDisplayName } from 'recompose'
-import { Card, CardHeader, CardBody } from 'reactstrap'
 import txFees from 'Img/txFees.png'
 import Icon from 'Components/Icon'
 import SwapIcon from 'Img/swap-icon.svg?inline'
