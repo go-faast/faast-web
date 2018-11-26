@@ -54,7 +54,11 @@ export const getCurrentWalletHoldingsError = currySelector(getWalletHoldingsErro
 
 export const getDefaultPortfolio = currySelector(getWallet, defaultPortfolioId)
 export const getDefaultPortfolioWithHoldings = currySelector(getWalletWithHoldings, defaultPortfolioId)
-export const getDefaultPortfolioWalletIds = createSelector(getCurrentPortfolio, ({ nestedWalletIds }) => nestedWalletIds)
+export const getDefaultPortfolioWalletIds = createSelector(getDefaultPortfolio, ({ nestedWalletIds }) => nestedWalletIds)
+export const isWalletAlreadyInDefaultPortfolio = createSelector(
+  getDefaultPortfolioWalletIds,
+  (_, walletId) => walletId,
+  (walletIds, walletId) => walletIds.includes(walletId))
 
 export const isPortfolioEmpty = createItemSelector(
   getWallet,

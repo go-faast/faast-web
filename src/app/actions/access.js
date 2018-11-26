@@ -16,7 +16,7 @@ import {
   EthereumWalletWeb3, EthereumWalletViewOnly
 } from 'Services/Wallet'
 
-import { getCurrentPortfolio, getWallet } from 'Selectors'
+import { getCurrentPortfolio, getWallet, isWalletAlreadyInDefaultPortfolio } from 'Selectors'
 import { addWallet, addNestedWallet, updateWalletBalances } from 'Actions/wallet'
 import { defaultPortfolioId } from 'Actions/portfolio'
 import { retrieveSwaps } from 'Actions/swap'
@@ -121,13 +121,18 @@ export const openBlockstackWallet = (forwardUrl) => (dispatch) => Promise.resolv
 })
 
 /** Opens a view only wallet and adds it to the current portfolio */
-export const openViewOnlyWallet = (addressPromise, forwardUrl) => (dispatch) => Promise.resolve(addressPromise)
+export const openViewOnlyWallet = (addressPromise, forwardUrl) => (dispatch, getState) => Promise.resolve(addressPromise)
   .then((address) => {
     address = typeof address === 'string' ? address.trim() : ''
     if (!isValidAddress(address, 'ETH')) {
-      return toastr.error('Not a valid address')
-    } 
+      return toastr.error('Not a valid view only address')
+    }
     address = toChecksumAddress(address)
     const wallet = new EthereumWalletViewOnly(address)
+    const walletId = wallet.getId()
+    if (isWalletAlreadyInDefaultPortfolio(getState(), walletId)) {
+      log.debug(`Wallet ${walletId} already in default portfolio`)
+      return
+    }
     return dispatch(openWalletAndRedirect(wallet, forwardUrl))
   })
