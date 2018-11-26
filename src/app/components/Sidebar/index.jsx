@@ -7,7 +7,7 @@ import { ListGroup, ListGroupItem, Row, Col, Card,
   Media, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Badge } from 'reactstrap'
 import { compose, setDisplayName, withState, withProps } from 'recompose'
 import { getWatchlist, getTrendingPositive, getTrendingNegative, 
-  getAllWalletsArray, getWalletWithHoldings, getCurrentPortfolioId } from 'Selectors'
+  getAllWalletsArray, getWalletWithHoldings, getCurrentPortfolioId, getCurrentWalletWithHoldings } from 'Selectors'
 import { setCurrentPortfolioAndWallet } from 'Actions/portfolio'
 
 import ChangePercent from 'Components/ChangePercent'
@@ -26,8 +26,8 @@ import classNames from 'class-names'
 import { sidebarLabel } from './style'
 
 const Sidebar = ({ watchlist, trendingPositive, 
-  trendingNegative, toggleDropdownOpen, isDropdownOpen, wallets, portfolioId, selectWallet, selectedWallet,
-  timeFrame, updateTimeFrame, className, push, setCurrentPortfolioAndWallet }) => {
+  trendingNegative, isTrendingDropDownOpen, toggleTrendingDropDownOpen, toggleDropdownOpen, isDropdownOpen, wallets, portfolioId, selectWallet, selectedWallet,
+  timeFrame, updateTimeFrame, trendingTimeFrame, updateTrendingTimeFrame, className, push, setCurrentPortfolioAndWallet }) => {
   const { id: walletId, totalFiat, totalChange, totalFiat24hAgo, 
     totalFiat7dAgo, totalFiat1hAgo, totalChange1h, totalChange7d, label } = selectedWallet
 
@@ -133,12 +133,41 @@ const Sidebar = ({ watchlist, trendingPositive,
               </div>
             </ListGroupItem>
             <ListGroupItem className='border-bottom-0 p-0 text-center'>
-              <small><p className={sidebarLabel}>Trending</p></small>
+              <small>
+                <div className={sidebarLabel}>Trending
+                  <Dropdown group isOpen={isTrendingDropDownOpen} size="sm" toggle={toggleTrendingDropDownOpen}>
+                    <DropdownToggle tag='span' className='cursor-pointer border py-0 ml-1 px-1 flat' size='sm' color='ultra-dark' caret>
+                      <small>{trendingTimeFrame}</small>
+                    </DropdownToggle>
+                    <DropdownMenu>
+                      <DropdownItem 
+                        className={trendingTimeFrame === '7d' ? 'text-primary' : null} 
+                        onClick={() => updateTrendingTimeFrame('7d')}
+                      >
+                        <small>7d</small>
+                      </DropdownItem>
+                      <DropdownItem 
+                        className={trendingTimeFrame === '1d' ? 'text-primary' : null} 
+                        onClick={() => updateTrendingTimeFrame('1d')}
+                      >
+                        <small>1d</small>
+                      </DropdownItem>
+                      <DropdownItem 
+                        className={trendingTimeFrame === '1h' ? 'text-primary' : null} 
+                        onClick={() => updateTrendingTimeFrame('1h')}
+                      >
+                        <small>1h</small>
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </div>
+              </small>
+              
               <div style={{ maxHeight: '214px', overflowY: 'auto' }}>
                 {trendingPositive.map((asset, i) => {
                   const { symbol, price, change24, change7d, change1, price24hAgo, price7dAgo, price1hAgo } = asset
-                  const percentChange = timeFrame === '1d' ? change24 : timeFrame === '7d' ? change7d : change1
-                  const priceChangeBasedOnTime = timeFrame === '1d' ? price24hAgo : timeFrame === '7d' ? price7dAgo : price1hAgo
+                  const percentChange = trendingTimeFrame === '1d' ? change24 : trendingTimeFrame === '7d' ? change7d : change1
+                  const priceChangeBasedOnTime = trendingTimeFrame === '1d' ? price24hAgo : trendingTimeFrame === '7d' ? price7dAgo : price1hAgo
                   return (
                     <Fragment key={symbol}>
                       <Media 
@@ -227,10 +256,16 @@ const Sidebar = ({ watchlist, trendingPositive,
 export default compose(
   setDisplayName('Sidebar'),
   withToggle('dropdownOpen'),
-  withState('selectedWalletId', 'selectWallet', 'default'),
+  withToggle('trendingDropDownOpen'),
+  connect(createStructuredSelector({
+    currentWallet: getCurrentWalletWithHoldings,
+  }), {
+  }),
+  withState('selectedWalletId', 'selectWallet', ({ currentWallet: { id } }) => id),
   withState('timeFrame', 'updateTimeFrame', '1d'),
-  withProps(({ timeFrame }) => {
-    const sortField = timeFrame === '7d' ? 'change7d' : timeFrame === '1d' ? 'change24' : 'change1'
+  withState('trendingTimeFrame', 'updateTrendingTimeFrame', '1d'),
+  withProps(({ trendingTimeFrame }) => {
+    const sortField = trendingTimeFrame === '7d' ? 'change7d' : trendingTimeFrame === '1d' ? 'change24' : 'change1'
     return ({
       sortField 
     })
@@ -241,6 +276,7 @@ export default compose(
     trendingNegative: (state, { sortField }) => getTrendingNegative(state, { sortField }),
     watchlist: getWatchlist,
     portfolioId: getCurrentPortfolioId,
+    currentWallet: getCurrentWalletWithHoldings,
     wallets: getAllWalletsArray,
   }), {
     setCurrentPortfolioAndWallet: setCurrentPortfolioAndWallet,
