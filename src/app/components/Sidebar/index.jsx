@@ -136,7 +136,14 @@ const Sidebar = ({ watchlist, trendingPositive,
               <small>
                 <div className={sidebarLabel}>Trending
                   <Dropdown group isOpen={isTrendingDropDownOpen} size="sm" toggle={toggleTrendingDropDownOpen}>
-                    <DropdownToggle tag='span' className='cursor-pointer border py-0 ml-1 px-1 flat' size='sm' color='ultra-dark' caret>
+                    <DropdownToggle 
+                      tag='span' 
+                      style={{ lineHeight: '15px' }}
+                      className='cursor-pointer rounded border py-0 ml-1 px-1 flat' 
+                      size='sm' 
+                      color='ultra-dark' 
+                      caret
+                    >
                       <small>{trendingTimeFrame}</small>
                     </DropdownToggle>
                     <DropdownMenu>
