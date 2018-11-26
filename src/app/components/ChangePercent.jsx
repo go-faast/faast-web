@@ -6,20 +6,22 @@ import { tag as tagPropType } from 'Utilities/propTypes'
 import { ZERO, BigNumber } from 'Utilities/convert'
 import display from 'Utilities/display'
 
-const ChangePercent = ({ tag: Tag, className, children: change }) => (
+const ChangePercent = ({ tag: Tag, className, children: change, parentheses }) => (
   <Tag className={classNames(className, change.isNegative() ? 'text-negative' : change > 0 ? 'text-positive' : null)}>
-    {display.percentage(change, true)}
+    {!parentheses ? display.percentage(change, true) : `(${display.percentage(change, true)})`}
   </Tag>
 )
 
 ChangePercent.propTypes = {
   tag: tagPropType,
-  children: PropTypes.instanceOf(BigNumber)
+  children: PropTypes.instanceOf(BigNumber),
+  parentheses: PropTypes.bool
 }
 
 ChangePercent.defaultProps = {
   tag: 'span',
-  children: ZERO
+  children: ZERO,
+  parentheses: false
 }
 
 export default ChangePercent
