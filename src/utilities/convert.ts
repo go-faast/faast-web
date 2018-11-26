@@ -1,4 +1,5 @@
 import BigNumber from 'bignumber.js'
+import BN from 'bn.js'
 import EthereumjsUtil from 'ethereumjs-util'
 import padLeft from 'pad-left'
 import config from 'Config'
@@ -15,7 +16,7 @@ const ONE_HUNDRED = new BigNumber(100)
 
 export { ZERO, TEN, BigNumber, ONE_HUNDRED, ONE }
 
-export type Numerical = BigNumber | number | string
+export type Numerical = BigNumber | BN | number | string
 
 export function toBigNumber(value: Numerical = 0): BigNumber {
   if (value === '0x') { value = 0 }

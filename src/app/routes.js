@@ -31,6 +31,7 @@ const createPath = (...paths) => {
 export const root = createPath('/')
 export const dashboard = createPath('/dashboard')
 export const rebalance = createPath('/rebalance')
+export const rebalanceInstructions = createPath(rebalance, '/instructions')
 export const viewOnlyAddress = createPath('/address/:addressQuery')
 export const tradeHistory = createPath('/orders')
 export const tradeDetail = createPath('/orders/:tradeId')
@@ -40,6 +41,7 @@ export const assetIndex = createPath('/assets')
 
 export const connect = createPath('/connect')
 export const connectHwWallet = createPath(connect, '/hw/:walletType')
+export const walletInfoModal = createPath(connect, '/:walletType')
 export const connectHwWalletAsset = createPath(connectHwWallet, '/:assetSymbol')
 export const connectHwWalletAssetConfirm = createPath(connectHwWalletAsset, '/confirm')
 export const connectHwWalletAssetAccounts = createPath(connectHwWalletAsset, '/accounts')
@@ -48,6 +50,7 @@ export default {
   root,
   dashboard,
   rebalance,
+  rebalanceInstructions,
   tradeHistory,
   tradeDetail,
   swapWidget,
@@ -59,4 +62,5 @@ export default {
   connectHwWalletAssetAccounts,
   viewOnlyAddress,
   assetIndex,
+  walletInfoModal
 }

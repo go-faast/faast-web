@@ -22,12 +22,12 @@ export default compose(
         </code>
       </span>
     )), (
-    <span key='fee'>
+      <span key='fee'>
       Really send <br/>
-      <Units value={totalSent} symbol={assetSymbol} precision={null}/> <br/>
+        <Units value={totalSent} symbol={assetSymbol} precision={null}/> <br/>
       from your wallet? <br/>
       Fee included: <br/>
-      <Units value={feeAmount} symbol={feeSymbol} precision={null}/>
-    </span>
-  )]}/>
+        <Units value={feeAmount} symbol={feeSymbol} precision={null}/>
+      </span>
+    )]}/>
 ))

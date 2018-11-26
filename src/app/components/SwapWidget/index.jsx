@@ -9,15 +9,15 @@ import SwapStepTwo from './SwapStepTwo'
 
 const SwapWidget = ({ id, to, from, receive, refund, deposit }) => (
   <Layout className='pt-3 p-0 p-sm-3'>
-  {!id ? 
-    (<SwapStepOne 
-      receiveSymbol={to}
-      receiveAddress={receive}
-      depositSymbol={from}
-      depositAmount={deposit}
-      refundAddress={refund}
-    />) 
-    : <SwapStepTwo orderId={id} />}
+    {!id ? 
+      (<SwapStepOne 
+        receiveSymbol={to}
+        receiveAddress={receive}
+        depositSymbol={from}
+        depositAmount={deposit}
+        refundAddress={refund}
+      />) 
+      : <SwapStepTwo orderId={id} />}
   </Layout>
 )
 

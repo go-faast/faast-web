@@ -13,13 +13,13 @@ const ProgressBar = ({ steps, currentStep }) => (
 )
 
 export default compose(
-    setDisplayName('ProgressBar'),
-    setPropTypes({
-      steps: PropTypes.array,
-      currentStep: PropTypes.number
-    }),
-    defaultProps({
-      steps: [],
-      currentStep: 0
-    })
-  )(ProgressBar)
+  setDisplayName('ProgressBar'),
+  setPropTypes({
+    steps: PropTypes.array,
+    currentStep: PropTypes.number
+  }),
+  defaultProps({
+    steps: [],
+    currentStep: 0
+  })
+)(ProgressBar)

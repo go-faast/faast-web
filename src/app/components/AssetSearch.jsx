@@ -37,7 +37,7 @@ const AssetSearch = ({ size, placeholder,
         <InputGroupAddon addonType="append">
           <Button color='primary' outline type='submit' size={size} {...buttonProps}><i className='fa fa-search fa'></i></Button>
         </InputGroupAddon>
-        {results ? (
+        {query ? (
           <ListGroup 
             className='position-absolute'
             style={{ width: '100%', top: '100%', zIndex: 99, maxHeight: '305px', overflow: 'auto' }} 

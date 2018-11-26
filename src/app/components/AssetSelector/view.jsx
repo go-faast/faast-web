@@ -16,7 +16,7 @@ const AssetSearchForm = reduxForm({
       name='searchAsset'
       placeholder='Search by name or symbol...'
       type='search'
-      autofocus
+      autoFocus
       autoComplete='off'
       onChange={handleSearchChange}
       inputClass='border-primary'

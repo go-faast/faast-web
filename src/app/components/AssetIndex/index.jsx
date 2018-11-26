@@ -15,7 +15,7 @@ import { getAssetIndexPage, getNumberOfAssets } from 'Selectors/asset'
 const AssetIndex = ({ assets, currentPage, numberOfAssets }) => {
   return (
     <Layout className='pt-3'>
-      <h4 className='pt-4 mb-0 text-primary d-inline-block float-left'>All Coins 
+      <h4 className='pt-4 mb-0 text-primary d-inline-block float-left'>All Coins
         {currentPage > 1 ? (<span> - Page {currentPage}</span>) : null}
       </h4>
       <AssetSearch 

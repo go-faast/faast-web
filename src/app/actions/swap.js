@@ -216,6 +216,11 @@ export const sendSwap = (swap, sendOptions) => (dispatch, getState) => Promise.r
       return
     }
     return dispatch(sendTx(tx, sendOptions))
+      .then((sentTx) => {
+        if (sentTx && sentTx.sent && sentTx.hash) {
+          Faast.provideSwapDepositTx(swap.orderId, sentTx.hash)
+        }
+      })
   })
   .then(() => dispatch(pollOrderStatus(swap)))
 

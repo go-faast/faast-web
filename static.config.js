@@ -5,7 +5,7 @@ import merge from 'webpack-merge'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import { pick } from 'lodash'
 
-const { dirs } = require('./etc/common.js')
+const { dirs, useHttps } = require('./etc/common.js')
 const getBaseConfig = require('./etc/webpack.config.base.js')
 const siteConfig = require('./src/site/config.js')
 const isDev = process.env.NODE_ENV === 'development'
@@ -79,6 +79,10 @@ export default {
   },
   paths: {
     dist: dirs.buildSite,
+  },
+  devServer: {
+    https: useHttps,
+    host: useHttps ? 'https://localhost' : 'http://localhost',
   },
   webpack: (defaultConfig, { stage }) => {
     const baseConfig = getBaseConfig(stage)

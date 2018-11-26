@@ -5,7 +5,7 @@ const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const convPaths = require('convert-tsconfig-paths-to-webpack-aliases').default
 
 const {
-  NODE_ENV, isIpfs, dirs, imgOutputPath, fontOutputPath, fileOutputPath, bundleOutputPath, 
+  NODE_ENV, isIpfs, useHttps, dirs, imgOutputPath, fontOutputPath, fileOutputPath, bundleOutputPath, 
 } = require('./common.js')
 
 // Needs to be valid JSON. All comments in tsconfig.json must be removed.
@@ -141,6 +141,10 @@ module.exports = function (stage, outputPathPrefix = '') {
         'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
         'process.env.IPFS': JSON.stringify(isIpfs),
       }),
-    ]
+    ],
+    devServer: {
+      https: useHttps,
+      host: 'localhost',
+    }
   }
 }

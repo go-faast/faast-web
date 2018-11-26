@@ -15,7 +15,6 @@ import AssetIndex from 'Components/AssetIndex'
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
   tradeHistory, tradeDetail, swapWidget, assetDetail, assetIndex,
-  assetIndexPagination
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => (

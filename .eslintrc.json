@@ -8,6 +8,11 @@
         "eslint:recommended",
         "plugin:react/recommended"
     ],
+    "settings": {
+      "react": {
+        "version": "16.0"
+      }
+    },
     "parserOptions": {
         "ecmaFeatures": {
             "jsx": true,
@@ -30,7 +35,8 @@
         ],
         "quotes": [
             "error",
-            "single"
+            "single",
+            { "avoidEscape": true }
         ],
         "react/jsx-uses-vars": "error",
         "react/jsx-uses-react": "error",

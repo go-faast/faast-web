@@ -70,7 +70,7 @@ export const fetchSwap = (swapId: string): Promise<SwapOrder> => {
 }
 
 export const refreshSwap = (id: string) =>
-  fetchPost(`${apiUrl}/api/v2/public/swaps/${id}/refresh`, null, { swapId: id })
+  fetchPost(`${apiUrl}/api/v2/public/swaps/${id}/refresh`)
     .then(formatOrderResult)
 
 export const createNewOrder = ({
@@ -131,6 +131,17 @@ export const fetchOrders = (
       throw e
     })
 
+export const provideSwapDepositTx = (
+  swapOrderId: string,
+  swapTxHash: string,
+): Promise<SwapOrder> => fetchPost(`${apiUrl}/api/v2/public/swaps/${swapOrderId}/deposit`, {
+  tx_id: swapTxHash,
+}).then(formatOrderResult)
+  .catch((e: any) => {
+    log.error(e)
+    throw e
+  })
+
 export default {
   fetchAssets,
   fetchAssetPrice,
@@ -141,4 +152,5 @@ export default {
   fetchSwap,
   fetchPairData,
   refreshSwap,
+  provideSwapDepositTx,
 }

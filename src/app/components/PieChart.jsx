@@ -9,6 +9,7 @@ class PieChart extends Component {
   constructor () {
     super()
     this._setPieChartSeries = this._setPieChartSeries.bind(this)
+    this.chartRef = React.createRef()
   }
 
   componentDidUpdate (prevProps) {
@@ -16,7 +17,7 @@ class PieChart extends Component {
       window.setTimeout(() => {
         const list = this.props.portfolio.assetHoldings
         const assetIx = list.findIndex(a => a.symbol === this.props.selectedSymbol)
-        const pieChart = this.refs.pieChart.getChart()
+        const pieChart = this.chartRef.getChart()
         if (typeof prevAssetIx !== 'undefined' && pieChart.series[0].data[prevAssetIx]) {
           pieChart.series[0].data[prevAssetIx].slice(false)
         }
@@ -72,7 +73,7 @@ class PieChart extends Component {
   }
 
   render () {
-    return <ReactHighcharts config={this._setPieChartSeries()} ref='pieChart' />
+    return <ReactHighcharts config={this._setPieChartSeries()} ref={this.chartRef} />
   }
 }
 

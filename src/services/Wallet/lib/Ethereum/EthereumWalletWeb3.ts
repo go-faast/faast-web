@@ -1,7 +1,7 @@
 import { omit } from 'lodash'
 
 import config from 'Config'
-import { getUserWeb3, Web3 } from 'Services/Web3'
+import { getUserWeb3, getWeb3, Web3 } from 'Services/Web3'
 import log from 'Utilities/log'
 import { toChecksumAddress, toBigNumber } from 'Utilities/convert'
 
@@ -23,7 +23,7 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
     if (!VALID_PROVIDER_NAMES.includes(providerName)) {
       throw new Error(`Unsupported web3 provider ${providerName}`)
     }
-    this._web3 = userWeb3 ? Promise.resolve(userWeb3) : getUserWeb3()
+    this._web3 = Promise.resolve(userWeb3 ? userWeb3 : getWeb3())
   }
 
   getType() { return EthereumWalletWeb3.type }
@@ -37,8 +37,12 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
   // Most popular web3 wallets don't currently support signTransaction even though it's part of the web3 1.0 interface
   isSignTransactionSupported() { return false }
 
+  _getUserWeb3(): Promise<Web3> {
+    return (this._web3 = getUserWeb3())
+  }
+
   _signAndSendTx(tx: Transaction, options: object): Promise<Partial<EthTransaction>> {
-    return this._web3.then((web3) =>
+    return this._getUserWeb3().then((web3) =>
       web3SendTx(web3, tx.txData, options)
         .then((hash) => ({ hash })));
   }
@@ -46,7 +50,7 @@ export default class EthereumWalletWeb3 extends EthereumWallet {
   _signTx(tx: EthTransaction): Promise<Partial<EthTransaction>> {
     const { txData } = tx
     const { value, gas, gasPrice, nonce } = txData
-    return this._web3.then((web3) =>
+    return this._getUserWeb3().then((web3) =>
       web3.eth.signTransaction(omit(txData, 'chainId'))
       .then((signedTxData) => ({ signedTxData })))
   }

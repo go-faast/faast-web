@@ -20,12 +20,12 @@ export default compose(
       {address.slice(27)}?
     </span>
   ), (
-    <span key='2'>
+      <span key='2'>
       Really send <br/>
-      {ERC20 ? 'token' : (<Units value={amount} symbol={symbol} precision={null}/>)} <br/>
+        {ERC20 ? 'token' : (<Units value={amount} symbol={symbol} precision={null}/>)} <br/>
       paying up to <br/>
-      <Units value={feeAmount} symbol={feeSymbol} precision={null}/><br/>
+        <Units value={feeAmount} symbol={feeSymbol} precision={null}/><br/>
       for gas?
-    </span>
-  )]}/>
+      </span>
+    )]}/>
 ))

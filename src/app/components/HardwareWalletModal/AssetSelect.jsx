@@ -12,6 +12,8 @@ import { removeConnectedAccount, startConnectBatch, saveConnectedAccounts } from
 import BackButton from './BackButton'
 import ConnectAssetButton from './ConnectAssetButton'
 
+import config from 'Config'
+
 const ADD_ALL_TEXT = 'Add All Currencies'
 
 export default compose(
@@ -56,6 +58,9 @@ export default compose(
           </Col>
         ))}
       </Row>
+      <p style={{ fontSize: '14px' }} className='mt-5 mb-0 text-left'>
+        <a href={config.walletTypes[walletType].website}><i className='fa fa-info-circle'></i> Learn more about {walletType}</a>
+      </p>
     </ModalBody>
     <ModalFooter>
       <BackButton onClick={handleCancel}>Cancel</BackButton>
