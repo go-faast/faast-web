@@ -5,7 +5,6 @@ import {
 
 import Layout from 'Components/Layout'
 import BlockstackWelcome from 'Components/BlockstackWelcome'
-import OrderStatus from 'Components/OrderStatus'
 import Balances from 'Components/Balances'
 import ShareButton from 'Components/ShareButton'
 import Sidebar from 'Components/Sidebar'
@@ -13,8 +12,7 @@ import WalleSelector from 'Components/WalletSelector'
 
 const DashboardView = (props) => {
   const {
-    wallet, viewOnly, toggleChart, openCharts,
-    showOrderStatus, disableRemove, handleRemove, isDefaultPortfolioEmpty
+    wallet, viewOnly, toggleChart, openCharts, disableRemove, handleRemove, isDefaultPortfolioEmpty
   } = props
 
   const { label, type } = wallet
@@ -49,11 +47,6 @@ const DashboardView = (props) => {
                 </Col>
               </Row>
             </Col>
-            {showOrderStatus && (
-              <Col xs='12'>
-                <OrderStatus/>
-              </Col>
-            )}
             <Col xs='12'>
               <Balances wallet={wallet} toggleChart={toggleChart} openCharts={openCharts}/>
             </Col>

@@ -5,7 +5,6 @@ import { createStructuredSelector } from 'reselect'
 
 import {
   getCurrentWalletWithHoldings, isDefaultPortfolioEmpty,
-  isLatestSwundleSummaryShowing
 } from 'Selectors'
 import { updateAllHoldings, removePortfolio, defaultPortfolioId } from 'Actions/portfolio'
 
@@ -61,7 +60,6 @@ class Dashboard extends Component {
 const mapStateToProps = createStructuredSelector({
   wallet: getCurrentWalletWithHoldings,
   isDefaultPortfolioEmpty: isDefaultPortfolioEmpty,
-  showOrderStatus: isLatestSwundleSummaryShowing,
 })
 
 const mapDispatchToProps = {
