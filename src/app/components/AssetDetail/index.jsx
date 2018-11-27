@@ -42,7 +42,7 @@ const marketData = [
   }
 ]
 
-const AssetDetail = ({ symbol, asset, assetHoldings }) => {
+const AssetDetail = ({ symbol, asset }) => {
   const { name, price, change24, deposit, receive } = asset
   return (
     <Layout className='pt-3 p-0 p-sm-3'>
@@ -77,7 +77,7 @@ const AssetDetail = ({ symbol, asset, assetHoldings }) => {
                 </Media>
               </Media>
             </Col>
-            <Col className='col-sm-8 col-md-8 col-lg-2 col-5'>
+            <Col className='col-sm-5 col-md-2 col-xl-2 col-5'>
               <div className='pl-4 py-2'>
                 <div className='mb-0'>
                   <Units 
@@ -85,6 +85,7 @@ const AssetDetail = ({ symbol, asset, assetHoldings }) => {
                     value={price} 
                     symbol={'$'} 
                     precision={6} 
+                    symbolSpaced={false}
                     prefixSymbol
                   />
                 </div>
@@ -97,23 +98,9 @@ const AssetDetail = ({ symbol, asset, assetHoldings }) => {
                 />
               </div>
             </Col>
-            {assetHoldings ? (
-              <Col className='col-auto ml-3 mr-3' size='sm'>
-                <div className='py-2'>
-                  <div className='text-muted mb-0'>
-                    <small>Your Holdings</small>
-                  </div>
-                  <Units 
-                    value={assetHoldings || 0} 
-                    symbol={symbol} 
-                    precision={6}
-                  />
-                </div>
-              </Col>
-            ) : null}
             {marketData.map(({ title, jsonKey, fiat }, i) => {
               return (
-                <Col key={i} className='ml-3 mr-3 d-flex col-auto'>
+                <Col key={i} className='ml-3 mr-3 d-flex col-auto pl-1'>
                   <div className='py-2'>
                     <div className='text-muted mb-0'>
                       <small>{title}</small>
@@ -124,13 +111,14 @@ const AssetDetail = ({ symbol, asset, assetHoldings }) => {
                       symbol={fiat ? '$' : asset.symbol} 
                       precision={6} 
                       prefixSymbol={fiat}
+                      symbolSpaced={false}
                       abbreviate
                     />
                   </div>
                 </Col>
               )
             })}
-            <Col className='d-flex align-items-center flex-row-reverse ml-2 mr-2'>
+            <Col className='d-flex align-items-center flex-xl-row-reverse px-md-4 flex-row ml-2 mr-2'>
               <div className='py-2'>
                 <div className='d-flex flex-nowrap text-muted mb-0'>
                   <Link to={`/swap?to=${symbol}`}>
@@ -165,7 +153,6 @@ export default compose(
   }),
   connect(createStructuredSelector({
     asset: (state, { symbol }) => getAsset(state, symbol),
-    assetHoldings: (state, { symbol }) => getHoldingsByAsset(state, symbol),
   }),{
   }),
   conditionalRedirect(
