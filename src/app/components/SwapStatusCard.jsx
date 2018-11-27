@@ -40,6 +40,28 @@ const priceChange = (date, asset) => {
   )
 }
 
+const getShortStatus = (swap) => {
+  const { tx, status: { code, detailsCode, labelClass, label } } = swap
+  if (detailsCode === 'signed') {
+    return (<span className='text-success'>Signed</span>)
+  } else if (detailsCode === 'signing_unsupported') {
+    return (<span className='text-success'>Ready</span>)
+  } else if (detailsCode === 'signing') {
+    return (<span className='text-warning blink'>Awaiting signature</span>)
+  } else if (detailsCode.includes('error')) {
+    return (<span className='text-danger'>Failed</span>)
+  } else if (detailsCode === 'sending') {
+    return (<span className='text-primary'>Sending</span>)
+  } else if ((tx && tx.sent) || code === 'failed') {
+    return (<span className={labelClass}>{label}</span>)
+  } else if (detailsCode === 'unsigned') {
+    return null
+  } else if (detailsCode === 'creating_tx' || detailsCode === 'fetching_rate') {
+    return (<Spinner size='sm' inline/>)
+  }
+  return (<span>{label || code}</span>)
+}
+
 /* eslint-disable react/jsx-key */
 export default compose(
   setDisplayName('SwapStatusCard'),
@@ -48,7 +70,8 @@ export default compose(
     showWalletLabels: PropTypes.bool,
     showFees: PropTypes.bool,
     showDetails: PropTypes.bool,
-    expanded: PropTypes.bool
+    expanded: PropTypes.bool,
+    showShortStatus: PropTypes.bool,
   }),
   defaultProps({
     showWalletLabels: true,
@@ -57,9 +80,10 @@ export default compose(
     expanded: null
   }),
   withToggle('expandedState'),
-  withProps(({ expanded, isExpandedState, toggleExpandedState }) => ({
+  withProps(({ swap, expanded, isExpandedState, toggleExpandedState }) => ({
     isExpanded: expanded === null ? isExpandedState : expanded,
-    togglerProps: expanded === null ? { tag: Button, color: 'ultra-dark', onClick: toggleExpandedState } : {}
+    togglerProps: expanded === null ? { tag: Button, color: 'ultra-dark', onClick: toggleExpandedState } : {},
+    shortStatus: getShortStatus(swap),
   }))
 )(({
   swap: {
@@ -69,7 +93,7 @@ export default compose(
     tx: { confirmed, succeeded, hash: txHash, feeAmount: txFee, feeSymbol: txFeeSymbol },
     status: { code, details, detailsCode }, createdAt, createdAtFormatted, initializing, isManual
   },
-  statusText, showDetails, isExpanded, togglerProps, expanded
+  shortStatus, showShortStatus, showDetails, isExpanded, togglerProps, expanded
 }) => {
   const isComplete = code === 'complete'
   const loadingValue = (error
@@ -102,7 +126,7 @@ export default compose(
           </Col>
           <Col xs='auto' className='text-center'>
             <ArrowIcon inline size={1.5} dir='right' color={error ? 'danger' : 'success'}/><br/>
-            <small className='lh-0'>{statusText}</small>
+            {showShortStatus && (<small className='lh-0'>{shortStatus}</small>)}
           </Col>
           <Col>
             <Row className='gutter-2 align-items-center text-center text-sm-right'>

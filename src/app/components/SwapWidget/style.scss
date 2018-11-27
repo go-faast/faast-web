@@ -69,26 +69,6 @@ button {
 .fadedWhite {
   color: rgba(255, 255, 255, 0.8);
 }
-.qr {
-  position: relative;
-  display: inline-block;
-  padding: 16px;
-  background-color: white;
-}
-.scan {
-    position: absolute;
-    top: 0px;
-    left: -25%;
-    width: 150%;
-    height: 6px;
-    background: rgba(255, 36, 62, 0.5);
-    border-top: 1px solid rgba(255, 36, 62, 0.8);
-    border-bottom: 1px solid rgba(255, 36, 62, 0.8);
-    border-radius: 2px;
-    opacity: 1;
-    animation: scan 3s forwards;
-    animation-delay: 1s
-}
 .receipt {
     top: 0px;
     position: absolute;
@@ -98,29 +78,6 @@ button {
     height: 6px;
     background: linear-gradient(-135deg, #353535 3px, transparent 0px) 0% 0% / 6px 6px repeat-x, linear-gradient(135deg, #353535 3px, transparent 0px);
     background-repeat: repeat-x;
-}
-
-@keyframes scan {
-    0% {
-      top: 0px;
-      opacity:1;
-    }
-    25% {
-      top: 170px;
-      opacity:1;
-    }
-    50% {
-      top: 0px;
-      opacity:1;
-    }
-    90% {
-      top: 170px;
-      opacity:1;
-    }
-    100% {
-      top: 170px;
-      opacity: 0;
-    }
 }
 @media screen and (max-width: 560px) {
     .btn {
