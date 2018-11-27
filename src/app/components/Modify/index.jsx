@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
@@ -10,10 +10,11 @@ import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
 import { ZERO, toBigNumber } from 'Utilities/convert'
 
-import { getCurrentPortfolioWithWalletHoldings, getAllAssets, isAppRestricted } from 'Selectors'
+import { getCurrentPortfolioWithWalletHoldings, getAllAssets, isAppRestricted, isAppBlocked } from 'Selectors'
 import { toggleOrderModal, showOrderModal } from 'Actions/orderModal'
 import { createSwundle } from 'Actions/swundle'
 
+import Blocked from 'Components/Blocked'
 import ModifyView from './view'
 
 const filterAdjustedHoldings = (walletHoldings) => {
@@ -334,7 +335,7 @@ class Modify extends Component {
   }
 
   render () {
-    const { portfolio, isAppRestricted } = this.props
+    const { portfolio, isAppRestricted, blocked } = this.props
     const { walletHoldings, assetListWalletId, allowance, isAssetListOpen } = this.state
     const adjustedPortfolio = {
       ...portfolio,
@@ -360,22 +361,27 @@ class Modify extends Component {
       disableSave = true
     }
     return (
-      <ModifyView
-        assetListProps={assetListProps}
-        isAssetListOpen={isAssetListOpen}
-        showAssetList={this._showAssetList}
-        hideAssetList={this._hideAssetList}
-        toggleAssetList={this._toggleAssetList}
-        handleRemove={this._handleRemoveAsset}
-        portfolio={adjustedPortfolio}
-        sliderProps={sliderProps}
-        allowance={allowance}
-        handleFiatChange={this._handleFiatChange}
-        handleWeightChange={this._handleWeightChange}
-        handleSave={this._handleSave}
-        disableSave={disableSave}
-        isAppRestricted={isAppRestricted}
-      />
+      <Fragment>
+        {blocked ? (
+          <Blocked/>
+        ) : null}
+        <ModifyView
+          assetListProps={assetListProps}
+          isAssetListOpen={isAssetListOpen}
+          showAssetList={this._showAssetList}
+          hideAssetList={this._hideAssetList}
+          toggleAssetList={this._toggleAssetList}
+          handleRemove={this._handleRemoveAsset}
+          portfolio={adjustedPortfolio}
+          sliderProps={sliderProps}
+          allowance={allowance}
+          handleFiatChange={this._handleFiatChange}
+          handleWeightChange={this._handleWeightChange}
+          handleSave={this._handleSave}
+          disableSave={disableSave}
+          isAppRestricted={isAppRestricted}
+        />
+      </Fragment>
     )
   }
 }
@@ -384,6 +390,7 @@ const mapStateToProps = createStructuredSelector({
   portfolio: getCurrentPortfolioWithWalletHoldings,
   allAssets: getAllAssets,
   isAppRestricted: isAppRestricted,
+  blocked: isAppBlocked
 })
 
 const mapDispatchToProps = {

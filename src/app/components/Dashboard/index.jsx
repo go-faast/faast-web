@@ -1,14 +1,15 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Redirect, withRouter } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
 
 import {
   getCurrentWalletWithHoldings, isDefaultPortfolioEmpty,
-  isLatestSwundleSummaryShowing
+  isLatestSwundleSummaryShowing, isAppBlocked
 } from 'Selectors'
 import { updateAllHoldings, removePortfolio, defaultPortfolioId } from 'Actions/portfolio'
 
+import Blocked from 'Components/Blocked'
 import DashboardView from './view'
 
 class Dashboard extends Component {
@@ -37,7 +38,7 @@ class Dashboard extends Component {
   }
 
   render () {
-    const { wallet, isDefaultPortfolioEmpty } = this.props
+    const { wallet, isDefaultPortfolioEmpty, blocked } = this.props
     const isViewOnly = wallet.isReadOnly
 
     if (isDefaultPortfolioEmpty && !isViewOnly) {
@@ -46,14 +47,19 @@ class Dashboard extends Component {
 
     const disableRemove = wallet.id === defaultPortfolioId
     return (
-      <DashboardView
-        wallet={wallet}
-        handleRemove={this._removeWallet}
-        viewOnly={isViewOnly}
-        disableRemove={disableRemove}
-        isDefaultPortfolioEmpty={isDefaultPortfolioEmpty}
-        {...this.props}
-      />
+      <Fragment>
+        {blocked ? (
+          <Blocked/>
+        ) : null}
+        <DashboardView
+          wallet={wallet}
+          handleRemove={this._removeWallet}
+          viewOnly={isViewOnly}
+          disableRemove={disableRemove}
+          isDefaultPortfolioEmpty={isDefaultPortfolioEmpty}
+          {...this.props}
+        />
+      </Fragment>
     )
   }
 }
@@ -62,6 +68,7 @@ const mapStateToProps = createStructuredSelector({
   wallet: getCurrentWalletWithHoldings,
   isDefaultPortfolioEmpty: isDefaultPortfolioEmpty,
   showOrderStatus: isLatestSwundleSummaryShowing,
+  blocked: isAppBlocked,
 })
 
 const mapDispatchToProps = {
