@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import {
   Row, Col, Card, CardHeader, CardBody
@@ -48,31 +48,31 @@ const Balances = ({ wallet }) => {
   ]
 
   return (
-    <Card>
-      {!holdingsLoaded && (<LoadingFullscreen center error={holdingsError}/>)}
-      <CardHeader className='grid-group'>
-        <Row className='gutter-3'>
-          {stats.map(({ title, value, colClass }, i) => (
-            <Col xs='6' lg='3' key={i} className={classNames('text-center', colClass)}>
-              <div className='grid-cell'>
-                <div className='h3 mb-0'>{value}</div>
-                <small className={classNames('mb-0', statLabel)}>{title}</small>
-              </div>
-            </Col>
-          ))}
-        </Row>
-      </CardHeader>
-      <CardBody>
-        {address && (
-          <div className='text-right' style={{ lineHeight: 1 }}>
-            <Address address={address} />
-            <small className='text-muted'>address</small>
-          </div>
-        )}
-        <PieChart portfolio={wallet} />
-      </CardBody>
-      <AssetTable assetRows={assetRows}/>
-    </Card>
+    <Fragment>
+      <Card>
+        {!holdingsLoaded && (<LoadingFullscreen center error={holdingsError}/>)}
+        <CardHeader>
+          <h5>Holdings</h5>
+        </CardHeader>
+        <div className='p-2'>
+          <AssetTable assetRows={assetRows}/>
+        </div>
+      </Card>
+      <Card className='mt-3'>
+        <CardHeader>
+          <h5>Distribution</h5>
+        </CardHeader>
+        <CardBody>
+          {address && (
+            <div className='text-right' style={{ lineHeight: 1 }}>
+              <Address address={address} />
+              <small className='text-muted'>address</small>
+            </div>
+          )}
+          <PieChart portfolio={wallet} />
+        </CardBody>
+      </Card>
+    </Fragment>
   )
 }
 

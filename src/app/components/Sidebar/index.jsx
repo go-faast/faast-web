@@ -9,6 +9,7 @@ import { compose, setDisplayName, withState, withProps } from 'recompose'
 import { getWatchlist, getTrendingPositive, getTrendingNegative, 
   getAllWalletsArray, getWalletWithHoldings, getCurrentPortfolioId, getCurrentWalletWithHoldings } from 'Selectors'
 import { setCurrentPortfolioAndWallet } from 'Actions/portfolio'
+import { moveObjectToFrontOfArray } from 'Utilities/helpers'
 
 import ChangePercent from 'Components/ChangePercent'
 import ChangeFiat from 'Components/ChangeFiat'
@@ -33,7 +34,7 @@ const Sidebar = ({ watchlist, trendingPositive,
 
   const portfolioPercentChange = timeFrame === '1d' ? totalChange : timeFrame === '7d' ? totalChange7d : totalChange1h
   const portfolioBasedOnTimeFrame = timeFrame === '1d' ? totalFiat24hAgo : timeFrame === '7d' ? totalFiat7dAgo : totalFiat1hAgo
-
+  wallets = moveObjectToFrontOfArray(wallets, 'id', portfolioId)
   return (
     <Row style={{ maxWidth: '275px', flex: '0 0 100%' }} className={classNames('gutter-3 align-items-end', className)}>
       <Col xs='12'>
@@ -47,19 +48,21 @@ const Sidebar = ({ watchlist, trendingPositive,
                     className='mr-2 cursor-pointer font-size-xxs' 
                     color='light'
                   >
-                    {wallets.length}
+                    {wallets.length - 1}
                   </Badge>{label}</small>
                 </DropdownToggle>
                 <DropdownMenu>
                   {wallets.map(({ label, id, iconProps, typeLabel }) => (
-                    <DropdownItem 
-                      key={label} 
-                      onClick={() => { selectWallet(id); return setCurrentPortfolioAndWallet(portfolioId,id)}}
-                      disabled={walletId == id}
-                    >
-                      <IconLabel label={label} iconProps={iconProps}/>
-                      <p className='font-xxs text-muted m-0'>{typeLabel}</p>
-                    </DropdownItem>
+                    <Fragment key={id}>
+                      <DropdownItem
+                        onClick={() => { selectWallet(id); return setCurrentPortfolioAndWallet(portfolioId,id)}}
+                        disabled={walletId == id}
+                      >
+                        <IconLabel label={label} iconProps={iconProps}/>
+                        <p className='font-xxs text-muted m-0'>{typeLabel}</p>
+                      </DropdownItem>
+                      <Fragment>{id === portfolioId ? <DropdownItem divider/> : null}</Fragment>
+                    </Fragment>
                   ))}
                 </DropdownMenu>
               </Dropdown>
