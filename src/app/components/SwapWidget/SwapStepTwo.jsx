@@ -23,7 +23,7 @@ const SwapStepTwo = ({
   const { sendSymbol, receiveSymbol, isManual } = swap
   return (
     <Fragment>
-      <ProgressBar steps={['Create Swap', `Deposit ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={1}/>
+      <ProgressBar steps={['Create Swap', `Send ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={1}/>
       {isManual ? (
         <StepTwoManual swap={swap}/>
       ) : (
@@ -50,14 +50,14 @@ export default compose(
   }), {
     retrieveSwap: retrieveSwap,
   }),
-  branch(
-    renderComponent(SwapLoading),
-    ({ swap }) => !swap,
-  ),
   lifecycle({
     componentWillMount() {
       const { orderId, retrieveSwap } = this.props
       retrieveSwap(orderId)
     }
-  })
+  }),
+  branch(
+    ({ swap }) => !swap,
+    renderComponent(SwapLoading),
+  ),
 )(SwapStepTwo)

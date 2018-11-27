@@ -51,7 +51,7 @@ const SwapStepOne = ({
   sendWallet,
 }) => (
   <Fragment>
-    <ProgressBar steps={['Create Swap', `Deposit ${depositSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
+    <ProgressBar steps={['Create Swap', `Send ${depositSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
     <Form onSubmit={handleSubmit}>
       <Card className={classNames('container justify-content-center p-0', container)}>
         <CardHeader className='text-center'>
