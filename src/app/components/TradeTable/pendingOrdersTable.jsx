@@ -3,9 +3,9 @@ import { createStructuredSelector } from 'reselect'
 import { push as pushAction } from 'react-router-redux'
 import { connect } from 'react-redux'
 import { Table, Card, CardHeader } from 'reactstrap'
-import { compose, setDisplayName, withHandlers } from 'recompose'
+import { compose, setDisplayName, withHandlers, defaultProps, setPropTypes } from 'recompose'
 import classNames from 'class-names'
-
+import PropTypes from 'prop-types'
 import { getConnectedWalletsPendingSwaps } from 'Selectors'
 
 import routes from 'Routes'
@@ -52,37 +52,41 @@ const TableRow = ({
   </tr>
 )
 
-const PendingOrderTable = ({ handleClick, pendingSwaps }) => (
-  <Card className='my-3'>
-    <CardHeader>
-      <h5>Open Orders</h5>
-    </CardHeader>
-    <div className='p-2'>
-      <Table hover striped responsive className={tradeTable}>
-        <thead>
-          <tr>
-            <th className='border-0'></th>
-            <th className='d-none d-sm-table-cell border-0'>Date</th>
-            <th className='d-none d-sm-table-cell border-0'>Pair</th>
-            <th className='border-0'>Received</th>
-            <th className='border-0'>Cost</th>
-            <th className='border-0'>Rate</th>
-          </tr>
-        </thead>
-        <tbody>
-          {pendingSwaps.length === 0 ? (
-            <tr className='text-center'>
-              <td colSpan='10'>
-                <i>No open orders right now</i>
-              </td>
-            </tr>
-          ) : pendingSwaps.map((swap) => !swap.orderId ? null : (
-            <TableRow key={swap.orderId} swap={swap} onClick={() => handleClick(swap.orderId)}/>
-          ))}
-        </tbody>
-      </Table>
-    </div>
-  </Card>
+const PendingOrderTable = ({ handleClick, pendingSwaps, hideIfNone }) => (
+  <Fragment>
+    {hideIfNone && pendingSwaps.length == 0 ? null : (
+      <Card className='my-3'>
+        <CardHeader>
+          <h5>Open Orders</h5>
+        </CardHeader>
+        <div className='p-2'>
+          <Table hover striped responsive className={tradeTable}>
+            <thead>
+              <tr>
+                <th className='border-0'></th>
+                <th className='d-none d-sm-table-cell border-0'>Date</th>
+                <th className='d-none d-sm-table-cell border-0'>Pair</th>
+                <th className='border-0'>Received</th>
+                <th className='border-0'>Cost</th>
+                <th className='border-0'>Rate</th>
+              </tr>
+            </thead>
+            <tbody>
+              {pendingSwaps.length === 0 ? (
+                <tr className='text-center'>
+                  <td colSpan='10'>
+                    <i>No open orders right now</i>
+                  </td>
+                </tr>
+              ) : pendingSwaps.map((swap) => !swap.orderId ? null : (
+                <TableRow key={swap.orderId} swap={swap} onClick={() => handleClick(swap.orderId)}/>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+      </Card>
+    )}
+  </Fragment>
 )
 
 
@@ -101,6 +105,12 @@ const createStatusLabel = (swap) => {
 
 export default compose(
   setDisplayName('PendingOrderTable'),
+  setPropTypes({
+    hideIfNone: PropTypes.bool
+  }),
+  defaultProps({
+    hideIfNone: false,
+  }),
   connect(createStructuredSelector({
     pendingSwaps: getConnectedWalletsPendingSwaps
   }), {

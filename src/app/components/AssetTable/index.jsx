@@ -67,7 +67,7 @@ export default compose(
     assetRows: PropTypes.arrayOf(PropTypes.object).isRequired,
   })
 )(({ assetRows, push }) => (
-  <Table hover striped responsive className={classNames(tableStyle)}>
+  <Table hover striped responsive className={tableStyle}>
     <thead>
       <tr>
         <th className='border-0'><h6>Asset</h6></th>
