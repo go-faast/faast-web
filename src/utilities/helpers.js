@@ -359,4 +359,13 @@ export const reduceByKey = (objects, reduce, defaultValue) => {
   return result
 }
 
+export const moveObjectToFrontOfArray = (array, key, match) => {
+  return array = array.reduce((w, element) => {
+    if (element[key] === match) {
+      return [element, ...w];
+    }
+    return [...w, element];
+  }, []);
+}
+
 export const isIterable = (o) => o != null && typeof o[Symbol.iterator] === 'function'
