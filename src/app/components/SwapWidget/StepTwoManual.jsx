@@ -86,8 +86,8 @@ export default compose(
     swap: PropTypes.object.isRequired,
   }),
   conditionalRedirect(
-    ({ swap }) => !swap,
     routes.swapWidget(),
+    ({ swap }) => !swap,
   ),
   connect((state, { swap: { pair } }) => ({
     minimumDeposit: getRateMinimumDeposit(state, pair),

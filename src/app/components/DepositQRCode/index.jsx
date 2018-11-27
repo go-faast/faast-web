@@ -37,7 +37,7 @@ export default compose(
     }
   })
 )(({ className, scan, fullUri, qrProps }) => (
-  <div className={classNames(className, style.wrapper)}>
+  <div className={classNames(className, style.wrapper, { [style.wrapperScan]: scan })}>
     {scan && (<div className={style.scan}></div>)}
     <a href={fullUri}>
       <QRCode level='L' value={fullUri} {...qrProps} />
