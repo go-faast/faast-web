@@ -2,10 +2,13 @@ import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import {
-  compose, setDisplayName, lifecycle, setPropTypes, defaultProps,
+  compose, setDisplayName, lifecycle, setPropTypes, defaultProps, withHandlers,
   branch, renderComponent,
 } from 'recompose'
 import { createStructuredSelector } from 'reselect'
+import { push as pushAction } from 'react-router-redux'
+
+import routes from 'Routes'
 
 import { retrieveSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
@@ -49,11 +52,26 @@ export default compose(
     swap: (state, { orderId }) => getSwap(state, orderId)
   }), {
     retrieveSwap: retrieveSwap,
+    push: pushAction,
+  }),
+  withHandlers({
+    checkDepositStatus: ({ push, swap }) => () => {
+      swap = swap || {}
+      const { orderStatus = '', orderId = '' } = swap
+      if (orderStatus && orderStatus !== 'awaiting deposit') {
+        push(routes.tradeDetail(orderId))
+      }
+    },
   }),
   lifecycle({
     componentWillMount() {
-      const { orderId, retrieveSwap } = this.props
+      const { orderId, retrieveSwap, checkDepositStatus } = this.props
       retrieveSwap(orderId)
+      checkDepositStatus()
+    },
+    componentDidUpdate() {
+      const { checkDepositStatus } = this.props
+      checkDepositStatus()
     }
   }),
   branch(

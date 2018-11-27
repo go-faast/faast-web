@@ -7,12 +7,6 @@ import {
 import { reduxForm } from 'redux-form'
 import Checkbox from 'Components/Checkbox'
 import {
-  getCurrentSwundle, 
-  isCurrentSwundleReadyToSign, isCurrentSwundleReadyToSend,
-  isCurrentSwundleSigning, isCurrentSwundleSending,
-  doesCurrentSwundleRequireSigning,
-} from 'Selectors'
-import {
   compose, setDisplayName, setPropTypes, defaultProps,
   withProps, branch, withHandlers, renderNothing,
 } from 'recompose'
@@ -25,7 +19,6 @@ import Spinner from 'Components/Spinner'
 import ConfirmTransactionModal from 'Components/ConfirmTransactionModal'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { signSwundle, sendSwundle, removeSwundle } from 'Actions/swundle'
 import { toggleOrderModal } from 'Actions/orderModal'
 import { refreshSwap } from 'Actions/swap'
 import { push } from 'react-router-redux'
@@ -36,9 +29,9 @@ import routes from 'Routes'
 const RenderChildren = ({ children }) => children
 const RenderNothing = () => null
 
-const SwapSubmitModal = ({
-  isOpen, swundle, headerText, continueText, continueDisabled, continueLoading,
-  errorMessage, handleCancel, currentSwap, secondsUntilPriceExpiry, 
+const SwapSubmit = ({
+  isOpen, swaps, headerText, continueText, continueDisabled, continueLoading,
+  errorMessage, handleCancel, currentSwap, secondsUntilPriceExpiry, totalTxFee,
   handleTimerEnd, handleSubmit, invalid, submitting, modal, termsAccepted, singleSwap,
 }) => {
   const Wrapper = modal ? Modal : RenderChildren
@@ -63,16 +56,16 @@ const SwapSubmitModal = ({
             )}
             <div className='my-3'>
               <Row className='gutter-2'>
-                {swundle.swaps.map((swap) => (
+                {swaps.map((swap) => (
                   <Col xs='12' key={swap.id}>
                     <SwapStatusCard swap={swap} showShortStatus expanded={singleSwap ? true : null}/>
                   </Col>
                 ))}
               </Row>
             </div>
-            {!singleSwap && (
-              <p>Total network fee: {swundle.totalTxFee
-                ? display.fiat(swundle.totalTxFee)
+            {totalTxFee && (
+              <p>Total network fee: {totalTxFee
+                ? display.fiat(totalTxFee)
                 : <Spinner inline size='sm'/>}
               </p>
             )}
@@ -84,14 +77,16 @@ const SwapSubmitModal = ({
             + 'the asset being sent and the wallet you\'re using.'}
             </small></p>
             {!termsAccepted && (
-              <Checkbox
-                label={
-                  <small className='pl-1 text-white'>I accept the 
-                    <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'> Faast Terms & Conditions</a>
-                  </small>
-                }
-                labelClass='p-0'
-              />
+              <div className='mb-3'>
+                <Checkbox
+                  label={
+                    <small className='pl-1 text-white'>I accept the 
+                      <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'> Faast Terms & Conditions</a>
+                    </small>
+                  }
+                  labelClass='p-0'
+                />
+              </div>
             )}
           </Body>
           <Footer>
@@ -110,78 +105,60 @@ const SwapSubmitModal = ({
   )}
 
 export default compose(
-  setDisplayName('SwapSubmitModal'),
+  setDisplayName('SwapSubmit'),
   setPropTypes({
+    swap: PropTypes.oneOfType([
+      PropTypes.object,
+      PropTypes.arrayOf(PropTypes.object)
+    ]),
+    requiresSigning: PropTypes.bool.isRequired,
+    readyToSign: PropTypes.bool.isRequired,
+    readyToSend: PropTypes.bool.isRequired,
+    startedSigning: PropTypes.bool.isRequired,
+    startedSending: PropTypes.bool.isRequired,
+    onSign: PropTypes.func.isRequired,
+    onSend: PropTypes.func.isRequired,
+    onCancel: PropTypes.func,
     modal: PropTypes.bool,
     termsAccepted: PropTypes.bool,
-    singleSwap: PropTypes.bool,
   }),
   defaultProps({
+    onCancel: () => undefined,
     modal: false,
     termsAccepted: false,
-    singleSwap: false,
   }),
   connect(createStructuredSelector({
-    swundle: getCurrentSwundle,
-    requiresSigning: doesCurrentSwundleRequireSigning,
-    readyToSign: isCurrentSwundleReadyToSign,
-    readyToSend: isCurrentSwundleReadyToSend,
-    startedSigning: isCurrentSwundleSigning,
-    startedSending: isCurrentSwundleSending,
     isOpen: ({ orderModal: { show } }) => show,
   }), {
     toggle: toggleOrderModal,
-    removeSwundle,
-    signSwundle,
-    sendSwundle,
     routerPush: push,
     refreshSwap,
   }),
-  withHandlers({
-    handleCancel: ({ swundle, toggle, removeSwundle }) => () => {
-      Trezor.close()
-      toggle()
-      removeSwundle(swundle)
-    },
-    handleSignTxs: ({ swundle, signSwundle }) => () => {
-      signSwundle(swundle)
-        .then(() => Trezor.close())
-        .catch((e) => {
-          toastr.error(e.message || e)
-          log.error(e)
-          Trezor.close()
-        })
-    },
-    handleSendTxs: ({ swundle, sendSwundle, toggle, routerPush }) => () => {
-      sendSwundle(swundle)
-        .then((updatedSwundle) => {
-          if (updatedSwundle.swaps.every((swap) => swap.tx.sent)) {
-            toggle()
-            routerPush(routes.tradeHistory())
-          }
-        })
-        .catch((e) => {
-          toastr.error(e.message || e)
-          log.error(e)
-        })
-    }
-  }),
   branch(
-    ({ swundle }) => !swundle,
+    ({ swap }) => !swap,
     renderNothing
   ),
-  withProps(({ swundle, requiresSigning, readyToSign, readyToSend, startedSigning, startedSending, singleSwap }) => {
-    let errorMessage = swundle.error
-    const soonestPriceExpiry = min(swundle.swaps.map(swap => swap.rateLockedUntil))
+  withProps(({ swap, requiresSigning, readyToSign, readyToSend, startedSigning, startedSending }) => {
+    let singleSwap = false
+    let swaps = swap
+    if (!Array.isArray(swap)) {
+      singleSwap = true
+      swaps = [swap]
+    }
+    let errorMessage = (swaps.find(({ error }) => error) || {}).error
+    const soonestPriceExpiry = min(swaps.map(swap => swap.rateLockedUntil))
     const secondsUntilPriceExpiry = (Date.parse(soonestPriceExpiry) - Date.now()) / 1000
-    const currentSwap = swundle.swaps.find(({ txSigning, txSending, sendWallet }) =>
+    const currentSwap = swaps.find(({ txSigning, txSending, sendWallet }) =>
       txSigning || (txSending && sendWallet && !sendWallet.isSignTxSupported))
     const showSubmit = !requiresSigning || startedSigning // True if continue button triggers tx sending, false for signing
     const continueDisabled = showSubmit ? (!readyToSend || startedSending) : (!readyToSign || startedSigning)
     const continueLoading = showSubmit ? startedSending : startedSigning
     const continueText = showSubmit ? (singleSwap ? 'Submit' : 'Submit all') : 'Begin signing'
     const headerText = showSubmit ? 'Confirm and Submit' : 'Review and Sign'
+    console.log({ readyToSend, startedSending, requiresSigning })
     return {
+      swaps,
+      singleSwap,
       errorMessage,
       showSubmit,
       soonestPriceExpiry,
@@ -190,16 +167,51 @@ export default compose(
       continueDisabled,
       continueLoading,
       continueText,
-      headerText
+      headerText,
     }
   }),
   withHandlers({
+    handleCancel: ({ swap, onCancel, toggle }) => () => {
+      onCancel(swap)
+      Trezor.close()
+      toggle()
+    },
+    handleSignTxs: ({ swap, onSign }) => () => {
+      Promise.resolve(onSign(swap))
+        .then(() => Trezor.close())
+        .catch((e) => {
+          toastr.error(e.message || e)
+          log.error(e)
+          Trezor.close()
+        })
+    },
+    handleSendTxs: ({ swap, onSend, toggle, routerPush }) => () => {
+      Promise.resolve(onSend(swap))
+        .then((updatedSwap) => {
+          if (!updatedSwap) {
+            return
+          }
+          if (Array.isArray(updatedSwap) && updatedSwap.every(({ tx }) => tx.sent)) {
+            toggle()
+            routerPush(routes.tradeHistory())
+          } else if (updatedSwap.tx.sent) {
+            toggle()
+            routerPush(routes.tradeDetail(updatedSwap.orderId))
+          }
+        })
+        .catch((e) => {
+          toastr.error(e.message || e)
+          log.error(e)
+        })
+    },
+    handleTimerEnd: ({ swaps }) => () => {
+      swaps.map(swap => refreshSwap(swap.orderId))
+    },
+  }),
+  withHandlers({
     onSubmit: ({ showSubmit, handleSendTxs, handleSignTxs }) => () => showSubmit ? handleSendTxs() : handleSignTxs(),
-    handleTimerEnd: ({ refreshSwap, swundle }) => () => {
-      swundle.swaps.map(swap => refreshSwap(swap.orderId))
-    }
   }),
   reduxForm({
     form: 'termsForm'
   })
-)(SwapSubmitModal)
+)(SwapSubmit)

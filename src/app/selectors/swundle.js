@@ -5,6 +5,7 @@ import { createItemSelector, selectItemId } from 'Utilities/selector'
 import { mapValues, dateSort } from 'Utilities/helpers'
 import { statusAllSwaps } from 'Utilities/swap'
 import { ZERO } from 'Utilities/convert'
+import { getSwapRequiresSigning, getSwapReadyToSign, getSwapReadyToSend } from 'Utilities/swap'
 
 import { getAllSwaps } from './swap'
 
@@ -55,13 +56,13 @@ export const isLatestSwundleSummaryShowing = createSelector(
 )
 
 export const doesCurrentSwundleRequireSigning = createSelector(getCurrentSwundleSwaps,
-  (swaps) => swaps.some(({ tx }) => tx && tx.signingSupported && !tx.signed))
+  (swaps) => swaps.some(getSwapRequiresSigning))
 
 export const isCurrentSwundleReadyToSign = createSelector(getCurrentSwundleSwaps,
-  (swaps) => swaps.every(({ status }) => ['sign_tx_error', 'signing_unsupported', 'unsigned'].includes(status.detailsCode)))
+  (swaps) => swaps.every(getSwapReadyToSign))
 
 export const isCurrentSwundleReadyToSend = createSelector(getCurrentSwundleSwaps,
-  (swaps) => swaps.every(({ status }) => ['send_tx_error', 'signing_unsupported', 'signed'].includes(status.detailsCode)))
+  (swaps) => swaps.every(getSwapReadyToSend))
 
 /** Returns an Array of all walletIds used by swaps in the current swundle */
 export const getCurrentSwundleWalletIds = createSelector(getCurrentSwundleSwaps, (swaps) => 

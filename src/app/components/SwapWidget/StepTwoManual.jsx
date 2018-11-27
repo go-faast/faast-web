@@ -102,29 +102,20 @@ export default compose(
     quotedRate: rate || estimatedRate,
   })),
   withHandlers({
-    checkDepositStatus: ({ push, swap }) => () => {
-      swap = swap || {}
-      const { orderStatus = '', orderId = '' } = swap
-      if (orderStatus && orderStatus !== 'awaiting deposit') {
-        push(routes.tradeDetail(orderId))
-      }
-    },
     handleTimerEnd: ({ refreshSwap, swap }) => () => {
       refreshSwap(swap.orderId)
     },
   }),
   lifecycle({
     componentDidUpdate() {
-      const { swap, minimumDeposit, checkDepositStatus, retrievePairData } = this.props
+      const { swap, minimumDeposit, retrievePairData } = this.props
       if (!minimumDeposit) {
         retrievePairData(swap.pair)
       }
-      checkDepositStatus()
     },
     componentWillMount() {
-      const { swap, checkDepositStatus, retrievePairData } = this.props
+      const { swap, retrievePairData } = this.props
       retrievePairData(swap.pair)
-      checkDepositStatus()
     }
   }),
 )(StepTwoManual)

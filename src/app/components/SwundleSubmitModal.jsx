@@ -1,10 +1,10 @@
 import { compose, setDisplayName, withProps } from 'recompose'
 
-import SwapSubmit from 'Components/SwapSubmit'
+import SwundleSubmit from 'Components/SwundleSubmit'
 
 export default compose(
-  setDisplayName('SwapSubmitModal'),
+  setDisplayName('SwundleSubmitModal'),
   withProps({
     modal: true,
   })
-)(SwapSubmit)
+)(SwundleSubmit)
