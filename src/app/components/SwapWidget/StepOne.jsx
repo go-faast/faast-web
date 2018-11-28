@@ -42,6 +42,15 @@ const FORM_NAME = 'swapWidget'
 
 const getFormValue = formValueSelector(FORM_NAME)
 
+const StepOneField = withProps(({ labelClass, inputClass, className, labelCol, inputCol }) => ({
+  labelClass: classNames('mb-sm-0 mb-lg-2 py-sm-2 p-lg-0', labelClass),
+  inputClass: classNames('flat', inputClass),
+  className: classNames('mb-2 gutter-x-3', className),
+  row: true,
+  labelCol: { xs: '12', sm: '3', md: '2', lg: '12', className: 'text-left text-sm-right text-lg-left', ...labelCol },
+  inputCol: { xs: '12', sm: true, md: true, lg: '12', ...inputCol },
+}))(ReduxFormField)
+
 const SwapStepOne = ({
   change, untouch, submitting,
   depositSymbol, receiveSymbol, supportedAssets, assetSelect, setAssetSelect, 
@@ -59,26 +68,13 @@ const SwapStepOne = ({
         </CardHeader>
         <CardBody className='pt-3'>
           <Row className='gutter-0'>
-            <Col xs='12'>
-              <h3>Select Assets</h3>
-            </Col>
-            <Col>
-              <p className='text-center'>You send</p>
-            </Col>
-            <Col xs='1'/>
-            <Col>
-              <p className='text-center'>You receive</p>
-            </Col>
-            <div className='w-100'/>
-            <Col>
-              <ReduxFormField
-                id='depositAmount'
+            <Col xs={{ size: 12, order: 1 }} lg>
+              <StepOneField
                 name='depositAmount'
                 type='number'
                 placeholder={`Send amount${sendWallet ? '' : ' (optional)'}`}
                 validate={validateDepositAmount}
-                inputClass='flat'
-                className='mb-2'
+                label='You send'
                 onChange={onChangeDepositAmount}
                 addonAppend={({ invalid }) => (
                   <InputGroupAddon addonType="append">
@@ -88,36 +84,33 @@ const SwapStepOne = ({
                     </Button>
                   </InputGroupAddon>
                 )}
+                helpText={sendWallet ? (
+                  <FormText color="muted">
+                    You have {maxSendAmountLoaded ? (
+                      <Button color='link-plain' onClick={handleSelectMax}>
+                        <Units precision={8} value={maxSendAmount}/>
+                      </Button>
+                    ) : (
+                      <i className='fa fa-spinner fa-pulse'/>
+                    )} {depositSymbol}
+                  </FormText>
+                ) : (
+                  <FormText color="muted">If omitted, a variable market rate is used.</FormText>
+                )}
               />
-              {sendWallet ? (
-                <FormText color="muted">
-                  You have {maxSendAmountLoaded ? (
-                    <Button color='link-plain' onClick={handleSelectMax}>
-                      <Units precision={8} value={maxSendAmount}/>
-                    </Button>
-                  ) : (
-                    <i className='fa fa-spinner fa-pulse'/>
-                  )} {depositSymbol}
-                </FormText>
-              ) : (
-                <FormText color="muted">If omitted, a variable market rate is used.</FormText>
-              )}
             </Col>
-            <Col xs='1' className='text-center'>
-              <Button color='ultra-dark' onClick={handleSwitchAssets}
-                className={classNames('flat', style.reverse)}>
+            <Col xs={{ size: 12, order: 3 }} lg={{ size: 1, order: 2 }} className='text-right text-lg-center'>
+              <Button color='primary' onClick={handleSwitchAssets} className={style.reverse}>
                 <SwapIcon/>
               </Button>
             </Col>
-            <Col>
-              <ReduxFormField
-                id='receiveAmount'
+            <Col xs={{ size: 12, order: 4 }} lg={{ size: true, order: 3 }}>
+              <StepOneField
                 name='receiveAmount'
                 type='number'
                 disabled
                 placeholder='Estimated receive amount'
-                inputClass='flat'
-                className='mb-2'
+                label='You receive'
                 addonAppend={({ invalid }) => (
                   <InputGroupAddon addonType="append">
                     <Button color={invalid ? 'danger' : 'dark'} size='sm' onClick={() => setAssetSelect('receive')}>
@@ -126,49 +119,43 @@ const SwapStepOne = ({
                     </Button>
                   </InputGroupAddon>
                 )}
+                helpText={(
+                  <FormText color="muted">Only an estimate. Not a guaranteed quote.</FormText>
+                )}
               />
-              <FormText color="muted">Only an estimate. Not a guaranteed quote.</FormText>
             </Col>
-            <Col xs='12'>
-              <h3 className='mt-2r'>Select Wallets</h3>
-            </Col>
-            <Col>
-              <p className='text-center'>From...</p>
-            </Col>
-            <Col xs='1'/>
-            <Col>
-              <p className='text-center'>To...</p>
-            </Col>
-            <div className='w-100'/>
-            <Col>
-              <WalletSelectField 
+            <div className='w-100 order-3'/>
+            <Col xs={{ size: 12, order: 2 }} lg={{ size: true, order: 4 }}>
+              <WalletSelectField
+                tag={StepOneField}
                 addressFieldName='refundAddress'
                 walletIdFieldName='sendWalletId'
                 placeholder={`${depositSymbol} return address (optional)`}
+                label='From wallet'
+                labelClass='mt-3 mt-sm-0 mt-lg-3'
                 validate={validateRefundAddress}
-                inputClass='flat'
-                className='mb-2'
                 symbol={depositSymbol}
                 change={change}
                 untouch={untouch}
               />
             </Col>
-            <Col xs='1'/>
-            <Col>
+            <Col lg={{ size: 1, order: 5 }}/>
+            <Col xs={{ size: 12, order: 6 }} lg>
               <WalletSelectField 
+                tag={StepOneField}
                 addressFieldName='receiveAddress'
                 walletIdFieldName='receiveWalletId'
                 placeholder={`${receiveSymbol} receive address`}
+                label='To wallet'
+                labelClass='mt-3 mt-sm-0 mt-lg-3'
                 validate={validateReceiveAddress}
-                inputClass='flat'
-                className='mb-2'
                 symbol={receiveSymbol}
                 change={change}
                 untouch={untouch}
               />
             </Col>
           </Row>
-          <div className='my-4'>
+          <div className='mt-2 mb-4'>
             <Checkbox
               label={
                 <small className='pl-1 text-white'>I accept the 

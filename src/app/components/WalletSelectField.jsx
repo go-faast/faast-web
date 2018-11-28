@@ -13,6 +13,7 @@ import classNames from 'class-names'
 
 import { sortByProperty } from 'Utilities/helpers'
 import { getWalletForAsset } from 'Utilities/wallet'
+import propTypes from 'Utilities/propTypes'
 import { getAllWalletsBasedOnSymbol } from 'Selectors/wallet'
 
 import withToggle from 'Hoc/withToggle'
@@ -20,7 +21,7 @@ import ReduxFormField from 'Components/ReduxFormField'
 import WalletLabel from 'Components/WalletLabel'
 
 const WalletSelectField = ({
-  symbol, handleSelect, dropDownStyle, dropDownText,
+  tag: Tag, symbol, handleSelect, dropDownStyle,
   toggleDropdownOpen, isDropdownOpen, connectedWallets, handleConnect,
   selectedWallet, handleSelectManual, addressFieldName, walletIdFieldName, 
   ...props,
@@ -31,9 +32,10 @@ const WalletSelectField = ({
       className={classNames('form-control', className, 'lh-0')} verticalAlign='middle'
       iconProps={{ width: '1.5em', height: '1.5em' }}/>
   )
+  const dropDownText = !selectedWallet ? 'External' : 'Wallet'
   return (
     <Fragment>
-      <ReduxFormField {...props}
+      <Tag {...props}
         name={addressFieldName}
         autoCorrect='false'
         autoCapitalize='false'
@@ -74,15 +76,15 @@ export default compose(
     walletIdFieldName: PropTypes.string.isRequired,
     change: PropTypes.func.isRequired, // change prop passed into decorated redux-form component
     untouch: PropTypes.func.isRequired, // untouch prop passed into decorated redux-form component
-    dropDownText: PropTypes.string,
     dropDownStyle: PropTypes.object,
     handleSelect: PropTypes.func,
     symbol: PropTypes.string,
+    tag: propTypes.tag,
   }),
   defaultProps({
-    dropDownText: 'Wallet',
     dropDownStyle: {},
     symbol: '',
+    tag: ReduxFormField,
   }),
   connect(createStructuredSelector({
     connectedWallets: (state, { symbol }) => getAllWalletsBasedOnSymbol(state, symbol),
