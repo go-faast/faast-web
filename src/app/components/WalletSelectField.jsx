@@ -12,7 +12,7 @@ import { push as pushAction } from 'react-router-redux'
 import classNames from 'class-names'
 
 import { getWalletForAsset } from 'Utilities/wallet'
-import { getAllWalletsBasedOnSymbol } from 'Selectors/wallet'
+import { getCurrentPortfolioWalletsForSymbol } from 'Selectors/portfolio'
 
 import withToggle from 'Hoc/withToggle'
 import ReduxFormField from 'Components/ReduxFormField'
@@ -84,7 +84,7 @@ export default compose(
     symbol: '',
   }),
   connect(createStructuredSelector({
-    connectedWallets: (state, { symbol }) => getAllWalletsBasedOnSymbol(state, symbol),
+    connectedWallets: (state, { symbol }) => getCurrentPortfolioWalletsForSymbol(state, symbol),
   }), {
     push: pushAction
   }),
