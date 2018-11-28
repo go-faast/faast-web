@@ -57,8 +57,8 @@ export const BTC = network({
   symbol: 'BTC',
   name: 'Bitcoin',
   bitcoreUrls: [
-    'https://btc.faa.st', 'btc1.trezor.io', 'btc2.trezor.io',
-    'btc3.trezor.io', 'btc4.trezor.io', 'btc5.trezor.io',
+    'https://btc.faa.st', 'https://btc1.trezor.io', 'https://btc2.trezor.io',
+    'https://btc3.trezor.io', 'https://btc4.trezor.io', 'https://btc5.trezor.io',
     'https://blockexplorer.com',
   ],
   paymentTypes: [
