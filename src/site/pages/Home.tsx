@@ -9,6 +9,7 @@ import EmailSubscriptionForm from 'Site/components/EmailSubscriptionForm'
 import IconCarousel from 'Site/components/IconCarousel'
 import Header from 'Site/components/Header'
 import Footer from 'Site/components/Footer'
+import SwapWidget from 'Site/components/SwapWidget'
 
 import TrezorWalletLogo from 'Img/wallet/trezor.png'
 import LedgerWalletLogo from 'Img/wallet/ledger.png'
@@ -56,6 +57,7 @@ export default compose<Props, {}>(
           paddingTop: '220px',
           backgroundColor: 'rgba(0,26,23)',
         }}>
+        <SwapWidget />
         <h1 className='hero-title' style={{ fontWeight: 'normal' }}>Trade Crypto</h1>
         <p className='hero-subtitle' style={{ fontWeight: 'normal', width: '90%' }}>
           It’s never been this easy to build a diversified cryptocurrency portfolio<br/>
