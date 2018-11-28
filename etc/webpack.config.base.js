@@ -90,7 +90,8 @@ module.exports = function (stage, outputPathPrefix = '') {
       resourceQuery: /worker/,
       loader: 'worker-loader',
       options: {
-        name: path.join(outputPathPrefix, bundleOutputPath, 'worker.[hash:8].js')
+        name: path.join(outputPathPrefix, bundleOutputPath, 'worker.[hash:8].js'),
+        publicPath: isDev ? '/' : null, // Web workers break on cross-origin
       }
     }, {
       exclude: /node_modules/,
