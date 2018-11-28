@@ -4,7 +4,7 @@ import {
 } from 'recompose'
 import { connect } from 'react-redux'
 import {
-  ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
+  ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Row, Col,
 } from 'reactstrap'
 import { createStructuredSelector } from 'reselect'
 import PropTypes from 'prop-types'
@@ -19,9 +19,10 @@ import { getCurrentPortfolioWalletsForSymbol } from 'Selectors/portfolio'
 import withToggle from 'Hoc/withToggle'
 import ReduxFormField from 'Components/ReduxFormField'
 import WalletLabel from 'Components/WalletLabel'
+import Units from 'Components/Units'
 
 const WalletSelectField = ({
-  tag: Tag, symbol, handleSelect, dropDownStyle,
+  tag: Tag, symbol, handleSelect, dropDownStyle, disableNoBalance, walletHasBalance, showBalances,
   toggleDropdownOpen, isDropdownOpen, connectedWallets, handleConnect,
   selectedWallet, handleSelectManual, addressFieldName, walletIdFieldName, 
   ...props,
@@ -50,8 +51,20 @@ const WalletSelectField = ({
               {connectedWallets.map((wallet) => (
                 <DropdownItem key={wallet.id}
                   onClick={() => handleSelect(wallet)}
-                  active={selectedWallet && selectedWallet.id === wallet.id}>
-                  <WalletLabel wallet={wallet}/>
+                  active={selectedWallet && selectedWallet.id === wallet.id}
+                  disabled={disableNoBalance && !walletHasBalance(wallet)}>
+                  <Row className='justify-content-between flex-nowrap gutter-x-4'>
+                    <Col xs='auto'>
+                      <WalletLabel wallet={wallet} tag='span'/>
+                    </Col>
+                    {showBalances && (
+                      <Col xs='auto'>
+                        <small>
+                          <Units symbol={symbol} value={wallet.balances[symbol] || 0} precision={4}/>
+                        </small>
+                      </Col>
+                    )}
+                  </Row>
                 </DropdownItem>
               ))}
               <DropdownItem onClick={handleSelectManual} active={!selectedWallet}>
@@ -80,11 +93,15 @@ export default compose(
     handleSelect: PropTypes.func,
     symbol: PropTypes.string,
     tag: propTypes.tag,
+    disableNoBalance: PropTypes.bool,
+    showBalances: PropTypes.bool,
   }),
   defaultProps({
     dropDownStyle: {},
     symbol: '',
     tag: ReduxFormField,
+    disableNoBalance: false,
+    showBalances: true,
   }),
   connect(createStructuredSelector({
     connectedWallets: (state, { symbol }) => getCurrentPortfolioWalletsForSymbol(state, symbol),
@@ -111,11 +128,13 @@ export default compose(
       return walletInstance.getFreshAddress(symbol)
         .then((address) => change(addressFieldName, address))
     },
+    walletHasBalance: ({ symbol }) => ({ balances }) => Boolean(balances[symbol] && balances[symbol].gt(0))
   }),
   withHandlers({
     handleSelectManual: ({ handleSelect }) => () => handleSelect(null),
-    selectDefault: ({ connectedWallets, handleSelect }) => () => {
-      const ordered = sortByProperty(connectedWallets, 'isReadOnly')
+    selectDefault: ({ disableNoBalance, walletHasBalance, connectedWallets, handleSelect }) => () => {
+      const hasBalance = disableNoBalance ? connectedWallets.filter(walletHasBalance) : connectedWallets
+      const ordered = sortByProperty(hasBalance, 'isReadOnly')
       handleSelect(ordered[0] || null) // Select first non view only wallet
     },
   }),

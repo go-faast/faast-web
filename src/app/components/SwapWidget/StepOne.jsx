@@ -88,7 +88,7 @@ const SwapStepOne = ({
                   <FormText color="muted">
                     You have {maxSendAmountLoaded ? (
                       <Button color='link-plain' onClick={handleSelectMax}>
-                        <Units precision={8} value={maxSendAmount}/>
+                        <Units precision={8} roundingType='dp' value={maxSendAmount}/>
                       </Button>
                     ) : (
                       <i className='fa fa-spinner fa-pulse'/>
@@ -137,6 +137,7 @@ const SwapStepOne = ({
                 symbol={depositSymbol}
                 change={change}
                 untouch={untouch}
+                disableNoBalance
               />
             </Col>
             <Col lg={{ size: 1, order: 5 }}/>
