@@ -1,6 +1,9 @@
 import { createSelector } from 'reselect'
 import { mapValues, dateSort } from 'Utilities/helpers'
-import { getSwapStatus, getSwapFriendlyError } from 'Utilities/swap'
+import {
+  getSwapStatus, getSwapFriendlyError, getSwapRequiresSigning,
+  getSwapReadyToSign, getSwapReadyToSend,
+} from 'Utilities/swap'
 import { createItemSelector, selectItemId } from 'Utilities/selector'
 import { toBigNumber } from 'Utilities/convert'
 import { MultiWallet } from 'Services/Wallet'
@@ -31,13 +34,15 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
       receiveWalletId = receiveWallet.id
     }
   }
+  const sendWallet = allWallets[sendWalletId]
+  const isManual = !sendWallet || sendWallet.isReadOnly
 
   swap = {
     ...swap,
     sendAmount: swap.sendAmount || swap.depositAmount,
-    isManual: !swap.sendWalletId,
+    isManual,
     isFixedPrice: Boolean(rateLockedUntil),
-    sendWallet: allWallets[sendWalletId],
+    sendWallet,
     receiveWallet,
     receiveWalletId,
     pair: `${sendSymbol}_${receiveSymbol}`.toLowerCase(),
@@ -107,3 +112,13 @@ export const getSentSwapOrderTxIds = createSelector(
     return byId
   }, {})
 )
+
+export const doesSwapRequireSigning = createSelector(getSwap, getSwapRequiresSigning)
+
+export const isSwapReadyToSign = createSelector(getSwap, getSwapReadyToSign)
+
+export const isSwapReadyToSend = createSelector(getSwap, getSwapReadyToSend)
+
+export const isSwapSigning = createSelector(getSwap, (swap) => Boolean(swap && swap.txSigning))
+
+export const isSwapSending = createSelector(getSwap, (swap) => Boolean(swap && swap.txSending))

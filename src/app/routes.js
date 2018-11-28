@@ -1,5 +1,7 @@
 import urlJoin from 'url-join'
 import { isString, ary } from 'lodash'
+import qs from 'query-string'
+
 import log from 'Utilities/log'
 
 const createPath = (...paths) => {
@@ -22,7 +24,12 @@ const createPath = (...paths) => {
         substitutedPath = substitutedPath.replace(`:${paramName}`, paramValue)
       }
     })
-    return substitutedPath
+    const queryParams = params[pathParamNames.length]
+    let query = ''
+    if (typeof queryParams === 'object' && queryParams !== null) {
+      query = '?' + qs.stringify(queryParams)
+    }
+    return substitutedPath + query
   }
   subPathParams.path = fullPath
   return subPathParams

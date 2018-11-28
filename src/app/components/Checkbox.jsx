@@ -6,14 +6,9 @@ import * as validator from 'Utilities/validator'
 
 const Checkbox = ({ validateCheckbox, label, ...props, }) => (
   <ReduxFormField
-    row
-    className='gutter-3 align-items-center ml-0'
-    id='customCheckbox'
-    name='customCheckbox'
+    className='ml-0'
     type='checkbox'
     label={label}
-    labelProps={{ xs: '12', md: '6' }}
-    inputClass='flat'
     validate={validateCheckbox}
     {...props} 
   />
@@ -22,7 +17,8 @@ const Checkbox = ({ validateCheckbox, label, ...props, }) => (
 export default compose(
   setDisplayName('Checkbox'),
   setPropTypes({
-    label: PropTypes.node
+    name: PropTypes.string.isRequired,
+    label: PropTypes.node,
   }),
   defaultProps({
     label: ''

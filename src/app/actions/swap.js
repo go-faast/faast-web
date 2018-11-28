@@ -139,7 +139,13 @@ export const createSwapTx = (swap, options) => (dispatch) => Promise.resolve().t
     })
 })
 
-export const createSwap = (swapParams) => (dispatch, getState) => {
+export const ensureSwapTxCreated = (swap, options) => (dispatch) => Promise.resolve().then(() => {
+  if (swap && !swap.txId && swap.sendWalletId) {
+    return dispatch(createSwapTx(swap, options))
+  }
+})
+
+export const createSwap = (swapParams, options) => (dispatch, getState) => {
   const swapId = (swapParams.id = swapParams.id || uuid())
   dispatch(swapAdded(swapParams))
   dispatch(swapInitStarted(swapParams.id))
@@ -150,7 +156,7 @@ export const createSwap = (swapParams) => (dispatch, getState) => {
       }
       swap.id = swapId
       if (swap.sendWalletId) {
-        return dispatch(createSwapTx(swap))
+        return dispatch(createSwapTx(swap, options))
       }
       return swap
     })
@@ -205,6 +211,7 @@ export const signSwap = (swap, passwordCache = {}) => (dispatch, getState) => Pr
     }
     return dispatch(signTx(tx, passwordCache))
   })
+  .then(() => getSwap(getState(), swap.id))
 
 export const sendSwap = (swap, sendOptions) => (dispatch, getState) => Promise.resolve()
   .then(() => {
@@ -222,6 +229,7 @@ export const sendSwap = (swap, sendOptions) => (dispatch, getState) => Promise.r
       })
   })
   .then(() => dispatch(pollOrderStatus(swap)))
+  .then(() => getSwap(getState(), swap.id))
 
 const updateOrderStatus = (swap) => (dispatch) => {
   const { id, orderId, orderStatus } = swap

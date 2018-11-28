@@ -167,11 +167,12 @@ export const downloadJson = (obj, fileName, noExtension) => {
   })
 }
 
-export const sortByProperty = (arr, prop, ...moreProps) => {
+export const sortByProperty = (arr, propOrTest, ...moreProps) => {
   let pass = []
   const fail = []
   arr.forEach((val) => {
-    if (val[prop]) {
+    const condition = typeof propOrTest === 'function' ? propOrTest(val) : val[propOrTest]
+    if (condition) {
       pass.push(val)
     } else {
       fail.push(val)
