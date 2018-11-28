@@ -1,6 +1,10 @@
 @import '~faast-ui/src/style/index.scss';
 @import 'variables';
 
+.lh-1 {
+  line-height: 1;
+}
+
 .watchlist-unselected {
   color: #d0d7df;
   transition: all .2s ease-in-out;

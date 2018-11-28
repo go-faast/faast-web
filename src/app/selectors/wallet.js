@@ -57,11 +57,6 @@ export const getLeafWalletIds = createSelector(
     .map(({ id }) => id)
 )
 
-export const getAllWalletsBasedOnSymbol = createItemSelector(
-  getAllWalletsArray,
-  selectItemId,
-  (wallets, symbol) => wallets.filter(({ id, supportedAssets, nestedWalletIds }) => id !== 'default' && supportedAssets.includes(symbol) && nestedWalletIds.length == 0))
-
 export const getWalletParents = createItemSelector(
   getAllWallets,
   selectItemId,
@@ -73,6 +68,11 @@ export const getWalletParents = createItemSelector(
 export const areWalletBalancesUpdating = createItemSelector(
   getWallet,
   ({ balancesUpdating }) => balancesUpdating
+)
+
+export const getWalletBalances = createItemSelector(
+  getWallet,
+  ({ balances }) => balances
 )
 
 export const areWalletHoldingsLoaded = createItemSelector(

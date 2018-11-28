@@ -1,6 +1,7 @@
 import { flatten } from 'lodash'
 import uuid from 'uuid/v4'
-import { toNumber } from 'Utilities/convert'
+
+import { toNumber, toBigNumber } from 'Utilities/convert'
 import { MultiWallet } from 'Services/Wallet'
 import { newScopedCreateAction, idPayload } from 'Utilities/action'
 import { getWalletForAsset } from 'Utilities/wallet'
@@ -10,6 +11,7 @@ import toastr from 'Utilities/toastrWrapper'
 
 import { createTx, signTx, sendTx, updateTxReceipt, pollTxReceipt } from 'Actions/tx'
 import { defaultPortfolioId } from 'Actions/portfolio'
+import { retrievePairData } from 'Actions/rate'
 
 import { getSwap, getTx, getWallet } from 'Selectors'
 
@@ -73,34 +75,49 @@ const getFreshAddress = (walletId, symbol) => walletId
   ? getWalletForAsset(walletId, symbol).getFreshAddress(symbol)
   : undefined
 
-export const createOrder = (swap) => (dispatch) => Promise.resolve().then(() => {
-  if (swap.error) return swap
-  const finish = dispatch(createSwapFinish('createOrder', swap))
-  const { id, sendAmount, sendSymbol, receiveSymbol, sendWalletId, receiveWalletId } = swap
-  if (!receiveWalletId && !swap.receiveAddress) {
-    throw new Error('Must specify receive wallet or receive address')
+export const createOrder = (swap) => (dispatch) => {
+  if (!swap) {
+    log.error(`Cannot create swap order for ${swap}`)
+    return
   }
-  const userId = sendWalletId ? getWalletForAsset(sendWalletId, sendSymbol).getId() : undefined
-  log.info(`Creating faast order for swap ${id}`)
-  return Promise.all([
-    swap.receiveAddress || getFreshAddress(receiveWalletId, receiveSymbol),
-    swap.refundAddress || getFreshAddress(sendWalletId, sendSymbol),
-  ]).then(([receiveAddress, refundAddress]) => Faast.createNewOrder({
-    sendSymbol,
-    receiveSymbol,
-    receiveAddress,
-    refundAddress,  // optional
-    sendAmount: sendAmount ? toNumber(sendAmount) : undefined, // optional
-    userId, // optional
-  }))
-    .then((order) => {
-      return finish(null, order)
-    })
-    .catch((e) => {
-      log.error('createOrder', e)
-      return finish(`Error creating swap for pair ${sendSymbol}->${receiveSymbol}, please contact support@faa.st`)
-    })
-})
+  const { id, sendAmount, sendSymbol, receiveSymbol, sendWalletId, receiveWalletId } = swap
+  return Promise.resolve().then(() => {
+    if (swap.error) return swap
+    const finish = dispatch(createSwapFinish('createOrder', swap))
+    return dispatch(retrievePairData(sendSymbol, receiveSymbol))
+      .then((pairData) => {
+        if (sendAmount) {
+          const minDeposit = toBigNumber(pairData.minimum_deposit)
+          if (minDeposit.gt(sendAmount)) {
+            return finish(`Send amount must be at least ${minDeposit} ${sendSymbol}`)
+          }
+        }
+        if (!receiveWalletId && !swap.receiveAddress) {
+          throw new Error('Must specify receive wallet or receive address')
+        }
+        const userId = sendWalletId ? getWalletForAsset(sendWalletId, sendSymbol).getId() : undefined
+        log.info(`Creating faast order for swap ${id}`)
+        return Promise.all([
+          swap.receiveAddress || getFreshAddress(receiveWalletId, receiveSymbol),
+          swap.refundAddress || getFreshAddress(sendWalletId, sendSymbol),
+        ]).then(([receiveAddress, refundAddress]) => Faast.createNewOrder({
+          sendSymbol,
+          receiveSymbol,
+          receiveAddress,
+          refundAddress,  // optional
+          sendAmount: sendAmount ? toNumber(sendAmount) : undefined, // optional
+          userId, // optional
+        }))
+          .then((order) => {
+            return finish(null, order)
+          })
+      })
+      .catch((e) => {
+        log.error('createOrder', e)
+        return finish(`Failed to create swap for pair ${sendSymbol}->${receiveSymbol}, please contact support@faa.st. Error: ${e.message}`)
+      })
+  })
+}
 
 export const setSwapTx = (swapId, tx, outputIndex = 0) => (dispatch) => {
   dispatch(swapUpdated(swapId, { sendAmount: tx.outputs[outputIndex].amount, txId: tx.id }))
@@ -239,11 +256,11 @@ export const pollOrderStatus = (swap) => (dispatch) => {
     return
   }
   if (isSwapFinalized(swap)) {
-    log.debug(`pollOrderStatus: swap ${id} is finalized, won't poll`)
+    // log.debug(`pollOrderStatus: swap ${id} is finalized, won't poll`)
     return
   }
   if (orderStatus === 'awaiting deposit' && (errorType === 'createSwapTx' || (tx && !tx.sent))) {
-    log.debug(`pollOrderStatus: swap ${id} has unsent tx, won't poll`)
+    // log.debug(`pollOrderStatus: swap ${id} has unsent tx, won't poll`)
     return
   }
   const orderStatusInterval = window.setInterval(() => {

@@ -54,16 +54,6 @@ export function getPaymentTypeForPath(bip44Path: string, network: NetworkConfig)
   return paymentType
 }
 
-export function isPublicPrefix(bip32Prefix: string, paymentType: PaymentType): boolean {
-  if (bip32Prefix === paymentType.bip32.publicPrefix) {
-    return true
-  }
-  if (bip32Prefix === paymentType.bip32.privatePrefix) {
-    return false
-  }
-  throw new Error(`PaymentType ${paymentType.addressEncoding} not compatible with bip32 prefix ${bip32Prefix}`)
-}
-
 export function isSegwitSupported(network: NetworkConfig): boolean {
   return Boolean(findPaymentTypeForEncoding('P2SH-P2WPKH', network))
 }
@@ -74,6 +64,18 @@ const bufferFromUInt32 = (x: number) => {
   return b
 }
 
+export function isPublicPrefix(bip32Prefix: string): boolean {
+  if (bip32Prefix === 'xpub') {
+    return true
+  }
+  if (bip32Prefix === 'xprv') {
+    return false
+  }
+  return Object.values(networks)
+    .some((network) => network.paymentTypes
+      .some((pt) => pt.bip32.publicPrefix === bip32Prefix))
+}
+
 /**
  * Converts prefix of bip32 extended public/private keys
  * Source: https://github.com/bitcoinjs/bitcoinjs-lib/issues/966
@@ -81,15 +83,13 @@ const bufferFromUInt32 = (x: number) => {
 export function convertHdKeyPaymentType(
   hdKey: string,
   newPaymentType: PaymentType,
-  network: NetworkConfig,
 ): string {
   const prefix = getHdKeyPrefix(hdKey)
   if (isPrefixForPaymentType(prefix, newPaymentType)) {
     // Key already converted to correct format
     return hdKey
   }
-  const currentPaymentType = getPaymentTypeForPrefix(prefix, network)
-  const isPublic = isPublicPrefix(prefix, currentPaymentType)
+  const isPublic = isPublicPrefix(prefix)
   const newMagicNumber = bufferFromUInt32(isPublic ? newPaymentType.bip32.public : newPaymentType.bip32.private)
   let data = b58.decode(hdKey)
   data = data.slice(4)
@@ -103,7 +103,7 @@ export function convertHdKeyAddressEncoding(
   network: NetworkConfig,
 ): string {
   const newPaymentType = getPaymentTypeForEncoding(newEncoding, network)
-  return convertHdKeyPaymentType(hdKey, newPaymentType, network)
+  return convertHdKeyPaymentType(hdKey, newPaymentType)
 }
 
 export function convertHdKeyPrefixForPath(
@@ -112,7 +112,7 @@ export function convertHdKeyPrefixForPath(
   network: NetworkConfig,
 ): string {
   const newPaymentType = getPaymentTypeForPath(bip44Path, network)
-  return convertHdKeyPaymentType(hdKey, newPaymentType, network)
+  return convertHdKeyPaymentType(hdKey, newPaymentType)
 }
 
 export const toXpub = (hdKey: string) => convertHdKeyAddressEncoding(hdKey, 'P2PKH', BTC)

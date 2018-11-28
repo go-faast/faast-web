@@ -2,7 +2,7 @@ import { newScopedCreateAction } from 'Utilities/action'
 import blockstack from 'Utilities/blockstack'
 import log from 'Utilities/log'
 import walletService, { Wallet, MultiWallet, EthereumWalletBlockstack } from 'Services/Wallet'
-import { getAllAssets, getWalletParents, areWalletBalancesUpdating } from 'Selectors'
+import { getAllAssets, getWalletParents, areWalletBalancesUpdating, getWalletBalances } from 'Selectors'
 import { getWalletIconProps } from 'Utilities/walletIcon'
 import { retry } from 'Utilities/helpers'
 
@@ -120,10 +120,6 @@ export const restoreAllWallets = () => (dispatch, getState) => Promise.resolve()
 
 export const updateWalletBalances = (walletId) => (dispatch, getState) => Promise.resolve()
   .then(() => {
-    if (areWalletBalancesUpdating(getState(), walletId)) {
-      log.debug(`Wallet balances already updating ${walletId}`)
-      return
-    }
     const walletInstance = walletService.get(walletId)
     if (!walletInstance) {
       dispatch(disownWallet(walletId))
@@ -132,6 +128,10 @@ export const updateWalletBalances = (walletId) => (dispatch, getState) => Promis
     }
     if (walletInstance instanceof MultiWallet) {
       return Promise.all(walletInstance.getWalletIds().map((nestedId) => dispatch(updateWalletBalances(nestedId))))
+    }
+    if (areWalletBalancesUpdating(getState(), walletId)) {
+      log.debug(`Wallet balances already updating ${walletId}`)
+      return getWalletBalances(getState(), walletId)
     }
     dispatch(walletBalancesUpdating(walletId))
     return retry(() => walletInstance.getAllBalances(), {
@@ -161,7 +161,7 @@ export const updateWalletBalances = (walletId) => (dispatch, getState) => Promis
           message = 'Error loading wallet balances'
         }
         dispatch(walletBalancesError(walletId, message))
-        return {}
+        return getWalletBalances(getState(), walletId)
       })
   })
 

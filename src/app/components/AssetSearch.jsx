@@ -8,6 +8,7 @@ import { Input, InputGroup, InputGroupAddon, Button, ListGroup, ListGroupItem } 
 import PropTypes from 'prop-types'
 import Fuse from 'fuse.js'
 
+import routes from 'Routes'
 import CoinIcon from 'Components/CoinIcon'
 import debounceHandler from 'Hoc/debounceHandler'
 
@@ -48,7 +49,7 @@ const AssetSearch = ({ size, placeholder,
                   onClick={resetQuery}
                   className='text-white' 
                   tag={Link} 
-                  to={`/assets/${symbol}`} 
+                  to={routes.assetDetail(symbol)} 
                   key={name}
                 >
                   <CoinIcon symbol={symbol} inline size='sm' className='m-1'/>
@@ -80,7 +81,7 @@ export default compose(
     sortBy: 'marketCap',
     displayResults: (results) => results,
     size: 'sm',
-    placeholder: 'Search coins...',
+    placeholder: 'Search assets...',
     formProps: {},
     inputProps: {},
     inputGroupProps: {},
