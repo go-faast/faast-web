@@ -82,7 +82,7 @@ const AssetDetail = ({ symbol, asset }) => {
                   <Media className='m-0 font-weight-bold' heading>
                     {name}
                   </Media>
-                  <div className='lh-1'>
+                  <div className='lh-0'>
                     <small className='text-muted'>[{symbol}]</small>
                     <WatchlistStar
                       className='ml-1 d-inline-block align-middle'
@@ -101,7 +101,7 @@ const AssetDetail = ({ symbol, asset }) => {
                 symbolSpaced={false}
                 prefixSymbol
               />
-              <div className='lh-1'>
+              <div className='lh-0'>
                 <small><ChangePercent>{change24}</ChangePercent></small>
                 <ArrowIcon
                   className={classNames('d-inline-block align-middle', { 'd-none': change24.isZero() })} 
