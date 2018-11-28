@@ -97,11 +97,11 @@ export const getSwapFriendlyError = (swap) => {
   return 'Unknown error'
 }
 
-export const getSwapRequiresSigning = (swap) => swap &&
-  swap.tx && swap.tx.signingSupported && !swap.tx.signed
+export const getSwapRequiresSigning = (swap) => Boolean(swap &&
+  swap.tx && swap.tx.signingSupported && !swap.tx.signed)
 
-export const getSwapReadyToSign = (swap) => swap &&
+export const getSwapReadyToSign = (swap) => Boolean(swap) &&
   ['sign_tx_error', 'signing_unsupported', 'unsigned'].includes(swap.status.detailsCode)
 
-export const getSwapReadyToSend = (swap) => swap &&
+export const getSwapReadyToSend = (swap) => Boolean(swap) &&
   ['send_tx_error', 'signing_unsupported', 'signed'].includes(swap.status.detailsCode)

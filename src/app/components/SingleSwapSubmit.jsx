@@ -3,7 +3,6 @@ import {
   compose, setDisplayName, setPropTypes, withHandlers,
 } from 'recompose'
 import { connect } from 'react-redux'
-import { omit } from 'lodash'
 
 import {
   isSwapReadyToSign, isSwapReadyToSend,
@@ -18,7 +17,6 @@ export default compose(
   setDisplayName('SingleSwapSubmit'),
   setPropTypes({
     swap: PropTypes.object.isRequired,
-    ...omit(SwapSubmit.propTypes, 'swap', 'onCancel', 'onSign', 'onSend'),
   }),
   connect((state, { swap }) => ({
     requiresSigning: doesSwapRequireSigning(state, swap.id),

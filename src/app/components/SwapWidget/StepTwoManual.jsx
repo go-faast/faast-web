@@ -3,8 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push as pushAction } from 'react-router-redux'
 import { compose, setDisplayName, lifecycle, setPropTypes, withHandlers, withProps } from 'recompose'
-import { Card, CardHeader, CardBody, CardFooter } from 'reactstrap'
-import classNames from 'class-names'
+import { CardHeader, CardBody, CardFooter } from 'reactstrap'
 
 import routes from 'Routes'
 
@@ -20,7 +19,7 @@ import { refreshSwap } from 'Actions/swap'
 import { getRateMinimumDeposit, getRatePrice } from 'Selectors/rate'
 import DataLayout from 'Components/DataLayout'
 
-import { container, receipt } from './style.scss'
+import style from './style.scss'
 
 /* eslint-disable react/jsx-key */
 const StepTwoManual = ({
@@ -30,7 +29,7 @@ const StepTwoManual = ({
     sendAmount, receiveAmount, orderStatus = '', refundAddress = '', isFixedPrice, sendAsset,
   },
 }) => (
-  <Card className={classNames('container justify-content-center p-0', container)}>
+  <Fragment>
     <CardHeader className='text-center'>
       <h4>
         Send {(sendAmount && sendAmount > 0)
@@ -46,7 +45,7 @@ const StepTwoManual = ({
       <ClipboardCopyField value={depositAddress}/>
     </CardBody>
     <CardFooter style={{ border: 'none', position: 'relative', wordBreak: 'break-word' }}>
-      <div className={receipt}></div>
+      <div className={style.receipt}></div>
       <p className='mt-2 text-center' style={{ letterSpacing: 5 }}>ORDER DETAILS</p>
       <DataLayout rows={[
         ['Status:', <span className='text-capitalize'>
@@ -77,7 +76,7 @@ const StepTwoManual = ({
         </small>
       </div>
     </CardFooter>
-  </Card>
+  </Fragment>
 )
 
 export default compose(

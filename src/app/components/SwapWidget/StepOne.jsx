@@ -34,7 +34,7 @@ import Units from 'Components/Units'
 
 import SwapIcon from 'Img/swap-icon.svg?inline'
 
-import { container, submitButton, reverse } from './style.scss'
+import style from './style.scss'
 
 const DEFAULT_DEPOSIT = 'BTC'
 const DEFAULT_RECEIVE = 'ETH'
@@ -53,7 +53,7 @@ const SwapStepOne = ({
   <Fragment>
     <ProgressBar steps={['Create Swap', `Send ${depositSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
     <Form onSubmit={handleSubmit}>
-      <Card className={classNames('container justify-content-center p-0', container)}>
+      <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
         <CardHeader className='text-center'>
           <h4 className='my-1'>Swap Instantly</h4>
         </CardHeader>
@@ -105,7 +105,7 @@ const SwapStepOne = ({
             </Col>
             <Col xs='1' className='text-center'>
               <Button color='ultra-dark' onClick={handleSwitchAssets}
-                className={classNames('flat', reverse)}>
+                className={classNames('flat', style.reverse)}>
                 <SwapIcon/>
               </Button>
             </Col>
@@ -178,7 +178,7 @@ const SwapStepOne = ({
               labelClass='p-0'
             />
           </div>
-          <Button className={classNames('mt-2 mb-2 mx-auto', submitButton)} color='primary' type='submit' disabled={submitting}>
+          <Button className={classNames('mt-2 mb-2 mx-auto', style.submitButton)} color='primary' type='submit' disabled={submitting}>
             {!submitting ? 'Create Swap' : 'Generating Swap...' }
           </Button>
         </CardBody>

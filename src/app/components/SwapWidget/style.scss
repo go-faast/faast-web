@@ -1,45 +1,23 @@
 .container {
     background: #1C1C1C;
-    max-width: 960px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     margin-top: 20px;
-}
-.assetAddOn {
-    span {
-        color: rgba(255, 255, 255, 0.9) !important;
-        background-color: #303030 !important;
-        border-color: #444444 !important;
-        z-index: 1;
+    margin-left: auto;
+    margin-right: auto;
+    &.stepOne {
+      max-width: 960px;
     }
-}
-.assetAddOnError {
-    span {
-        background-color: #BC1515 !important;
-        border-color: #e11919 !important;
+    &.stepTwo {
+      max-width: 640px;
     }
 }
 button {
     cursor: pointer;
 }
-.asset {
-    display: inline-block;
-    vertical-align: middle;
-    width: 216px;
-    min-height: 102px;
-    line-height: 67px;
-    p {
-        position: relative;
-        bottom: 2px;
-        height: 0px;
-        margin: 0;
-    }
-}
 .reverse {
     border: none !important;
     margin: 0;
     background: transparent !important;
-}
-.reverse {
     svg {
         fill: #565656;
     }
@@ -47,27 +25,10 @@ button {
         fill: #777;
     }
 }
-.section {
-    margin:10px auto 0 auto;
-    max-width: 550px;
-    padding: 20px 16px;
-    min-height: 156px;
-    .expnd {
-      position: absolute;
-      right: -38px;
-      top: 16px;
-    }
-    .icon {
-        color: #05B8AB;
-    }
-}
 .submitButton {
-    display:block;
-    max-width: 519px;
+    display: block;
+    max-width: 480px;
     width: 95%;
-}
-.fadedWhite {
-  color: rgba(255, 255, 255, 0.8);
 }
 .receipt {
     top: 0px;
@@ -80,20 +41,9 @@ button {
     background-repeat: repeat-x;
 }
 @media screen and (max-width: 560px) {
-    .btn {
-      display: block !important;
-      margin: 25px auto 25px auto;
-    }
     .reverse {
-      display:block;
+      display: block;
       margin: 15px auto 0 auto;
       transform: rotate(90deg)
-    }
-}
-@media screen and (max-width: 610px) {
-    .section {
-        .expnd {
-            right: -23px;
-        }
     }
 }

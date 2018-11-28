@@ -11,6 +11,7 @@ import PropTypes from 'prop-types'
 import { push as pushAction } from 'react-router-redux'
 import classNames from 'class-names'
 
+import { sortByProperty } from 'Utilities/helpers'
 import { getWalletForAsset } from 'Utilities/wallet'
 import { getAllWalletsBasedOnSymbol } from 'Selectors/wallet'
 
@@ -111,7 +112,10 @@ export default compose(
   }),
   withHandlers({
     handleSelectManual: ({ handleSelect }) => () => handleSelect(null),
-    selectDefault: ({ connectedWallets, handleSelect }) => () => handleSelect(connectedWallets[0] || null)
+    selectDefault: ({ connectedWallets, handleSelect }) => () => {
+      const ordered = sortByProperty(connectedWallets, 'isReadOnly')
+      handleSelect(ordered[0] || null) // Select first non view only wallet
+    },
   }),
   lifecycle({
     componentWillMount() {

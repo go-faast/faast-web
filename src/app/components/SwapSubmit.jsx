@@ -122,6 +122,10 @@ export default compose(
     modal: PropTypes.bool,
     termsAccepted: PropTypes.bool,
   }),
+  branch(
+    ({ swap }) => !swap,
+    renderNothing
+  ),
   defaultProps({
     onCancel: () => undefined,
     modal: false,
@@ -134,10 +138,6 @@ export default compose(
     routerPush: push,
     refreshSwap,
   }),
-  branch(
-    ({ swap }) => !swap,
-    renderNothing
-  ),
   withProps(({ swap, requiresSigning, readyToSign, readyToSend, startedSigning, startedSending }) => {
     let singleSwap = false
     let swaps = swap
@@ -155,7 +155,6 @@ export default compose(
     const continueLoading = showSubmit ? startedSending : startedSigning
     const continueText = showSubmit ? (singleSwap ? 'Submit' : 'Submit all') : 'Begin signing'
     const headerText = showSubmit ? 'Confirm and Submit' : 'Review and Sign'
-    console.log({ readyToSend, startedSending, requiresSigning })
     return {
       swaps,
       singleSwap,

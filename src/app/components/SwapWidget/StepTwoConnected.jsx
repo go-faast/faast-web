@@ -1,14 +1,13 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { compose, setDisplayName, setPropTypes, lifecycle } from 'recompose'
-import classNames from 'class-names'
-import { Card, CardHeader, CardBody } from 'reactstrap'
+import { compose, setDisplayName, setPropTypes, withHandlers, lifecycle } from 'recompose'
+import { CardHeader, CardBody } from 'reactstrap'
 import { connect } from 'react-redux'
+import { push as pushAction } from 'react-router-redux'
 
+import routes from 'Routes'
 import { ensureSwapTxCreated } from 'Actions/swap'
 import SingleSwapSubmit from 'Components/SingleSwapSubmit'
-
-import { container } from './style.scss'
 
 export default compose(
   setDisplayName('StepTwoConnected'),
@@ -17,6 +16,10 @@ export default compose(
   }),
   connect(null, {
     ensureSwapTxCreated,
+    push: pushAction,
+  }),
+  withHandlers({
+    onCancel: ({ swap, push }) => () => push(routes.swapWidget({ from: swap.sendSymbol, to: swap.receiveSymbol }))
   }),
   lifecycle({
     componentDidMount() {
@@ -24,8 +27,8 @@ export default compose(
       ensureSwapTxCreated(swap)
     }
   }),
-)(({ swap }) => (
-  <Card className={classNames('container justify-content-center p-0', container)}>
+)(({ swap, onCancel }) => (
+  <Fragment>
     <CardHeader className='text-center'>
       <h4>
         Confirm Swap Transaction
@@ -34,8 +37,8 @@ export default compose(
 
     <CardBody className='pt-1'>
       <div className='w-75 mx-auto'>
-        <SingleSwapSubmit swap={swap} termsAccepted/>
+        <SingleSwapSubmit swap={swap} termsAccepted onCancel={onCancel}/>
       </div>
     </CardBody>
-  </Card>
+  </Fragment>
 ))

@@ -7,6 +7,8 @@ import {
 } from 'recompose'
 import { createStructuredSelector } from 'reselect'
 import { push as pushAction } from 'react-router-redux'
+import classNames from 'class-names'
+import { Card } from 'reactstrap'
 
 import routes from 'Routes'
 
@@ -19,6 +21,8 @@ import Loading from 'Components/Loading'
 import StepTwoManual from './StepTwoManual'
 import StepTwoConnected from './StepTwoConnected'
 
+import style from './style'
+
 /* eslint-disable react/jsx-key */
 const SwapStepTwo = ({
   swap,
@@ -27,11 +31,14 @@ const SwapStepTwo = ({
   return (
     <Fragment>
       <ProgressBar steps={['Create Swap', `Send ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={1}/>
-      {isManual ? (
-        <StepTwoManual swap={swap}/>
-      ) : (
-        <StepTwoConnected swap={swap}/>
-      )}
+
+      <Card className={classNames('justify-content-center p-0', style.container, style.stepTwo)}>
+        {isManual ? (
+          <StepTwoManual swap={swap}/>
+        ) : (
+          <StepTwoConnected swap={swap}/>
+        )}
+      </Card>
     </Fragment>
   )
 }

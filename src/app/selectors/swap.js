@@ -34,13 +34,15 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
       receiveWalletId = receiveWallet.id
     }
   }
+  const sendWallet = allWallets[sendWalletId]
+  const isManual = !sendWallet || sendWallet.isReadOnly
 
   swap = {
     ...swap,
     sendAmount: swap.sendAmount || swap.depositAmount,
-    isManual: !swap.sendWalletId,
+    isManual,
     isFixedPrice: Boolean(rateLockedUntil),
-    sendWallet: allWallets[sendWalletId],
+    sendWallet,
     receiveWallet,
     receiveWalletId,
     pair: `${sendSymbol}_${receiveSymbol}`.toLowerCase(),
@@ -117,6 +119,6 @@ export const isSwapReadyToSign = createSelector(getSwap, getSwapReadyToSign)
 
 export const isSwapReadyToSend = createSelector(getSwap, getSwapReadyToSend)
 
-export const isSwapSigning = createSelector(getSwap, (swap) => swap && swap.txSigning)
+export const isSwapSigning = createSelector(getSwap, (swap) => Boolean(swap && swap.txSigning))
 
-export const isSwapSending = createSelector(getSwap, (swap) => swap && swap.txSending)
+export const isSwapSending = createSelector(getSwap, (swap) => Boolean(swap && swap.txSending))

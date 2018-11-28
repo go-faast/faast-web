@@ -1,9 +1,8 @@
 import {
-  compose, setDisplayName, setPropTypes, withHandlers, withProps,
+  compose, setDisplayName, withHandlers, withProps,
 } from 'recompose'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { omit } from 'lodash'
 
 import {
   getCurrentSwundle, 
@@ -17,9 +16,6 @@ import SwapSubmit from 'Components/SwapSubmit'
 
 export default compose(
   setDisplayName('SwundleSubmit'),
-  setPropTypes({
-    ...omit(SwapSubmit.propTypes, 'swap', 'onCancel', 'onSign', 'onSend'),
-  }),
   connect(createStructuredSelector({
     swundle: getCurrentSwundle,
     requiresSigning: doesCurrentSwundleRequireSigning,
