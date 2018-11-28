@@ -114,7 +114,7 @@ export const createOrder = (swap) => (dispatch) => {
       })
       .catch((e) => {
         log.error('createOrder', e)
-        return finish(`Error creating swap for pair ${sendSymbol}->${receiveSymbol}, please contact support@faa.st`)
+        return finish(`Failed to create swap for pair ${sendSymbol}->${receiveSymbol}, please contact support@faa.st. Error: ${e.message}`)
       })
   })
 }
