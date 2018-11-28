@@ -248,11 +248,11 @@ export const pollOrderStatus = (swap) => (dispatch) => {
     return
   }
   if (isSwapFinalized(swap)) {
-    log.debug(`pollOrderStatus: swap ${id} is finalized, won't poll`)
+    // log.debug(`pollOrderStatus: swap ${id} is finalized, won't poll`)
     return
   }
   if (orderStatus === 'awaiting deposit' && (errorType === 'createSwapTx' || (tx && !tx.sent))) {
-    log.debug(`pollOrderStatus: swap ${id} has unsent tx, won't poll`)
+    // log.debug(`pollOrderStatus: swap ${id} has unsent tx, won't poll`)
     return
   }
   const orderStatusInterval = window.setInterval(() => {
