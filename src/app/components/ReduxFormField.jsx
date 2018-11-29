@@ -12,17 +12,18 @@ const RenderInput = (props) => {
     label, type, placeholder, id, disabled, autoComplete, size,
     addonPrepend, addonAppend, row, className, inputClass,
     labelProps, labelClass, labelCol, inputCol, autoFocus,
-    renderInput, helpText,
+    renderInput, helpText, style,
   } = props
-  let { input: inputProps } = props
+  let { inputProps, input: reduxFormInput } = props
   const check = ['checkbox', 'radio'].includes(type)
   let { labelPosition } = props
   if (!labelPosition) {
     labelPosition = check ? 'append' : 'prepend'
   }
   const invalid = touched && (error || warning)
-  const inputId = id || (label ? `form-${formName}-${inputProps.name}` : undefined)
+  const inputId = id || (label ? `form-${formName}-${reduxFormInput.name}` : undefined)
   inputProps = {
+    ...reduxFormInput,
     ...inputProps,
     id: inputId, placeholder, type,
     disabled, autoComplete,
@@ -69,7 +70,7 @@ const RenderInput = (props) => {
   labelElement = !labelCol ? labelElement : (<Col {...labelCol}>{labelElement}</Col>)
 
   return (
-    <FormGroup className={className} row={row} check={check}>
+    <FormGroup className={className} row={row} check={check} style={style}>
       {labelPosition === 'prepend' && labelElement}
       {inputCol
         ? (<Col {...inputCol}>{inputGroupElement}</Col>)
@@ -99,6 +100,7 @@ ReduxFormField.propTypes = {
   labelPosition: PropTypes.oneOf(['prepend', 'append']),
   autoFocus: PropTypes.bool,
   renderInput: PropTypes.func,
+  inputProps: PropTypes.object,
 }
 
 export default ReduxFormField

@@ -8,7 +8,7 @@ import { compose, setDisplayName, withProps } from 'recompose'
 import Layout from 'Components/Layout'
 import AssetIndexTable from 'Components/AssetIndexTable'
 import Paginator from 'Components/Paginator'
-import AssetSearch from 'Components/AssetSearch'
+import AssetSearchBox from 'Components/AssetSearchBox'
 
 import { getAssetIndexPage, getNumberOfAssets } from 'Selectors/asset'
 
@@ -18,9 +18,7 @@ const AssetIndex = ({ assets, currentPage, numberOfAssets }) => {
       <h4 className='pt-4 mb-0 text-primary d-inline-block float-left'>All Assets
         {currentPage > 1 ? (<span> - Page {currentPage}</span>) : null}
       </h4>
-      <AssetSearch 
-        inputGroupProps={{ style: { width: '100%', maxWidth: '300px' }, className: 'pl-3 pl-md-0 my-3 float-left float-sm-right' }}
-      />
+      <AssetSearchBox className='pl-3 pl-md-0 my-3 float-left float-sm-right'/>
       <AssetIndexTable assets={assets}/>
       <Paginator page={currentPage} pages={Math.ceil(numberOfAssets / 50)}/>
     </Layout>

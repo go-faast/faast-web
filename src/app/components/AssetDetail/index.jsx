@@ -18,7 +18,7 @@ import CoinIcon from 'Components/CoinIcon'
 import Units from 'Components/Units'
 import ChangePercent from 'Components/ChangePercent'
 import ArrowIcon from 'Components/ArrowIcon'
-import AssetSearch from 'Components/AssetSearch'
+import AssetSearchBox from 'Components/AssetSearchBox'
 import WatchlistStar from 'Components/WatchlistStar'
 
 const getQuery = ({ match }) => match.params.symbol
@@ -59,9 +59,7 @@ const AssetDetail = ({ symbol, asset }) => {
   )
   return (
     <Layout className='pt-3 p-0 p-sm-3'>
-      <AssetSearch 
-        inputGroupProps={{ style: { width: '100%', maxWidth: '300px' }, className: 'mx-3 mx-sm-0 mb-3 ml-md-auto' }}
-      />
+      <AssetSearchBox className='mx-3 mx-sm-0 mb-3 ml-md-auto'/>
       <div className='m-3 mx-sm-0 d-lg-none'>
         {buySellButtons}
       </div>
