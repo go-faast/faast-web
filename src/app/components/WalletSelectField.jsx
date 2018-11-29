@@ -4,7 +4,7 @@ import {
 } from 'recompose'
 import { connect } from 'react-redux'
 import {
-  ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem, Row, Col,
+  ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap'
 import { createStructuredSelector } from 'reselect'
 import PropTypes from 'prop-types'
@@ -19,7 +19,6 @@ import { getCurrentPortfolioWalletsForSymbol, areCurrentPortfolioBalancesLoaded 
 import withToggle from 'Hoc/withToggle'
 import ReduxFormField from 'Components/ReduxFormField'
 import WalletLabel from 'Components/WalletLabel'
-import Units from 'Components/Units'
 
 const WalletSelectField = ({
   tag: Tag, symbol, handleSelect, dropDownStyle, disableNoBalance, walletHasBalance, showBalances,
@@ -53,22 +52,7 @@ const WalletSelectField = ({
                   onClick={() => handleSelect(wallet)}
                   active={selectedWallet && selectedWallet.id === wallet.id}
                   disabled={disableNoBalance && !walletHasBalance(wallet)}>
-                  <Row className='justify-content-between flex-nowrap gutter-x-4'>
-                    <Col xs='auto'>
-                      <WalletLabel wallet={wallet} tag='span'/>
-                    </Col>
-                    {showBalances && (
-                      <Col xs='auto'>
-                        <small>
-                          {wallet.balancesUpdating ? (
-                            <Fragment><i className='fa fa-spinner fa-pulse'/> {symbol}</Fragment>
-                          ) : (
-                            <Units symbol={symbol} value={wallet.balances[symbol] || 0} precision={4}/>
-                          )}
-                        </small>
-                      </Col>
-                    )}
-                  </Row>
+                  <WalletLabel wallet={wallet} showBalance={showBalances && symbol}/>
                 </DropdownItem>
               ))}
               <DropdownItem onClick={handleSelectManual} active={!selectedWallet}>

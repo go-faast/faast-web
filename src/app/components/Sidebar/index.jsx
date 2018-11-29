@@ -3,11 +3,15 @@ import React, { Fragment } from 'react'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import { ListGroup, ListGroupItem, Row, Col, Card, 
-  Media, Dropdown, DropdownToggle, DropdownMenu, DropdownItem, Badge } from 'reactstrap'
+import {
+  ListGroup, ListGroupItem, Row, Col, Card, Badge, Media,
+  Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
+} from 'reactstrap'
 import { compose, setDisplayName, withState, withProps } from 'recompose'
-import { getWatchlist, getTrendingPositive, getTrendingNegative, 
-  getAllWalletsArray, getWalletWithHoldings, getCurrentPortfolioId, getCurrentWalletWithHoldings } from 'Selectors'
+import {
+  getWatchlist, getTrendingPositive, getTrendingNegative, getCurrentPortfolioWalletIds,
+  getCurrentPortfolioId, getCurrentWalletWithHoldings,
+} from 'Selectors'
 import { setCurrentPortfolioAndWallet } from 'Actions/portfolio'
 
 import ChangePercent from 'Components/ChangePercent'
@@ -15,7 +19,7 @@ import ChangeFiat from 'Components/ChangeFiat'
 import WatchlistStar from 'Components/WatchlistStar'
 import CoinIcon from 'Components/CoinIcon'
 import Icon from 'Components/Icon'
-import IconLabel from 'Components/IconLabel'
+import WalletLabel from 'Components/WalletLabel'
 import Units from 'Components/Units'
 
 import chart from 'Img/chart.svg?inline'
@@ -25,11 +29,13 @@ import classNames from 'class-names'
 
 import { sidebarLabel } from './style'
 
-const Sidebar = ({ watchlist, trendingPositive, 
-  trendingNegative, isTrendingDropDownOpen, toggleTrendingDropDownOpen, toggleDropdownOpen, isDropdownOpen, wallets, portfolioId, selectWallet, selectedWallet,
-  timeFrame, updateTimeFrame, trendingTimeFrame, updateTrendingTimeFrame, className, push, setCurrentPortfolioAndWallet }) => {
-  const { id: walletId, totalFiat, totalChange, totalFiat24hAgo, 
-    totalFiat7dAgo, totalFiat1hAgo, totalChange1h, totalChange7d, label } = selectedWallet
+const Sidebar = ({
+  watchlist, trendingPositive, currentPortfolioId, portfolioWalletIds,
+  trendingNegative, isTrendingDropDownOpen, toggleTrendingDropDownOpen, toggleDropdownOpen, isDropdownOpen, currentWallet,
+  timeFrame, updateTimeFrame, trendingTimeFrame, updateTrendingTimeFrame, className, push, setCurrentPortfolioAndWallet
+}) => {
+  const { id: currentWalletId, totalFiat, totalChange, totalFiat24hAgo, 
+    totalFiat7dAgo, totalFiat1hAgo, totalChange1h, totalChange7d, label } = currentWallet
 
   const portfolioPercentChange = timeFrame === '1d' ? totalChange : timeFrame === '7d' ? totalChange7d : totalChange1h
   const portfolioBasedOnTimeFrame = timeFrame === '1d' ? totalFiat24hAgo : timeFrame === '7d' ? totalFiat7dAgo : totalFiat1hAgo
@@ -47,18 +53,24 @@ const Sidebar = ({ watchlist, trendingPositive,
                     className='mr-2 cursor-pointer font-size-xxs' 
                     color='light'
                   >
-                    {wallets.length}
+                    {portfolioWalletIds.length}
                   </Badge>{label}</small>
                 </DropdownToggle>
                 <DropdownMenu>
-                  {wallets.map(({ label, id, iconProps, typeLabel }) => (
+                  <DropdownItem
+                    onClick={() => setCurrentPortfolioAndWallet(currentPortfolioId, currentPortfolioId)}
+                    active={currentWalletId === currentPortfolioId}
+                  >
+                    <WalletLabel.Connected id={currentPortfolioId} showBalance hideIcon/>
+                  </DropdownItem>
+                  <DropdownItem divider/>
+                  {portfolioWalletIds.map((walletId) => (
                     <DropdownItem 
-                      key={label} 
-                      onClick={() => { selectWallet(id); return setCurrentPortfolioAndWallet(portfolioId,id)}}
-                      disabled={walletId == id}
+                      key={walletId} 
+                      onClick={() => setCurrentPortfolioAndWallet(currentPortfolioId, walletId)}
+                      active={walletId === currentWalletId}
                     >
-                      <IconLabel label={label} iconProps={iconProps}/>
-                      <p className='font-xxs text-muted m-0'>{typeLabel}</p>
+                      <WalletLabel.Connected id={walletId} showBalance/>
                     </DropdownItem>
                   ))}
                 </DropdownMenu>
@@ -268,7 +280,6 @@ export default compose(
     currentWallet: getCurrentWalletWithHoldings,
   }), {
   }),
-  withState('selectedWalletId', 'selectWallet', ({ currentWallet: { id } }) => id),
   withState('timeFrame', 'updateTimeFrame', '1d'),
   withState('trendingTimeFrame', 'updateTrendingTimeFrame', '1d'),
   withProps(({ trendingTimeFrame }) => {
@@ -278,13 +289,12 @@ export default compose(
     })
   }),
   connect(createStructuredSelector({
-    selectedWallet: (state, { selectedWalletId }) => getWalletWithHoldings(state, selectedWalletId),
     trendingPositive: (state, { sortField }) => getTrendingPositive(state, { sortField }),
     trendingNegative: (state, { sortField }) => getTrendingNegative(state, { sortField }),
     watchlist: getWatchlist,
-    portfolioId: getCurrentPortfolioId,
+    currentPortfolioId: getCurrentPortfolioId,
     currentWallet: getCurrentWalletWithHoldings,
-    wallets: getAllWalletsArray,
+    portfolioWalletIds: getCurrentPortfolioWalletIds,
   }), {
     setCurrentPortfolioAndWallet: setCurrentPortfolioAndWallet,
     push: push,
