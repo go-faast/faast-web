@@ -49,7 +49,9 @@ const Balances = ({ wallet }) => {
 
   return (
     <Card>
-      {!holdingsLoaded && (<LoadingFullscreen center error={holdingsError}/>)}
+      {!holdingsLoaded && (
+        <LoadingFullscreen label='Loading balances...' error={holdingsError}/>
+      )}
       <CardHeader className='grid-group'>
         <Row className='gutter-3'>
           {stats.map(({ title, value, colClass }, i) => (

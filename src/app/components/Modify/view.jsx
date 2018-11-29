@@ -206,7 +206,9 @@ const ModifyView = (props) => {
               </Alert>
             ) : (
               <ListGroup>
-                {!holdingsLoaded && (<LoadingFullscreen center />)}
+                {!holdingsLoaded && (
+                  <LoadingFullscreen label='Loading balances...' />
+                )}
                 {renderAssetRows(assetHoldings.filter(({ shown }) => shown))}
                 <ListGroupButton action onClick={() => props.showAssetList(id, 'bottom')} className='text-center text-success'>
                   <i className='fa fa-plus fa-2x align-middle' />
