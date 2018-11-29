@@ -23,6 +23,7 @@ import { openViewOnlyWallet } from 'Actions/access'
 import { getRateMinimumDeposit, getRatePrice, isRateLoaded } from 'Selectors/rate'
 import { getAllAssetsArray, getAsset } from 'Selectors/asset'
 import { getWallet } from 'Selectors/wallet'
+import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
 
 import ReduxFormField from 'Components/ReduxFormField'
 import Checkbox from 'Components/Checkbox'
@@ -31,6 +32,7 @@ import AssetSelector from 'Components/AssetSelector'
 import ProgressBar from 'Components/ProgressBar'
 import WalletSelectField from 'Components/WalletSelectField'
 import Units from 'Components/Units'
+import LoadingFullscreen from 'Components/LoadingFullscreen'
 
 import SwapIcon from 'Img/swap-icon.svg?inline'
 
@@ -52,7 +54,7 @@ const StepOneField = withProps(({ labelClass, inputClass, className, labelCol, i
 }))(ReduxFormField)
 
 const SwapStepOne = ({
-  change, untouch, submitting,
+  change, untouch, submitting, balancesLoaded,
   depositSymbol, receiveSymbol, supportedAssets, assetSelect, setAssetSelect, 
   validateReceiveAddress, validateRefundAddress, validateDepositAmount,
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
@@ -63,6 +65,9 @@ const SwapStepOne = ({
     <ProgressBar steps={['Create Swap', `Send ${depositSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
     <Form onSubmit={handleSubmit}>
       <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
+        {!balancesLoaded && (
+          <LoadingFullscreen label='Loading balances...'/>
+        )}
         <CardHeader className='text-center'>
           <h4 className='my-1'>Swap Instantly</h4>
         </CardHeader>
@@ -211,6 +216,7 @@ export default compose(
     receiveAsset: (state, { receiveSymbol }) => getAsset(state, receiveSymbol),
     depositAmount: (state) => getFormValue(state, 'depositAmount'),
     sendWallet: (state) => getWallet(state, getFormValue(state, 'sendWalletId')),
+    balancesLoaded: areCurrentPortfolioBalancesLoaded,
   }), {
     createSwap: createSwapAction,
     push: pushAction,

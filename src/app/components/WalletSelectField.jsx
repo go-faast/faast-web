@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import {
-  compose, setDisplayName, setPropTypes, defaultProps, withHandlers, withState, lifecycle,
+  compose, setDisplayName, setPropTypes, defaultProps, withHandlers, withState, lifecycle, withProps,
 } from 'recompose'
 import { connect } from 'react-redux'
 import {
@@ -14,7 +14,7 @@ import classNames from 'class-names'
 import { sortByProperty } from 'Utilities/helpers'
 import { getWalletForAsset } from 'Utilities/wallet'
 import propTypes from 'Utilities/propTypes'
-import { getCurrentPortfolioWalletsForSymbol } from 'Selectors/portfolio'
+import { getCurrentPortfolioWalletsForSymbol, areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
 
 import withToggle from 'Hoc/withToggle'
 import ReduxFormField from 'Components/ReduxFormField'
@@ -60,7 +60,11 @@ const WalletSelectField = ({
                     {showBalances && (
                       <Col xs='auto'>
                         <small>
-                          <Units symbol={symbol} value={wallet.balances[symbol] || 0} precision={4}/>
+                          {wallet.balancesUpdating ? (
+                            <Fragment><i className='fa fa-spinner fa-pulse'/> {symbol}</Fragment>
+                          ) : (
+                            <Units symbol={symbol} value={wallet.balances[symbol] || 0} precision={4}/>
+                          )}
                         </small>
                       </Col>
                     )}
@@ -105,6 +109,7 @@ export default compose(
   }),
   connect(createStructuredSelector({
     connectedWallets: (state, { symbol }) => getCurrentPortfolioWalletsForSymbol(state, symbol),
+    balancesLoaded: areCurrentPortfolioBalancesLoaded,
   }), {
     push: pushAction
   }),
@@ -130,11 +135,13 @@ export default compose(
     },
     walletHasBalance: ({ symbol }) => ({ balances }) => Boolean(balances[symbol] && balances[symbol].gt(0))
   }),
+  withProps(({ connectedWallets, disableNoBalance, walletHasBalance }) => ({
+    selectableWallets: disableNoBalance ? connectedWallets.filter(walletHasBalance) : connectedWallets
+  })),
   withHandlers({
     handleSelectManual: ({ handleSelect }) => () => handleSelect(null),
-    selectDefault: ({ disableNoBalance, walletHasBalance, connectedWallets, handleSelect }) => () => {
-      const hasBalance = disableNoBalance ? connectedWallets.filter(walletHasBalance) : connectedWallets
-      const ordered = sortByProperty(hasBalance, 'isReadOnly')
+    selectDefault: ({ selectableWallets, handleSelect }) => () => {
+      const ordered = sortByProperty(selectableWallets, 'isReadOnly')
       handleSelect(ordered[0] || null) // Select first non view only wallet
     },
   }),
@@ -143,8 +150,9 @@ export default compose(
       this.props.selectDefault()
     },
     componentDidUpdate(prevProps) {
-      const { symbol, selectedWallet, connectedWallets, selectDefault } = this.props
-      if (prevProps.symbol !== symbol && !connectedWallets.includes(selectedWallet)) {
+      const { symbol, selectedWallet, selectableWallets, selectDefault, balancesLoaded } = this.props
+      if ((prevProps.symbol !== symbol && !selectableWallets.includes(selectedWallet))
+        || (!selectedWallet && !prevProps.balancesLoaded && balancesLoaded)) {
         selectDefault()
       }
     }
