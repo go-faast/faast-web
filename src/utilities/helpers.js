@@ -4,6 +4,7 @@ import { mergeWith, union, without, omit, identity } from 'lodash'
 import sha256 from 'hash.js/lib/hash/sha/256'
 import baseX from 'base-x'
 import urlJoin from 'url-join'
+import { toBigNumber } from './numbers'
 
 export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -37,6 +38,9 @@ const getDate = (item, dateField) => {
 
 export const dateSort = (items, dir, dateField) => items
   .sort((a, b) => (dir === 'desc' ? -1 : 1) * (getDate(a, dateField) - getDate(b, dateField)))
+
+export const numericalSort = (items, dir, field) => items
+  .sort((a, b) => (dir === 'desc' ? -1 : 1) * (toBigNumber(a[field]).comparedTo(toBigNumber(b[field]))))
 
 export const bs62 = baseX('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
 
