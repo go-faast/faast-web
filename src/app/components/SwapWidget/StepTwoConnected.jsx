@@ -36,9 +36,7 @@ export default compose(
     </CardHeader>
 
     <CardBody className='pt-1'>
-      <div className='w-75 mx-auto'>
-        <SingleSwapSubmit swap={swap} termsAccepted onCancel={onCancel}/>
-      </div>
+      <SingleSwapSubmit swap={swap} termsAccepted onCancel={onCancel}/>
     </CardBody>
   </Fragment>
 ))
