@@ -225,8 +225,8 @@ const Sidebar = ({
                 <div style={{ borderTop: '1px dashed #292929' }} className='p-0 text-center'>
                   {trendingNegative.map((asset, i) => {
                     const { symbol, price, change24, change7d, change1, price24hAgo, price7dAgo, price1hAgo } = asset
-                    const percentChange = timeFrame === '1d' ? change24 : timeFrame === '7d' ? change7d : change1
-                    const priceChangeBasedOnTime = timeFrame === '1d' ? price24hAgo : timeFrame === '7d' ? price7dAgo : price1hAgo
+                    const percentChange = trendingTimeFrame === '1d' ? change24 : trendingTimeFrame === '7d' ? change7d : change1
+                    const priceChangeBasedOnTime = trendingTimeFrame === '1d' ? price24hAgo : trendingTimeFrame === '7d' ? price7dAgo : price1hAgo
                     return (
                       <Fragment key={symbol}>
                         <Media 
