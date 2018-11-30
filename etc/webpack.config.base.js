@@ -92,7 +92,9 @@ module.exports = function (stage, outputPathPrefix = '') {
       loader: 'worker-loader',
       options: {
         name: path.join(outputPathPrefix, bundleOutputPath, 'worker.[hash:8].js'),
-        publicPath: isDev ? '/' : null, // Web workers break on cross-origin
+        // Web workers break when using dev proxy because cross-origin isn't
+        // allowed. Override public path to force same origin
+        publicPath: isDev ? '/' : undefined,
       }
     }, {
       exclude: /node_modules/,
