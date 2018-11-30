@@ -16,7 +16,7 @@ import {
   EthereumWalletWeb3, EthereumWalletViewOnly
 } from 'Services/Wallet'
 
-import { getCurrentPortfolio, getWallet, isWalletAlreadyInDefaultPortfolio } from 'Selectors'
+import { getCurrentPortfolio, getWallet, isWalletAdded } from 'Selectors'
 import { addWallet, addNestedWallet, updateWalletBalances } from 'Actions/wallet'
 import { defaultPortfolioId } from 'Actions/portfolio'
 import { retrieveSwaps } from 'Actions/swap'
@@ -130,8 +130,8 @@ export const openViewOnlyWallet = (addressPromise, forwardUrl) => (dispatch, get
     address = toChecksumAddress(address)
     const wallet = new EthereumWalletViewOnly(address)
     const walletId = wallet.getId()
-    if (isWalletAlreadyInDefaultPortfolio(getState(), walletId)) {
-      log.debug(`Wallet ${walletId} already in default portfolio`)
+    if (isWalletAdded(getState(), walletId)) {
+      log.debug(`Wallet ${walletId} already added`)
       return
     }
     return dispatch(openWalletAndRedirect(wallet, forwardUrl))

@@ -57,6 +57,8 @@ export const getLeafWalletIds = createSelector(
     .map(({ id }) => id)
 )
 
+export const isWalletAdded = createItemSelector(getAllWalletIds, selectItemId, (walletIds, walletId) => walletIds.includes(walletId))
+
 export const getWalletParents = createItemSelector(
   getAllWallets,
   selectItemId,
