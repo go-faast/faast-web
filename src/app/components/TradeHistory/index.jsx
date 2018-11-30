@@ -1,22 +1,45 @@
 import React from 'react'
 import { compose, setDisplayName } from 'recompose'
-import { getConnectedWalletsSentSwaps } from 'Selectors/swap'
+import { createStructuredSelector } from 'reselect' 
 import { connect } from 'react-redux'
-import { createStructuredSelector } from 'reselect'
 
 import Layout from 'Components/Layout'
 import TradeTable from 'Components/TradeTable'
 
-const TradeHistory = ({ swaps }) => (
+import { getConnectedWalletsPendingSwaps, getConnectedWalletsCompletedSwaps } from 'Selectors'
+
+export const tableHeadings = [
+  { text: '', mobile: true },
+  { text: 'Date', mobile: false },
+  { text: 'Pair', mobile: false },
+  { text: 'Received', mobile: true },
+  { text: 'Cost', mobile: true },
+  { text: 'Rate', mobile: true }
+]
+
+const TradeHistory = ({ pendingSwaps, completedSwaps }) => (
   <Layout className='pt-3'>
     <h4 className='mt-2 text-primary'>Order History</h4>
-    <TradeTable swaps={swaps}/>
+    <TradeTable 
+      swaps={pendingSwaps} 
+      tableTitle='Open Orders' 
+      tableHeadings={tableHeadings}
+      zeroOrdersMessage='No open orders right now'
+    />
+    <TradeTable 
+      swaps={completedSwaps} 
+      tableTitle='Previous Orders' 
+      tableHeadings={tableHeadings} 
+      zeroOrdersMessage='No previous orders to show'
+    />
   </Layout>
 )
 
 export default compose(
   setDisplayName('TradeHistory'),
   connect(createStructuredSelector({
-    swaps: getConnectedWalletsSentSwaps
-  }))
+    pendingSwaps: getConnectedWalletsPendingSwaps,
+    completedSwaps: getConnectedWalletsCompletedSwaps
+  }), {
+  }),
 )(TradeHistory)

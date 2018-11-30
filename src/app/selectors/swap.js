@@ -86,10 +86,16 @@ export const getSentSwaps = createSelector(
   (allSwaps) => allSwaps.filter(({ orderStatus, tx, isManual }) => orderStatus !== 'awaiting deposit' || tx.sent || (isManual && orderStatus !== 'awaiting deposit'))
 )
 
-export const getConnectedWalletsSentSwaps = createSelector(
+export const getConnectedWalletsCompletedSwaps = createSelector(
   getSentSwaps,
   getAllWalletIds,
-  (sentSwaps, walletIds) => sentSwaps.filter(({ receiveWalletId }) => walletIds.some((id) => id === receiveWalletId))
+  (sentSwaps, walletIds) => sentSwaps.filter(({ receiveWalletId, orderStatus }) => (walletIds.some((id) => id === receiveWalletId) && orderStatus == 'complete'))
+)
+
+export const getConnectedWalletsPendingSwaps = createSelector(
+  getSentSwaps,
+  getAllWalletIds,
+  (sentSwaps, walletIds) => sentSwaps.filter(({ receiveWalletId, orderStatus }) => (walletIds.some((id) => id === receiveWalletId) && (orderStatus == 'pending' || orderStatus == 'cancelled')))
 )
 
 export const getSwap = createItemSelector(
