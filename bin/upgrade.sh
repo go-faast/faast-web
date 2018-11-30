@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 RELEASE=$(git tag -l | grep $(git describe --tags))
 
