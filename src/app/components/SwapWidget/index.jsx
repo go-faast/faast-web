@@ -1,14 +1,22 @@
 import React from 'react'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, withProps } from 'recompose'
 import Layout from 'Components/Layout'
 import * as qs from 'query-string'
 import { withRouter } from 'react-router'
 
+import { isAppBlocked } from 'Selectors'
+
+import Blocked from 'Components/Blocked'
 import SwapStepOne from './SwapStepOne'
 import SwapStepTwo from './SwapStepTwo'
 
-const SwapWidget = ({ id, to, from, receive, refund, deposit }) => (
+const SwapWidget = ({ id, to, from, receive, refund, deposit, blocked }) => (
   <Layout className='pt-3 p-0 p-sm-3'>
+    {blocked ? (
+      <Blocked/>
+    ) : null}
     {!id ? 
       (<SwapStepOne 
         receiveSymbol={to}
@@ -23,6 +31,10 @@ const SwapWidget = ({ id, to, from, receive, refund, deposit }) => (
 
 export default compose(
   setDisplayName('SwapWidget'),
+  connect(createStructuredSelector({
+    blocked: isAppBlocked,
+  }),{
+  }),
   withRouter,
   withProps(({ location }) => {
     const urlParams = qs.parse(location.search)

@@ -23,13 +23,15 @@ function getInitState (props) {
       const disabled = swapDisabled || unsupportedWallet || alreadyInPortfolio || restricted
       const disabledMessage = swapDisabled
         ? 'coming soon'
-        : restricted ? 
+        : (restricted ? 
           'unavailable in your location' : 
           (unsupportedWallet
             ? 'unsupported wallet'
             : (alreadyInPortfolio
               ? 'already added'
-              : 'unavailable'))
+              : 'unavailable')))
+
+      console.log(disabledMessage)
       return {
         ...a,
         disabled,
