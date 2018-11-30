@@ -12,7 +12,7 @@ const TEN = new BigNumber(10)
 const HUNDRED = new BigNumber(100)
 const THOUSAND = new BigNumber(1000)
 
-export { BigNumber, ZERO, ONE, TEN, HUNDRED, HUNDRED as ONE_HUNDRED, THOUSAND }
+export { BigNumber, BN, ZERO, ONE, TEN, HUNDRED, HUNDRED as ONE_HUNDRED, THOUSAND }
 
 export type Numerical = BigNumber | BN | number | string
 
