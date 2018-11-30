@@ -1,25 +1,27 @@
 #!/bin/bash
 
 RELEASE=$(git tag -l | grep $(git describe --tags))
+
+if [ -z "$RELEASE" ]; then
+  echo no release tag, just passing by
+  exit 0
+fi
+
 echo $RELEASE
 
-if [ -n "$RELEASE" ]; then
-  echo npm run release
-  npm run release $RELEASE
+echo npm run release
+npm run release $RELEASE
 
-  echo npm run release done, now triggering build on faast-swap
+echo npm run release done, now triggering build on faast-swap
 
-  curl -sL -u $BUILDUSER=:$BUILDPASSWORD -X POST \
-    -H 'Content-Type: application/json' \
-   https://api.bitbucket.org/2.0/repositories/bitaccess/faast-swap/pipelines/ \
-    -d '
-    {
-      "target": {
-        "ref_type": "branch",
-        "type": "pipeline_ref_target",
-        "ref_name": "upgrade"
-      }
-    }'
-else
-  echo no release tag, just passing by
-fi
+curl -sL -u $BUILDUSER=:$BUILDPASSWORD -X POST \
+  -H 'Content-Type: application/json' \
+  https://api.bitbucket.org/2.0/repositories/bitaccess/faast-swap/pipelines/ \
+  -d '
+  {
+    "target": {
+      "ref_type": "branch",
+      "type": "pipeline_ref_target",
+      "ref_name": "upgrade"
+    }
+  }'
