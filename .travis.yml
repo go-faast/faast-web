@@ -4,7 +4,7 @@ node_js:
 before_install:
 - npm install -g "npm@$(jq -r '.engines.npm' package.json)"
 install:
-- npm i
+- npm install --no-save
 - npm test
 after_success:
 - git fetch
