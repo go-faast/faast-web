@@ -134,9 +134,16 @@ export default compose(
       this.props.selectDefault()
     },
     componentDidUpdate(prevProps) {
-      const { symbol, selectedWallet, selectableWallets, selectDefault, balancesLoaded } = this.props
-      if ((prevProps.symbol !== symbol && !selectableWallets.includes(selectedWallet))
-        || (!selectedWallet && !prevProps.balancesLoaded && balancesLoaded)) {
+      const { symbol, selectedWallet, selectableWallets, selectDefault, handleSelect, balancesLoaded } = this.props
+      const symbolChange = prevProps.symbol !== symbol
+      if (symbolChange) {
+        if (!selectableWallets.includes(selectedWallet)) {
+          selectDefault()
+        } else {
+          // reselect current to get new address for symbol
+          handleSelect(selectedWallet)
+        }
+      } else if (!selectedWallet && !prevProps.balancesLoaded && balancesLoaded) {
         selectDefault()
       }
     }
