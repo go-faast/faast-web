@@ -1,12 +1,11 @@
 import React, { Fragment } from 'react'
+import { createStructuredSelector } from 'reselect'
 import PropTypes from 'prop-types'
 import { Card, CardHeader, CardBody
 } from 'reactstrap'
 import { connect } from 'react-redux'
 
 import { getWalletWithHoldings } from 'Selectors'
-
-import PendingOrdersTable from 'Components/TradeTable/PendingOrdersTable'
 import Address from 'Components/Address'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import PieChart from 'Components/PieChart'
@@ -44,7 +43,6 @@ const Balances = ({ wallet }) => {
           <PieChart portfolio={wallet} />
         </CardBody>
       </Card>
-      <PendingOrdersTable hideIfNone/>
     </Fragment>
   )
 }
@@ -53,8 +51,8 @@ Balances.propTypes = {
   wallet: PropTypes.object.isRequired
 }
 
-const ConnectedBalances = connect((state, { id }) => ({
-  wallet: getWalletWithHoldings(state, id)
+const ConnectedBalances = connect(createStructuredSelector({
+  wallet: (state, { id }) => getWalletWithHoldings(state, id),
 }))(Balances)
 
 ConnectedBalances.propTypes = {

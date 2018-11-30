@@ -9,10 +9,13 @@ import Balances from 'Components/Balances'
 import ShareButton from 'Components/ShareButton'
 import Sidebar from 'Components/Sidebar'
 import WalleSelector from 'Components/WalletSelector'
+import TradeTable from 'Components/TradeTable'
+import { tableHeadings } from 'Components/TradeHistory'
 
 const DashboardView = (props) => {
   const {
-    wallet, viewOnly, toggleChart, openCharts, disableRemove, handleRemove, isDefaultPortfolioEmpty
+    wallet, viewOnly, toggleChart, openCharts, disableRemove, handleRemove, isDefaultPortfolioEmpty,
+    pendingSwaps
   } = props
 
   const { label, type } = wallet
@@ -49,6 +52,14 @@ const DashboardView = (props) => {
             </Col>
             <Col xs='12'>
               <Balances wallet={wallet} toggleChart={toggleChart} openCharts={openCharts}/>
+            </Col>
+            <Col xs='12'>
+              <TradeTable 
+                tableTitle='Open Orders'
+                swaps={pendingSwaps}
+                tableHeadings={tableHeadings}
+                hideIfNone
+              />
             </Col>
           </Row>
         </Col>
