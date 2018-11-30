@@ -4,7 +4,7 @@ RELEASE=$(git tag -l | grep $(git describe --tags))
 
 if [ -z "$RELEASE" ]; then
   echo no release tag, just passing by
-  exit 1
+  exit 0
 fi
 
 echo $RELEASE
