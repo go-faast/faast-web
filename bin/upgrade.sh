@@ -9,6 +9,10 @@ fi
 
 echo $RELEASE
 
+echo doing the necessary git Config
+git config --replace-all remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
+git fetch
+
 echo npm run release
 npm run release $RELEASE
 
