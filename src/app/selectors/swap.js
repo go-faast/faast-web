@@ -119,7 +119,8 @@ export const getSentSwapOrderTxIds = createSelector(
   }, {})
 )
 
-export const doesSwapRequireSigning = createSelector(getSwap, getSwapRequiresSigning)
+export const doesSwapRequireSigning = createSelector(getSwap, (swap) =>
+  (!swap.isManual && swap.sendWallet && swap.sendWallet.isSignTxSupported) || getSwapRequiresSigning(swap))
 
 export const isSwapReadyToSign = createSelector(getSwap, getSwapReadyToSign)
 

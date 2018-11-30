@@ -22,7 +22,7 @@ export default compose(
     onCancel: ({ swap, push }) => () => push(routes.swapWidget({ from: swap.sendSymbol, to: swap.receiveSymbol }))
   }),
   lifecycle({
-    componentDidMount() {
+    componentWillMount() {
       const { swap, ensureSwapTxCreated } = this.props
       ensureSwapTxCreated(swap)
     }
