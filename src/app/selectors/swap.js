@@ -83,19 +83,30 @@ export const getAllSwapsArray = createSelector(
 
 export const getSentSwaps = createSelector(
   getAllSwapsArray,
-  (allSwaps) => allSwaps.filter(({ orderStatus, tx, isManual }) => orderStatus !== 'awaiting deposit' || tx.sent || (isManual && orderStatus !== 'awaiting deposit'))
+  (allSwaps) => allSwaps
+    .filter(({ orderStatus, tx, isManual }) =>
+      orderStatus !== 'awaiting deposit' ||
+      tx.sent ||
+      (isManual && orderStatus !== 'awaiting deposit'))
+)
+
+export const getConnectedWalletSentSwaps = createSelector(
+  getSentSwaps,
+  getAllWalletIds,
+  (sentSwaps, walletIds) => sentSwaps.filter(({ receiveWalletId, sendWalletId }) =>
+    walletIds.some((id) => id === receiveWalletId || id === sendWalletId))
 )
 
 export const getConnectedWalletsCompletedSwaps = createSelector(
-  getSentSwaps,
-  getAllWalletIds,
-  (sentSwaps, walletIds) => sentSwaps.filter(({ receiveWalletId, orderStatus }) => (walletIds.some((id) => id === receiveWalletId) && orderStatus == 'complete'))
+  getConnectedWalletSentSwaps,
+  (swaps) => swaps.filter(({ status: { code } }) =>
+    code === 'complete' || code === 'failed')
 )
 
 export const getConnectedWalletsPendingSwaps = createSelector(
-  getSentSwaps,
-  getAllWalletIds,
-  (sentSwaps, walletIds) => sentSwaps.filter(({ receiveWalletId, orderStatus }) => (walletIds.some((id) => id === receiveWalletId) && (orderStatus !== 'complete')))
+  getConnectedWalletSentSwaps,
+  (swaps) => swaps.filter(({ status: { code } }) => 
+    code === 'pending')
 )
 
 export const getSwap = createItemSelector(
@@ -119,8 +130,7 @@ export const getSentSwapOrderTxIds = createSelector(
   }, {})
 )
 
-export const doesSwapRequireSigning = createSelector(getSwap, (swap) =>
-  (!swap.isManual && swap.sendWallet && swap.sendWallet.isSignTxSupported) || getSwapRequiresSigning(swap))
+export const doesSwapRequireSigning = createSelector(getSwap, (swap) => getSwapRequiresSigning(swap))
 
 export const isSwapReadyToSign = createSelector(getSwap, getSwapReadyToSign)
 

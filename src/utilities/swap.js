@@ -98,7 +98,10 @@ export const getSwapFriendlyError = (swap) => {
 }
 
 export const getSwapRequiresSigning = (swap) => Boolean(swap &&
-  swap.tx && swap.tx.signingSupported && !swap.tx.signed)
+  !swap.isManual &&
+  swap.sendWallet &&
+  swap.sendWallet.isSignTxSupported &&
+  (swap.tx ? !swap.tx.signed : true))
 
 export const getSwapReadyToSign = (swap) => Boolean(swap) &&
   ['sign_tx_error', 'signing_unsupported', 'unsigned'].includes(swap.status.detailsCode)
