@@ -95,7 +95,7 @@ export const getConnectedWalletsCompletedSwaps = createSelector(
 export const getConnectedWalletsPendingSwaps = createSelector(
   getSentSwaps,
   getAllWalletIds,
-  (sentSwaps, walletIds) => sentSwaps.filter(({ receiveWalletId, orderStatus }) => (walletIds.some((id) => id === receiveWalletId) && (orderStatus == 'pending' || orderStatus == 'cancelled')))
+  (sentSwaps, walletIds) => sentSwaps.filter(({ receiveWalletId, orderStatus }) => (walletIds.some((id) => id === receiveWalletId) && (orderStatus !== 'complete')))
 )
 
 export const getSwap = createItemSelector(
