@@ -2,6 +2,14 @@
 
 RELEASE=$(git tag -l | grep $(git describe --tags))
 echo $RELEASE
+
+echo doing the necessary git Config
+git config --replace-all remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
+
+for branch in $(git branch -r|grep -v HEAD) ; do
+    git checkout ${branch#origin/}
+done
+
 if [ -n "$RELEASE" ]; then
   echo npm run release
   npm run release $RELEASE
