@@ -105,9 +105,9 @@ export default compose(
   setPropTypes({
     hideIfNone: PropTypes.bool,
     tableTitle: PropTypes.string,
-    tableHeadings: PropTypes.arrayOf(PropTypes.obj),
+    tableHeadings: PropTypes.arrayOf(PropTypes.object),
     zeroOrdersMessage: PropTypes.string,
-    swaps: PropTypes.arrayOf(PropTypes.obj)
+    swaps: PropTypes.arrayOf(PropTypes.object)
   }),
   defaultProps({
     tableTitle: 'Orders',
