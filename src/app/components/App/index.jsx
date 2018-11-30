@@ -36,6 +36,6 @@ export default compose(
   ready ? (
     <AppView/>
   ) : (
-    <LoadingFullscreen error={error}/>
+    <LoadingFullscreen label='Loading Faa.st...' error={error}/>
   )
 ))

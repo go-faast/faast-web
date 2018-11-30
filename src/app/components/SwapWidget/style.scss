@@ -1,142 +1,49 @@
+@import '~Styles/variables';
+
 .container {
-    background: #1C1C1C;
+  background: #1C1C1C;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+  margin-top: 20px;
+  margin-left: auto;
+  margin-right: auto;
+  &.stepOne {
     max-width: 960px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    margin-top: 20px;
-}
-.assetAddOn {
-    span {
-        color: rgba(255, 255, 255, 0.9) !important;
-        background-color: #303030 !important;
-        border-color: #444444 !important;
-        z-index: 1;
-    }
-}
-.assetAddOnError {
-    span {
-        background-color: #BC1515 !important;
-        border-color: #e11919 !important;
-    }
-}
-button {
-    cursor: pointer;
-}
-.asset {
-    display: inline-block;
-    vertical-align: middle;
-    width: 216px;
-    min-height: 102px;
-    line-height: 67px;
-    p {
-        position: relative;
-        bottom: 2px;
-        height: 0px;
-        margin: 0;
-    }
+  }
+  &.stepTwo {
+    max-width: 640px;
+  }
 }
 .reverse {
-    border: none !important;
-    margin: 0;
-    background: transparent !important;
-}
-.reverse {
-    svg {
-        fill: #565656;
-    }
-    &:hover svg {
-        fill: #777;
-    }
-}
-.section {
-    margin:10px auto 0 auto;
-    max-width: 550px;
-    padding: 20px 16px;
-    min-height: 156px;
-    .expnd {
-      position: absolute;
-      right: -38px;
-      top: 16px;
-    }
-    .icon {
-        color: #05B8AB;
-    }
+  margin: 2rem 0 0 0;
+  height: 42px;
+  box-shadow: none;
+  line-height: 0;
+  svg {
+    fill: #000;
+    width: 16px;
+    height: 16px;
+  }
 }
 .submitButton {
-    display:block;
-    max-width: 519px;
-    width: 95%;
-}
-.fadedWhite {
-  color: rgba(255, 255, 255, 0.8);
-}
-.qr {
-  position: relative;
-  display: inline-block;
-  padding: 16px;
-  background-color: white;
-}
-.scan {
-    position: absolute;
-    top: 0px;
-    left: -25%;
-    width: 150%;
-    height: 6px;
-    background: rgba(255, 36, 62, 0.5);
-    border-top: 1px solid rgba(255, 36, 62, 0.8);
-    border-bottom: 1px solid rgba(255, 36, 62, 0.8);
-    border-radius: 2px;
-    opacity: 1;
-    animation: scan 3s forwards;
-    animation-delay: 1s
+  display: block;
+  max-width: 480px;
+  width: 95%;
 }
 .receipt {
-    top: 0px;
-    position: absolute;
-    left: 0px;
-    display: block;
-    width: 100%;
-    height: 6px;
-    background: linear-gradient(-135deg, #353535 3px, transparent 0px) 0% 0% / 6px 6px repeat-x, linear-gradient(135deg, #353535 3px, transparent 0px);
-    background-repeat: repeat-x;
+  top: 0px;
+  position: absolute;
+  left: 0px;
+  display: block;
+  width: 100%;
+  height: 6px;
+  background: linear-gradient(-135deg, #353535 3px, transparent 0px) 0% 0% / 6px 6px repeat-x, linear-gradient(135deg, #353535 3px, transparent 0px);
+  background-repeat: repeat-x;
 }
-
-@keyframes scan {
-    0% {
-      top: 0px;
-      opacity:1;
+@include media-breakpoint-down(md) {
+  .reverse {
+    margin: 0 0 1rem 0;
+    svg {
+      transform: rotate(90deg);
     }
-    25% {
-      top: 170px;
-      opacity:1;
-    }
-    50% {
-      top: 0px;
-      opacity:1;
-    }
-    90% {
-      top: 170px;
-      opacity:1;
-    }
-    100% {
-      top: 170px;
-      opacity: 0;
-    }
-}
-@media screen and (max-width: 560px) {
-    .btn {
-      display: block !important;
-      margin: 25px auto 25px auto;
-    }
-    .reverse {
-      display:block;
-      margin: 15px auto 0 auto;
-      transform: rotate(90deg)
-    }
-}
-@media screen and (max-width: 610px) {
-    .section {
-        .expnd {
-            right: -23px;
-        }
-    }
+  }
 }

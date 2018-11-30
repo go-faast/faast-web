@@ -16,7 +16,7 @@ import display from 'Utilities/display'
 import Layout from 'Components/Layout'
 import Slider from 'Components/Slider'
 import AssetSelector from 'Components/AssetSelector'
-import SwapSubmitModal from 'Components/SwapSubmitModal'
+import SwundleSubmitModal from 'Components/SwundleSubmitModal'
 import Units from 'Components/Units'
 import Overlay from 'Components/Overlay'
 import ArrowIcon from 'Components/ArrowIcon'
@@ -206,7 +206,9 @@ const ModifyView = (props) => {
               </Alert>
             ) : (
               <ListGroup>
-                {!holdingsLoaded && (<LoadingFullscreen center />)}
+                {!holdingsLoaded && (
+                  <LoadingFullscreen label='Loading balances...' />
+                )}
                 {renderAssetRows(assetHoldings.filter(({ shown }) => shown))}
                 <ListGroupButton action onClick={() => props.showAssetList(id, 'bottom')} className='text-center text-success'>
                   <i className='fa fa-plus fa-2x align-middle' />
@@ -296,7 +298,7 @@ const ModifyView = (props) => {
           )}
         </ModalBody>
       </Modal>
-      <SwapSubmitModal />
+      <SwundleSubmitModal />
       <WalletPasswordPrompt />
     </Layout>
   )

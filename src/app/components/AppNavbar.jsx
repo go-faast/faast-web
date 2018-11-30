@@ -42,7 +42,7 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, toggleExpanded
           <NavItem key='coins'>
             <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/assets'>
               <i className="d-inline d-md-none d-lg-inline nav-link-icon fa fa-align-left" aria-hidden="true"></i>
-              <span className='nav-link-label d-sm-inline'>Coins</span>
+              <span className='nav-link-label d-sm-inline'>Assets</span>
             </NavLink>
           </NavItem>
           {!disablePortfolioLinks && ([

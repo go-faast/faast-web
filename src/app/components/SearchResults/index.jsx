@@ -49,7 +49,7 @@ export default compose(
 )(({ pending, error, wallet, handleViewInPortfolio, handleAddToPortfolio, isAlreadyInPortfolio }) => (
   <Layout className='pt-3'>
     {(pending || error || !wallet) ? (
-      <LoadingFullscreen center error={error}/>
+      <LoadingFullscreen label='Loading wallet...' error={error}/>
     ) : (
       <Row className='gutter-3 align-items-end'>
         <Col>

@@ -20,8 +20,10 @@ const Balances = ({ wallet }) => {
 
   return (
     <Fragment>
+      {!holdingsLoaded && (
+        <LoadingFullscreen label='Loading balances...' error={holdingsError}/>
+      )}
       <Card>
-        {!holdingsLoaded && (<LoadingFullscreen center error={holdingsError}/>)}
         <CardHeader>
           <h5>Holdings</h5>
         </CardHeader>

@@ -5,7 +5,7 @@ import { toPercentage } from 'Utilities/convert'
 
 import {
   getAllWallets, getWallet, getWalletWithHoldings,
-  getWalletHoldingsError, areWalletHoldingsLoaded
+  getWalletHoldingsError, areWalletHoldingsLoaded, areWalletBalancesLoaded,
 } from './wallet'
 
 const { defaultPortfolioId } = config
@@ -24,6 +24,7 @@ export const getAllPortfolioWalletIds = createSelector(
 
 export const getCurrentPortfolio = currySelector(getWallet, getCurrentPortfolioId)
 export const getCurrentPortfolioWithHoldings = currySelector(getWalletWithHoldings, getCurrentPortfolioId)
+export const areCurrentPortfolioBalancesLoaded = currySelector(areWalletBalancesLoaded, getCurrentPortfolioId)
 export const areCurrentPortfolioHoldingsLoaded = currySelector(areWalletHoldingsLoaded, getCurrentPortfolioId)
 export const getCurrentPortfolioHoldingsError = currySelector(getWalletHoldingsError, getCurrentPortfolioId)
 export const getCurrentPortfolioWalletIds = createSelector(getCurrentPortfolio, ({ nestedWalletIds }) => nestedWalletIds)
@@ -68,3 +69,10 @@ export const isCurrentPortfolioEmpty = currySelector(isPortfolioEmpty, getCurren
 export const isDefaultPortfolioEmpty = (state) => isPortfolioEmpty(state, 'default')
 
 export const canAddWalletsToCurrentPortfolio = createSelector(getCurrentPortfolio, ({ type }) => type === 'MultiWallet')
+
+export const getCurrentPortfolioWalletsForSymbol = createItemSelector(
+  getCurrentPortfolio,
+  (_, symbol) => symbol,
+  (portfolio, symbol) => !(portfolio && portfolio.nestedWallets)
+    ? []
+    : portfolio.nestedWallets.filter(({ supportedAssets }) => supportedAssets.includes(symbol)))
