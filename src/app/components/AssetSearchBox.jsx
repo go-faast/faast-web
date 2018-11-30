@@ -25,7 +25,11 @@ const AssetSearch = ({
   size, placeholder, buttonProps, performSearch, results, 
   dirty, reset, style, className, handleSubmit,
 }) => (
-  <Form onSubmit={handleSubmit}>
+  <Form
+    onSubmit={handleSubmit}
+    style={{ width: '100%', maxWidth: '300px', ...style }}
+    className={className}
+  >
     <ReduxFormField
       name='query'
       type='search'
@@ -34,8 +38,6 @@ const AssetSearch = ({
       spellCheck='false'
       placeholder={placeholder}
       onChange={performSearch}
-      style={{ width: '100%', maxWidth: '300px', ...style }}
-      className={className}
       addonAppend={(
         <Fragment>
           <InputGroupAddon addonType="append">
