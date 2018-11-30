@@ -58,28 +58,26 @@ const TradeTable = ({ handleClick, hideIfNone, tableTitle,
         <CardHeader>
           <h5>{tableTitle}</h5>
         </CardHeader>
-        <div className='p-2'>
-          <Table hover striped responsive className={tradeTable}>
-            <thead>
-              <tr>
-                {tableHeadings.map(({ text, mobile }) => (
-                  <th key={text} className={!mobile ? 'd-none d-sm-table-cell border-0' : 'border-0'}>{text}</th>)
-                )}
+        <Table hover striped responsive className={tradeTable}>
+          <thead>
+            <tr>
+              {tableHeadings.map(({ text, mobile }) => (
+                <th key={text} className={!mobile ? 'd-none d-sm-table-cell border-0' : 'border-0'}>{text}</th>)
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {swaps.length === 0 ? (
+              <tr className='text-center'>
+                <td colSpan='10'>
+                  <i>{zeroOrdersMessage}</i>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {swaps.length === 0 ? (
-                <tr className='text-center'>
-                  <td colSpan='10'>
-                    <i>{zeroOrdersMessage}</i>
-                  </td>
-                </tr>
-              ) : swaps.map((swap) => !swap.orderId ? null : (
-                <TableRow key={swap.orderId} swap={swap} onClick={() => handleClick(swap.orderId)}/>
-              ))}
-            </tbody>
-          </Table>
-        </div>
+            ) : swaps.map((swap) => !swap.orderId ? null : (
+              <TableRow key={swap.orderId} swap={swap} onClick={() => handleClick(swap.orderId)}/>
+            ))}
+          </tbody>
+        </Table>
       </Card>
     )}
   </Fragment>

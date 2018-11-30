@@ -27,9 +27,7 @@ const Balances = ({ wallet }) => {
         <CardHeader>
           <h5>Holdings</h5>
         </CardHeader>
-        <div className='p-2'>
-          <AssetTable assetRows={assetRows}/>
-        </div>
+        <AssetTable assetRows={assetRows}/>
       </Card>
       <Card className='mt-3'>
         <CardHeader>
