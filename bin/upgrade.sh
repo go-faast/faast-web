@@ -1,6 +1,12 @@
 #!/bin/bash
 set -e
 
+BRANCH=$(git rev-parse --abbrev-ref HEAD)
+if [ "$BRANCH" != "master" ]; then
+  echo not on master, passing by
+  exit 0
+fi
+
 RELEASE=$(git tag -l | grep $(git describe --tags))
 
 if [ -z "$RELEASE" ]; then
@@ -8,16 +14,9 @@ if [ -z "$RELEASE" ]; then
   exit 0
 fi
 
-echo $RELEASE
+echo release $RELEASE
 
-echo doing the necessary git Config
-git config --replace-all remote.origin.fetch +refs/heads/*:refs/remotes/origin/*
-git fetch
-
-echo npm run release
-npm run release $RELEASE
-
-echo npm run release done, now triggering build on faast-swap
+echo triggering build on faast-swap
 
 curl -sL -u $BUILDUSER=:$BUILDPASSWORD -X POST \
   -H 'Content-Type: application/json' \
