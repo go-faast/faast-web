@@ -1,7 +1,6 @@
 const webpack = require('webpack')
 const merge = require('webpack-merge')
 const path = require('path')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const HtmlPlugin = require('html-webpack-plugin')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const FaviconPlugin = require('favicons-webpack-plugin')
@@ -83,14 +82,6 @@ if (!isDev) {
     devtool: 'source-map',
     plugins: [
       new CleanPlugin(dirs.buildApp, { root: dirs.root, exclude: [faviconOutputPath.replace(/\/$/, '')] }),
-      new UglifyJsPlugin({
-        sourceMap: true,
-        uglifyOptions: {
-          mangle: {
-            reserved: ['BigInteger', 'ECPair', 'Point']
-          }
-        }
-      }),
       new ExtractTextPlugin({
         filename: path.join(outputPathPrefix, bundleOutputPath, '[name].[contenthash:8].css'),
         ignoreOrder: true,

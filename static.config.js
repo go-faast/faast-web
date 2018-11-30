@@ -89,7 +89,12 @@ export default {
     host: useHttps ? 'https://localhost' : 'http://localhost',
   },
   webpack: (defaultConfig, { stage }) => {
+    // Omit old version of UglifyJsPlugin because we use a newer one
+    defaultConfig.plugins = defaultConfig.plugins.filter((plugin) =>
+      plugin.constructor.name !== 'UglifyJsPlugin')
+
     const baseConfig = getBaseConfig(stage)
+
     const config = merge.strategy({
       'module.rules': 'replace',
     })(defaultConfig, baseConfig)
