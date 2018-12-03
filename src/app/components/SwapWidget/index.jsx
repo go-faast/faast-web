@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, withProps } from 'recompose'
@@ -13,20 +13,22 @@ import SwapStepOne from './SwapStepOne'
 import SwapStepTwo from './SwapStepTwo'
 
 const SwapWidget = ({ id, to, from, receive, refund, deposit, blocked }) => (
-  <Layout className='pt-3 p-0 p-sm-3'>
+  <Fragment>
     {blocked ? (
       <Blocked/>
     ) : null}
-    {!id ? 
-      (<SwapStepOne 
-        receiveSymbol={to}
-        receiveAddress={receive}
-        depositSymbol={from}
-        depositAmount={deposit}
-        refundAddress={refund}
-      />) 
-      : <SwapStepTwo orderId={id} />}
-  </Layout>
+    <Layout className='pt-3 p-0 p-sm-3'>
+      {!id ? 
+        (<SwapStepOne 
+          receiveSymbol={to}
+          receiveAddress={receive}
+          depositSymbol={from}
+          depositAmount={deposit}
+          refundAddress={refund}
+        />) 
+        : <SwapStepTwo orderId={id} />}
+    </Layout>
+  </Fragment>
 )
 
 export default compose(

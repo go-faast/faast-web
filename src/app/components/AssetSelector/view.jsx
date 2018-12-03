@@ -32,15 +32,24 @@ const AssetSearchForm = reduxForm({
 const AssetCol = ({
   asset, handleSelect
 }) => {
-  const { symbol, name, disabled, disabledMessage } = asset
+  const { symbol, name, disabled, disabledMessage, restricted } = asset
   return (
     <Col xs='4' lg='3'>
       <Button color='dark' size='sm' onClick={() => handleSelect(asset)} disabled={disabled}
         className={style.assetButton}>
         <CoinIcon symbol={symbol} size='lg' className={style.assetButtonIcon} />
         <div>{name}</div>
-        {disabled && (
+        {disabled && !restricted && (
           <div className={style.assetDisabledMessage}>{`(${disabledMessage})`}</div>
+        )}
+        {restricted && disabled && (
+          <a 
+            href='https://medium.com/faast/faast-location-restrictions-9b14e100d828' 
+            target='_blank noopener noreferrer'
+            className={style.assetDisabledMessage}
+          >
+            {`(${disabledMessage})`}
+          </a>
         )}
       </Button>
     </Col>

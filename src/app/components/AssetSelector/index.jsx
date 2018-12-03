@@ -30,10 +30,9 @@ function getInitState (props) {
             : (alreadyInPortfolio
               ? 'already added'
               : 'unavailable')))
-
-      console.log(disabledMessage)
       return {
         ...a,
+        restricted,
         disabled,
         disabledMessage,
         swapDisabled,
