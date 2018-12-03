@@ -3,19 +3,17 @@ set -e
 
 BRANCH=${TRAVIS_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
 echo branch $BRANCH
-
 if [ "$BRANCH" != "master" ]; then
   echo not on master, just passing by
   exit 0
 fi
 
 RELEASE=$(git tag -l | grep $(git describe --tags))
-echo release $RELEASE
-
 if [ -z "$RELEASE" ]; then
   echo no release tag, just passing by
   exit 0
 fi
+echo release $RELEASE
 
 echo triggering build on faast-swap
 
