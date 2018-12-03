@@ -5,7 +5,7 @@ import { appReady, appError, restrictionsUpdated, restrictionsError } from 'Acti
 export default createReducer({
   [appReady]: (state) => ({ ...state, ready: true }),
   [appError]: (state, error) => ({ ...state, error: error.message || error }),
-  [restrictionsUpdated]: (state, { blocked, restricted }) => ({ ...state, blocked: true, restricted }),
+  [restrictionsUpdated]: (state, { blocked, restricted }) => ({ ...state, blocked, restricted }),
   [restrictionsError]: (state, error) => ({ ...state, error })
 }, {
   ready: false,
