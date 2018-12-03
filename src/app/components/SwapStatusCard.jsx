@@ -102,7 +102,7 @@ export default compose(
             </Row>
           </Col>
           <Col xs='auto' className='text-center'>
-            <ArrowIcon inline size={1.5} dir='right' color='#82858D'/><br/>
+            <ArrowIcon inline size={1.5} dir='right' color={error ? 'danger' : 'success'}/><br/>
             <small className='lh-0'>{statusText}</small>
           </Col>
           <Col>
