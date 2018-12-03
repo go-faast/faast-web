@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-BRANCH=$(git rev-parse --abbrev-ref HEAD)
+BRANCH=${TRAVIS_BRANCH:-$(git rev-parse --abbrev-ref HEAD)}
 echo branch $BRANCH
 
 if [ "$BRANCH" != "master" ]; then
