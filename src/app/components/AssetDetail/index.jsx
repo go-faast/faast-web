@@ -118,7 +118,7 @@ const AssetDetail = ({ symbol, asset }) => {
                   symbol={fiat ? '$' : asset.symbol} 
                   precision={6} 
                   prefixSymbol={fiat}
-                  symbolSpaced={false}
+                  symbolSpaced={!fiat}
                   abbreviate
                 />
               </Col>
