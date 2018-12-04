@@ -7,8 +7,12 @@ import config from 'Config'
 
 const storeName = 'logging'
 
-const query = queryString.parse(window.location.search)
-const appLogLevel = query.log_level || config.logLevel
+let query = {}
+let appLogLevel = config.logLevel
+if (typeof window !== 'undefined') {
+  query = queryString.parse(window.location.search)
+  appLogLevel = query.log_level || appLogLevel
+}
 
 let idbNotReadyQueue = []
 

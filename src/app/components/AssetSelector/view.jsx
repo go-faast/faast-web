@@ -56,19 +56,19 @@ const AssetCol = ({
   )
 }
 
-const AssetSelectorView = ({ assetList, handleSearchSubmit, handleSearchChange, handleSelect }) => (
+const AssetSelectorView = ({ results, handleSearchSubmit, handleSearchChange, handleSelect }) => (
   <div>
     <AssetSearchForm onSubmit={handleSearchSubmit} handleSearchChange={handleSearchChange}/>
     <div className={style.assetButtonContainer}>
       <Row className='gutter-1'>
-        {assetList.map((a) => (<AssetCol key={a.symbol} asset={a} handleSelect={handleSelect}/>))}
+        {results.map((a) => (<AssetCol key={a.symbol} asset={a} handleSelect={handleSelect}/>))}
       </Row>
     </div>
   </div>
 )
 
 AssetSelectorView.propTypes = {
-  assetList: PropTypes.array,
+  results: PropTypes.array,
   handleSelect: PropTypes.func,
   handleSearchSubmit: PropTypes.func,
   handleSearchChange: PropTypes.func,

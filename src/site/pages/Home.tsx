@@ -7,6 +7,8 @@ import { Asset } from 'Types'
 // import logoImg from 'Img/faast-logo.png'
 import EmailSubscriptionForm from 'Site/components/EmailSubscriptionForm'
 import IconCarousel from 'Site/components/IconCarousel'
+import Header from 'Site/components/Header'
+import Footer from 'Site/components/Footer'
 
 import TrezorWalletLogo from 'Img/wallet/trezor.png'
 import LedgerWalletLogo from 'Img/wallet/ledger.png'
@@ -30,7 +32,6 @@ import MacbookScreenshot1 from 'Img/macbook-screenshot-01.png'
 import MacbookScreenshot2 from 'Img/macbook-screenshot-02.png'
 
 import BitaccessLogo from 'Img/bitaccess.svg'
-import FaastLogo64x64 from 'Img/faast-logo-64x64.png'
 
 type PrunedAsset = Pick<Asset, 'symbol' | 'name' | 'iconUrl'>
 
@@ -44,31 +45,7 @@ export default compose<Props, {}>(
 )(({ supportedAssets }: Props) => (
   <div>
     <div>
-      <nav className='navbar navbar-dark navbar-expand-md navigation-clean-button'
-        style={{ backgroundColor: 'transparent', paddingLeft: '12px' }}>
-        <div className='container'>
-          <Link exact to='/' className='navbar-brand text-white' style={{ fontWeight: 400 }}>
-            <img src={FaastLogo64x64} style={{ height: '32px', marginRight: '16px' }}/>{siteConfig.name}
-          </Link>
-          <button className='navbar-toggler' data-toggle='collapse' data-target='#navcol-1'>
-            <span className='sr-only'>Toggle navigation</span>
-            <span className='navbar-toggler-icon text-white'></span>
-          </button>
-          <div className='collapse navbar-collapse' id='navcol-1'>
-            <ul className='nav navbar-nav ml-auto'>
-              <li className='nav-item' role='presentation'>
-                <a className='nav-link text-light' href='/app/swap'>Swap</a>
-              </li>
-              <li className='nav-item' role='presentation'>
-                <a className='nav-link text-light' href='https://medium.com/faast' target='_blank' rel='noopener'>Blog</a>
-              </li>
-              <li className='nav-item' role='presentation'>
-                <a className='nav-link py-1' href='/app'><button className='btn btn-light'>Portfolio</button></a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </nav>
+      <Header/>
       <div className='jumbotron jumbotron-fluid hero-technology mb-0' style={{
           backgroundImage: `url(${MoonBackground})`,
           height: '759px',
@@ -316,51 +293,6 @@ export default compose<Props, {}>(
         <p className='text-center text-white'>Made by the team at<br/></p><img src={BitaccessLogo} style={{ marginTop: '0px' }}/>
       </a>
     </div>
-    <div className='footer-clean' style={{ backgroundColor: 'rgb(24,24,24)', paddingTop: '0px', height: '394px' }}>
-      <footer>
-        <div className='container' style={{ paddingTop: '40px' }}>
-          <div className='row no-gutters'>
-            <div className='col-6 col-sm-6 col-md-2 col-xl-2 offset-xl-1 item'>
-              <h3 style={{ fontWeight: 'normal', color: '#00d7b8' }}>Faast</h3>
-              <ul>
-                <li><a className='text-white' href='/app' target='_blank'>Portfolio</a></li>
-                <li><a className='text-white' href='/app/swap' target='_blank'>Swap</a></li>
-                <li><a className='text-white' href='https://medium.com/faast' target='_blank'>Blog</a></li>
-              </ul>
-            </div>
-            <div className='col-6 col-sm-6 col-md-2 col-xl-2 offset-md-1 offset-xl-1 item'>
-              <h3 style={{ fontWeight: 'normal', color: 'rgb(251,181,18)' }}>Bitaccess</h3>
-              <ul>
-                <li><a className='text-white' href='https://bitaccess.ca/about-us/' target='_blank'>About Us</a></li>
-                <li><a className='text-white' href='/terms' target='_blank'>Terms of use</a></li>
-                <li><a className='text-white' href='/privacy' target='_blank'>Privacy Policy</a></li>
-              </ul>
-            </div>
-            <div className='col-6 col-sm-6 col-md-2 col-xl-2 offset-md-2 offset-xl-1 item'>
-              <h3 className='text-light' style={{ fontWeight: 'normal' }}>Contact</h3>
-              <ul>
-                <li><a href='mailto:support@faa.st' style={{ color: 'rgb(255,255,255)' }}>support@faa.st</a></li>
-              </ul>
-            </div>
-            <div className='col-6 col-sm-6 col-md-2 col-xl-2 offset-md-1 offset-xl-1 item'>
-              <h3 className='text-light' style={{ fontWeight: 'normal' }}>Links</h3>
-              <ul>
-                <li><a href='https://api.faa.st/' target='_blank' style={{ color: 'rgb(255,255,255)' }}>API</a></li>
-                <li><a href='/static/faast-press-kit.zip' target='_blank' style={{ color: 'rgb(255,255,255)' }}>Press Kit</a></li>
-                <li></li>
-              </ul>
-            </div>
-            <div className='col-lg-12 col-xl-12 offset-lg-0 offset-xl-0 item social text-white' style={{ minHeight: '0px', paddingRight: '0px', paddingLeft: '0px' }}>
-              <a href='https://github.com/go-faast'><i className='icon ion-social-github'></i></a>
-              <a href='https://www.facebook.com/Faast-237787136707810' target='_blank'><i className='icon ion-social-facebook'></i></a>
-              <a href='https://twitter.com/gofaast'><i className='icon ion-social-twitter'></i></a>
-              <a href='https://slack.faa.st/' target='_blank'><i className='fab fa-slack-hash'></i></a>
-              <a href='https://www.reddit.com/r/gofaast/' target='_blank'><i className='icon ion-social-reddit'></i></a>
-              <p className='lead text-white copyright'>© {siteConfig.year} {siteConfig.author}</p>
-            </div>
-          </div>
-        </div>
-      </footer>
-    </div>
+    <Footer/>
   </div>
 ))

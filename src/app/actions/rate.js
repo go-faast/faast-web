@@ -1,7 +1,7 @@
 import { newScopedCreateAction } from 'Utilities/action'
 import log from 'Log'
 import Faast from 'Services/Faast'
-import { isRateStale, isRateLoading } from 'Selectors'
+import { getRate, isRateStale, isRateLoading } from 'Selectors'
 
 const createAction = newScopedCreateAction(__filename)
 
@@ -9,15 +9,21 @@ export const rateLoading = createAction('RATE_LOADING', (pair) => ({ pair }))
 export const rateUpdated = createAction('RATE_UPDATED', (pair, data) => ({ pair, ...data }))
 export const rateError = createAction('RATE_ERROR', (pair, error) => ({ pair, error }))
 
-export const retrievePairData = (pair) => (dispatch, getState) => {
-  pair = pair.toLowerCase()
+export const retrievePairData = (from, to) => (dispatch, getState) => Promise.resolve().then(() => {
+  if (typeof from !== 'string') {
+    throw new Error(`Cannot retrieve pair data for ${from}`)
+  }
+  let pair = from
+  if (to && !pair.includes('_')) {
+    pair = `${from}_${to}`.toLowerCase()
+  }
   if (!isRateStale(getState(), pair) || isRateLoading(getState(), pair)) {
-    return
+    return getRate(getState(), pair)
   }
   dispatch(rateLoading(pair))
   return Faast.fetchPairData(pair)
     .then((data) => { 
-      dispatch(rateUpdated(pair, data))
+      return dispatch(rateUpdated(pair, data)).payload
     })
     .catch((e) => {
       log.error(e)
@@ -25,4 +31,4 @@ export const retrievePairData = (pair) => (dispatch, getState) => {
       dispatch(rateError(pair, message))
       throw new Error(message)
     })
-}
+})

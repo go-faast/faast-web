@@ -4,6 +4,7 @@ import { mergeWith, union, without, omit, identity } from 'lodash'
 import sha256 from 'hash.js/lib/hash/sha/256'
 import baseX from 'base-x'
 import urlJoin from 'url-join'
+import { toBigNumber } from './numbers'
 
 export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
@@ -37,6 +38,9 @@ const getDate = (item, dateField) => {
 
 export const dateSort = (items, dir, dateField) => items
   .sort((a, b) => (dir === 'desc' ? -1 : 1) * (getDate(a, dateField) - getDate(b, dateField)))
+
+export const numericalSort = (items, dir, field) => items
+  .sort((a, b) => (dir === 'desc' ? -1 : 1) * (toBigNumber(a[field]).comparedTo(toBigNumber(b[field]))))
 
 export const bs62 = baseX('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ')
 
@@ -167,11 +171,12 @@ export const downloadJson = (obj, fileName, noExtension) => {
   })
 }
 
-export const sortByProperty = (arr, prop, ...moreProps) => {
+export const sortByProperty = (arr, propOrTest, ...moreProps) => {
   let pass = []
   const fail = []
   arr.forEach((val) => {
-    if (val[prop]) {
+    const condition = typeof propOrTest === 'function' ? propOrTest(val) : val[propOrTest]
+    if (condition) {
       pass.push(val)
     } else {
       fail.push(val)
@@ -357,6 +362,15 @@ export const reduceByKey = (objects, reduce, defaultValue) => {
     })
   })
   return result
+}
+
+export const moveObjectToFrontOfArray = (array, key, match) => {
+  return array = array.reduce((w, element) => {
+    if (element[key] === match) {
+      return [element, ...w];
+    }
+    return [...w, element];
+  }, []);
 }
 
 export const isIterable = (o) => o != null && typeof o[Symbol.iterator] === 'function'

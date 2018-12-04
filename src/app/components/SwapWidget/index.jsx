@@ -5,12 +5,11 @@ import { compose, setDisplayName, withProps } from 'recompose'
 import Layout from 'Components/Layout'
 import * as qs from 'query-string'
 import { withRouter } from 'react-router'
-
 import { isAppBlocked } from 'Selectors'
 
 import Blocked from 'Components/Blocked'
-import SwapStepOne from './SwapStepOne'
-import SwapStepTwo from './SwapStepTwo'
+import StepOne from './StepOne'
+import StepTwo from './StepTwo'
 
 const SwapWidget = ({ id, to, from, receive, refund, deposit, blocked }) => (
   <Fragment>
@@ -19,14 +18,14 @@ const SwapWidget = ({ id, to, from, receive, refund, deposit, blocked }) => (
     ) : null}
     <Layout className='pt-3 p-0 p-sm-3'>
       {!id ? 
-        (<SwapStepOne 
+        (<StepOne 
           receiveSymbol={to}
           receiveAddress={receive}
           depositSymbol={from}
           depositAmount={deposit}
           refundAddress={refund}
         />) 
-        : <SwapStepTwo orderId={id} />}
+        : <StepTwo orderId={id} />}
     </Layout>
   </Fragment>
 )

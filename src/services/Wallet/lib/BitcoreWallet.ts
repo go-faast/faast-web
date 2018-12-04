@@ -28,6 +28,7 @@ export default abstract class BitcoreWallet extends Wallet {
   static type = 'BitcoreWallet'
 
   assetSymbol: string
+  _obfuscatedXpub: string
   _network: NetworkConfig
   _bitcore: Bitcore
   _latestDiscoveryResult: AccountInfo
@@ -35,6 +36,7 @@ export default abstract class BitcoreWallet extends Wallet {
   constructor(network: NetworkConfig, public xpub: string, public derivationPath: string, label?: string) {
     super(deriveAddress(xpub, ID_DERIVATION_PATH, network), label)
     this.assetSymbol = network.symbol
+    this._obfuscatedXpub = ellipsize(xpub, 8, 4)
     this._network = network
     this._bitcore = getBitcore(network.symbol)
     this._latestDiscoveryResult = null
@@ -44,7 +46,7 @@ export default abstract class BitcoreWallet extends Wallet {
 
   getAccountNumber() { return Number.parseInt(this.derivationPath.match(/(\d+)'$/)[1]) + 1 }
 
-  getLabel() { return this.label || `${this._network.name} ${ellipsize(this.xpub, 8, 4)}` }
+  getLabel() { return this.label || `${this._network.name} ${this._obfuscatedXpub}` }
 
   isSingleAddress() { return false }
 
@@ -57,9 +59,10 @@ export default abstract class BitcoreWallet extends Wallet {
   }
 
   _performDiscovery() {
+    log.debug(`performing discovery for ${this.assetSymbol} account ${this._obfuscatedXpub}`)
     const discoveryPromise = this._bitcore.discoverAccount(this.xpub)
       .then((result) => {
-        log.debug(`bitcore result for ${this.assetSymbol}`, result)
+        log.debug(`bitcore discovery result for ${this.assetSymbol} account ${this._obfuscatedXpub}`, result)
         this._latestDiscoveryResult = result
         return result
       });

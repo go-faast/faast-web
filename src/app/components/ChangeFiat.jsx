@@ -4,9 +4,7 @@ import classNames from 'class-names'
 
 import Units from 'Components/Units'
 
-import { tag as tagPropType } from 'Utilities/propTypes'
 import { ZERO, BigNumber } from 'Utilities/convert'
-import display from 'Utilities/display'
 
 const ChangeFiat = ({ className, children: change }) => (
   <Units 

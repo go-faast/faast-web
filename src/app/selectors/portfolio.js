@@ -4,8 +4,8 @@ import { createItemSelector, currySelector } from 'Utilities/selector'
 import { toPercentage } from 'Utilities/convert'
 
 import {
-  getAllWallets, getWallet, getWalletWithHoldings,
-  getWalletHoldingsError, areWalletHoldingsLoaded
+  getAllWallets, getWallet, getWalletWithHoldings, getWalletNestedIds, getWalletTransitiveNestedIds,
+  getWalletHoldingsError, areWalletHoldingsLoaded, areWalletBalancesLoaded, getWalletLabel,
 } from './wallet'
 
 const { defaultPortfolioId } = config
@@ -24,10 +24,12 @@ export const getAllPortfolioWalletIds = createSelector(
 
 export const getCurrentPortfolio = currySelector(getWallet, getCurrentPortfolioId)
 export const getCurrentPortfolioWithHoldings = currySelector(getWalletWithHoldings, getCurrentPortfolioId)
+export const areCurrentPortfolioBalancesLoaded = currySelector(areWalletBalancesLoaded, getCurrentPortfolioId)
 export const areCurrentPortfolioHoldingsLoaded = currySelector(areWalletHoldingsLoaded, getCurrentPortfolioId)
 export const getCurrentPortfolioHoldingsError = currySelector(getWalletHoldingsError, getCurrentPortfolioId)
-export const getCurrentPortfolioWalletIds = createSelector(getCurrentPortfolio, ({ nestedWalletIds }) => nestedWalletIds)
-export const getCurrentPortfolioLabel = createSelector(getCurrentPortfolio, ({ label }) => label)
+export const getCurrentPortfolioWalletIds = currySelector(getWalletNestedIds, getCurrentPortfolioId)
+export const getCurrentPortfolioTransitiveWalletIds = currySelector(getWalletTransitiveNestedIds, getCurrentPortfolioId)
+export const getCurrentPortfolioLabel = currySelector(getWalletLabel, getCurrentPortfolioId)
 
 export const getCurrentPortfolioWithWalletHoldings = (state) => {
   const currentPortfolio = getCurrentPortfolioWithHoldings(state)
@@ -54,7 +56,12 @@ export const getCurrentWalletHoldingsError = currySelector(getWalletHoldingsErro
 
 export const getDefaultPortfolio = currySelector(getWallet, defaultPortfolioId)
 export const getDefaultPortfolioWithHoldings = currySelector(getWalletWithHoldings, defaultPortfolioId)
-export const getDefaultPortfolioWalletIds = createSelector(getCurrentPortfolio, ({ nestedWalletIds }) => nestedWalletIds)
+export const getDefaultPortfolioWalletIds = currySelector(getWalletNestedIds, defaultPortfolioId)
+export const getDefaultPortfolioTransitiveWalletIds = currySelector(getWalletTransitiveNestedIds, defaultPortfolioId)
+export const isWalletAlreadyInDefaultPortfolio = createSelector(
+  getDefaultPortfolioTransitiveWalletIds,
+  (_, walletId) => walletId,
+  (walletIds, walletId) => walletIds.includes(walletId))
 
 export const isPortfolioEmpty = createItemSelector(
   getWallet,
@@ -64,3 +71,10 @@ export const isCurrentPortfolioEmpty = currySelector(isPortfolioEmpty, getCurren
 export const isDefaultPortfolioEmpty = (state) => isPortfolioEmpty(state, 'default')
 
 export const canAddWalletsToCurrentPortfolio = createSelector(getCurrentPortfolio, ({ type }) => type === 'MultiWallet')
+
+export const getCurrentPortfolioWalletsForSymbol = createItemSelector(
+  getCurrentPortfolio,
+  (_, symbol) => symbol,
+  (portfolio, symbol) => !(portfolio && portfolio.nestedWallets)
+    ? []
+    : portfolio.nestedWallets.filter(({ supportedAssets }) => supportedAssets.includes(symbol)))

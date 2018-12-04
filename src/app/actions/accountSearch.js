@@ -2,15 +2,16 @@ import { isString } from 'lodash'
 import { push } from 'react-router-redux'
 
 import routes from 'Routes'
+import log from 'Log'
 
 import { newScopedCreateAction } from 'Utilities/action'
 import walletService, { EthereumWalletViewOnly } from 'Services/Wallet'
 import { isValidAddress } from 'Utilities/addressFormat'
 
-import { getWallet, getAccountSearchResultId } from 'Selectors'
+import { getWallet, getAccountSearchResultId, getCurrentPortfolio } from 'Selectors'
 import { addWallet, updateWalletBalances } from 'Actions/wallet'
 import { openWalletAndRedirect } from 'Actions/access'
-import { setCurrentWallet } from 'Actions/portfolio'
+import { setCurrentPortfolioAndWallet } from 'Actions/portfolio'
 
 const createAction = newScopedCreateAction(__filename)
 
@@ -41,7 +42,18 @@ export const searchAddress = (addressPromise) => (dispatch, getState) => Promise
 
 export const viewInPortfolio = () => (dispatch, getState) => Promise.resolve().then(() => {
   const resultId = getAccountSearchResultId(getState())
-  dispatch(setCurrentWallet(resultId))
+  const portfolio = getCurrentPortfolio(getState())
+  let walletId = resultId
+  if (!portfolio.nestedWalletIds.includes(resultId)) {
+    const parent = portfolio.nestedWallets.find((w) => w.transitiveNestedWalletIds.includes(resultId))
+    if (parent) {
+      walletId = parent.id
+    } else {
+      log.error(`search result wallet ${resultId} not in current portfolio`)
+      walletId = portfolio.id
+    }
+  }
+  dispatch(setCurrentPortfolioAndWallet(portfolio.id, walletId))
   dispatch(push(routes.dashboard()))
 })
 

@@ -1,6 +1,9 @@
 import { createSelector } from 'reselect'
 import { mapValues, dateSort } from 'Utilities/helpers'
-import { getSwapStatus, getSwapFriendlyError } from 'Utilities/swap'
+import {
+  getSwapStatus, getSwapFriendlyError, getSwapRequiresSigning,
+  getSwapReadyToSign, getSwapReadyToSend,
+} from 'Utilities/swap'
 import { createItemSelector, selectItemId } from 'Utilities/selector'
 import { toBigNumber } from 'Utilities/convert'
 import { MultiWallet } from 'Services/Wallet'
@@ -31,13 +34,15 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
       receiveWalletId = receiveWallet.id
     }
   }
+  const sendWallet = allWallets[sendWalletId]
+  const isManual = !sendWallet || sendWallet.isReadOnly
 
   swap = {
     ...swap,
     sendAmount: swap.sendAmount || swap.depositAmount,
-    isManual: !swap.sendWalletId,
+    isManual,
     isFixedPrice: Boolean(rateLockedUntil),
-    sendWallet: allWallets[sendWalletId],
+    sendWallet,
     receiveWallet,
     receiveWalletId,
     pair: `${sendSymbol}_${receiveSymbol}`.toLowerCase(),
@@ -78,13 +83,30 @@ export const getAllSwapsArray = createSelector(
 
 export const getSentSwaps = createSelector(
   getAllSwapsArray,
-  (allSwaps) => allSwaps.filter(({ orderStatus, tx, isManual }) => orderStatus !== 'awaiting deposit' || tx.sent || (isManual && orderStatus !== 'awaiting deposit'))
+  (allSwaps) => allSwaps
+    .filter(({ orderStatus, tx, isManual }) =>
+      orderStatus !== 'awaiting deposit' ||
+      tx.sent ||
+      (isManual && orderStatus !== 'awaiting deposit'))
 )
 
-export const getConnectedWalletsSentSwaps = createSelector(
+export const getConnectedWalletSentSwaps = createSelector(
   getSentSwaps,
   getAllWalletIds,
-  (sentSwaps, walletIds) => sentSwaps.filter(({ receiveWalletId }) => walletIds.some((id) => id === receiveWalletId))
+  (sentSwaps, walletIds) => sentSwaps.filter(({ receiveWalletId, sendWalletId }) =>
+    walletIds.some((id) => id === receiveWalletId || id === sendWalletId))
+)
+
+export const getConnectedWalletsCompletedSwaps = createSelector(
+  getConnectedWalletSentSwaps,
+  (swaps) => swaps.filter(({ status: { code } }) =>
+    code === 'complete' || code === 'failed')
+)
+
+export const getConnectedWalletsPendingSwaps = createSelector(
+  getConnectedWalletSentSwaps,
+  (swaps) => swaps.filter(({ status: { code } }) => 
+    code === 'pending')
 )
 
 export const getSwap = createItemSelector(
@@ -107,3 +129,13 @@ export const getSentSwapOrderTxIds = createSelector(
     return byId
   }, {})
 )
+
+export const doesSwapRequireSigning = createSelector(getSwap, (swap) => getSwapRequiresSigning(swap))
+
+export const isSwapReadyToSign = createSelector(getSwap, getSwapReadyToSign)
+
+export const isSwapReadyToSend = createSelector(getSwap, getSwapReadyToSend)
+
+export const isSwapSigning = createSelector(getSwap, (swap) => Boolean(swap && swap.txSigning))
+
+export const isSwapSending = createSelector(getSwap, (swap) => Boolean(swap && swap.txSending))

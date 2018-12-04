@@ -16,7 +16,7 @@ import display from 'Utilities/display'
 import Layout from 'Components/Layout'
 import Slider from 'Components/Slider'
 import AssetSelector from 'Components/AssetSelector'
-import SwapSubmitModal from 'Components/SwapSubmitModal'
+import SwundleSubmitModal from 'Components/SwundleSubmitModal'
 import Units from 'Components/Units'
 import Overlay from 'Components/Overlay'
 import ArrowIcon from 'Components/ArrowIcon'
@@ -31,155 +31,6 @@ import styles from './style'
 
 const ModifyView = (props) => {
   const { portfolio, handleSave, disableSave, isAppRestricted } = props
-
-  const renderAssetRows = (assetHoldings) => assetHoldings.map((a) => {
-    const { walletId, symbol, name, change24, price, units, fiat, weight, swapEnabled, priceDecrease } = a
-    const wallet = portfolio.nestedWallets.find(w => w.id === walletId);
-    let unsendable = wallet.unsendableAssets.includes(symbol)
-    const restricted = a.restricted && isAppRestricted
-    let disabledMessage
-    if (!swapEnabled) {
-      disabledMessage = `Swapping ${name} is currently unavailable`
-    } else if (restricted) {
-      disabledMessage = `Swapping ${name} is unavailable in your location`
-    } else if (unsendable) {
-      disabledMessage = `Sending ${name} from this wallet currently unsupported`
-    }
-    const disabled = Boolean(disabledMessage)
-
-    const changeIconDirection = priceDecrease ? 'down' : 'up'
-    const changeColor = priceDecrease ? 'danger' : 'success'
-    const fiatPrice = display.fiat(price)
-    const percentChange24 = display.percentage(change24, true)
-    const originalFiat = display.fiat(fiat.original)
-    const originalWeight = display.percentage(a.weight.original)
-    const originalUnits = (<Units value={units.original} symbol={symbol} precision={6} />)
-    const adjustedFiat = accounting.toFixed(fiat.adjusted, 2)
-    const adjustedWeight = accounting.toFixed(weight.adjusted, 2)
-    const adjustedUnits = (<Units value={units.adjusted} symbol={symbol} precision={6} />)
-
-    let fiatInput
-    let weightInput
-
-    return (
-      <ListGroupItem key={symbol}>
-        {disabled && (
-          <Overlay className='justify-content-end'>
-            <Alert color='info' className='m-1'>
-              {disabledMessage}
-            </Alert>
-          </Overlay>
-        )}
-        <Row className='gutter-x-3 align-items-center'>
-          <Col xs lg='4' xl='5' className='order-1'>
-            <Row className='gutter-3 align-items-center'>
-              <Col xs='auto' className='text-right'>
-                <CoinIcon size='md' symbol={symbol} inline />
-              </Col>
-              <Col xs='auto'><h5 className='m-0'>{name}</h5></Col>
-            </Row>
-            <Row className='gutter-x-4 my-3 align-items-center'>
-              <Col xs='auto'>
-                <Row className='gutter-3 align-items-center'>
-                  <Col xs='auto'><ArrowIcon size='md' dir={changeIconDirection} color={changeColor} /></Col>
-                  <Col>
-                    <div className={`h5 m-0 text-${changeColor}`}>{percentChange24}</div>
-                    <small className='text-muted'>24h change</small>
-                  </Col>
-                </Row>
-              </Col>
-              <Col xs='auto'>
-                <div className='h5 m-0'>{fiatPrice}</div>
-                <small className='text-muted'>current price</small>
-              </Col>
-            </Row>
-          </Col>
-          <Col xs='12' lg style={{ lineHeight: 1 }} className='order-3 order-lg-2'>
-            <Row className='gutter-3'>
-              <Col xs='12' sm='2' lg='auto'>
-                <Row className='gutter-3 flex-sm-column'>
-                  <Col xs='3' sm='12'>&nbsp;</Col>
-                  <Col xs='4' sm='12' className='text-muted text-sm-right'>Before</Col>
-                  <Col xs='5' sm='12' className='text-muted text-sm-right'>After</Col>
-                </Row>
-              </Col>
-              <Col xs='12' sm='3' lg>
-                <Row className='gutter-3 flex-sm-column'>
-                  <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>Value</Col>
-                  <Col xs='4' sm='12'>{originalFiat}</Col>
-                  <Col xs='5' sm='12'>
-                    {disabled ? (
-                      display.fiat(adjustedFiat)
-                    ) : (
-                      <span className='text-primary'>
-                        <RIENumber
-                          value={adjustedFiat}
-                          format={display.fiat}
-                          change={(change) => props.handleFiatChange(walletId, symbol, change[symbol])}
-                          propName={symbol}
-                          className='cursor-pointer'
-                          classEditing={styles.editableEditing}
-                          ref={(input) => { fiatInput = input }}
-                        />
-                        <i onClick={() => fiatInput.startEditing()} className='fa fa-pencil ml-1 cursor-pointer' aria-hidden='true' />
-                      </span>
-                    )}
-                  </Col>
-                </Row>
-              </Col>
-              <Col xs='12' sm='3' lg>
-                <Row className='gutter-3 flex-sm-column'>
-                  <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>Weight</Col>
-                  <Col xs='4' sm='12'>{originalWeight}</Col>
-                  <Col xs='5' sm='12'>
-                    {disabled ? (
-                      display.percentage(adjustedWeight)
-                    ) : (
-                      <span className='text-primary'>
-                        <RIENumber
-                          value={adjustedWeight}
-                          format={display.percentage}
-                          change={(change) => props.handleWeightChange(walletId, symbol, change[symbol])}
-                          propName={symbol}
-                          className='cursor-pointer'
-                          classEditing={styles.editableEditing}
-                          ref={(input) => { weightInput = input }}
-                          disabled={disabled}
-                        />
-                        <i onClick={() => weightInput.startEditing()} className='fa fa-pencil ml-1 cursor-pointer' aria-hidden='true' />
-                      </span>
-                    )}
-                  </Col>
-                </Row>
-              </Col>
-              <Col xs='12' sm>
-                <Row className='gutter-3 flex-sm-column'>
-                  <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>Units</Col>
-                  <Col xs='4' sm='12'>{originalUnits}</Col>
-                  <Col xs='5' sm='12'>{adjustedUnits}</Col>
-                </Row>
-              </Col>
-            </Row>
-          </Col>
-          <Col xs='auto' className='align-self-start order-2 order-lg-3'>
-            <Button color='danger' size='sm' disabled={disabled} className='flat' onClick={() => props.handleRemove(walletId, symbol)}>
-              {removeButtonContent}
-            </Button>
-          </Col>
-        </Row>
-
-        <div className='pt-3'>
-          <Slider
-            asset={a}
-            walletId={walletId}
-            disabled={disabled}
-            {...props.sliderProps}
-          />
-        </div>
-      </ListGroupItem>
-    )
-  })
-
   const saveButtonContent = (<Fragment><i className='fa fa-check mr-2' />Save Changes</Fragment>)
   const addButtonContent = (<Fragment><i className='fa fa-plus'/> add asset</Fragment>)
   const removeButtonContent = (<Fragment><i className='fa fa-times'/> remove</Fragment>)
@@ -209,8 +60,162 @@ const ModifyView = (props) => {
               </Alert>
             ) : (
               <ListGroup>
-                {!holdingsLoaded && (<LoadingFullscreen center />)}
-                {renderAssetRows(assetHoldings.filter(({ shown }) => shown))}
+                {!holdingsLoaded && (
+                  <LoadingFullscreen label='Loading balances...' />
+                )}
+                {assetHoldings.filter(({ shown }) => shown).map((a) => {
+                  const { walletId, symbol, name, change24, price, units, fiat, weight, swapEnabled, priceDecrease } = a
+                  let unsendable = wallet.unsendableAssets.includes(symbol)
+                  const restricted = a.restricted && isAppRestricted
+                  let disabledMessage
+                  if (!swapEnabled) {
+                    disabledMessage = `Swapping ${name} is currently unavailable`
+                  } else if (restricted) {
+                    disabledMessage = `Swapping ${name} is unavailable in your location`
+                  } else if (unsendable) {
+                    disabledMessage = `Sending ${name} from this wallet currently unsupported`
+                  }
+                  const disabled = Boolean(disabledMessage)
+
+                  const changeIconDirection = priceDecrease ? 'down' : 'up'
+                  const changeColor = priceDecrease ? 'danger' : 'success'
+                  const fiatPrice = display.fiat(price)
+                  const percentChange24 = display.percentage(change24, true)
+                  const originalFiat = display.fiat(fiat.original)
+                  const originalWeight = display.percentage(a.weight.original)
+                  const originalUnits = (<Units value={units.original} symbol={symbol} precision={6} />)
+                  const adjustedFiat = accounting.toFixed(fiat.adjusted, 2)
+                  const adjustedWeight = accounting.toFixed(weight.adjusted, 2)
+                  const adjustedUnits = (<Units value={units.adjusted} symbol={symbol} precision={6} />)
+
+                  let fiatInput
+                  let weightInput
+
+                  return (
+                    <ListGroupItem key={symbol}>
+                      {holdingsLoaded && disabled && !restricted && (
+                        <Overlay className='justify-content-end'>
+                          <Alert color='info' className='m-1'>
+                            {disabledMessage}
+                          </Alert>
+                        </Overlay>
+                      )}
+                      {holdingsLoaded && restricted && (
+                        <Overlay className='justify-content-end'>
+                          <Alert color='info' className='m-1'>
+                            <a className='text-white' href='https://medium.com/faast/faast-location-restrictions-9b14e100d828' target='_blank noreferrer noopener'>{disabledMessage}</a>
+                          </Alert>
+                        </Overlay>
+                      )}
+                      <Row className='gutter-x-3 align-items-center'>
+                        <Col xs lg='4' xl='5' className='order-1'>
+                          <Row className='gutter-3 align-items-center'>
+                            <Col xs='auto' className='text-right'>
+                              <CoinIcon size='md' symbol={symbol} inline />
+                            </Col>
+                            <Col xs='auto'><h5 className='m-0'>{name}</h5></Col>
+                          </Row>
+                          <Row className='gutter-x-4 my-3 align-items-center'>
+                            <Col xs='auto'>
+                              <Row className='gutter-3 align-items-center'>
+                                <Col xs='auto'><ArrowIcon size='md' dir={changeIconDirection} color={changeColor} /></Col>
+                                <Col>
+                                  <div className={`h5 m-0 text-${changeColor}`}>{percentChange24}</div>
+                                  <small className='text-muted'>24h change</small>
+                                </Col>
+                              </Row>
+                            </Col>
+                            <Col xs='auto'>
+                              <div className='h5 m-0'>{fiatPrice}</div>
+                              <small className='text-muted'>current price</small>
+                            </Col>
+                          </Row>
+                        </Col>
+                        <Col xs='12' lg style={{ lineHeight: 1 }} className='order-3 order-lg-2'>
+                          <Row className='gutter-3'>
+                            <Col xs='12' sm='2' lg='auto'>
+                              <Row className='gutter-3 flex-sm-column'>
+                                <Col xs='3' sm='12'>&nbsp;</Col>
+                                <Col xs='4' sm='12' className='text-muted text-sm-right'>Before</Col>
+                                <Col xs='5' sm='12' className='text-muted text-sm-right'>After</Col>
+                              </Row>
+                            </Col>
+                            <Col xs='12' sm='3' lg>
+                              <Row className='gutter-3 flex-sm-column'>
+                                <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>Value</Col>
+                                <Col xs='4' sm='12'>{originalFiat}</Col>
+                                <Col xs='5' sm='12'>
+                                  {disabled ? (
+                                    display.fiat(adjustedFiat)
+                                  ) : (
+                                    <span className='text-primary'>
+                                      <RIENumber
+                                        value={adjustedFiat}
+                                        format={display.fiat}
+                                        change={(change) => props.handleFiatChange(walletId, symbol, change[symbol])}
+                                        propName={symbol}
+                                        className='cursor-pointer'
+                                        classEditing={styles.editableEditing}
+                                        ref={(input) => { fiatInput = input }}
+                                      />
+                                      <i onClick={() => fiatInput.startEditing()} className='fa fa-pencil ml-1 cursor-pointer' aria-hidden='true' />
+                                    </span>
+                                  )}
+                                </Col>
+                              </Row>
+                            </Col>
+                            <Col xs='12' sm='3' lg>
+                              <Row className='gutter-3 flex-sm-column'>
+                                <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>Weight</Col>
+                                <Col xs='4' sm='12'>{originalWeight}</Col>
+                                <Col xs='5' sm='12'>
+                                  {disabled ? (
+                                    display.percentage(adjustedWeight)
+                                  ) : (
+                                    <span className='text-primary'>
+                                      <RIENumber
+                                        value={adjustedWeight}
+                                        format={display.percentage}
+                                        change={(change) => props.handleWeightChange(walletId, symbol, change[symbol])}
+                                        propName={symbol}
+                                        className='cursor-pointer'
+                                        classEditing={styles.editableEditing}
+                                        ref={(input) => { weightInput = input }}
+                                        disabled={disabled}
+                                      />
+                                      <i onClick={() => weightInput.startEditing()} className='fa fa-pencil ml-1 cursor-pointer' aria-hidden='true' />
+                                    </span>
+                                  )}
+                                </Col>
+                              </Row>
+                            </Col>
+                            <Col xs='12' sm>
+                              <Row className='gutter-3 flex-sm-column'>
+                                <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>Units</Col>
+                                <Col xs='4' sm='12'>{originalUnits}</Col>
+                                <Col xs='5' sm='12'>{adjustedUnits}</Col>
+                              </Row>
+                            </Col>
+                          </Row>
+                        </Col>
+                        <Col xs='auto' className='align-self-start order-2 order-lg-3'>
+                          <Button color='danger' size='sm' disabled={disabled} className='flat' onClick={() => props.handleRemove(walletId, symbol)}>
+                            {removeButtonContent}
+                          </Button>
+                        </Col>
+                      </Row>
+
+                      <div className='pt-3'>
+                        <Slider
+                          asset={a}
+                          walletId={walletId}
+                          disabled={disabled}
+                          {...props.sliderProps}
+                        />
+                      </div>
+                    </ListGroupItem>
+                  )
+                })}
                 <ListGroupButton action onClick={() => props.showAssetList(id, 'bottom')} className='text-center text-success'>
                   <i className='fa fa-plus fa-2x align-middle' />
                   <span className='pl-2 h5'>add asset</span>
@@ -299,7 +304,7 @@ const ModifyView = (props) => {
           )}
         </ModalBody>
       </Modal>
-      <SwapSubmitModal />
+      <SwundleSubmitModal />
       <WalletPasswordPrompt />
     </Layout>
   )
