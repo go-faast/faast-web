@@ -30,8 +30,7 @@ import ModalRoute from 'Components/ModalRoute'
 import styles from './style'
 
 const ModifyView = (props) => {
-  const { portfolio, handleSave, disableSave } = props
-
+  const { portfolio, handleSave, disableSave, isAppRestricted } = props
   const saveButtonContent = (<Fragment><i className='fa fa-check mr-2' />Save Changes</Fragment>)
   const addButtonContent = (<Fragment><i className='fa fa-plus'/> add asset</Fragment>)
   const removeButtonContent = (<Fragment><i className='fa fa-times'/> remove</Fragment>)
@@ -67,12 +66,14 @@ const ModifyView = (props) => {
                 {assetHoldings.filter(({ shown }) => shown).map((a) => {
                   const { walletId, symbol, name, change24, price, units, fiat, weight, swapEnabled, priceDecrease } = a
                   let unsendable = wallet.unsendableAssets.includes(symbol)
-                  console.log({ symbol, unsendable, wallet })
+                  const restricted = a.restricted && isAppRestricted
                   let disabledMessage
                   if (!swapEnabled) {
                     disabledMessage = `Swapping ${name} is currently unavailable`
+                  } else if (restricted) {
+                    disabledMessage = `Swapping ${name} is unavailable in your location`
                   } else if (unsendable) {
-                    disabledMessage = `Sending ${name} from this wallet is currently unsupported`
+                    disabledMessage = `Sending ${name} from this wallet currently unsupported`
                   }
                   const disabled = Boolean(disabledMessage)
 
@@ -92,10 +93,17 @@ const ModifyView = (props) => {
 
                   return (
                     <ListGroupItem key={symbol}>
-                      {holdingsLoaded && disabled && (
+                      {holdingsLoaded && disabled && !restricted && (
                         <Overlay className='justify-content-end'>
                           <Alert color='info' className='m-1'>
                             {disabledMessage}
+                          </Alert>
+                        </Overlay>
+                      )}
+                      {holdingsLoaded && restricted && (
+                        <Overlay className='justify-content-end'>
+                          <Alert color='info' className='m-1'>
+                            <a className='text-white' href='https://medium.com/faast/faast-location-restrictions-9b14e100d828' target='_blank noreferrer noopener'>{disabledMessage}</a>
                           </Alert>
                         </Overlay>
                       )}

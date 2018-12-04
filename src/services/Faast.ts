@@ -9,7 +9,7 @@ import { Asset, SwapOrder } from 'Types'
 const { siteUrl, apiUrl } = config
 
 export function fetchAssets(): Promise<Asset[]> {
-  return fetchGet(`${apiUrl}/api/v1/public/currencies`, null, { retries: 2 })
+  return fetchGet(`${apiUrl}/api/v2/public/currencies`, null, { retries: 2 })
     .then((assets: Array<Partial<Asset>>) => assets.filter((asset) => {
       if (!asset.symbol) {
         log.warn('omitting asset without symbol', asset)
@@ -35,6 +35,8 @@ export const fetchAssetPrices = () => fetchGet(`${siteUrl}/app/portfolio-price`,
 export const fetchPriceChart = (symbol: string) => fetchGet(`${siteUrl}/app/portfolio-chart/${symbol}`)
 
 export const fetchPairData = (pair: string) => fetchGet(`${apiUrl}/api/v2/public/price/${pair}`)
+
+export const fetchRestrictionsByIp = () => fetchGet(`${apiUrl}/api/v2/public/geoinfo`)
 
 const formatOrderResult = (r: any): SwapOrder => ({
   orderId: r.swap_id,
@@ -153,4 +155,5 @@ export default {
   fetchPairData,
   refreshSwap,
   provideSwapDepositTx,
+  fetchRestrictionsByIp,
 }

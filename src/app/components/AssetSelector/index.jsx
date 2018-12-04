@@ -7,7 +7,7 @@ import Fuse from 'fuse.js'
 import { debounce } from 'debounce'
 import AssetSelectorView from './view'
 import { sortByProperty } from 'Utilities/helpers'
-import { getAllAssetsArray } from 'Selectors'
+import { getAllAssetsArray, isAppRestricted } from 'Selectors'
 
 const DEBOUNCE_WAIT = 400
 const MAX_RESULTS = 50
@@ -17,22 +17,26 @@ function applySortOrder (list) {
 }
 
 function getInitState (props) {
-  const { assets, supportedAssetSymbols, portfolioSymbols, isAssetDisabled } = props
+  const { assets, supportedAssetSymbols, portfolioSymbols, isAssetDisabled, isAppRestricted } = props
   let assetList = [...assets]
     .map((a) => {
       const unsupportedWallet = !supportedAssetSymbols.includes(a.symbol)
       const alreadyInPortfolio = portfolioSymbols.includes(a.symbol)
       const swapDisabled = isAssetDisabled(a)
-      const disabled = swapDisabled || unsupportedWallet || alreadyInPortfolio
+      const restricted = a.restricted && isAppRestricted
+      const disabled = swapDisabled || unsupportedWallet || alreadyInPortfolio || restricted
       const disabledMessage = swapDisabled
         ? 'coming soon'
-        : (unsupportedWallet
-          ? 'unsupported wallet'
-          : (alreadyInPortfolio
-            ? 'already added'
-            : 'unavailable'))
+        : (restricted ? 
+          'unavailable in your location' : 
+          (unsupportedWallet
+            ? 'unsupported wallet'
+            : (alreadyInPortfolio
+              ? 'already added'
+              : 'unavailable')))
       return {
         ...a,
+        restricted,
         disabled,
         disabledMessage,
         swapDisabled,
@@ -125,7 +129,7 @@ AssetSelector.propTypes = {
   selectAsset: PropTypes.func.isRequired,
   supportedAssetSymbols: PropTypes.arrayOf(PropTypes.string),
   portfolioSymbols: PropTypes.arrayOf(PropTypes.string),
-  isAssetDisabled: PropTypes.func
+  isAssetDisabled: PropTypes.func,
 }
 
 AssetSelector.defaultProps = {
@@ -136,4 +140,5 @@ AssetSelector.defaultProps = {
 
 export default connect(createStructuredSelector({
   assets: getAllAssetsArray,
+  isAppRestricted: isAppRestricted,
 }))(AssetSelector)

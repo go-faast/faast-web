@@ -10,7 +10,7 @@ import withToggle from 'Hoc/withToggle'
 
 import Units from 'Components/Units'
 import ChangePercent from 'Components/ChangePercent'
-import ArrowIcon from 'Components/ArrowIcon'
+import PriceArrowIcon from 'Components/PriceArrowIcon'
 import CoinIcon from 'Components/CoinIcon'
 import Expandable from 'Components/Expandable'
 import WatchlistStar from 'Components/WatchlistStar'
@@ -82,7 +82,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
         />
         <div>
           <small><ChangePercent>{percentChange}</ChangePercent></small>
-          <ArrowIcon
+          <PriceArrowIcon
             style={{ position: 'relative', top: '0px' }}
             className={classNames('swapChangeArrow', percentChange.isZero() ? 'd-none' : null)} 
             size={.58} dir={percentChange < 0 ? 'down' : 'up'} 

@@ -8,6 +8,7 @@ import withToggle from '../hoc/withToggle'
 
 import ChangePercent from 'Components/ChangePercent'
 import ArrowIcon from 'Components/ArrowIcon'
+import PriceArrowIcon from 'Components/PriceArrowIcon'
 import CoinIcon from 'Components/CoinIcon'
 import Units from 'Components/Units'
 import UnitsLoading from 'Components/UnitsLoading'
@@ -31,7 +32,7 @@ const priceChange = (date, asset) => {
   return (
     <span>{timespan}
       <ChangePercent>{priceChange}</ChangePercent>
-      <ArrowIcon 
+      <PriceArrowIcon 
         className={classNames('swapChangeArrow', priceChange.isZero() ? 'd-none' : null)} 
         size={.58} dir={priceChange < 0 ? 'down' : 'up'} 
         color={priceChange < 0 ? 'danger' : priceChange > 0 ? 'success' : null}

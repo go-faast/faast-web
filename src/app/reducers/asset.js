@@ -39,7 +39,8 @@ const assetInitialState = {
   priceLoading: false,
   priceLoaded: false,
   priceError: '',
-  onWatchlist: false
+  onWatchlist: false,
+  restricted: false,
 }
 
 const priceDataToAsset = (priceData) => {
