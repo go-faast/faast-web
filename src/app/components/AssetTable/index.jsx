@@ -12,6 +12,7 @@ import display from 'Utilities/display'
 import ChangePercent from 'Components/ChangePercent'
 import Units from 'Components/Units'
 import CoinIcon from 'Components/CoinIcon'
+import WatchlistStar from 'Components/WatchlistStar'
 
 import { tableStyle, expandedOnly, collapsedOnly, collapsedRow } from './style'
 
@@ -31,6 +32,11 @@ const renderAssetRows = ({ assetRows, push }) => {
         onClick={() => push(routes.assetDetail(symbol))} 
         tabIndex='0'
       >
+        <td colSpan='auto'>
+          <WatchlistStar
+            symbol={symbol}
+          />
+        </td>
         <td>
           <CoinIcon symbol={symbol} width='1.5em' height='1.5em' size={1} inline/>
           <span className='mx-2 text-truncate'>{displayName}</span>
@@ -70,6 +76,7 @@ export default compose(
   <Table hover striped responsive className={tableStyle}>
     <thead>
       <tr>
+        <th className='border-0'></th>
         <th className='border-0'><h6>Asset</h6></th>
         <th className='border-0'><h6>Units</h6></th>
         <th className='border-0'><h6>Holdings</h6></th>

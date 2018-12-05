@@ -39,10 +39,12 @@ const AssetIndex = ({ assets, currentPage, numberOfAssets, pricesLoaded,
               >
                 {timeFrame}
               </DropdownToggle>
-              <DropdownMenu>
-                <DropdownItem className={timeFrame === '7d' ? 'text-primary' : null} onClick={() => updateTimeFrame('7d')}>7d</DropdownItem>
-                <DropdownItem className={timeFrame === '1d' ? 'text-primary' : null} onClick={() => updateTimeFrame('1d')}>1d</DropdownItem>
-                <DropdownItem className={timeFrame === '1h' ? 'text-primary' : null} onClick={() => updateTimeFrame('1h')}>1h</DropdownItem>
+              <DropdownMenu className='p-0'>
+                <DropdownItem active={timeFrame === '7d'} onClick={() => updateTimeFrame('7d')}>7d</DropdownItem>
+                <DropdownItem className='m-0' divider/>
+                <DropdownItem active={timeFrame === '1d'} onClick={() => updateTimeFrame('1d')}>1d</DropdownItem>
+                <DropdownItem className='m-0' divider/>
+                <DropdownItem active={timeFrame === '1h'} onClick={() => updateTimeFrame('1h')}>1h</DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </h4> : null}

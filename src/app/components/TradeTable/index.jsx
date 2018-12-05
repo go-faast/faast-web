@@ -54,7 +54,7 @@ const TradeTable = ({ handleClick, hideIfNone, tableTitle,
   swaps, tableHeadings, zeroOrdersMessage }) => (
   <Fragment>
     {hideIfNone && swaps.length == 0 ? null : (
-      <Card className='my-3'>
+      <Card className='mb-3'>
         <CardHeader>
           <h5>{tableTitle}</h5>
         </CardHeader>

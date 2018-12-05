@@ -55,10 +55,12 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded,
               <i className="d-inline d-md-none d-lg-inline nav-link-icon fa fa-align-left" aria-hidden="true"></i>
               <span className='nav-link-label d-sm-inline'>Assets</span>
             </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem className='text-muted' onClick={() => push('/assets')}>All Assets</DropdownItem>
-              <DropdownItem className='text-muted' onClick={() => push('/assets/trending')}>Trending</DropdownItem>
-              <DropdownItem className='text-muted' onClick={() => push('/assets/watchlist')}>Watchlist</DropdownItem>
+            <DropdownMenu className='p-0'>
+              <DropdownItem className='text-muted py-2' onClick={() => push('/assets')}>All Assets</DropdownItem>
+              <DropdownItem className='m-0' divider/>
+              <DropdownItem className='text-muted py-2' onClick={() => push('/assets/trending')}>Trending</DropdownItem>
+              <DropdownItem className='m-0' divider/>
+              <DropdownItem className='text-muted py-2' onClick={() => push('/assets/watchlist')}>Watchlist</DropdownItem>
             </DropdownMenu>
           </Dropdown>
           {!disablePortfolioLinks && ([

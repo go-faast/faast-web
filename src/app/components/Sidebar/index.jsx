@@ -158,21 +158,23 @@ const Sidebar = ({
                     >
                       <small>{trendingTimeFrame}</small>
                     </DropdownToggle>
-                    <DropdownMenu>
+                    <DropdownMenu className='p-0'>
                       <DropdownItem 
-                        className={trendingTimeFrame === '7d' ? 'text-primary' : null} 
+                        active={trendingTimeFrame === '7d'}
                         onClick={() => updateTrendingTimeFrame('7d')}
                       >
                         <small>7d</small>
                       </DropdownItem>
+                      <DropdownItem className='m-0' divider/>
                       <DropdownItem 
-                        className={trendingTimeFrame === '1d' ? 'text-primary' : null} 
+                        active={trendingTimeFrame === '1d'}
                         onClick={() => updateTrendingTimeFrame('1d')}
                       >
                         <small>1d</small>
                       </DropdownItem>
+                      <DropdownItem className='m-0' divider/>
                       <DropdownItem 
-                        className={trendingTimeFrame === '1h' ? 'text-primary' : null} 
+                        active={trendingTimeFrame === '1h'}
                         onClick={() => updateTrendingTimeFrame('1h')}
                       >
                         <small>1h</small>

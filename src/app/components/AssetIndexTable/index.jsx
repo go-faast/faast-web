@@ -46,6 +46,15 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
         </Media>
       </td>
       <td onClick={() => push(routes.assetDetail(symbol))}>
+        <Units 
+          className='mt-1 d-inline-block'
+          value={price} 
+          symbol={'$'} 
+          precision={6} 
+          prefixSymbol
+        />
+      </td>
+      <td onClick={() => push(routes.assetDetail(symbol))}>
         <Units
           className='text-nowrap'
           value={marketCap} 
@@ -75,15 +84,8 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
         />
       </td>
       <td onClick={() => push(routes.assetDetail(symbol))}>
-        <Units 
-          className='mt-1 d-inline-block'
-          value={price} 
-          symbol={'$'} 
-          precision={6} 
-          prefixSymbol
-        />
         <div>
-          <small><ChangePercent>{percentChange}</ChangePercent></small>
+          <ChangePercent>{percentChange}</ChangePercent>
           <PriceArrowIcon
             style={{ position: 'relative', top: '0px' }}
             className={classNames('swapChangeArrow', percentChange.isZero() ? 'd-none' : null)} 
@@ -107,27 +109,29 @@ const AssetIndexTable = ({ assets, push, toggleDropdownOpen, isDropdownOpen, upd
           <tr>
             <th className='border-0'></th>
             <th className='pl-3 pl-md-5 border-0'>Coin</th>
+            <th className='border-0'>Price</th>
             <th className='border-0'>Market Cap</th>
             <th className='border-0'>Volume</th>
             <th className='border-0'>Supply</th>
-            <th className='border-0'>
-              Price
+            <th className={classNames('border-0', !defaultPriceChange ? 'p-0' : null)}>
               {!defaultPriceChange ? (
                 <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
                   <DropdownToggle 
-                    className='py-0 px-2 ml-2 flat position-absolute' 
-                    style={{ top: '-13px' }}
+                    className='py-0 px-2 flat position-relative d-inline' 
+                    style={{ top: '-4px' }}
                     color='dark' 
                     caret
                   >
-                    {timeFrame}
+                    {timeFrame} Change
                   </DropdownToggle>
-                  <DropdownMenu>
-                    <DropdownItem className={timeFrame === '7d' ? 'text-primary' : null} onClick={() => updateTimeFrame('7d')}>7d</DropdownItem>
-                    <DropdownItem className={timeFrame === '1d' ? 'text-primary' : null} onClick={() => updateTimeFrame('1d')}>1d</DropdownItem>
-                    <DropdownItem className={timeFrame === '1h' ? 'text-primary' : null} onClick={() => updateTimeFrame('1h')}>1h</DropdownItem>
+                  <DropdownMenu className='p-0' right>
+                    <DropdownItem active={timeFrame === '7d'} onClick={() => updateTimeFrame('7d')}>7d</DropdownItem>
+                    <DropdownItem className='m-0' divider/>
+                    <DropdownItem active={timeFrame === '1d'} onClick={() => updateTimeFrame('1d')}>1d</DropdownItem>
+                    <DropdownItem className='m-0' divider/>
+                    <DropdownItem active={timeFrame === '1h'} onClick={() => updateTimeFrame('1h')}>1h</DropdownItem>
                   </DropdownMenu>
-                </Dropdown>) : null}
+                </Dropdown>) : `${defaultPriceChange} Change`}
             </th>
           </tr>
         </thead>

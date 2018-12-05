@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { createStructuredSelector } from 'reselect'
 import PropTypes from 'prop-types'
-import { Card, CardHeader, CardBody, Col, Row, Button, Dropdown, DropdownMenu, DropdownToggle,
+import { Card, CardHeader, CardBody, Col, Row, Dropdown, DropdownMenu, DropdownToggle,
   DropdownItem
 } from 'reactstrap'
 import { connect } from 'react-redux'
