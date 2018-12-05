@@ -15,7 +15,7 @@ import PieChart from 'Components/PieChart'
 import AssetTable from 'Components/AssetTable'
 import ShareButton from 'Components/ShareButton'
 
-const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen }) => {
+const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen, handleAdd, isAlreadyInPortfolio = true }) => {
   const {
     address, assetHoldings, holdingsLoaded, holdingsError, label
   } = wallet
@@ -39,7 +39,7 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen }) 
                   <Col style={{ top: '2px' }} className='p-0 position-relative' xs='auto'>
                     <ShareButton wallet={wallet}/>
                   </Col>
-                  <Col className='p-0' xs='auto'>
+                  <Col className='p-0 pr-2' xs='auto'>
                     <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
                       <DropdownToggle 
                         tag='div'
@@ -47,8 +47,15 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen }) 
                       >
                         <i className="fa fa-ellipsis-v" aria-hidden="true"></i>
                       </DropdownToggle>
-                      <DropdownMenu right>
-                        <DropdownItem onClick={handleRemove}>Remove Wallet</DropdownItem>
+                      <DropdownMenu className='p-0' right>
+                        {isAlreadyInPortfolio ? (
+                          <Fragment>
+                            <DropdownItem className='py-2' onClick={handleRemove}>Remove Wallet</DropdownItem>
+                            <DropdownItem className='m-0' divider/>
+                          </Fragment>
+                        ) : (
+                          <DropdownItem className='py-2' onClick={handleAdd}>Add Wallet</DropdownItem>
+                        )}
                       </DropdownMenu>
                     </Dropdown>
                   </Col>
@@ -79,7 +86,9 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen }) 
 
 Balances.propTypes = {
   wallet: PropTypes.object.isRequired,
-  removeButton: PropTypes.node
+  handleRemove: PropTypes.func,
+  handleAdd: PropTypes.func,
+  isAlreadyInPortfolio: PropTypes.Bool
 }
 
 const ConnectedBalances = connect(createStructuredSelector({

@@ -20,7 +20,7 @@ export default compose(
   withToggle('open', false),
 )(({ wallet, isOpen, toggleOpen }) => (
   <Button tag='span' color='' size='sm' disabled={!(wallet && wallet.address)} onClick={toggleOpen}>
-    <Icon src={ShareIcon} size='sm' style={{ fill: '#fff' }} />
+    <Icon src={ShareIcon} style={{ width: '14px', fill: '#fff' }} />
     {wallet && (<ShareModal wallet={wallet} isOpen={isOpen} toggle={toggleOpen} />)}
   </Button>
 ))

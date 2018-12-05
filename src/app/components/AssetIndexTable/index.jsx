@@ -52,6 +52,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           symbol={'$'} 
           precision={6} 
           prefixSymbol
+          symbolSpaced={false}
         />
       </td>
       <td onClick={() => push(routes.assetDetail(symbol))}>
@@ -59,7 +60,8 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           className='text-nowrap'
           value={marketCap} 
           symbol={'$'} 
-          precision={6} 
+          precision={6}
+          symbolSpaced={false}
           prefixSymbol
           abbreviate
         />
@@ -70,6 +72,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           value={volume24} 
           symbol={'$'} 
           precision={6} 
+          symbolSpaced={false}
           prefixSymbol
           abbreviate
         />
