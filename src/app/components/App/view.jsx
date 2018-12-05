@@ -15,6 +15,7 @@ import AssetIndex from 'Components/AssetIndex'
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
   tradeHistory, tradeDetail, swapWidget, assetDetail, assetIndex,
+  watchlist, trending
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => (
@@ -35,8 +36,11 @@ const AppView = ({ hasNoWallets }) => (
       <Route path={viewOnlyAddress.path} component={SearchResults}/>
       <Route path={swapWidget.path} component={SwapWidget}/>
       <Route path={tradeHistory.path} component={TradeHistory}/>
+      <Route path={watchlist.path} component={AssetIndex}/>
+      <Route path={trending.path} component={AssetIndex}/>
       <Route path={assetDetail.path} component={AssetDetail}/>
       <Route path={assetIndex.path} component={AssetIndex}/>
+      
 
       {/* Legacy routes */}
       <Redirect exact from='/balances' to={dashboard.path}/>

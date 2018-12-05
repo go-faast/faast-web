@@ -7,13 +7,18 @@ import {
   Nav,
   NavItem,
   NavLink,
-  NavbarToggler
+  NavbarToggler,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownToggle
 } from 'reactstrap'
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { setDisplayName, compose } from 'recompose'
 import { pick } from 'lodash'
+import { push as pushAction } from 'react-router-redux'
 
 import config from 'Config'
 import { isDefaultPortfolioEmpty } from 'Selectors'
@@ -22,7 +27,8 @@ import withToggle from 'Hoc/withToggle'
 import Icon from 'Components/Icon'
 import FaastLogo from 'Img/faast-logo.png'
 
-const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, toggleExpanded, ...props }) => (
+const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, 
+  toggleExpanded, isDropdownOpen, toggleDropdownOpen, push, ...props }) => (
   <Navbar {...pick(props, Object.keys(Navbar.propTypes))}>
     <Container>
       <NavbarBrand tag={Link} to='/' className='mr-auto'>
@@ -39,12 +45,22 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, toggleExpanded
               </NavLink>
             </NavItem>
           )}
-          <NavItem key='coins'>
-            <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/assets'>
+          <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
+            <DropdownToggle 
+              tag='span'
+              className='nav-link position-relative cursor-pointer'
+              color='dark' 
+              caret
+            >
               <i className="d-inline d-md-none d-lg-inline nav-link-icon fa fa-align-left" aria-hidden="true"></i>
               <span className='nav-link-label d-sm-inline'>Assets</span>
-            </NavLink>
-          </NavItem>
+            </DropdownToggle>
+            <DropdownMenu>
+              <DropdownItem className='text-muted' onClick={() => push('/assets')}>All Assets</DropdownItem>
+              <DropdownItem className='text-muted' onClick={() => push('/assets/trending')}>Trending</DropdownItem>
+              <DropdownItem className='text-muted' onClick={() => push('/assets/watchlist')}>Watchlist</DropdownItem>
+            </DropdownMenu>
+          </Dropdown>
           {!disablePortfolioLinks && ([
             <NavItem key='rebalance'>
               <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/rebalance'>
@@ -96,6 +112,8 @@ export default compose(
   connect(createStructuredSelector({
     disablePortfolioLinks: isDefaultPortfolioEmpty,
   }), {
+    push: pushAction
   }),
-  withToggle('expanded')
+  withToggle('expanded'),
+  withToggle('dropdownOpen'),
 )(AppNavbar)

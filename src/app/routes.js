@@ -43,6 +43,8 @@ export const viewOnlyAddress = createPath('/address/:addressQuery')
 export const tradeHistory = createPath('/orders')
 export const tradeDetail = createPath('/orders/:tradeId')
 export const swapWidget = createPath('/swap')
+export const watchlist = createPath('/assets/watchlist')
+export const trending = createPath('/assets/trending')
 export const assetDetail = createPath('/assets/:symbol')
 export const assetIndex = createPath('/assets')
 
@@ -69,5 +71,7 @@ export default {
   connectHwWalletAssetAccounts,
   viewOnlyAddress,
   assetIndex,
+  watchlist,
+  trending,
   walletInfoModal
 }

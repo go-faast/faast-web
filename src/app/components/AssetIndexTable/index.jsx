@@ -3,7 +3,8 @@ import routes from 'Routes'
 import { connect } from 'react-redux'
 import { push as pushAction } from 'react-router-redux'
 import { compose, setDisplayName, setPropTypes, defaultProps, withState } from 'recompose'
-import { Table, Media, Dropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap'
+import { Table, Media, Dropdown, DropdownToggle, DropdownMenu, 
+  DropdownItem, Card, CardHeader, CardBody } from 'reactstrap'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
 import withToggle from 'Hoc/withToggle'
@@ -17,8 +18,9 @@ import WatchlistStar from 'Components/WatchlistStar'
 
 import { indexTable, mediaBody } from './style'
 
-const TableRow = ({ asset: { symbol, availableSupply, name, 
-  marketCap, price, change24, volume24, change7d, change1 }, timeFrame, push, ...props }) => {
+const TableRow = ({ asset: { symbol, availableSupply, name,
+  marketCap, price, change24, volume24, change7d, change1 }, timeFrame, push, defaultPriceChange, ...props }) => {
+  timeFrame = defaultPriceChange ? defaultPriceChange : timeFrame
   const percentChange = timeFrame === '1d' ? change24 : timeFrame === '7d' ? change7d : change1
   return (
     <tr {...props}>
@@ -94,48 +96,62 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
   )
 }
 
-const AssetIndexTable = ({ assets, push, toggleDropdownOpen, isDropdownOpen, updateTimeFrame, timeFrame }) => (
-  <Table hover striped responsive className={indexTable}>
-    <thead>
-      <tr>
-        <th></th>
-        <th className='pl-3 pl-md-5'>Coin</th>
-        <th>Market Cap</th>
-        <th>Volume</th>
-        <th>Supply</th>
-        <th>
-          Price
-          <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
-            <DropdownToggle className='py-0 px-2 ml-2 flat' color='dark' caret>
-              {timeFrame}
-            </DropdownToggle>
-            <DropdownMenu>
-              <DropdownItem className={timeFrame === '7d' ? 'text-primary' : null} onClick={() => updateTimeFrame('7d')}>7d</DropdownItem>
-              <DropdownItem className={timeFrame === '1d' ? 'text-primary' : null} onClick={() => updateTimeFrame('1d')}>1d</DropdownItem>
-              <DropdownItem className={timeFrame === '1h' ? 'text-primary' : null} onClick={() => updateTimeFrame('1h')}>1h</DropdownItem>
-            </DropdownMenu>
-          </Dropdown>
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      {assets.length === 0 ? (
-        <tr className='text-center'>
-          <td colSpan='10'>
-            <i>No assets to show. Please refresh.</i>
-          </td>
-        </tr>
-      ) : assets.map((asset) => (
-        <TableRow 
-          key={asset.symbol} 
-          asset={asset} 
-          push={push}
-          timeFrame={timeFrame}
-        />
-      )
-      )}
-    </tbody>
-  </Table>
+const AssetIndexTable = ({ assets, push, toggleDropdownOpen, isDropdownOpen, updateTimeFrame, timeFrame, tableHeader, defaultPriceChange }) => (
+  <Card className='mb-4'>
+    <CardHeader>
+      <h5>{tableHeader}</h5>
+    </CardHeader>
+    <CardBody className='p-0'>
+      <Table hover striped responsive className={indexTable}>
+        <thead>
+          <tr>
+            <th className='border-0'></th>
+            <th className='pl-3 pl-md-5 border-0'>Coin</th>
+            <th className='border-0'>Market Cap</th>
+            <th className='border-0'>Volume</th>
+            <th className='border-0'>Supply</th>
+            <th className='border-0'>
+              Price
+              {!defaultPriceChange ? (
+                <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
+                  <DropdownToggle 
+                    className='py-0 px-2 ml-2 flat position-absolute' 
+                    style={{ top: '-13px' }}
+                    color='dark' 
+                    caret
+                  >
+                    {timeFrame}
+                  </DropdownToggle>
+                  <DropdownMenu>
+                    <DropdownItem className={timeFrame === '7d' ? 'text-primary' : null} onClick={() => updateTimeFrame('7d')}>7d</DropdownItem>
+                    <DropdownItem className={timeFrame === '1d' ? 'text-primary' : null} onClick={() => updateTimeFrame('1d')}>1d</DropdownItem>
+                    <DropdownItem className={timeFrame === '1h' ? 'text-primary' : null} onClick={() => updateTimeFrame('1h')}>1h</DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>) : null}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {assets.length === 0 ? (
+            <tr className='text-center'>
+              <td colSpan='10'>
+                <i>No assets to show. Please refresh.</i>
+              </td>
+            </tr>
+          ) : assets.map((asset) => (
+            <TableRow 
+              key={asset.symbol} 
+              asset={asset} 
+              push={push}
+              timeFrame={timeFrame}
+              defaultPriceChange={defaultPriceChange}
+            />
+          )
+          )}
+        </tbody>
+      </Table>
+    </CardBody>
+  </Card>
 )
 
 export default compose(
@@ -144,11 +160,21 @@ export default compose(
     push: pushAction
   }),
   setPropTypes({
-    assets: PropTypes.arrayOf(PropTypes.object).isRequired
+    assets: PropTypes.arrayOf(PropTypes.object).isRequired,
+    tableHeader: PropTypes.node,
+    defaultPriceChange: PropTypes.string
   }),
   defaultProps({
-    assets: []
+    assets: [],
+    tableHeader: 'Assets',
+    defaultPriceChange: undefined
   }),
-  withState('timeFrame', 'updateTimeFrame', '1d'),
+  withState('timeFrame', 'updateTimeFrame', ({ defaultPriceChange }) => {
+    if (defaultPriceChange) {
+      return defaultPriceChange
+    } else {
+      return '1d'
+    }
+  }),
   withToggle('dropdownOpen'),
 )(AssetIndexTable)

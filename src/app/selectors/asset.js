@@ -46,20 +46,20 @@ export const getAssetPricesError = createSelector(getAssetState, ({ loadingError
 
 export const getNumberOfAssets = createSelector(getAllAssetsArray, (assets) => assets.length)
 
-export const getWatchlist = createSelector(getAllAssetsArray, (assets) => assets.filter(asset => asset.onWatchlist))
+export const getWatchlist = createSelector(getAllAssetsArray, (assets) => assets.filter(asset => asset.onWatchlist).sort((a, b) => b.marketCap.comparedTo(a.marketCap)))
 
 export const getTrendingPositive = createItemSelector(
   getAllAssetsArray, 
   selectItemId,
-  (assets, { sortField }) => {
-    return assets.sort((a, b) => b[sortField].comparedTo(a[sortField])).slice(0,5)
+  (assets, { sortField, n = 5 }) => {
+    return assets.filter(asset => asset.volume24.gt(50000)).sort((a, b) => b[sortField].comparedTo(a[sortField])).slice(0,n)
   })
 
 export const getTrendingNegative = createItemSelector(
   getAllAssetsArray, 
   selectItemId,
-  (assets, { sortField }) => {
-    return assets.sort((a, b) => a[sortField].comparedTo(b[sortField])).slice(0,5)
+  (assets, { sortField, n = 5 }) => {
+    return assets.filter(asset => asset.volume24.gt(50000)).sort((a, b) => a[sortField].comparedTo(b[sortField])).slice(0,n)
   })
 
 export const getAssetIndexPage = createItemSelector(
