@@ -41,7 +41,7 @@ const Sidebar = ({
   const portfolioBasedOnTimeFrame = timeFrame === '1d' ? totalFiat24hAgo : timeFrame === '7d' ? totalFiat7dAgo : totalFiat1hAgo
 
   return (
-    <Row style={{ maxWidth: '275px', flex: '0 0 100%' }} className={classNames('gutter-3 align-items-end', className)}>
+    <Row className={classNames('gutter-3 align-items-end', className)}>
       <Col xs='12'>
         <Card>
           <ListGroup>
