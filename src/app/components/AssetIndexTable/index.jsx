@@ -128,11 +128,29 @@ const AssetIndexTable = ({ assets, push, toggleDropdownOpen, isDropdownOpen, upd
                     {timeFrame} Change
                   </DropdownToggle>
                   <DropdownMenu className='p-0' right>
-                    <DropdownItem active={timeFrame === '7d'} onClick={() => updateTimeFrame('7d')}>7d</DropdownItem>
+                    <DropdownItem
+                      active={timeFrame === '7d'} 
+                      onClick={() => updateTimeFrame('7d')}
+                      className='py-2'
+                    >
+                      7d
+                    </DropdownItem>
                     <DropdownItem className='m-0' divider/>
-                    <DropdownItem active={timeFrame === '1d'} onClick={() => updateTimeFrame('1d')}>1d</DropdownItem>
+                    <DropdownItem 
+                      active={timeFrame === '1d'} 
+                      onClick={() => updateTimeFrame('1d')}
+                      className='py-2'
+                    >
+                      1d
+                    </DropdownItem>
                     <DropdownItem className='m-0' divider/>
-                    <DropdownItem active={timeFrame === '1h'} onClick={() => updateTimeFrame('1h')}>1h</DropdownItem>
+                    <DropdownItem 
+                      active={timeFrame === '1h'} 
+                      onClick={() => updateTimeFrame('1h')}
+                      className='py-2'
+                    >
+                      1h
+                    </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>) : `${defaultPriceChange} Change`}
             </th>

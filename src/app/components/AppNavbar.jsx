@@ -18,7 +18,6 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { setDisplayName, compose } from 'recompose'
 import { pick } from 'lodash'
-import { push as pushAction } from 'react-router-redux'
 
 import config from 'Config'
 import { isDefaultPortfolioEmpty } from 'Selectors'
@@ -28,7 +27,7 @@ import Icon from 'Components/Icon'
 import FaastLogo from 'Img/faast-logo.png'
 
 const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, 
-  toggleExpanded, isDropdownOpen, toggleDropdownOpen, push, ...props }) => (
+  toggleExpanded, isDropdownOpen, toggleDropdownOpen, ...props }) => (
   <Navbar {...pick(props, Object.keys(Navbar.propTypes))}>
     <Container>
       <NavbarBrand tag={Link} to='/' className='mr-auto'>
@@ -45,22 +44,25 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded,
               </NavLink>
             </NavItem>
           )}
-          <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
+          <Dropdown nav isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen} setActiveFromChild>
             <DropdownToggle 
-              tag='span'
+              tag={RouterNavLink} 
+              to={'/assets'}
+              onClick={((e) => e.preventDefault())}
               className='nav-link position-relative cursor-pointer'
               color='dark' 
               caret
+              nav
             >
               <i className="d-inline d-md-none d-lg-inline nav-link-icon fa fa-align-left" aria-hidden="true"></i>
               <span className='nav-link-label d-sm-inline'>Assets</span>
             </DropdownToggle>
             <DropdownMenu className='p-0'>
-              <DropdownItem className='text-muted py-2' onClick={() => push('/assets')}>All Assets</DropdownItem>
+              <DropdownItem tag={Link} to={'/assets'} className='text-muted py-2'>All Assets</DropdownItem>
               <DropdownItem className='m-0' divider/>
-              <DropdownItem className='text-muted py-2' onClick={() => push('/assets/trending')}>Trending</DropdownItem>
+              <DropdownItem tag={Link} to={'/assets/trending'} className='text-muted py-2'>Trending</DropdownItem>
               <DropdownItem className='m-0' divider/>
-              <DropdownItem className='text-muted py-2' onClick={() => push('/assets/watchlist')}>Watchlist</DropdownItem>
+              <DropdownItem tag={Link} to={'/assets/watchlist'} className='text-muted py-2'>Watchlist</DropdownItem>
             </DropdownMenu>
           </Dropdown>
           {!disablePortfolioLinks && ([
@@ -114,7 +116,6 @@ export default compose(
   connect(createStructuredSelector({
     disablePortfolioLinks: isDefaultPortfolioEmpty,
   }), {
-    push: pushAction
   }),
   withToggle('expanded'),
   withToggle('dropdownOpen'),

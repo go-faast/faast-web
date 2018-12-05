@@ -15,7 +15,7 @@ import PieChart from 'Components/PieChart'
 import AssetTable from 'Components/AssetTable'
 import ShareButton from 'Components/ShareButton'
 
-const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen, handleAdd, isAlreadyInPortfolio = true }) => {
+const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen, handleAdd, isAlreadyInPortfolio }) => {
   const {
     address, assetHoldings, holdingsLoaded, holdingsError, label
   } = wallet
@@ -49,10 +49,7 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen, ha
                       </DropdownToggle>
                       <DropdownMenu className='p-0' right>
                         {isAlreadyInPortfolio ? (
-                          <Fragment>
-                            <DropdownItem className='py-2' onClick={handleRemove}>Remove Wallet</DropdownItem>
-                            <DropdownItem className='m-0' divider/>
-                          </Fragment>
+                          <DropdownItem className='py-2' onClick={handleRemove}>Remove Wallet</DropdownItem>
                         ) : (
                           <DropdownItem className='py-2' onClick={handleAdd}>Add Wallet</DropdownItem>
                         )}
@@ -88,7 +85,11 @@ Balances.propTypes = {
   wallet: PropTypes.object.isRequired,
   handleRemove: PropTypes.func,
   handleAdd: PropTypes.func,
-  isAlreadyInPortfolio: PropTypes.Bool
+  isAlreadyInPortfolio: PropTypes.bool
+}
+
+Balances.defaultProps = {
+  isAlreadyInPortfolio: true
 }
 
 const ConnectedBalances = connect(createStructuredSelector({
