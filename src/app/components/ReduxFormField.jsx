@@ -9,7 +9,7 @@ import {
 const RenderInput = (props) => {
   const {
     meta: { touched, error, warning, form: formName },
-    label, type, placeholder, id, disabled, autoComplete, size,
+    label, type, step, placeholder, id, disabled, autoComplete, size,
     addonPrepend, addonAppend, row, className, inputClass,
     labelProps, labelClass, labelCol, inputCol, autoFocus,
     renderInput, helpText, style,
@@ -25,7 +25,7 @@ const RenderInput = (props) => {
   inputProps = {
     ...reduxFormInput,
     ...inputProps,
-    id: inputId, placeholder, type,
+    id: inputId, placeholder, type, step,
     disabled, autoComplete,
     invalid: Boolean(invalid),
     className: inputClass,
