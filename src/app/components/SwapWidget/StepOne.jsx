@@ -77,6 +77,7 @@ const SwapStepOne = ({
               <StepOneField
                 name='depositAmount'
                 type='number'
+                step='any'
                 placeholder={`Send amount${sendWallet ? '' : ' (optional)'}`}
                 validate={validateDepositAmount}
                 label='You send'
@@ -316,7 +317,7 @@ export default compose(
       setDepositAmount,
       setEstimatedReceiveAmount,
       handleSelectMax: ({ maxSendAmount }) => () => {
-        setDepositAmount(maxSendAmount)
+        setDepositAmount(parseFloat(maxSendAmount))
       },
       calculateReceiveAmount: ({ depositAmount, receiveAsset, estimatedRate }) => () => {
         if (estimatedRate && depositAmount) {
