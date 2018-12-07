@@ -19,6 +19,7 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
         defaultPriceChange={timeFrame} 
         tableHeader={'Biggest Gainers'} 
         assets={trendingPositive}
+        allowSorting={false}
         heading={(
           <h4 className='mb-3 text-primary'>Trending
             <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
@@ -63,6 +64,7 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
         tableHeader={'Biggest Losers'} 
         assets={trendingNegative}
         defaultPriceChange={timeFrame}
+        allowSorting={false}
         showSearch={false}
       />
     </Layout>

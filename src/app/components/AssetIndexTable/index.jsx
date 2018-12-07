@@ -3,7 +3,7 @@ import routes from 'Routes'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { push as pushAction } from 'react-router-redux'
-import { compose, setDisplayName, setPropTypes, defaultProps, withState, withHandlers } from 'recompose'
+import { compose, setDisplayName, setPropTypes, defaultProps, withState, withHandlers, lifecycle } from 'recompose'
 import { Table, Media, Dropdown, DropdownToggle, DropdownMenu, 
   DropdownItem, Card, CardHeader, CardBody, Col, Row } from 'reactstrap'
 import PropTypes from 'prop-types'
@@ -226,20 +226,22 @@ export default compose(
     tableHeader: PropTypes.node,
     defaultPriceChange: PropTypes.string,
     heading: PropTypes.node,
-    showSearch: PropTypes.bool
+    showSearch: PropTypes.bool,
+    allowSorting: PropTypes.bool
   }),
   defaultProps({
     assets: [],
     tableHeader: 'Assets',
     defaultPriceChange: undefined,
     heading: undefined,
-    showSearch: true
+    showSearch: true,
+    allowSorting: true
   }),
   withState('assetList', 'updateAssetList', ({ assets }) => assets),
-  withState('sortKey', 'updateSortKey', 'marketCap'),
+  withState('sortKey', 'updateSortKey', ({ allowSorting }) => allowSorting ? 'marketCap' : null),
   withState('sortDesc', 'updateSortOrder', true),
   withHandlers({
-    handleSort: ({ assetList, updateAssetList, updateSortOrder, sortDesc, sortKey: currentSortKey }) => (sortKey) => {
+    handleSort: ({ assetList, allowSorting, updateAssetList, updateSortOrder, sortDesc, sortKey: currentSortKey }) => (sortKey) => {
       let order
       if (currentSortKey == sortKey) {
         sortDesc = !sortDesc
@@ -248,12 +250,12 @@ export default compose(
       }
       order = sortDesc ? 'desc' : 'asc'
       updateSortOrder(sortDesc)
-      return updateAssetList(sortObjOfArray(assetList, sortKey, order))
+      return allowSorting ? updateAssetList(sortObjOfArray(assetList, sortKey, order)) : assetList
     }
   }),
   withHandlers({
-    handleSortKey: ({ updateSortKey, handleSort }) => (sortKey) => {
-      updateSortKey(sortKey)
+    handleSortKey: ({ updateSortKey, handleSort, allowSorting }) => (sortKey) => {
+      allowSorting && (updateSortKey(sortKey))
       return handleSort(sortKey)
     }
   }),
@@ -262,6 +264,14 @@ export default compose(
       return defaultPriceChange
     } else {
       return '1d'
+    }
+  }),
+  lifecycle({
+    componentDidUpdate(nextProps) {
+      const { updateAssetList, assets, assetList, allowSorting } = nextProps
+      if ((assets != assetList) && !allowSorting) {
+        updateAssetList(assets)
+      }
     }
   }),
   withToggle('dropdownOpen'),
