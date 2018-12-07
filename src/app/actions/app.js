@@ -74,8 +74,6 @@ export const fetchAppRestrictions = () => (dispatch) => Promise.resolve()
       .then(({ blocked, restricted }) => dispatch(restrictionsUpdated(blocked, restricted)))
       .catch((e) => {
         log.error(e)
-        const message = 'Failed to fetch IP address restrictions'
-        throw new Error(message)
       })
   }) 
 
