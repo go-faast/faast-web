@@ -21,15 +21,15 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
         assets={trendingPositive}
         allowSorting={false}
         heading={(
-          <h4 className='mb-3 text-primary'>Trending
+          <h4 className='mb-3 text-primary'>
             <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
               <DropdownToggle 
                 tag='div'
                 className='py-0 px-2 flat d-inline-block position-relative cursor-pointer' 
-                style={{ top: '-1px', width: '60px' }}
+                style={{ top: '-1px', width: '100%' }}
                 caret
               >
-                {timeFrame}
+                Trending {timeFrame}
               </DropdownToggle>
               <DropdownMenu className='p-0'>
                 <DropdownItem 
