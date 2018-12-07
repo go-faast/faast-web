@@ -15,8 +15,11 @@ import { searchAddress, viewInPortfolio, addToPortfolio } from 'Actions/accountS
 import Layout from 'Components/Layout'
 import Balances from 'Components/Balances'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
+import ShareButton from 'Components/ShareButton'
 
 const getQuery = ({ match }) => match.params.addressQuery
+
+const showStats = true
 
 export default compose(
   setDisplayName('SearchResults'),
@@ -65,9 +68,15 @@ export default compose(
             </Button>
           )}
         </Col>
+        {showStats && (
+          <Col xs='auto'>
+            <ShareButton wallet={wallet}/>
+          </Col>
+        )}
         <Col xs='12'>
           <Balances 
-            wallet={wallet} 
+            wallet={wallet}
+            showStats={showStats}
             handleAdd={() => handleAddToPortfolio(routes.dashboard())}
             isAlreadyInPortfolio={isAlreadyInPortfolio}
           />
