@@ -1,10 +1,11 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import routes from 'Routes'
 import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 import { push as pushAction } from 'react-router-redux'
 import { compose, setDisplayName, setPropTypes, defaultProps, withState } from 'recompose'
 import { Table, Media, Dropdown, DropdownToggle, DropdownMenu, 
-  DropdownItem, Card, CardHeader, CardBody } from 'reactstrap'
+  DropdownItem, Card, CardHeader, CardBody, Col, Row } from 'reactstrap'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
 import withToggle from 'Hoc/withToggle'
@@ -15,6 +16,10 @@ import PriceArrowIcon from 'Components/PriceArrowIcon'
 import CoinIcon from 'Components/CoinIcon'
 import Expandable from 'Components/Expandable'
 import WatchlistStar from 'Components/WatchlistStar'
+import AssetSearchBox from 'Components/AssetSearchBox'
+import Loading from 'Components/Loading'
+
+import { areAssetPricesLoaded, getAssetPricesError } from 'Selectors'
 
 import { indexTable, mediaBody } from './style'
 
@@ -101,98 +106,119 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
   )
 }
 
-const AssetIndexTable = ({ assets, push, toggleDropdownOpen, isDropdownOpen, updateTimeFrame, timeFrame, tableHeader, defaultPriceChange }) => (
-  <Card className='mb-4'>
-    <CardHeader>
-      <h5>{tableHeader}</h5>
-    </CardHeader>
-    <CardBody className='p-0'>
-      <Table hover striped responsive className={indexTable}>
-        <thead>
-          <tr>
-            <th className='border-0'></th>
-            <th className='pl-3 pl-md-5 border-0'>Coin</th>
-            <th className='border-0'>Price</th>
-            <th className='border-0'>Market Cap</th>
-            <th className='border-0'>Volume</th>
-            <th className='border-0'>Supply</th>
-            <th className={classNames('border-0', !defaultPriceChange ? 'p-0' : null)}>
-              {!defaultPriceChange ? (
-                <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
-                  <DropdownToggle 
-                    className='py-0 px-2 flat position-relative d-inline' 
-                    style={{ top: '-4px' }}
-                    color='dark' 
-                    caret
-                  >
-                    {timeFrame} Change
-                  </DropdownToggle>
-                  <DropdownMenu className='p-0' right>
-                    <DropdownItem
-                      active={timeFrame === '7d'} 
-                      onClick={() => updateTimeFrame('7d')}
-                      className='py-2'
-                    >
-                      7d
-                    </DropdownItem>
-                    <DropdownItem className='m-0' divider/>
-                    <DropdownItem 
-                      active={timeFrame === '1d'} 
-                      onClick={() => updateTimeFrame('1d')}
-                      className='py-2'
-                    >
-                      1d
-                    </DropdownItem>
-                    <DropdownItem className='m-0' divider/>
-                    <DropdownItem 
-                      active={timeFrame === '1h'} 
-                      onClick={() => updateTimeFrame('1h')}
-                      className='py-2'
-                    >
-                      1h
-                    </DropdownItem>
-                  </DropdownMenu>
-                </Dropdown>) : `${defaultPriceChange} Change`}
-            </th>
-          </tr>
-        </thead>
-        <tbody>
+const AssetIndexTable = ({ assets, push, toggleDropdownOpen, isDropdownOpen, updateTimeFrame, 
+  timeFrame, tableHeader, defaultPriceChange, heading, pricesLoaded, pricesError, showSearch }) => (
+  <Fragment>
+    <Row className='justify-content-between align-items-end gutter-x-3'>
+      {showSearch && (<Col xs='12' sm={{ size: true, order: 2 }}>
+        <AssetSearchBox className='float-sm-right'/>
+      </Col>)}
+      <Col xs='12' sm={{ size: 'auto', order: 1 }}>
+        {heading && (heading)}
+      </Col>
+    </Row>
+    {pricesLoaded ? (
+      <Card className='mb-4'>
+        <CardHeader>
+          <h5>{tableHeader}</h5>
+        </CardHeader>
+        <CardBody className='p-0'>
           {assets.length === 0 ? (
-            <tr className='text-center'>
-              <td colSpan='10'>
-                <i>No assets to show. Please refresh.</i>
-              </td>
-            </tr>
-          ) : assets.map((asset) => (
-            <TableRow 
-              key={asset.symbol} 
-              asset={asset} 
-              push={push}
-              timeFrame={timeFrame}
-              defaultPriceChange={defaultPriceChange}
-            />
-          )
+            <p className='text-center mt-3'>
+              <i>No assets to show. Please refresh.</i>
+            </p>
+          ) : (
+            <Table hover striped responsive className={indexTable}>
+              <thead>
+                <tr>
+                  <th className='border-0'></th>
+                  <th className='pl-3 pl-md-5 border-0'>Coin</th>
+                  <th className='border-0'>Price</th>
+                  <th className='border-0'>Market Cap</th>
+                  <th className='border-0'>Volume</th>
+                  <th className='border-0'>Supply</th>
+                  <th className={classNames('border-0', !defaultPriceChange ? 'p-0' : null)}>
+                    {!defaultPriceChange ? (
+                      <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
+                        <DropdownToggle 
+                          className='py-0 px-2 flat position-relative d-inline' 
+                          style={{ top: '-4px' }}
+                          color='dark' 
+                          caret
+                        >
+                          {timeFrame} Change
+                        </DropdownToggle>
+                        <DropdownMenu className='p-0' right>
+                          <DropdownItem
+                            active={timeFrame === '7d'} 
+                            onClick={() => updateTimeFrame('7d')}
+                            className='py-2'
+                          >
+                      7d
+                          </DropdownItem>
+                          <DropdownItem className='m-0' divider/>
+                          <DropdownItem 
+                            active={timeFrame === '1d'} 
+                            onClick={() => updateTimeFrame('1d')}
+                            className='py-2'
+                          >
+                      1d
+                          </DropdownItem>
+                          <DropdownItem className='m-0' divider/>
+                          <DropdownItem 
+                            active={timeFrame === '1h'} 
+                            onClick={() => updateTimeFrame('1h')}
+                            className='py-2'
+                          >
+                      1h
+                          </DropdownItem>
+                        </DropdownMenu>
+                      </Dropdown>) : `${defaultPriceChange} Change`}
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {assets.map((asset) => (
+                  <TableRow 
+                    key={asset.symbol} 
+                    asset={asset} 
+                    push={push}
+                    timeFrame={timeFrame}
+                    defaultPriceChange={defaultPriceChange}
+                  />
+                )
+                )}
+              </tbody>
+            </Table>
           )}
-        </tbody>
-      </Table>
-    </CardBody>
-  </Card>
+        </CardBody>
+      </Card>) : (
+      <Loading center label='Loading market data...' error={pricesError}/>
+    )}
+  </Fragment>
 )
 
 export default compose(
   setDisplayName('AssetIndexTable'),
-  connect(null, {
+  connect(createStructuredSelector({
+    pricesLoaded: areAssetPricesLoaded,
+    pricesError: getAssetPricesError, 
+  }),{
     push: pushAction
   }),
   setPropTypes({
     assets: PropTypes.arrayOf(PropTypes.object).isRequired,
     tableHeader: PropTypes.node,
-    defaultPriceChange: PropTypes.string
+    defaultPriceChange: PropTypes.string,
+    heading: PropTypes.node,
+    showSearch: PropTypes.bool
   }),
   defaultProps({
     assets: [],
     tableHeader: 'Assets',
-    defaultPriceChange: undefined
+    defaultPriceChange: undefined,
+    heading: undefined,
+    showSearch: true
   }),
   withState('timeFrame', 'updateTimeFrame', ({ defaultPriceChange }) => {
     if (defaultPriceChange) {

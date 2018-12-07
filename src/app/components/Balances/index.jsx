@@ -63,7 +63,7 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen, ha
         </CardHeader>
         <AssetTable assetRows={assetRows}/>
       </Card>
-      <Card className='mt-3'>
+      {assetRows.length > 0 && (<Card className='mt-3'>
         <CardHeader>
           <h5>Distribution</h5>
         </CardHeader>
@@ -76,7 +76,7 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen, ha
           )}
           <PieChart portfolio={wallet} />
         </CardBody>
-      </Card>
+      </Card>)}
     </Fragment>
   )
 }

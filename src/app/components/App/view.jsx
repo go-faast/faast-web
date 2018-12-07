@@ -11,6 +11,8 @@ import TradeDetailModal from 'Components/TradeDetailModal'
 import SwapWidget from 'Components/SwapWidget'
 import AssetDetail from 'Components/AssetDetail'
 import AssetIndex from 'Components/AssetIndex'
+import AssetWatchlist from 'Components/AssetWatchlist'
+import AssetTrending from 'Components/AssetTrending'
 
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
@@ -36,8 +38,8 @@ const AppView = ({ hasNoWallets }) => (
       <Route path={viewOnlyAddress.path} component={SearchResults}/>
       <Route path={swapWidget.path} component={SwapWidget}/>
       <Route path={tradeHistory.path} component={TradeHistory}/>
-      <Route path={watchlist.path} component={AssetIndex}/>
-      <Route path={trending.path} component={AssetIndex}/>
+      <Route path={watchlist.path} component={AssetWatchlist}/>
+      <Route path={trending.path} component={AssetTrending}/>
       <Route path={assetDetail.path} component={AssetDetail}/>
       <Route path={assetIndex.path} component={AssetIndex}/>
       

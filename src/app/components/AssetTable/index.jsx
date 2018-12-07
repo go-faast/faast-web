@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { push as pushAction } from 'react-router-redux'
 import { connect } from 'react-redux'
 import { compose, setDisplayName, setPropTypes } from 'recompose'
-import { Table } from 'reactstrap'
+import { Table, Button } from 'reactstrap'
 import classNames from 'class-names'
 
 import routes from 'Routes'
@@ -73,26 +73,28 @@ export default compose(
     assetRows: PropTypes.arrayOf(PropTypes.object).isRequired,
   })
 )(({ assetRows, push }) => (
-  <Table hover striped responsive className={tableStyle}>
-    <thead>
-      <tr>
-        <th className='border-0'></th>
-        <th className='border-0'><h6>Asset</h6></th>
-        <th className='border-0'><h6>Units</h6></th>
-        <th className='border-0'><h6>Holdings</h6></th>
-        <th className={classNames(expandedOnly, 'border-0')}><h6>Weight</h6></th>
-        <th className='border-0'><h6>Price</h6></th>
-        <th className={classNames(expandedOnly, 'border-0')}><h6>24h change</h6></th>
-      </tr>
-    </thead>
-    <tbody>
-      {assetRows.length === 0 ? (
-        <tr className='text-center'>
-          <td colSpan='10'>
-            <i>No assets to show</i>
-          </td>
-        </tr>
-      ) : renderAssetRows({ assetRows, push })}
-    </tbody>
-  </Table>
+  <Fragment>
+    {assetRows.length === 0 ? (
+      <p className='text-center mt-3'>
+        <i>No assets to show</i>
+      </p>
+    ) : (
+      <Table hover striped responsive className={tableStyle}>
+        <thead>
+          <tr>
+            <th className='border-0'></th>
+            <th className='border-0'><h6>Asset</h6></th>
+            <th className='border-0'><h6>Units</h6></th>
+            <th className='border-0'><h6>Holdings</h6></th>
+            <th className={classNames(expandedOnly, 'border-0')}><h6>Weight</h6></th>
+            <th className='border-0'><h6>Price</h6></th>
+            <th className={classNames(expandedOnly, 'border-0')}><h6>24h change</h6></th>
+          </tr>
+        </thead>
+        <tbody>
+          {renderAssetRows({ assetRows, push })}
+        </tbody>
+      </Table>
+    )}
+  </Fragment>
 ))
