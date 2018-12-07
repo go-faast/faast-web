@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { push as pushAction } from 'react-router-redux'
 import { connect } from 'react-redux'
 import { compose, setDisplayName, setPropTypes } from 'recompose'
-import { Table, Button } from 'reactstrap'
+import { Table } from 'reactstrap'
 import classNames from 'class-names'
 
 import routes from 'Routes'

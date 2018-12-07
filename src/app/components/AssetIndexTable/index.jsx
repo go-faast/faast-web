@@ -3,7 +3,7 @@ import routes from 'Routes'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { push as pushAction } from 'react-router-redux'
-import { compose, setDisplayName, setPropTypes, defaultProps, withState } from 'recompose'
+import { compose, setDisplayName, setPropTypes, defaultProps, withState, withHandlers } from 'recompose'
 import { Table, Media, Dropdown, DropdownToggle, DropdownMenu, 
   DropdownItem, Card, CardHeader, CardBody, Col, Row } from 'reactstrap'
 import PropTypes from 'prop-types'
@@ -18,10 +18,13 @@ import Expandable from 'Components/Expandable'
 import WatchlistStar from 'Components/WatchlistStar'
 import AssetSearchBox from 'Components/AssetSearchBox'
 import Loading from 'Components/Loading'
+import Icon from 'Components/Icon'
 
+import PriceArrowIconSvg from 'Img/price-arrow.svg?inline'
+import { sortObjOfArray } from 'Utilities/helpers'
 import { areAssetPricesLoaded, getAssetPricesError } from 'Selectors'
 
-import { indexTable, mediaBody } from './style'
+import { indexTable, mediaBody, sortingArrow } from './style'
 
 const TableRow = ({ asset: { symbol, availableSupply, name,
   marketCap, price, change24, volume24, change7d, change1 }, timeFrame, push, defaultPriceChange, ...props }) => {
@@ -106,8 +109,10 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
   )
 }
 
-const AssetIndexTable = ({ assets, push, toggleDropdownOpen, isDropdownOpen, updateTimeFrame, 
-  timeFrame, tableHeader, defaultPriceChange, heading, pricesLoaded, pricesError, showSearch }) => (
+const AssetIndexTable = ({ assetList, push, toggleDropdownOpen, isDropdownOpen, updateTimeFrame, 
+  timeFrame, tableHeader, defaultPriceChange, heading, pricesLoaded, pricesError, showSearch, handleSortKey,
+  sortKey, sortDesc
+}) => (
   <Fragment>
     <Row className='justify-content-between align-items-end gutter-x-3'>
       {showSearch && (<Col xs='12' sm={{ size: true, order: 2 }}>
@@ -123,7 +128,7 @@ const AssetIndexTable = ({ assets, push, toggleDropdownOpen, isDropdownOpen, upd
           <h5>{tableHeader}</h5>
         </CardHeader>
         <CardBody className='p-0'>
-          {assets.length === 0 ? (
+          {assetList.length === 0 ? (
             <p className='text-center mt-3'>
               <i>No assets to show. Please refresh.</i>
             </p>
@@ -132,11 +137,21 @@ const AssetIndexTable = ({ assets, push, toggleDropdownOpen, isDropdownOpen, upd
               <thead>
                 <tr>
                   <th className='border-0'></th>
-                  <th className='pl-3 pl-md-5 border-0'>Coin</th>
-                  <th className='border-0'>Price</th>
-                  <th className='border-0'>Market Cap</th>
-                  <th className='border-0'>Volume</th>
-                  <th className='border-0'>Supply</th>
+                  <th onClick={() => handleSortKey('name')} className='pl-3 pl-md-5 border-0'>
+                    Coin {sortKey === 'name' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
+                  </th>
+                  <th onClick={() => handleSortKey('price')} className='border-0'>
+                    Price {sortKey === 'price' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
+                  </th>
+                  <th onClick={() => handleSortKey('marketCap')} className='border-0'>
+                    Market Cap {sortKey === 'marketCap' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
+                  </th>
+                  <th onClick={() => handleSortKey('volume24')} className='border-0'>
+                    Volume {sortKey === 'volume24' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
+                  </th>
+                  <th onClick={() => handleSortKey('availableSupply')} className='border-0'>
+                    Supply {sortKey === 'availableSupply' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
+                  </th>
                   <th className={classNames('border-0', !defaultPriceChange ? 'p-0' : null)}>
                     {!defaultPriceChange ? (
                       <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
@@ -178,7 +193,7 @@ const AssetIndexTable = ({ assets, push, toggleDropdownOpen, isDropdownOpen, upd
                 </tr>
               </thead>
               <tbody>
-                {assets.map((asset) => (
+                {assetList.map((asset) => (
                   <TableRow 
                     key={asset.symbol} 
                     asset={asset} 
@@ -219,6 +234,28 @@ export default compose(
     defaultPriceChange: undefined,
     heading: undefined,
     showSearch: true
+  }),
+  withState('assetList', 'updateAssetList', ({ assets }) => assets),
+  withState('sortKey', 'updateSortKey', 'marketCap'),
+  withState('sortDesc', 'updateSortOrder', true),
+  withHandlers({
+    handleSort: ({ assetList, updateAssetList, updateSortOrder, sortDesc, sortKey: currentSortKey }) => (sortKey) => {
+      let order
+      if (currentSortKey == sortKey) {
+        sortDesc = !sortDesc
+      } else {
+        sortDesc = true
+      }
+      order = sortDesc ? 'desc' : 'asc'
+      updateSortOrder(sortDesc)
+      return updateAssetList(sortObjOfArray(assetList, sortKey, order))
+    }
+  }),
+  withHandlers({
+    handleSortKey: ({ updateSortKey, handleSort }) => (sortKey) => {
+      updateSortKey(sortKey)
+      return handleSort(sortKey)
+    }
   }),
   withState('timeFrame', 'updateTimeFrame', ({ defaultPriceChange }) => {
     if (defaultPriceChange) {
