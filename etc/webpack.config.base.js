@@ -2,6 +2,7 @@ const path = require('path')
 const webpack = require('webpack')
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const convPaths = require('convert-tsconfig-paths-to-webpack-aliases').default
 
 const {
@@ -90,7 +91,10 @@ module.exports = function (stage, outputPathPrefix = '') {
       resourceQuery: /worker/,
       loader: 'worker-loader',
       options: {
-        name: path.join(outputPathPrefix, bundleOutputPath, 'worker.[hash:8].js')
+        name: path.join(outputPathPrefix, bundleOutputPath, 'worker.[hash:8].js'),
+        // Web workers break when using dev proxy because cross-origin isn't
+        // allowed. Override public path to force same origin
+        publicPath: isDev ? '/' : undefined,
       }
     }, {
       exclude: /node_modules/,
@@ -136,11 +140,21 @@ module.exports = function (stage, outputPathPrefix = '') {
       __filename: true,
     },
     plugins: [
-      new OptimizeCssAssetsPlugin(),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
         'process.env.IPFS': JSON.stringify(isIpfs),
       }),
+      ...(stage !== 'prod' ? [] : [
+        new OptimizeCssAssetsPlugin(),
+        new UglifyJsPlugin({
+          sourceMap: true,
+          uglifyOptions: {
+            mangle: {
+              reserved: ['BigInteger', 'ECPair', 'Point']
+            }
+          }
+        }),
+      ])
     ],
     devServer: {
       https: useHttps,

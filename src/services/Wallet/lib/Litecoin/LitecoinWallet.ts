@@ -41,6 +41,4 @@ export default abstract class LitecoinWallet extends BitcoreWallet {
       }))
   }
 
-  isReadOnly() { return true }
-
 }

@@ -1,9 +1,9 @@
 import { createSelector } from 'reselect'
-import { union } from 'lodash'
+import { union, flatMap } from 'lodash'
 
 import { ZERO, toUnit, toPercentage } from 'Utilities/convert'
 import { fixPercentageRounding, reduceByKey, mapValues } from 'Utilities/helpers'
-import { createItemSelector, selectItemId } from 'Utilities/selector'
+import { createItemSelector, selectItemId, fieldSelector } from 'Utilities/selector'
 
 import { MultiWallet } from 'Services/Wallet'
 import { getAllAssets, areAssetPricesLoaded, getAssetPricesError } from './asset'
@@ -29,9 +29,11 @@ const doGetWallet = (walletState, id) => {
       balancesLoaded = true
     }
   }
+  const transitiveNestedWalletIds = flatMap(nestedWallets, ({ id, transitiveNestedWalletIds }) => [id, ...transitiveNestedWalletIds])
   return {
     ...wallet,
     nestedWallets,
+    transitiveNestedWalletIds,
     balances,
     balancesLoaded,
     balancesUpdating,
@@ -46,6 +48,7 @@ export const getWallet = createItemSelector(
   selectItemId,
   doGetWallet
 )
+export const getWalletOrDefault = createItemSelector(getWallet, (wallet) => wallet || {})
 
 export const getAllWallets = (state) => mapValues(getWalletState(state), (_, id) => getWallet(state, id))
 export const getAllWalletsArray = createSelector(getAllWallets, Object.values)
@@ -57,10 +60,7 @@ export const getLeafWalletIds = createSelector(
     .map(({ id }) => id)
 )
 
-export const getAllWalletsBasedOnSymbol = createItemSelector(
-  getAllWalletsArray,
-  selectItemId,
-  (wallets, symbol) => wallets.filter(({ id, supportedAssets, nestedWalletIds }) => id !== 'default' && supportedAssets.includes(symbol) && nestedWalletIds.length == 0))
+export const isWalletAdded = createItemSelector(getAllWalletIds, selectItemId, (walletIds, walletId) => walletIds.includes(walletId))
 
 export const getWalletParents = createItemSelector(
   getAllWallets,
@@ -70,21 +70,24 @@ export const getWalletParents = createItemSelector(
     [])
 )
 
-export const areWalletBalancesUpdating = createItemSelector(
-  getWallet,
-  ({ balancesUpdating }) => balancesUpdating
-)
+export const areWalletBalancesUpdating = createItemSelector(getWallet, fieldSelector('balancesUpdating'))
+export const areWalletBalancesLoaded = createItemSelector(getWallet, fieldSelector('balancesLoaded'))
+export const getWalletBalancesError = createItemSelector(getWallet, fieldSelector('balancesError'))
+export const getWalletBalances = createItemSelector(getWallet, fieldSelector('balances'))
+export const getWalletNestedIds = createItemSelector(getWallet, fieldSelector('nestedWalletIds'))
+export const getWalletTransitiveNestedIds = createItemSelector(getWallet, fieldSelector('transitiveNestedWalletIds'))
+export const getWalletLabel = createItemSelector(getWallet, fieldSelector('label'))
 
 export const areWalletHoldingsLoaded = createItemSelector(
-  getWallet,
+  areWalletBalancesLoaded,
   areAssetPricesLoaded,
-  (wallet, assetPricesLoaded) => wallet && wallet.balancesLoaded && assetPricesLoaded
+  (balancesLoaded, assetPricesLoaded) => balancesLoaded && assetPricesLoaded
 )
 
 export const getWalletHoldingsError = createItemSelector(
-  getWallet,
+  getWalletBalancesError,
   getAssetPricesError,
-  (wallet, assetPricesError) => wallet && wallet.balancesError || assetPricesError
+  (balancesError, assetPricesError) => balancesError || assetPricesError
 )
 
 export const getWalletWithHoldings = createItemSelector(

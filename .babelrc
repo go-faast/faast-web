@@ -1,5 +1,16 @@
 {
   "extends": "react-static/.babelrc",
+  "presets": [
+    ["env", {
+      "modules": false,
+      "targets": {
+        "node": "current",
+        "uglify": true
+      }
+    }],
+    "stage-0",
+    "react"
+  ],
   "plugins": [
     "react-hot-loader/babel",
     "transform-object-rest-spread",

@@ -32,34 +32,43 @@ const AssetSearchForm = reduxForm({
 const AssetCol = ({
   asset, handleSelect
 }) => {
-  const { symbol, name, disabled, disabledMessage } = asset
+  const { symbol, name, disabled, disabledMessage, restricted } = asset
   return (
     <Col xs='4' lg='3'>
       <Button color='dark' size='sm' onClick={() => handleSelect(asset)} disabled={disabled}
         className={style.assetButton}>
         <CoinIcon symbol={symbol} size='lg' className={style.assetButtonIcon} />
         <div>{name}</div>
-        {disabled && (
+        {disabled && !restricted && (
           <div className={style.assetDisabledMessage}>{`(${disabledMessage})`}</div>
+        )}
+        {restricted && disabled && (
+          <a 
+            href='https://medium.com/faast/faast-location-restrictions-9b14e100d828' 
+            target='_blank noopener noreferrer'
+            className={style.assetDisabledMessage}
+          >
+            {`(${disabledMessage})`}
+          </a>
         )}
       </Button>
     </Col>
   )
 }
 
-const AssetSelectorView = ({ assetList, handleSearchSubmit, handleSearchChange, handleSelect }) => (
+const AssetSelectorView = ({ results, handleSearchSubmit, handleSearchChange, handleSelect }) => (
   <div>
     <AssetSearchForm onSubmit={handleSearchSubmit} handleSearchChange={handleSearchChange}/>
     <div className={style.assetButtonContainer}>
       <Row className='gutter-1'>
-        {assetList.map((a) => (<AssetCol key={a.symbol} asset={a} handleSelect={handleSelect}/>))}
+        {results.map((a) => (<AssetCol key={a.symbol} asset={a} handleSelect={handleSelect}/>))}
       </Row>
     </div>
   </div>
 )
 
 AssetSelectorView.propTypes = {
-  assetList: PropTypes.array,
+  results: PropTypes.array,
   handleSelect: PropTypes.func,
   handleSearchSubmit: PropTypes.func,
   handleSearchChange: PropTypes.func,

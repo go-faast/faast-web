@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react'
 import { push as pushAction } from 'react-router-redux'
 import { connect } from 'react-redux'
-import { Table } from 'reactstrap'
-import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers } from 'recompose'
-import PropTypes from 'prop-types'
+import { Table, Card, CardHeader } from 'reactstrap'
+import { compose, setDisplayName, withHandlers, defaultProps, setPropTypes } from 'recompose'
 import classNames from 'class-names'
+import PropTypes from 'prop-types'
 
 import routes from 'Routes'
 import Units from 'Components/Units'
@@ -27,7 +27,7 @@ const TableRow = ({
   swap: { sendAmount, sendSymbol, receiveAmount, receiveSymbol, rate, createdAtFormatted },
   ...props
 }) => (
-  <tr {...props}>
+  <tr className='cursor-pointer' {...props}>
     <td>{createStatusLabel(swap)}</td>
     <td className='d-none d-sm-table-cell'>{createdAtFormatted}</td>
     <td className='d-none d-sm-table-cell'>
@@ -50,30 +50,37 @@ const TableRow = ({
   </tr>
 )
 
-const TradeTable = ({ swaps, handleClick }) => (
-  <Table hover striped responsive className={tradeTable}>
-    <thead>
-      <tr>
-        <th></th>
-        <th className='d-none d-sm-table-cell'>Date</th>
-        <th className='d-none d-sm-table-cell'>Pair</th>
-        <th>Received</th>
-        <th>Cost</th>
-        <th>Rate</th>
-      </tr>
-    </thead>
-    <tbody>
-      {swaps.length === 0 ? (
-        <tr className='text-center'>
-          <td colSpan='10'>
-            <i>No previous trades to show</i>
-          </td>
-        </tr>
-      ) : swaps.map((swap) => !swap.orderId ? null : (
-        <TableRow key={swap.orderId} swap={swap} onClick={() => handleClick(swap.orderId)}/>
-      ))}
-    </tbody>
-  </Table>
+const TradeTable = ({ handleClick, hideIfNone, tableTitle, 
+  swaps, tableHeadings, zeroOrdersMessage }) => (
+  <Fragment>
+    {hideIfNone && swaps.length == 0 ? null : (
+      <Card className='my-3'>
+        <CardHeader>
+          <h5>{tableTitle}</h5>
+        </CardHeader>
+        <Table hover striped responsive className={tradeTable}>
+          <thead>
+            <tr>
+              {tableHeadings.map(({ text, mobile }) => (
+                <th key={text} className={!mobile ? 'd-none d-sm-table-cell border-0' : 'border-0'}>{text}</th>)
+              )}
+            </tr>
+          </thead>
+          <tbody>
+            {swaps.length === 0 ? (
+              <tr className='text-center'>
+                <td colSpan='10'>
+                  <i>{zeroOrdersMessage}</i>
+                </td>
+              </tr>
+            ) : swaps.map((swap) => !swap.orderId ? null : (
+              <TableRow key={swap.orderId} swap={swap} onClick={() => handleClick(swap.orderId)}/>
+            ))}
+          </tbody>
+        </Table>
+      </Card>
+    )}
+  </Fragment>
 )
 
 
@@ -93,14 +100,22 @@ const createStatusLabel = (swap) => {
 
 export default compose(
   setDisplayName('TradeTable'),
-  connect(null, {
-    push: pushAction
-  }),
   setPropTypes({
-    swaps: PropTypes.arrayOf(PropTypes.object).isRequired
+    hideIfNone: PropTypes.bool,
+    tableTitle: PropTypes.string,
+    tableHeadings: PropTypes.arrayOf(PropTypes.object),
+    zeroOrdersMessage: PropTypes.string,
+    swaps: PropTypes.arrayOf(PropTypes.object)
   }),
   defaultProps({
-    swaps: []
+    tableTitle: 'Orders',
+    hideIfNone: false,
+    tableHeadings: [],
+    zeroOrdersMessage: 'No orders to show',
+    swaps: [{}]
+  }),
+  connect(null, {
+    push: pushAction
   }),
   withHandlers({
     handleClick: ({ push }) => (orderId) => push(routes.tradeDetail(orderId))

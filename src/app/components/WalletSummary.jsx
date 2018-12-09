@@ -1,50 +1,22 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Row, Col } from 'reactstrap'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
-import { Link } from 'react-router-dom'
 
-import IconLabel from 'Components/IconLabel'
-import Spinner from 'Components/Spinner'
-import Expandable from 'Components/Expandable'
-
-import routes from 'Routes'
 import { getWallet, getWalletWithHoldings } from 'Selectors'
-import display from 'Utilities/display'
+import WalletLabel from 'Components/WalletLabel'
 
 export const WalletSummary = ({
-  hideIcon, hideBalance, showLink, labelClass,
-  wallet: { id, label, address, typeLabel, totalFiat, iconProps, holdingsLoaded, holdingsError }
+  hideIcon, hideBalance, wallet, showLink, labelTag,
 }) => {
-  const labelNode = id === 'default' ? (<i>{label}</i>) : label
   return (
-    <Row className='gutter-0'>
-      <Col xs='12' className={labelClass}>
-        {showLink && address ? (
-          <Link to={routes.viewOnlyAddress(address)}>
-            {labelNode}
-          </Link>
-        ) : labelNode}
-      </Col>
-      <Col>
-        <IconLabel label={typeLabel} iconProps={!hideIcon && iconProps} className='text-muted'/>
-      </Col>
-      {!hideBalance && (
-        <Col xs='auto'>
-          {(holdingsLoaded || holdingsError)
-            ? (<span>
-              {!holdingsLoaded && holdingsError && (
-                <Expandable
-                  shrunk={<i className='fa fa-exclamation-triangle text-danger mr-2'/>}
-                  expanded={holdingsError}/>
-              )}
-              {display.fiat(totalFiat)}
-            </span>)
-            : (<Spinner size='sm'/>)}
-        </Col>
-      )}
-    </Row>
+    <WalletLabel stacked
+      wallet={wallet}
+      showBalance={!hideBalance}
+      hideIcon={hideIcon}
+      showLink={showLink}
+      tag={labelTag}
+    />
   )
 }
 
@@ -57,8 +29,9 @@ WalletSummary.propTypes = {
 }
 
 WalletSummary.defaultProps = {
-  icon: false,
-  showBalance: false,
+  hideIcon: false,
+  hideBalance: false,
+  showLink: false,
   labelTag: 'div',
 }
 

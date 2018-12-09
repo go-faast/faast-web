@@ -4,31 +4,39 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { toastr } from 'react-redux-toastr'
 import Fuse from 'fuse.js'
+import { debounce } from 'debounce'
 import AssetSelectorView from './view'
 import { sortByProperty } from 'Utilities/helpers'
-import { getAllAssetsArray } from 'Selectors/asset'
+import { getAllAssetsArray, isAppRestricted } from 'Selectors/asset'
+
+const DEBOUNCE_WAIT = 400
+const MAX_RESULTS = 50
 
 function applySortOrder (list) {
   return sortByProperty(list, 'disabled')
 }
 
 function getInitState (props) {
-  const { assets, supportedAssetSymbols, portfolioSymbols, isAssetDisabled } = props
+  const { assets, supportedAssetSymbols, portfolioSymbols, isAssetDisabled, isAppRestricted } = props
   let assetList = [...assets]
     .map((a) => {
       const unsupportedWallet = !supportedAssetSymbols.includes(a.symbol)
       const alreadyInPortfolio = portfolioSymbols.includes(a.symbol)
       const swapDisabled = isAssetDisabled(a)
-      const disabled = swapDisabled || unsupportedWallet || alreadyInPortfolio
+      const restricted = a.restricted && isAppRestricted
+      const disabled = swapDisabled || unsupportedWallet || alreadyInPortfolio || restricted
       const disabledMessage = swapDisabled
         ? 'coming soon'
-        : (unsupportedWallet
-          ? 'unsupported wallet'
-          : (alreadyInPortfolio
-            ? 'already added'
-            : 'unavailable'))
+        : (restricted ? 
+          'unavailable in your location' : 
+          (unsupportedWallet
+            ? 'unsupported wallet'
+            : (alreadyInPortfolio
+              ? 'already added'
+              : 'unavailable')))
       return {
         ...a,
+        restricted,
         disabled,
         disabledMessage,
         swapDisabled,
@@ -46,11 +54,12 @@ function getInitState (props) {
     minMatchCharLength: 2,
     keys: ['symbol', 'name']
   })
+  const assetListDefault = assetList.filter((a) => !isAssetDisabled(a))
   return {
     searchQuery: '',
     fuse,
-    assetList,
-    assetListOriginal: assetList
+    results: assetListDefault,
+    assetListDefault,
   }
 }
 
@@ -60,28 +69,36 @@ class AssetSelector extends Component {
     this.handleSelect = this.handleSelect.bind(this)
     this.handleSearchChange = this.handleSearchChange.bind(this)
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this)
+    this.performSearch = debounce(this.performSearch.bind(this), DEBOUNCE_WAIT)
     this.state = getInitState(props)
+  }
+
+  performSearch (query) {
+    let results
+    if (!query) {
+      results = this.state.assetListDefault
+    } else {
+      results = this.state.fuse.search(query)
+      results = applySortOrder(results)
+      results = results.slice(0, MAX_RESULTS)
+    }
+    this.setState({
+      results,
+    })
   }
 
   handleSearchChange (event) {
     const query = event.target.value
-    let results
-    if (!query) {
-      results = this.state.assetListOriginal
-    } else {
-      results = this.state.fuse.search(query)
-      results = applySortOrder(results)
-    }
     this.setState({
       searchQuery: query,
-      assetList: results
     })
+    this.performSearch(query)
   }
 
   handleSearchSubmit () {
-    const { assetList, searchQuery } = this.state
-    if (searchQuery && assetList.length > 0) {
-      this.handleSelect(assetList[0])
+    const { results, searchQuery } = this.state
+    if (searchQuery && results.length > 0) {
+      this.handleSelect(results[0])
     }
   }
 
@@ -94,11 +111,11 @@ class AssetSelector extends Component {
   }
 
   render () {
-    const { assetList } = this.state
+    const { results } = this.state
     const { handleSelect, handleSearchSubmit, handleSearchChange } = this
     return (
       <AssetSelectorView
-        assetList={assetList}
+        results={results}
         handleSelect={handleSelect}
         handleSearchSubmit={handleSearchSubmit}
         handleSearchChange={handleSearchChange}
@@ -112,7 +129,7 @@ AssetSelector.propTypes = {
   selectAsset: PropTypes.func.isRequired,
   supportedAssetSymbols: PropTypes.arrayOf(PropTypes.string),
   portfolioSymbols: PropTypes.arrayOf(PropTypes.string),
-  isAssetDisabled: PropTypes.func
+  isAssetDisabled: PropTypes.func,
 }
 
 AssetSelector.defaultProps = {
@@ -123,4 +140,5 @@ AssetSelector.defaultProps = {
 
 export default connect(createStructuredSelector({
   assets: getAllAssetsArray,
+  isAppRestricted: isAppRestricted,
 }))(AssetSelector)

@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react'
 import {
-  compose, setDisplayName, setPropTypes, defaultProps, withHandlers, withState, lifecycle,
+  compose, setDisplayName, setPropTypes, defaultProps, withHandlers, withState, lifecycle, withProps,
 } from 'recompose'
 import { connect } from 'react-redux'
 import {
@@ -11,15 +11,17 @@ import PropTypes from 'prop-types'
 import { push as pushAction } from 'react-router-redux'
 import classNames from 'class-names'
 
+import { sortByProperty } from 'Utilities/helpers'
 import { getWalletForAsset } from 'Utilities/wallet'
-import { getAllWalletsBasedOnSymbol } from 'Selectors/wallet'
+import propTypes from 'Utilities/propTypes'
+import { getCurrentPortfolioWalletsForSymbol, areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
 
 import withToggle from 'Hoc/withToggle'
 import ReduxFormField from 'Components/ReduxFormField'
 import WalletLabel from 'Components/WalletLabel'
 
 const WalletSelectField = ({
-  symbol, handleSelect, dropDownStyle, dropDownText,
+  tag: Tag, symbol, handleSelect, dropDownStyle, disableNoBalance, walletHasBalance, showBalances,
   toggleDropdownOpen, isDropdownOpen, connectedWallets, handleConnect,
   selectedWallet, handleSelectManual, addressFieldName, walletIdFieldName, 
   ...props,
@@ -30,9 +32,10 @@ const WalletSelectField = ({
       className={classNames('form-control', className, 'lh-0')} verticalAlign='middle'
       iconProps={{ width: '1.5em', height: '1.5em' }}/>
   )
+  const dropDownText = !selectedWallet ? 'External' : 'Wallet'
   return (
     <Fragment>
-      <ReduxFormField {...props}
+      <Tag {...props}
         name={addressFieldName}
         autoCorrect='false'
         autoCapitalize='false'
@@ -47,8 +50,9 @@ const WalletSelectField = ({
               {connectedWallets.map((wallet) => (
                 <DropdownItem key={wallet.id}
                   onClick={() => handleSelect(wallet)}
-                  active={selectedWallet && selectedWallet.id === wallet.id}>
-                  <WalletLabel wallet={wallet}/>
+                  active={selectedWallet && selectedWallet.id === wallet.id}
+                  disabled={disableNoBalance && !walletHasBalance(wallet)}>
+                  <WalletLabel wallet={wallet} showBalance={showBalances && symbol}/>
                 </DropdownItem>
               ))}
               <DropdownItem onClick={handleSelectManual} active={!selectedWallet}>
@@ -73,18 +77,23 @@ export default compose(
     walletIdFieldName: PropTypes.string.isRequired,
     change: PropTypes.func.isRequired, // change prop passed into decorated redux-form component
     untouch: PropTypes.func.isRequired, // untouch prop passed into decorated redux-form component
-    dropDownText: PropTypes.string,
     dropDownStyle: PropTypes.object,
     handleSelect: PropTypes.func,
     symbol: PropTypes.string,
+    tag: propTypes.tag,
+    disableNoBalance: PropTypes.bool,
+    showBalances: PropTypes.bool,
   }),
   defaultProps({
-    dropDownText: 'Wallet',
     dropDownStyle: {},
     symbol: '',
+    tag: ReduxFormField,
+    disableNoBalance: false,
+    showBalances: true,
   }),
   connect(createStructuredSelector({
-    connectedWallets: (state, { symbol }) => getAllWalletsBasedOnSymbol(state, symbol),
+    connectedWallets: (state, { symbol }) => getCurrentPortfolioWalletsForSymbol(state, symbol),
+    balancesLoaded: areCurrentPortfolioBalancesLoaded,
   }), {
     push: pushAction
   }),
@@ -108,18 +117,33 @@ export default compose(
       return walletInstance.getFreshAddress(symbol)
         .then((address) => change(addressFieldName, address))
     },
+    walletHasBalance: ({ symbol }) => ({ balances }) => Boolean(balances[symbol] && balances[symbol].gt(0))
   }),
+  withProps(({ connectedWallets, disableNoBalance, walletHasBalance }) => ({
+    selectableWallets: disableNoBalance ? connectedWallets.filter(walletHasBalance) : connectedWallets
+  })),
   withHandlers({
     handleSelectManual: ({ handleSelect }) => () => handleSelect(null),
-    selectDefault: ({ connectedWallets, handleSelect }) => () => handleSelect(connectedWallets[0] || null)
+    selectDefault: ({ selectableWallets, handleSelect }) => () => {
+      const ordered = sortByProperty(selectableWallets, 'isReadOnly')
+      handleSelect(ordered[0] || null) // Select first non view only wallet
+    },
   }),
   lifecycle({
     componentWillMount() {
       this.props.selectDefault()
     },
     componentDidUpdate(prevProps) {
-      const { symbol, selectedWallet, connectedWallets, selectDefault } = this.props
-      if (prevProps.symbol !== symbol && !connectedWallets.includes(selectedWallet)) {
+      const { symbol, selectedWallet, selectableWallets, selectDefault, handleSelect, balancesLoaded } = this.props
+      const symbolChange = prevProps.symbol !== symbol
+      if (symbolChange) {
+        if (!selectableWallets.includes(selectedWallet)) {
+          selectDefault()
+        } else {
+          // reselect current to get new address for symbol
+          handleSelect(selectedWallet)
+        }
+      } else if (!selectedWallet && !prevProps.balancesLoaded && balancesLoaded) {
         selectDefault()
       }
     }

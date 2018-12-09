@@ -25,7 +25,12 @@ const renderAssetRows = ({ assetRows, push }) => {
     const fiatValue = display.fiat(fiat)
     const fiatPrice = display.fiat(price)
     return (
-      <tr key={symbol} onClick={() => push(routes.assetDetail(symbol))} tabIndex='0'>
+      <tr 
+        className='cursor-pointer'
+        key={symbol} 
+        onClick={() => push(routes.assetDetail(symbol))} 
+        tabIndex='0'
+      >
         <td>
           <CoinIcon symbol={symbol} width='1.5em' height='1.5em' size={1} inline/>
           <span className='mx-2 text-truncate'>{displayName}</span>
@@ -62,15 +67,15 @@ export default compose(
     assetRows: PropTypes.arrayOf(PropTypes.object).isRequired,
   })
 )(({ assetRows, push }) => (
-  <Table hover striped responsive className={classNames(tableStyle, 'table-accordian')}>
+  <Table hover striped responsive className={tableStyle}>
     <thead>
       <tr>
-        <th><h6>Asset</h6></th>
-        <th><h6>Units</h6></th>
-        <th><h6>Holdings</h6></th>
-        <th className={expandedOnly}><h6>Weight</h6></th>
-        <th><h6>Price</h6></th>
-        <th className={expandedOnly}><h6>24h change</h6></th>
+        <th className='border-0'><h6>Asset</h6></th>
+        <th className='border-0'><h6>Units</h6></th>
+        <th className='border-0'><h6>Holdings</h6></th>
+        <th className={classNames(expandedOnly, 'border-0')}><h6>Weight</h6></th>
+        <th className='border-0'><h6>Price</h6></th>
+        <th className={classNames(expandedOnly, 'border-0')}><h6>24h change</h6></th>
       </tr>
     </thead>
     <tbody>
