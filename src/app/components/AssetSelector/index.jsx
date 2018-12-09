@@ -6,7 +6,7 @@ import { toastr } from 'react-redux-toastr'
 import Fuse from 'fuse.js'
 import AssetSelectorView from './view'
 import { sortByProperty } from 'Utilities/helpers'
-import { getAllAssetsArray } from 'Selectors'
+import { getAllAssetsArray } from 'Selectors/asset'
 
 function applySortOrder (list) {
   return sortByProperty(list, 'disabled')

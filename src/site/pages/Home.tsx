@@ -57,7 +57,7 @@ export default compose<Props, {}>(
           paddingTop: '220px',
           backgroundColor: 'rgba(0,26,23)',
         }}>
-        <SwapWidget />
+        <SwapWidget/>
         <h1 className='hero-title' style={{ fontWeight: 'normal' }}>Trade Crypto</h1>
         <p className='hero-subtitle' style={{ fontWeight: 'normal', width: '90%' }}>
           It’s never been this easy to build a diversified cryptocurrency portfolio<br/>

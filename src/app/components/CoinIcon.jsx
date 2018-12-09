@@ -3,7 +3,7 @@ import { compose, setDisplayName, setPropTypes, defaultProps, mapProps } from 'r
 import { connect } from 'react-redux'
 import { omit } from 'lodash'
 
-import { getAssetIconUrl } from 'Selectors'
+import { getAssetIconUrl } from 'Selectors/asset'
 import Icon from 'Components/Icon'
 
 import Erc20Svg from 'Img/coin/ERC20.svg?inline'

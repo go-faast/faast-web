@@ -31,6 +31,8 @@
       "Actions/*": ["src/app/actions/*"],
       "Hoc/*": ["src/app/hoc/*"],
       "Selectors/*": ["src/app/selectors/*"],
+      "Reducers/*": ["src/app/reducers/*"],
+      "Shared/*": ["src/app/shared/*"],
       "Routes/*": ["src/app/routes/*"],
       "Log/*": ["src/utilities/log/*"],
       "Types/*": ["src/types/*"]

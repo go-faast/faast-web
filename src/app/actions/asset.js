@@ -3,7 +3,7 @@ import { newScopedCreateAction } from 'Utilities/action'
 import log from 'Utilities/log'
 import Faast from 'Services/Faast'
 import { localStorageSetJson, localStorageGetJson } from 'Utilities/storage'
-import { isAssetPriceLoading, areAssetsLoading, areAssetPricesLoading } from 'Selectors'
+import { isAssetPriceLoading, areAssetsLoading, areAssetPricesLoading } from 'Selectors/asset'
 import config from 'Config'
 
 const createAction = newScopedCreateAction(__filename)

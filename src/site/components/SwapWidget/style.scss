@@ -1,22 +1,8 @@
-.container {
+.swapContainer {
     background: #1C1C1C;
-    max-width: 960px;
+    max-width: 650px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
     margin-top: 20px;
-}
-.assetAddOn {
-    span {
-        color: rgba(255, 255, 255, 0.9) !important;
-        background-color: #303030 !important;
-        border-color: #444444 !important;
-        z-index: 1;
-    }
-}
-.assetAddOnError {
-    span {
-        background-color: #BC1515 !important;
-        border-color: #e11919 !important;
-    }
 }
 button {
     cursor: pointer;
@@ -34,12 +20,12 @@ button {
         margin: 0;
     }
 }
-.reverse {
+.swap {
     border: none !important;
     margin: 0;
     background: transparent !important;
 }
-.reverse {
+.swap {
     svg {
         fill: #565656;
     }
@@ -61,6 +47,9 @@ button {
         color: #05B8AB;
     }
 }
+// .receive {
+//     border: 1px solid #6bada7;
+// }
 .submitButton {
     display:block;
     max-width: 519px;
@@ -127,7 +116,7 @@ button {
       display: block !important;
       margin: 25px auto 25px auto;
     }
-    .reverse {
+    .swap {
       display:block;
       margin: 15px auto 0 auto;
       transform: rotate(90deg)
