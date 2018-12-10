@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux'
 
-import asset from 'Reducers/asset'
+import asset from 'Shared/reducers/asset'
+import app from 'Shared/reducers/app'
 
 const reducer = combineReducers({
-  asset
+  asset,
+  app
 })
 
 export default reducer

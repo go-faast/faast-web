@@ -1,8 +1,12 @@
-.container {
-    background: #1C1C1C;
-    max-width: 650px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    margin-top: 20px;
+.swapContainer {
+    box-shadow: 10px 15px 10px 5px rgba(0,0,0,0.2);
+}
+.cardHeader {
+    background: #fff;
+    border: none !important;
+}
+.cardTitle {
+    color: #52658C;
 }
 button {
     cursor: pointer;
@@ -10,7 +14,8 @@ button {
 .asset {
     display: inline-block;
     vertical-align: middle;
-    width: 216px;
+    width: 140px;
+    height: 140px;
     min-height: 102px;
     line-height: 67px;
     p {

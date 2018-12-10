@@ -35,5 +35,15 @@ export const getAllAssets = createSelector(getAssetState, ({ data }) => mapValue
   }
 }))
 
+export const getAllAssetsArray = createSelector(getAllAssets, Object.values)
+
+export const areAssetsLoading = createSelector(getAssetState, ({ loading }) => loading)
+export const areAssetsLoaded = createSelector(getAssetState, ({ loaded }) => loaded)
+export const getAssetsLoadingError = createSelector(getAssetState, ({ loadingError }) => loadingError)
+
+export const areAssetPricesLoading = createSelector(getAssetState, ({ pricesLoading }) => pricesLoading)
+export const areAssetPricesLoaded = createSelector(getAssetState, ({ loaded, pricesLoaded }) => loaded && pricesLoaded)
+export const getAssetPricesError = createSelector(getAssetState, ({ loadingError, pricesError }) => loadingError || pricesError)
+
 export const getAsset = createItemSelector(getAllAssets, selectItemId, (allAssets, id) => allAssets[id])
 export const getAssetIconUrl = createItemSelector(getAsset, fieldSelector('iconUrl'))
