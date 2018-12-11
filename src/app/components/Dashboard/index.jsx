@@ -3,8 +3,9 @@ import { connect } from 'react-redux'
 import { Redirect, withRouter } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
 
+import routes from 'Routes'
 import {
-  getCurrentWalletWithHoldings, isDefaultPortfolioEmpty, getConnectedWalletsPendingSwaps
+  getCurrentWalletWithHoldings, isDefaultPortfolioEmpty, getConnectedWalletsRecentSwaps
 } from 'Selectors'
 import { updateAllHoldings, removePortfolio, defaultPortfolioId } from 'Actions/portfolio'
 
@@ -36,11 +37,11 @@ class Dashboard extends Component {
   }
 
   render () {
-    const { wallet, isDefaultPortfolioEmpty, pendingSwaps } = this.props
+    const { wallet, isDefaultPortfolioEmpty } = this.props
     const isViewOnly = wallet.isReadOnly
 
     if (isDefaultPortfolioEmpty && !isViewOnly) {
-      return (<Redirect to='/connect'/>)
+      return (<Redirect to={routes.connect()}/>)
     }
 
     const disableRemove = wallet.id === defaultPortfolioId
@@ -51,7 +52,6 @@ class Dashboard extends Component {
         viewOnly={isViewOnly}
         disableRemove={disableRemove}
         isDefaultPortfolioEmpty={isDefaultPortfolioEmpty}
-        pendingSwaps={pendingSwaps}
         {...this.props}
       />
     )
@@ -61,7 +61,7 @@ class Dashboard extends Component {
 const mapStateToProps = createStructuredSelector({
   wallet: getCurrentWalletWithHoldings,
   isDefaultPortfolioEmpty: isDefaultPortfolioEmpty,
-  pendingSwaps: getConnectedWalletsPendingSwaps
+  recentSwaps: getConnectedWalletsRecentSwaps,
 })
 
 const mapDispatchToProps = {

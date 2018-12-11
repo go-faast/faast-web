@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { createStructuredSelector } from 'reselect'
 import PropTypes from 'prop-types'
-import { Card, CardHeader, CardBody, Col, Row, Dropdown, DropdownMenu, DropdownToggle,
+import { Card, CardHeader, Col, Row, Dropdown, DropdownMenu, DropdownToggle,
   DropdownItem
 } from 'reactstrap'
 import classNames from 'class-names'
@@ -13,9 +13,7 @@ import { getWalletWithHoldings } from 'Selectors'
 import withToggle from 'Hoc/withToggle'
 
 import ChangePercent from 'Components/ChangePercent'
-import Address from 'Components/Address'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
-import PieChart from 'Components/PieChart'
 import AssetTable from 'Components/AssetTable'
 import ShareButton from 'Components/ShareButton'
 
@@ -112,20 +110,6 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
         </CardHeader>
         <AssetTable assetRows={assetRows}/>
       </Card>
-      {assetRows.length > 0 && (<Card className='mt-3'>
-        <CardHeader>
-          <h5>Distribution</h5>
-        </CardHeader>
-        <CardBody>
-          {address && (
-            <div className='text-right' style={{ lineHeight: 1 }}>
-              <Address address={address} />
-              <small className='text-muted'>address</small>
-            </div>
-          )}
-          <PieChart portfolio={wallet} />
-        </CardBody>
-      </Card>)}
     </Fragment>
   )
 }

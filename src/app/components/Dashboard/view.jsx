@@ -1,27 +1,24 @@
 import React from 'react'
 import {
-  Row, Col,
+  Row, Col, Card, CardHeader, CardBody,
 } from 'reactstrap'
 
 import Layout from 'Components/Layout'
-import BlockstackWelcome from 'Components/BlockstackWelcome'
 import Balances from 'Components/Balances'
 import Sidebar from 'Components/Sidebar'
 import WalletSelector from 'Components/WalletSelector'
-import TradeTable from 'Components/TradeTable'
-import { tableHeadings } from 'Components/TradeHistory'
+import Address from 'Components/Address'
+import PieChart from 'Components/PieChart'
+import SwapList from 'Components/SwapList'
 
 const DashboardView = (props) => {
   const {
-    wallet, viewOnly, toggleChart, openCharts, handleRemove, isDefaultPortfolioEmpty,
-    pendingSwaps
+    wallet, toggleChart, openCharts, handleRemove, isDefaultPortfolioEmpty,
+    recentSwaps
   } = props
 
   return (
     <Layout className='pt-3'>
-      {!viewOnly &&
-        <BlockstackWelcome />
-      }
       <Row className='gutter-3'>
         {!isDefaultPortfolioEmpty && (
           <Col xs='12' md='5' lg='4' xl='3'>
@@ -39,13 +36,27 @@ const DashboardView = (props) => {
                 handleRemove={handleRemove}
               />
             </Col>
-            <Col xs='12'>
-              <TradeTable 
-                tableTitle='Open Orders'
-                swaps={pendingSwaps}
-                tableHeadings={tableHeadings}
-                hideIfNone
-              />
+            <Col xs='12' lg='6'>
+              <SwapList
+                className='h-100'
+                header={'Recent Swaps'}
+                swaps={recentSwaps}/>
+            </Col>
+            <Col xs='12' lg='6'>
+              <Card>
+                <CardHeader>
+                  <h5>Distribution</h5>
+                </CardHeader>
+                <CardBody>
+                  {wallet.address && (
+                    <div className='text-right' style={{ lineHeight: 1 }}>
+                      <Address address={wallet.address} />
+                      <small className='text-muted'>address</small>
+                    </div>
+                  )}
+                  <PieChart portfolio={wallet} />
+                </CardBody>
+              </Card>
             </Col>
           </Row>
         </Col>

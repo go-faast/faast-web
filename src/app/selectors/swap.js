@@ -1,4 +1,6 @@
 import { createSelector } from 'reselect'
+import moment from 'moment'
+
 import { mapValues, dateSort } from 'Utilities/helpers'
 import {
   getSwapStatus, getSwapFriendlyError, getSwapRequiresSigning,
@@ -8,7 +10,6 @@ import { createItemSelector, selectItemId } from 'Utilities/selector'
 import { toBigNumber } from 'Utilities/convert'
 import { MultiWallet } from 'Services/Wallet'
 import { getAllWalletIds } from 'Selectors/wallet'
-import { formatDate } from 'Utilities/display'
 
 import { getAllAssets } from './asset'
 import { getAllWallets } from './wallet'
@@ -37,6 +38,8 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
   const sendWallet = allWallets[sendWalletId]
   const isManual = !sendWallet || sendWallet.isReadOnly
 
+  const createdAt = moment(swap.createdAt)
+
   swap = {
     ...swap,
     sendAmount: swap.sendAmount || swap.depositAmount,
@@ -51,7 +54,8 @@ const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
     receiveAsset,
     fee,
     hasFee: fee && fee.gt(0),
-    createdAtFormatted: formatDate(swap.createdAt, 'yyyy-MM-dd hh:mm:ss'),
+    createdAtFormatted: createdAt.format('YYYY-MM-DD hh:mm:ss'),
+    createdAtFriendly: createdAt.fromNow(),
     tx,
     txSigning: tx.signing,
     txSigned: tx.signed,
@@ -107,6 +111,11 @@ export const getConnectedWalletsPendingSwaps = createSelector(
   getConnectedWalletSentSwaps,
   (swaps) => swaps.filter(({ status: { code } }) => 
     code === 'pending')
+)
+
+export const getConnectedWalletsRecentSwaps = createSelector(
+  getConnectedWalletSentSwaps,
+  (swaps) => swaps.slice(0, 5),
 )
 
 export const getSwap = createItemSelector(

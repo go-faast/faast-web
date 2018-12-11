@@ -3,24 +3,16 @@ import { push as pushAction } from 'react-router-redux'
 import { connect } from 'react-redux'
 import { Table, Card, CardHeader } from 'reactstrap'
 import { compose, setDisplayName, withHandlers, defaultProps, setPropTypes } from 'recompose'
-import classNames from 'class-names'
 import PropTypes from 'prop-types'
 
 import routes from 'Routes'
 import Units from 'Components/Units'
 import Expandable from 'Components/Expandable'
-import CoinIcon from 'Components/CoinIcon'
+import Pair from 'Components/Pair'
 
-import { tradeTable, tradeCoinIcon } from './style'
+import { tradeTable } from './style'
 
 const NODATA = '-----'
-
-const CoinSymbol = ({ symbol, ...props }) => (
-  <Fragment>
-    <CoinIcon className={classNames(tradeCoinIcon, 'mr-1')} symbol={symbol} size='sm' inline {...props}/>
-    {symbol}
-  </Fragment>
-)
 
 const TableRow = ({
   swap,
@@ -31,9 +23,7 @@ const TableRow = ({
     <td>{createStatusLabel(swap)}</td>
     <td className='d-none d-sm-table-cell'>{createdAtFormatted}</td>
     <td className='d-none d-sm-table-cell'>
-      <CoinSymbol symbol={sendSymbol}/>
-      <i className='fa fa-long-arrow-right text-grey mx-2'/> 
-      <CoinSymbol symbol={receiveSymbol}/>
+      <Pair from={sendSymbol} to={receiveSymbol}/>
     </td>
     <td>{receiveAmount
       ? (<Units value={receiveAmount} symbol={receiveSymbol} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>)
