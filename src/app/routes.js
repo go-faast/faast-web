@@ -36,19 +36,24 @@ const createPath = (...paths) => {
 }
 
 export const root = createPath('/')
-export const dashboard = createPath('/dashboard')
-export const rebalance = createPath('/rebalance')
+
+const portfolio = createPath('/portfolio')
+export const dashboard = portfolio
+export const rebalance = createPath(portfolio, '/rebalance')
 export const rebalanceInstructions = createPath(rebalance, '/instructions')
-export const viewOnlyAddress = createPath('/address/:addressQuery')
-export const tradeHistory = createPath('/orders')
+export const tradeHistory = createPath(portfolio, '/orders')
+
 export const tradeDetail = createPath('/orders/:tradeId')
 export const swapWidget = createPath('/swap')
-export const watchlist = createPath('/assets/watchlist')
-export const trending = createPath('/assets/trending')
-export const assetDetail = createPath('/assets/:symbol')
-export const assetIndex = createPath('/assets')
+export const viewOnlyAddress = createPath('/address/:addressQuery')
 
-export const connect = createPath('/connect')
+const assets = createPath('/assets')
+export const assetIndex = assets
+export const watchlist = createPath(assets, '/watchlist')
+export const trending = createPath(assets, '/trending')
+export const assetDetail = createPath(assets, '/:symbol')
+
+export const connect = createPath('/portfolio/connect')
 export const connectHwWallet = createPath(connect, '/hw/:walletType')
 export const walletInfoModal = createPath(connect, '/:walletType')
 export const connectHwWalletAsset = createPath(connectHwWallet, '/:assetSymbol')

@@ -26,7 +26,7 @@ import withToggle from 'Hoc/withToggle'
 import Icon from 'Components/Icon'
 import FaastLogo from 'Img/faast-logo.png'
 
-const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, 
+const AppNavbar = ({ children, isExpanded, 
   toggleExpanded, isDropdownOpen, toggleDropdownOpen, ...props }) => (
   <Navbar {...pick(props, Object.keys(Navbar.propTypes))}>
     <Container>
@@ -36,14 +36,6 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded,
       <NavbarToggler onClick={toggleExpanded} />
       <Collapse isOpen={isExpanded} navbar>
         <Nav navbar>
-          {!disablePortfolioLinks && (
-            <NavItem key='dashboard'>
-              <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/dashboard'>
-                <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-pie-chart'/>
-                <span className='nav-link-label d-sm-inline'>Dashboard</span>
-              </NavLink>
-            </NavItem>
-          )}
           <Dropdown nav isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen} setActiveFromChild>
             <DropdownToggle 
               tag={RouterNavLink} 
@@ -65,32 +57,16 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded,
               <DropdownItem tag={Link} to={'/assets/watchlist'} className='text-muted py-2'>Watchlist</DropdownItem>
             </DropdownMenu>
           </Dropdown>
-          {!disablePortfolioLinks && ([
-            <NavItem key='rebalance'>
-              <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/rebalance'>
-                <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-sliders'/>
-                <span className='nav-link-label d-sm-inline'>Rebalance</span>
-              </NavLink>
-            </NavItem>
-          ])}
-          <NavItem key='swap'>
+          <NavItem>
             <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/swap'>
               <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-exchange'/>
               <span className='nav-link-label d-sm-inline'>Swap</span>
             </NavLink>
           </NavItem>
-          {!disablePortfolioLinks && (
-            <NavItem key='orders'>
-              <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/orders'>
-                <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-history'/>
-                <span className='nav-link-label d-sm-inline'>Orders</span>
-              </NavLink>
-            </NavItem>
-          )}
-          <NavItem key='connect'>
-            <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/connect'>
-              <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-plus'/>
-              <span className='nav-link-label d-sm-inline'>Add wallet</span>
+          <NavItem>
+            <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/portfolio'>
+              <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-pie-chart'/>
+              <span className='nav-link-label d-sm-inline'>Portfolio</span>
             </NavLink>
           </NavItem>
         </Nav>

@@ -1,5 +1,7 @@
 import React, { Fragment } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
+
+import RedirectPrefix from 'Components/RedirectPrefix'
 import Connect from 'Components/Connect'
 import TradeHistory from 'Components/TradeHistory'
 import WalletOpened from 'Components/WalletOpened'
@@ -30,7 +32,7 @@ const AppView = ({ hasNoWallets }) => (
       )} />
 
       {/* Routes requiring a connected wallet */}
-      <WalletOpened path={dashboard.path} component={Dashboard}/>
+      <WalletOpened exact path={dashboard.path} component={Dashboard}/>
       <WalletOpened path={rebalance.path} component={Modify}/>
 
       {/* Routes that don't require a connected wallet */}
@@ -47,6 +49,10 @@ const AppView = ({ hasNoWallets }) => (
       {/* Legacy routes */}
       <Redirect exact from='/balances' to={dashboard.path}/>
       <Redirect exact from='/modify' to={rebalance.path}/>
+      <Redirect exact from='/dashboard' to={dashboard.path}/>
+      <Redirect exact from='/orders' to={tradeHistory.path}/>
+      <RedirectPrefix from='/rebalance' to={rebalance.path}/>
+      <RedirectPrefix from='/connect' to={connect.path}/>
 
       {/* Fallback for unknown routes */}
       <Redirect to={dashboard.path}/>
