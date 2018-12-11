@@ -1,4 +1,5 @@
 import pad from 'pad-left'
+import { isBigNumber, toNumber } from 'Utilities/numbers'
 import queryString from 'query-string'
 import { mergeWith, union, without, omit, identity } from 'lodash'
 import sha256 from 'hash.js/lib/hash/sha/256'
@@ -374,3 +375,18 @@ export const moveObjectToFrontOfArray = (array, key, match) => {
 }
 
 export const isIterable = (o) => o != null && typeof o[Symbol.iterator] === 'function'
+
+export const sortObjOfArray = (array, key, order = 'desc') => {
+  return array.sort((a,b) => {
+    let c = a[key]
+    let d = b[key]
+    if (isBigNumber(c)) {
+      c = toNumber(c)
+    }
+    if (isBigNumber(d)) {
+      d = toNumber(d)
+    }
+    return order === 'asc' ? ((c > d) ? 1 : ((d > c) ? -1 : 0)) : 
+      ((d > c) ? 1 : ((c > d) ? -1 : 0))
+  })
+}

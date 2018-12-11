@@ -17,7 +17,7 @@ import PriceChart from 'Components/PriceChart'
 import CoinIcon from 'Components/CoinIcon'
 import Units from 'Components/Units'
 import ChangePercent from 'Components/ChangePercent'
-import ArrowIcon from 'Components/ArrowIcon'
+import PriceArrowIcon from 'Components/PriceArrowIcon'
 import AssetSearchBox from 'Components/AssetSearchBox'
 import WatchlistStar from 'Components/WatchlistStar'
 
@@ -101,7 +101,7 @@ const AssetDetail = ({ symbol, asset }) => {
               />
               <div className='lh-0'>
                 <small><ChangePercent>{change24}</ChangePercent></small>
-                <ArrowIcon
+                <PriceArrowIcon
                   className={classNames('d-inline-block align-middle', { 'd-none': change24.isZero() })} 
                   size={.75} dir={change24 < 0 ? 'down' : 'up'} 
                   color={change24 < 0 ? 'danger' : change24 > 0 ? 'success' : null}
@@ -118,7 +118,7 @@ const AssetDetail = ({ symbol, asset }) => {
                   symbol={fiat ? '$' : asset.symbol} 
                   precision={6} 
                   prefixSymbol={fiat}
-                  symbolSpaced={false}
+                  symbolSpaced={!fiat}
                   abbreviate
                 />
               </Col>

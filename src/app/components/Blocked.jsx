@@ -14,7 +14,7 @@ export default compose(
     Restricted Area
       </CardHeader>
       <CardBody>
-        <img className='d-block mx-auto mb-2' style={{ minWidth: '320px', maxWidth: '400px' }} src={GrumpyCat}/>
+        <img className='d-block mx-auto mb-2' style={{ minWidth: '320px', maxWidth: '400px', width: '95%' }} src={GrumpyCat}/>
       </CardBody>
       <CardFooter>
       Sorry, you are accessing faa.st from a blocked location. 

@@ -1,53 +1,35 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import * as qs from 'query-string'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, withProps } from 'recompose'
-import { Row, Col } from 'reactstrap'
+import withToggle from 'Hoc/withToggle'
 
-import Layout from 'Components/Layout'
 import AssetIndexTable from 'Components/AssetIndexTable'
+import Layout from 'Components/Layout'
 import Paginator from 'Components/Paginator'
-import AssetSearchBox from 'Components/AssetSearchBox'
-import Loading from 'Components/Loading'
 
-import {
-  getAssetIndexPage, getNumberOfAssets, areAssetPricesLoaded, getAssetPricesError
-} from 'Selectors/asset'
+import { getAssetIndexPage, getNumberOfAssets } from 'Selectors'
 
-const AssetIndex = ({ assets, currentPage, numberOfAssets, pricesLoaded, pricesError }) => {
+const AssetIndex = ({ assets, currentPage, numberOfAssets, title }) => {
   return (
-    <Layout className='pt-3'>
-      <Row className='justify-content-between align-items-end gutter-x-3'>
-        <Col xs='12' sm={{ size: true, order: 2 }}>
-          <AssetSearchBox className='float-sm-right'/>
-        </Col>
-        <Col xs='12' sm={{ size: 'auto', order: 1 }}>
-          <h4 className='mb-3 text-primary'>All Assets
-            {currentPage > 1 ? (<span> - Page {currentPage}</span>) : null}
-          </h4>
-        </Col>
-      </Row>
-      {pricesLoaded ? (
-        <Fragment>
-          <AssetIndexTable assets={assets}/>
-          <Paginator page={currentPage} pages={Math.ceil(numberOfAssets / 50)}/>
-        </Fragment>
-      ) : (
-        <Loading center label='Loading market data...' error={pricesError}/>
-      )}
+    <Layout className='pt-3 p-0 p-sm-3'>
+      <AssetIndexTable tableHeader={title} assets={assets}/>
+      <Paginator page={currentPage} pages={Math.ceil(numberOfAssets / 50)}/>
     </Layout>
   )
 }
 
 export default compose(
   setDisplayName('AssetIndex'),
+  withToggle('dropdownOpen'),
   withRouter,
   withProps(({ location }) => {
     const urlParams = qs.parse(location.search)
     let { page: currentPage = 1 } = urlParams
     currentPage = parseInt(currentPage)
+    let title = currentPage > 1 ? (<span>All Assets - Page {currentPage}</span>) : 'All Assets'
     const page = currentPage - 1
     const sortField = 'marketCap'
     const limit = 50
@@ -55,13 +37,12 @@ export default compose(
       currentPage,
       page,
       limit,
-      sortField 
+      sortField,
+      title
     })
   }),
   connect(createStructuredSelector({
     assets: (state, { page, limit, sortField }) => getAssetIndexPage(state, { page, limit, sortField }),
-    pricesLoaded: areAssetPricesLoaded,
-    pricesError: getAssetPricesError,
     numberOfAssets: getNumberOfAssets
   }), {
   }),

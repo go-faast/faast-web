@@ -9,7 +9,7 @@ $expand-point: breakpoint-next($collapse-point);
   td, th {
     vertical-align: middle !important;
     text-align: right;
-    &:first-child {
+    &:nth-child(2) {
       text-align: left;
       @include media-breakpoint-down($collapse-point) {
         text-align: center;

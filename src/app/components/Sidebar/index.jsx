@@ -41,7 +41,7 @@ const Sidebar = ({
   const portfolioBasedOnTimeFrame = timeFrame === '1d' ? totalFiat24hAgo : timeFrame === '7d' ? totalFiat7dAgo : totalFiat1hAgo
 
   return (
-    <Row style={{ maxWidth: '275px', flex: '0 0 100%' }} className={classNames('gutter-3 align-items-end', className)}>
+    <Row className={classNames('gutter-3 align-items-end', className)}>
       <Col xs='12'>
         <Card>
           <ListGroup>
@@ -158,24 +158,26 @@ const Sidebar = ({
                     >
                       <small>{trendingTimeFrame}</small>
                     </DropdownToggle>
-                    <DropdownMenu>
+                    <DropdownMenu className='p-0'>
                       <DropdownItem 
-                        className={trendingTimeFrame === '7d' ? 'text-primary' : null} 
+                        active={trendingTimeFrame === '7d'}
                         onClick={() => updateTrendingTimeFrame('7d')}
                       >
-                        <small>7d</small>
+                        7d
                       </DropdownItem>
+                      <DropdownItem className='m-0' divider/>
                       <DropdownItem 
-                        className={trendingTimeFrame === '1d' ? 'text-primary' : null} 
+                        active={trendingTimeFrame === '1d'}
                         onClick={() => updateTrendingTimeFrame('1d')}
                       >
-                        <small>1d</small>
+                        1d
                       </DropdownItem>
+                      <DropdownItem className='m-0' divider/>
                       <DropdownItem 
-                        className={trendingTimeFrame === '1h' ? 'text-primary' : null} 
+                        active={trendingTimeFrame === '1h'}
                         onClick={() => updateTrendingTimeFrame('1h')}
                       >
-                        <small>1h</small>
+                        1h
                       </DropdownItem>
                     </DropdownMenu>
                   </Dropdown>
