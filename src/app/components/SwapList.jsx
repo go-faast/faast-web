@@ -1,11 +1,12 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
-import { Card, CardHeader, CardBody, CardFooter, ListGroup, ListGroupItem } from 'reactstrap'
+import { Card, CardHeader, CardBody, ListGroup, ListGroupItem } from 'reactstrap'
 import { Link } from 'react-router-dom'
 
 import routes from 'Routes'
-import Pair from 'Components/Pair'
+import SwapStatus from 'Components/SwapStatus'
+import Expandable from 'Components/Expandable'
 
 export default compose(
   setDisplayName('SwapList'),
@@ -29,19 +30,22 @@ export default compose(
     ) : (
       <ListGroup>
         {swaps.map((swap) => (
-          <ListGroupItem action key={swap.id} tag={Link} to={routes.tradeDetail(swap.orderId)}>
-            <div>
-              <Pair from={swap.sendSymbol} to={swap.receiveSymbol}/>
+          <ListGroupItem action className='pb-1' key={swap.id} tag={Link} to={routes.tradeDetail(swap.orderId)}>
+            <SwapStatus swap={swap} hideChange/>
+            <div className='text-right mt-1'>
+              <small className='text-muted'>
+                <Expandable
+                  shrunk={swap.createdAtFriendly}
+                  expanded={swap.createdAtFormatted}
+                />
+              </small>
             </div>
-            <small className='text-muted'>{swap.createdAtFriendly}</small>
           </ListGroupItem>
         ))}
+        <ListGroupItem action tag={Link} to={routes.tradeHistory()} className='text-center text-primary mt-auto'>
+          View all orders
+        </ListGroupItem>
       </ListGroup>
     )}
-    <CardFooter className='text-center mt-auto'>
-      <Link to={routes.tradeHistory()}>
-        View all orders
-      </Link>
-    </CardFooter>
   </Card>
 ))
