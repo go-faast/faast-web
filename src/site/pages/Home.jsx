@@ -35,6 +35,7 @@ import ViewDashboardIcon from 'Img/view-dashboard.svg'
 import SwapFundsIcon from 'Img/swap-funds.svg'
 
 import MoonBackground from 'Img/moon-background.jpg'
+import MacbookScreenshot1 from 'Img/macbook-screenshot-01.png'
 import MacbookScreenshot2 from 'Img/macbook-screenshot-02.png'
 
 import BitaccessLogo from 'Img/bitaccess.svg'
@@ -77,7 +78,7 @@ export default compose(
           backgroundColor: 'rgba(0,26,23)',
         }}>
           <Row>
-            <Col sm='12' lg='6' className='text-left pl-lg-5 pl-0 ml-4'>
+            <Col sm='12' lg='6' className='text-left pl-md-5 pl-0 ml-4'>
               <a href='https://medium.com/faast/faast-swap-api-is-now-available-959091bc85ca' target='_blank noopener'>
                 <div className='notification'>
                   <span className='new-pill'>new</span>
@@ -94,9 +95,12 @@ export default compose(
           Create A Portfolio
               </a></p>
             </Col>
-            <Col className='pr-3 d-sm-block d-none'>
+            <Col className='pr-3 d-md-block d-none'>
               <SwapWidget assets={supportedAssets}/>
             </Col>
+            <div className='intro d-md-none d-block mx-auto' style={{ paddingTop: '60px', maxWidth: 400 }}>	
+              <img className='img-fluid' src={MacbookScreenshot1} style={{ height: '100%', width: '730px' }}/>	
+            </div>
           </Row>
         </div>
       </div>
