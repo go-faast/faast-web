@@ -1,10 +1,12 @@
 import React from 'react'
 import {
-  Row, Col, Card, CardHeader, CardBody,
+  Row, Col, Card, CardHeader, CardBody, Nav, NavItem, NavLink,
   UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap'
+import { NavLink as RouterNavLink } from 'react-router-dom'
 
 import { defaultPortfolioId } from 'Actions/portfolio'
+import routes from 'Routes'
 
 import Layout from 'Components/Layout'
 import Balances from 'Components/Balances'
@@ -25,6 +27,22 @@ const DashboardView = (props) => {
   return (
     <Layout className='pt-3'>
       <Row className='gutter-3'>
+        <Col xs='12'>
+          <Nav>
+            <NavItem className='ml-auto'>
+              <NavLink tag={RouterNavLink} to={routes.dashboard()}><i className='fa fa-list'/> Dashboard</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink tag={RouterNavLink} to={routes.rebalance()}><i className='fa fa-sliders'/> Rebalance</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink tag={RouterNavLink} to={routes.tradeHistory()}><i className='fa fa-history'/> Orders</NavLink>
+            </NavItem>
+            <NavItem>
+              <NavLink tag={RouterNavLink} to={routes.connect()}><i className='fa fa-plus'/> Add Wallet</NavLink>
+            </NavItem>
+          </Nav>
+        </Col>
         {!isDefaultPortfolioEmpty && (
           <Col xs='12' md='5' lg='4' xl='3'>
             <Sidebar className='d-none d-md-block'/>
