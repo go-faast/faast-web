@@ -77,8 +77,6 @@ export default compose(
           <Balances 
             wallet={wallet}
             showStats={showStats}
-            handleAdd={() => handleAddToPortfolio(routes.dashboard())}
-            isAlreadyInPortfolio={isAlreadyInPortfolio}
           />
         </Col>
       </Row>

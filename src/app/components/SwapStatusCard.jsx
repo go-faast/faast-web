@@ -61,7 +61,6 @@ export default compose(
         style={{ minHeight: '4rem' }}
         {...togglerProps}>
         <SwapStatus swap={swap}
-          className='align-items-center'
           showShortStatus={showShortStatus}
           before={expanded === null && (
             <Col xs='auto'>

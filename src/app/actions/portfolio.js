@@ -24,9 +24,6 @@ export const portfolioAdded = createAction('PORTFOLIO_ADDED')
 
 export const removePortfolio = (id) => (dispatch) => Promise.resolve()
   .then(() => {
-    if (id === defaultPortfolioId) {
-      throw new Error('Cannot delete default portfolio');
-    }
     return dispatch(removeWallet(id))
   })
 

@@ -1,7 +1,10 @@
 import React from 'react'
 import {
   Row, Col, Card, CardHeader, CardBody,
+  UncontrolledDropdown, DropdownMenu, DropdownToggle, DropdownItem,
 } from 'reactstrap'
+
+import { defaultPortfolioId } from 'Actions/portfolio'
 
 import Layout from 'Components/Layout'
 import Balances from 'Components/Balances'
@@ -10,6 +13,8 @@ import WalletSelector from 'Components/WalletSelector'
 import Address from 'Components/Address'
 import PieChart from 'Components/PieChart'
 import SwapList from 'Components/SwapList'
+import ShareButton from 'Components/ShareButton'
+import WalletStats from 'Components/WalletStats'
 
 const DashboardView = (props) => {
   const {
@@ -29,6 +34,36 @@ const DashboardView = (props) => {
         <Col xs='12' md='7' lg='8' xl='9'>
           <Row className='gutter-3'>
             <Col xs='12'>
+              <Card>
+                <CardHeader>
+                  <Row className='gutter-3 align-items-center'>
+                    <Col className='px-2'>
+                      <h5>{wallet.label}</h5>
+                    </Col>
+                    <Col xs='auto'>
+                      <ShareButton wallet={wallet} className='py-0 align-baseline'/>
+                    </Col>
+                    <Col className='p-0 pr-2' xs='auto'>
+                      <UncontrolledDropdown group size='sm'>
+                        <DropdownToggle
+                          className='py-0 px-2 text-white'
+                          color='link'
+                        >
+                          <i className="fa fa-ellipsis-v fa-lg" aria-hidden="true"></i>
+                        </DropdownToggle>
+                        <DropdownMenu className='p-0' right>
+                          <DropdownItem className='py-2' onClick={handleRemove}>
+                            {wallet.id === defaultPortfolioId ? 'Remove all wallets' : 'Remove Wallet'}
+                          </DropdownItem>
+                        </DropdownMenu>
+                      </UncontrolledDropdown>
+                    </Col>
+                  </Row>
+                </CardHeader>
+                <WalletStats tag={CardBody} wallet={wallet}/>
+              </Card>
+            </Col>
+            <Col xs='12'>
               <Balances 
                 wallet={wallet} 
                 toggleChart={toggleChart} 
@@ -36,13 +71,13 @@ const DashboardView = (props) => {
                 handleRemove={handleRemove}
               />
             </Col>
-            <Col xs='12' lg='6'>
+            <Col xs='12' xl='6'>
               <SwapList
                 className='h-100'
                 header={'Recent Swaps'}
                 swaps={recentSwaps}/>
             </Col>
-            <Col xs='12' lg='6'>
+            <Col xs='12' xl='6'>
               <Card>
                 <CardHeader>
                   <h5>Distribution</h5>

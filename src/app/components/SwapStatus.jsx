@@ -77,7 +77,7 @@ export default compose(
   },
   before, after, shortStatus, showShortStatus, hideChange, className,
 }) => (
-  <Row className={classNames('gutter-0 font-size-small text-muted lh-0', className)}>
+  <Row className={classNames('gutter-0 align-items-center font-size-small text-muted lh-0', className)}>
     {before}
     <Col>
       <Row className='gutter-2 align-items-center text-center text-sm-left'>

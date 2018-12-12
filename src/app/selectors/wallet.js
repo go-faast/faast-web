@@ -153,6 +153,7 @@ export const getWalletWithHoldings = createItemSelector(
       assetHoldings,
       holdingsLoaded,
       holdingsError,
+      shownAssetHoldings: assetHoldings.filter(({ shown }) => shown),
     }
     return result
   }
