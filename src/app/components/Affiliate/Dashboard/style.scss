@@ -1,0 +1,31 @@
+.row div div:nth-child(1) {
+  height: 143px;
+  max-width: 325px;
+}
+.row div div:nth-child(1) p:nth-of-type(1) {
+  font-size: 30px;
+  font-weight: 600;
+  color: #fff;
+  line-height: 2.5;
+  position: relative;
+  top: 5px;
+}
+.row div div:nth-child(1) p:nth-of-type(2) {
+  font-weight: 600;
+  font-size: 14px;
+}
+.stat1 {
+  background-image: linear-gradient(0deg, #442D9E 28%, #6379DB 100%);
+  box-shadow: 0 3px 4px 1px rgba(175,194,219,0.36);
+  border-radius: 4px;
+}
+.stat2 {
+  background-image: linear-gradient(-180deg, #2EA0EF 50%, #2B53A0 100%);
+  box-shadow: 0 3px 4px 1px rgba(175,194,219,0.36);
+  border-radius: 4px;
+}
+.stat3 {
+  background-image: linear-gradient(-180deg, #4AD6D5 50%, #008372 100%);
+  box-shadow: 0 3px 4px 1px rgba(175,194,219,0.36);
+  border-radius: 4px;
+}

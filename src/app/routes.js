@@ -46,6 +46,11 @@ export const swapWidget = createPath('/swap')
 export const assetDetail = createPath('/assets/:symbol')
 export const assetIndex = createPath('/assets')
 
+export const affiliateLogin = createPath('/affiliates/login')
+export const affiliateSignup = createPath('/affiliates/signup')
+export const affiliateDashboard = createPath('/affiliates/dashboard')
+export const affiliateSettings = createPath('/affiliates/settings')
+
 export const connect = createPath('/connect')
 export const connectHwWallet = createPath(connect, '/hw/:walletType')
 export const walletInfoModal = createPath(connect, '/:walletType')
@@ -69,5 +74,9 @@ export default {
   connectHwWalletAssetAccounts,
   viewOnlyAddress,
   assetIndex,
-  walletInfoModal
+  walletInfoModal,
+  affiliateLogin,
+  affiliateSignup,
+  affiliateDashboard,
+  affiliateSettings
 }

@@ -3,6 +3,7 @@ import { filterErrors } from 'Utilities/helpers'
 import { toBigNumber } from 'Utilities/convert'
 import log from 'Log'
 import config from 'Config'
+import crypto from 'crypto'
 
 import { Asset, SwapOrder } from 'Types'
 
@@ -144,6 +145,52 @@ export const provideSwapDepositTx = (
     throw e
   })
 
+export const getAffiliateStats = (
+  id: string,
+  key: string,
+): Promise<void> => {
+  const nonce = String(Date.now())
+  const signature = createAffiliateSignature(undefined, key, nonce)
+  return fetchGet(`${apiUrl}/api/v2/public/affiliate/stats`, null, {
+  headers: {
+    'affiliate-id': id,
+    nonce,
+    signature,
+  },
+}).then((stats) => stats)
+  .catch((e: any) => {
+    log.error(e)
+    throw e
+  })
+}
+
+export const getAffiliateSwapPayouts = (
+  id: string,
+  key: string,
+): Promise<void> => {
+  const nonce = String(Date.now())
+  const signature = createAffiliateSignature(undefined, key, nonce)
+  return fetchGet(`${apiUrl}/api/v2/public/affiliate/payouts`, null, {
+  headers: {
+    'affiliate-id': id,
+    nonce,
+    signature,
+  },
+}).then((stats) => stats)
+  .catch((e: any) => {
+    log.error(e)
+    throw e
+  })
+}
+
+export const createAffiliateSignature = (requestJSON: string | boolean, secret: string, nonce: string) => {
+  const updateString = requestJSON ? requestJSON + nonce : nonce
+  return crypto
+    .createHmac('sha256', secret)
+    .update(updateString, 'utf8')
+    .digest('hex')
+}
+
 export default {
   fetchAssets,
   fetchAssetPrice,
@@ -156,4 +203,6 @@ export default {
   refreshSwap,
   provideSwapDepositTx,
   fetchRestrictionsByIp,
+  getAffiliateStats,
+  getAffiliateSwapPayouts,
 }

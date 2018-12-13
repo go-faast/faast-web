@@ -3,6 +3,7 @@ import { reducer as formReducer } from 'redux-form'
 import { reducer as toastrReducer } from 'react-redux-toastr'
 import { routerReducer } from 'react-router-redux'
 import asset from './asset'
+import affiliate from './affiliate'
 import priceChart from './priceChart'
 import swap from './swap'
 import swundle from './swundle'
@@ -23,6 +24,7 @@ export default combineReducers({
   portfolio,
   wallet,
   asset,
+  affiliate,
   rate,
   tx,
   swap,

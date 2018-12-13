@@ -38,7 +38,8 @@ export interface FetchOptions {
   retryDelay?: number
   retryMultiplier?: number
   allowConcurrent?: boolean
-  headers?: FetchHeaders
+  headers?: FetchHeaders,
+  json?: string
 }
 
 export const fetchJson = (

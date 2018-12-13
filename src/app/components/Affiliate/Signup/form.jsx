@@ -2,18 +2,18 @@ import React from 'react'
 import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withHandlers, withState } from 'recompose'
 import PropTypes from 'prop-types'
 
-const AffiliateLogin = () => {
+const AffiliateSignupForm = () => {
   return (
-    <span>Login</span>
+    <span>Signup</span>
   )
 }
 
 export default compose(
-  setDisplayName('AffiliateLogin'),
+  setDisplayName('AffiliateSignupForm'),
   setPropTypes({
   }),
   defaultProps({
   }),
   withHandlers({
   }),
-)(AffiliateLogin)
+)(AffiliateSignupForm)

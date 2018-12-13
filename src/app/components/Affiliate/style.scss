@@ -1,0 +1,29 @@
+.text {
+  color: #525252;
+}
+.card {
+  background-color: #fff;
+  border: none;
+  max-width: 600px;
+  box-shadow: 0px 3px 4px 1px rgba(207, 219, 224, .17) !important;
+  border-radius: 2px;
+}
+
+.cardHeader {
+  background: #fff;
+  border-color: #ECECEC;
+  color: #525252;
+}
+
+.input {
+  background-color: #fafbfd !important;
+  border-color: #ebeff1 !important;
+  color: #596872 !important;
+  &::placeholder {
+    color: #798893;
+  }
+}
+
+body {
+  background-color: #F5F7F8 !important;
+}

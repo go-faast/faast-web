@@ -11,10 +11,15 @@ import TradeDetailModal from 'Components/TradeDetailModal'
 import SwapWidget from 'Components/SwapWidget'
 import AssetDetail from 'Components/AssetDetail'
 import AssetIndex from 'Components/AssetIndex'
+import AffiliateLogin from 'Components/Affiliate/Login'
+import AffiliateSignup from 'Components/Affiliate/Signup'
+import AffiliateDashboard from 'Components/Affiliate/Dashboard'
+import AffiliateSettings from 'Components/Affiliate/Settings'
 
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
   tradeHistory, tradeDetail, swapWidget, assetDetail, assetIndex,
+  affiliateLogin, affiliateSignup, affiliateDashboard, affiliateSettings
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => (
@@ -37,6 +42,11 @@ const AppView = ({ hasNoWallets }) => (
       <Route path={tradeHistory.path} component={TradeHistory}/>
       <Route path={assetDetail.path} component={AssetDetail}/>
       <Route path={assetIndex.path} component={AssetIndex}/>
+      <Route path={affiliateLogin.path} component={AffiliateLogin}/>
+      <Route path={affiliateSignup.path} component={AffiliateSignup}/>
+      <Route path={affiliateDashboard.path} component={AffiliateDashboard}/>
+      <Route path={affiliateSettings.path} component={AffiliateSettings}/>
+      
 
       {/* Legacy routes */}
       <Redirect exact from='/balances' to={dashboard.path}/>

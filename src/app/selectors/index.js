@@ -1,5 +1,6 @@
 export * from './accountSearch'
 export * from './app'
+export * from './affiliate'
 export * from './asset'
 export * from './portfolio'
 export * from './priceChart'
