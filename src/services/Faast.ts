@@ -170,17 +170,80 @@ export const getAffiliateSwapPayouts = (
 ): Promise<void> => {
   const nonce = String(Date.now())
   const signature = createAffiliateSignature(undefined, key, nonce)
-  return fetchGet(`${apiUrl}/api/v2/public/affiliate/payouts`, null, {
+  return fetchGet(`${apiUrl}/api/v2/public/affiliate/payouts`,
+  { affiliate_payment_address: '33WKJWf2iyJHUaRjoHmF7x4rKnENPHC9G8' }, {
   headers: {
     'affiliate-id': id,
     nonce,
     signature,
   },
-}).then((stats) => stats)
+}).then((swaps) => swaps)
   .catch((e: any) => {
     log.error(e)
     throw e
   })
+}
+
+export const getAffiliateBalance = (
+  id: string,
+  key: string,
+): Promise<void> => {
+  const nonce = String(Date.now())
+  const signature = createAffiliateSignature(undefined, key, nonce)
+  return fetchGet(`${apiUrl}/api/v2/public/affiliate/balance`,
+  { affiliate_payment_address: '33WKJWf2iyJHUaRjoHmF7x4rKnENPHC9G8' }, {
+  headers: {
+    'affiliate-id': id,
+    nonce,
+    signature,
+  },
+}).then((balance) => balance)
+  .catch((e: any) => {
+    log.error(e)
+    throw e
+  })
+}
+
+export const initiateAffiliateWithdrawal = (
+  withdrawalAddress: string,
+  id: string,
+  key: string,
+): Promise<void> => {
+  const requestJSON = {
+    withdrawal_address: withdrawalAddress,
+  }
+  const nonce = String(Date.now())
+  const signature = createAffiliateSignature(undefined, key, nonce)
+  return fetchPost(`${apiUrl}/api/v2/public/affiliate/withdraw`, requestJSON,
+null,
+{ headers: {
+  'affiliate-id': id,
+  nonce,
+  signature,
+  },
+})
+.then((r) => console.log(r))
+  .catch((e: any) => {
+    log.error(e)
+    throw e
+  })
+}
+
+export const affiliateRegister = (
+  id: string,
+  address: string,
+  email: string,
+): Promise<void> => {
+  return fetchPost(`${apiUrl}/api/v2/public/affiliate/register`, {
+    affiliate_id: id,
+    affiliate_payment_address: address,
+    contact_email: email,
+  })
+  .then((res) => res)
+    .catch((e: any) => {
+      log.error(e)
+      throw e
+    })
 }
 
 export const createAffiliateSignature = (requestJSON: string | boolean, secret: string, nonce: string) => {
@@ -205,4 +268,7 @@ export default {
   fetchRestrictionsByIp,
   getAffiliateStats,
   getAffiliateSwapPayouts,
+  initiateAffiliateWithdrawal,
+  affiliateRegister,
+  getAffiliateBalance,
 }

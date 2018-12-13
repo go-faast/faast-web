@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import { push } from 'react-router-redux'
+import { Link } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
 import { Card, CardHeader, CardBody } from 'reactstrap'
 import { connect } from 'react-redux'
@@ -24,6 +25,11 @@ const AffiliateLogin = () => {
           <LoginForm/>
         </CardBody>
       </Card>
+      <small className='text-center'>
+        <Link to='/affiliates/signup' style={{ color: '#8aa2b5' }} className='pt-3 d-block font-weight-bold'>
+              Not registered with the Faa.st Affiliate API yet? Sign up here.
+        </Link>
+      </small>
     </AffiliateLayout>
   )
 }

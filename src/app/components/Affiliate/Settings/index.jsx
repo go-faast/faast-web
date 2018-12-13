@@ -1,17 +1,21 @@
 import React from 'react'
+import * as validator from 'Utilities/validator'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withHandlers, withState } from 'recompose'
 import PropTypes from 'prop-types'
-import { Row, Col, Card, Input, CardHeader, CardBody, Button } from 'reactstrap'
+import { Row, Col, Card, Input, CardHeader, CardBody, Button, Form } from 'reactstrap'
 import classNames from 'class-names'
+import { reduxForm, formValueSelector } from 'redux-form'
+import ReduxFormField from 'Components/ReduxFormField'
 
-import { affiliateId, secretKey } from 'Selectors/affiliate'
+import { affiliateId, secretKey, getAsset } from 'Selectors'
+import { initiateAffiliateWithdrawal } from 'Services/Faast'
 
 import AffiliateLayout from 'Components/Affiliate/Layout'
 import { card, cardHeader, input, text } from '../style'
 
-const AffiliateSettings = ({ affiliateId, secretKey }) => {
+const AffiliateSettings = ({ affiliateId, secretKey, handleSubmit, validateWithdrawalAddress, invalid }) => {
   return (
     <AffiliateLayout className='pt-3'>
       <Row className='mt-4'>
@@ -30,7 +34,16 @@ const AffiliateSettings = ({ affiliateId, secretKey }) => {
                 </Col>
                 <Col>
                   <small><p className={classNames('mt-3 mb-1 font-weight-bold', text)}>Initiate Withdrawal</p></small>
-                  <Button color='primary' className='flat'>Withdrawal</Button>
+                  <Form onSubmit={handleSubmit}>
+                    <ReduxFormField
+                      name='withdrawal_address'
+                      type='text'
+                      placeholder='Enter a BTC Withdrawal Address'
+                      inputClass={classNames('flat', input)}
+                      validate={validateWithdrawalAddress}
+                    />
+                    <Button className='flat' color='primary' type='submit' disabled={invalid}>Withdrawal</Button>
+                  </Form>
                 </Col>
               </Row>
             </CardBody>
@@ -46,6 +59,7 @@ export default compose(
   connect(createStructuredSelector({
     affiliateId,
     secretKey,
+    bitcoin: (state) => getAsset(state, 'BTC'),
   }), {
   }),
   setPropTypes({
@@ -53,5 +67,18 @@ export default compose(
   defaultProps({
   }),
   withHandlers({
+    onSubmit: ({ affiliateId, secretKey }) => ({ withdrawal_address }) => {
+      initiateAffiliateWithdrawal(withdrawal_address, affiliateId, secretKey)
+    },
+    validateWithdrawalAddress: ({ bitcoin }) => validator.all(
+      validator.required(),
+      validator.walletAddress(bitcoin)
+    ),
+  }),
+  reduxForm({
+    form: 'affiliate_withdrawal',
+    enableReinitialize: true,
+    keepDirtyOnReinitialize: true,
+    updateUnregisteredFields: true,
   }),
 )(AffiliateSettings)

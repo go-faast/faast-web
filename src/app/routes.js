@@ -48,8 +48,11 @@ export const assetIndex = createPath('/assets')
 
 export const affiliateLogin = createPath('/affiliates/login')
 export const affiliateSignup = createPath('/affiliates/signup')
+export const affiliateAccountModal = createPath('/affiliates/dashboard/account')
 export const affiliateDashboard = createPath('/affiliates/dashboard')
 export const affiliateSettings = createPath('/affiliates/settings')
+export const affiliateSwaps = createPath('/affiliates/swaps')
+export const affiliatePayouts = createPath('/affiliates/withdrawals')
 
 export const connect = createPath('/connect')
 export const connectHwWallet = createPath(connect, '/hw/:walletType')
@@ -78,5 +81,8 @@ export default {
   affiliateLogin,
   affiliateSignup,
   affiliateDashboard,
-  affiliateSettings
+  affiliateSettings,
+  affiliateSwaps,
+  affiliatePayouts,
+  affiliateAccountModal
 }

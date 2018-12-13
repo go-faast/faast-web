@@ -1,20 +1,22 @@
 import React from 'react'
 import { createStructuredSelector } from 'reselect'
-import { Row, Col, Card, CardHeader, CardBody } from 'reactstrap'
+import { Row, Col, Card, CardHeader, CardBody, Button } from 'reactstrap'
 import { connect } from 'react-redux'
+import { Link } from 'react-router-dom'
 import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withHandlers, withState } from 'recompose'
 import PropTypes from 'prop-types'
 import PieChart from './pieChart'
 import AffiliateLayout from 'Components/Affiliate/Layout'
+import Units from 'Components/Units'
 import { getStats } from 'Actions/affiliate'
 import classNames from 'class-names'
 
-import { affiliateStats } from 'Selectors'
+import { affiliateStats, getAffiliateBalance } from 'Selectors'
 
-import { stat1, stat2, stat3, row } from './style'
-import { card, cardHeader } from '../style'
+import { stat1, stat2, stat3, row, withdrawal} from './style'
+import { card, cardHeader, text } from '../style'
 
-const AffiliateDashboard = ({ stats: { swaps_completed, value_btc, affiliate_payouts_btc } = {} }) => {
+const AffiliateDashboard = ({ stats: { swaps_completed, value_btc, affiliate_payouts_btc } = {}, balance }) => {
   return (
     <AffiliateLayout className='pt-3'>
       <Row className={classNames(row, 'text-center mt-3')}>
@@ -46,6 +48,16 @@ const AffiliateDashboard = ({ stats: { swaps_completed, value_btc, affiliate_pay
             </CardBody>
           </Card>
         </Col>
+        <Col>
+          <Card className={card}>
+            <CardHeader className={cardHeader}>Funds Ready for Payout</CardHeader>
+            <CardBody className='text-center'>
+              <p className='mb-0' style={{ fontSize: 70 }}>🎉</p>
+              <Units value={balance} symbol='BTC' precision={6} style={{ fontSize: 50 }} className={classNames('font-weight-bold mt-0 mb-3 d-block', text)}/>
+              <Button tag={Link} to='/affiliates/settings' className={classNames(withdrawal, 'flat px-4 mb-3')} color='primary'>Initiate a Withdrawal</Button>
+            </CardBody>
+          </Card>
+        </Col>
       </Row>
     </AffiliateLayout>
   )
@@ -54,7 +66,8 @@ const AffiliateDashboard = ({ stats: { swaps_completed, value_btc, affiliate_pay
 export default compose(
   setDisplayName('AffiliateDashboard'),
   connect(createStructuredSelector({
-    stats: affiliateStats
+    stats: affiliateStats,
+    balance: getAffiliateBalance
   }), {
     getStats,
   }),

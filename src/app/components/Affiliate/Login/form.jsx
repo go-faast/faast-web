@@ -9,7 +9,7 @@ import classNames from 'class-names'
 
 import { input } from '../style'
 
-import { getStats, getSwapPayouts } from 'Actions/affiliate'
+import { affiliateLogin } from 'Actions/affiliate'
 
 const AffiliateLoginForm = ({ handleSubmit }) => {
   return (
@@ -34,17 +34,15 @@ const AffiliateLoginForm = ({ handleSubmit }) => {
 export default compose(
   setDisplayName('AffiliateLoginForm'),
   connect(null, {
-    getStats: getStats,
-    getSwapPayouts: getSwapPayouts
+    login: affiliateLogin
   }),
   setPropTypes({
   }),
   defaultProps({
   }),
   withHandlers({
-    onSubmit: ({ getStats, getSwapPayouts }) => ({ affiliateId, secretKey }) => {
-      getSwapPayouts(affiliateId, secretKey)
-      getStats(affiliateId, secretKey)
+    onSubmit: ({ login }) => ({ affiliateId, secretKey }) => {
+      login(affiliateId, secretKey)
     }
   }),
   reduxForm({

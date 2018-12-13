@@ -1,13 +1,15 @@
 import { createReducer } from 'redux-act'
 import { pick } from 'lodash'
 import { statsRetrieved, statsError, login, swapsRetrieved, swapsError, loginError,
-  updateAffiliateId, updateSecretKey, resetAffiliate, logout
+  updateAffiliateId, updateSecretKey, resetAffiliate, logout, updateBalance, updateBalanceSwaps
 } from 'Actions/affiliate'
 import { toBigNumber, ZERO } from 'Utilities/convert'
 import { createUpserter, createUpdater, mapValues } from 'Utilities/helpers'
 
 const initialState = {
   loggedIn: false,
+  balance: undefined,
+  swapCount: undefined,
   affiliate_id: '',
   secret_key: '',
   loginError: false,
@@ -25,6 +27,8 @@ export default createReducer({
   [logout]: (state) => ({ ...state, loggedIn: false, loginError: false }),
   [loginError]: (state) => ({ ...state, loggedIn: false, loginError: true }),
   [updateAffiliateId]: (state, id) => ({ ...state, affiliate_id: id }),
+  [updateBalance]: (state, balance) => ({ ...state, balance }),
+  [updateBalanceSwaps]: (state, swaps) => ({ ...state, swapCount: swaps }),
   [updateSecretKey]: (state, key) => ({ ...state, secret_key: key }),
   [statsRetrieved]: (state, stats) => ({ 
     ...state,

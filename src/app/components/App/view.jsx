@@ -15,11 +15,15 @@ import AffiliateLogin from 'Components/Affiliate/Login'
 import AffiliateSignup from 'Components/Affiliate/Signup'
 import AffiliateDashboard from 'Components/Affiliate/Dashboard'
 import AffiliateSettings from 'Components/Affiliate/Settings'
+import AffiliatePayouts from 'Components/Affiliate/Payouts'
+import AffiliateSwaps from 'Components/Affiliate/Swaps'
+import AffiliateAccountModal from 'Components/Affiliate/AccountModal'
 
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
   tradeHistory, tradeDetail, swapWidget, assetDetail, assetIndex,
-  affiliateLogin, affiliateSignup, affiliateDashboard, affiliateSettings
+  affiliateLogin, affiliateSignup, affiliateDashboard, affiliateSettings,
+  affiliatePayouts, affiliateSwaps, affiliateAccountModal
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => (
@@ -46,6 +50,8 @@ const AppView = ({ hasNoWallets }) => (
       <Route path={affiliateSignup.path} component={AffiliateSignup}/>
       <Route path={affiliateDashboard.path} component={AffiliateDashboard}/>
       <Route path={affiliateSettings.path} component={AffiliateSettings}/>
+      <Route path={affiliatePayouts.path} component={AffiliatePayouts}/>
+      <Route path={affiliateSwaps.path} component={AffiliateSwaps}/>
       
 
       {/* Legacy routes */}
@@ -59,6 +65,9 @@ const AppView = ({ hasNoWallets }) => (
     {/* Routes that show a modal over one of the above pages */}
     <ModalRoute closePath={tradeHistory.path} path={tradeDetail.path} render={(props) => (
       <TradeDetailModal tradeId={props.match.params.tradeId} {...props}/>
+    )}/>
+    <ModalRoute closePath={affiliateDashboard.path} path={affiliateAccountModal.path} render={(props) => (
+      <AffiliateAccountModal {...props}/>
     )}/>
   </Fragment>
 )

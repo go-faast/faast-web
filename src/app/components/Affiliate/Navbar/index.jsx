@@ -30,7 +30,7 @@ import { navbar, navbarBrand, navbarLink, active } from './style'
 const AffiliateNavBar = ({ logout, loggedIn, children, isExpanded, toggleExpanded, ...props }) => (
   <Navbar className={navbar} {...pick(props, Object.keys(Navbar.propTypes))}>
     <Container>
-      <NavbarBrand tag={Link} to='/affiliates/login' className={classNames(navbarBrand, !loggedIn ? 'mx-auto' : 'mr-auto')}>
+      <NavbarBrand tag={Link} to={loggedIn ? '/affiliates/dashboard' : '/affiliates/login'} className={classNames(navbarBrand, !loggedIn ? 'mx-auto' : 'mr-auto')}>
         <Icon src={FaastLogo} height='1.5rem' width='1.5rem' inline className='mx-3'/>
         Faa.st Affiliates
       </NavbarBrand>
@@ -50,7 +50,7 @@ const AffiliateNavBar = ({ logout, loggedIn, children, isExpanded, toggleExpande
                 </NavLink>
               </NavItem>
               <NavItem key='payouts'>
-                <NavLink className={classNames(navbarLink, 'px-1 px-lg-2')} activeClassName={active} tag={RouterNavLink} to='/affiliates/payouts'>
+                <NavLink className={classNames(navbarLink, 'px-1 px-lg-2')} activeClassName={active} tag={RouterNavLink} to='/affiliates/withdrawals'>
                   <span className='nav-link-label d-sm-inline'>Payouts</span>
                 </NavLink>
               </NavItem>
