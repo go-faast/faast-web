@@ -35,6 +35,7 @@ export const getAllAssets = createSelector(getAssetState, ({ data }) => mapValue
   }
 }))
 export const getAllAssetsArray = createSelector(getAllAssets, Object.values)
+export const getAllAssetSymbols = createSelector(getAllAssets, Object.keys)
 
 export const areAssetsLoading = createSelector(getAssetState, ({ loading }) => loading)
 export const areAssetsLoaded = createSelector(getAssetState, ({ loaded }) => loaded)

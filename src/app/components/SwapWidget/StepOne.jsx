@@ -21,7 +21,7 @@ import { retrievePairData } from 'Actions/rate'
 import { openViewOnlyWallet } from 'Actions/access'
 
 import { getRateMinimumDeposit, getRatePrice, isRateLoaded } from 'Selectors/rate'
-import { getAllAssetsArray, getAsset } from 'Selectors/asset'
+import { getAllAssetSymbols, getAsset } from 'Selectors/asset'
 import { getWallet } from 'Selectors/wallet'
 import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
 
@@ -38,8 +38,9 @@ import SwapIcon from 'Img/swap-icon.svg?inline'
 
 import style from './style.scss'
 
-const DEFAULT_DEPOSIT = 'BTC'
-const DEFAULT_RECEIVE = 'ETH'
+const DEFAULT_SEND_SYMBOL = 'BTC'
+const DEFAULT_RECEIVE_SYMBOL = 'ETH'
+const DEFAULT_SEND_AMOUNT = 1
 const FORM_NAME = 'swapWidget'
 
 const getFormValue = formValueSelector(FORM_NAME)
@@ -55,14 +56,14 @@ const StepOneField = withProps(({ labelClass, inputClass, className, labelCol, i
 
 const SwapStepOne = ({
   change, untouch, submitting, balancesLoaded,
-  depositSymbol, receiveSymbol, supportedAssets, assetSelect, setAssetSelect, 
+  sendSymbol, receiveSymbol, supportedAssets, assetSelect, setAssetSelect, 
   validateReceiveAddress, validateRefundAddress, validateDepositAmount,
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
   onChangeDepositAmount, handleSelectMax, maxSendAmount, maxSendAmountLoaded,
-  sendWallet,
+  sendWallet, defaultRefundAddress, defaultReceiveAddress,
 }) => (
   <Fragment>
-    <ProgressBar steps={['Create Swap', `Send ${depositSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
+    <ProgressBar steps={['Create Swap', `Send ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
     <Form onSubmit={handleSubmit}>
       <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
         {!balancesLoaded && (
@@ -75,7 +76,7 @@ const SwapStepOne = ({
           <Row className='gutter-0'>
             <Col xs={{ size: 12, order: 1 }} lg>
               <StepOneField
-                name='depositAmount'
+                name='sendAmount'
                 type='number'
                 step='any'
                 placeholder={`Send amount${sendWallet ? '' : ' (optional)'}`}
@@ -84,9 +85,9 @@ const SwapStepOne = ({
                 onChange={onChangeDepositAmount}
                 addonAppend={({ invalid }) => (
                   <InputGroupAddon addonType="append">
-                    <Button color={invalid ? 'danger' : 'dark'} size='sm' onClick={() => setAssetSelect('deposit')}>
-                      <CoinIcon key={depositSymbol} symbol={depositSymbol} size={1.25} className='mr-2'/>
-                      {depositSymbol} <i className='fa fa-caret-down'/>
+                    <Button color={invalid ? 'danger' : 'dark'} size='sm' onClick={() => setAssetSelect('send')}>
+                      <CoinIcon key={sendSymbol} symbol={sendSymbol} size={1.25} className='mr-2'/>
+                      {sendSymbol} <i className='fa fa-caret-down'/>
                     </Button>
                   </InputGroupAddon>
                 )}
@@ -98,7 +99,7 @@ const SwapStepOne = ({
                       </Button>
                     ) : (
                       <i className='fa fa-spinner fa-pulse'/>
-                    )} {depositSymbol}
+                    )} {sendSymbol}
                   </FormText>
                 ) : (
                   <FormText color="muted">If omitted, a variable market rate is used.</FormText>
@@ -136,13 +137,14 @@ const SwapStepOne = ({
                 tag={StepOneField}
                 addressFieldName='refundAddress'
                 walletIdFieldName='sendWalletId'
-                placeholder={`${depositSymbol} return address (optional)`}
+                placeholder={`${sendSymbol} return address (optional)`}
                 label='From wallet'
                 labelClass='mt-3 mt-sm-0 mt-lg-3'
                 validate={validateRefundAddress}
-                symbol={depositSymbol}
+                symbol={sendSymbol}
                 change={change}
                 untouch={untouch}
+                defaultValue={defaultRefundAddress}
                 disableNoBalance
               />
             </Col>
@@ -158,7 +160,9 @@ const SwapStepOne = ({
                 validate={validateReceiveAddress}
                 symbol={receiveSymbol}
                 change={change}
+                defaultValue={defaultReceiveAddress}
                 untouch={untouch}
+                requiredLabel
               />
             </Col>
           </Row>
@@ -166,7 +170,7 @@ const SwapStepOne = ({
             <Checkbox
               label={
                 <small className='pl-1 text-white'>I accept the 
-                  <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'> Faast Terms & Conditions</a>
+                  <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'> Faa.st Terms & Conditions</a>
                 </small>
               }
               labelClass='p-0'
@@ -180,7 +184,7 @@ const SwapStepOne = ({
     </Form>
     <Modal size='lg' isOpen={Boolean(assetSelect)} toggle={() => setAssetSelect(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
       <ModalHeader toggle={() => setAssetSelect(null)} tag='h4' className='text-primary'>
-        Choose Asset to {assetSelect === 'deposit' ? 'Send' : 'Receive'}
+        Choose Asset to {assetSelect === 'send' ? 'Send' : 'Receive'}
       </ModalHeader>
       <ModalBody>
         {assetSelect && (
@@ -198,24 +202,26 @@ const SwapStepOne = ({
 export default compose(
   setDisplayName('SwapStepOne'),
   setPropTypes({
-    depositSymbol: PropTypes.string, 
+    sendSymbol: PropTypes.string, 
     receiveSymbol: PropTypes.string,
-    depositAmount: PropTypes.number,
-    receiveAddress: PropTypes.string,
-    refundAddress: PropTypes.string,
+    defaultSendAmount: PropTypes.number,
+    defaultReceiveAmount: PropTypes.number,
+    defaultRefundAddress: PropTypes.string,
+    defaultReceiveAddress: PropTypes.string,
   }),
   defaultProps({
-    depositSymbol: DEFAULT_DEPOSIT,
-    receiveSymbol: DEFAULT_RECEIVE,
-    depositAmount: null,
-    receiveAddress: null,
-    refundAddress: undefined,
+    sendSymbol: DEFAULT_SEND_SYMBOL,
+    receiveSymbol: DEFAULT_RECEIVE_SYMBOL,
+    defaultSendAmount: DEFAULT_SEND_AMOUNT,
+    defaultReceiveAmount: null,
+    defaultRefundAddress: undefined,
+    defaultReceiveAddress: undefined,
   }),
   connect(createStructuredSelector({
-    assets: getAllAssetsArray,
-    depositAsset: (state, { depositSymbol }) => getAsset(state, depositSymbol),
+    assetSymbols: getAllAssetSymbols,
+    sendAsset: (state, { sendSymbol }) => getAsset(state, sendSymbol),
     receiveAsset: (state, { receiveSymbol }) => getAsset(state, receiveSymbol),
-    depositAmount: (state) => getFormValue(state, 'depositAmount'),
+    sendAmount: (state) => getFormValue(state, 'sendAmount'),
     sendWallet: (state) => getWallet(state, getFormValue(state, 'sendWalletId')),
     balancesLoaded: areCurrentPortfolioBalancesLoaded,
   }), {
@@ -225,15 +231,20 @@ export default compose(
     retrievePairData: retrievePairData,
     openViewOnly: openViewOnlyWallet,
   }),
-  withProps(({ assets, receiveAddress, depositAmount, refundAddress, depositSymbol, receiveSymbol, sendWallet }) => ({
-    supportedAssets: assets.map(({ symbol }) => symbol),
-    pair: `${depositSymbol}_${receiveSymbol}`,
+  withProps(({
+    sendSymbol, receiveSymbol,
+    defaultSendAmount, defaultReceiveAmount,
+    defaultRefundAddress, defaultReceiveAddress,
+    sendWallet
+  }) => ({
+    pair: `${sendSymbol}_${receiveSymbol}`,
     initialValues: {
-      receiveAddress,
-      depositAmount,
-      refundAddress
+      sendAmount: defaultSendAmount,
+      receiveAmount: defaultReceiveAmount,
+      refundAddress: defaultRefundAddress,
+      receiveAddress: defaultReceiveAddress,
     },
-    maxSendAmount: sendWallet && (sendWallet.balances[depositSymbol] || '0'),
+    maxSendAmount: sendWallet && (sendWallet.balances[sendSymbol] || '0'),
     maxSendAmountLoaded: sendWallet && sendWallet.balancesLoaded,
   })),
   connect(createStructuredSelector({
@@ -241,22 +252,22 @@ export default compose(
     minimumDeposit: (state, { pair }) => getRateMinimumDeposit(state, pair),
     estimatedRate: (state, { pair }) => getRatePrice(state, pair),
   })),
-  withState('assetSelect', 'setAssetSelect', null), // deposit, receive, or null
+  withState('assetSelect', 'setAssetSelect', null), // send, receive, or null
   withHandlers({
     isAssetDisabled: ({ assetSelect }) => ({ deposit, receive }) =>
-      !((assetSelect === 'deposit' && deposit) || 
+      !((assetSelect === 'send' && deposit) || 
       (assetSelect === 'receive' && receive)),
-    handleSelectedAsset: ({ assetSelect, updateQueryString, setAssetSelect, depositSymbol, receiveSymbol }) => (asset) => {
+    handleSelectedAsset: ({ assetSelect, updateQueryString, setAssetSelect, sendSymbol, receiveSymbol }) => (asset) => {
       const { symbol } = asset
-      let from = depositSymbol
+      let from = sendSymbol
       let to = receiveSymbol
-      if (assetSelect === 'deposit') {
+      if (assetSelect === 'send') {
         if (symbol === receiveSymbol) {
           to = from
         }
         from = symbol
       } else { // receive
-        if (symbol === depositSymbol) {
+        if (symbol === sendSymbol) {
           from = to
         }
         to = symbol
@@ -264,29 +275,29 @@ export default compose(
       setAssetSelect(null)
       updateQueryString({ from, to })
     },
-    handleSwitchAssets: ({ updateQueryString, depositSymbol, receiveSymbol }) => () => {
-      updateQueryString({ from: receiveSymbol, to: depositSymbol })
+    handleSwitchAssets: ({ updateQueryString, sendSymbol, receiveSymbol }) => () => {
+      updateQueryString({ from: receiveSymbol, to: sendSymbol })
     },
     validateReceiveAddress: ({ receiveAsset }) => validator.all(
       validator.required(),
       validator.walletAddress(receiveAsset)
     ),
-    validateRefundAddress: ({ depositAsset }) => validator.walletAddress(depositAsset),
-    validateDepositAmount: ({ minimumDeposit, depositSymbol, sendWallet, maxSendAmount }) => validator.all(
+    validateRefundAddress: ({ sendAsset }) => validator.walletAddress(sendAsset),
+    validateDepositAmount: ({ minimumDeposit, sendSymbol, sendWallet, maxSendAmount }) => validator.all(
       ...(sendWallet ? [validator.required()] : []),
       validator.number(),
-      validator.gt(minimumDeposit, `Send amount must be at least ${minimumDeposit} ${depositSymbol}.`),
+      validator.gt(minimumDeposit, `Send amount must be at least ${minimumDeposit} ${sendSymbol}.`),
       ...(sendWallet ? [validator.lte(maxSendAmount, 'Cannot send more than you have.')] : []),
     ),
     onSubmit: ({
-      depositSymbol, receiveAsset, 
+      sendSymbol, receiveAsset, 
       createSwap, openViewOnly, push
     }) => (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
-      const { depositAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId } = values
+      const { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId } = values
       return createSwap({
-        sendSymbol: depositSymbol,
-        sendAmount: depositAmount ? toBigNumber(depositAmount) : undefined,
+        sendSymbol: sendSymbol,
+        sendAmount: sendAmount ? toBigNumber(sendAmount) : undefined,
         sendWalletId,
         receiveSymbol,
         receiveWalletId,
@@ -310,8 +321,8 @@ export default compose(
   withHandlers(({ change, touch }) => {
     const setEstimatedReceiveAmount = (x) => change('receiveAmount', x)
     const setDepositAmount = (x) => {
-      change('depositAmount', log.debugInline('setDepositAmount', x))
-      touch('depositAmount')
+      change('sendAmount', log.debugInline('setDepositAmount', x))
+      touch('sendAmount')
     }
     return {
       setDepositAmount,
@@ -319,35 +330,35 @@ export default compose(
       handleSelectMax: ({ maxSendAmount }) => () => {
         setDepositAmount(parseFloat(maxSendAmount))
       },
-      calculateReceiveAmount: ({ depositAmount, receiveAsset, estimatedRate }) => () => {
-        if (estimatedRate && depositAmount) {
-          depositAmount = toBigNumber(depositAmount)
-          const estimatedReceiveAmount = depositAmount.div(estimatedRate).round(receiveAsset.decimals)
+      calculateReceiveAmount: ({ sendAmount, receiveAsset, estimatedRate }) => () => {
+        if (estimatedRate && sendAmount) {
+          sendAmount = toBigNumber(sendAmount)
+          const estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals)
           setEstimatedReceiveAmount(estimatedReceiveAmount.toNumber())
         } else {
-          setEstimatedReceiveAmount('')
+          setEstimatedReceiveAmount(null)
         }
       }
     }
   }),
   lifecycle({
     componentDidUpdate(prevProps) {
-      const { rateLoaded, pair, retrievePairData, depositAmount, estimatedRate, calculateReceiveAmount } = this.props
+      const { rateLoaded, pair, retrievePairData, sendAmount, estimatedRate, calculateReceiveAmount } = this.props
       if (pair && !rateLoaded) {
         retrievePairData(pair)
       }
-      if (prevProps.depositAmount !== depositAmount || prevProps.estimatedRate !== estimatedRate) {
+      if (prevProps.sendAmount !== sendAmount || prevProps.estimatedRate !== estimatedRate) {
         calculateReceiveAmount()
       }
     },
     componentWillMount() {
-      const { updateQueryString, depositSymbol, receiveSymbol, retrievePairData, pair } = this.props
-      if (depositSymbol === receiveSymbol) {
-        let to = DEFAULT_RECEIVE
-        let from = DEFAULT_DEPOSIT
-        if (to === depositSymbol || from === receiveSymbol) {
+      const { updateQueryString, sendSymbol, receiveSymbol, retrievePairData, pair } = this.props
+      if (sendSymbol === receiveSymbol) {
+        let from = DEFAULT_SEND_SYMBOL
+        let to = DEFAULT_RECEIVE_SYMBOL
+        if (to === sendSymbol || from === receiveSymbol) {
           from = to
-          to = DEFAULT_DEPOSIT
+          to = DEFAULT_SEND_SYMBOL
         }
         updateQueryString({ to, from })
       } else {

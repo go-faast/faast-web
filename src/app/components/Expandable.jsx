@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { UncontrolledTooltip } from 'reactstrap'
+import { UncontrolledTooltip, Tooltip } from 'reactstrap'
 import { tag as tagPropType } from 'Utilities/propTypes'
 
 class Expandable extends Component {
@@ -12,13 +12,13 @@ class Expandable extends Component {
   }
 
   render () {
-    const { tag: Tag, expanded, shrunk, id: propId, ...props } = this.props
+    const { tag: Tag, expanded, shrunk, id: propId, placement, ...props } = this.props
     const id = propId || this.state.id
     return (
       <Tag {...props}>
         {shrunk !== expanded ? ([
           <span key='shrunk' id={id}>{shrunk}</span>,
-          <UncontrolledTooltip key='expanded' target={id} autohide={false}>
+          <UncontrolledTooltip key='expanded' target={id} autohide={false} placement={placement}>
             {expanded}
           </UncontrolledTooltip>
         ]) : shrunk}
@@ -30,7 +30,8 @@ class Expandable extends Component {
 Expandable.propTypes = {
   expanded: PropTypes.node.isRequired,
   shrunk: PropTypes.node.isRequired,
-  tag: tagPropType
+  tag: tagPropType,
+  placement: Tooltip.propTypes.placement,
 }
 
 Expandable.defaultProps = {

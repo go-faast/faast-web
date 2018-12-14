@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { compose, setDisplayName, withProps } from 'recompose'
+import { compose, setDisplayName, withPropsOnChange } from 'recompose'
 import Layout from 'Components/Layout'
 import * as qs from 'query-string'
 import { withRouter } from 'react-router'
@@ -11,21 +11,15 @@ import Blocked from 'Components/Blocked'
 import StepOne from './StepOne'
 import StepTwo from './StepTwo'
 
-const SwapWidget = ({ id, to, from, receive, refund, deposit, blocked }) => (
+const SwapWidget = ({ orderId, blocked, stepOne }) => (
   <Fragment>
     {blocked ? (
       <Blocked/>
     ) : null}
     <Layout className='pt-3 p-0 p-sm-3'>
-      {!id ? 
-        (<StepOne 
-          receiveSymbol={to}
-          receiveAddress={receive}
-          depositSymbol={from}
-          depositAmount={deposit}
-          refundAddress={refund}
-        />) 
-        : <StepTwo orderId={id} />}
+      {!orderId
+        ? (<StepOne {...stepOne}/>) 
+        : (<StepTwo orderId={orderId} />)}
     </Layout>
   </Fragment>
 )
@@ -37,17 +31,25 @@ export default compose(
   }),{
   }),
   withRouter,
-  withProps(({ location }) => {
+  withPropsOnChange(['location'], ({ location }) => {
     const urlParams = qs.parse(location.search)
-    let { id, to, from, receive, refund, deposit } = urlParams
-    deposit = deposit ? parseFloat(deposit) : deposit
+    let { id, from, fromAmount, fromAddress, to, toAmount, toAddress } = urlParams
+    fromAmount = fromAmount && Number.parseFloat(fromAmount)
+    toAmount = toAmount && Number.parseFloat(toAmount)
+    if (fromAmount && toAmount) {
+      // Can't set both
+      toAmount = undefined
+    }
     return {
-      id,
-      to,
-      from,
-      receive,
-      refund,
-      deposit
+      orderId: id,
+      stepOne: {
+        sendSymbol: from,
+        receiveSymbol: to,
+        defaultSendAmount: fromAmount,
+        defaultReceiveAmount: toAmount,
+        defaultRefundAddress: fromAddress,
+        defaultReceiveAddress: toAddress,
+      },
     }
   })
 )(SwapWidget)

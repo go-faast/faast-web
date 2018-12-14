@@ -6,13 +6,15 @@ import {
   Input, InputGroup,
 } from 'reactstrap'
 
+import Expandable from 'Components/Expandable'
+
 const RenderInput = (props) => {
   const {
     meta: { touched, error, warning, form: formName },
     label, type, step, placeholder, id, disabled, autoComplete, size,
     addonPrepend, addonAppend, row, className, inputClass,
     labelProps, labelClass, labelCol, inputCol, autoFocus,
-    renderInput, helpText, style,
+    renderInput, helpText, style, requiredLabel,
   } = props
   let { inputProps, input: reduxFormInput } = props
   const check = ['checkbox', 'radio'].includes(type)
@@ -61,7 +63,13 @@ const RenderInput = (props) => {
   let labelElement = label && (
     <Fragment>
       <Label key='label' for={inputId} check={check} className={labelClass} {...labelProps}>
-        {label}
+        {requiredLabel ? (
+          <Expandable
+            placement='right'
+            shrunk={<Fragment>{label} <span className='text-danger'>*</span></Fragment>}
+            expanded='Required'
+          />
+        ) : label}
       </Label>
       {check && feedbackElement}
     </Fragment>
@@ -101,6 +109,7 @@ ReduxFormField.propTypes = {
   autoFocus: PropTypes.bool,
   renderInput: PropTypes.func,
   inputProps: PropTypes.object,
+  requiredLabel: PropTypes.bool,
 }
 
 export default ReduxFormField
