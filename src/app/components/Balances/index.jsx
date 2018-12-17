@@ -55,7 +55,7 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
 
   const searchAndShare = (
     (<Fragment>
-      <Col style={{ top: '2px' }} className='p-0 position-relative' xs='auto'>
+      <Col style={{ top: '-1px' }} className='p-0 position-relative' xs='auto'>
         <ShareButton wallet={wallet}/>
       </Col>
       <Col className='p-0 pr-2' xs='auto'>
