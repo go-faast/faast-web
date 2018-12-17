@@ -53,7 +53,7 @@ const AffiliateDashboard = ({ stats: { swaps_completed, value_btc, affiliate_pay
             <CardHeader className={cardHeader}>Funds Ready for Payout</CardHeader>
             <CardBody className='text-center'>
               <p className='mb-0' style={{ fontSize: 70 }}>🎉</p>
-              <Units value={balance} symbol='BTC' precision={6} style={{ fontSize: 50 }} className={classNames('font-weight-bold mt-0 mb-3 d-block', text)}/>
+              <Units value={balance} symbol='BTC' precision={6} style={{ fontSize: 50 }} className={classNames('font-weight-bold mt-0 mb-4 d-block', text)}/>
               <Button tag={Link} to='/affiliates/settings' className={classNames(withdrawal, 'flat px-4 mb-3')} color='primary'>Initiate a Withdrawal</Button>
             </CardBody>
           </Card>
