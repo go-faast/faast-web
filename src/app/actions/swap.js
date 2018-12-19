@@ -80,7 +80,7 @@ export const createOrder = (swap) => (dispatch) => {
     log.error(`Cannot create swap order for ${swap}`)
     return
   }
-  let { id, sendAmount, sendSymbol, receiveSymbol, sendWalletId, receiveWalletId } = swap
+  const { id, sendAmount, sendSymbol, receiveSymbol, sendWalletId, receiveWalletId } = swap
   return Promise.resolve().then(() => {
     if (swap.error) return swap
     const finish = dispatch(createSwapFinish('createOrder', swap))
