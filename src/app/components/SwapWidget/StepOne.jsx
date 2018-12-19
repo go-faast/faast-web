@@ -20,7 +20,7 @@ import { updateQueryStringReplace } from 'Actions/router'
 import { retrievePairData } from 'Actions/rate'
 import { openViewOnlyWallet } from 'Actions/access'
 
-import { getRateMinimumDeposit, getRatePrice, isRateLoaded } from 'Selectors/rate'
+import { getRateMinimumDeposit, getRatePrice, isRateLoaded, getRateMaximumDeposit } from 'Selectors/rate'
 import { getAllAssetSymbols, getAsset } from 'Selectors/asset'
 import { getWallet } from 'Selectors/wallet'
 import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
@@ -250,6 +250,7 @@ export default compose(
   connect(createStructuredSelector({
     rateLoaded: (state, { pair }) => isRateLoaded(state, pair),
     minimumDeposit: (state, { pair }) => getRateMinimumDeposit(state, pair),
+    maximumDeposit: (state, { pair }) => getRateMaximumDeposit(state, pair),
     estimatedRate: (state, { pair }) => getRatePrice(state, pair),
   })),
   withState('assetSelect', 'setAssetSelect', null), // send, receive, or null
@@ -283,10 +284,11 @@ export default compose(
       validator.walletAddress(receiveAsset)
     ),
     validateRefundAddress: ({ sendAsset }) => validator.walletAddress(sendAsset),
-    validateDepositAmount: ({ minimumDeposit, sendSymbol, sendWallet, maxSendAmount }) => validator.all(
+    validateDepositAmount: ({ minimumDeposit, maximumDeposit, sendSymbol, sendWallet, maxSendAmount }) => validator.all(
       ...(sendWallet ? [validator.required()] : []),
       validator.number(),
       validator.gt(minimumDeposit, `Send amount must be at least ${minimumDeposit} ${sendSymbol}.`),
+      validator.lt(maximumDeposit, `Send amount cannot be greater than ${maximumDeposit} ${sendSymbol}`),
       ...(sendWallet ? [validator.lte(maxSendAmount, 'Cannot send more than you have.')] : []),
     ),
     onSubmit: ({

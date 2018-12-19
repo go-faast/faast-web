@@ -15,6 +15,7 @@ const rateInitialState = {
   price: null,
   deposit_amount: null,
   minimum_deposit: null,
+  maximum_deposit: null,
   error: '',
   lastUpdated: undefined,
   loading: false
