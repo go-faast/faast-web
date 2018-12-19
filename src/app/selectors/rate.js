@@ -13,6 +13,7 @@ export const getRate = createItemSelector(
     : null)
 export const getRatePrice = createItemSelector(getRate, fieldSelector('price'))
 export const getRateMinimumDeposit = createItemSelector(getRate, fieldSelector('minimum_deposit'))
+export const getRateMaximumDeposit = createItemSelector(getRate, fieldSelector('maximum_deposit'))
 export const getRateLastUpdated = createItemSelector(getRate, fieldSelector('lastUpdated'))
 export const isRateLoaded = createItemSelector(getRateLastUpdated, (lastUpdated) => Boolean(lastUpdated))
 export const isRateLoading = createItemSelector(getRate, fieldSelector('loading'))
