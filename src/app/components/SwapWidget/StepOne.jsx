@@ -288,7 +288,7 @@ export default compose(
       ...(sendWallet ? [validator.required()] : []),
       validator.number(),
       validator.gt(minimumDeposit, `Send amount must be at least ${minimumDeposit} ${sendSymbol}.`),
-      validator.lt(maximumDeposit, `Send amount cannot be greater than ${maximumDeposit} ${sendSymbol}`),
+      validator.lt(maximumDeposit, `Send amount cannot be greater than ${maximumDeposit} ${sendSymbol} to ensure efficient pricing.`),
       ...(sendWallet ? [validator.lte(maxSendAmount, 'Cannot send more than you have.')] : []),
     ),
     onSubmit: ({

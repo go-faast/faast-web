@@ -80,7 +80,7 @@ export const createOrder = (swap) => (dispatch) => {
     log.error(`Cannot create swap order for ${swap}`)
     return
   }
-  const { id, sendAmount, sendSymbol, receiveSymbol, sendWalletId, receiveWalletId } = swap
+  let { id, sendAmount, sendSymbol, receiveSymbol, sendWalletId, receiveWalletId } = swap
   return Promise.resolve().then(() => {
     if (swap.error) return swap
     const finish = dispatch(createSwapFinish('createOrder', swap))
@@ -88,8 +88,12 @@ export const createOrder = (swap) => (dispatch) => {
       .then((pairData) => {
         if (sendAmount) {
           const minDeposit = toBigNumber(pairData.minimum_deposit)
+          const maxDeposit = toBigNumber(pairData.maximum_deposit)
           if (minDeposit.gt(sendAmount)) {
             return finish(`Send amount must be at least ${minDeposit} ${sendSymbol}`)
+          }
+          if (sendAmount.gt(maxDeposit)) {
+            return finish(`Send amount cannot be greater than ${maxDeposit} ${sendSymbol} to ensure efficient pricing.`)
           }
         }
         if (!receiveWalletId && !swap.receiveAddress) {
