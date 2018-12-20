@@ -56,7 +56,7 @@ const StepOneField = withProps(({ labelClass, inputClass, className, labelCol, i
 
 const SwapStepOne = ({
   change, untouch, submitting, balancesLoaded,
-  sendSymbol, receiveSymbol, supportedAssets, assetSelect, setAssetSelect, 
+  sendSymbol, receiveSymbol, assetSymbols, assetSelect, setAssetSelect, 
   validateReceiveAddress, validateRefundAddress, validateDepositAmount,
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
   onChangeDepositAmount, handleSelectMax, maxSendAmount, maxSendAmountLoaded,
@@ -190,7 +190,7 @@ const SwapStepOne = ({
         {assetSelect && (
           <AssetSelector 
             selectAsset={handleSelectedAsset} 
-            supportedAssetSymbols={supportedAssets}
+            supportedAssetSymbols={assetSymbols}
             isAssetDisabled={isAssetDisabled}
           />
         )}
