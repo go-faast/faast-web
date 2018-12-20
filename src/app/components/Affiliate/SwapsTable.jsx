@@ -10,7 +10,7 @@ import classNames from 'class-names'
 import { createStatusLabel, CoinSymbol } from 'Components/TradeTable'
 import Units from 'Components/Units'
 
-import { affiliateSentSwapsArray } from 'Selectors'
+import { affiliateSentSwapsArray, areSwapsLoading } from 'Selectors/affiliate'
 
 import { text, affilateTable, card, cardHeader, cardFooter, smallCard } from './style'
 
@@ -46,8 +46,9 @@ const TableRow = ({
   </tr>
 )
 
-const AffiliateSwapsTable = ({ swaps, size }) => {
+const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading }) => {
   swaps = swaps && size === 'small' ? swaps.slice(0,5) : swaps
+  console.log('swaps loading', areSwapsLoading)
   return (
     <Fragment>
       <Card className={classNames(card, size === 'small' && smallCard, size !== 'small' && 'mx-auto')}>
@@ -74,14 +75,14 @@ const AffiliateSwapsTable = ({ swaps, size }) => {
                   })}
                 </tbody>
               </Table>
-              <CardFooter 
+              {size === 'small' && (<CardFooter 
                 tag={Link} 
                 to='/affiliates/swaps'
                 className={classNames(cardFooter, text, 'p-2 text-center cursor-pointer d-block')}
               >
                 <span className='font-weight-bold'>View All Swaps</span>
-              </CardFooter>
-            </Fragment>) :
+              </CardFooter>)}
+            </Fragment>) : areSwapsLoading ? (<i className='fa fa-spinner fa-pulse'/>) :
             <div className='d-flex align-items-center justify-content-center'>
               <p className={text}>No swaps yet.</p>
             </div>
@@ -96,6 +97,7 @@ export default compose(
   setDisplayName('AffiliateSwapsTable'),
   connect(createStructuredSelector({
     swaps: affiliateSentSwapsArray,
+    areSwapsLoading: areSwapsLoading,
   }), {
   }),
   setPropTypes({

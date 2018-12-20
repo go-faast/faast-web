@@ -10,6 +10,10 @@ const getAffiliateState = ({ affiliate }) => affiliate
 
 // Affiliate selectors
 export const isAffiliateLoggedIn = createSelector(getAffiliateState, ({ loggedIn }) => loggedIn)
+export const isAffiliateDataStale = createSelector(getAffiliateState, ({ lastUpdated }) => {
+  return (Date.now() - lastUpdated) >= 300000
+})
+export const areSwapsLoading = createSelector(getAffiliateState, ({ swapsLoading }) => swapsLoading)
 export const affiliateStats = createSelector(getAffiliateState, ({ stats }) => stats)
 export const affiliateSwaps = createSelector(
   getAffiliateState,

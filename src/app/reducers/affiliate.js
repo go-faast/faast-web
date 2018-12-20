@@ -1,13 +1,11 @@
 import { createReducer } from 'redux-act'
-import { pick } from 'lodash'
 import { statsRetrieved, statsError, login, swapsRetrieved, swapsError, loginError,
   updateAffiliateId, updateSecretKey, resetAffiliate, logout, updateBalance, updateBalanceSwaps,
-  withdrawalsRetrieved, withdrawalsError
+  withdrawalsRetrieved, withdrawalsError, swapsLoading
 } from 'Actions/affiliate'
-import { toBigNumber, ZERO } from 'Utilities/convert'
-import { createUpserter, createUpdater, mapValues } from 'Utilities/helpers'
 
 const initialState = {
+  lastUpdated: undefined,
   loggedIn: false,
   balance: undefined,
   swapCount: undefined,
@@ -15,15 +13,13 @@ const initialState = {
   secret_key: '',
   loginError: false,
   swapsError: '',
+  swapsLoading: false,
   statsError: '',
   stats: {},
   swaps: {},
   withdrawals: {},
   withdrawalsError: '',
 }
-
-const upsert = createUpserter('stats', initialState)
-const update = createUpdater('stats')
 
 export default createReducer({
   [login]: (state) => ({ ...state, loggedIn: true, loginError: false }),
@@ -36,20 +32,25 @@ export default createReducer({
   [statsRetrieved]: (state, stats) => ({ 
     ...state,
     statsError: '',
-    stats: { ...stats }
+    stats: { ...stats },
+    lastUpdated: Date.now(),
   }),
   [statsError]: (state, error) => ({ ...state, statsError: error }),
+  [swapsLoading]: (state) => ({ ...state, swapsLoading: true }),
   [swapsRetrieved]: (state, swaps) => ({ 
     ...state,
     swapsError: '',
-    swaps: { ...swaps }
+    swapsLoading: false,
+    swaps: { ...swaps },
+    lastUpdated: Date.now(),
   }),
   [withdrawalsRetrieved]: (state, withdrawals) => ({ 
     ...state,
+    lastUpdated: Date.now(),
     withdrawalsError: '',
     withdrawals: { ...withdrawals }
   }),
   [withdrawalsError]: (state, error) => ({ ...state, withdrawalsError: error }),
-  [swapsError]: (state, error) => ({ ...state, swapsError: error }),
+  [swapsError]: (state, error) => ({ ...state, swapsError: error, swapsLoading: false }),
   [resetAffiliate]: () => initialState
 }, initialState)

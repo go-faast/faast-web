@@ -2,11 +2,10 @@ import React from 'react'
 import * as validator from 'Utilities/validator'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
-import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withHandlers, withState } from 'recompose'
-import PropTypes from 'prop-types'
+import { compose, setDisplayName, withHandlers } from 'recompose'
 import { Row, Col, Card, Input, CardHeader, CardBody, Button, Form } from 'reactstrap'
 import classNames from 'class-names'
-import { reduxForm, formValueSelector } from 'redux-form'
+import { reduxForm } from 'redux-form'
 import ReduxFormField from 'Components/ReduxFormField'
 
 import { affiliateId, secretKey, getAsset } from 'Selectors'
@@ -62,12 +61,11 @@ export default compose(
     bitcoin: (state) => getAsset(state, 'BTC'),
   }), {
   }),
-  setPropTypes({
-  }),
-  defaultProps({
-  }),
   withHandlers({
     onSubmit: ({ affiliateId, secretKey }) => ({ withdrawal_address }) => {
+      console.log(affiliateId)
+      console.log(secretKey)
+      console.log(withdrawal_address)
       initiateAffiliateWithdrawal(withdrawal_address, affiliateId, secretKey)
     },
     validateWithdrawalAddress: ({ bitcoin }) => validator.all(

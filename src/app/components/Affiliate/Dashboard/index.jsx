@@ -1,10 +1,9 @@
 import React from 'react'
 import { createStructuredSelector } from 'reselect'
-import { Row, Col, Card, CardHeader, CardBody, Button, CardFooter, CardDeck } from 'reactstrap'
+import { Row, Col, Card, CardHeader, CardBody, Button, CardDeck } from 'reactstrap'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withHandlers, withState } from 'recompose'
-import PropTypes from 'prop-types'
+import { compose, setDisplayName } from 'recompose'
 import PieChart from './pieChart'
 import AffiliateLayout from 'Components/Affiliate/Layout'
 import SwapsTable from 'Components/Affiliate/SwapsTable'
@@ -79,17 +78,5 @@ export default compose(
     balance: getAffiliateBalance,
   }), {
     getStats,
-  }),
-  setPropTypes({
-  }),
-  defaultProps({
-  }),
-  withHandlers({
-  }),
-  // lifecycle({
-  //   componentWillMount() {
-  //     const { getStats } = this.props
-  //     getStats('DLABdEEmJUcLfLs2Y7jkkZntvdENT3nL', '1a585fe709b35047900b450040ff6d3771b3')
-  //   }
-  // })
+  })
 )(AffiliateDashboard)

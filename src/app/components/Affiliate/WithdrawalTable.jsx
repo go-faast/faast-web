@@ -72,13 +72,13 @@ const AffiliateWithdrawalTable = ({ withdrawals, size }) => {
               <p className={text}>No withdrawals yet.</p>
             </div>
           }
-          <CardFooter 
+          {size === 'small' && (<CardFooter 
             tag={Link} 
             to='/affiliates/withdrawals'
             className={classNames(cardFooter, text, 'p-2 text-center cursor-pointer d-block')}
           >
             <span className='font-weight-bold'>View All Withdrawals</span>
-          </CardFooter>
+          </CardFooter>)}
         </CardBody>
       </Card>
     </Fragment>

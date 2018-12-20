@@ -1,10 +1,10 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { push } from 'react-router-redux'
 import { Link } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
 import { Card, CardHeader, CardBody } from 'reactstrap'
 import { connect } from 'react-redux'
-import { compose, setDisplayName, lifecycle } from 'recompose'
+import { compose, setDisplayName } from 'recompose'
 import classNames from 'class-names'
 
 import { isAffiliateLoggedIn } from 'Selectors'

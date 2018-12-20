@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { push } from 'react-router-redux'
 import { Link } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
@@ -42,6 +42,12 @@ export default compose(
     push: push,
   }),
   lifecycle({
+    componentWillMount() {
+      const { loggedIn, push } = this.props
+      if (loggedIn) {
+        push('/affiliates/dashboard')
+      }
+    },
     componentDidUpdate() {
       const { loggedIn, push } = this.props
       if (loggedIn) {

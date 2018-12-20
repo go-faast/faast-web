@@ -1,10 +1,9 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withHandlers, withState } from 'recompose'
+import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers } from 'recompose'
 import { Form, Button } from 'reactstrap'
-import { reduxForm, formValueSelector } from 'redux-form'
+import { reduxForm } from 'redux-form'
 import ReduxFormField from 'Components/ReduxFormField'
-import PropTypes from 'prop-types'
 import classNames from 'class-names'
 
 import { input, text } from '../style'
