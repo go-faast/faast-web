@@ -24,7 +24,7 @@ const AffiliateDashboard = ({ stats: { swaps_completed, value_btc, affiliate_pay
   return (
     <AffiliateLayout className='pt-3'>
       <Row className={classNames(row, 'text-center mt-3')}>
-        <Col className='mt-md-0 mt-3' sm='12' md='4'>
+        <Col className='mt-0' sm='12' md='4'>
           <div className={classNames('mx-auto', stat1)}>
             <p className='pt-3'>{swaps_completed}</p>
             <p className='text-left pt-2 pl-3'>Swaps Completed</p>

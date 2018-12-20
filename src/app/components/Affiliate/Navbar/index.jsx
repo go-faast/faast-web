@@ -28,7 +28,7 @@ import FaastLogo from 'Img/faast-logo.png'
 import { navbar, navbarBrand, navbarLink, active } from './style'
 
 const AffiliateNavBar = ({ logout, loggedIn, children, isExpanded, toggleExpanded, ...props }) => (
-  <Navbar className={navbar} {...pick(props, Object.keys(Navbar.propTypes))}>
+  <Navbar className={navbar} {...pick(props, Object.keys(Navbar.propTypes))} light>
     <Container>
       <NavbarBrand tag={Link} to={loggedIn ? '/affiliates/dashboard' : '/affiliates/login'} className={classNames(navbarBrand, !loggedIn ? 'mx-auto' : 'mr-auto')}>
         <Icon src={FaastLogo} height='1.5rem' width='1.5rem' inline className='mx-3'/>
@@ -36,7 +36,7 @@ const AffiliateNavBar = ({ logout, loggedIn, children, isExpanded, toggleExpande
       </NavbarBrand>
       {loggedIn && (
         <Fragment>
-          <NavbarToggler onClick={toggleExpanded} />
+          <NavbarToggler onClick={toggleExpanded}/>
           <Collapse isOpen={isExpanded} navbar>
             <Nav className='mx-auto' navbar>
               <NavItem key='dashboard'>
@@ -78,8 +78,8 @@ AffiliateNavBar.propTypes = {
 }
 
 AffiliateNavBar.defaultProps = {
-  color: 'ultra-dark',
-  dark: true,
+  color: 'light',
+  dark: false,
   fixed: 'top',
   expand: config.navbar.expand,
 }

@@ -213,7 +213,7 @@ export const initiateAffiliateWithdrawal = (
     withdrawal_address: withdrawalAddress,
   }
   const nonce = String(Date.now())
-  const signature = createAffiliateSignature(undefined, key, nonce)
+  const signature = createAffiliateSignature(JSON.stringify(requestJSON), key, nonce)
   return fetchPost(`${apiUrl}/api/v2/public/affiliate/withdraw`, requestJSON,
   undefined,
 { headers: {
@@ -259,7 +259,7 @@ export const getAffiliateSwaps = (
 }
 
 export const createAffiliateSignature = (requestJSON: string | boolean, secret: string, nonce: string) => {
-  const updateString = requestJSON ? requestJSON + nonce : nonce
+  const updateString = requestJSON ? nonce + requestJSON : nonce
   console.log(updateString)
   return crypto
     .createHmac('sha256', secret)
