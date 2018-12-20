@@ -32,7 +32,7 @@ const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwit
               <div className={classNames('pt-1', asset)}>
                 <CoinIcon key={depositSymbol} symbol={depositSymbol} style={{ width: 60, height: 60 }} className='mt-4 mb-2'/>
                 <h4 style={{ fontWeight: 600 }} className='m-0'>{depositSymbol}</h4>
-                <p className='mt-2'>Deposit</p>
+                <p className='mt-2'>You send</p>
               </div>
             ) : (
               <i className='fa fa-spinner fa-pulse'/>
@@ -46,7 +46,7 @@ const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwit
               <div className={classNames('pt-1', asset)}>
                 <CoinIcon key={receiveSymbol} symbol={receiveSymbol} style={{ width: 60, height: 60 }} className='mt-4 mb-2'/>
                 <h4 style={{ fontWeight: 600 }} className='m-0'>{receiveSymbol}</h4>
-                <p className='mt-2'>Receive</p>
+                <p className='mt-2'>You receive</p>
               </div>
             ) : (
               <i className='fa fa-spinner fa-pulse'/>
