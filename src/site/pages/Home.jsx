@@ -13,9 +13,9 @@ import Header from 'Site/components/Header'
 import Footer from 'Site/components/Footer'
 import SwapWidget from 'Site/components/SwapWidget'
 
-import { fetchAppRestrictions } from 'Shared/actions/app'
-import { retrieveAssets } from 'Shared/actions/asset'
-import { getAllAssetsArray, areAssetsLoaded } from 'Shared/selectors/asset'
+import { fetchGeoRestrictions } from 'Common/actions/app'
+import { retrieveAssets } from 'Common/actions/asset'
+import { getAllAssetsArray, areAssetsLoaded } from 'Common/selectors/asset'
 
 import TrezorWalletLogo from 'Img/wallet/trezor.png'
 import LedgerWalletLogo from 'Img/wallet/ledger.png'
@@ -47,7 +47,7 @@ export default compose(
     areAssetsLoaded: areAssetsLoaded
   }), {
     retrieveAssets,
-    fetchAppRestrictions
+    fetchGeoRestrictions
   }),
   withProps(({ assets }) => ({
     assetList: assets.filter(({ deposit, receive }) => deposit || receive)
@@ -55,8 +55,8 @@ export default compose(
   })),
   lifecycle({
     componentWillMount() {
-      const { fetchAppRestrictions,retrieveAssets } = this.props
-      fetchAppRestrictions()
+      const { fetchGeoRestrictions, retrieveAssets } = this.props
+      fetchGeoRestrictions()
       retrieveAssets()
     }
   }),

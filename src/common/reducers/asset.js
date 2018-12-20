@@ -6,11 +6,11 @@ import {
   assetPriceLoading, assetPriceUpdated, assetPriceError,
   assetPricesLoading, assetPricesUpdated, assetPricesError,
   watchlistUpdated
-} from 'Shared/actions/asset'
+} from 'Common/actions/asset'
 import { toBigNumber, ZERO } from 'Utilities/convert'
 import { createUpserter, createUpdater, mapValues } from 'Utilities/helpers'
 
-const initialState = {
+export const initialState = {
   loading: false,
   loaded: false,
   loadingError: '',
@@ -19,7 +19,7 @@ const initialState = {
   pricesError: '',
   data: {},
 }
-const assetInitialState = {
+export const assetInitialState = {
   symbol: '',
   name: '',
   walletUrl: '',
@@ -65,7 +65,7 @@ const priceDataToAsset = (priceData) => {
 const upsertAsset = createUpserter('symbol', assetInitialState)
 const updateAsset = createUpdater('symbol')
 
-export default createReducer({
+export const reducerFunctions = {
   [assetsRestored]: (state, restoredState) => ({
     ...restoredState,
     loading: false,
@@ -118,4 +118,6 @@ export default createReducer({
     pricesError: initialState.pricesError,
   }),
   [assetPricesError]: (state, pricesError) => ({ ...state, pricesLoading: false, pricesError })
-}, initialState)
+}
+
+export default createReducer(reducerFunctions, initialState)

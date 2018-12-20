@@ -1,7 +1,7 @@
 import { newScopedCreateAction } from 'Utilities/action'
 import log from 'Utilities/log'
 import Faast from 'Services/Faast'
-import { isAssetPriceLoading, areAssetsLoading, areAssetPricesLoading } from 'Shared/selectors/asset'
+import { isAssetPriceLoading, areAssetsLoading, areAssetPricesLoading } from 'Common/selectors/asset'
 
 const createAction = newScopedCreateAction(__filename)
 

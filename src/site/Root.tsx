@@ -3,10 +3,9 @@ import { Router } from 'react-static'
 import { Provider } from 'react-redux'
 import { hot } from 'react-hot-loader'
 import { compose, setDisplayName } from 'recompose'
-
-import store from './connectors'
-
 import Routes from 'react-static-routes'
+
+import store from './store'
 
 import './styles/index.scss?global'
 

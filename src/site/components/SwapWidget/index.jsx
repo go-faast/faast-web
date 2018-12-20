@@ -6,7 +6,7 @@ import { Card, CardHeader, Button, Modal, ModalHeader,
   ModalBody } from 'reactstrap'
 import { swapContainer, cardHeader, cardTitle, submitButton, asset, swap } from './style.scss'
 
-import { areAssetsLoaded } from 'Shared/selectors/asset'
+import { areAssetsLoaded } from 'Common/selectors/asset'
 
 import CoinIcon from 'Components/CoinIcon'
 import AssetSelector from 'Components/AssetSelector'

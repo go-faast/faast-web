@@ -36,6 +36,8 @@ export const getAllAssets = createSelector(getAssetState, ({ data }) => mapValue
 }))
 
 export const getAllAssetsArray = createSelector(getAllAssets, Object.values)
+export const getAllAssetSymbols = createSelector(getAllAssets, Object.keys)
+export const getNumberOfAssets = createSelector(getAllAssetsArray, (assets) => assets.length)
 
 export const areAssetsLoading = createSelector(getAssetState, ({ loading }) => loading)
 export const areAssetsLoaded = createSelector(getAssetState, ({ loaded }) => loaded)
@@ -46,4 +48,28 @@ export const areAssetPricesLoaded = createSelector(getAssetState, ({ loaded, pri
 export const getAssetPricesError = createSelector(getAssetState, ({ loadingError, pricesError }) => loadingError || pricesError)
 
 export const getAsset = createItemSelector(getAllAssets, selectItemId, (allAssets, id) => allAssets[id])
+export const getAssetPrice = createItemSelector(getAsset, fieldSelector('price'))
 export const getAssetIconUrl = createItemSelector(getAsset, fieldSelector('iconUrl'))
+export const isAssetPriceLoading = createItemSelector(getAsset, fieldSelector('priceLoading'))
+export const isAssetPriceLoaded = createItemSelector(getAsset, fieldSelector('priceLoaded'))
+
+export const getTrendingPositive = createItemSelector(
+  getAllAssetsArray, 
+  selectItemId,
+  (assets, { sortField, n = 5 }) => {
+    return assets.filter(asset => asset.volume24.gt(50000)).sort((a, b) => b[sortField].comparedTo(a[sortField])).slice(0,n)
+  })
+
+export const getTrendingNegative = createItemSelector(
+  getAllAssetsArray, 
+  selectItemId,
+  (assets, { sortField, n = 5 }) => {
+    return assets.filter(asset => asset.volume24.gt(50000)).sort((a, b) => a[sortField].comparedTo(b[sortField])).slice(0,n)
+  })
+
+export const getAssetIndexPage = createItemSelector(
+  getAllAssetsArray,
+  selectItemId, 
+  (allAssets, { page, limit, sortField }) => {
+    return allAssets.sort((a, b) => b[sortField].comparedTo(a[sortField])).slice(page * limit, page * limit + limit)
+  })

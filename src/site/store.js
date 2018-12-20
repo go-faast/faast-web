@@ -1,14 +1,11 @@
 import { createStore, applyMiddleware, compose } from 'redux'
-import reducer from './reducers'
 import thunk from 'redux-thunk'
 import { routerMiddleware } from 'react-router-redux'
-import { createHashHistory, createBrowserHistory } from 'history'
-import config from 'Config'
+import { createBrowserHistory as createHistory } from 'history'
 
-const createHistory = isIpfs ? createHashHistory : createBrowserHistory
+import reducer from './reducers'
 
-const { isIpfs } = config
-const history = createHistory({ basename: process.env.ROUTER_BASE_NAME })
+const history = createHistory()
 const middleware = [
   thunk,
   routerMiddleware(history)
