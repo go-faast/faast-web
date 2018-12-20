@@ -38,7 +38,7 @@ export default {
   },
   affiliateSettings: {
     affiliate_margin: 0.1, 
-    affiliate_payment_address: '33WKJWf2iyJHUaRjoHmF7x4rKnENPHC9G8',
+    affiliate_id: 'DLABdEEmJUcLfLs2Y7jkkZntvdENT3nL',
   },
   explorerUrls: {
     BTC: 'https://blockchain.info',
