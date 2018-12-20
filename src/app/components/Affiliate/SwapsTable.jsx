@@ -50,7 +50,7 @@ const AffiliateSwapsTable = ({ swaps, size }) => {
   swaps = swaps && size === 'small' ? swaps.slice(0,5) : swaps
   return (
     <Fragment>
-      <Card className={classNames(card, smallCard, 'mx-auto')}>
+      <Card className={classNames(card, size === 'small' && smallCard, size !== 'small' && 'mx-auto')}>
         <CardHeader className={cardHeader}>Recent Swaps</CardHeader>
         <CardBody className={classNames(swaps.length > 0 && 'p-0','text-center')}>
           {swaps.length > 0 ? (

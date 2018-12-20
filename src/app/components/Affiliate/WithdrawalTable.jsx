@@ -15,7 +15,7 @@ import { ellipsize } from 'Utilities/display'
 
 import { getAffiliateWithdrawalsArray } from 'Selectors'
 
-import { text, affilateTable, card, cardHeader, cardFooter } from './style'
+import { text, affilateTable, card, cardHeader, cardFooter, smallCard } from './style'
 
 const WithdrawalTableRow = ({
   withdrawal, size,
@@ -45,7 +45,7 @@ const AffiliateWithdrawalTable = ({ withdrawals, size }) => {
   withdrawals = size === 'small' ? withdrawals.slice(0,9) : withdrawals
   return (
     <Fragment>
-      <Card className={classNames(card, 'mx-auto')}>
+      <Card className={classNames(card, size === 'small' && smallCard, size != 'small' && 'mx-auto')}>
         <CardHeader className={cardHeader}>Recent Withdrawals</CardHeader>
         <CardBody className={classNames(withdrawals.length > 0 && 'p-0', 'text-center')}>
           {withdrawals.length > 0 ? (
