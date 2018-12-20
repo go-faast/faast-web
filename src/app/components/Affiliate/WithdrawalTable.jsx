@@ -28,7 +28,7 @@ const WithdrawalTableRow = ({
     <tr className='cursor-pointer' {...props}>
       <td>{createStatusLabel(withdrawal)}</td>
       {size == 'large' ? (<td>{created}</td>) : null}
-      <td className='d-none d-sm-table-cell'>
+      <td>
         <Units value={amount} symbol={currency} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>
       </td>
       <td>
