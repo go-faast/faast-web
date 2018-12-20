@@ -8,6 +8,7 @@ import PropTypes from 'prop-types'
 import classNames from 'class-names'
 
 import { createStatusLabel, CoinSymbol } from 'Components/TradeTable'
+import Loading from 'Components/Loading'
 import Units from 'Components/Units'
 
 import { affiliateSentSwapsArray, areSwapsLoading } from 'Selectors/affiliate'
@@ -48,44 +49,44 @@ const TableRow = ({
 
 const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading }) => {
   swaps = swaps && size === 'small' ? swaps.slice(0,5) : swaps
-  console.log('swaps loading', areSwapsLoading)
   return (
     <Fragment>
       <Card className={classNames(card, size === 'small' && smallCard, size !== 'small' && 'mx-auto')}>
         <CardHeader className={cardHeader}>Recent Swaps</CardHeader>
         <CardBody className={classNames(swaps.length > 0 && 'p-0','text-center')}>
-          {swaps.length > 0 ? (
-            <Fragment>
-              <Table className={classNames('text-left', text, affilateTable)} striped responsive>
-                <thead>
-                  <tr>
-                    <th></th>
-                    {size === 'large' ? (<th>Date</th>) : null}
-                    <th className='d-none d-sm-table-cell'>Pair</th>
-                    <th>Received</th>
-                    <th>Sent</th>
-                    {size === 'large' ? (<th>Rate</th>) : null}
-                  </tr>
-                </thead>
-                <tbody>
-                  {swaps.map(swap => {
-                    return (
-                      <TableRow key={swap.orderId} size={size} swap={swap}/>
-                    )
-                  })}
-                </tbody>
-              </Table>
-              {size === 'small' && (<CardFooter 
-                tag={Link} 
-                to='/affiliates/swaps'
-                className={classNames(cardFooter, text, 'p-2 text-center cursor-pointer d-block')}
-              >
-                <span className='font-weight-bold'>View All Swaps</span>
-              </CardFooter>)}
-            </Fragment>) : areSwapsLoading ? (<i className='fa fa-spinner fa-pulse'/>) :
-            <div className='d-flex align-items-center justify-content-center'>
-              <p className={text}>No swaps yet.</p>
-            </div>
+          {areSwapsLoading ? (<Loading />) :
+            swaps.length > 0 ? (
+              <Fragment>
+                <Table className={classNames('text-left', text, affilateTable)} striped responsive>
+                  <thead>
+                    <tr>
+                      <th></th>
+                      {size === 'large' ? (<th>Date</th>) : null}
+                      <th className='d-none d-sm-table-cell'>Pair</th>
+                      <th>Received</th>
+                      <th>Sent</th>
+                      {size === 'large' ? (<th>Rate</th>) : null}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {swaps.map(swap => {
+                      return (
+                        <TableRow key={swap.orderId} size={size} swap={swap}/>
+                      )
+                    })}
+                  </tbody>
+                </Table>
+                {size === 'small' && (<CardFooter 
+                  tag={Link} 
+                  to='/affiliates/swaps'
+                  className={classNames(cardFooter, text, 'p-2 text-center cursor-pointer d-block')}
+                >
+                  <span className='font-weight-bold'>View All Swaps</span>
+                </CardFooter>)}
+              </Fragment>) :
+              <div className='d-flex align-items-center justify-content-center'>
+                <p className={text}>No swaps yet.</p>
+              </div>
           }
         </CardBody>
       </Card>

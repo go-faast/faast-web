@@ -1,5 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers } from 'recompose'
 import { Form, Button } from 'reactstrap'
 import { reduxForm } from 'redux-form'
@@ -9,8 +10,9 @@ import classNames from 'class-names'
 import { input, text } from '../style'
 
 import { register } from 'Actions/affiliate'
+import { areSwapsLoading } from 'Selectors'
 
-const AffiliateSignupForm = ({ handleSubmit }) => {
+const AffiliateSignupForm = ({ handleSubmit, areSwapsLoading }) => {
   return (
     <Form onSubmit={handleSubmit}>
       <ReduxFormField
@@ -34,14 +36,16 @@ const AffiliateSignupForm = ({ handleSubmit }) => {
         inputClass={classNames('flat', input)}
         label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Contact Email Address</p></small>}
       />
-      <Button className='w-100 flat' color='primary' type='submit'>Signup</Button>
+      <Button className='w-100 flat' color='primary' type='submit' disabled={areSwapsLoading}>Signup</Button>
     </Form>
   )
 }
 
 export default compose(
   setDisplayName('AffiliateSignupForm'),
-  connect(null, {
+  connect(createStructuredSelector({
+    areSwapsLoading: areSwapsLoading,
+  }), {
     register
   }),
   setPropTypes({

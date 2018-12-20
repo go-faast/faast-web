@@ -55,6 +55,7 @@ const AppView = ({ hasNoWallets }) => (
       
 
       {/* Legacy routes */}
+      <Redirect exact from='/affiliates' to={affiliateLogin.path}/>
       <Redirect exact from='/balances' to={dashboard.path}/>
       <Redirect exact from='/modify' to={rebalance.path}/>
 

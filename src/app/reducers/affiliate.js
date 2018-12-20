@@ -1,7 +1,7 @@
 import { createReducer } from 'redux-act'
 import { statsRetrieved, statsError, login, swapsRetrieved, swapsError, loginError,
   updateAffiliateId, updateSecretKey, resetAffiliate, logout, updateBalance, updateBalanceSwaps,
-  withdrawalsRetrieved, withdrawalsError, swapsLoading
+  withdrawalsRetrieved, withdrawalsError, swapsLoading, affiliateDataUpdated
 } from 'Actions/affiliate'
 
 const initialState = {
@@ -29,11 +29,11 @@ export default createReducer({
   [updateBalance]: (state, balance) => ({ ...state, balance }),
   [updateBalanceSwaps]: (state, swaps) => ({ ...state, swapCount: swaps }),
   [updateSecretKey]: (state, key) => ({ ...state, secret_key: key }),
+  [affiliateDataUpdated]: (state, timestamp = Date.now()) => ({ ...state, lastUpdated: timestamp }),
   [statsRetrieved]: (state, stats) => ({ 
     ...state,
     statsError: '',
     stats: { ...stats },
-    lastUpdated: Date.now(),
   }),
   [statsError]: (state, error) => ({ ...state, statsError: error }),
   [swapsLoading]: (state) => ({ ...state, swapsLoading: true }),
@@ -42,11 +42,9 @@ export default createReducer({
     swapsError: '',
     swapsLoading: false,
     swaps: { ...swaps },
-    lastUpdated: Date.now(),
   }),
   [withdrawalsRetrieved]: (state, withdrawals) => ({ 
     ...state,
-    lastUpdated: Date.now(),
     withdrawalsError: '',
     withdrawals: { ...withdrawals }
   }),

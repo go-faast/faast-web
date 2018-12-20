@@ -9,6 +9,7 @@ import { isAffiliateLoggedIn, isAffiliateDataStale } from 'Selectors'
 
 const createAction = newScopedCreateAction(__filename)
 
+export const affiliateDataUpdated = createAction('AFFILIATE_UPDATED')
 export const login = createAction('LOGIN')
 export const logout = createAction('LOGOUT')
 export const loginError = createAction('LOGIN_ERROR')
@@ -46,10 +47,12 @@ export const getStats = (id, key) => (dispatch, getState) => {
 }
 
 export const affiliateLogin = (id, key) => (dispatch) => {
+  dispatch(affiliateDataUpdated())
   dispatch(getAffiliateWithdrawals(id, key))
   dispatch(getAffiliateSwaps(id))
   dispatch(getBalance(id, key))
   dispatch(getStats(id, key))
+  sessionStorageSet('state:affiliate_lastUpdated', Date.now())
 }
 
 export const getBalance = (id, key) => (dispatch, getState) => {
@@ -94,6 +97,7 @@ export const restoreCachedAffiliateInfo = () => (dispatch, getState) => {
   const cachedAffiliateSwaps = sessionStorageGetJson('state:affiliate_swaps')
   const cachedAffiliateBalance = sessionStorageGetJson('state:affiliate_balance')
   const cachedAffiliateBalanceSwaps = sessionStorageGetJson('state:affiliate_balance_swaps')
+  const cachedLastUpdated = sessionStorageGet('state:affiliate_lastUpdated')
   if (cachedAffiliateId && cachedAffiliateStats && cachedAffiliateWithdrawals 
     && cachedAffiliateKey && cachedAffiliateBalance && cachedAffiliateBalanceSwaps && cachedAffiliateSwaps) {
     if (isAffiliateDataStale(getState())) {
@@ -107,6 +111,7 @@ export const restoreCachedAffiliateInfo = () => (dispatch, getState) => {
     dispatch(updateBalance(cachedAffiliateBalance))
     dispatch(updateBalanceSwaps(cachedAffiliateBalanceSwaps))
     dispatch(dispatch(login()))
+    dispatch(affiliateDataUpdated(parseInt(cachedLastUpdated)))
   }
   else {
     dispatch(affiliateLogout())
