@@ -13,14 +13,14 @@ import { affiliateId, secretKey, getAsset } from 'Selectors'
 import { initiateAffiliateWithdrawal } from 'Services/Faast'
 
 import AffiliateLayout from 'Components/Affiliate/Layout'
-import { card, cardHeader, input, text } from '../style'
+import { card, cardHeader, input, text, smallCard } from '../style'
 
 const AffiliateSettings = ({ affiliateId, secretKey, handleSubmit, validateWithdrawalAddress, invalid }) => {
   return (
     <AffiliateLayout className='pt-3'>
       <Row className='mt-4'>
         <Col>
-          <Card className={classNames('mx-auto', card)}>
+          <Card className={classNames('mx-auto', card, smallCard)}>
             <CardHeader className={cardHeader}>Affiliate API Settings</CardHeader>
             <CardBody>
               <Row>

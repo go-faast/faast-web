@@ -1,4 +1,5 @@
 import React from 'react'
+import { isEmpty } from 'lodash'
 import { compose, setDisplayName, withProps } from 'recompose'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
@@ -6,8 +7,16 @@ import { swapPieChartData } from 'Selectors'
 import ReactHighcharts from 'react-highcharts'
 import config from 'Config'
 
-const PieChart = ({ config }) => {
-  return <ReactHighcharts config={config}/>
+import { text } from '../style'
+
+const PieChart = ({ config, data }) => {
+  return isEmpty(data) ? (
+    <div className='d-flex align-items-center justify-content-center'>
+      <p className={text}>No swaps created yet.</p>
+    </div>
+  ) : (
+    <ReactHighcharts config={config}/>
+  )
 }
 
 const { pieChart: initialConfig } = config.highCharts

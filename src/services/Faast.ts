@@ -246,6 +246,18 @@ export const affiliateRegister = (
     })
 }
 
+export const getAffiliateSwaps = (
+  id: string,
+): Promise<void> => {
+  return fetchGet(`${apiUrl}/api/v2/public/swaps`,
+  { affiliate_id: id, limit: 100 })
+  .then((swaps) => swaps.orders.map(formatOrderResult))
+  .catch((e: any) => {
+    log.error(e)
+    throw e
+  })
+}
+
 export const createAffiliateSignature = (requestJSON: string | boolean, secret: string, nonce: string) => {
   const updateString = requestJSON ? requestJSON + nonce : nonce
   return crypto
@@ -271,4 +283,5 @@ export default {
   initiateAffiliateWithdrawal,
   affiliateRegister,
   getAffiliateBalance,
+  getAffiliateSwaps,
 }

@@ -1,19 +1,17 @@
 import React from 'react'
-import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withHandlers, withState } from 'recompose'
-import PropTypes from 'prop-types'
+import { compose, setDisplayName } from 'recompose'
+
+import AffiliateLayout from 'Components/Affiliate/Layout'
+import WithdrawalTable from 'Components/Affiliate/WithdrawalTable'
 
 const AffiliatePayouts = () => {
   return (
-    <span>Payouts</span>
+    <AffiliateLayout className='pt-4'>
+      <WithdrawalTable/>
+    </AffiliateLayout>
   )
 }
 
 export default compose(
   setDisplayName('AffiliatePayouts'),
-  setPropTypes({
-  }),
-  defaultProps({
-  }),
-  withHandlers({
-  }),
 )(AffiliatePayouts)

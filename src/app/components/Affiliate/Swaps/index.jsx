@@ -1,19 +1,18 @@
 import React from 'react'
-import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withHandlers, withState } from 'recompose'
-import PropTypes from 'prop-types'
+import { compose, setDisplayName } from 'recompose'
+
+import AffiliateLayout from 'Components/Affiliate/Layout'
+import SwapsTable from 'Components/Affiliate/SwapsTable'
+
 
 const AffiliateSwaps = () => {
   return (
-    <span>Swaps</span>
+    <AffiliateLayout className='pt-4'>
+      <SwapsTable />
+    </AffiliateLayout>
   )
 }
 
 export default compose(
   setDisplayName('AffiliateSwaps'),
-  setPropTypes({
-  }),
-  defaultProps({
-  }),
-  withHandlers({
-  }),
 )(AffiliateSwaps)

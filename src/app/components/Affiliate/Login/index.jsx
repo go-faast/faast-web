@@ -12,12 +12,12 @@ import LoginForm from './form'
 
 import AffiliateLayout from 'Components/Affiliate/Layout'
 
-import { card, cardHeader } from '../style'
+import { card, cardHeader, smallCard } from '../style'
 
 const AffiliateLogin = () => {
   return (
     <AffiliateLayout className='pt-5'>
-      <Card className={classNames(card, 'mx-auto')}>
+      <Card className={classNames(card, smallCard, 'mx-auto')}>
         <CardHeader className={classNames(cardHeader, 'text-center')}>
           <span>Dashboard Login</span>
         </CardHeader>

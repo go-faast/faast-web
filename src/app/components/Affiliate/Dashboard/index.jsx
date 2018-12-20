@@ -1,22 +1,27 @@
 import React from 'react'
 import { createStructuredSelector } from 'reselect'
-import { Row, Col, Card, CardHeader, CardBody, Button } from 'reactstrap'
+import { Row, Col, Card, CardHeader, CardBody, Button, CardFooter, CardDeck } from 'reactstrap'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withHandlers, withState } from 'recompose'
 import PropTypes from 'prop-types'
 import PieChart from './pieChart'
 import AffiliateLayout from 'Components/Affiliate/Layout'
+import SwapsTable from 'Components/Affiliate/SwapsTable'
+import WithdrawalTable from 'Components/Affiliate/WithdrawalTable';
 import Units from 'Components/Units'
+
 import { getStats } from 'Actions/affiliate'
 import classNames from 'class-names'
 
 import { affiliateStats, getAffiliateBalance } from 'Selectors'
 
-import { stat1, stat2, stat3, row, withdrawal} from './style'
-import { card, cardHeader, text } from '../style'
+import { stat1, stat2, stat3, row, withdrawal } from './style'
+import { card, cardHeader, text, smallCard } from '../style'
 
-const AffiliateDashboard = ({ stats: { swaps_completed, value_btc, affiliate_payouts_btc } = {}, balance }) => {
+
+const AffiliateDashboard = ({ stats: { swaps_completed, value_btc, affiliate_payouts_btc } = {}, 
+  balance }) => {
   return (
     <AffiliateLayout className='pt-3'>
       <Row className={classNames(row, 'text-center mt-3')}>
@@ -40,15 +45,8 @@ const AffiliateDashboard = ({ stats: { swaps_completed, value_btc, affiliate_pay
         </Col>
       </Row>
       <Row className='mt-4'>
-        <Col>
-          <Card className={card}>
-            <CardHeader className={cardHeader}>Distribution of Swaps</CardHeader>
-            <CardBody>
-              <PieChart/>
-            </CardBody>
-          </Card>
-        </Col>
-        <Col>
+        <CardDeck style={{ flex: 1 }}>
+          <SwapsTable size='small'/>
           <Card className={card}>
             <CardHeader className={cardHeader}>Funds Ready for Payout</CardHeader>
             <CardBody className='text-center'>
@@ -57,7 +55,18 @@ const AffiliateDashboard = ({ stats: { swaps_completed, value_btc, affiliate_pay
               <Button tag={Link} to='/affiliates/settings' className={classNames(withdrawal, 'flat px-4 mb-3')} color='primary'>Initiate a Withdrawal</Button>
             </CardBody>
           </Card>
-        </Col>
+        </CardDeck>
+      </Row>
+      <Row className='mt-4'>
+        <CardDeck style={{ flex: 1 }}>
+          <Card className={classNames(card, smallCard)}>
+            <CardHeader className={cardHeader}>Distribution of Swaps</CardHeader>
+            <CardBody>
+              <PieChart/>
+            </CardBody>
+          </Card>
+          <WithdrawalTable size='small'/>
+        </CardDeck>
       </Row>
     </AffiliateLayout>
   )
@@ -67,7 +76,7 @@ export default compose(
   setDisplayName('AffiliateDashboard'),
   connect(createStructuredSelector({
     stats: affiliateStats,
-    balance: getAffiliateBalance
+    balance: getAffiliateBalance,
   }), {
     getStats,
   }),

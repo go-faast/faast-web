@@ -19,9 +19,11 @@ export const updateBalance = createAction('UPDATE_BALANCE')
 export const updateBalanceSwaps = createAction('UPDATE_BALANCE_SWAPS')
 export const resetAffiliate = createAction('RESET_ALL')
 export const statsRetrieved = createAction('STATS_RETRIEVED')
+export const withdrawalsRetrieved = createAction('WITHDRAWALS_RETRIEVED')
 export const swapsRetrieved = createAction('SWAPS_RETRIEVED')
+export const swapsError = createAction('SWAPS_RETRIEVED')
 export const statsError = createAction('STATS_ERROR')
-export const swapsError = createAction('SWAPS_ERROR')
+export const withdrawalsError = createAction('WITHDRAWALS_ERROR')
 
 export const getStats = (id, key) => (dispatch, getState) => {
   return Faast.getAffiliateStats(id, key)
@@ -44,7 +46,8 @@ export const getStats = (id, key) => (dispatch, getState) => {
 }
 
 export const affiliateLogin = (id, key) => (dispatch) => {
-  dispatch(getSwapPayouts(id, key))
+  dispatch(getAffiliateWithdrawals(id, key))
+  dispatch(getAffiliateSwaps(id))
   dispatch(getBalance(id, key))
   dispatch(getStats(id, key))
 }
@@ -64,12 +67,20 @@ export const getBalance = (id, key) => (dispatch, getState) => {
     })
 }
 
-export const getSwapPayouts = (id, key) => (dispatch) => {
+export const getAffiliateWithdrawals = (id, key) => (dispatch) => {
   return Faast.getAffiliateSwapPayouts(id, key)
+    .then((withdrawals) => {
+      sessionStorageSetJson('state:affiliate_withdrawals', withdrawals.records)
+      return dispatch(withdrawalsRetrieved(withdrawals.records))
+    })
+    .catch((e) => dispatch(withdrawalsError(e)))
+}
+
+export const getAffiliateSwaps = (id) => (dispatch) => {
+  return Faast.getAffiliateSwaps(id)
     .then((swaps) => {
-      console.log(swaps)
-      sessionStorageSetJson('state:affiliate_swaps', swaps.records)
-      return dispatch(swapsRetrieved(swaps.records))
+      sessionStorageSetJson('state:affiliate_swaps', swaps)
+      return dispatch(swapsRetrieved(swaps))
     })
     .catch((e) => dispatch(swapsError(e)))
 }
@@ -78,14 +89,16 @@ export const restoreCachedAffiliateInfo = () => (dispatch) => {
   const cachedAffiliateId = sessionStorageGet('state:affiliate_id')
   const cachedAffiliateKey = sessionStorageGet('state:affiliate_key')
   const cachedAffiliateStats = sessionStorageGetJson('state:affiliate_stats')
+  const cachedAffiliateWithdrawals = sessionStorageGetJson('state:affiliate_withdrawals')
   const cachedAffiliateSwaps = sessionStorageGetJson('state:affiliate_swaps')
   const cachedAffiliateBalance = sessionStorageGetJson('state:affiliate_balance')
   const cachedAffiliateBalanceSwaps = sessionStorageGetJson('state:affiliate_balance_swaps')
-  if (cachedAffiliateId && cachedAffiliateStats && cachedAffiliateSwaps 
-    && cachedAffiliateKey && cachedAffiliateBalance && cachedAffiliateBalanceSwaps) {
+  if (cachedAffiliateId && cachedAffiliateStats && cachedAffiliateWithdrawals 
+    && cachedAffiliateKey && cachedAffiliateBalance && cachedAffiliateBalanceSwaps && cachedAffiliateSwaps) {
     dispatch(updateAffiliateId(cachedAffiliateId))
     dispatch(statsRetrieved(cachedAffiliateStats))
-    dispatch(swapsRetrieved(cachedAffiliateStats))
+    dispatch(withdrawalsRetrieved(cachedAffiliateWithdrawals))
+    dispatch(swapsRetrieved(cachedAffiliateSwaps))
     dispatch(updateSecretKey(cachedAffiliateKey))
     dispatch(updateBalance(cachedAffiliateBalance))
     dispatch(updateBalanceSwaps(cachedAffiliateBalanceSwaps))

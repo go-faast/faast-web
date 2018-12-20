@@ -15,14 +15,14 @@ import { tradeTable, tradeCoinIcon } from './style'
 
 const NODATA = '-----'
 
-const CoinSymbol = ({ symbol, ...props }) => (
+export const CoinSymbol = ({ symbol, ...props }) => (
   <Fragment>
     <CoinIcon className={classNames(tradeCoinIcon, 'mr-1')} symbol={symbol} size='sm' inline {...props}/>
     {symbol}
   </Fragment>
 )
 
-const TableRow = ({
+export const TableRow = ({
   swap,
   swap: { sendAmount, sendSymbol, receiveAmount, receiveSymbol, rate, createdAtFormatted },
   ...props
@@ -84,14 +84,14 @@ const TradeTable = ({ handleClick, hideIfNone, tableTitle,
 )
 
 
-const statusIcons = {
+export const statusIcons = {
   complete: <i style={{ fontSize: '18px' }} className='text-success fa fa-check-circle'></i>,
   contact_support: <i className='fa fa-exclamation-circle text-warning'></i>,
   pending: <i className='fa fa-spinner fa-pulse'/>,
   failed: <i className='fa fa-exclamation-circle text-danger'></i>
 }
 
-const createStatusLabel = (swap) => {
+export const createStatusLabel = (swap) => {
   const { status: { detailsCode, code, details } } = swap
   const statusIcon = statusIcons[detailsCode] || statusIcons[code]
 

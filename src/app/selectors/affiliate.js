@@ -1,16 +1,36 @@
 import { values, mapValues } from 'lodash'
 import { createSelector } from 'reselect'
 
+import { getAllAssets } from './asset'
+import { getAllWallets } from './wallet'
+import { getAllTxs } from './tx'
+import { createSwapExtender } from './swap'
+
 const getAffiliateState = ({ affiliate }) => affiliate
 
 // Affiliate selectors
 export const isAffiliateLoggedIn = createSelector(getAffiliateState, ({ loggedIn }) => loggedIn)
 export const affiliateStats = createSelector(getAffiliateState, ({ stats }) => stats)
+export const affiliateSwaps = createSelector(
+  getAffiliateState,
+  getAllAssets,
+  getAllWallets,
+  getAllTxs,
+  ({ swaps }, allAssets, allWallets, allTxs) => mapValues(swaps, createSwapExtender(allAssets, allWallets, allTxs)))
+
+export const affiliateSwapsArray = createSelector(affiliateSwaps, Object.values)
+export const affiliateSentSwapsArray = createSelector(affiliateSwapsArray, (swaps) => 
+  swaps.filter(({ status: { code } }) =>
+    code === 'complete' || code === 'failed'))
 export const getAffiliateBalance = createSelector(getAffiliateState, ({ balance }) => balance)
 export const affiliateId = createSelector(getAffiliateState, ({ affiliate_id }) => affiliate_id)
+export const getAffiliateWithdrawals = createSelector(getAffiliateState, ({ withdrawals }) => withdrawals)
+export const getAffiliateWithdrawalsArray = createSelector(getAffiliateWithdrawals, Object.values)
 export const secretKey = createSelector(getAffiliateState, ({ secret_key }) => secret_key)
 export const swapPieChartData = createSelector(getAffiliateState, ({ stats: { by_currency } }) => {
   return values(mapValues(by_currency, (value, key) => { value.name = key; return value }))
     .filter((x) => x.swaps_completed > 0)
-    .map(({ swaps_completed, name }) => { return { sliced: false, y: swaps_completed, name }})
+    .map((completed) => { 
+      const { swaps_completed, name } = completed
+      return { sliced: false, y: swaps_completed, name }})
 })
