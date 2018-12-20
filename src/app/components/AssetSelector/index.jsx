@@ -7,7 +7,8 @@ import Fuse from 'fuse.js'
 import { debounce } from 'debounce'
 import AssetSelectorView from './view'
 import { sortByProperty } from 'Utilities/helpers'
-import { getAllAssetsArray, isAppRestricted } from 'Selectors'
+import { getAllAssetsArray } from 'Selectors/asset'
+import { isAppRestricted } from 'Selectors/app'
 
 const DEBOUNCE_WAIT = 400
 const MAX_RESULTS = 50
