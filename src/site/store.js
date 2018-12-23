@@ -5,15 +5,18 @@ import { createBrowserHistory as createHistory } from 'history'
 
 import reducer from './reducers'
 
-const history = createHistory()
+let history
+
+if (typeof window !== 'undefined') {
+  history = createHistory()
+}
+if (typeof window === 'undefined') {
+  global.window = {}
+}
 const middleware = [
   thunk,
   routerMiddleware(history)
 ]
-
-if (typeof window === 'undefined') {
-  global.window = {}
-}
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
 const store = createStore(reducer, composeEnhancers(applyMiddleware(...middleware)))

@@ -58,8 +58,10 @@ const globalConfig = {
   }
 }
 
-ReactHighstock.Highcharts.setOptions(globalConfig)
-ReactHighcharts.Highcharts.setOptions(globalConfig)
+if (typeof document !== 'undefined') {
+  ReactHighstock.Highcharts.setOptions(globalConfig)
+  ReactHighcharts.Highcharts.setOptions(globalConfig)
+}
 
 export const pieChart = {
   colors: ['#0AA16F', '#0dd590', '#0EF0A1', '#0dd3b9', '#0B9986', '#076A5D'],
