@@ -3,18 +3,25 @@ import * as validator from 'Utilities/validator'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { compose, setDisplayName, withHandlers } from 'recompose'
-import { Row, Col, Card, Input, CardHeader, CardBody, Button, Form } from 'reactstrap'
+import { Row, Col, Card, Input, CardHeader, CardBody, Button, Form, Modal, ModalBody, ModalHeader } from 'reactstrap'
+import withToggle from 'Hoc/withToggle'
 import classNames from 'class-names'
-import { reduxForm } from 'redux-form'
+import { reduxForm, formValueSelector, change, untouch } from 'redux-form'
 import ReduxFormField from 'Components/ReduxFormField'
+import toastr from 'Utilities/toastrWrapper'
 
-import { affiliateId, secretKey, getAsset } from 'Selectors'
+import { affiliateId, secretKey, getAsset, getAffiliateBalance } from 'Selectors'
 import { initiateAffiliateWithdrawal } from 'Services/Faast'
 
 import AffiliateLayout from 'Components/Affiliate/Layout'
 import { card, cardHeader, input, text, smallCard } from '../style'
 
-const AffiliateSettings = ({ affiliateId, secretKey, handleSubmit, validateWithdrawalAddress, invalid }) => {
+const FORM_NAME = 'affiliate_withdrawal'
+
+const getFormValue = formValueSelector(FORM_NAME)
+
+const AffiliateSettings = ({ isModalOpen, toggleModalOpen, affiliateId, secretKey, 
+  handleSubmit, validateWithdrawalAddress, invalid, balance, withdrawalAddress }) => {
   return (
     <AffiliateLayout className='pt-3'>
       <Row className='mt-4'>
@@ -33,7 +40,7 @@ const AffiliateSettings = ({ affiliateId, secretKey, handleSubmit, validateWithd
                 </Col>
                 <Col>
                   <small><p className={classNames('mt-3 mb-1 font-weight-bold', text)}>Initiate Withdrawal</p></small>
-                  <Form onSubmit={handleSubmit}>
+                  <Form id='withdrawal-form' onSubmit={handleSubmit}>
                     <ReduxFormField
                       name='withdrawal_address'
                       type='text'
@@ -41,7 +48,26 @@ const AffiliateSettings = ({ affiliateId, secretKey, handleSubmit, validateWithd
                       inputClass={classNames('flat', input)}
                       validate={validateWithdrawalAddress}
                     />
-                    <Button className='flat' color='primary' type='submit' disabled={invalid}>Withdrawal</Button>
+                    <Button type='button' className='flat' color='primary' onClick={toggleModalOpen} disabled={invalid}>Withdrawal</Button>
+                    <Modal
+                      size='md' isOpen={isModalOpen} toggle={toggleModalOpen} className={'border-0 mt-6 mx-md-auto'} contentClassName={classNames('p-0 border-0 flat')}>
+                      <ModalHeader close={<span className='cursor-pointer' onClick={toggleModalOpen}>cancel</span>} tag='h4' toggle={toggleModalOpen} className={cardHeader}>
+                        Confirm Withdrawal
+                      </ModalHeader>
+                      <ModalBody className={classNames(cardHeader, 'p-0 p-sm-3')}>
+                        <Row>
+                          <Col sm='12'>
+                            <small><p className={classNames('mt-1 mb-1 font-weight-bold', text)}>Amount to be Withdrawn</p></small>
+                            <Input className={classNames('flat', input)} value={`${balance} BTC`} type='text' autoFocus readOnly/>
+                          </Col>
+                          <Col sm='12'>
+                            <small><p className={classNames('mt-3 mb-1 font-weight-bold', text)}>BTC Wallet Address</p></small>
+                            <Input className={classNames('flat', input)} value={withdrawalAddress} type='text' autoFocus readOnly/>
+                            <Button className='flat mt-3 d-block w-100' type='submit' form='withdrawal-form' color='primary'>Confirm Withdrawal</Button>
+                          </Col>
+                        </Row>
+                      </ModalBody>
+                    </Modal>
                   </Form>
                 </Col>
               </Row>
@@ -58,15 +84,30 @@ export default compose(
   connect(createStructuredSelector({
     affiliateId,
     secretKey,
+    balance: getAffiliateBalance,
     bitcoin: (state) => getAsset(state, 'BTC'),
+    withdrawalAddress: (state) => getFormValue(state, 'withdrawal_address'),
   }), {
+    change: change,
+    untouch: untouch,
   }),
+  withToggle('modalOpen'),
   withHandlers({
-    onSubmit: ({ affiliateId, secretKey }) => ({ withdrawal_address }) => {
-      console.log(affiliateId)
-      console.log(secretKey)
-      console.log(withdrawal_address)
+    onSubmit: ({ affiliateId, secretKey, toggleModalOpen, change, untouch }) => ({ withdrawal_address }) => {
       initiateAffiliateWithdrawal(withdrawal_address, affiliateId, secretKey)
+        .then(() => {
+          toggleModalOpen()
+          change(FORM_NAME, 'withdrawal_address', null)
+          untouch(FORM_NAME, 'withdrawal_address')
+          toastr.info('Withdrawal successfully initiated.')
+          
+        })
+        .catch(() => {
+          toggleModalOpen()
+          change(FORM_NAME, 'withdrawal_address', null)
+          untouch(FORM_NAME, 'withdrawal_address')
+          toastr.error('There was an issue initiating your withdrawal. Please try again.')
+        })
     },
     validateWithdrawalAddress: ({ bitcoin }) => validator.all(
       validator.required(),
@@ -74,7 +115,7 @@ export default compose(
     ),
   }),
   reduxForm({
-    form: 'affiliate_withdrawal',
+    form: FORM_NAME,
     enableReinitialize: true,
     keepDirtyOnReinitialize: true,
     updateUnregisteredFields: true,

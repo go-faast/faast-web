@@ -204,6 +204,26 @@ export const getAffiliateBalance = (
   })
 }
 
+export const getAffiliateAccount = (
+  id: string,
+  key: string,
+): Promise<void> => {
+  const nonce = String(Date.now())
+  const signature = createAffiliateSignature(undefined, key, nonce)
+  return fetchGet(`${apiUrl}/api/v2/public/affiliate/account`,
+  null, {
+  headers: {
+    'affiliate-id': id,
+    nonce,
+    signature,
+  },
+}).then((account) => account)
+  .catch((e: any) => {
+    log.error(e)
+    throw e
+  })
+}
+
 export const initiateAffiliateWithdrawal = (
   withdrawalAddress: string,
   id: string,
@@ -222,7 +242,7 @@ export const initiateAffiliateWithdrawal = (
   signature,
   },
 })
-.then((r) => console.log(r))
+.then((r) => r)
   .catch((e: any) => {
     log.error(e)
     throw e
@@ -284,5 +304,6 @@ export default {
   initiateAffiliateWithdrawal,
   affiliateRegister,
   getAffiliateBalance,
+  getAffiliateAccount,
   getAffiliateSwaps,
 }

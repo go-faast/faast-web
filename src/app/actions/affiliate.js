@@ -52,6 +52,7 @@ export const affiliateLogin = (id, key) => (dispatch) => {
   dispatch(getAffiliateSwaps(id))
   dispatch(getBalance(id, key))
   dispatch(getStats(id, key))
+  dispatch(getAccountDetails(id, key))
   sessionStorageSet('state:affiliate_lastUpdated', Date.now())
 }
 
@@ -62,6 +63,18 @@ export const getBalance = (id, key) => (dispatch, getState) => {
       sessionStorageSet('state:affiliate_balance_swaps', swaps)
       dispatch(updateBalance(balance))
       return dispatch(updateBalanceSwaps(swaps))
+    })
+    .catch(() => { 
+      if (!isAffiliateLoggedIn(getState())) {
+        dispatch(loginError())
+      }
+    })
+}
+
+export const getAccountDetails = (id, key) => (dispatch, getState) => {
+  return Faast.getAffiliateAccount(id, key)
+    .then((account) => {
+      return console.log(account)
     })
     .catch(() => { 
       if (!isAffiliateLoggedIn(getState())) {
