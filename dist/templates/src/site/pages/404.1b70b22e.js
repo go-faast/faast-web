@@ -1,0 +1,2 @@
+webpackJsonp([4],{141:function(e,t,n){"use strict";Object.defineProperty(t,"__esModule",{value:!0});var r=function(e){if(e&&e.__esModule)return e;var t={};if(null!=e)for(var n in e)Object.prototype.hasOwnProperty.call(e,n)&&(t[n]=e[n]);return t.default=e,t}(n(0)),l=n(121);t.default=(0,l.compose)((0,l.setDisplayName)("404"))(function(){return r.createElement("div",null,r.createElement("h1",null,"404 - Oh no's! We couldn't find that page :("))})}});
+//# sourceMappingURL=404.1b70b22e.js.map
