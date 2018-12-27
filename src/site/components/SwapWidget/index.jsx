@@ -27,7 +27,11 @@ const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwit
       >
         <CardHeader style={{ background: '#fff' }} className={classNames('text-center pb-4 h-100', cardHeader)}>
           <h4 style={{ fontSize: 25 }} className={classNames('mb-4 mt-3', cardTitle)}>Swap Instantly</h4>
-          <Button style={{ background: '#F2F5FB', color: '#8796BF' }} className='flat mt-2 mb-5 p-0 border-0' onClick={() => setAssetSelect('deposit')}>
+          <Button 
+            style={{ background: '#F2F5FB', color: '#8796BF' }} 
+            className={classNames('flat mt-2 mb-5 p-0 border-0', asset)} 
+            onClick={() => setAssetSelect('deposit')}
+          >
             {areAssetsLoaded ? (
               <div className={classNames('pt-1', asset)}>
                 <CoinIcon key={depositSymbol} symbol={depositSymbol} style={{ width: 60, height: 60 }} className='mt-4 mb-2'/>
@@ -41,7 +45,11 @@ const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwit
           <Button className={classNames('flat', swap)} onClick={handleSwitchAssets}>
             <SwapIcon className='position-relative' style={{ fill: '#b7beca', width: 20, top: -10 }}/>
           </Button>
-          <Button style={{ background: '#F2F5FB', color: '#8796BF' }} className='flat mt-2 mb-5 p-0 border-0' onClick={() => setAssetSelect('receive')}>
+          <Button 
+            style={{ background: '#F2F5FB', color: '#8796BF' }} 
+            className={classNames('flat mt-2 mb-5 p-0 border-0', asset)} 
+            onClick={() => setAssetSelect('receive')}
+          >
             {areAssetsLoaded ? (
               <div className={classNames('pt-1', asset)}>
                 <CoinIcon key={receiveSymbol} symbol={receiveSymbol} style={{ width: 60, height: 60 }} className='mt-4 mb-2'/>
