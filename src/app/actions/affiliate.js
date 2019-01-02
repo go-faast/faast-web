@@ -141,10 +141,10 @@ export const restoreCachedAffiliateInfo = () => (dispatch, getState) => {
   const cachedAffiliateBalance = sessionStorageGetJson('state:affiliate_balance')
   const cachedAffiliateBalanceSwaps = sessionStorageGetJson('state:affiliate_balance_swaps')
   const cachedLastUpdated = sessionStorageGet('state:affiliate_lastUpdated')
-  const cachedSwapsChartData = sessionStorageGet('state:swaps_chart')
+  //const cachedSwapsChartData = sessionStorageGet('state:swaps_chart')
   if (cachedAffiliateId && cachedAffiliateStats && cachedAffiliateWithdrawals 
     && cachedAffiliateKey && cachedAffiliateBalance && cachedAffiliateBalanceSwaps 
-    && cachedAffiliateSwaps && cachedSwapsChartData) {
+    && cachedAffiliateSwaps) {
     dispatch(updateAffiliateId(cachedAffiliateId))
     dispatch(statsRetrieved(cachedAffiliateStats))
     dispatch(withdrawalsRetrieved(cachedAffiliateWithdrawals))
@@ -152,7 +152,7 @@ export const restoreCachedAffiliateInfo = () => (dispatch, getState) => {
     dispatch(updateSecretKey(cachedAffiliateKey))
     dispatch(updateBalance(cachedAffiliateBalance))
     dispatch(updateBalanceSwaps(cachedAffiliateBalanceSwaps))
-    dispatch(updateSwapsChart(cachedSwapsChartData))
+    //dispatch(updateSwapsChart(cachedSwapsChartData))
     dispatch(dispatch(login()))
     dispatch(affiliateDataUpdated(parseInt(cachedLastUpdated)))
     if (isAffiliateDataStale(getState())) {
@@ -169,7 +169,7 @@ export const affiliateLogout = () => (dispatch) => {
   sessionStorageClear()
   dispatch(resetAffiliate())
   dispatch(dispatch(logout()))
-  return dispatch(push('/affiliates/login'))
+  // return dispatch(push('/affiliates/login'))
 }
 
 export const register = (id, address, email) => (dispatch) => {
