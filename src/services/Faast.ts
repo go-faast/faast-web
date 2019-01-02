@@ -281,7 +281,6 @@ export const getAffiliateSwaps = (
 
 export const createAffiliateSignature = (requestJSON: string | boolean, secret: string, nonce: string) => {
   const updateString = requestJSON ? nonce + requestJSON : nonce
-  console.log(updateString)
   return crypto
     .createHmac('sha256', secret)
     .update(updateString, 'utf8')

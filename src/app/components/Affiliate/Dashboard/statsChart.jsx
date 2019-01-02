@@ -9,7 +9,6 @@ import { themeColor } from 'Utilities/style'
 const priceSeriesName = 'Swaps per day'
 
 const StatsChart = ({ config, isSwapChartLoading }) => {
-  console.log(isSwapChartLoading)
   return isSwapChartLoading ? 
     <i className='fa fa-spinner fa-pulse'/> : (<ReactHighcharts config={config}/>)
 }

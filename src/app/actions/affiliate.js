@@ -76,7 +76,7 @@ export const getBalance = (id, key) => (dispatch, getState) => {
 export const getAccountDetails = (id, key) => (dispatch, getState) => {
   return Faast.getAffiliateAccount(id, key)
     .then((account) => {
-      return console.log(account)
+      return account
     })
     .catch(() => { 
       if (!isAffiliateLoggedIn(getState())) {
@@ -123,7 +123,6 @@ export const getSwapsChart = (id, totalPages) => (dispatch) => {
         data = swaps_chart.concat(data)
         sessionStorageSet('state:swaps_chart', JSON.stringify(data))
         if (i >= totalPages) {
-          console.log('yo')
           return dispatch(updateSwapsChart(data.sort((a, b) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0)))
         }
       })
