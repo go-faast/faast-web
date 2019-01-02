@@ -1,6 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { compose, setDisplayName, setPropTypes, lifecycle } from 'recompose'
+import { compose, setDisplayName, setPropTypes } from 'recompose'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { Modal, ModalBody, ModalHeader, Row, Col, Input } from 'reactstrap'
@@ -10,7 +9,7 @@ import classNames from 'class-names'
 import { affiliateId, secretKey, } from 'Selectors'
 
 import { modalShadow } from './style'
-import { card, cardHeader, input, text } from '../style'
+import { cardHeader, input, text } from '../style'
 
 export default compose(
   setDisplayName('AccountInfoModal'),

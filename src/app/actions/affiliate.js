@@ -4,7 +4,6 @@ import toastr from 'Utilities/toastrWrapper'
 import Faast from 'Services/Faast'
 import { sessionStorageSet, sessionStorageSetJson, sessionStorageGetJson, 
   sessionStorageGet, sessionStorageClear } from 'Utilities/storage'
-import { formatDate } from 'Utilities/display'
 
 import { isAffiliateLoggedIn, isAffiliateDataStale } from 'Selectors'
 
@@ -99,7 +98,7 @@ export const getAffiliateSwaps = (id) => (dispatch) => {
   dispatch(swapsLoading())
   return Faast.getAffiliateSwaps(id)
     .then((swaps) => {
-      const totalPages = Math.ceil(swaps.total / swaps.limit)
+      //const totalPages = Math.ceil(swaps.total / swaps.limit)
       swaps = swaps.orders.map(Faast.formatOrderResult)
       sessionStorageSetJson('state:affiliate_swaps', swaps)
       //dispatch(getSwapsChart(id, totalPages))

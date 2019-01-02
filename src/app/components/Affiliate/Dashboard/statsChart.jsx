@@ -1,6 +1,5 @@
 import React from 'react'
-import PropTypes from 'prop-types'
-import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withProps } from 'recompose'
+import { compose, setDisplayName, withProps } from 'recompose'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { getSwapChartData, isSwapChartLoading } from 'Selectors/affiliate'

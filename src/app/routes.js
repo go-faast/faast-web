@@ -89,5 +89,4 @@ export default {
   affiliateAccountModal,
   watchlist,
   trending,
-  walletInfoModal
 }
