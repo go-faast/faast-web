@@ -3,20 +3,21 @@ import PropTypes from 'prop-types'
 import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withProps } from 'recompose'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { getPriceChartData, isPriceChartLoading } from 'Selectors'
-import { fetchPriceChartData } from 'Actions/priceChart'
-import ReactHighstock from 'react-highcharts/ReactHighstock.src'
+import { getSwapChartData, isSwapChartLoading } from 'Selectors/affiliate'
+import ReactHighcharts from 'react-highcharts'
 import { themeColor } from 'Utilities/style'
 
-const priceSeriesName = 'Price (USD)'
+const priceSeriesName = 'Swaps per day'
 
-const StatsChart = ({ config, isPriceChartLoading }) => {
-  return  isPriceChartLoading ? 
-    <i className='fa fa-spinner fa-pulse'/> : <ReactHighstock config={config}/>
+const StatsChart = ({ config, isSwapChartLoading }) => {
+  console.log(isSwapChartLoading)
+  return isSwapChartLoading ? 
+    <i className='fa fa-spinner fa-pulse'/> : (<ReactHighcharts config={config}/>)
 }
 
 const initialConfig = {
   chart: {
+    type:'column',
     height: 350,
   },
   colors: [themeColor.primary],
@@ -106,13 +107,16 @@ const initialConfig = {
     data: [],
     type: 'area',
     tooltip: {
-      valuePrefix: '$',
-      pointFormat: '<b>{point.y}</b> USD',
+      valuePrefix: '',
+      pointFormat: '# of swaps: <b>{point.y}</b>',
       valueDecimals: 2
     },
     threshold: null
   }],
   yAxis: {
+    dateTimeLabelFormats: {
+      day: '%e. %b',
+    },
     min: 0,
     opposite: false,
     gridLineColor: '#707073',
@@ -124,7 +128,7 @@ const initialConfig = {
     },
     labels: {
       y: null, // Center vertically
-      format: '${value}',
+      format: '{value}',
       align: 'right',
       style: {
         color: themeColor.primary,
@@ -144,21 +148,11 @@ const initialConfig = {
 }
 
 export default compose(
-  setDisplayName('PriceChart'),
+  setDisplayName('StatsChart'),
   connect(createStructuredSelector({
-    data: (state, { symbol }) => getPriceChartData(state, symbol),
-    isPriceChartLoading: (state, { symbol }) => isPriceChartLoading(state, symbol)
+    data: getSwapChartData,
+    isSwapChartLoading,
   }), {
-    fetchPriceChart: fetchPriceChartData
-  }),
-  setPropTypes({
-    symbol: PropTypes.string.isRequired,
-    chartOpen: PropTypes.bool,
-    toggle: PropTypes.bool
-  }),
-  defaultProps({
-    chartOpen: false,
-    toggle: false
   }),
   withProps(({ data }) => {
     const config = (data 
@@ -171,19 +165,5 @@ export default compose(
       } 
       : initialConfig)
     return { config }
-  }),
-  lifecycle({
-    componentDidUpdate (prevProps) {
-      const { symbol, chartOpen, fetchPriceChart, toggle } = this.props
-      if (!prevProps.chartOpen && chartOpen || !toggle && chartOpen) {
-        fetchPriceChart(symbol)
-      }
-    },
-    componentWillMount() {
-      const { symbol, chartOpen, fetchPriceChart, toggle } = this.props
-      if (!toggle && chartOpen) {
-        fetchPriceChart(symbol)
-      }
-    }
   }),
 )(StatsChart)

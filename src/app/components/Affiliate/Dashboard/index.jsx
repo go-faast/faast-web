@@ -8,6 +8,7 @@ import PieChart from './pieChart'
 import AffiliateLayout from 'Components/Affiliate/Layout'
 import SwapsTable from 'Components/Affiliate/SwapsTable'
 import WithdrawalTable from 'Components/Affiliate/WithdrawalTable';
+// import StatsChart from './statsChart'
 import Units from 'Components/Units'
 
 import { getStats } from 'Actions/affiliate'
@@ -23,6 +24,7 @@ const AffiliateDashboard = ({ stats: { swaps_completed, value_btc, affiliate_pay
   balance }) => {
   return (
     <AffiliateLayout className='pt-3'>
+      {/* <StatsChart /> */}
       <Row className={classNames(row, 'text-center mt-3')}>
         <Col className='mt-0' sm='12' md='4'>
           <div className={classNames('mx-auto', stat1)}>

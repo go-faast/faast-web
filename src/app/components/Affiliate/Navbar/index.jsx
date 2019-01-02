@@ -12,7 +12,7 @@ import {
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { setDisplayName, compose } from 'recompose'
+import { setDisplayName, compose, lifecycle } from 'recompose'
 import { pick } from 'lodash'
 import classNames from 'class-names'
 
@@ -91,5 +91,10 @@ export default compose(
   }), {
     logout: affiliateLogout
   }),
-  withToggle('expanded')
+  withToggle('expanded'),
+  lifecycle({
+    componentWillMount() {
+      document.body.style.backgroundColor = '#F5F7F8'
+    }
+  })
 )(AffiliateNavBar)

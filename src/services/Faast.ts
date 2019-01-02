@@ -39,7 +39,7 @@ export const fetchPairData = (pair: string) => fetchGet(`${apiUrl}/api/v2/public
 
 export const fetchRestrictionsByIp = () => fetchGet(`${apiUrl}/api/v2/public/geoinfo`)
 
-const formatOrderResult = (r: any): SwapOrder => ({
+export const formatOrderResult = (r: any): SwapOrder => ({
   orderId: r.swap_id,
   orderStatus: r.status,
   createdAt: r.created_at ? new Date(r.created_at) : null,
@@ -268,10 +268,11 @@ export const affiliateRegister = (
 
 export const getAffiliateSwaps = (
   id: string,
+  i: number = 1,
 ): Promise<void> => {
   return fetchGet(`${apiUrl}/api/v2/public/swaps`,
-  { affiliate_id: id, limit: 100 })
-  .then((swaps) => swaps.orders.map(formatOrderResult))
+  { affiliate_id: id, limit: 100, page: i })
+  .then((swaps) => swaps)
   .catch((e: any) => {
     log.error(e)
     throw e
@@ -306,4 +307,5 @@ export default {
   getAffiliateBalance,
   getAffiliateAccount,
   getAffiliateSwaps,
+  formatOrderResult,
 }
