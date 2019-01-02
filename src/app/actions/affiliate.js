@@ -160,16 +160,17 @@ export const restoreCachedAffiliateInfo = () => (dispatch, getState) => {
     }
     return
   }
-  else {
+  else if (isAffiliateLoggedIn(getState())) {
     return dispatch(affiliateLogout())
-  }
+  } 
+  return
 }
 
 export const affiliateLogout = () => (dispatch) => {
   sessionStorageClear()
   dispatch(resetAffiliate())
   dispatch(dispatch(logout()))
-  // return dispatch(push('/affiliates/login'))
+  return dispatch(push('/affiliates/login'))
 }
 
 export const register = (id, address, email) => (dispatch) => {
