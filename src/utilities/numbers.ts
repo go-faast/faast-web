@@ -29,6 +29,10 @@ export function toBigNumber(value: Numerical = 0): BigNumber {
   return value
 }
 
+export function isBigNumber(value: any): boolean {
+  return value instanceof BigNumber
+}
+
 export function toNumber(value: Numerical = 0): number {
   if (typeof value === 'number') {
     return value

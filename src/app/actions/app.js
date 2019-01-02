@@ -11,14 +11,15 @@ import { setSettings } from './settings'
 import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
 import { restoreTxs } from './tx'
 import { retrieveAllSwaps, restoreSwapTxIds, restoreSwapPolling } from './swap'
+import { fetchGeoRestrictions } from 'Common/actions/app'
+
+export * from 'Common/actions/app'
 
 const createAction = newScopedCreateAction(__filename)
 
 export const appReady = createAction('READY')
 export const appError = createAction('ERROR')
 export const resetAll = createAction('RESET_ALL')
-export const restrictionsUpdated = createAction('UPDATE_RESTRICTIONS', (blocked, restricted) => ({ blocked, restricted }))
-export const restrictionsError = createAction('RESTRICTIONS_ERROR')
 
 export const restoreState = (dispatch) => Promise.resolve()
   .then(() => {
@@ -70,17 +71,8 @@ export const setupBlockstack = (dispatch) => Promise.resolve()
     log.error('Failed to setup Blockstack', e)
   })
 
-export const fetchAppRestrictions = () => (dispatch) => Promise.resolve()
-  .then(() => {
-    return Faast.fetchRestrictionsByIp()
-      .then(({ blocked, restricted }) => dispatch(restrictionsUpdated(blocked, restricted)))
-      .catch((e) => {
-        log.error(e)
-      })
-  }) 
-
 export const init = () => (dispatch) => Promise.resolve()
-  .then(() => dispatch(fetchAppRestrictions()))
+  .then(() => dispatch(fetchGeoRestrictions()))
   .then(() => dispatch(restoreState))
   .then(() => dispatch(setupBlockstack))
   .then(() => dispatch(appReady()))

@@ -54,30 +54,30 @@ const TradeTable = ({ handleClick, hideIfNone, tableTitle,
   swaps, tableHeadings, zeroOrdersMessage }) => (
   <Fragment>
     {hideIfNone && swaps.length == 0 ? null : (
-      <Card className='my-3'>
+      <Card className='mb-3'>
         <CardHeader>
           <h5>{tableTitle}</h5>
         </CardHeader>
-        <Table hover striped responsive className={tradeTable}>
-          <thead>
-            <tr>
-              {tableHeadings.map(({ text, mobile }) => (
-                <th key={text} className={!mobile ? 'd-none d-sm-table-cell border-0' : 'border-0'}>{text}</th>)
-              )}
-            </tr>
-          </thead>
-          <tbody>
-            {swaps.length === 0 ? (
-              <tr className='text-center'>
-                <td colSpan='10'>
-                  <i>{zeroOrdersMessage}</i>
-                </td>
+        {swaps.length === 0 ? (
+          <p className='text-center mt-3'>
+            <i>{zeroOrdersMessage}</i>
+          </p>
+        ) : (
+          <Table hover striped responsive className={tradeTable}>
+            <thead>
+              <tr>
+                {tableHeadings.map(({ text, mobile }) => (
+                  <th key={text} className={!mobile ? 'd-none d-sm-table-cell border-0' : 'border-0'}>{text}</th>)
+                )}
               </tr>
-            ) : swaps.map((swap) => !swap.orderId ? null : (
-              <TableRow key={swap.orderId} swap={swap} onClick={() => handleClick(swap.orderId)}/>
-            ))}
-          </tbody>
-        </Table>
+            </thead>
+            <tbody>
+              {swaps.map((swap) => !swap.orderId ? null : (
+                <TableRow key={swap.orderId} swap={swap} onClick={() => handleClick(swap.orderId)}/>
+              ))}
+            </tbody>
+          </Table>
+        )}
       </Card>
     )}
   </Fragment>

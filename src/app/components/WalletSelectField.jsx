@@ -83,6 +83,7 @@ export default compose(
     tag: propTypes.tag,
     disableNoBalance: PropTypes.bool,
     showBalances: PropTypes.bool,
+    defaultValue: PropTypes.string,
   }),
   defaultProps({
     dropDownStyle: {},
@@ -131,19 +132,24 @@ export default compose(
   }),
   lifecycle({
     componentWillMount() {
-      this.props.selectDefault()
+      const { defaultValue, selectDefault } = this.props
+      if (!defaultValue) {
+        selectDefault()
+      }
     },
     componentDidUpdate(prevProps) {
-      const { symbol, selectedWallet, selectableWallets, selectDefault, handleSelect, balancesLoaded } = this.props
+      const {
+        symbol, selectedWallet, selectableWallets, selectDefault, handleSelect, balancesLoaded, defaultValue,
+      } = this.props
       const symbolChange = prevProps.symbol !== symbol
-      if (symbolChange) {
+      if (selectedWallet && symbolChange) {
         if (!selectableWallets.includes(selectedWallet)) {
           selectDefault()
         } else {
           // reselect current to get new address for symbol
           handleSelect(selectedWallet)
         }
-      } else if (!selectedWallet && !prevProps.balancesLoaded && balancesLoaded) {
+      } else if (!selectedWallet && !defaultValue && !prevProps.balancesLoaded && balancesLoaded) {
         selectDefault()
       }
     }

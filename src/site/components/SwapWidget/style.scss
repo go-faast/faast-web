@@ -1,0 +1,136 @@
+.swapContainer {
+    box-shadow: 10px 15px 10px 5px rgba(0,0,0,0.2);
+}
+.cardHeader {
+    background: #fff;
+    border: none !important;
+}
+.cardTitle {
+    color: #52658C;
+}
+button {
+    cursor: pointer;
+}
+.asset {
+    display: inline-block;
+    vertical-align: middle;
+    width: 140px;
+    height: 140px;
+    min-height: 102px;
+    line-height: 67px;
+    p {
+        position: relative;
+        bottom: 2px;
+        height: 0px;
+        margin: 0;
+    }
+}
+.swap {
+    border: none !important;
+    margin: 0;
+    background: transparent !important;
+}
+.swap {
+    svg {
+        fill: #565656;
+    }
+    &:hover svg {
+        fill: #777;
+    }
+}
+.section {
+    margin:10px auto 0 auto;
+    max-width: 550px;
+    padding: 20px 16px;
+    min-height: 156px;
+    .expnd {
+      position: absolute;
+      right: -38px;
+      top: 16px;
+    }
+    .icon {
+        color: #05B8AB;
+    }
+}
+// .receive {
+//     border: 1px solid #6bada7;
+// }
+.submitButton {
+    display:block;
+    max-width: 519px;
+    width: 95%;
+}
+.fadedWhite {
+  color: rgba(255, 255, 255, 0.8);
+}
+.qr {
+  position: relative;
+  display: inline-block;
+  padding: 16px;
+  background-color: white;
+}
+.scan {
+    position: absolute;
+    top: 0px;
+    left: -25%;
+    width: 150%;
+    height: 6px;
+    background: rgba(255, 36, 62, 0.5);
+    border-top: 1px solid rgba(255, 36, 62, 0.8);
+    border-bottom: 1px solid rgba(255, 36, 62, 0.8);
+    border-radius: 2px;
+    opacity: 1;
+    animation: scan 3s forwards;
+    animation-delay: 1s
+}
+.receipt {
+    top: 0px;
+    position: absolute;
+    left: 0px;
+    display: block;
+    width: 100%;
+    height: 6px;
+    background: linear-gradient(-135deg, #353535 3px, transparent 0px) 0% 0% / 6px 6px repeat-x, linear-gradient(135deg, #353535 3px, transparent 0px);
+    background-repeat: repeat-x;
+}
+
+@keyframes scan {
+    0% {
+      top: 0px;
+      opacity:1;
+    }
+    25% {
+      top: 170px;
+      opacity:1;
+    }
+    50% {
+      top: 0px;
+      opacity:1;
+    }
+    90% {
+      top: 170px;
+      opacity:1;
+    }
+    100% {
+      top: 170px;
+      opacity: 0;
+    }
+}
+@media screen and (max-width: 560px) {
+    .btn {
+      display: block !important;
+      margin: 25px auto 25px auto;
+    }
+    .swap {
+      display:block;
+      margin: 15px auto 0 auto;
+      transform: rotate(90deg)
+    }
+}
+@media screen and (max-width: 610px) {
+    .section {
+        .expnd {
+            right: -23px;
+        }
+    }
+}

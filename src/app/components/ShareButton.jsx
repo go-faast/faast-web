@@ -5,6 +5,9 @@ import { Button } from 'reactstrap'
 
 import withToggle from 'Hoc/withToggle'
 import ShareModal from 'Components/ShareModal'
+import Icon from 'Components/Icon'
+
+import ShareIcon from 'Img/shareIcon.svg?inline'
 
 export default compose(
   setDisplayName('ShareButton'),
@@ -16,8 +19,8 @@ export default compose(
   }),
   withToggle('open', false),
 )(({ wallet, isOpen, toggleOpen }) => (
-  <Button color='light' size='sm' disabled={!(wallet && wallet.address)} onClick={toggleOpen}>
-    <i className='fa fa-share'/> share
-    { wallet && (<ShareModal wallet={wallet} isOpen={isOpen} toggle={toggleOpen} />)}
+  <Button tag='span' color='' size='sm' disabled={!(wallet && wallet.address)} onClick={toggleOpen}>
+    <Icon src={ShareIcon} style={{ width: '14px', fill: '#fff' }} />
+    {wallet && (<ShareModal wallet={wallet} isOpen={isOpen} toggle={toggleOpen} />)}
   </Button>
 ))
