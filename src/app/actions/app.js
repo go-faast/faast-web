@@ -3,6 +3,8 @@ import { localStorageGetJson } from 'Utilities/storage'
 import blockstack from 'Utilities/blockstack'
 import { filterUrl } from 'Utilities/helpers'
 import log from 'Utilities/log'
+import Faast from 'Services/Faast'
+import { restoreCachedAffiliateInfo } from 'Actions/affiliate'
 
 import { retrieveAssets, restoreAssets } from './asset'
 import { setSettings } from './settings'
@@ -21,6 +23,7 @@ export const resetAll = createAction('RESET_ALL')
 
 export const restoreState = (dispatch) => Promise.resolve()
   .then(() => {
+    dispatch(restoreCachedAffiliateInfo())
     const assetCache = localStorageGetJson('state:asset')
     if (assetCache) {
       dispatch(restoreAssets(assetCache))

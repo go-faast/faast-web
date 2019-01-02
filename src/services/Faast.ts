@@ -3,6 +3,7 @@ import { filterErrors } from 'Utilities/helpers'
 import { toBigNumber } from 'Utilities/convert'
 import log from 'Log'
 import config from 'Config'
+import crypto from 'crypto'
 
 import { Asset, SwapOrder } from 'Types'
 
@@ -38,7 +39,7 @@ export const fetchPairData = (pair: string) => fetchGet(`${apiUrl}/api/v2/public
 
 export const fetchRestrictionsByIp = () => fetchGet(`${apiUrl}/api/v2/public/geoinfo`)
 
-const formatOrderResult = (r: any): SwapOrder => ({
+export const formatOrderResult = (r: any): SwapOrder => ({
   orderId: r.swap_id,
   orderStatus: r.status,
   createdAt: r.created_at ? new Date(r.created_at) : null,
@@ -144,6 +145,149 @@ export const provideSwapDepositTx = (
     throw e
   })
 
+export const getAffiliateStats = (
+  id: string,
+  key: string,
+): Promise<void> => {
+  const nonce = String(Date.now())
+  const signature = createAffiliateSignature(undefined, key, nonce)
+  return fetchGet(`${apiUrl}/api/v2/public/affiliate/stats`, null, {
+  headers: {
+    'affiliate-id': id,
+    nonce,
+    signature,
+  },
+}).then((stats) => stats)
+  .catch((e: any) => {
+    log.error(e)
+    throw e
+  })
+}
+
+export const getAffiliateSwapPayouts = (
+  id: string,
+  key: string,
+): Promise<void> => {
+  const nonce = String(Date.now())
+  const signature = createAffiliateSignature(undefined, key, nonce)
+  return fetchGet(`${apiUrl}/api/v2/public/affiliate/payouts`,
+  { affiliate_payment_address: '33WKJWf2iyJHUaRjoHmF7x4rKnENPHC9G8' }, {
+  headers: {
+    'affiliate-id': id,
+    nonce,
+    signature,
+  },
+}).then((swaps) => swaps)
+  .catch((e: any) => {
+    log.error(e)
+    throw e
+  })
+}
+
+export const getAffiliateBalance = (
+  id: string,
+  key: string,
+): Promise<void> => {
+  const nonce = String(Date.now())
+  const signature = createAffiliateSignature(undefined, key, nonce)
+  return fetchGet(`${apiUrl}/api/v2/public/affiliate/balance`,
+  { affiliate_payment_address: '33WKJWf2iyJHUaRjoHmF7x4rKnENPHC9G8' }, {
+  headers: {
+    'affiliate-id': id,
+    nonce,
+    signature,
+  },
+}).then((balance) => balance)
+  .catch((e: any) => {
+    log.error(e)
+    throw e
+  })
+}
+
+export const getAffiliateAccount = (
+  id: string,
+  key: string,
+): Promise<void> => {
+  const nonce = String(Date.now())
+  const signature = createAffiliateSignature(undefined, key, nonce)
+  return fetchGet(`${apiUrl}/api/v2/public/affiliate/account`,
+  null, {
+  headers: {
+    'affiliate-id': id,
+    nonce,
+    signature,
+  },
+}).then((account) => account)
+  .catch((e: any) => {
+    log.error(e)
+    throw e
+  })
+}
+
+export const initiateAffiliateWithdrawal = (
+  withdrawalAddress: string,
+  id: string,
+  key: string,
+): Promise<void> => {
+  const requestJSON = {
+    withdrawal_address: withdrawalAddress,
+  }
+  const nonce = String(Date.now())
+  const signature = createAffiliateSignature(JSON.stringify(requestJSON), key, nonce)
+  return fetchPost(`${apiUrl}/api/v2/public/affiliate/withdraw`, requestJSON,
+  undefined,
+{ headers: {
+  'affiliate-id': id,
+  nonce,
+  signature,
+  },
+})
+.then((r) => r)
+  .catch((e: any) => {
+    log.error(e)
+    throw e
+  })
+}
+
+export const affiliateRegister = (
+  id: string,
+  address: string,
+  email: string,
+): Promise<void> => {
+  return fetchPost(`${apiUrl}/api/v2/public/affiliate/register`, {
+    affiliate_id: id,
+    affiliate_payment_address: address,
+    contact_email: email,
+  })
+  .then((res) => res)
+    .catch((e: any) => {
+      log.error(e)
+      throw e
+    })
+}
+
+export const getAffiliateSwaps = (
+  id: string,
+  i: number = 1,
+): Promise<void> => {
+  return fetchGet(`${apiUrl}/api/v2/public/swaps`,
+  { affiliate_id: id, limit: 100, page: i })
+  .then((swaps) => swaps)
+  .catch((e: any) => {
+    log.error(e)
+    throw e
+  })
+}
+
+export const createAffiliateSignature = (requestJSON: string | boolean, secret: string, nonce: string) => {
+  const updateString = requestJSON ? nonce + requestJSON : nonce
+  console.log(updateString)
+  return crypto
+    .createHmac('sha256', secret)
+    .update(updateString, 'utf8')
+    .digest('hex')
+}
+
 export default {
   fetchAssets,
   fetchAssetPrice,
@@ -156,4 +300,12 @@ export default {
   refreshSwap,
   provideSwapDepositTx,
   fetchRestrictionsByIp,
+  getAffiliateStats,
+  getAffiliateSwapPayouts,
+  initiateAffiliateWithdrawal,
+  affiliateRegister,
+  getAffiliateBalance,
+  getAffiliateAccount,
+  getAffiliateSwaps,
+  formatOrderResult,
 }

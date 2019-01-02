@@ -48,6 +48,14 @@ export const trending = createPath('/assets/trending')
 export const assetDetail = createPath('/assets/:symbol')
 export const assetIndex = createPath('/assets')
 
+export const affiliateLogin = createPath('/affiliates/login')
+export const affiliateSignup = createPath('/affiliates/signup')
+export const affiliateAccountModal = createPath('/affiliates/dashboard/account')
+export const affiliateDashboard = createPath('/affiliates/dashboard')
+export const affiliateSettings = createPath('/affiliates/settings')
+export const affiliateSwaps = createPath('/affiliates/swaps')
+export const affiliatePayouts = createPath('/affiliates/withdrawals')
+
 export const connect = createPath('/connect')
 export const connectHwWallet = createPath(connect, '/hw/:walletType')
 export const walletInfoModal = createPath(connect, '/:walletType')
@@ -71,6 +79,14 @@ export default {
   connectHwWalletAssetAccounts,
   viewOnlyAddress,
   assetIndex,
+  walletInfoModal,
+  affiliateLogin,
+  affiliateSignup,
+  affiliateDashboard,
+  affiliateSettings,
+  affiliateSwaps,
+  affiliatePayouts,
+  affiliateAccountModal,
   watchlist,
   trending,
   walletInfoModal

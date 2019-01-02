@@ -11,12 +11,21 @@ import TradeDetailModal from 'Components/TradeDetailModal'
 import SwapWidget from 'Components/SwapWidget'
 import AssetDetail from 'Components/AssetDetail'
 import AssetIndex from 'Components/AssetIndex'
+import AffiliateLogin from 'Components/Affiliate/Login'
+import AffiliateSignup from 'Components/Affiliate/Signup'
+import AffiliateDashboard from 'Components/Affiliate/Dashboard'
+import AffiliateSettings from 'Components/Affiliate/Settings'
+import AffiliatePayouts from 'Components/Affiliate/Payouts'
+import AffiliateSwaps from 'Components/Affiliate/Swaps'
+import AffiliateAccountModal from 'Components/Affiliate/AccountModal'
 import AssetWatchlist from 'Components/AssetWatchlist'
 import AssetTrending from 'Components/AssetTrending'
 
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
   tradeHistory, tradeDetail, swapWidget, assetDetail, assetIndex,
+  affiliateLogin, affiliateSignup, affiliateDashboard, affiliateSettings,
+  affiliatePayouts, affiliateSwaps, affiliateAccountModal,
   watchlist, trending
 } from 'Routes'
 
@@ -42,9 +51,16 @@ const AppView = ({ hasNoWallets }) => (
       <Route path={trending.path} component={AssetTrending}/>
       <Route path={assetDetail.path} component={AssetDetail}/>
       <Route path={assetIndex.path} component={AssetIndex}/>
+      <Route path={affiliateLogin.path} component={AffiliateLogin}/>
+      <Route path={affiliateSignup.path} component={AffiliateSignup}/>
+      <Route path={affiliateDashboard.path} component={AffiliateDashboard}/>
+      <Route path={affiliateSettings.path} component={AffiliateSettings}/>
+      <Route path={affiliatePayouts.path} component={AffiliatePayouts}/>
+      <Route path={affiliateSwaps.path} component={AffiliateSwaps}/>
       
 
       {/* Legacy routes */}
+      <Redirect exact from='/affiliates' to={affiliateLogin.path}/>
       <Redirect exact from='/balances' to={dashboard.path}/>
       <Redirect exact from='/modify' to={rebalance.path}/>
 
@@ -55,6 +71,9 @@ const AppView = ({ hasNoWallets }) => (
     {/* Routes that show a modal over one of the above pages */}
     <ModalRoute closePath={tradeHistory.path} path={tradeDetail.path} render={(props) => (
       <TradeDetailModal tradeId={props.match.params.tradeId} {...props}/>
+    )}/>
+    <ModalRoute closePath={affiliateDashboard.path} path={affiliateAccountModal.path} render={(props) => (
+      <AffiliateAccountModal {...props}/>
     )}/>
   </Fragment>
 )

@@ -16,7 +16,7 @@ import { getAllTxs } from './tx'
 
 export const getSwapState = ({ swap }) => swap
 
-const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
+export const createSwapExtender = (allAssets, allWallets, allTxs) => (swap) => {
   const { sendSymbol, receiveSymbol, txId, rate, receiveAddress, sendWalletId, rateLockedUntil } = swap
   const sendAsset = allAssets[sendSymbol]
   const receiveAsset = allAssets[receiveSymbol]
