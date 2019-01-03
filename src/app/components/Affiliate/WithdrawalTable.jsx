@@ -35,7 +35,9 @@ const WithdrawalTableRow = ({
         <Expandable shrunk={ellipsize(address, 15, 3)} expanded={address} />
       </td>
       <td>
-        <a href={`https://www.blockchain.com/btc/tx/${tx_hash}`} target='_blank noreferrer'>View</a>
+        {tx_hash ? (
+          <a href={`https://www.blockchain.com/btc/tx/${tx_hash}`} target='_blank noreferrer'>View</a>
+        ) : <span style={{ opacity: .6, cursor: 'default' }}>------</span>}
       </td>
     </tr>
   )
