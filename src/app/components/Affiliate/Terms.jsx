@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { Card, CardHeader, CardBody } from 'reactstrap'
