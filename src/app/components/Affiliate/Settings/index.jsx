@@ -1,5 +1,6 @@
 import React from 'react'
 import * as validator from 'Utilities/validator'
+import { Link } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { compose, setDisplayName, withHandlers } from 'recompose'
@@ -73,6 +74,9 @@ const AffiliateSettings = ({ isModalOpen, toggleModalOpen, affiliateId, secretKe
               </Row>
             </CardBody>
           </Card>
+          <Link to='/affiliates/terms' style={{ color: '#8aa2b5' }} className='pt-3 d-block font-weight-bold font-xs text-center'>
+              Read the Faa.st Affiliate Terms
+          </Link>
         </Col>
       </Row>
     </AffiliateLayout>

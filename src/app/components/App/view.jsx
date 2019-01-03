@@ -17,6 +17,7 @@ import AffiliateDashboard from 'Components/Affiliate/Dashboard'
 import AffiliateSettings from 'Components/Affiliate/Settings'
 import AffiliatePayouts from 'Components/Affiliate/Payouts'
 import AffiliateSwaps from 'Components/Affiliate/Swaps'
+import AffiliateTerms from 'Components/Affiliate/Terms'
 import AffiliateAccountModal from 'Components/Affiliate/AccountModal'
 import AssetWatchlist from 'Components/AssetWatchlist'
 import AssetTrending from 'Components/AssetTrending'
@@ -26,7 +27,7 @@ import {
   tradeHistory, tradeDetail, swapWidget, assetDetail, assetIndex,
   affiliateLogin, affiliateSignup, affiliateDashboard, affiliateSettings,
   affiliatePayouts, affiliateSwaps, affiliateAccountModal,
-  watchlist, trending
+  watchlist, trending, affiliateTerms
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => (
@@ -57,6 +58,7 @@ const AppView = ({ hasNoWallets }) => (
       <Route path={affiliateSettings.path} component={AffiliateSettings}/>
       <Route path={affiliatePayouts.path} component={AffiliatePayouts}/>
       <Route path={affiliateSwaps.path} component={AffiliateSwaps}/>
+      <Route path={affiliateTerms.path} component={AffiliateTerms}/>
       
 
       {/* Legacy routes */}
