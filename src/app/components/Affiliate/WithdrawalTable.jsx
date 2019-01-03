@@ -32,12 +32,14 @@ const WithdrawalTableRow = ({
         <Units value={amount} symbol={currency} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>
       </td>
       <td>
-        <Expandable shrunk={ellipsize(address, 15, 3)} expanded={address} />
+        {address ? (
+          <Expandable shrunk={ellipsize(address, 15, 3)} expanded={address} />
+        ) : 'N/A'}
       </td>
       <td>
         {tx_hash ? (
           <a href={`https://www.blockchain.com/btc/tx/${tx_hash}`} target='_blank noreferrer'>View</a>
-        ) : <span style={{ opacity: .6, cursor: 'default' }}>------</span>}
+        ) : <span style={{ opacity: .6, cursor: 'default' }}>View</span>}
       </td>
     </tr>
   )
@@ -74,7 +76,7 @@ const AffiliateWithdrawalTable = ({ withdrawals, size }) => {
               <p className={text}>No withdrawals yet.</p>
             </div>
           }
-          {size === 'small' && (<CardFooter 
+          {size === 'small' && withdrawals.length > 0 && (<CardFooter 
             tag={Link} 
             to='/affiliates/withdrawals'
             className={classNames(cardFooter, text, 'p-2 text-center cursor-pointer d-block')}

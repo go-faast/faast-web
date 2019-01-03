@@ -20,7 +20,7 @@ import { stat1, stat2, stat3, row, withdrawal } from './style'
 import { card, cardHeader, text, smallCard } from '../style'
 
 
-const AffiliateDashboard = ({ stats: { swaps_completed, value_btc, affiliate_payouts_btc } = {}, 
+const AffiliateDashboard = ({ stats: { swaps_completed = 0, value_btc = 0, affiliate_payouts_btc = 0 } = {}, 
   balance }) => {
   return (
     <AffiliateLayout className='pt-3'>
@@ -53,7 +53,15 @@ const AffiliateDashboard = ({ stats: { swaps_completed, value_btc, affiliate_pay
             <CardBody className='text-center'>
               <p className='mb-0' style={{ fontSize: 70 }}>🎉</p>
               <Units value={balance} symbol='BTC' precision={6} style={{ fontSize: 50 }} className={classNames('font-weight-bold mt-0 mb-4 d-block', text)}/>
-              <Button tag={Link} to='/affiliates/settings' className={classNames(withdrawal, 'flat px-4 mb-3')} color='primary'>Initiate a Withdrawal</Button>
+              <Button 
+                tag={Link} 
+                to='/affiliates/settings' 
+                className={classNames(withdrawal, 'flat px-4 mb-3')} 
+                color='primary'
+                disabled={balance == 0}
+              >
+                Initiate a Withdrawal
+              </Button>
             </CardBody>
           </Card>
         </CardDeck>

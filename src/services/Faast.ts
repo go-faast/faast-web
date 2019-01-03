@@ -171,7 +171,7 @@ export const getAffiliateSwapPayouts = (
   const nonce = String(Date.now())
   const signature = createAffiliateSignature(undefined, key, nonce)
   return fetchGet(`${apiUrl}/api/v2/public/affiliate/payouts`,
-  { affiliate_payment_address: '33WKJWf2iyJHUaRjoHmF7x4rKnENPHC9G8' }, {
+  undefined, {
   headers: {
     'affiliate-id': id,
     nonce,
@@ -191,7 +191,7 @@ export const getAffiliateBalance = (
   const nonce = String(Date.now())
   const signature = createAffiliateSignature(undefined, key, nonce)
   return fetchGet(`${apiUrl}/api/v2/public/affiliate/balance`,
-  { affiliate_payment_address: '33WKJWf2iyJHUaRjoHmF7x4rKnENPHC9G8' }, {
+  undefined, {
   headers: {
     'affiliate-id': id,
     nonce,

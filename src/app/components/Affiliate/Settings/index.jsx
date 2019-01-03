@@ -49,7 +49,14 @@ const AffiliateSettings = ({ isModalOpen, toggleModalOpen, affiliateId, secretKe
                       inputClass={classNames('flat', input)}
                       validate={validateWithdrawalAddress}
                     />
-                    <Button type='button' className='flat' color='primary' onClick={toggleModalOpen} disabled={invalid}>Withdrawal</Button>
+                    <Button type='button' 
+                      className='flat' 
+                      color='primary' 
+                      onClick={toggleModalOpen} 
+                      disabled={invalid || balance == 0}
+                    >
+                      {balance == 0 ? 'Cannot withdrawal 0 BTC' : 'Withdrawal'}
+                    </Button>
                     <Modal
                       size='md' isOpen={isModalOpen} toggle={toggleModalOpen} className={'border-0 mt-6 mx-md-auto'} contentClassName={classNames('p-0 border-0 flat')}>
                       <ModalHeader close={<span className='cursor-pointer' onClick={toggleModalOpen}>cancel</span>} tag='h4' toggle={toggleModalOpen} className={cardHeader}>
@@ -64,7 +71,14 @@ const AffiliateSettings = ({ isModalOpen, toggleModalOpen, affiliateId, secretKe
                           <Col sm='12'>
                             <small><p className={classNames('mt-3 mb-1 font-weight-bold', text)}>BTC Wallet Address</p></small>
                             <Input className={classNames('flat', input)} value={withdrawalAddress} type='text' autoFocus readOnly/>
-                            <Button className='flat mt-3 d-block w-100' type='submit' form='withdrawal-form' color='primary'>Confirm Withdrawal</Button>
+                            <Button 
+                              className='flat mt-3 d-block w-100' 
+                              type='submit' 
+                              form='withdrawal-form' 
+                              color='primary'
+                            >
+                              Confirm Withdrawal
+                            </Button>
                           </Col>
                         </Row>
                       </ModalBody>
