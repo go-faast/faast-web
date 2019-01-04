@@ -7,7 +7,6 @@ import Layout from 'Components/Layout'
 import BlockstackWelcome from 'Components/BlockstackWelcome'
 import Balances from 'Components/Balances'
 import Sidebar from 'Components/Sidebar'
-import WalletSelector from 'Components/WalletSelector'
 import TradeTable from 'Components/TradeTable'
 import { tableHeadings } from 'Components/TradeHistory'
 
@@ -25,8 +24,7 @@ const DashboardView = (props) => {
       <Row className='gutter-3'>
         {!isDefaultPortfolioEmpty && (
           <Col xs='12' md='5' lg='4' xl='3'>
-            <Sidebar className='d-none d-md-block'/>
-            <WalletSelector className='d-flex d-md-none'/>
+            <Sidebar/>
           </Col>
         )}
         <Col xs='12' md='7' lg='8' xl='9'>
