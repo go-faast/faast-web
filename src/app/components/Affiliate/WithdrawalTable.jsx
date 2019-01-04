@@ -67,7 +67,7 @@ const AffiliateWithdrawalTable = ({ withdrawals, size }) => {
             </Table>
           ) :
             <div className='d-flex align-items-center justify-content-center'>
-              <p className={text}>No withdrawals yet.</p>
+              <p className={text}>No Earnings yet.</p>
             </div>
           }
           {size === 'small' && withdrawals.length > 0 && (
@@ -77,7 +77,7 @@ const AffiliateWithdrawalTable = ({ withdrawals, size }) => {
               className={classNames(cardFooter, text, withdrawals.length < 9 && 'position-absolute', 'p-2 text-center cursor-pointer d-block w-100')}
               style={{ bottom: 0 }}
             >
-              <span className='font-weight-bold'>View All Withdrawals</span>
+              <span className='font-weight-bold'>View All Earnings</span>
             </CardFooter>)}
         </CardBody>
       </Card>
