@@ -65,6 +65,6 @@ export default compose(
       </div>
     </div>
     <EmailSubscriptionForm />
-    <Footer footerClass='bg-ultra-dark p-4'/>
+    <Footer/>
   </Fragment>
 ))
