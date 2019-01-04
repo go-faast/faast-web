@@ -40,7 +40,7 @@ const AffiliateSettings = ({ isModalOpen, toggleModalOpen, affiliateId, secretKe
                   <Input className={classNames('flat', input)} value={secretKey} type='text' autoFocus readOnly/>
                 </Col>
                 <Col>
-                  <small><p className={classNames('mt-3 mb-1 font-weight-bold', text)}>Initiate Withdrawal</p></small>
+                  <small><p className={classNames('mt-3 mb-1 font-weight-bold', text)}>Initiate Earnings Withdrawal</p></small>
                   <Form id='withdrawal-form' onSubmit={handleSubmit}>
                     <ReduxFormField
                       name='withdrawal_address'

@@ -49,7 +49,7 @@ const AffiliateDashboard = ({ stats: { swaps_completed = 0, value_btc = 0, affil
         <CardDeck style={{ flex: 1 }}>
           <SwapsTable size='small'/>
           <Card className={classNames(card, smallCard)}>
-            <CardHeader className={cardHeader}>Funds Ready for Payout</CardHeader>
+            <CardHeader className={cardHeader}>Earnings Ready for Payout</CardHeader>
             <CardBody className='text-center'>
               <p className='mb-0' style={{ fontSize: 70 }}>🎉</p>
               <Units value={balance} symbol='BTC' precision={6} style={{ fontSize: 50 }} className={classNames('font-weight-bold mt-0 mb-4 d-block', text)}/>

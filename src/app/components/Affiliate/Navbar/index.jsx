@@ -7,7 +7,8 @@ import {
   Nav,
   NavItem,
   NavLink,
-  NavbarToggler
+  NavbarToggler,
+  Button
 } from 'reactstrap'
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -51,7 +52,7 @@ const AffiliateNavBar = ({ logout, loggedIn, children, isExpanded, toggleExpande
               </NavItem>
               <NavItem key='withdrawals'>
                 <NavLink className={classNames(navbarLink, 'px-1 px-lg-2')} activeClassName={active} tag={RouterNavLink} to='/affiliates/withdrawals'>
-                  <span className='nav-link-label d-sm-inline'>Withdrawals</span>
+                  <span className='nav-link-label d-sm-inline'>Earnings</span>
                 </NavLink>
               </NavItem>
               <NavItem key='settings'>
@@ -61,6 +62,16 @@ const AffiliateNavBar = ({ logout, loggedIn, children, isExpanded, toggleExpande
               </NavItem>
             </Nav>
           </Collapse>
+          <div>
+            <Button 
+              tag='a' 
+              color='primary'
+              href='https://faa.st/affiliates/terms' 
+              target='_blank noreferrer noopener' 
+              className={classNames(navbarLink, active, 'd-none d-md-inline cursor-pointer flat mr-3')}>
+              Agreement
+            </Button>
+          </div>
           <div>
             <p onClick={logout} className={classNames(navbarLink, active, 'd-inline cursor-pointer')}>
               Logout

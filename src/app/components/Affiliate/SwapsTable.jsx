@@ -22,7 +22,7 @@ const TableRow = ({
   swap: { sendAmount, sendSymbol, receiveAmount, receiveSymbol, createdAtFormatted, rate },
   ...props
 }) => (
-  <tr className='cursor-pointer' {...props}>
+  <tr {...props}>
     <td>{createStatusLabel(swap)}</td>
     {size === 'large' && (<td className='d-none d-sm-table-cell'>{createdAtFormatted}</td>)}
     <td className='d-none d-sm-table-cell'>
@@ -76,13 +76,15 @@ const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading }) => {
                     })}
                   </tbody>
                 </Table>
-                {size === 'small' && (<CardFooter 
-                  tag={Link} 
-                  to='/affiliates/swaps'
-                  className={classNames(cardFooter, text, 'p-2 text-center cursor-pointer d-block')}
-                >
-                  <span className='font-weight-bold'>View All Swaps</span>
-                </CardFooter>)}
+                {size === 'small' && (
+                  <CardFooter 
+                    tag={Link} 
+                    to='/affiliates/swaps'
+                    className={classNames(cardFooter, text, swaps.length < 5 && 'position-absolute', 'p-2 text-center cursor-pointer d-block w-100')}
+                    style={{ bottom: 0 }}
+                  >
+                    <span className='font-weight-bold'>View All Swaps</span>
+                  </CardFooter>)}
               </Fragment>) :
               <div className='d-flex align-items-center justify-content-center'>
                 <p className={text}>No swaps yet.</p>

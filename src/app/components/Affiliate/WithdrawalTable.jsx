@@ -9,32 +9,24 @@ import classNames from 'class-names'
 
 import { createStatusLabel } from 'Components/TradeTable'
 import Units from 'Components/Units'
-import Expandable from 'Components/Expandable'
-
-import { ellipsize } from 'Utilities/display'
 
 import { getAffiliateWithdrawalsArray } from 'Selectors'
 
 import { text, affilateTable, card, cardHeader, cardFooter, smallCard } from './style'
 
 const WithdrawalTableRow = ({
-  withdrawal, size,
-  withdrawal: { created, address, amount, currency, status, tx_hash },
+  withdrawal,
+  withdrawal: { created, amount, currency, status, tx_hash },
   ...props
 }) => {
   if (status == 'paid') { withdrawal.status = { detailsCode: 'complete', details: 'Paid' } } 
   if (status == 'pending') { withdrawal.status = { detailsCode: 'pending', details: 'Pending' } }
   return (
-    <tr className='cursor-pointer' {...props}>
+    <tr {...props}>
       <td>{createStatusLabel(withdrawal)}</td>
-      {size == 'large' ? (<td>{created}</td>) : null}
+      <td>{created}</td>
       <td>
         <Units value={amount} symbol={currency} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>
-      </td>
-      <td>
-        {address ? (
-          <Expandable shrunk={ellipsize(address, 15, 3)} expanded={address} />
-        ) : 'N/A'}
       </td>
       <td>
         {tx_hash ? (
@@ -50,16 +42,15 @@ const AffiliateWithdrawalTable = ({ withdrawals, size }) => {
   return (
     <Fragment>
       <Card className={classNames(card, size === 'small' && smallCard, size != 'small' && 'mx-auto')}>
-        <CardHeader className={cardHeader}>Recent Withdrawals</CardHeader>
+        <CardHeader className={cardHeader}>Recent Earnings</CardHeader>
         <CardBody className={classNames(withdrawals.length > 0 && 'p-0', 'text-center')}>
           {withdrawals.length > 0 ? (
             <Table className={classNames('text-left', text, affilateTable)} striped responsive>
               <thead>
                 <tr>
                   <th></th>
-                  {size === 'large' ? (<th>Date</th>) : null}
+                  <th>Date</th>
                   <th>Amount</th>
-                  <th>Wallet</th>
                   <th>Tx</th>
                 </tr>
               </thead>
@@ -76,13 +67,15 @@ const AffiliateWithdrawalTable = ({ withdrawals, size }) => {
               <p className={text}>No withdrawals yet.</p>
             </div>
           }
-          {size === 'small' && withdrawals.length > 0 && (<CardFooter 
-            tag={Link} 
-            to='/affiliates/withdrawals'
-            className={classNames(cardFooter, text, 'p-2 text-center cursor-pointer d-block')}
-          >
-            <span className='font-weight-bold'>View All Withdrawals</span>
-          </CardFooter>)}
+          {size === 'small' && withdrawals.length > 0 && (
+            <CardFooter 
+              tag={Link} 
+              to='/affiliates/withdrawals'
+              className={classNames(cardFooter, text, withdrawals.length < 9 && 'position-absolute', 'p-2 text-center cursor-pointer d-block w-100')}
+              style={{ bottom: 0 }}
+            >
+              <span className='font-weight-bold'>View All Withdrawals</span>
+            </CardFooter>)}
         </CardBody>
       </Card>
     </Fragment>
