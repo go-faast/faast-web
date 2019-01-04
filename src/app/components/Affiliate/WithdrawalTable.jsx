@@ -16,7 +16,8 @@ import { text, affilateTable, card, cardHeader, cardFooter, smallCard } from './
 
 const WithdrawalTableRow = ({
   withdrawal,
-  withdrawal: { created, amount, currency, status, tx_hash },
+  withdrawal: { created, amount, currency, status, tx_hash, updated },
+  size,
   ...props
 }) => {
   if (status == 'paid') { withdrawal.status = { detailsCode: 'complete', details: 'Paid' } } 
@@ -25,6 +26,7 @@ const WithdrawalTableRow = ({
     <tr {...props}>
       <td>{createStatusLabel(withdrawal)}</td>
       <td>{created}</td>
+      {size === 'large' && (<td>{updated}</td>)}
       <td>
         <Units value={amount} symbol={currency} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>
       </td>
@@ -49,7 +51,8 @@ const AffiliateWithdrawalTable = ({ withdrawals, size }) => {
               <thead>
                 <tr>
                   <th></th>
-                  <th>Date</th>
+                  <th>Created</th>
+                  {size === 'large' && (<th>Updated</th>)}
                   <th>Amount</th>
                   <th>Tx</th>
                 </tr>
