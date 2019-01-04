@@ -7,7 +7,6 @@ import Layout from 'Components/Layout'
 import BlockstackWelcome from 'Components/BlockstackWelcome'
 import Balances from 'Components/Balances'
 import Sidebar from 'Components/Sidebar'
-import WalletSelector from 'Components/WalletSelector'
 import TradeTable from 'Components/TradeTable'
 import { tableHeadings } from 'Components/TradeHistory'
 
