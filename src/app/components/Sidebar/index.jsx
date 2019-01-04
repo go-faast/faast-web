@@ -43,7 +43,11 @@ const Sidebar = ({
     <Card className={className}>
       <ListGroup>
         <ListGroupItem className='text-center position-relative'>
-          <Icon style={{ top: '2px', left: 0, width: '100%', zIndex: 0 }} className='position-absolute' src={chart} />
+          <Icon 
+            style={{ top: '2px', left: 0, width: '100%', zIndex: 0 }} 
+            className='position-absolute d-none d-md-block' 
+            src={chart} 
+          />
           <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
             <DropdownToggle className='m-0 cursor-pointer' tag='p' caret>
               <small><Badge 
@@ -101,7 +105,7 @@ const Sidebar = ({
             </div>
           </div>
         </ListGroupItem>
-        <ListGroupItem className='p-0 text-center'>
+        <ListGroupItem className='p-0 text-center d-none d-md-block'>
           <small><p className={sidebarLabel}>Watchlist</p></small>
           <div style={{ maxHeight: '171px', overflowY: 'auto' }}>
             {watchlist.map((asset) => {
@@ -141,7 +145,7 @@ const Sidebar = ({
             })}
           </div>
         </ListGroupItem>
-        <ListGroupItem className='border-bottom-0 p-0 text-center'>
+        <ListGroupItem className='border-bottom-0 p-0 text-center d-none d-md-block'>
           <small>
             <div className={sidebarLabel}>Trending
               <Dropdown group isOpen={isTrendingDropDownOpen} size="sm" toggle={toggleTrendingDropDownOpen}>
