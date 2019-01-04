@@ -1,7 +1,7 @@
 {
   "name": "faast-portfolio",
   "productName": "Faa.st",
-  "version": "3.0.24",
+  "version": "3.0.25",
   "description": "A decentralized cryptocurrency portfolio manager and exchange.",
   "contributors": [
     "Nathan Wood <nathan@bitaccess.co>",
