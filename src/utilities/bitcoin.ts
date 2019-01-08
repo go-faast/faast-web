@@ -1,6 +1,8 @@
 import b58 from 'bs58check'
 import bitcoin, { payments, bip32, Network as BitcoinJsNetwork } from 'bitcoinjs-lib'
 import networks, { NetworkConfig, PaymentType, AddressEncoding, BTC } from 'Utilities/networks'
+import { FeeRate } from 'Types'
+import { toNumber } from 'Utilities/convert'
 
 function arrayify<T>(x: T | T[]): T[] {
   return Array.isArray(x) ? x : [x]
@@ -221,11 +223,21 @@ export function estimateTxSize(
 }
 
 export function estimateTxFee(
-  satPerByte: number,
+  feeRate: FeeRate | number, // number => sat/byte
   inputsCount: number,
   outputsCount: number,
   handleSegwit: boolean,
 ): number {
+  let satPerByte
+  if (typeof feeRate === 'number') {
+    satPerByte = feeRate
+  } else if (feeRate.unit === 'sat/byte') {
+    satPerByte = toNumber(feeRate.rate)
+  } else if (feeRate.unit === 'sat') {
+    return toNumber(feeRate.rate)
+  } else {
+    throw new Error(`Unsupported feeRate unit: ${feeRate.unit}`)
+  }
   const { min, max } = estimateTxSize(inputsCount, outputsCount, handleSegwit)
   const mean = (min + max) / 2
   return Math.ceil(mean * satPerByte)

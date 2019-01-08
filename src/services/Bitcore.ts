@@ -21,6 +21,7 @@ import {
   estimateTxFee, getPaymentTypeForHdKey, convertHdKeyAddressEncoding, isSegwitSupported,
 } from 'Utilities/bitcoin'
 import networks, { NetworkConfig } from 'Utilities/networks'
+import { FeeRate } from 'Types'
 
 // setting up workers
 const xpubWasmFilePromise = fetch(xpubWasmFile)
@@ -157,7 +158,7 @@ export class Bitcore extends BitcoreBlockchain {
    * @param {Object[]} desiredOutputs - Outputs for the transaction (excluding change)
    * @param {String} desiredOutputs[].address - address to send to
    * @param {Number} desiredOutputs[].amount - amount to send (unit: satoshi)
-   * @param {Number} feeRate - desired fee (unit: satoshi per byte)
+   * @param {FeeRate|Number} feeRate - desired fee (unit: satoshi per byte)
    * @param {Boolean} [isSegwit=true] - True if this is a segwit transaction
    * @param {Number} [dustThreshold=546] - A change output will only be included when greater than this value.
    *   Otherwise it will be included as a fee instead (unit: satoshi)
@@ -166,9 +167,9 @@ export class Bitcore extends BitcoreBlockchain {
   buildPaymentTx(
     account: AccountInfo,
     desiredOutputs: Array<{ address: string, amount: number}>,
-    feeRate: number,
+    feeRate: FeeRate | number,
     isSegwit = true,
-    dustThreshold = 546,
+    dustThreshold?: number,
   ): PaymentTx {
     const { utxos, changeIndex, changeAddresses } = account
     let changeAddress = changeAddresses[changeIndex]
@@ -176,6 +177,12 @@ export class Bitcore extends BitcoreBlockchain {
 
     if (isSegwit && !isSegwitSupported(this.network)) {
       throw new Error(`Segwit not supported for ${this.network.symbol}`)
+    }
+
+    if (typeof dustThreshold === 'undefined') {
+      dustThreshold = typeof this.network.dustThreshold !== 'undefined'
+        ? this.network.dustThreshold
+        : 546
     }
 
     const outputs = desiredOutputs
@@ -209,6 +216,15 @@ export class Bitcore extends BitcoreBlockchain {
       inputUtxos.push(utxo)
       if (inputTotal >= amountWithFee) {
         break
+      }
+    }
+
+    // Ensure calculated fee is above network minimum
+    const minTxFee = this.network.minTxFee
+    if (minTxFee) {
+      const minTxFeeSat = estimateTxFee(minTxFee, inputUtxos.length, outputCount, isSegwit)
+      if (fee < minTxFeeSat) {
+        fee = minTxFeeSat
       }
     }
 

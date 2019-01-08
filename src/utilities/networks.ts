@@ -8,6 +8,8 @@ import coininfo from 'coininfo'
 import { Network as BitcoinJsNetwork } from 'bitcoinjs-lib'
 import { pick } from 'lodash'
 
+import { FeeRate } from 'Types'
+
 export type AddressEncoding = 'P2PKH' | 'P2SH-P2WPKH' | 'P2WPKH' | 'P2SH-P2WSH' | 'P2WSH'
 
 export type PaymentType = {
@@ -25,6 +27,8 @@ type BaseNetworkConfig = {
   symbol: string,
   name: string,
   bitcoreUrls: string[],
+  minTxFee?: FeeRate,
+  dustThreshold?: number,
   paymentTypes: PaymentType[],
 }
 
@@ -61,6 +65,11 @@ export const BTC = network({
     'https://btc3.trezor.io', 'https://btc4.trezor.io', 'https://btc5.trezor.io',
     // 'https://blockexplorer.com',
   ],
+  minTxFee: {
+    rate: 1,
+    unit: 'sat/byte',
+  },
+  dustThreshold: 546,
   paymentTypes: [
     {
       addressEncoding: 'P2PKH',
@@ -180,6 +189,11 @@ export const BCH = network({
     'https://bitcoincash.blockexplorer.com', 'https://bch1.trezor.io', 'https://bch2.trezor.io',
     'https://bch3.trezor.io', 'https://bch4.trezor.io', 'https://bch5.trezor.io',
   ],
+  minTxFee: {
+    rate: 1,
+    unit: 'sat/byte',
+  },
+  dustThreshold: 546,
   paymentTypes: [
     {
       addressEncoding: 'P2PKH',
@@ -201,6 +215,11 @@ export const LTC = network({
     'https://ltc1.trezor.io', 'https://ltc2.trezor.io',
     'https://ltc3.trezor.io', 'https://ltc4.trezor.io', 'https://ltc5.trezor.io',
   ],
+  minTxFee: {
+    rate: 10,
+    unit: 'sat/byte',
+  },
+  dustThreshold: 546,
   paymentTypes: [
     {
       addressEncoding: 'P2PKH',

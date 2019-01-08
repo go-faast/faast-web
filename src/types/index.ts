@@ -1,5 +1,7 @@
 import BigNumber from 'bignumber.js'
 
+export { BigNumber }
+
 export interface Asset {
   symbol: string
   name: string
@@ -42,4 +44,9 @@ export interface SwapOrder {
 export type HdAccount = {
   xpub: string, // xpub, ypub, etc
   path: string, // derivation path
+}
+
+export interface FeeRate {
+  rate: BigNumber | number
+  unit: string
 }

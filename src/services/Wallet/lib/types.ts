@@ -1,8 +1,10 @@
 import BigNumber from 'bignumber.js'
 import Wallet from './Wallet'
-import { Asset } from 'Types'
+import { Asset, FeeRate } from 'Types'
 import { PaymentTx } from 'Services/Bitcore'
 import { AddressFormat } from 'Utilities/addressFormat'
+
+export { FeeRate }
 
 export type Amount = BigNumber
 
@@ -32,11 +34,6 @@ export interface BitcoreTransaction extends Transaction {
 
 export interface Balances {
   [symbol: string]: Amount
-}
-
-export interface FeeRate {
-  rate: Amount | number
-  unit: string
 }
 
 export type AssetProvider = () => (Asset[] | { [symbol: string]: Asset })
