@@ -56,7 +56,8 @@ export const getSwapStatus = (swap) => {
   } else if (orderStatus === 'awaiting deposit') {
     return statusPending('awaiting_deposit', 'Waiting for deposit')
   }
-  const timeSinceCreated = createdAt ? createdAt.getTime() : Date.now()
+
+  const timeSinceCreated = createdAt ? new Date(createdAt).getTime() : Date.now()
   if ((Date.now() - timeSinceCreated) / 3600000 >= 4) {
     return statusPending('contact_support', 'There may be an issue. Contact support@faa.st for more info.')
   }
