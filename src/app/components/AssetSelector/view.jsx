@@ -39,6 +39,7 @@ const AssetCol = ({
         className={style.assetButton}>
         <CoinIcon symbol={symbol} size='lg' className={style.assetButtonIcon} />
         <div>{name}</div>
+        <div><small className='text-muted'>[{symbol}]</small></div>
         {disabled && !restricted && (
           <div className={style.assetDisabledMessage}>{`(${disabledMessage})`}</div>
         )}
