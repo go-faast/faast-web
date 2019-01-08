@@ -37,7 +37,7 @@ export default {
     expand: 'md',
   },
   affiliateSettings: {
-    affiliate_margin: 0.1, 
+    affiliate_margin: 0.2, 
     affiliate_id: 'DLABdEEmJUcLfLs2Y7jkkZntvdENT3nL',
   },
   explorerUrls: {
