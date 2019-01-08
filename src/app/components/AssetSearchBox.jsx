@@ -56,7 +56,7 @@ const AssetSearch = ({
                   key={name}
                 >
                   <CoinIcon symbol={symbol} inline size='sm' className='m-1'/>
-                  {name}
+                  <span className='pl-2'>{name} <small className='text-muted'>[{symbol}]</small></span>
                 </ListGroupItem>
               ))}
             </ListGroup>

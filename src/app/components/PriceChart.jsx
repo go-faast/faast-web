@@ -108,7 +108,6 @@ const initialConfig = {
     tooltip: {
       valuePrefix: '$',
       pointFormat: '<b>{point.y}</b> USD',
-      valueDecimals: 2
     },
     threshold: null
   }],
