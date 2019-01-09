@@ -1,5 +1,7 @@
+import qs from 'query-string'
+
 import { newScopedCreateAction } from 'Utilities/action'
-import { localStorageGetJson } from 'Utilities/storage'
+import { localStorageGetJson, sessionStorageSet } from 'Utilities/storage'
 import blockstack from 'Utilities/blockstack'
 import { filterUrl } from 'Utilities/helpers'
 import log from 'Utilities/log'
@@ -70,11 +72,23 @@ export const setupBlockstack = (dispatch) => Promise.resolve()
     log.error('Failed to setup Blockstack', e)
   })
 
+export const setupAffiliateReferral = () => Promise.resolve()
+  .then(() => {
+    const query = qs.parse(window.location.search, { ignoreQueryPrefix: true })
+    if (typeof query.afid === 'string') {
+      sessionStorageSet('affiliateId', query.afid)
+    }
+  })
+  .catch((e) => {
+    log.error('Failed to setup affiliate referral', e)
+  })
+
 export const init = () => (dispatch) => Promise.resolve()
   .then(() => dispatch(fetchGeoRestrictions()))
   .then(() => dispatch(restoreState))
   .then(() => dispatch(setupBlockstack))
   .then(() => dispatch(appReady()))
+  .then(() => setupAffiliateReferral())
   .catch((e) => {
     log.error(e)
     const message = e.message || 'Unknown error'

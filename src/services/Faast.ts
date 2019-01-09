@@ -1,13 +1,22 @@
 import { fetchGet, fetchPost, fetchDelete } from 'Utilities/fetch'
 import { filterErrors } from 'Utilities/helpers'
 import { toBigNumber } from 'Utilities/convert'
+import { sessionStorageGet } from 'Utilities/storage'
 import log from 'Log'
 import config from 'Config'
 import crypto from 'crypto'
 
 import { Asset, SwapOrder } from 'Types'
 
-const { siteUrl, apiUrl } = config
+const { siteUrl, apiUrl, affiliateSettings } = config
+
+const getAffiliateSettings = () => {
+  const affiliateId = sessionStorageGet('affiliateId')
+  return {
+    ...affiliateSettings,
+    affiliate_id: typeof affiliateId === 'string' ? affiliateId : affiliateSettings.affiliate_id,
+  }
+}
 
 export function fetchAssets(): Promise<Asset[]> {
   return fetchGet(`${apiUrl}/api/v2/public/currencies`, null, { retries: 2 })
@@ -97,7 +106,7 @@ export const createNewOrder = ({
   withdrawal_address: receiveAddress,
   withdrawal_currency: receiveSymbol,
   refund_address: refundAddress,
-  ...config.affiliateSettings,
+  ...getAffiliateSettings(),
 }).then(formatOrderResult)
   .catch((e: any) => {
     log.error(e)
