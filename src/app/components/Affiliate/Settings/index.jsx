@@ -10,6 +10,7 @@ import classNames from 'class-names'
 import { reduxForm, formValueSelector, change, untouch } from 'redux-form'
 import ReduxFormField from 'Components/ReduxFormField'
 import toastr from 'Utilities/toastrWrapper'
+import config from 'Config'
 
 import { affiliateId, secretKey, getAsset, getAffiliateBalance } from 'Selectors'
 import { initiateAffiliateWithdrawal } from 'Services/Faast'
@@ -30,17 +31,26 @@ const AffiliateSettings = ({ isModalOpen, toggleModalOpen, affiliateId, secretKe
           <Card className={classNames('mx-auto', card, smallCard)}>
             <CardHeader className={cardHeader}>Affiliate API Settings</CardHeader>
             <CardBody>
-              <Row>
+              <Row className='gutter-y-3'>
                 <Col sm='12'>
                   <small><p className={classNames('mt-1 mb-1 font-weight-bold', text)}>Affiliate Id</p></small>
                   <Input className={classNames('flat', input)} value={affiliateId} type='text' autoFocus readOnly/>
                 </Col>
                 <Col sm='12'>
-                  <small><p className={classNames('mt-3 mb-1 font-weight-bold', text)}>Secret Key</p></small>
+                  <small><p className={classNames('mb-1 font-weight-bold', text)}>Secret Key</p></small>
                   <Input className={classNames('flat', input)} value={secretKey} type='text' autoFocus readOnly/>
                 </Col>
+                <hr className='w-100 border-light'/>
+                <Col sm='12'>
+                  <small><p className={classNames('mb-1 font-weight-bold', text)}>Referral Link</p></small>
+                  <Input className={classNames('flat', input)} value={`https://faa.st/swap?afid=${affiliateId}`} type='text' autoFocus readOnly/>
+                  <small><p className={classNames('mt-1 mb-1', text)}>
+                    Receive {config.affiliateSettings.affiliate_margin}% commision on any trade placed using this link.
+                  </p></small>
+                </Col>
+                <hr className='w-100 border-light'/>
                 <Col>
-                  <small><p className={classNames('mt-3 mb-1 font-weight-bold', text)}>Initiate Earnings Withdrawal</p></small>
+                  <small><p className={classNames('mb-1 font-weight-bold', text)}>Initiate Earnings Withdrawal</p></small>
                   <Form id='withdrawal-form' onSubmit={handleSubmit}>
                     <ReduxFormField
                       name='withdrawal_address'
