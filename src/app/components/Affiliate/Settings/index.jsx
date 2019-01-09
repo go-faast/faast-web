@@ -43,7 +43,7 @@ const AffiliateSettings = ({ isModalOpen, toggleModalOpen, affiliateId, secretKe
                 <hr className='w-100 border-light'/>
                 <Col sm='12'>
                   <small><p className={classNames('mb-1 font-weight-bold', text)}>Referral Link</p></small>
-                  <Input className={classNames('flat', input)} value={`https://faa.st/swap?afid=${affiliateId}`} type='text' autoFocus readOnly/>
+                  <Input className={classNames('flat', input)} value={`https://faa.st/swap?ref=${affiliateId}`} type='text' autoFocus readOnly/>
                   <small><p className={classNames('mt-1 mb-1', text)}>
                     Receive {config.affiliateSettings.affiliate_margin}% commision on any trade placed using this link.
                   </p></small>

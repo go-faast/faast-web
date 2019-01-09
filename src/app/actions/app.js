@@ -75,8 +75,8 @@ export const setupBlockstack = (dispatch) => Promise.resolve()
 export const setupAffiliateReferral = () => Promise.resolve()
   .then(() => {
     const query = qs.parse(window.location.search, { ignoreQueryPrefix: true })
-    if (typeof query.afid === 'string') {
-      sessionStorageSet('affiliateId', query.afid)
+    if (typeof query.ref === 'string') {
+      sessionStorageSet('affiliateId', query.ref)
     }
   })
   .catch((e) => {
