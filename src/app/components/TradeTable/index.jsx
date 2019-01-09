@@ -1,8 +1,9 @@
 import React, { Fragment } from 'react'
 import { push as pushAction } from 'react-router-redux'
+import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
-import { Table, Card, CardHeader } from 'reactstrap'
-import { compose, setDisplayName, withHandlers, defaultProps, setPropTypes } from 'recompose'
+import { Table, Card, CardHeader, CardFooter } from 'reactstrap'
+import { compose, setDisplayName, withHandlers, defaultProps, setPropTypes, withState } from 'recompose'
 import classNames from 'class-names'
 import PropTypes from 'prop-types'
 
@@ -10,6 +11,9 @@ import routes from 'Routes'
 import Units from 'Components/Units'
 import Expandable from 'Components/Expandable'
 import CoinIcon from 'Components/CoinIcon'
+
+import { areOrdersLoading, areAllOrdersLoaded } from 'Selectors/orders'
+import { retrievePaginatedSwaps } from 'Actions/swap'
 
 import { tradeTable, tradeCoinIcon } from './style'
 
@@ -51,7 +55,8 @@ export const TableRow = ({
 )
 
 const TradeTable = ({ handleClick, hideIfNone, tableTitle, 
-  swaps, tableHeadings, zeroOrdersMessage }) => (
+  swaps, tableHeadings, zeroOrdersMessage, handleShowMore, areOrdersLoading,
+  areAllOrdersLoaded, showMore }) => (
   <Fragment>
     {hideIfNone && swaps.length == 0 ? null : (
       <Card className='mb-3'>
@@ -77,6 +82,20 @@ const TradeTable = ({ handleClick, hideIfNone, tableTitle,
               ))}
             </tbody>
           </Table>
+        )}
+        {!areAllOrdersLoaded && showMore && (
+          <CardFooter 
+            tag='a'
+            onClick={handleShowMore}
+            className={'position-absolute p-2 text-center cursor-pointer d-block w-100'}
+            style={{ bottom: 0 }}
+          >
+            {!areOrdersLoading ? (
+              <span className='hover'>Show more orders...</span>
+            ) : (
+              <i className='fa fa-spinner fa-pulse'/>
+            )}
+          </CardFooter>
         )}
       </Card>
     )}
@@ -105,19 +124,30 @@ export default compose(
     tableTitle: PropTypes.string,
     tableHeadings: PropTypes.arrayOf(PropTypes.object),
     zeroOrdersMessage: PropTypes.string,
-    swaps: PropTypes.arrayOf(PropTypes.object)
+    swaps: PropTypes.arrayOf(PropTypes.object),
+    showMore: PropTypes.bool,
   }),
   defaultProps({
     tableTitle: 'Orders',
     hideIfNone: false,
     tableHeadings: [],
     zeroOrdersMessage: 'No orders to show',
-    swaps: [{}]
+    swaps: [{}],
+    showMore: false,
   }),
-  connect(null, {
-    push: pushAction
+  connect(createStructuredSelector({
+    areOrdersLoading: areOrdersLoading,
+    areAllOrdersLoaded: areAllOrdersLoaded,
+  }), {
+    push: pushAction,
+    retrievePaginatedSwaps: retrievePaginatedSwaps
   }),
+  withState('page', 'updatePage', 2),
   withHandlers({
-    handleClick: ({ push }) => (orderId) => push(routes.tradeDetail(orderId))
-  })
+    handleClick: ({ push }) => (orderId) => push(routes.tradeDetail(orderId)),
+    handleShowMore: ({ page, updatePage, retrievePaginatedSwaps }) => () => {
+      retrievePaginatedSwaps(page, 50)
+      updatePage(page + 1)
+    }
+  }),
 )(TradeTable)
