@@ -87,9 +87,9 @@ export const getAccountDetails = (id, key) => (dispatch, getState) => {
 
 export const getAffiliateWithdrawals = (id, key) => (dispatch) => {
   return Faast.getAffiliateSwapPayouts(id, key)
-    .then((withdrawals) => {
-      sessionStorageSetJson('state:affiliate_withdrawals', withdrawals.records)
-      return dispatch(withdrawalsRetrieved(withdrawals.records))
+    .then((response) => {
+      sessionStorageSetJson('state:affiliate_withdrawals', response.withdrawals)
+      return dispatch(withdrawalsRetrieved(response.withdrawals))
     })
     .catch((e) => dispatch(withdrawalsError(e)))
 }

@@ -52,7 +52,7 @@ const AffiliateNavBar = ({ logout, loggedIn, children, isExpanded, toggleExpande
               </NavItem>
               <NavItem key='withdrawals'>
                 <NavLink className={classNames(navbarLink, 'px-1 px-lg-2')} activeClassName={active} tag={RouterNavLink} to='/affiliates/withdrawals'>
-                  <span className='nav-link-label d-sm-inline'>Earnings</span>
+                  <span className='nav-link-label d-sm-inline'>Withdrawals</span>
                 </NavLink>
               </NavItem>
               <NavItem key='settings'>

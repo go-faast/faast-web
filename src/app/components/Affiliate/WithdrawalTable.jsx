@@ -9,6 +9,9 @@ import classNames from 'class-names'
 
 import { createStatusLabel } from 'Components/TradeTable'
 import Units from 'Components/Units'
+import Expandable from 'Components/Expandable'
+
+import { ellipsize } from 'Utilities/display'
 
 import { getAffiliateWithdrawalsArray } from 'Selectors'
 
@@ -16,23 +19,27 @@ import { text, affilateTable, card, cardHeader, cardFooter, smallCard } from './
 
 const WithdrawalTableRow = ({
   withdrawal,
-  withdrawal: { created, amount, currency, status, tx_hash, updated },
+  withdrawal: { created_at, withdrawal_address, withdrawal_amount = 0, 
+    withdrawal_currency = 'BTC', status, transaction_id },
   size,
   ...props
 }) => {
-  if (status == 'paid') { withdrawal.status = { detailsCode: 'complete', details: 'Paid' } } 
+  if (status == 'paid' || status == 'complete') { withdrawal.status = { detailsCode: 'complete', details: 'Paid' } } 
   if (status == 'pending') { withdrawal.status = { detailsCode: 'pending', details: 'Pending' } }
+  if (status == 'error') { withdrawal.status = { detailsCode: 'failed', details: 'Error' } }
   return (
     <tr {...props}>
       <td>{createStatusLabel(withdrawal)}</td>
-      <td>{created}</td>
-      {size === 'large' && (<td>{updated}</td>)}
+      {size === 'large' && (<td>{created_at}</td>)}
       <td>
-        <Units value={amount} symbol={currency} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>
+        <Expandable shrunk={ellipsize(withdrawal_address, 15, 3)} expanded={withdrawal_address} />
       </td>
       <td>
-        {tx_hash ? (
-          <a href={`https://www.blockchain.com/btc/tx/${tx_hash}`} target='_blank noreferrer'>View</a>
+        <Units value={withdrawal_amount} symbol={withdrawal_currency} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>
+      </td>
+      <td>
+        {transaction_id ? (
+          <a href={`https://www.blockchain.com/btc/tx/${transaction_id}`} target='_blank noreferrer'>View</a>
         ) : <span style={{ opacity: .6, cursor: 'default' }}>View</span>}
       </td>
     </tr>
@@ -44,15 +51,15 @@ const AffiliateWithdrawalTable = ({ withdrawals, size }) => {
   return (
     <Fragment>
       <Card className={classNames(card, size === 'small' && smallCard, size != 'small' && 'mx-auto')}>
-        <CardHeader className={cardHeader}>Recent Earnings</CardHeader>
+        <CardHeader className={cardHeader}>Recent Withdrawals</CardHeader>
         <CardBody className={classNames(withdrawals.length > 0 && 'p-0', 'text-center')}>
           {withdrawals.length > 0 ? (
             <Table className={classNames('text-left', text, affilateTable)} striped responsive>
               <thead>
                 <tr>
                   <th></th>
-                  <th>Created</th>
-                  {size === 'large' && (<th>Updated</th>)}
+                  {size === 'large' && (<th>Created</th>)}
+                  <th>Wallet</th>
                   <th>Amount</th>
                   <th>Tx</th>
                 </tr>
@@ -67,7 +74,7 @@ const AffiliateWithdrawalTable = ({ withdrawals, size }) => {
             </Table>
           ) :
             <div className='d-flex align-items-center justify-content-center'>
-              <p className={text}>No Earnings yet.</p>
+              <p className={text}>No Withdrawals yet.</p>
             </div>
           }
           {size === 'small' && withdrawals.length > 0 && (
@@ -77,7 +84,7 @@ const AffiliateWithdrawalTable = ({ withdrawals, size }) => {
               className={classNames(cardFooter, text, withdrawals.length < 9 && 'position-absolute', 'p-2 text-center cursor-pointer d-block w-100')}
               style={{ bottom: 0 }}
             >
-              <span className='font-weight-bold'>View All Earnings</span>
+              <span className='font-weight-bold'>View Withdrawal History</span>
             </CardFooter>)}
         </CardBody>
       </Card>

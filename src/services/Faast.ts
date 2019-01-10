@@ -179,7 +179,7 @@ export const getAffiliateSwapPayouts = (
 ): Promise<void> => {
   const nonce = String(Date.now())
   const signature = createAffiliateSignature(undefined, key, nonce)
-  return fetchGet(`${apiUrl}/api/v2/public/affiliate/payouts`,
+  return fetchGet(`${apiUrl}/api/v2/public/affiliate/withdrawals`,
   undefined, {
   headers: {
     'affiliate-id': id,
