@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react'
-import { compose, setDisplayName, withHandlers, withProps, withState } from 'recompose'
+import { compose, setDisplayName, withHandlers, withProps, withState, setPropTypes, defaultProps } from 'recompose'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { Card, CardHeader, Button, Modal, ModalHeader,
@@ -12,10 +12,8 @@ import CoinIcon from 'Components/CoinIcon'
 import AssetSelector from 'Components/AssetSelector'
 
 import classNames from 'class-names'
+import PropTypes from 'prop-types'
 import SwapIcon from 'Img/swap-icon.svg?inline'
-
-const DEFAULT_DEPOSIT = 'BTC'
-const DEFAULT_RECEIVE = 'ETH'
 
 const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwitchAssets, 
   supportedAssets, assetSelect, setAssetSelect, depositSymbol, receiveSymbol, areAssetsLoaded }) => {
@@ -95,12 +93,20 @@ export default compose(
     areAssetsLoaded
   }), {
   }),
+  setPropTypes({
+    defaultReceive: PropTypes.string,
+    defaultDeposit: PropTypes.string,
+  }),
+  defaultProps({
+    defaultReceive: 'ETH',
+    defaultDeposit: 'BTC'
+  }),
   withProps(({ assets }) => ({
     supportedAssets: assets.map(({ symbol }) => symbol),
   })),
   withState('assetSelect', 'setAssetSelect', null), // deposit, receive, or null
-  withState('depositSymbol', 'setDepositSymbol', DEFAULT_DEPOSIT),
-  withState('receiveSymbol', 'setReceiveSymbol', DEFAULT_RECEIVE),
+  withState('depositSymbol', 'setDepositSymbol', ({ defaultDeposit }) => defaultDeposit),
+  withState('receiveSymbol', 'setReceiveSymbol', ({ defaultReceive }) => defaultReceive),
   withHandlers({
     isAssetDisabled: ({ assetSelect }) => ({ deposit, receive }) =>
       !((assetSelect === 'deposit' && deposit) || 

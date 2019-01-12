@@ -3,14 +3,16 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { withRouteData } from 'react-static'
 import { createStructuredSelector } from 'reselect'
-import { compose, setDisplayName, lifecycle, withProps } from 'recompose'
+import { compose, setDisplayName, lifecycle, withProps, withState } from 'recompose'
 import { Container, Row, Col } from 'reactstrap'
+
+import PriceChart from 'Components/PriceChart'
 
 // import logoImg from 'Img/faast-logo.png'
 import Header from 'Site/components/Header'
-import Features from 'Site/components/Features'
 import Footer from 'Site/components/Footer'
 import SwapWidget from 'Site/components/SwapWidget'
+import Features from 'Site/components/Features'
 
 import { fetchGeoRestrictions } from 'Common/actions/app'
 import { retrieveAssets } from 'Common/actions/asset'
@@ -19,8 +21,12 @@ import { getAllAssetsArray, areAssetsLoaded } from 'Common/selectors/asset'
 import MoonBackground from 'Img/moon-background.jpg'
 import MacbookScreenshot1 from 'Img/macbook-screenshot-01.png'
 
+import classNames from 'class-names'
+
+import { selectedChartButton } from './style.scss'
+
 export default compose(
-  setDisplayName('Home'),
+  setDisplayName('Pairs'),
   connect(createStructuredSelector({
     assets: getAllAssetsArray,
     areAssetsLoaded: areAssetsLoaded
@@ -32,6 +38,7 @@ export default compose(
     assetList: assets.filter(({ deposit, receive }) => deposit || receive)
       .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl'))
   })),
+  withState('selectedChart', 'updateSelectedChart', undefined),
   lifecycle({
     componentWillMount() {
       const { fetchGeoRestrictions, retrieveAssets } = this.props
@@ -40,8 +47,11 @@ export default compose(
     }
   }),
   withRouteData,
-)(({ supportedAssets, areAssetsLoaded, assetList }) => {
+)(({ supportedAssets, areAssetsLoaded, assetList, pair, updateSelectedChart, selectedChart }) => {
   supportedAssets = areAssetsLoaded ? assetList : supportedAssets
+  const defaultDeposit = pair.split('-')[0]
+  const defaultReceive = pair.split('-')[1]
+  selectedChart = selectedChart ? selectedChart : defaultDeposit
   return (
     <div>
       <div>
@@ -66,7 +76,7 @@ export default compose(
                   </div>
                 </a>
                 <h1 className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
-                  <span className='special-word'>Instantly</span> trade directly from your Ledger, Trezor, or MetaMask.
+                  <span className='special-word'>Instantly</span> trade {defaultDeposit} for {defaultReceive} from your Ledger, Trezor, or MetaMask.
                 </h1>
                 <p className='hero-subtitle mb-4' style={{ fontWeight: 'normal' }}>
                   The <span className='special-word'>safest</span> way to to build a diversified cryptocurrency portfolio
@@ -76,13 +86,40 @@ export default compose(
                 </a></p>
               </Col>
               <Col className='pr-3 d-md-block d-none'>
-                <SwapWidget assets={supportedAssets}/>
+                <SwapWidget defaultDeposit={defaultDeposit} defaultReceive={defaultReceive} assets={supportedAssets}/>
               </Col>
               <div className='intro d-md-none d-block mx-auto' style={{ paddingTop: '60px', maxWidth: 400 }}>	
                 <img className='img-fluid' src={MacbookScreenshot1} style={{ height: '100%', width: '730px' }}/>	
               </div>
             </Row>
           </Container>
+        </div>
+      </div>
+      <div style={{ backgroundColor: '#fff' }}>
+        <div 
+          className='mx-auto w-75 features-clean pb-0 text-center cursor-pointer'
+        > 
+          <h2 className='text-center' style={{ marginBottom: '15px', fontWeight: 'normal' }}>{selectedChart} Pricing</h2>
+          <div style={{ minHeight: 300 }}>
+            <PriceChart symbol={selectedChart} chartOpen/> 
+          </div>
+          <div
+            style={{ border: '1px solid #F2F5FB', borderRadius: 20, maxWidth: '140px', height: 30 }} 
+            className='text-center mx-auto'
+          >
+            <div 
+              onClick={() => updateSelectedChart(defaultDeposit)}
+              className={classNames(selectedChart == defaultDeposit ? selectedChartButton : null, 'd-inline-block w-50')} 
+            >
+              {defaultDeposit}
+            </div>
+            <div 
+              onClick={() => updateSelectedChart(defaultReceive)}
+              className={classNames(selectedChart == defaultReceive ? selectedChartButton : null, 'd-inline-block w-50')}
+            >
+              {defaultReceive}
+            </div>
+          </div>
         </div>
       </div>
       <Features supportedAssets={supportedAssets} />

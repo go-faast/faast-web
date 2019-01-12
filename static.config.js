@@ -5,6 +5,7 @@ import merge from 'webpack-merge'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import { pick } from 'lodash'
 
+
 const { dirs, useHttps } = require('./etc/common.js')
 const getBaseConfig = require('./etc/webpack.config.base.js')
 const siteConfig = require('./src/site/config.js')
@@ -20,6 +21,20 @@ const analyticsCode = `
   a.appendChild(r);
 })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
 `
+
+const generateCombinationsFromArray = (array, property, separator = '-') => {
+  let results = []
+  for (let i = 0; i <= array.length - 1; i++) {
+    for (let j = 0; j <= array.length - 1; j++) {
+      if (array[i][property] !== array[j][property]) {
+        results.push(`${array[i][property]}${separator}${array[j][property]}`)
+      }
+    }
+    if (i == array.length - 1) {
+      return results
+    }
+  }
+}
 
 const Document = ({ Html, Head, Body, children, siteData }) => (
   <Html lang='en'>
@@ -61,7 +76,15 @@ export default {
         component: 'src/site/pages/Home',
         getData: () => ({
           supportedAssets
-        })
+        }),
+        children: generateCombinationsFromArray(supportedAssets, 'symbol', '-').map(pair => ({
+          path: `/pairs/${pair}`,
+          component: 'src/site/pages/Pair',
+          getData: async () => ({
+            supportedAssets,
+            pair,
+          }),
+        })),
       },
       {
         path: '/terms',
