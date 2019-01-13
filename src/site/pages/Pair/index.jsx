@@ -100,12 +100,13 @@ export default compose(
           className='mx-auto w-75 features-clean pb-0 text-center cursor-pointer'
         > 
           <h2 className='text-center' style={{ marginBottom: '15px', fontWeight: 'normal' }}>{selectedChart} Pricing</h2>
-          <div style={{ minHeight: 300 }}>
+          <div style={{ minHeight: 300, maxWidth: 960 }}>
             <PriceChart symbol={selectedChart} chartOpen/> 
           </div>
           <div
-            style={{ border: '1px solid #F2F5FB', borderRadius: 20, maxWidth: '140px', height: 30 }} 
-            className='text-center mx-auto'
+            style={{ border: '1px solid #e3edf3', background: '#eff4f7', 
+              borderRadius: 20, maxWidth: '140px', height: 30 }} 
+            className='text-center mx-auto mt-2'
           >
             <div 
               onClick={() => updateSelectedChart(defaultDeposit)}
