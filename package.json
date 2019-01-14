@@ -35,7 +35,7 @@
     "dist:ipfs": "cross-env IPFS=true npm run dist",
     "dist": "gulp dist",
     "dist-staging": "gulp dist-staging",
-    "compile:app": "webpack --config etc/webpack.config.app.js --progress",
+    "compile:app": "webpack --config etc/webpack.config.app.js",
     "compile:site": "react-static build",
     "compile-staging:site": "react-static build --staging",
     "lint:js": "eslint src/ --ext .js,.jsx",
