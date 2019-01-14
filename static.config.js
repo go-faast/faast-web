@@ -27,7 +27,7 @@ const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => (
       <meta name='description' content={siteConfig.description}/>
       <meta name='author' content={siteConfig.author}/>
       <meta name='referrer' content='origin-when-cross-origin'/>
-      <link rel="canonical" href={urlJoin(siteUrlProd, routeInfo.path)}/>
+      <link rel="canonical" href={urlJoin(siteUrlProd, routeInfo ? routeInfo.path : '')}/>
       <link href='/static/vendor/ionicons-2.0/css/ionicons.min.css' rel='stylesheet'/>
       <link href='/static/vendor/font-awesome-5.5/css/all.min.css' rel='stylesheet'/>
       <link rel="icon" href="/favicon.png"/>
