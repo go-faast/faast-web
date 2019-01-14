@@ -44,7 +44,8 @@ const Document = ({ Html, Head, Body, children, siteData }) => (
 
 export default {
   entry: path.join(dirs.site, 'index.tsx'),
-  siteRoot: process.env.SITE_ROOT || '', // Leave empty to build for all environments
+  siteRoot: process.env.SITE_ROOT || (process.env.NETLIFY_PROD === 'true' ? process.env.URL : ''), // Leave empty to build for all environments
+  stagingSiteRoot: '',
   getSiteData: () => ({
     title: 'Trade Crypto - Faast',
     lastBuilt: Date.now(),

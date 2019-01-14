@@ -1,6 +1,6 @@
 const gulp = require('gulp')
 const path = require('path')
-const clean = require('gulp-clean')
+const gulpClean = require('gulp-clean')
 const run = require('gulp-run-command').default
 
 const { dirs } = require('./etc/common.js')
@@ -10,32 +10,34 @@ const ignoredFiles = [
   '!' + path.join(dirs.buildSite, '**/_*/**/*'), // exclude files/subfolders in folders starting with '_'
 ]
 
-gulp.task('lint:js', run('npm run lint:js'))
-gulp.task('lint:ts', run('npm run lint:ts'))
-gulp.task('lint', gulp.parallel(['lint:js', 'lint:ts']))
-
-gulp.task('compile:app', run('npm run compile:app'))
-gulp.task('compile:site', run('npm run compile:site'))
-
-gulp.task('clean', () =>
-  gulp.src(dirs.dist, { read: false })
-    .pipe(clean()))
-
 const mergeDist = (path) =>
   gulp.src([
     path,
     ...ignoredFiles,
   ]).pipe(gulp.dest(dirs.dist, { overwrite: false }))
 
-gulp.task('dist:app', () => mergeDist(path.join(dirs.buildApp, '**/*')))
+gulp.task('clean', () =>
+  gulp.src(dirs.dist, { read: false })
+    .pipe(gulpClean()))
 
-gulp.task('dist:site', () => mergeDist(path.join(dirs.buildSite, '**/*')))
+gulp.task('lint:js', run('npm run lint:js'))
+gulp.task('lint:ts', run('npm run lint:ts'))
+gulp.task('lint', gulp.parallel(['lint:js', 'lint:ts']))
 
-gulp.task('build:app', gulp.series('compile:app', 'dist:app'))
-gulp.task('build:site', gulp.series('compile:site', 'dist:site'))
+gulp.task('compile:app', run('npm run compile:app'))
+gulp.task('compile:site', run('npm run compile:site'))
+gulp.task('compile-staging:app', run('npm run compile:app'))
+gulp.task('compile-staging:site', run('npm run compile-staging:site'))
 
-const build = gulp.series('lint', 'clean', gulp.parallel(['build:app', 'build:site']))
+gulp.task('combine:app', () => mergeDist(path.join(dirs.buildApp, '**/*')))
+gulp.task('combine:site', () => mergeDist(path.join(dirs.buildSite, '**/*')))
 
-gulp.task('build', build)
+gulp.task('dist:app', gulp.series('compile:app', 'combine:app'))
+gulp.task('dist:site', gulp.series('compile:site', 'combine:site'))
+gulp.task('dist-staging:app', gulp.series('compile-staging:app', 'combine:app'))
+gulp.task('dist-staging:site', gulp.series('compile-staging:site', 'combine:site'))
 
-gulp.task('default', build)
+const dist = gulp.series('lint', 'clean', gulp.parallel(['dist:app', 'dist:site']))
+
+gulp.task('dist', dist)
+gulp.task('default', dist)

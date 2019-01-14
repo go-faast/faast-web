@@ -6,3 +6,4 @@ npm-debug.log*
 dist-dev/
 build/
 tmp/
+dist/
