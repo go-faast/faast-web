@@ -11,16 +11,16 @@
 # Production context: All deploys to the main
 # repository branch will inherit these settings.
 [context.production]
-  command = "npm run dist"
+  command = "npm run build"
   [context.production.environment]
     NETLIFY_PROD = "true"
 
 # Deploy Preview context: All Deploy Previews
 # will inherit these settings.
 [context.deploy-preview.environment]
-  command = "npm run dist-staging"
+  command = "npm run build-staging"
 
 # Branch deploy context: All deploys that are not in
 # an active Deploy Preview will inherit these settings.
 [context.branch-deploy]
-  command = "npm run dist-staging"
+  command = "npm run build-staging"
