@@ -24,20 +24,23 @@ gulp.task('lint:js', run('npm run lint:js'))
 gulp.task('lint:ts', run('npm run lint:ts'))
 gulp.task('lint', gulp.parallel(['lint:js', 'lint:ts']))
 
-gulp.task('compile:app', run('npm run compile:app'))
-gulp.task('compile:site', run('npm run compile:site'))
-gulp.task('compile-staging:app', run('npm run compile:app'))
-gulp.task('compile-staging:site', run('npm run compile-staging:site'))
+gulp.task('compile:app', run('webpack --config etc/webpack.config.app.js'))
+gulp.task('compile:site', run('react-static build'))
+gulp.task('compile-staging:site', run('react-static build --staging'))
 
 gulp.task('combine:app', () => mergeDist(path.join(dirs.buildApp, '**/*')))
 gulp.task('combine:site', () => mergeDist(path.join(dirs.buildSite, '**/*')))
 
-gulp.task('dist:app', gulp.series('compile:app', 'combine:app'))
-gulp.task('dist:site', gulp.series('compile:site', 'combine:site'))
-gulp.task('dist-staging:app', gulp.series('compile-staging:app', 'combine:app'))
-gulp.task('dist-staging:site', gulp.series('compile-staging:site', 'combine:site'))
+gulp.task('build:app', gulp.series('compile:app', 'combine:app'))
+gulp.task('build:site', gulp.series('compile:site', 'combine:site'))
+gulp.task('build-staging:site', gulp.series('compile-staging:site', 'combine:site'))
 
-const dist = gulp.series('lint', 'clean', gulp.parallel(['dist:app', 'dist:site']))
+gulp.task('prebuild', gulp.series('lint', 'clean'))
 
-gulp.task('dist', dist)
-gulp.task('default', dist)
+const build = gulp.series('prebuild', gulp.parallel(['build:app', 'build:site']))
+const buildStaging = gulp.series('prebuild', gulp.parallel(['build:app', 'build-staging:site']))
+
+gulp.task('build', build)
+gulp.task('build-staging', buildStaging)
+
+gulp.task('default', build)
