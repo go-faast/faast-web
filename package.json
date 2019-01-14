@@ -49,7 +49,10 @@
   "standard": {
     "ignore": [
       "dist/",
-      "res/"
+      "res/",
+      "build/",
+      "tmp/",
+      "public/"
     ]
   },
   "dependencies": {},
