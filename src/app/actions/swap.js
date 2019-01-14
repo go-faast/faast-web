@@ -18,6 +18,9 @@ import { getSwap, getTx, getWallet } from 'Selectors'
 const createAction = newScopedCreateAction(__filename)
 
 export const resetSwaps = createAction('RESET_ALL')
+export const allOrdersLoaded = createAction('ALL_ORDERS_LOADED')
+export const ordersLoading = createAction('ORDERS_LOADING')
+export const ordersLoaded = createAction('ORDERS_LOADED')
 export const swapsRetrieved = createAction('RESTORED')
 export const swapAdded = createAction('ADDED')
 export const swapRemoved = createAction('REMOVED', (id) => ({ id }))
@@ -30,22 +33,32 @@ export const swapInitStarted = createAction('INIT_STARTED', idPayload)
 export const swapInitSuccess = createAction('INIT_SUCCESS', idPayload)
 export const swapInitFailed = createAction('INIT_FAILED', (id, errorMessage) => ({ id, error: errorMessage }))
 
-export const retrieveSwaps = (walletId) => (dispatch, getState) => {
+export const retrieveSwaps = (walletId, page, limit) => (dispatch, getState) => {
   const wallet = getWallet(getState(), walletId)
+  dispatch(ordersLoading())
   if (!wallet) {
     log.warn(`Cannot retrieve swaps for unknown wallet ${walletId}`)
     return
   }
   if (wallet.type.includes(MultiWallet.type)) {
-    return Promise.all(wallet.nestedWalletIds.map((nestedWalletId) => dispatch(retrieveSwaps(nestedWalletId))))
+    return Promise.all(wallet.nestedWalletIds.map((nestedWalletId) => dispatch(retrieveSwaps(nestedWalletId, page, limit))))
       .then(flatten)
   }
-  return Faast.fetchOrders(walletId)
-    .then((orders) => dispatch(swapsRetrieved(orders)).payload)
+  return Faast.fetchOrders(walletId, page)
+    .then((orders) => { 
+      if (orders.length == 0) {
+        dispatch(allOrdersLoaded())
+      }
+      dispatch(ordersLoaded())
+      return dispatch(swapsRetrieved(orders)).payload })
 }
 
 export const retrieveAllSwaps = () => (dispatch) => {
   return dispatch(retrieveSwaps(defaultPortfolioId))
+}
+
+export const retrievePaginatedSwaps = (page, limit) => (dispatch) => {
+  return dispatch(retrieveSwaps(defaultPortfolioId, page, limit))
 }
 
 export const restoreSwapTxIds = (swapIdToTxId) => (dispatch) => {
