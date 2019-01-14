@@ -6,7 +6,7 @@
 # “publish” is the directory to publish (relative to the root of your repo).
 
 [build]
-  publish = "dist"
+  publish = "dist/"
 
 # Production context: All deploys to the main
 # repository branch will inherit these settings.
