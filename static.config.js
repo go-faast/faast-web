@@ -55,6 +55,9 @@ export default {
     const { data: assets } = await axios.get('https://api.faa.st/api/v2/public/currencies')
     const supportedAssets = assets.filter(({ deposit, receive }) => deposit || receive)
       .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl'))
+    let mediumProfile = await axios.get('https://medium.com/faast?format=json')
+    mediumProfile = JSON.parse(mediumProfile.data.replace('])}while(1);</x>', ''))
+    const mediumPosts = Object.values(mediumProfile.payload.references.Post)
     return [
       {
         path: '/',
@@ -62,6 +65,20 @@ export default {
         getData: () => ({
           supportedAssets
         })
+      },
+      {
+        path: '/blog',
+        component: 'src/site/pages/Blog',
+        getData: () => ({
+          mediumPosts
+        }),
+        children: mediumPosts.map(post => ({
+          path: `/blog/${post.id}`,
+          component: 'src/site/pages/BlogPost',
+          getData: async () => ({
+            post,
+          }),
+        })),
       },
       {
         path: '/terms',
