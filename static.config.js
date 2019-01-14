@@ -4,11 +4,13 @@ import axios from 'axios'
 import merge from 'webpack-merge'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import { pick } from 'lodash'
+import urlJoin from 'url-join'
 
-const { dirs, useHttps } = require('./etc/common.js')
+const { isDev, dirs, useHttps, siteRoot } = require('./etc/common.js')
 const getBaseConfig = require('./etc/webpack.config.base.js')
 const siteConfig = require('./src/site/config.js')
-const isDev = process.env.NODE_ENV === 'development'
+
+const siteUrlProd = 'https://faa.st'
 
 const analyticsCode = `
 window.dataLayer = window.dataLayer || [];
@@ -17,7 +19,7 @@ gtag('js', new Date());
 gtag('config', 'UA-100689193-1');
 `
 
-const Document = ({ Html, Head, Body, children, siteData }) => (
+const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => (
   <Html lang='en'>
     <Head>
       <meta charSet='utf-8' />
@@ -25,6 +27,7 @@ const Document = ({ Html, Head, Body, children, siteData }) => (
       <meta name='description' content={siteConfig.description}/>
       <meta name='author' content={siteConfig.author}/>
       <meta name='referrer' content='origin-when-cross-origin'/>
+      <link rel="canonical" href={urlJoin(siteUrlProd, routeInfo.path)}/>
       <link href='/static/vendor/ionicons-2.0/css/ionicons.min.css' rel='stylesheet'/>
       <link href='/static/vendor/font-awesome-5.5/css/all.min.css' rel='stylesheet'/>
       <link rel="icon" href="/favicon.png"/>
@@ -44,7 +47,7 @@ const Document = ({ Html, Head, Body, children, siteData }) => (
 
 export default {
   entry: path.join(dirs.site, 'index.tsx'),
-  siteRoot: process.env.SITE_ROOT || (process.env.NETLIFY_PROD === 'true' ? process.env.URL : ''), // Leave empty to build for all environments
+  siteRoot: siteRoot,
   stagingSiteRoot: '',
   getSiteData: () => ({
     title: 'Trade Crypto - Faast',

@@ -37,6 +37,8 @@ const fontOutputPath = path.join(staticOutputPath, 'font')
 const fileOutputPath = path.join(staticOutputPath, 'file')
 const vendorOutputPath = path.join(staticOutputPath, 'vendor')
 
+const siteRoot = process.env.SITE_ROOT || (process.env.NETLIFY_PROD === 'true' ? process.env.URL : '') // Leave empty when not deploying behind a domain
+
 module.exports = {
   NODE_ENV,
   isDev,
@@ -53,4 +55,5 @@ module.exports = {
   fontOutputPath,
   fileOutputPath,
   vendorOutputPath,
+  siteRoot,
 }

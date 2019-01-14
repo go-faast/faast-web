@@ -26,8 +26,8 @@ export default {
   logLevel: process.env.LOG_LEVEL || (isDev ? 'debug' : 'info'),
   web3Provider: 'https://mainnet.infura.io/v3/6c0b732cae674991b713c9b18ffdd0d3',
   ethereumChainId: 1,
-  siteUrl: typeof SITE_URL !== 'undefined' ? SITE_URL : 'https://faa.st',
-  apiUrl: typeof API_URL !== 'undefined' ? API_URL : 'https://api.faa.st',
+  siteUrl: SITE_URL || 'https://faa.st',
+  apiUrl: API_URL || 'https://api.faa.st',
   encrOpts: {
     kdf: 'scrypt',
     n: 1024
