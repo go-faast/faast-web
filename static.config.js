@@ -77,14 +77,31 @@ export default {
         getData: () => ({
           supportedAssets
         }),
-        children: generateCombinationsFromArray(supportedAssets, 'symbol', '-').map(pair => ({
-          path: `/pairs/${pair}`,
-          component: 'src/site/pages/Pair',
-          getData: async () => ({
-            supportedAssets,
-            pair,
-          }),
-        })),
+        children: generateCombinationsFromArray(supportedAssets, 'symbol', '-').map(pair => {
+          return {
+            path: `/pairs/${pair}`,
+            component: 'src/site/pages/Pair',
+            getData: async () => {
+              let descriptions = {}
+              let symbols = [pair.split('-')[0].toLowerCase(), pair.split('-')[1].toLowerCase()]
+              await Promise.all(symbols.map(async (sym) => {
+                try {
+                  const coinInfo = await axios.get(`https://data.messari.io/api/v1/assets/${sym}/profile`)
+                  descriptions[sym.toUpperCase()] = coinInfo.data.data
+                  return
+                } catch (err) {
+                  console.log('there was an error', sym)
+                  return
+                }
+              }))
+              return {
+                supportedAssets,
+                pair,
+                descriptions
+              }
+            },
+          }
+        }),
       },
       {
         path: '/terms',

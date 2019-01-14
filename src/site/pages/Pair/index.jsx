@@ -29,7 +29,7 @@ export default compose(
   setDisplayName('Pairs'),
   connect(createStructuredSelector({
     assets: getAllAssetsArray,
-    areAssetsLoaded: areAssetsLoaded
+    areAssetsLoaded: areAssetsLoaded,
   }), {
     retrieveAssets,
     fetchGeoRestrictions
@@ -47,7 +47,8 @@ export default compose(
     }
   }),
   withRouteData,
-)(({ supportedAssets, areAssetsLoaded, assetList, pair, updateSelectedChart, selectedChart }) => {
+)(({ supportedAssets, areAssetsLoaded, assetList, pair, updateSelectedChart, selectedChart, 
+  descriptions }) => {
   supportedAssets = areAssetsLoaded ? assetList : supportedAssets
   const defaultDeposit = pair.split('-')[0]
   const defaultReceive = pair.split('-')[1]
@@ -99,8 +100,10 @@ export default compose(
         <div 
           className='mx-auto w-75 features-clean pb-0 text-center cursor-pointer'
         > 
-          <h2 className='text-center' style={{ marginBottom: '15px', fontWeight: 'normal' }}>{selectedChart} Pricing</h2>
+          <h2 className='text-center' style={{ marginBottom: '15px', fontWeight: 'normal' }}>{selectedChart} Coin Information</h2>
           <div style={{ minHeight: 300, maxWidth: 960 }}>
+            <p>{selectedChart === defaultDeposit && descriptions[defaultDeposit] ? descriptions[defaultDeposit].overview 
+              : selectedChart === defaultReceive && descriptions[defaultReceive] ? descriptions[defaultReceive].overview : null}</p>
             <PriceChart symbol={selectedChart} chartOpen/> 
           </div>
           <div
