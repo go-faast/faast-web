@@ -1,4 +1,3 @@
-/* global SITE_URL, API_URL */
 import highCharts from './highcharts'
 import tokenFunctionSignatures from './tokenFunctionSignatures'
 import walletTypes from './walletTypes'
@@ -26,8 +25,8 @@ export default {
   logLevel: process.env.LOG_LEVEL || (isDev ? 'debug' : 'info'),
   web3Provider: 'https://mainnet.infura.io/v3/6c0b732cae674991b713c9b18ffdd0d3',
   ethereumChainId: 1,
-  siteUrl: SITE_URL || 'https://faa.st',
-  apiUrl: API_URL || 'https://api.faa.st',
+  siteUrl: process.env.SITE_URL || 'https://faa.st',
+  apiUrl: process.env.API_URL || 'https://api.faa.st',
   encrOpts: {
     kdf: 'scrypt',
     n: 1024

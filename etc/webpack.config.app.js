@@ -108,8 +108,8 @@ if (!isDev) {
     },
     plugins: [
       new webpack.DefinePlugin({
-        SITE_URL: JSON.stringify(process.env.SITE_URL || siteRoot),
-        API_URL: JSON.stringify(process.env.API_URL)
+        'process.env.SITE_URL': JSON.stringify(process.env.SITE_URL || siteRoot),
+        'process.env.API_URL': JSON.stringify(process.env.API_URL)
       }),
       new webpack.NamedModulesPlugin(),
       new webpack.HotModuleReplacementPlugin()
