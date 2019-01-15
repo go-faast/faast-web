@@ -42,19 +42,19 @@ export default compose(
     }
   }),
   withRouteData,
-)(({ supportedAssets, areAssetsLoaded, assetList, to, from, updateSelectedChart, selectedChart, 
+)(({ supportedAssets, areAssetsLoaded, assetList, toSymbol, toName, fromName, fromSymbol, updateSelectedChart, selectedChart, 
   descriptions }) => {
   supportedAssets = areAssetsLoaded ? assetList : supportedAssets
-  selectedChart = selectedChart ? selectedChart : from
+  selectedChart = selectedChart ? selectedChart : fromSymbol
   return (
     <div>
       <Hero 
-        to={to} 
-        from={from} 
+        to={toSymbol} 
+        from={fromSymbol} 
         supportedAssets={supportedAssets}
         headline={(
           <h1 className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
-            <span className='special-word'>Instantly</span> trade {from} for {to} from your Ledger, Trezor, or MetaMask.
+            <span className='special-word'>Instantly</span> trade {fromSymbol} for {toSymbol} from your Ledger, Trezor, or MetaMask.
           </h1>
         )} 
       />
@@ -62,10 +62,12 @@ export default compose(
         <div 
           className='mx-auto w-75 features-clean pb-0 text-center cursor-pointer'
         > 
-          <h2 className='text-center' style={{ marginBottom: '15px', fontWeight: 'normal' }}>{selectedChart} Information</h2>
+          <h2 className='text-center' style={{ marginBottom: '15px', fontWeight: 'normal' }}>
+            {selectedChart === fromSymbol ? `${fromName} (${fromSymbol})` : `${toName} (${toSymbol})`} Information
+          </h2>
           <div style={{ minHeight: 300, maxWidth: 960 }}>
-            <p>{selectedChart === from && descriptions[from] ? descriptions[from].overview 
-              : selectedChart === to && descriptions[to] ? descriptions[to].overview : null}</p>
+            <p>{selectedChart === fromSymbol && descriptions[fromSymbol] ? descriptions[fromSymbol].overview 
+              : selectedChart === toSymbol && descriptions[toSymbol] ? descriptions[toSymbol].overview : null}</p>
             <PriceChart symbol={selectedChart} chartOpen/> 
           </div>
           <div
@@ -74,16 +76,16 @@ export default compose(
             className='text-center mx-auto mt-2'
           >
             <div 
-              onClick={() => updateSelectedChart(from)}
-              className={classNames(selectedChart == from ? selectedChartButton : null, 'd-inline-block w-50')} 
+              onClick={() => updateSelectedChart(fromSymbol)}
+              className={classNames(selectedChart == fromSymbol ? selectedChartButton : null, 'd-inline-block w-50')} 
             >
-              {from}
+              {fromSymbol}
             </div>
             <div 
-              onClick={() => updateSelectedChart(to)}
-              className={classNames(selectedChart == to ? selectedChartButton : null, 'd-inline-block w-50')}
+              onClick={() => updateSelectedChart(toSymbol)}
+              className={classNames(selectedChart == toSymbol ? selectedChartButton : null, 'd-inline-block w-50')}
             >
-              {to}
+              {toSymbol}
             </div>
           </div>
         </div>
