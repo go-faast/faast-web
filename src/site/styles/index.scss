@@ -1,14 +1,14 @@
 @import '~faast-ui/src/style/index.scss';
-@import 'plugins/Brands';
-@import 'plugins/Features-Boxed';
-@import 'plugins/Features-Clean';
-@import 'plugins/Footer-Clean';
-@import 'plugins/Highlight-Phone';
-@import 'plugins/Navigation-With-Button';
-@import 'plugins/Newsletter-Subscription-Form';
-@import 'plugins/Paralax-Hero-Banner';
-@import 'plugins/Team-Clean';
-@import 'plugins/sendpulse';
+@import './plugins/brands';
+@import './plugins/features-boxed';
+@import './plugins/features-clean';
+@import './plugins/footer-clean';
+@import './plugins/highlight-phone';
+@import './plugins/navigation-with-button';
+@import './plugins/newsletter-subscription-form';
+@import './plugins/paralax-hero-banner';
+@import './plugins/team-clean';
+@import './plugins/sendpulse';
 
 .slick-interface-section {
   padding-top: 2.5rem;
