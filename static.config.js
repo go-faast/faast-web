@@ -4,12 +4,13 @@ import axios from 'axios'
 import merge from 'webpack-merge'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import { pick, get } from 'lodash'
+import urlJoin from 'url-join'
 
-
-const { dirs, useHttps } = require('./etc/common.js')
+const { isDev, dirs, useHttps, siteRoot } = require('./etc/common.js')
 const getBaseConfig = require('./etc/webpack.config.base.js')
 const siteConfig = require('./src/site/config.js')
-const isDev = process.env.NODE_ENV === 'development'
+
+const siteUrlProd = 'https://faa.st'
 
 const analyticsCode = `
 window.dataLayer = window.dataLayer || [];
@@ -44,6 +45,7 @@ const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
         <meta name='description' content={get(routeInfo, 'routeData.meta.description', siteData.description)}/>
         <meta name='author' content={siteConfig.author}/>
         <meta name='referrer' content='origin-when-cross-origin'/>
+        <link rel="canonical" href={urlJoin(siteUrlProd, routeInfo ? routeInfo.path : '')}/>
         <link href='/static/vendor/ionicons-2.0/css/ionicons.min.css' rel='stylesheet'/>
         <link href='/static/vendor/font-awesome-5.5/css/all.min.css' rel='stylesheet'/>
         <link rel="icon" href="/favicon.png"/>
@@ -58,11 +60,13 @@ const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
       </Head>
       <Body>{children}</Body>
     </Html>
-  )}
+  )
+}
 
 export default {
   entry: path.join(dirs.site, 'index.tsx'),
-  siteRoot: process.env.SITE_ROOT || '', // Leave empty to build for all environments
+  siteRoot: siteRoot,
+  stagingSiteRoot: '',
   getSiteData: () => ({
     title: 'Trade Crypto - Faast',
     lastBuilt: Date.now(),

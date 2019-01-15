@@ -34,22 +34,22 @@
     "build:site": "gulp build:site",
     "build:ipfs": "cross-env IPFS=true npm run build",
     "build": "gulp build",
-    "compile:app": "webpack --config etc/webpack.config.app.js --progress",
-    "compile:site": "react-static build",
+    "build-staging": "gulp build-staging",
     "lint:js": "eslint src/ --ext .js,.jsx",
     "lint:ts": "tslint -p .",
     "lint": "gulp lint",
     "ngrok": "ngrok http 8000",
-    "preversion": "git checkout develop",
-    "version": "npm run build && git add -A dist",
-    "postversion": "git push && git push --tags",
+    "preversion": "npm test",
     "release": "bin/release.sh",
     "postinstall": "rm -f node_modules/web3/index.d.ts"
   },
   "standard": {
     "ignore": [
       "dist/",
-      "res/"
+      "res/",
+      "build/",
+      "tmp/",
+      "public/"
     ]
   },
   "dependencies": {},
