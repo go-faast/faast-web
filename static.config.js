@@ -36,26 +36,37 @@ const generateCombinationsFromArray = (array, property) => {
   }
 }
 
-const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => (
-  <Html lang='en'>
-    <Head>
-      <meta charSet='utf-8' />
-      <meta name='viewport' content='width=device-width, initial-scale=1' />
-      <meta name='description' content={routeInfo ? routeInfo.routeData.meta.description : siteConfig.description}/>
-      <meta name='author' content={siteConfig.author}/>
-      <meta name='referrer' content='origin-when-cross-origin'/>
-      <link href='/static/vendor/ionicons-2.0/css/ionicons.min.css' rel='stylesheet'/>
-      <link href='/static/vendor/font-awesome-5.5/css/all.min.css' rel='stylesheet'/>
-      <link rel="icon" href="/favicon.png"/>
-      <title>{routeInfo ? routeInfo.routeData.meta.title : siteData.title}</title>
-      {/* Hotjar Tracking Code */}
-      {!isDev && (
-        <script dangerouslySetInnerHTML={{ __html: analyticsCode }}/>
-      )}
-    </Head>
-    <Body>{children}</Body>
-  </Html>
-)
+const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
+  let description
+  let title
+  // check for dev compilation because routeInfo === undefined and errors out
+  if (!isDev) {
+    description = routeInfo.routeData.meta.description || siteConfig.description
+    title = routeInfo.routeData.meta.title || siteData.title
+  } else {
+    description = siteConfig.description
+    title = siteData.title
+  }
+  return (
+    <Html lang='en'>
+      <Head>
+        <meta charSet='utf-8' />
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <meta name='description' content={description}/>
+        <meta name='author' content={siteConfig.author}/>
+        <meta name='referrer' content='origin-when-cross-origin'/>
+        <link href='/static/vendor/ionicons-2.0/css/ionicons.min.css' rel='stylesheet'/>
+        <link href='/static/vendor/font-awesome-5.5/css/all.min.css' rel='stylesheet'/>
+        <link rel="icon" href="/favicon.png"/>
+        <title>{title}</title>
+        {/* Hotjar Tracking Code */}
+        {!isDev && (
+          <script dangerouslySetInnerHTML={{ __html: analyticsCode }}/>
+        )}
+      </Head>
+      <Body>{children}</Body>
+    </Html>
+  )}
 
 export default {
   entry: path.join(dirs.site, 'index.tsx'),
