@@ -2,6 +2,7 @@
 
 import uuid from 'uuid/v4'
 import qs from 'query-string'
+import fetch from 'cross-fetch'
 
 import log from 'Utilities/log'
 import { retry } from 'Utilities/helpers'
