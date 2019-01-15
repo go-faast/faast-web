@@ -48,21 +48,17 @@ const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
         <link href='/static/vendor/font-awesome-5.5/css/all.min.css' rel='stylesheet'/>
         <link rel="icon" href="/favicon.png"/>
         <title>{get(routeInfo, 'routeData.meta.title', siteData.title)}</title>
+        {/* Google analytics */}
+        {!isDev && (
+          <Fragment>
+            <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100689193-1"></script>
+            <script dangerouslySetInnerHTML={{ __html: analyticsCode }}/>
+          </Fragment>
+        )}
       </Head>
       <Body>{children}</Body>
     </Html>
   )}
-      {/* Google analytics */}
-      {!isDev && (
-        <Fragment>
-          <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100689193-1"></script>
-          <script dangerouslySetInnerHTML={{ __html: analyticsCode }}/>
-        </Fragment>
-      )}
-    </Head>
-    <Body>{children}</Body>
-  </Html>
-)
 
 export default {
   entry: path.join(dirs.site, 'index.tsx'),
