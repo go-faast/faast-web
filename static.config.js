@@ -3,7 +3,8 @@ import path from 'path'
 import axios from 'axios'
 import merge from 'webpack-merge'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
-import { pick } from 'lodash'
+import { pick, get } from 'lodash'
+
 
 const { dirs, useHttps } = require('./etc/common.js')
 const getBaseConfig = require('./etc/webpack.config.base.js')
@@ -17,19 +18,40 @@ gtag('js', new Date());
 gtag('config', 'UA-100689193-1');
 `
 
-const Document = ({ Html, Head, Body, children, siteData }) => (
-  <Html lang='en'>
-    <Head>
-      <meta charSet='utf-8' />
-      <meta name='viewport' content='width=device-width, initial-scale=1' />
-      <meta name='description' content={siteConfig.description}/>
-      <meta name='author' content={siteConfig.author}/>
-      <meta name='referrer' content='origin-when-cross-origin'/>
-      <link href='/static/vendor/ionicons-2.0/css/ionicons.min.css' rel='stylesheet'/>
-      <link href='/static/vendor/font-awesome-5.5/css/all.min.css' rel='stylesheet'/>
-      <link rel="icon" href="/favicon.png"/>
-      <title>{siteData.title}</title>
+const generateCombinationsFromArray = (array, property) => {
+  let results = []
+  for (let i = 0; i <= array.length - 1; i++) {
+    for (let j = 0; j <= array.length - 1; j++) {
+      if ((array[i][property] !== array[j][property]) && array[i].deposit && array[j].receive) {
+        results.push([
+          { name: array[i]['name'], symbol: array[i][property] }, 
+          { name: array[j]['name'], symbol: array[j][property] }
+        ])
+      }
+    }
+    if (i == array.length - 1) {
+      return results
+    }
+  }
+}
 
+const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
+  return (
+    <Html lang='en'>
+      <Head>
+        <meta charSet='utf-8' />
+        <meta name='viewport' content='width=device-width, initial-scale=1' />
+        <meta name='description' content={get(routeInfo, 'routeData.meta.description', siteData.description)}/>
+        <meta name='author' content={siteConfig.author}/>
+        <meta name='referrer' content='origin-when-cross-origin'/>
+        <link href='/static/vendor/ionicons-2.0/css/ionicons.min.css' rel='stylesheet'/>
+        <link href='/static/vendor/font-awesome-5.5/css/all.min.css' rel='stylesheet'/>
+        <link rel="icon" href="/favicon.png"/>
+        <title>{get(routeInfo, 'routeData.meta.title', siteData.title)}</title>
+      </Head>
+      <Body>{children}</Body>
+    </Html>
+  )}
       {/* Google analytics */}
       {!isDev && (
         <Fragment>
@@ -53,14 +75,50 @@ export default {
   getRoutes: async () => {
     const { data: assets } = await axios.get('https://api.faa.st/api/v2/public/currencies')
     const supportedAssets = assets.filter(({ deposit, receive }) => deposit || receive)
-      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl'))
+      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl', 'deposit', 'receive'))
     return [
       {
         path: '/',
         component: 'src/site/pages/Home',
         getData: () => ({
           supportedAssets
-        })
+        }),
+        children: generateCombinationsFromArray(supportedAssets, 'symbol').map(pair => {
+          const fromSymbol = pair[0].symbol
+          const fromName = pair[0].name
+          const toSymbol = pair[1].symbol
+          const toName = pair[1].name
+          return {
+            path: `/pairs/${fromSymbol}_${toSymbol}`,
+            component: 'src/site/pages/Pair',
+            getData: async () => {
+              let descriptions = {}
+              await Promise.all(pair.map(async (o) => {
+                const sym = o.symbol.toLowerCase()
+                try {
+                  const coinInfo = await axios.get(`https://data.messari.io/api/v1/assets/${sym}/profile`)
+                  descriptions[sym.toUpperCase()] = coinInfo.data.data
+                  return
+                } catch (err) {
+                  return
+                }
+              }))
+              return {
+                supportedAssets,
+                toSymbol,
+                fromSymbol,
+                fromName,
+                toName,
+                descriptions,
+                meta: {
+                  title: `Instantly trade ${fromName} (${fromSymbol}) for ${toName} (${toSymbol}) - Faa.st`,
+                  description: `Safely trade your ${fromName} crypto directly from your hardware or software wallet.
+                  View ${fromName} (${fromSymbol}) pricing charts, market cap, daily volume and other coin data.`
+                }
+              }
+            },
+          }
+        }),
       },
       {
         path: '/terms',

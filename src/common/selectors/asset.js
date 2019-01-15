@@ -49,6 +49,7 @@ export const getAssetPricesError = createSelector(getAssetState, ({ loadingError
 
 export const getAsset = createItemSelector(getAllAssets, selectItemId, (allAssets, id) => allAssets[id])
 export const getAssetPrice = createItemSelector(getAsset, fieldSelector('price'))
+export const getAssetName = createItemSelector(getAsset, fieldSelector('name'))
 export const getAssetIconUrl = createItemSelector(getAsset, fieldSelector('iconUrl'))
 export const isAssetPriceLoading = createItemSelector(getAsset, fieldSelector('priceLoading'))
 export const isAssetPriceLoaded = createItemSelector(getAsset, fieldSelector('priceLoaded'))
