@@ -17,7 +17,7 @@ const mergeDist = (path) =>
   ]).pipe(gulp.dest(dirs.dist, { overwrite: false }))
 
 gulp.task('clean', () =>
-  gulp.src(dirs.dist, { read: false })
+  gulp.src(dirs.dist, { read: false, allowEmpty: true })
     .pipe(gulpClean()))
 
 gulp.task('lint:js', run('npm run lint:js'))
