@@ -22,12 +22,12 @@ const analyticsCode = `
 })(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
 `
 
-const generateCombinationsFromArray = (array, property, separator = '-') => {
+const generateCombinationsFromArray = (array, property) => {
   let results = []
   for (let i = 0; i <= array.length - 1; i++) {
     for (let j = 0; j <= array.length - 1; j++) {
-      if (array[i][property] !== array[j][property]) {
-        results.push(`${array[i][property]}${separator}${array[j][property]}`)
+      if ((array[i][property] !== array[j][property]) && array[i].deposit && array[j].receive) {
+        results.push([array[i][property], array[j][property]])
       }
     }
     if (i == array.length - 1) {
@@ -36,19 +36,18 @@ const generateCombinationsFromArray = (array, property, separator = '-') => {
   }
 }
 
-const Document = ({ Html, Head, Body, children, siteData }) => (
+const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => (
   <Html lang='en'>
     <Head>
       <meta charSet='utf-8' />
       <meta name='viewport' content='width=device-width, initial-scale=1' />
-      <meta name='description' content={siteConfig.description}/>
+      <meta name='description' content={routeInfo ? routeInfo.routeData.meta.description : siteConfig.description}/>
       <meta name='author' content={siteConfig.author}/>
       <meta name='referrer' content='origin-when-cross-origin'/>
       <link href='/static/vendor/ionicons-2.0/css/ionicons.min.css' rel='stylesheet'/>
       <link href='/static/vendor/font-awesome-5.5/css/all.min.css' rel='stylesheet'/>
       <link rel="icon" href="/favicon.png"/>
-      <title>{siteData.title}</title>
-
+      <title>{routeInfo ? routeInfo.routeData.meta.title : siteData.title}</title>
       {/* Hotjar Tracking Code */}
       {!isDev && (
         <script dangerouslySetInnerHTML={{ __html: analyticsCode }}/>
@@ -69,7 +68,7 @@ export default {
   getRoutes: async () => {
     const { data: assets } = await axios.get('https://api.faa.st/api/v2/public/currencies')
     const supportedAssets = assets.filter(({ deposit, receive }) => deposit || receive)
-      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl'))
+      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl', 'deposit', 'receive'))
     return [
       {
         path: '/',
@@ -77,14 +76,16 @@ export default {
         getData: () => ({
           supportedAssets
         }),
-        children: generateCombinationsFromArray(supportedAssets, 'symbol', '-').map(pair => {
+        children: generateCombinationsFromArray(supportedAssets, 'symbol').map(pair => {
+          const from = pair[0]
+          const to = pair[1]
           return {
-            path: `/pairs/${pair}`,
+            path: `/pairs/${from}_${to}`,
             component: 'src/site/pages/Pair',
             getData: async () => {
               let descriptions = {}
-              let symbols = [pair.split('-')[0].toLowerCase(), pair.split('-')[1].toLowerCase()]
-              await Promise.all(symbols.map(async (sym) => {
+              await Promise.all(pair.map(async (sym) => {
+                sym = sym.toLowerCase()
                 try {
                   const coinInfo = await axios.get(`https://data.messari.io/api/v1/assets/${sym}/profile`)
                   descriptions[sym.toUpperCase()] = coinInfo.data.data
@@ -96,8 +97,14 @@ export default {
               }))
               return {
                 supportedAssets,
-                pair,
-                descriptions
+                to,
+                from,
+                descriptions,
+                meta: {
+                  title: `Instantly trade ${from} for ${to} - Faa.st`,
+                  description: `Safely trade your ${from} crypto directly from your hardware or software wallet.
+                  View ${from} pricing charts, market cap, daily volume and other coin data.`
+                }
               }
             },
           }
