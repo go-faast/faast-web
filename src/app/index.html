@@ -11,7 +11,6 @@
 </head>
 <body>
   <div id="root"></div>
-  <script src="https://cdn.polyfill.io/v2/polyfill.min.js"></script>
   <script>
     // Fixes Trezor Connect during local development
     window.TREZOR_POPUP_ORIGIN = 'https://connect.trezor.io';
@@ -19,5 +18,13 @@
     delete window._bitcore
   </script>
   <script src="https://connect.trezor.io/4/connect.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100689193-1"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-100689193-1');
+  </script>
 </body>
 </html>

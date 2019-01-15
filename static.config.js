@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import path from 'path'
 import axios from 'axios'
 import merge from 'webpack-merge'
@@ -11,14 +11,10 @@ const siteConfig = require('./src/site/config.js')
 const isDev = process.env.NODE_ENV === 'development'
 
 const analyticsCode = `
-(function(h,o,t,j,a,r){
-  h.hj=h.hj||function(){(h.hj.q=h.hj.q||[]).push(arguments)};
-  h._hjSettings={hjid:875945,hjsv:6};
-  a=o.getElementsByTagName('head')[0];
-  r=o.createElement('script');r.async=1;
-  r.src=t+h._hjSettings.hjid+j+h._hjSettings.hjsv;
-  a.appendChild(r);
-})(window,document,'https://static.hotjar.com/c/hotjar-','.js?sv=');
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-100689193-1');
 `
 
 const Document = ({ Html, Head, Body, children, siteData }) => (
@@ -34,9 +30,12 @@ const Document = ({ Html, Head, Body, children, siteData }) => (
       <link rel="icon" href="/favicon.png"/>
       <title>{siteData.title}</title>
 
-      {/* Hotjar Tracking Code */}
+      {/* Google analytics */}
       {!isDev && (
-        <script dangerouslySetInnerHTML={{ __html: analyticsCode }}/>
+        <Fragment>
+          <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100689193-1"></script>
+          <script dangerouslySetInnerHTML={{ __html: analyticsCode }}/>
+        </Fragment>
       )}
     </Head>
     <Body>{children}</Body>
