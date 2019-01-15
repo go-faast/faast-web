@@ -31,6 +31,7 @@ const TradeHistory = ({ pendingSwaps, completedSwaps }) => (
       tableTitle='Previous Orders' 
       tableHeadings={tableHeadings} 
       zeroOrdersMessage='No previous orders to show'
+      showMore
     />
   </Layout>
 )

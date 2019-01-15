@@ -1,0 +1,53 @@
+div.jumbotron.hero-technology {
+  color:#fff;
+  text-align:center;
+  background-size:cover;
+  background-position:center top;
+  padding-top:100px;
+  padding-bottom:100px;
+  background-attachment:local;
+}
+
+h1.hero-title, h2.hero-title, h3.hero-title {
+  text-shadow:0 2px 2px rgba(0,0,0,0.3);
+  color:#fff;
+  font-weight:500;
+}
+
+.hero-title {
+  font-size: 32px;
+  max-width: 525px;
+}
+
+.hero-subtitle {
+  opacity: .8;
+  font-size: 20px;
+}
+
+.special-word {
+  color: #23D6B8;
+}
+
+.notification {
+  background: rgba(255,255,255,.08);
+  border-radius: 4px;
+  width: 90%;
+  padding: 3px 0;
+  font-weight: 600;
+  font-size: 13px;
+  margin-bottom: 30px;
+  margin-top: 30px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.new-pill {
+  background-image: linear-gradient(-90deg, #23D6B8 12%, #118382 83%);
+  border-radius: 4px;
+  padding: 0px 12px;
+  font-weight: 600;
+  font-size: 12px;
+  vertical-align: middle;
+  margin: 0 10px;
+}
+

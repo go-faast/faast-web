@@ -7,6 +7,8 @@ import config from 'Config'
 
 const storeName = 'logging'
 
+const MAX_OBJECT_SIZE = 1024
+
 let query = {}
 let appLogLevel = config.logLevel
 if (typeof window !== 'undefined') {
@@ -32,7 +34,7 @@ idb.setup([storeName])
       console.log(`Pushed ${idbNotReadyQueue.length} log messages to IDB`)
       idbNotReadyQueue = []
     })
-    .catch(() => false)) // Do nothing
+    .catch((e) => console.error(`Failed to push ${idbNotReadyQueue.length} log messages to IDB`, e)))
 
 const logger = {}
 
@@ -47,45 +49,50 @@ const logLevels = {
 const log = (level) => (text, ...data) => {
   if (logLevels[level] >= logLevels[appLogLevel]) {
     console[level](text, ...data)
-    if (text instanceof Error) {
-      text = text.toString()
-    }
-    if (!isString(text)) {
-      data = [text, ...data]
-      text = ''
-    }
-    const now = dateNowString()
-    const payload = {
-      level,
-      time: now,
-      message: text
-    }
-    if (data && data.length > 0) {
-      data = data.map((item) => {
-        if (item instanceof Error) {
-          return item.toString()
-        }
-        if (isObject(item)) {
-          return JSON.stringify(item)
-        }
-        return item
-      })
-      if (data.length === 1) {
-        data = data[0]
-      }
-      payload.data = data
-    }
-    idb.put(storeName, payload)
-      .catch((err) => {
-        const { message } = err
-        if (message && message.includes('store not ready')) {
-          // Save any failed log messages until store is ready
-          idbNotReadyQueue.push(payload)
-        } else {
-          console.error('Error writing to indexedDB -', err.message)
-        }
-      })
   }
+  if (text instanceof Error) {
+    text = text.toString()
+  }
+  if (!isString(text)) {
+    data = [text, ...data]
+    text = ''
+  }
+  const now = dateNowString()
+  const payload = {
+    level,
+    time: now,
+    message: text
+  }
+  if (data && data.length > 0) {
+    data = data.map((item) => {
+      if (item instanceof Error) {
+        return item.toString()
+      }
+      if (isObject(item)) {
+        const strObj = JSON.stringify(item)
+        if (strObj.length > MAX_OBJECT_SIZE) {
+          return strObj.slice(0, MAX_OBJECT_SIZE)
+        } else {
+          return strObj
+        }
+      }
+      return item
+    })
+    if (data.length === 1) {
+      data = data[0]
+    }
+    payload.data = data
+  }
+  idb.put(storeName, payload)
+    .catch((err) => {
+      const { message } = err
+      if (message && message.includes('store not ready')) {
+        // Save any failed log messages until store is ready
+        idbNotReadyQueue.push(payload)
+      } else {
+        console.error('Error writing to indexedDB -', err.message)
+      }
+    })
 }
 
 const logInline = (level) => (text, ...data) => {

@@ -1,7 +1,7 @@
 {
   "name": "faast-portfolio",
   "productName": "Faa.st",
-  "version": "3.0.30",
+  "version": "3.0.32",
   "description": "A decentralized cryptocurrency portfolio manager and exchange.",
   "contributors": [
     "Nathan Wood <nathan@bitaccess.co>",
@@ -101,6 +101,7 @@
     "convert-tsconfig-paths-to-webpack-aliases": "^0.9.2",
     "copy-webpack-plugin": "^4.5.1",
     "cross-env": "^5.0.5",
+    "cross-fetch": "^3.0.0",
     "css-loader": "^0.28.7",
     "debounce": "^1.2.0",
     "eslint": "^4.19.1",

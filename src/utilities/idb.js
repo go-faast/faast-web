@@ -1,27 +1,38 @@
-import IDBStore from 'idb-wrapper'
 import pkg from 'Pkg'
 import { dateNowString, downloadJson } from './helpers'
+import idbWrapper from 'idb-wrapper'
 
 const DAYS_TO_STORE = 5
 const stores = {}
 
+/** Polyfill idb-wrapper for react-static */
+const IDBStore = typeof window !== 'undefined'
+  ? idbWrapper
+  : function () {
+    return {
+      put: (data, cb) => cb(''),
+      getAll: (cb) => cb([]),
+      remove: (key, cb) => cb(null),
+    }
+  }
+
 const setup = (storeNames) => {
   return Promise.all(
-    storeNames.map((storeName) => {
-      return new Promise((resolve) => {
-        if (!stores[storeName]) { stores[storeName] = {} }
-        stores[storeName].store = new IDBStore({
-          dbVersion: 1,
-          storeName,
-          keyPath: 'id',
-          autoIncrement: true,
-          onStoreReady: () => {
-            stores[storeName].ready = true
-            resolve()
-          }
-        })
+    storeNames.map((storeName) => new Promise((resolve) => {
+      if (!stores[storeName]) {
+        stores[storeName] = {}
+      }
+      stores[storeName].store = new IDBStore({
+        dbVersion: 1,
+        storeName,
+        keyPath: 'id',
+        autoIncrement: true,
+        onStoreReady: () => {
+          stores[storeName].ready = true
+          resolve()
+        }
       })
-    })
+    }))
   )
 }
 
