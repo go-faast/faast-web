@@ -24,3 +24,28 @@
 # an active Deploy Preview will inherit these settings.
 [context.branch-deploy]
   command = "npm run build-staging"
+
+[[redirects]]
+  from = "/app/*"
+  to = "/app/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/portfolio/*"
+  to = "/app/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/swap/*"
+  to = "/app/swap/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/affiliates/*"
+  to = "/app/affiliates/:splat"
+  status = 301
+
+[[redirects]]
+  from = "/blog/*"
+  to = "https://medium.com/faast/:splat"
+  status = 301
