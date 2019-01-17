@@ -10,6 +10,7 @@ const isIpfs = process.env.IPFS === 'true'
 const isMocking = Boolean(process.env.MOCK)
 const useHttps = process.env.HTTPS === 'true'
 const useHttp = process.env.HTTPS === 'false'
+const deployEnv = process.env.DEPLOY_ENV || 'local' // can be production, staging, develop, or local
 
 const dirs = {
   root: path.resolve(__dirname, '..')
@@ -37,7 +38,12 @@ const fontOutputPath = path.join(staticOutputPath, 'font')
 const fileOutputPath = path.join(staticOutputPath, 'file')
 const vendorOutputPath = path.join(staticOutputPath, 'vendor')
 
-const siteRoot = process.env.SITE_ROOT || (process.env.NETLIFY_PROD === 'true' ? process.env.URL : '') // Leave empty when not deploying behind a domain
+const siteRoots = {
+  production: 'https://faa.st',
+  staging: 'https://test.faa.st',
+}
+// Leave empty when not deploying behind a domain
+const siteRoot = process.env.SITE_ROOT || siteRoots[deployEnv] || (process.env.NETLIFY === 'true' ? process.env.URL : '')
 
 module.exports = {
   NODE_ENV,

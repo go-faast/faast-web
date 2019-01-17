@@ -6,24 +6,22 @@
 # “publish” is the directory to publish (relative to the root of your repo).
 
 [build]
-  publish = "dist/"
-
-# Production context: All deploys to the main
-# repository branch will inherit these settings.
-[context.production]
   command = "npm run build"
+  publish = "dist/"
+  [build.environment]
+    NETLIFY = "true"
+
+[context.production]
   [context.production.environment]
-    NETLIFY_PROD = "true"
+    DEPLOY_ENV = "production"
 
-# Deploy Preview context: All Deploy Previews
-# will inherit these settings.
-[context.deploy-preview.environment]
-  command = "npm run build-staging"
+[context.staging]
+  [context.staging.environment]
+    DEPLOY_ENV = "staging"
 
-# Branch deploy context: All deploys that are not in
-# an active Deploy Preview will inherit these settings.
-[context.branch-deploy]
-  command = "npm run build-staging"
+[context.develop]
+  [context.develop.environment]
+    DEPLOY_ENV = "develop"
 
 [[redirects]]
   from = "/app/*"

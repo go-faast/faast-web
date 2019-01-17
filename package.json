@@ -34,7 +34,6 @@
     "build:site": "gulp build:site",
     "build:ipfs": "cross-env IPFS=true npm run build",
     "build": "gulp build",
-    "build-staging": "gulp build-staging",
     "lint:js": "eslint src/ --ext .js,.jsx",
     "lint:ts": "tslint -p .",
     "lint": "gulp lint",
