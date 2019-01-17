@@ -3,11 +3,10 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { withRouteData } from 'react-static'
 import { createStructuredSelector } from 'reselect'
-import { compose, setDisplayName, lifecycle, withProps, withState } from 'recompose'
+import { compose, setDisplayName, lifecycle, withProps } from 'recompose'
 
 import PriceChart from 'Components/PriceChart'
 
-// import logoImg from 'Img/faast-logo.png'
 import Footer from 'Site/components/Footer'
 import Features from 'Site/components/Features'
 import Hero from 'Site/components/Hero'
@@ -15,10 +14,6 @@ import Hero from 'Site/components/Hero'
 import { fetchGeoRestrictions } from 'Common/actions/app'
 import { retrieveAssets } from 'Common/actions/asset'
 import { getAllAssetsArray, areAssetsLoaded } from 'Common/selectors/asset'
-
-import classNames from 'class-names'
-
-import { selectedChartButton } from './style.scss'
 
 export default compose(
   setDisplayName('Pairs'),
@@ -33,7 +28,6 @@ export default compose(
     assetList: assets.filter(({ deposit, receive }) => deposit || receive)
       .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl'))
   })),
-  withState('selectedChart', 'updateSelectedChart', undefined),
   lifecycle({
     componentWillMount() {
       const { fetchGeoRestrictions, retrieveAssets } = this.props
@@ -42,10 +36,10 @@ export default compose(
     }
   }),
   withRouteData,
-)(({ supportedAssets, areAssetsLoaded, assetList, toSymbol, toName, fromName, fromSymbol, updateSelectedChart, selectedChart, 
-  descriptions }) => {
+)(({ supportedAssets, areAssetsLoaded, assetList, symbol, name, type, descriptions }) => {
   supportedAssets = areAssetsLoaded ? assetList : supportedAssets
-  selectedChart = selectedChart ? selectedChart : fromSymbol
+  const toSymbol = type === 'buy' ? symbol : symbol === 'ETH' ? 'BTC' : 'ETH'
+  const fromSymbol = type === 'sell' ? symbol : symbol === 'BTC' ? 'ETH' : 'BTC'
   return (
     <div>
       <Hero 
@@ -54,7 +48,7 @@ export default compose(
         supportedAssets={supportedAssets}
         headline={(
           <h1 className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
-            <span className='special-word'>Instantly</span> trade {fromSymbol} for {toSymbol} from your Ledger, Trezor, or MetaMask.
+            <span className='special-word'>Instantly</span> {type} {name} ({symbol}) from your Ledger, Trezor, or MetaMask.
           </h1>
         )} 
       />
@@ -63,30 +57,11 @@ export default compose(
           className='mx-auto w-75 features-clean pb-0 text-center cursor-pointer'
         > 
           <h2 className='text-center' style={{ marginBottom: '15px', fontWeight: 'normal' }}>
-            {selectedChart === fromSymbol ? `${fromName} (${fromSymbol})` : `${toName} (${toSymbol})`} Information
+            {name} ({symbol}) Information
           </h2>
           <div style={{ minHeight: 300, maxWidth: 960 }}>
-            <p>{selectedChart === fromSymbol && descriptions[fromSymbol] ? descriptions[fromSymbol].overview 
-              : selectedChart === toSymbol && descriptions[toSymbol] ? descriptions[toSymbol].overview : null}</p>
-            <PriceChart symbol={selectedChart} chartOpen/> 
-          </div>
-          <div
-            style={{ border: '1px solid #e3edf3', background: '#eff4f7', 
-              borderRadius: 20, maxWidth: '140px', height: 30 }} 
-            className='text-center mx-auto mt-2'
-          >
-            <div 
-              onClick={() => updateSelectedChart(fromSymbol)}
-              className={classNames(selectedChart == fromSymbol ? selectedChartButton : null, 'd-inline-block w-50')} 
-            >
-              {fromSymbol}
-            </div>
-            <div 
-              onClick={() => updateSelectedChart(toSymbol)}
-              className={classNames(selectedChart == toSymbol ? selectedChartButton : null, 'd-inline-block w-50')}
-            >
-              {toSymbol}
-            </div>
+            <p>{descriptions[symbol] ? descriptions[symbol].overview : null}</p>
+            <PriceChart symbol={symbol} chartOpen/> 
           </div>
         </div>
       </div>

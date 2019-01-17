@@ -22,14 +22,10 @@ gtag('config', 'UA-100689193-1');
 const generateCombinationsFromArray = (array, property) => {
   let results = []
   for (let i = 0; i <= array.length - 1; i++) {
-    for (let j = 0; j <= array.length - 1; j++) {
-      if ((array[i][property] !== array[j][property]) && array[i].deposit && array[j].receive) {
-        results.push([
-          { name: array[i]['name'], symbol: array[i][property] }, 
-          { name: array[j]['name'], symbol: array[j][property] }
-        ])
-      }
-    }
+    results.push(
+      { name: array[i]['name'], symbol: array[i][property], type: 'buy' }, 
+      { name: array[i]['name'], symbol: array[i][property], type: 'sell' }
+    )
     if (i == array.length - 1) {
       return results
     }
@@ -84,36 +80,31 @@ export default {
           supportedAssets
         }),
         children: generateCombinationsFromArray(supportedAssets, 'symbol').map(pair => {
-          const fromSymbol = pair[0].symbol
-          const fromName = pair[0].name
-          const toSymbol = pair[1].symbol
-          const toName = pair[1].name
+          const symbol = pair.symbol
+          const name = pair.name
+          const type = pair.type
           return {
-            path: `/pairs/${fromSymbol}_${toSymbol}`,
+            path: `/${type}/${symbol}`,
             component: 'src/site/pages/Pair',
             getData: async () => {
               let descriptions = {}
-              await Promise.all(pair.map(async (o) => {
-                const sym = o.symbol.toLowerCase()
-                try {
-                  const coinInfo = await axios.get(`https://data.messari.io/api/v1/assets/${sym}/profile`)
-                  descriptions[sym.toUpperCase()] = coinInfo.data.data
-                  return
-                } catch (err) {
-                  return
-                }
-              }))
+              const sym = symbol.toLowerCase()
+              try {
+                const coinInfo = await axios.get(`https://data.messari.io/api/v1/assets/${sym}/profile`)
+                descriptions[symbol] = coinInfo.data.data
+              } catch (err) {
+                return
+              }
               return {
                 supportedAssets,
-                toSymbol,
-                fromSymbol,
-                fromName,
-                toName,
+                symbol,
+                name,
+                type,
                 descriptions,
                 meta: {
-                  title: `Instantly trade ${fromName} (${fromSymbol}) for ${toName} (${toSymbol}) - Faa.st`,
-                  description: `Safely trade your ${fromName} crypto directly from your hardware or software wallet.
-                  View ${fromName} (${fromSymbol}) pricing charts, market cap, daily volume and other coin data.`
+                  title: `Instantly ${type} ${name} (${symbol}) - Faa.st`,
+                  description: `Safely trade your ${name} crypto directly from your hardware or software wallet.
+                  View ${name} (${symbol}) pricing charts, market cap, daily volume and other coin data.`
                 }
               }
             },
