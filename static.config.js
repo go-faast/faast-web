@@ -22,10 +22,12 @@ gtag('config', 'UA-100689193-1');
 const generateCombinationsFromArray = (array, property) => {
   let results = []
   for (let i = 0; i <= array.length - 1; i++) {
-    results.push(
-      { name: array[i]['name'], symbol: array[i][property], type: 'buy' }, 
-      { name: array[i]['name'], symbol: array[i][property], type: 'sell' }
-    )
+    if (array[i]['receive']) {
+      results.push({ name: array[i]['name'], symbol: array[i][property], type: 'buy' })
+    }
+    if (array[i]['deposit']) {
+      results.push({ name: array[i]['name'], symbol: array[i][property], type: 'sell' })
+    }
     if (i == array.length - 1) {
       return results
     }
