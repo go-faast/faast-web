@@ -39,5 +39,5 @@ git checkout $TARGET_BRANCH
 git merge --ff-only $RELEASE
 git push
 if [ "$START_BRANCH" != "$TARGET_BRANCH" ]; then
-  git checkout $TARGET_BRANCH
+  git checkout $START_BRANCH
 fi
