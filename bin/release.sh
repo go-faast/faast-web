@@ -52,6 +52,11 @@ else
 fi
 
 RELEASE=${2:-$(git tag --points-at $PROMOTE_REF)}
+RELEASE_EXISTS=$(git tag -l "$RELEASE")
+if [ -z "$RELEASE_EXISTS" ]; then
+  echo "Invalid release-tag $RELEASE"
+  exit 1
+fi
 if [ -z "$RELEASE" ]; then
   echo "release-tag must be passed in as argument or $PROMOTE_REF must be tagged"
   exit 1
