@@ -38,11 +38,11 @@ export function fetchAssets(): Promise<Asset[]> {
     }))
 }
 
-export const fetchAssetPrice = (symbol: string) => fetchGet(`${siteUrl}/app/portfolio-price/${symbol}`)
+export const fetchAssetPrice = (symbol: string) => fetchGet(`${siteUrl}/api/portfolio-price/${symbol}`)
 
-export const fetchAssetPrices = () => fetchGet(`${siteUrl}/app/portfolio-price`, null, { retries: 2 })
+export const fetchAssetPrices = () => fetchGet(`${siteUrl}/api/portfolio-price`, null, { retries: 2 })
 
-export const fetchPriceChart = (symbol: string) => fetchGet(`${siteUrl}/app/portfolio-chart/${symbol}`)
+export const fetchPriceChart = (symbol: string) => fetchGet(`${siteUrl}/api/portfolio-chart/${symbol}`)
 
 export const fetchPairData = (pair: string) => fetchGet(`${apiUrl}/api/v2/public/price/${pair}`)
 
