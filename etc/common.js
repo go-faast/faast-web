@@ -41,7 +41,6 @@ const vendorOutputPath = path.join(staticOutputPath, 'vendor')
 const siteRoots = {
   production: 'https://faa.st',
   staging: 'https://test.faa.st',
-  develop: process.env.DEPLOY_PRIME_URL || '',
 }
 // Leave empty when not deploying behind a domain
 const siteRoot = process.env.SITE_ROOT || siteRoots[deployEnv] || ''
