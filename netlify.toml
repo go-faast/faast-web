@@ -23,6 +23,12 @@
   [context.develop.environment]
     DEPLOY_ENV = "develop"
 
+# Redirect netlify domain for SEO purposes
+[[redirects]]
+  from = "https://faast.netlify.com/*"
+  to = "https://faast.us/:splat"
+  status = 301
+
 
 ### Legacy apis not yet migrated to api.faa.st
 
@@ -33,12 +39,12 @@
 
 [[redirects]]
   from = "/app/portfolio-price/*"
-  to = "/api/portfolio-price/*"
+  to = "/api/portfolio-price/:splate"
   status = 301
 
 [[redirects]]
   from = "/app/portfolio-chart/*"
-  to = "/api/portfolio-chart/*"
+  to = "/api/portfolio-chart/:splate"
   status = 301
 
 
