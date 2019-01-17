@@ -40,6 +40,7 @@
     "lint": "gulp lint",
     "ngrok": "ngrok http 8000",
     "preversion": "npm test",
+    "postversion": "git push && git push --tags",
     "release": "bin/release.sh",
     "postinstall": "rm -f node_modules/web3/index.d.ts"
   },
