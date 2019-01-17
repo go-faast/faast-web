@@ -114,7 +114,7 @@ export default compose(
               key: symbol,
               label: (<p>{name}</p>),
               iconUrl,
-              link: `/app/assets/${symbol}`,
+              link: `/assets/${symbol}/buy`,
             }))}/>
           </div>
         </div>
