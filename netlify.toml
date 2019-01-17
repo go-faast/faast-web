@@ -23,10 +23,34 @@
   [context.develop.environment]
     DEPLOY_ENV = "develop"
 
+
+### Legacy apis not yet migrated to api.faa.st
+
+[[redirects]]
+  from = "/api/*"
+  to = "https://faast.herokuapp.com/api/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/app/portfolio-price/*"
+  to = "/api/portfolio-price/*"
+  status = 301
+
+[[redirects]]
+  from = "/app/portfolio-chart/*"
+  to = "/api/portfolio-chart/*"
+  status = 301
+
+
+### Main single page app
+
 [[redirects]]
   from = "/app/*"
   to = "/app/index.html"
   status = 200
+
+
+### Path aliases for convencience
 
 [[redirects]]
   from = "/portfolio/*"
