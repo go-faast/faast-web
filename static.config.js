@@ -86,7 +86,7 @@ export default {
           const name = pair.name
           const type = pair.type
           return {
-            path: `/${type}/${symbol}`,
+            path: `/assets/${symbol}/${type}`,
             component: 'src/site/pages/Pair',
             getData: async () => {
               let descriptions = {}
