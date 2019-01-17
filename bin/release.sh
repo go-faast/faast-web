@@ -1,5 +1,27 @@
 #!/bin/bash
+
+# This script is used to release changes to prod, staging, or any other branch.
+# Takes two args: <target-branch> [<release-tag>]
+# If release-tag is not provided it defaults to the current tag of the following:
+#   staging if target-branch == master
+#   develop if target-branch == staging
+#   HEAD if target-branch is anything else
+#
+# EXAMPLES
+# Deploy specific version to staging:
+# > release.sh staging v3.0.34
+# Promote staging to prod:
+# > release.sh master
+# Promote develop to staging:
+# > release.sh staging
+# Release current branch to some feature branch:
+# > release.sh feature-branch
+
 set -e
+
+PROD_BRANCH=master
+STAGING_BRANCH=staging
+DEVELOP_BRANCH=develop
 
 REQUIRE_CLEAN=0
 
@@ -17,18 +39,22 @@ if [ "$#" -eq 0 ]; then
 fi
 
 TARGET_BRANCH=$1
-RELEASE=${2:-$(git tag --points-at HEAD)}
-if [ -z "$RELEASE" ]; then
-  echo "HEAD must be tagged or release-tag must be passed in as argument"
-  exit 1
-fi
 
-if [ "$TARGET_BRANCH" == "master" ]; then
+if [ "$TARGET_BRANCH" == "$PROD_BRANCH" ]; then
+  PROMOTE_REF="$STAGING_BRANCH"
   BRANCH_LABEL="PRODUCTION"
-elif [ "$TARGET_BRANCH" == "staging" ]; then
+elif [ "$TARGET_BRANCH" == "$STAGING_BRANCH" ]; then
+  PROMOTE_REF="$DEVELOP_BRANCH"
   BRANCH_LABEL="STAGING"
 else
+  PROMOTE_REF="HEAD"
   BRANCH_LABEL="branch $TARGET_BRANCH"
+fi
+
+RELEASE=${2:-$(git tag --points-at $PROMOTE_REF)}
+if [ -z "$RELEASE" ]; then
+  echo "release-tag must be passed in as argument or $PROMOTE_REF must be tagged"
+  exit 1
 fi
 
 read -p "Deploying $RELEASE to $BRANCH_LABEL. Hit enter to continue or ctrl-c to abort."
