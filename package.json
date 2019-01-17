@@ -41,7 +41,8 @@
     "ngrok": "ngrok http 8000",
     "preversion": "npm test",
     "postversion": "git push && git push --tags",
-    "release": "bin/release.sh",
+    "release-staging": "bin/release.sh staging",
+    "release-prod": "bin/release.sh master",
     "postinstall": "rm -f node_modules/web3/index.d.ts"
   },
   "standard": {
