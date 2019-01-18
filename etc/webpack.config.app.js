@@ -11,7 +11,7 @@ const IncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 const pkg = require('../package.json')
 
 const {
-  isDev, isIpfs, useHttps, dirs, appPath, bundleOutputPath, vendorOutputPath, faviconOutputPath, siteRoot,
+  isDev, isIpfs, useHttps, dirs, appPath, bundleOutputPath, vendorOutputPath, faviconOutputPath,
 } = require('./common.js')
 
 const getBaseConfig = require('./webpack.config.base.js')
@@ -107,10 +107,6 @@ if (!isDev) {
       disableHostCheck: true,
     },
     plugins: [
-      new webpack.DefinePlugin({
-        'process.env.SITE_URL': JSON.stringify(process.env.SITE_URL || siteRoot),
-        'process.env.API_URL': JSON.stringify(process.env.API_URL)
-      }),
       new webpack.NamedModulesPlugin(),
       new webpack.HotModuleReplacementPlugin()
     ]

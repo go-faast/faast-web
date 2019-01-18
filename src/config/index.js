@@ -1,6 +1,7 @@
 import highCharts from './highcharts'
 import tokenFunctionSignatures from './tokenFunctionSignatures'
 import walletTypes from './walletTypes'
+import envConfig from './environment'
 import BigNumber from 'bignumber.js'
 
 BigNumber.config({ FORMAT: {
@@ -12,21 +13,10 @@ BigNumber.config({ FORMAT: {
   fractionGroupSize: 0
 } })
 
-const nodeEnv = process.env.NODE_ENV
-const isDev = nodeEnv === 'development'
-const isProd = nodeEnv === 'production'
-const isIpfs = Boolean(process.env.IPFS)
-
 export default {
-  nodeEnv,
-  isDev,
-  isProd,
-  isIpfs,
-  logLevel: process.env.LOG_LEVEL || (isDev ? 'debug' : 'info'),
+  ...envConfig,
   web3Provider: 'https://mainnet.infura.io/v3/6c0b732cae674991b713c9b18ffdd0d3',
   ethereumChainId: 1,
-  siteUrl: process.env.SITE_URL || 'https://faa.st',
-  apiUrl: process.env.API_URL || 'https://api.faa.st',
   encrOpts: {
     kdf: 'scrypt',
     n: 1024

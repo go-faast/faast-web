@@ -6,7 +6,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const convPaths = require('convert-tsconfig-paths-to-webpack-aliases').default
 
 const {
-  NODE_ENV, isIpfs, siteRoot, useHttps, dirs, imgOutputPath, fontOutputPath, fileOutputPath, bundleOutputPath, 
+  useHttps, dirs, imgOutputPath, fontOutputPath, fileOutputPath, bundleOutputPath, 
 } = require('./common.js')
 
 // Needs to be valid JSON. All comments in tsconfig.json must be removed.
@@ -141,9 +141,11 @@ module.exports = function (stage, outputPathPrefix = '') {
     },
     plugins: [
       new webpack.DefinePlugin({
-        'process.env.NODE_ENV': JSON.stringify(NODE_ENV),
-        'process.env.IPFS': JSON.stringify(isIpfs),
-        'process.env.SITE_ROOT': JSON.stringify(siteRoot),
+        'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
+        'process.env.IPFS': JSON.stringify(process.env.IPFS),
+        'process.env.SITE_ROOT': JSON.stringify(process.env.SITE_ROOT),
+        'process.env.DEPLOY_ENV': JSON.stringify(process.env.DEPLOY_ENV),
+        'process.env.API_URL': JSON.stringify(process.env.API_URL),
       }),
       ...(stage !== 'prod' ? [] : [
         new OptimizeCssAssetsPlugin(),

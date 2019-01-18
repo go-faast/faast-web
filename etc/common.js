@@ -1,16 +1,9 @@
 const path = require('path')
+const envConfig = require('../src/config/environment')
 
-const DEFAULT_NODE_ENV = 'production'
-let NODE_ENV = process.env.NODE_ENV
-if (!NODE_ENV) {
-  NODE_ENV = DEFAULT_NODE_ENV
-}
-const isDev = NODE_ENV === 'development'
-const isIpfs = process.env.IPFS === 'true'
-const isMocking = Boolean(process.env.MOCK)
+// only used in development, prod is always https
 const useHttps = process.env.HTTPS === 'true'
 const useHttp = process.env.HTTPS === 'false'
-const deployEnv = process.env.DEPLOY_ENV || 'local' // can be production, staging, develop, or local
 
 const dirs = {
   root: path.resolve(__dirname, '..')
@@ -38,19 +31,7 @@ const fontOutputPath = path.join(staticOutputPath, 'font')
 const fileOutputPath = path.join(staticOutputPath, 'file')
 const vendorOutputPath = path.join(staticOutputPath, 'vendor')
 
-const siteRoots = {
-  production: 'https://netlify.faa.st',
-  staging: 'https://staging.faast.us',
-  develop: '',
-}
-// Leave empty when not deploying behind a domain
-const siteRoot = process.env.SITE_ROOT || siteRoots[deployEnv] || ''
-
-module.exports = {
-  NODE_ENV,
-  isDev,
-  isIpfs,
-  isMocking,
+module.exports = Object.assign({}, envConfig, {
   useHttps,
   useHttp,
   dirs,
@@ -62,5 +43,4 @@ module.exports = {
   fontOutputPath,
   fileOutputPath,
   vendorOutputPath,
-  siteRoot,
-}
+})
