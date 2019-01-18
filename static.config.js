@@ -12,6 +12,19 @@ const siteConfig = require('./src/site/config.js')
 
 const siteUrlProd = 'https://faa.st'
 
+/**
+ * Redirect to site root at runtime. Needs to be included as inline script
+ * because assets won't load if viewing from domain other than site root.
+ */
+const runtimeRedirect = `
+window.siteRoot = "${process.env.SITE_ROOT}"
+if (window.siteRoot
+  && !window.location.search.includes('skipSiteRootRedirect')
+  && window.location.origin !== window.siteRoot) {
+  window.location.replace(window.siteRoot + window.location.pathname + window.location.search)
+}
+`
+
 const analyticsCode = `
 window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
@@ -48,6 +61,7 @@ const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
         <link href='/static/vendor/font-awesome-5.5/css/all.min.css' rel='stylesheet'/>
         <link rel="icon" href="/favicon.png"/>
         <title>{get(routeInfo, 'routeData.meta.title', siteData.title)}</title>
+        <script dangerouslySetInnerHTML={{ __html: runtimeRedirect }}/>
         {/* Google analytics */}
         {!isDev && (
           <Fragment>

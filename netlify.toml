@@ -14,10 +14,12 @@
 [context.production]
   [context.production.environment]
     DEPLOY_ENV = "production"
+    SITE_ROOT = "https://faa.st"
 
 [context.staging]
   [context.staging.environment]
     DEPLOY_ENV = "staging"
+    SITE_ROOT = "https://staging.faast.us"
 
 [context.develop]
   [context.develop.environment]

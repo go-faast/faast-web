@@ -16,13 +16,8 @@ const isIpfs = process.env.IPFS === 'true'
 const isMocking = process.env.MOCK === 'true'
 const DEPLOY_ENV = process.env.DEPLOY_ENV || 'local' // can be production, staging, develop, or local
 
-const siteRoots = {
-  production: 'https://netlify.faa.st',
-  staging: 'https://staging.faast.us',
-  develop: '',
-}
 // Leave empty when not deploying behind a specific domain
-const siteRoot = process.env.SITE_ROOT || siteRoots[DEPLOY_ENV] || ''
+const siteRoot = process.env.SITE_ROOT || ''
 
 module.exports = {
   NODE_ENV,
