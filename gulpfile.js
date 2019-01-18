@@ -33,7 +33,7 @@ gulp.task('combine:site', () => mergeDist(path.join(dirs.buildSite, '**/*')))
 gulp.task('build:app', gulp.series('compile:app', 'combine:app'))
 gulp.task('build:site', gulp.series('compile:site', 'combine:site'))
 
-gulp.task('prebuild', gulp.series('lint', 'clean'))
+gulp.task('prebuild', gulp.series('clean'))
 
 const build = gulp.series('prebuild', gulp.parallel(['build:app', 'build:site']))
 
