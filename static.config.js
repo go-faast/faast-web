@@ -17,7 +17,7 @@ const siteUrlProd = 'https://faa.st'
  * because assets won't load if viewing from domain other than site root.
  */
 const runtimeRedirect = `
-window.siteRoot = "${process.env.SITE_ROOT}"
+window.siteRoot = ${JSON.stringify(process.env.SITE_ROOT)}
 if (window.siteRoot
   && !window.location.search.includes('skipSiteRootRedirect')
   && window.location.origin !== window.siteRoot) {
