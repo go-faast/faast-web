@@ -45,12 +45,12 @@
 
 [[redirects]]
   from = "/app/portfolio-price/*"
-  to = "/api/portfolio-price/:splate"
+  to = "/api/portfolio-price/:splat"
   status = 301
 
 [[redirects]]
   from = "/app/portfolio-chart/*"
-  to = "/api/portfolio-chart/:splate"
+  to = "/api/portfolio-chart/:splat"
   status = 301
 
 
