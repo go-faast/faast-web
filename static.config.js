@@ -109,7 +109,7 @@ export default {
                 const coinInfo = await axios.get(`https://data.messari.io/api/v1/assets/${sym}/profile`)
                 descriptions[symbol] = coinInfo.data.data
               } catch (err) {
-                return
+                // err
               }
               return {
                 supportedAssets,

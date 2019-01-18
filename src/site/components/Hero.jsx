@@ -9,6 +9,7 @@ import MoonBackground from 'Img/moon-background.jpg'
 import MacbookScreenshot1 from 'Img/macbook-screenshot-01.png'
 
 import PropTypes from 'prop-types'
+import classNames from 'class-names'
 
 export default compose(
   setDisplayName('Hero'),
@@ -16,7 +17,8 @@ export default compose(
     to: PropTypes.string,
     from: PropTypes.string,
     headline: PropTypes.node,
-    supportedAssets: PropTypes.arrayOf(PropTypes.object)
+    supportedAssets: PropTypes.arrayOf(PropTypes.object),
+    type: PropTypes.string
   }),
   defaultProps({
     to: 'ETH',
@@ -26,9 +28,10 @@ export default compose(
       <h1 className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
         <span className='special-word'>Instantly</span> trade directly from your Ledger, Trezor, or MetaMask.
       </h1>
-    )
+    ),
+    type: 'home'
   }),
-)(({ supportedAssets, to, from, headline }) => (
+)(({ supportedAssets, to, from, headline, type }) => (
   <div>
     <Header/>
     <div className='jumbotron jumbotron-fluid hero-technology mb-0' style={{
@@ -58,12 +61,14 @@ export default compose(
       Create A Portfolio
             </a></p>
           </Col>
-          <Col className='pr-3 d-md-block d-none'>
+          <Col className={classNames(type == 'pair' ? 'd-lg-block' : 'd-md-block','pr-3 d-none')}>
             <SwapWidget assets={supportedAssets} defaultDeposit={from} defaultReceive={to} />
           </Col>
-          <div className='intro d-md-none d-block mx-auto' style={{ paddingTop: '60px', maxWidth: 400 }}>	
-            <img className='img-fluid' src={MacbookScreenshot1} style={{ height: '100%', width: '730px' }}/>	
-          </div>
+          {type === 'home' && (
+            <div className='intro d-md-none d-block mx-auto' style={{ paddingTop: '60px', maxWidth: 400 }}>	
+              <img className='img-fluid' src={MacbookScreenshot1} style={{ height: '100%', width: '730px' }}/>	
+            </div>
+          )}
         </Row>
       </Container>
     </div>

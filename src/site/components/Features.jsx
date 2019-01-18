@@ -27,7 +27,7 @@ import BitaccessLogo from 'Img/bitaccess.svg'
 
 export default compose(
   setDisplayName('Features'),
-)(({ supportedAssets }) => (
+)(({ supportedAssets = [] }) => (
   <Fragment>
     <div className='features-clean'>
       <div className='container' style={{ paddingTop: '100px' }}>
@@ -114,7 +114,7 @@ export default compose(
               key: symbol,
               label: (<p>{name}</p>),
               iconUrl,
-              link: `/assets/${symbol}/buy`,
+              link: `/app/swap?to=${symbol}`,
             }))}/>
           </div>
         </div>

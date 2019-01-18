@@ -36,7 +36,7 @@ export default compose(
     }
   }),
   withRouteData,
-)(({ supportedAssets, areAssetsLoaded, assetList, symbol, name, type, descriptions }) => {
+)(({ supportedAssets, areAssetsLoaded, assetList, symbol, name, type, descriptions = {} }) => {
   supportedAssets = areAssetsLoaded ? assetList : supportedAssets
   const toSymbol = type === 'buy' ? symbol : symbol === 'ETH' ? 'BTC' : 'ETH'
   const fromSymbol = type === 'sell' ? symbol : symbol === 'BTC' ? 'ETH' : 'BTC'
@@ -51,15 +51,16 @@ export default compose(
             <span className='special-word'>Instantly</span> {type} {name} ({symbol}) from your Ledger, Trezor, or MetaMask.
           </h1>
         )} 
+        type='pair'
       />
       <div style={{ backgroundColor: '#fff' }}>
         <div 
-          className='mx-auto w-75 features-clean pb-0 text-center cursor-pointer'
+          className='features-clean pb-0 text-center cursor-pointer'
         > 
           <h2 className='text-center' style={{ marginBottom: '15px', fontWeight: 'normal' }}>
             {name} ({symbol}) Information
           </h2>
-          <div style={{ minHeight: 300, maxWidth: 960 }}>
+          <div className='mx-auto' style={{ minHeight: 300, maxWidth: 960 }}>
             <p>{descriptions[symbol] ? descriptions[symbol].overview : null}</p>
             <PriceChart symbol={symbol} chartOpen/> 
           </div>
