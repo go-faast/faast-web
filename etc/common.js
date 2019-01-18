@@ -39,7 +39,7 @@ const fileOutputPath = path.join(staticOutputPath, 'file')
 const vendorOutputPath = path.join(staticOutputPath, 'vendor')
 
 const siteRoots = {
-  production: 'https://faa.st',
+  production: 'https://netlify.faa.st',
   staging: 'https://staging.faast.us',
   develop: '',
 }
