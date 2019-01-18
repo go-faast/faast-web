@@ -23,18 +23,6 @@
   [context.develop.environment]
     DEPLOY_ENV = "develop"
 
-# Redirect alias domains for SEO purposes
-
-[[redirects]]
-  from = "https://faast.netlify.com/*"
-  to = "https://faa.st/:splat"
-  status = 301
-
-[[redirects]]
-  from = "https://faast.us/*"
-  to = "https://faa.st/:splat"
-  status = 301
-
 
 ### Legacy apis not yet migrated to api.faa.st
 
