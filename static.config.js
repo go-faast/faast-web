@@ -62,23 +62,27 @@ export default {
       {
         path: '/',
         component: 'src/site/pages/Home',
-        getData: () => ({
+        getData: async () => ({
           supportedAssets
         })
       },
       {
         path: '/blog',
         component: 'src/site/pages/Blog',
-        getData: () => ({
-          mediumPosts
+        getData: async () => ({
+          mediumPosts,
         }),
-        children: mediumPosts.map(post => ({
-          path: `/blog/${post.id}`,
-          component: 'src/site/pages/BlogPost',
-          getData: async () => ({
-            post,
-          }),
-        })),
+        children: await Promise.all(mediumPosts.map(async post => {
+          let mediumPost = await axios.get(`https://medium.com/faast/${post.uniqueSlug}?format=json`)
+          mediumPost = JSON.parse(mediumPost.data.replace('])}while(1);</x>', ''))
+          return ({
+            path: `/${post.uniqueSlug}`,
+            component: 'src/site/pages/BlogPost',
+            getData: async () => ({
+              mediumPost,
+            }),
+          })
+        })) 
       },
       {
         path: '/terms',

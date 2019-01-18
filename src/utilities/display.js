@@ -1,4 +1,5 @@
 import accounting from 'accounting'
+import { isRegExp, escapeRegExp, isString, flatten } from 'lodash'
 
 export const fiat = (value) => {
   return accounting.formatMoney(value)
@@ -42,9 +43,47 @@ export const formatDate = (date, format) => {
   })
 }
 
+const replaceString = (str, match, fn) => {
+  var curCharStart = 0
+  var curCharLen = 0
+
+  if (str === '') {
+    return str
+  } else if (!str || !isString(str)) {
+    throw new TypeError('First argument to react-string-replace#replaceString must be a string')
+  }
+
+  var re = match
+
+  if (!isRegExp(re)) {
+    re = new RegExp('(' + escapeRegExp(re) + ')', 'gi')
+  }
+
+  var result = str.split(re)
+
+  // Apply fn to all odd elements
+  for (var i = 1, length = result.length; i < length; i += 2) {
+    curCharLen = result[i].length
+    curCharStart += result[i - 1].length
+    result[i] = fn(result[i], i, curCharStart)
+    curCharStart += curCharLen
+  }
+
+  return result
+}
+
+export const replaceStringWithJSX = (source, match, fn) => {
+  if (!Array.isArray(source)) source = [source]
+
+  return flatten(source.map(function(x) {
+    return isString(x) ? replaceString(x, match, fn) : x
+  }))
+}
+
 export default {
   fiat,
   percentage,
   ellipsize,
-  formatDate
+  formatDate,
+  replaceStringWithJSX
 }
