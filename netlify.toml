@@ -15,7 +15,7 @@
 [context.production]
   [context.production.environment]
     DEPLOY_ENV = "production"
-    SITE_ROOT = "https://netlify.faa.st"
+    SITE_ROOT = "https://faa.st"
 
 [context.staging]
   [context.staging.environment]
