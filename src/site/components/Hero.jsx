@@ -18,7 +18,7 @@ export default compose(
     from: PropTypes.string,
     headline: PropTypes.node,
     supportedAssets: PropTypes.arrayOf(PropTypes.object),
-    type: PropTypes.string
+    showMacScreenShot: PropTypes.bool
   }),
   defaultProps({
     to: 'ETH',
@@ -29,9 +29,9 @@ export default compose(
         <span className='special-word'>Instantly</span> trade directly from your Ledger, Trezor, or MetaMask.
       </h1>
     ),
-    type: 'home'
+    showMacScreenShot: true
   }),
-)(({ supportedAssets, to, from, headline, type }) => (
+)(({ supportedAssets, to, from, headline, showMacScreenShot }) => (
   <div>
     <Header/>
     <div className='jumbotron jumbotron-fluid hero-technology mb-0' style={{
@@ -61,10 +61,10 @@ export default compose(
       Create A Portfolio
             </a></p>
           </Col>
-          <Col className={classNames(type == 'pair' ? 'd-lg-block' : 'd-md-block','pr-3 d-none')}>
+          <Col className={classNames(!showMacScreenShot ? 'd-lg-block' : 'd-md-block','pr-3 d-none')}>
             <SwapWidget assets={supportedAssets} defaultDeposit={from} defaultReceive={to} />
           </Col>
-          {type === 'home' && (
+          {showMacScreenShot && (
             <div className='intro d-md-none d-block mx-auto' style={{ paddingTop: '60px', maxWidth: 400 }}>	
               <img className='img-fluid' src={MacbookScreenshot1} style={{ height: '100%', width: '730px' }}/>	
             </div>

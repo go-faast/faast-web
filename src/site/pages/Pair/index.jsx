@@ -51,7 +51,7 @@ export default compose(
             <span className='special-word'>Instantly</span> {type} {name} ({symbol}) from your Ledger, Trezor, or MetaMask.
           </h1>
         )} 
-        type='pair'
+        showMacScreenShot={false}
       />
       <div style={{ backgroundColor: '#fff' }}>
         <div 
