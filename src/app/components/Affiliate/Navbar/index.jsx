@@ -55,6 +55,11 @@ const AffiliateNavBar = ({ logout, loggedIn, children, isExpanded, toggleExpande
                   <span className='nav-link-label d-sm-inline'>Withdrawals</span>
                 </NavLink>
               </NavItem>
+              <NavItem key='docs'>
+                <NavLink className={classNames(navbarLink, 'px-1 px-lg-2')} activeClassName={active} tag='a' href='https://api.faa.st' target='_blank noopener noreferrer'>
+                  <span className='nav-link-label d-sm-inline'>Docs</span>
+                </NavLink>
+              </NavItem>
               <NavItem key='settings'>
                 <NavLink className={classNames(navbarLink, 'px-1 px-lg-2')} activeClassName={active} tag={RouterNavLink} to='/affiliates/settings'>
                   <span className='nav-link-label d-sm-inline'>Settings</span>
