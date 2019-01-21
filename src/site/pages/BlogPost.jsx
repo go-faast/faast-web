@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { withRouteData } from 'react-static'
-import { Container } from 'reactstrap'
+import { Container, Button } from 'reactstrap'
 
 import Header from 'Site/components/Header'
 import Footer from 'Site/components/Footer'
@@ -45,14 +45,17 @@ const parseParagraph = (p, title) => {
 export default compose(
   setDisplayName('BlogPost'),
   withRouteData
-)(({ mediumPost: { payload: { value: { title, content: { bodyModel: { paragraphs } } } } } }) => (
+)(({ mediumPost: { payload: { value: { title, mediumUrl, content: { bodyModel: { paragraphs } } } } } }) => (
   <Fragment>
     <Header theme='light' bgColor={'#FFFFFF'} />
     <Container>
       <div className={classNames(darkText, 'mx-auto mb-5 pb-5')} style={{ maxWidth: 1000 }}>
         <h1 className='mb-4 mt-5 font-weight-bold'>{title}</h1>
         {paragraphs.map(p => parseParagraph(p, title))}
-      </div>
+        <div className='text-center'>
+          <Button tag='a' href={mediumUrl} target='_blank noreferrer noopener' color='primary'>Read on Medium</Button>
+        </div>
+      </div>      
     </Container>
     <Footer />
   </Fragment>
