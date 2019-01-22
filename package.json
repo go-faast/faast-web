@@ -1,5 +1,5 @@
 {
-  "name": "faast-portfolio",
+  "name": "faast-web",
   "productName": "Faa.st",
   "version": "3.0.42",
   "description": "A decentralized cryptocurrency portfolio manager and exchange.",
@@ -17,10 +17,10 @@
   "files": [
     "src/"
   ],
-  "homepage": "https://github.com/go-faast/faast-portfolio#readme",
+  "homepage": "https://github.com/go-faast/faast-web#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/go-faast/faast-portfolio.git"
+    "url": "git+https://github.com/go-faast/faast-web.git"
   },
   "scripts": {
     "start": "ws --config-file etc/lws.config.prod.js",
