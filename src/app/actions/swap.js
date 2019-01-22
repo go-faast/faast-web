@@ -44,7 +44,7 @@ export const retrieveSwaps = (walletId, page, limit) => (dispatch, getState) => 
     return Promise.all(wallet.nestedWalletIds.map((nestedWalletId) => dispatch(retrieveSwaps(nestedWalletId, page, limit))))
       .then(flatten)
   }
-  return Faast.fetchOrders(walletId, page)
+  return Faast.fetchOrders(walletId, page, limit)
     .then((orders) => { 
       if (orders.length == 0) {
         dispatch(allOrdersLoaded())

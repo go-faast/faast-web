@@ -5,8 +5,8 @@ import {
   assetsLoading, assetsLoaded, assetsLoadingError,
   assetPriceLoading, assetPriceUpdated, assetPriceError,
   assetPricesLoading, assetPricesUpdated, assetPricesError,
-  watchlistUpdated
 } from 'Common/actions/asset'
+import { watchlistUpdated } from 'Actions/asset'
 import { toBigNumber, ZERO } from 'Utilities/convert'
 import { createUpserter, createUpdater, mapValues } from 'Utilities/helpers'
 
