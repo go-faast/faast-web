@@ -8,7 +8,7 @@ import classNames from 'class-names'
 
 import { affiliateId, secretKey, } from 'Selectors'
 
-import { modalShadow } from './style'
+import { modalShadow, apiDocs } from './style'
 import { cardHeader, input, text } from '../style'
 
 export default compose(
@@ -43,6 +43,11 @@ export default compose(
             * Save these credentials somewhere safe. You will need them to access the affiliate dashboard and authenticate API requests.
           </p>
           </small>
+          <Col>
+            <div className={classNames('p-3 mt-2 text-center', apiDocs)}>
+              <a href='https://api.faa.st' target='_blank noopener noreferrer'>Get started with the Faa.st API Docs</a>
+            </div>
+          </Col>
         </Row>
       </ModalBody>
     </Modal>
