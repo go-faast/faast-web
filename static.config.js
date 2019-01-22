@@ -91,11 +91,14 @@ export default {
     const supportedAssets = assets.filter(({ deposit, receive }) => deposit || receive)
       .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl', 'deposit', 'receive'))
     const supportedWallets = Object.values(Wallets)
+    let mediumProfile = await axios.get('https://medium.com/faast?format=json')
+    mediumProfile = JSON.parse(mediumProfile.data.replace('])}while(1);</x>', ''))
+    const mediumPosts = Object.values(mediumProfile.payload.references.Post)
     return [
       {
         path: '/',
         component: 'src/site/pages/Home',
-        getData: () => ({
+        getData: async () => ({
           supportedAssets
         }),
         children: generateCombinationsFromArray(supportedAssets, 'symbol').map(pair => {
@@ -145,6 +148,24 @@ export default {
             })
           }
         })
+      },
+      {
+        path: '/blog',
+        component: 'src/site/pages/Blog',
+        getData: async () => ({
+          mediumPosts,
+        }),
+        children: await Promise.all(mediumPosts.map(async post => {
+          let mediumPost = await axios.get(`https://medium.com/faast/${post.uniqueSlug}?format=json`)
+          mediumPost = JSON.parse(mediumPost.data.replace('])}while(1);</x>', ''))
+          return ({
+            path: `/${post.uniqueSlug}`,
+            component: 'src/site/pages/BlogPost',
+            getData: async () => ({
+              mediumPost,
+            }),
+          })
+        })) 
       },
       {
         path: '/terms',
