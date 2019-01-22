@@ -330,7 +330,7 @@ export default compose(
       setDepositAmount,
       setEstimatedReceiveAmount,
       handleSelectMax: ({ maxSendAmount }) => () => {
-        setDepositAmount(parseFloat(maxSendAmount))
+        setDepositAmount(maxSendAmount)
       },
       calculateReceiveAmount: ({ sendAmount, receiveAsset, estimatedRate }) => () => {
         if (estimatedRate && sendAmount) {
