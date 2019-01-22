@@ -1,13 +1,12 @@
-import ledgerLogo from 'Img/wallet/ledger.png'
-import trezorLogo from 'Img/wallet/trezor.png'
-import blockstackLogo from 'Img/wallet/blockstack.png'
-
-import metamaskLogo from 'Img/wallet/metamask.png'
-import mistLogo from 'Img/wallet/mist.png'
-import parityLogo from 'Img/wallet/parity.svg'
-import coinbaseLogo from 'Img/wallet/coinbase.png'
-import trustLogo from 'Img/wallet/trust.png'
-import statusLogo from 'Img/wallet/status.png'
+import ledgerLogo from '../../res/img/wallet/ledger.png'
+import trezorLogo from '../../res/img/wallet/trezor.png'
+import blockstackLogo from '../../res/img/wallet/blockstack.png'
+import metamaskLogo from '../../res/img/wallet/metamask.png'
+import mistLogo from '../../res/img/wallet/mist.png'
+import parityLogo from '../../res/img/wallet/parity.svg'
+import coinbaseLogo from '../../res/img/wallet/coinbase.png'
+import trustLogo from '../../res/img/wallet/trust.png'
+import statusLogo from '../../res/img/wallet/status.png'
 
 const switchPathSegwit = {
   primaryPrefix: 'm/49',
@@ -22,6 +21,9 @@ export default {
     icon: ledgerLogo,
     website: 'https://www.ledger.com/',
     hardware: true,
+    slogan: 'Keep your crypto secure, everywhere.', 
+    description: 'Ledger offers smartcard-based crypto asset hardware wallets bringing optimal protection level to your bitcoins, ethereums, ripple and more - without sacrificing usability or control.',
+    graphic: 'https://cdn.shopify.com/s/files/1/2974/4858/products/ledger-nano-x-stand-up_grande_7a016731-824a-4d00-acec-40acfdfed9dc.png?v=1545313453',
     supportedAssets: {
       ETH: {
         derivationPath: 'm/44\'/60\'/0\''
@@ -48,6 +50,8 @@ export default {
   trezor: {
     name: 'TREZOR',
     icon: trezorLogo,
+    graphic: 'https://shop.trezor.io/static/img/trezor_duopack.png',
+    slogan: 'The safe place for your coins.',
     website: 'https://trezor.io/',
     hardware: true,
     supportedAssets: {

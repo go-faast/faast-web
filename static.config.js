@@ -6,6 +6,8 @@ import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import { pick, get } from 'lodash'
 import urlJoin from 'url-join'
 
+import Wallets from './src/config/walletTypes'
+
 const { isDev, dirs, useHttps, siteRoot } = require('./etc/common.js')
 const getBaseConfig = require('./etc/webpack.config.base.js')
 const siteConfig = require('./src/site/config.js')
@@ -88,6 +90,7 @@ export default {
     const { data: assets } = await axios.get('https://api.faa.st/api/v2/public/currencies')
     const supportedAssets = assets.filter(({ deposit, receive }) => deposit || receive)
       .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl', 'deposit', 'receive'))
+    const supportedWallets = Object.values(Wallets)
     return [
       {
         path: '/',
@@ -125,7 +128,23 @@ export default {
               }
             },
           }
+        })
+      },
+      {
+        path: '/wallets',
+        component: 'src/site/pages/Wallets',
+        getData: () => ({
+          supportedWallets
         }),
+        children: supportedWallets.map(wallet => {
+          return {
+            path: `/${wallet.name.replace(/\s+/g, '-').toLowerCase()}`,
+            component: 'src/site/pages/Wallet',
+            getData: () => ({
+              wallet
+            })
+          }
+        })
       },
       {
         path: '/terms',
