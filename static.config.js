@@ -19,8 +19,8 @@ const siteUrlProd = 'https://faa.st'
 const runtimeRedirect = `
 window.siteRoot = ${JSON.stringify(process.env.SITE_ROOT)}
 if (window.siteRoot
-  && !window.location.search.includes('skipSiteRootRedirect')
-  && window.location.origin !== window.siteRoot) {
+  && window.location.origin !== window.siteRoot
+  && !window.location.search.includes('skipSiteRootRedirect')) {
   window.location.replace(window.siteRoot + window.location.pathname + window.location.search)
 }
 `
