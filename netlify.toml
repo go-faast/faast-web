@@ -8,6 +8,7 @@
 [build]
   command = "npm run build"
   publish = "dist/"
+  functions = "build/lambda"
   [build.environment]
     NETLIFY = "true"
     NODE_ENV = "production"

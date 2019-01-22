@@ -32,10 +32,11 @@ gulp.task('combine:site', () => mergeDist(path.join(dirs.buildSite, '**/*')))
 
 gulp.task('build:app', gulp.series('compile:app', 'combine:app'))
 gulp.task('build:site', gulp.series('compile:site', 'combine:site'))
+gulp.task('build:lambda', run('netlify-lambda build src/lambda'))
 
 gulp.task('prebuild', gulp.series('clean'))
 
-const build = gulp.series('prebuild', gulp.parallel(['build:app', 'build:site']))
+const build = gulp.series('prebuild', gulp.parallel(['build:app', 'build:site', 'build:lambda']))
 
 gulp.task('build', build)
 
