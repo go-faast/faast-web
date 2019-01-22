@@ -1,7 +1,13 @@
 import axios from 'axios'
+import urlJoin from 'url-join'
 
 const errorResponse = (message = 'internal error', code = 500) => ({ statusCode: code, body: JSON.stringify({ message }) })
 const successResponse = () => ({ statusCode: 204 })
+const round = (v, dp) => { const n = Math.pow(10, dp); return Math.round(v * n) / n }
+const formatDuration = (seconds) => seconds > 60 ? `${round(seconds / 60, 1)}m` : `${seconds}s`
+
+const PROD_URL = 'https://faa.st'
+const ONLY_CONTEXT = 'production'
 
 exports.handler = async (event) => {
   const { SLACK_WEBHOOK_URL } = process.env
@@ -10,16 +16,34 @@ exports.handler = async (event) => {
     return errorResponse('bad env')
   }
   const e = JSON.parse(event.body)
-  console.log('event body', e)
-  if (e.payload.context !== 'production') {
-    console.log('slack build notification aborted: not production')
+  const { context } = e.payload
+  if (ONLY_CONTEXT && context !== ONLY_CONTEXT) {
+    console.log(`slack build notification aborted: not ${ONLY_CONTEXT}`)
     return successResponse()
   }
-  const commitHash = 'test06f4d21d68471c0f5e9efd3f90f8ce7eb8db70a9'
-  const shortCommitHash = commitHash.slice(0,12)
-  const deployVersion = '3.0.42-test'
-  const buildLogUrl = 'https://app.netlify.com/sites/faast/deploys'
-  const timeStamp = Date.now()
+  const {
+    commit_ref: commitRef, commit_url: commitUrl, published_at: publishedAtString,
+    branch: deployBranch, title: deployTitle, admin_url: adminUrl, build_id: buildId,
+    committer: commitAuthor, deploy_ssl_url: deployUrl, deploy_time: deployTimeSec
+  } = e.payload
+  const shortCommitRef = commitRef.slice(0, 12)
+  const buildLogUrl = urlJoin(adminUrl, 'deploys', buildId)
+  const siteUrl = context === 'production' ? PROD_URL : deployUrl
+  const deployEnv = context === 'production' ? context : deployBranch
+  const deployTimeString = formatDuration(deployTimeSec)
+  const hookData = {
+    text: `Successful deploy of *faast* to *${deployEnv}*`,
+    attachments: [{
+      'mrkdwn_in': ['text'],
+      'fallback': `${deployTitle} using git branch ${deployBranch}, commit ${shortCommitRef} by ${commitAuthor}`,
+      'color': '#36a64f',
+      'title': deployTitle,
+      'title_link': siteUrl,
+      'text': `View on ${siteUrl}\nOr check out the <${buildLogUrl}|build log>\n_Deploy took ${deployTimeString}_`,
+      'footer': `Using git branch ${deployBranch}, commit <${commitUrl}|${shortCommitRef}> by ${commitAuthor}`,
+      'ts': Date.parse(publishedAtString),
+    }]
+  }
   try {
     const res = await axios({
       method: 'POST',
@@ -27,21 +51,8 @@ exports.handler = async (event) => {
       headers: {
         'Content-Type': 'application/json',
       },
-      data: {
-        attachments: [{
-          'mrkdwn_in': ['pretext'],
-          'fallback': `${deployVersion} using git branch master, commit ${shortCommitHash}`,
-          'color': '#36a64f',
-          'pretext': 'Successful deploy of *faast*',
-          'title': deployVersion,
-          'title_link': 'https://faa.st',
-          'text': `Or check out the <${buildLogUrl}|build log>`,
-          'footer': `Using git branch master, commit <https://github.com/go-faast/faast-web/commit/${commitHash}|${shortCommitHash}>`,
-          'ts': timeStamp,
-        }]
-      },
+      data: hookData,
     })
-    console.log('hook res', res)
     if (res.status === 200) {
       console.log('slack build notification success')
       return successResponse()
