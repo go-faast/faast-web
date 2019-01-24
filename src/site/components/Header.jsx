@@ -13,23 +13,25 @@ export default compose(
   setDisplayName('Header'),
   setPropTypes({
     theme: PropTypes.string,
-    bgColor: PropTypes.string
+    bgColor: PropTypes.string,
+    headerColor: PropTypes.string,
   }),
   defaultProps({
     theme: 'dark',
-    bgColor: '#F5F7F8'
+    bgColor: '#181818',
+    headerColor: undefined,
   }),
   lifecycle({
     componentWillMount() {
-      const { theme, bgColor } = this.props
-      if (theme === 'light') {
+      const { bgColor } = this.props
+      if (bgColor !== '#181818') {
         document.body.style.backgroundColor = bgColor
       }
     }
   })
-)(({ theme }) => (
+)(({ theme, headerColor }) => (
   <nav className={classNames(darkestText, 'navbar navbar-dark navbar-expand-md navigation-clean-button')}
-    style={{ backgroundColor: 'transparent', paddingLeft: '12px' }}>
+    style={{ backgroundColor: headerColor ? headerColor : 'transparent', paddingLeft: '12px' }}>
     <div className='container'>
       <Link exact to='/' className={classNames(theme == 'light' ? darkestText : 'text-white','navbar-brand')} style={{ fontWeight: 400 }}>
         <img src={FaastLogo64x64} style={{ height: '32px', marginRight: '16px' }}/>{siteConfig.name}

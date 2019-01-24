@@ -144,7 +144,7 @@ export default {
             path: `/${wallet.name.replace(/\s+/g, '-').toLowerCase()}`,
             component: 'src/site/pages/Wallet',
             getData: () => ({
-              wallet
+              wallet,
             })
           }
         })
