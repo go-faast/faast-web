@@ -24,8 +24,8 @@ import {
   getConnectedAccountIds, getConnectBatchQueue
 } from 'Selectors/connectHardwareWallet'
 
-import { openWallet } from 'Actions/access'
-import { addWallet, removeWallet, addNestedWallets, updateWallet } from 'Actions/wallet'
+import { loadWallet, openWallet } from 'Actions/access'
+import { removeWallet, addNestedWallets, updateWallet } from 'Actions/wallet'
 
 const CONNECT_RETRY_SECONDS = 10
 
@@ -304,7 +304,7 @@ export const confirmAccountSelection = () => (dispatch, getState) => {
   const accountRetriever = getAccountRetriever(getState())
   accountRetriever(selectedAccountIndex).then((walletInstance) => {
     walletInstance.setPersistAllowed(false)
-    dispatch(addWallet(walletInstance))
+    dispatch(loadWallet(walletInstance))
     dispatch(accountAdded(assetSymbol, walletInstance.getId()))
     dispatch(connectNext())
   })
