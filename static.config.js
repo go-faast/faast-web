@@ -141,11 +141,17 @@ export default {
           supportedWallets
         }),
         children: supportedWallets.map(wallet => {
+          const metaName = wallet.name.replace(' Wallet', '')
           return {
             path: `/${wallet.name.replace(/\s+/g, '-').toLowerCase()}`,
             component: 'src/site/pages/Wallet',
             getData: () => ({
               wallet,
+              meta: {
+                title: `Trade Your Crypto from your ${metaName.replace(' Wallet', '')} Wallet - Faa.st`,
+                description: `Safely trade your crypto directly from your ${metaName} Wallet.
+                Connect your ${metaName} wallet and trade 100+ cryptocurrencies on Faa.st.`
+              }
             })
           }
         })
