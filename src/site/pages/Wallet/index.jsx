@@ -9,6 +9,7 @@ import MacbookScreenshot1 from 'Img/macbook-screenshot-01.png'
 import SecureIcon from 'Img/secure.svg'
 import SimpleIcon from 'Img/simple.svg'
 import PrivacyIcon from 'Img/privacy.svg'
+import WalletTypes from 'Config/walletTypes'
 
 import classNames from 'class-names'
 
@@ -17,11 +18,12 @@ import { gradient, graphicSection, text } from './style.scss'
 export default compose(
   setDisplayName('Wallet'),
   withRouteData
-)(({ wallet: { name, graphic, slogan, website, description, supportedAssets, howTo } }) => {
-  name = name.replace(' Wallet', '')
+)(({ wallet: { name, slogan, website, description, supportedAssets, howTo } }) => {
+  const graphic = Object.values(WalletTypes).find(obj => obj.name === name).graphic
   const supportedTickers = supportedAssets ? Object.keys(supportedAssets) : []
+  name = name.replace(' Wallet', '')
   return (
-    <div>
+    <div style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
       <Header theme='light' headerColor='#fff' />
       <div className={classNames(graphicSection, 'mb-0 py-5')}>
         <div className={gradient}></div>
@@ -32,7 +34,7 @@ export default compose(
             <Button tag='a' href='https://faa.st/app/connect' className='mr-3' color='primary'>Connect Your {name}</Button>
             <Button style={{ backgroundColor: 'transparent' }} tag='a' href={website} target='_blank noopener noreferrer' outline color='primary'>Learn more</Button>
           </Col>
-          <Col>
+          <Col sm='12' md='2' className='text-sm-left text-center mt-sm-0 mt-5'>
             <img style={{ maxWidth: 200, maxHeight: 200 }} src={graphic} />
           </Col>
         </Row>
@@ -55,11 +57,11 @@ export default compose(
             {howTo ? `How to trade from your ${name}` : `Get started with ${name}` }
           </Button>
         </Col>
-        <Col>
+        <Col sm='12' md='2'>
           <img className='mt-4 pt-5' src={MacbookScreenshot1} style={{ maxWidth: 300 }} />
         </Col>
       </Row>
-      <Row className={classNames(text,'text-center p-5')} style={{ background: '#fff' }}>
+      <Row className={classNames(text,'text-center py-5')} style={{ background: '#fff' }}>
         <Col sm='12'>
           <h1 className={text}>Why trade from your {name}?</h1>
         </Col>
