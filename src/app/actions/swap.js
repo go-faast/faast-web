@@ -12,16 +12,14 @@ import toastr from 'Utilities/toastrWrapper'
 import { createTx, signTx, sendTx, updateTxReceipt, pollTxReceipt } from 'Actions/tx'
 import { defaultPortfolioId } from 'Actions/portfolio'
 import { retrievePairData } from 'Actions/rate'
+import { walletOrdersLoading, walletOrdersLoaded, walletOrdersAllLoaded } from 'Actions/wallet'
 
 import { getSwap, getTx, getWallet } from 'Selectors'
 
 const createAction = newScopedCreateAction(__filename)
 
 export const resetSwaps = createAction('RESET_ALL')
-export const allOrdersLoaded = createAction('ALL_ORDERS_LOADED')
-export const ordersLoading = createAction('ORDERS_LOADING')
-export const ordersLoaded = createAction('ORDERS_LOADED')
-export const swapsRetrieved = createAction('RESTORED')
+export const swapsRetrieved = createAction('RETRIEVED', (orders) => orders, (_, walletId) => ({ walletId }))
 export const swapAdded = createAction('ADDED')
 export const swapRemoved = createAction('REMOVED', (id) => ({ id }))
 export const swapUpdated = createAction('UPDATED', (id, data) => ({ id, ...data }))
@@ -35,7 +33,6 @@ export const swapInitFailed = createAction('INIT_FAILED', (id, errorMessage) => 
 
 export const retrieveSwaps = (walletId, page, limit) => (dispatch, getState) => {
   const wallet = getWallet(getState(), walletId)
-  dispatch(ordersLoading())
   if (!wallet) {
     log.warn(`Cannot retrieve swaps for unknown wallet ${walletId}`)
     return
@@ -44,13 +41,15 @@ export const retrieveSwaps = (walletId, page, limit) => (dispatch, getState) => 
     return Promise.all(wallet.nestedWalletIds.map((nestedWalletId) => dispatch(retrieveSwaps(nestedWalletId, page, limit))))
       .then(flatten)
   }
+  dispatch(walletOrdersLoading(walletId))
   return Faast.fetchOrders(walletId, page, limit)
     .then((orders) => { 
       if (orders.length == 0) {
-        dispatch(allOrdersLoaded())
+        dispatch(walletOrdersAllLoaded(walletId))
       }
-      dispatch(ordersLoaded())
-      return dispatch(swapsRetrieved(orders)).payload })
+      dispatch(walletOrdersLoaded(walletId))
+      return dispatch(swapsRetrieved(orders, walletId)).payload
+    })
 }
 
 export const retrieveAllSwaps = () => (dispatch) => {

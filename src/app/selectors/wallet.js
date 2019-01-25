@@ -53,10 +53,15 @@ export const getWalletOrDefault = createItemSelector(getWallet, (wallet) => wall
 export const getAllWallets = (state) => mapValues(getWalletState(state), (_, id) => getWallet(state, id))
 export const getAllWalletsArray = createSelector(getAllWallets, Object.values)
 export const getAllWalletIds = createSelector(getAllWallets, Object.keys)
-export const getLeafWalletIds = createSelector(
+
+export const getLeafWallets = createSelector(
   getAllWalletsArray,
   (wallets) => wallets
     .filter(({ type }) => !type.includes(MultiWallet.type))
+)
+export const getLeafWalletIds = createSelector(
+  getLeafWallets,
+  (wallets) => wallets
     .map(({ id }) => id)
 )
 
@@ -170,4 +175,15 @@ export const getHoldingsByAsset = createItemSelector(
     })
     return balance
   }
+)
+
+export const areWalletOrdersLoading = createItemSelector(getWallet, fieldSelector('ordersLoading'))
+export const areWalletOrdersAllLoaded = createItemSelector(getWallet, fieldSelector('ordersAllLoaded'))
+export const areAnyWalletOrdersLoading = createSelector(
+  getAllWalletsArray,
+  (wallets) => wallets.some((wallet) => wallet.ordersLoading)
+)
+export const areAllWalletOrdersLoaded = createSelector(
+  getAllWalletsArray,
+  (wallets) => wallets.every((wallet) => wallet.ordersAllLoaded)
 )

@@ -17,7 +17,6 @@ import walletPasswordPrompt from './walletPasswordPrompt'
 import connectHardwareWallet from './connectHardwareWallet'
 import tx from './tx'
 import rate from './rate'
-import orders from './orders'
 
 export default combineReducers({
   app,
@@ -29,7 +28,6 @@ export default combineReducers({
   rate,
   tx,
   swap,
-  orders,
   swundle,
   orderModal,
   settings,

@@ -27,6 +27,7 @@ const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   supportedAssets: wallet.getSupportedAssetSymbols(),
   unsendableAssets: wallet.getUnsendableAssetSymbols(),
   nestedWalletIds: wallet instanceof MultiWallet ? wallet.getWalletIds() : [],
+  ordersAllLoaded: wallet instanceof MultiWallet // Orders can't be loaded for multiwallets
 }) : wallet
 
 export const walletAdded = createAction('ADDED', convertWalletInstance)
@@ -47,6 +48,10 @@ export const walletBalancesError = createAction('BALANCES_ERROR', (walletId, err
 }))
 
 export const walletUsedAddressesUpdated = createAction('USED_ADDRESSES_UPDATED', (id, usedAddresses) => ({ id, usedAddresses }))
+
+export const walletOrdersAllLoaded = createAction('ALL_ORDERS_LOADED', (walletId) => ({ walletId }))
+export const walletOrdersLoading = createAction('ORDERS_LOADING', (walletId) => ({ walletId }))
+export const walletOrdersLoaded = createAction('ORDERS_LOADED', (walletId) => ({ walletId }))
 
 export const addWallet = (walletInstance) => (dispatch) => Promise.resolve()
   .then(() => walletService.add(walletInstance))

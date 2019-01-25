@@ -12,7 +12,7 @@ import Units from 'Components/Units'
 import Expandable from 'Components/Expandable'
 import CoinIcon from 'Components/CoinIcon'
 
-import { areOrdersLoading, areAllOrdersLoaded } from 'Selectors/orders'
+import { areAnyWalletOrdersLoading, areAllWalletOrdersLoaded } from 'Selectors/wallet'
 import { retrievePaginatedSwaps } from 'Actions/swap'
 
 import { tradeTable, tradeCoinIcon } from './style'
@@ -136,8 +136,8 @@ export default compose(
     showMore: false,
   }),
   connect(createStructuredSelector({
-    areOrdersLoading: areOrdersLoading,
-    areAllOrdersLoaded: areAllOrdersLoaded,
+    areOrdersLoading: areAnyWalletOrdersLoading,
+    areAllOrdersLoaded: areAllWalletOrdersLoaded,
   }), {
     push: pushAction,
     retrievePaginatedSwaps: retrievePaginatedSwaps
@@ -146,7 +146,7 @@ export default compose(
   withHandlers({
     handleClick: ({ push }) => (orderId) => push(routes.tradeDetail(orderId)),
     handleShowMore: ({ page, updatePage, retrievePaginatedSwaps }) => () => {
-      retrievePaginatedSwaps(page, 50)
+      retrievePaginatedSwaps(page)
       updatePage(page + 1)
     }
   }),

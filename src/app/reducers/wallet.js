@@ -6,6 +6,7 @@ import {
   walletAdded, walletUpdated, walletRemoved, allWalletsRemoved, 
   walletBalancesUpdating, walletBalancesUpdated, walletBalancesError,
   walletUsedAddressesUpdated,
+  walletOrdersLoading, walletOrdersLoaded, walletOrdersAllLoaded,
 } from 'Actions/wallet'
 import { createUpserter, createUpdater } from 'Utilities/helpers'
 
@@ -27,6 +28,9 @@ const walletInitialState = {
   balancesUpdating: false,
   balancesLoaded: false,
   balancesError: '',
+
+  ordersAllLoaded: false,
+  ordersLoading: false,
 }
 
 const upsertWallet = createUpserter('id', walletInitialState)
@@ -58,5 +62,17 @@ export default createReducer({
   [walletUsedAddressesUpdated]: (state, { id, usedAddresses }) => updateWallet(state, {
     id,
     usedAddresses
-  })
+  }),
+  [walletOrdersLoading]: (state, { walletId }) => updateWallet(state, {
+    id: walletId,
+    ordersLoading: true,
+  }),
+  [walletOrdersLoaded]: (state, { walletId }) => updateWallet(state, {
+    id: walletId,
+    ordersLoading: false,
+  }),
+  [walletOrdersAllLoaded]: (state, { walletId }) => updateWallet(state, {
+    id: walletId,
+    ordersAllLoaded: true,
+  }),
 }, initialState)
