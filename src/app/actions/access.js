@@ -21,8 +21,8 @@ import { addWallet, addNestedWallet, updateWalletBalances } from 'Actions/wallet
 import { defaultPortfolioId } from 'Actions/portfolio'
 import { retrieveSwaps } from 'Actions/swap'
 
-/** Add a wallet, add it to the current portfolio, and restore swap status */
-export const openWallet = (walletPromise, forwardUrl = null) => (dispatch, getState) => Promise.resolve(walletPromise)
+/** Add a wallet, load balances and retrieve swap history */
+export const loadWallet = (walletPromise) => (dispatch, getState) => Promise.resolve(walletPromise)
   .then((wallet) => {
     if (isString(wallet)) {
       wallet = getWallet(getState(), wallet)
@@ -37,24 +37,33 @@ export const openWallet = (walletPromise, forwardUrl = null) => (dispatch, getSt
   })
   .then((wallet) => {
     const { id: walletId } = wallet
-    const { id: portfolioId, type: portfolioType } = getCurrentPortfolio(getState())
-    return dispatch(addNestedWallet(defaultPortfolioId, walletId))
-      .then(() => {
-        if (portfolioType === MultiWallet.type && portfolioId !== defaultPortfolioId) {
-          return dispatch(addNestedWallet(portfolioId, walletId))
-        }
-      })
-      .then(() => {
-        // Background tasks
-        dispatch(updateWalletBalances(walletId))
-        dispatch(retrieveSwaps(walletId))
-      })
+
+    // Background tasks
+    dispatch(updateWalletBalances(walletId))
+    dispatch(retrieveSwaps(walletId))
+
+    return wallet
   })
-  .then(() => {
-    if (forwardUrl) {
-      dispatch(push(forwardUrl))
-    }
-  })
+
+/** Load a wallet, add it to the current portfolio, and optionally redirect user to another page */
+export const openWallet = (walletPromise, forwardUrl = null) => (dispatch, getState) =>
+  dispatch(loadWallet(walletPromise))
+    .then((wallet) => {
+      const { id: walletId } = wallet
+      const { id: portfolioId, type: portfolioType } = getCurrentPortfolio(getState())
+
+      return dispatch(addNestedWallet(defaultPortfolioId, walletId))
+        .then(() => {
+          if (portfolioType === MultiWallet.type && portfolioId !== defaultPortfolioId) {
+            return dispatch(addNestedWallet(portfolioId, walletId))
+          }
+        })
+    })
+    .then(() => {
+      if (forwardUrl) {
+        dispatch(push(forwardUrl))
+      }
+    })
 
 /** Do everything in openWallet and then redirect to the dashboard */
 export const openWalletAndRedirect = (walletPromise, forwardUrl = routes.dashboard()) => (dispatch) =>
