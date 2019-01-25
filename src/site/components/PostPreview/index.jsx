@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { compose, setDisplayName, lifecycle } from 'recompose'
+import { compose, setDisplayName } from 'recompose'
 import { Card, CardImg, CardBody, Col, CardTitle, CardText } from 'reactstrap'
 
 import { card, darkText, subtitleText } from './style.scss'
