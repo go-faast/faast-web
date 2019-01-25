@@ -1,7 +1,7 @@
 {
   "name": "faast-web",
   "productName": "Faa.st",
-  "version": "3.0.45",
+  "version": "3.0.46",
   "description": "A decentralized cryptocurrency portfolio manager and exchange.",
   "contributors": [
     "Nathan Wood <nathan@bitaccess.co>",
