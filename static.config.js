@@ -135,6 +135,7 @@ export default {
       },
       {
         path: '/wallets',
+        noindex: true,
         component: 'src/site/pages/Wallets',
         getData: () => ({
           supportedWallets
