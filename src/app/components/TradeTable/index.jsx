@@ -59,23 +59,23 @@ export const TableRow = ({
       </tr>
       <tr className='cursor-pointer d-table-row d-sm-none' {...props}>
         <td className='py-3'>
-          <Row className='gutter-2 align-items-center text-center pb-2'>
-            <Col>
+          <Row style={{ justifyContent: 'space-between' }} className='gutter-2 align-items-center text-center pb-2'>
+            <Col xs='5'>
               <CoinSymbol symbol={sendSymbol} size='md'/>
-              <p style={{ maxWidth: '80%' }} className='mt-2 mb-0 mx-auto font-xs'>{sendAsset.name}</p>
-              <div className='mt-2 text-muted'>
+              <p className='mt-2 mb-0 font-xs'>{sendAsset.name}</p>
+              <div className='mt-1 text-muted font-xs'>
                 {sendAmount
                   ? (<Units value={sendAmount} precision={6} symbol={sendSymbol} showSymbol/>)
                   : NODATA}
               </div>
             </Col>
-            <Col xs='12'>
+            <Col xs='1'>
               <i className='fa fa-long-arrow-right text-grey mx-2'/> 
             </Col>
-            <Col xs='12'>
+            <Col xs='5'>
               <CoinSymbol symbol={receiveSymbol} size='md'/>
               <p className='mt-2 mb-0 font-xs'>{receiveAsset.name}</p>
-              <div className='mt-2 text-muted'>
+              <div className='mt-1 text-muted font-xs'>
                 {receiveAmount
                   ? (<Units value={receiveAmount} symbol={receiveSymbol} precision={6} showSymbol/>)
                   : NODATA}
