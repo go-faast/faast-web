@@ -19,27 +19,29 @@ import { tradeTable, tradeCoinIcon } from './style'
 
 const NODATA = '-----'
 
-export const CoinSymbol = ({ symbol, size = 'sm', ...props }) => (
+export const CoinSymbol = ({ symbol, showSymbol,  size = 'sm', ...props }) => (
   <Fragment>
     <CoinIcon className={classNames(tradeCoinIcon, 'mr-1')} symbol={symbol} size={size} inline {...props}/>
-    {symbol}
+    {showSymbol ? symbol : null}
   </Fragment>
 )
 
 export const TableRow = ({
   swap,
-  swap: { sendAmount, sendSymbol, receiveAmount, receiveSymbol, rate, createdAtFormatted, status: { details } },
+  swap: { sendAmount, sendSymbol, receiveAmount, receiveSymbol, receiveAsset, sendAsset,
+    rate, createdAtFormatted, status: { details } },
   ...props
 }) => {
+  console.log(swap)
   return (
     <Fragment>
       <tr className='cursor-pointer d-none d-sm-table-row' {...props}>
         <td>{createStatusLabel(swap)}</td>
         <td className='d-none d-sm-table-cell'>{createdAtFormatted}</td>
         <td className='d-none d-sm-table-cell'>
-          <CoinSymbol symbol={sendSymbol}/>
+          <CoinSymbol symbol={sendSymbol} showSymbol/>
           <i className='fa fa-long-arrow-right text-grey mx-2'/> 
-          <CoinSymbol symbol={receiveSymbol}/>
+          <CoinSymbol symbol={receiveSymbol} showSymbol/>
         </td>
         <td>{receiveAmount
           ? (<Units value={receiveAmount} symbol={receiveSymbol} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>)
@@ -60,18 +62,20 @@ export const TableRow = ({
           <Row className='gutter-2 align-items-center text-center pb-2'>
             <Col>
               <CoinSymbol symbol={sendSymbol} size='md'/>
-              <div className='mt-2'>
+              <p style={{ maxWidth: '80%' }} className='mt-2 mb-0 mx-auto font-xs'>{sendAsset.name}</p>
+              <div className='mt-2 text-muted'>
                 {sendAmount
-                  ? (<Units value={sendAmount} symbol={sendSymbol} precision={6} showSymbol/>)
+                  ? (<Units value={sendAmount} precision={6} symbol={sendSymbol} showSymbol/>)
                   : NODATA}
               </div>
             </Col>
-            <Col xs='3'>
+            <Col xs='12'>
               <i className='fa fa-long-arrow-right text-grey mx-2'/> 
             </Col>
-            <Col>
+            <Col xs='12'>
               <CoinSymbol symbol={receiveSymbol} size='md'/>
-              <div className='mt-2'>
+              <p className='mt-2 mb-0 font-xs'>{receiveAsset.name}</p>
+              <div className='mt-2 text-muted'>
                 {receiveAmount
                   ? (<Units value={receiveAmount} symbol={receiveSymbol} precision={6} showSymbol/>)
                   : NODATA}
@@ -158,7 +162,7 @@ const TradeTable = ({ handleClick, hideIfNone, tableTitle,
 
 
 export const statusIcons = {
-  complete: <i style={{ fontSize: '18px' }} className='text-success fa fa-check-circle'></i>,
+  complete: <i className='text-success fa fa-check-circle'></i>,
   contact_support: <i className='fa fa-exclamation-circle text-warning'></i>,
   pending: <i className='fa fa-spinner fa-pulse'/>,
   failed: <i className='fa fa-exclamation-circle text-danger'></i>
