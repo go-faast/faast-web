@@ -52,6 +52,48 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
             <small style={{ position: 'relative', top: '-2px' }} className='text-muted'>[{symbol}]</small>
           </Media>
         </Media>
+        <div className='d-block d-lg-none pl-4 ml-2 font-xs'>
+          <div className='mt-1'>
+            <span style={{ width: 45 }} className='mr-2 d-inline-block'>Mkt Cap:</span>
+            <span>
+              <Units
+                className='text-nowrap'
+                value={marketCap} 
+                symbol={'$'} 
+                precision={6}
+                symbolSpaced={false}
+                prefixSymbol
+                abbreviate
+              />
+            </span>
+          </div>
+          <div className='mt-1'>
+            <span style={{ width: 45 }} className='mr-2 d-inline-block'>24h Vol:</span>
+            <span>
+              <Units
+                className='text-nowrap'
+                value={volume24} 
+                symbol={'$'} 
+                precision={6} 
+                symbolSpaced={false}
+                prefixSymbol
+                abbreviate
+              />
+            </span>
+          </div>
+          <div className='mt-1'>
+            <span style={{ width: 45 }} className='mr-2 d-inline-block'>Supply:</span>
+            <span>
+              <Units
+                className='text-nowrap'
+                value={availableSupply} 
+                symbol={symbol} 
+                precision={6} 
+                abbreviate
+              />
+            </span>
+          </div>
+        </div>
       </td>
       <td onClick={() => push(routes.assetDetail(symbol))}>
         <Units 
@@ -63,7 +105,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           symbolSpaced={false}
         />
       </td>
-      <td onClick={() => push(routes.assetDetail(symbol))}>
+      <td className='d-none d-lg-table-cell' onClick={() => push(routes.assetDetail(symbol))}>
         <Units
           className='text-nowrap'
           value={marketCap} 
@@ -74,7 +116,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           abbreviate
         />
       </td>
-      <td onClick={() => push(routes.assetDetail(symbol))}>
+      <td className='d-none d-lg-table-cell' onClick={() => push(routes.assetDetail(symbol))}>
         <Units
           className='text-nowrap'
           value={volume24} 
@@ -85,7 +127,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           abbreviate
         />
       </td>
-      <td onClick={() => push(routes.assetDetail(symbol))}>
+      <td className='d-none d-lg-table-cell' onClick={() => push(routes.assetDetail(symbol))}>
         <Units
           className='text-nowrap'
           value={availableSupply} 
@@ -143,13 +185,13 @@ const AssetIndexTable = ({ assetList, push, toggleDropdownOpen, isDropdownOpen, 
                   <th onClick={() => handleSortKey('price')} className='border-0'>
                     Price {sortKey === 'price' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
                   </th>
-                  <th onClick={() => handleSortKey('marketCap')} className='border-0'>
+                  <th onClick={() => handleSortKey('marketCap')} className='border-0 d-none d-lg-table-cell'>
                     Market Cap {sortKey === 'marketCap' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
                   </th>
-                  <th onClick={() => handleSortKey('volume24')} className='border-0'>
+                  <th onClick={() => handleSortKey('volume24')} className='border-0 d-none d-lg-table-cell'>
                     Volume {sortKey === 'volume24' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
                   </th>
-                  <th onClick={() => handleSortKey('availableSupply')} className='border-0'>
+                  <th onClick={() => handleSortKey('availableSupply')} className='border-0 d-none d-lg-table-cell'>
                     Supply {sortKey === 'availableSupply' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
                   </th>
                   <th className={classNames('border-0', !defaultPriceChange ? 'p-0' : null)}>

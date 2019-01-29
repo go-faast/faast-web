@@ -29,7 +29,6 @@ const renderAssetRows = ({ assetRows, push }) => {
       <tr 
         className='cursor-pointer'
         key={symbol} 
-        onClick={() => push(routes.assetDetail(symbol))} 
         tabIndex='0'
       >
         <td colSpan='auto'>
@@ -37,26 +36,26 @@ const renderAssetRows = ({ assetRows, push }) => {
             symbol={symbol}
           />
         </td>
-        <td>
+        <td onClick={() => push(routes.assetDetail(symbol))} >
           <CoinIcon symbol={symbol} width='1.5em' height='1.5em' size={1} inline/>
           <span className='mx-2 text-truncate'>{displayName}</span>
         </td>
-        <td>
+        <td onClick={() => push(routes.assetDetail(symbol))} >
           {displayUnits}
           <span className={collapsedRow}>&nbsp;{symbol}</span>
         </td>
-        <td>
+        <td onClick={() => push(routes.assetDetail(symbol))} >
           {fiatValue}
           <div className={classNames(collapsedOnly, collapsedRow)}>{displayWeight}</div>
         </td>
-        <td className={expandedOnly}>
+        <td onClick={() => push(routes.assetDetail(symbol))} className={expandedOnly}>
           {displayWeight}
         </td>
-        <td>
+        <td onClick={() => push(routes.assetDetail(symbol))} >
           {fiatPrice}
           <div className={classNames(collapsedOnly, collapsedRow)}>{displayChange}</div>
         </td>
-        <td className={expandedOnly}>
+        <td onClick={() => push(routes.assetDetail(symbol))} className={expandedOnly}>
           {displayChange}
         </td>
       </tr>

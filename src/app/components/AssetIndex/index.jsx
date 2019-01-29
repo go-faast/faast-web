@@ -14,7 +14,7 @@ import { getAssetIndexPage, getNumberOfAssets } from 'Selectors'
 
 const AssetIndex = ({ assets, currentPage, numberOfAssets, title }) => {
   return (
-    <Layout className='pt-3 p-0 p-sm-3'>
+    <Layout className='pt-3'>
       <AssetIndexTable tableHeader={title} assets={assets}/>
       <Paginator page={currentPage} pages={Math.ceil(numberOfAssets / 50)}/>
     </Layout>

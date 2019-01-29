@@ -31,7 +31,6 @@ const SwapStepTwo = ({
   return (
     <Fragment>
       <ProgressBar steps={['Create Swap', `Send ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={1}/>
-
       <Card className={classNames('justify-content-center p-0', style.container, style.stepTwo)}>
         {isManual ? (
           <StepTwoManual swap={swap}/>

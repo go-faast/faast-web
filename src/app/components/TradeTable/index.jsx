@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import { push as pushAction } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
-import { Table, Card, CardHeader, CardFooter } from 'reactstrap'
+import { Table, Card, CardHeader, CardFooter, Col, Row } from 'reactstrap'
 import { compose, setDisplayName, withHandlers, defaultProps, setPropTypes, withState } from 'recompose'
 import classNames from 'class-names'
 import PropTypes from 'prop-types'
@@ -19,47 +19,101 @@ import { tradeTable, tradeCoinIcon } from './style'
 
 const NODATA = '-----'
 
-export const CoinSymbol = ({ symbol, ...props }) => (
+export const CoinSymbol = ({ symbol, size = 'sm', ...props }) => (
   <Fragment>
-    <CoinIcon className={classNames(tradeCoinIcon, 'mr-1')} symbol={symbol} size='sm' inline {...props}/>
+    <CoinIcon className={classNames(tradeCoinIcon, 'mr-1')} symbol={symbol} size={size} inline {...props}/>
     {symbol}
   </Fragment>
 )
 
 export const TableRow = ({
   swap,
-  swap: { sendAmount, sendSymbol, receiveAmount, receiveSymbol, rate, createdAtFormatted },
+  swap: { sendAmount, sendSymbol, receiveAmount, receiveSymbol, rate, createdAtFormatted, status: { details } },
   ...props
-}) => (
-  <tr className='cursor-pointer' {...props}>
-    <td>{createStatusLabel(swap)}</td>
-    <td className='d-none d-sm-table-cell'>{createdAtFormatted}</td>
-    <td className='d-none d-sm-table-cell'>
-      <CoinSymbol symbol={sendSymbol}/>
-      <i className='fa fa-long-arrow-right text-grey mx-2'/> 
-      <CoinSymbol symbol={receiveSymbol}/>
-    </td>
-    <td>{receiveAmount
-      ? (<Units value={receiveAmount} symbol={receiveSymbol} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>)
-      : NODATA}
-    </td>
-    <td>{sendAmount
-      ? (<Units value={sendAmount} symbol={sendSymbol} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>)
-      : NODATA}
-    </td>
-    <td>{rate > 0
-      ? (<Units value={rate} precision={6}/>)
-      : NODATA}
-    </td>
-  </tr>
-)
+}) => {
+  return (
+    <Fragment>
+      <tr className='cursor-pointer d-none d-sm-table-row' {...props}>
+        <td>{createStatusLabel(swap)}</td>
+        <td className='d-none d-sm-table-cell'>{createdAtFormatted}</td>
+        <td className='d-none d-sm-table-cell'>
+          <CoinSymbol symbol={sendSymbol}/>
+          <i className='fa fa-long-arrow-right text-grey mx-2'/> 
+          <CoinSymbol symbol={receiveSymbol}/>
+        </td>
+        <td>{receiveAmount
+          ? (<Units value={receiveAmount} symbol={receiveSymbol} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>)
+          : NODATA}
+        </td>
+        <td>{sendAmount
+          ? (<Units value={sendAmount} symbol={sendSymbol} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>)
+          : NODATA}
+        </td>
+        <td className='d-none d-sm-table-cell'>{rate > 0
+          ? (<Units value={rate} precision={6}/>)
+          : (sendAmount && receiveAmount) ? <Units value={sendAmount.div(receiveAmount)} precision={6}/> 
+            : NODATA}
+        </td>
+      </tr>
+      <tr className='cursor-pointer d-table-row d-sm-none' {...props}>
+        <td className='py-3'>
+          <Row className='gutter-2 align-items-center text-center pb-2'>
+            <Col>
+              <CoinSymbol symbol={sendSymbol} size='md'/>
+              <div className='mt-2'>
+                {sendAmount
+                  ? (<Units value={sendAmount} symbol={sendSymbol} precision={6} showSymbol/>)
+                  : NODATA}
+              </div>
+            </Col>
+            <Col xs='3'>
+              <i className='fa fa-long-arrow-right text-grey mx-2'/> 
+            </Col>
+            <Col>
+              <CoinSymbol symbol={receiveSymbol} size='md'/>
+              <div className='mt-2'>
+                {receiveAmount
+                  ? (<Units value={receiveAmount} symbol={receiveSymbol} precision={6} showSymbol/>)
+                  : NODATA}
+              </div>
+            </Col>
+          </Row>
+          <div className='pl-2 ml-1 font-xs mt-2 mb-2'>
+            <div className='mt-1'>
+              <span style={{ width: 45 }} className='mr-2 d-inline-block'>Status:</span>
+              <span>
+                {createStatusLabel(swap)} {details}
+              </span>
+            </div>
+            <div className='mt-1'>
+              <span style={{ width: 45 }} className='mr-2 d-inline-block'>Date:</span>
+              <span>
+                {createdAtFormatted}
+              </span>
+            </div>
+            <div className='mt-1'>
+              <span style={{ width: 45 }} className='mr-2 d-inline-block'>Rate:</span>
+              <span>
+                {rate > 0
+                  ? (<Units value={rate} precision={6}/>)
+                  : (sendAmount && receiveAmount) ? <Units value={sendAmount.div(receiveAmount)} precision={6}/> 
+                    : NODATA}
+              </span>
+            </div>
+          </div>
+        </td>
+      </tr>
+    </Fragment>
+  )
+  
+}
 
 const TradeTable = ({ handleClick, hideIfNone, tableTitle, 
   swaps, tableHeadings, zeroOrdersMessage, handleShowMore, areOrdersLoading,
-  areAllOrdersLoaded, showMore }) => (
+  areAllOrdersLoaded, showMore, classProps }) => (
   <Fragment>
     {hideIfNone && swaps.length == 0 ? null : (
-      <Card className='mb-3'>
+      <Card className={classNames('mb-3', classProps)}>
         <CardHeader>
           <h5>{tableTitle}</h5>
         </CardHeader>
@@ -126,6 +180,7 @@ export default compose(
     zeroOrdersMessage: PropTypes.string,
     swaps: PropTypes.arrayOf(PropTypes.object),
     showMore: PropTypes.bool,
+    classProps: PropTypes.string
   }),
   defaultProps({
     tableTitle: 'Orders',
@@ -134,6 +189,7 @@ export default compose(
     zeroOrdersMessage: 'No orders to show',
     swaps: [{}],
     showMore: false,
+    classProps: ''
   }),
   connect(createStructuredSelector({
     areOrdersLoading: areAnyWalletOrdersLoading,

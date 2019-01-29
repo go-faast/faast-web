@@ -9,12 +9,12 @@ import TradeTable from 'Components/TradeTable'
 import { getConnectedWalletsPendingSwaps, getConnectedWalletsCompletedSwaps } from 'Selectors'
 
 export const tableHeadings = [
-  { text: '', mobile: true },
+  { text: '', mobile: false },
   { text: 'Date', mobile: false },
   { text: 'Pair', mobile: false },
-  { text: 'Received', mobile: true },
-  { text: 'Cost', mobile: true },
-  { text: 'Rate', mobile: true }
+  { text: 'Received', mobile: false },
+  { text: 'Cost', mobile: false },
+  { text: 'Rate', mobile: false }
 ]
 
 const TradeHistory = ({ pendingSwaps, completedSwaps }) => (

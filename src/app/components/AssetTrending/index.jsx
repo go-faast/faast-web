@@ -1,7 +1,9 @@
 import React from 'react'
+import { push as pushAction } from 'react-router-redux'
+import routes from 'Routes'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { compose, setDisplayName, withState, withProps } from 'recompose'
+import { compose, setDisplayName, withProps } from 'recompose'
 import withToggle from 'Hoc/withToggle'
 import { Dropdown, DropdownItem, DropdownToggle, DropdownMenu } from 'reactstrap'
 
@@ -10,8 +12,10 @@ import Layout from 'Components/Layout'
 
 import { getTrendingPositive, getTrendingNegative } from 'Selectors'
 
+const getQuery = ({ match }) => match.params.timeFrame
+
 const AssetTrending = ({ trendingPositive, trendingNegative,
-  isDropdownOpen, toggleDropdownOpen, timeFrame, updateTimeFrame
+  isDropdownOpen, toggleDropdownOpen, timeFrame, push
 }) => {
   return (
     <Layout className='pt-3 p-0 p-sm-3'>
@@ -34,7 +38,7 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
               <DropdownMenu className='p-0'>
                 <DropdownItem 
                   active={timeFrame === '7d'} 
-                  onClick={() => updateTimeFrame('7d')}
+                  onClick={() => push(routes.trending('7d'))}
                   className='py-2'
                 >
                 7d
@@ -42,7 +46,7 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
                 <DropdownItem className='m-0' divider/>
                 <DropdownItem 
                   active={timeFrame === '1d'} 
-                  onClick={() => updateTimeFrame('1d')}
+                  onClick={() => push(routes.trending('1d'))}
                   className='py-2'
                 >
                 1d
@@ -50,7 +54,7 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
                 <DropdownItem className='m-0' divider/>
                 <DropdownItem 
                   active={timeFrame === '1h'} 
-                  onClick={() => updateTimeFrame('1h')}
+                  onClick={() => push(routes.trending('1h'))}
                   className='py-2'
                 >
                 1h
@@ -73,11 +77,12 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
 
 export default compose(
   setDisplayName('AssetTrending'),
-  withState('timeFrame', 'updateTimeFrame', '1d'),
   withToggle('dropdownOpen'),
-  withProps(({ timeFrame }) => {
+  withProps((props) => {
+    const timeFrame = getQuery(props) || '1d'
     const trendingTimeFrame = timeFrame === '1d' ? 'change24' : timeFrame === '7d' ? 'change7d' : 'change1'
     return ({
+      timeFrame,
       trendingTimeFrame
     })
   }),
@@ -85,5 +90,6 @@ export default compose(
     trendingPositive: (state, { trendingTimeFrame }) => getTrendingPositive(state, { sortField: trendingTimeFrame, n: 15 }),
     trendingNegative: (state, { trendingTimeFrame }) => getTrendingNegative(state, { sortField: trendingTimeFrame, n: 15 }),
   }), {
+    push: pushAction
   }),
 )(AssetTrending)
