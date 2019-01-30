@@ -1,0 +1,22 @@
+.graphicSection {
+  background-size: 50%;
+  background-repeat: no-repeat;
+  background-position: 85%;
+  min-height: 350px;
+  height: auto;
+  position: relative;
+}
+
+.gradient {
+  background-image: radial-gradient(circle at 100% 100%, rgba(35, 38, 49, 1) 0, rgba(35, 38, 49, .8) 100%), radial-gradient(circle at 0 50%, rgba(57, 63, 78, 1) 0, rgba(57, 63, 78, .8) 50%);
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.text {
+  color: #272727;
+}

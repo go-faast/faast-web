@@ -139,43 +139,43 @@ export default compose(
       <p className='lead text-center text-muted' style={{ marginTop: '0px', marginBottom: '20px' }}>Supported Wallets<br/></p>
       <div className='row no-gutters justify-content-center'>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/app/connect/hw/trezor'>
+          <a className='d-block text-white' href='/wallets/trezor'>
             <img className='rounded wallet-logo' src={TrezorWalletLogo} alt='trezor'/>
             <p className='text-center pt-2'>TREZOR</p>
           </a>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/app/connect/hw/ledger'>
+          <a className='d-block text-white' href='/wallets/ledger-wallet'>
             <img className='rounded wallet-logo' src={LedgerWalletLogo} alt='ledger logo'/>
             <p className='text-center pt-2'>Ledger Wallet</p>
           </a>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/app/connect'>
+          <a className='d-block text-white' href='/wallets/metamask'>
             <img className='rounded wallet-logo' src={MetaMaskLogo} alt='metamask logo'/>
             <p className='text-center pt-2'>MetaMask</p>
           </a>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/app/connect'>
+          <a className='d-block text-white' href='/wallets/mist-browser'>
             <img className='rounded wallet-logo' src={MistLogo} alt='mist logo'/>
             <p className='text-center pt-2'>Mist</p>
           </a>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/app/connect'>
+          <a className='d-block text-white' href='/wallets/trust-wallet'>
             <img className='rounded wallet-logo' src={TrustWalletLogo} alt='trust wallet logo'/>
             <p className='text-center pt-2'>Trust Wallet</p>
           </a>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/app/connect'>
+          <a className='d-block text-white' href='/wallets/coinbase-wallet'>
             <img className='rounded wallet-logo' src={CoinbaseWalletLogo} alt='coinbase wallet logo'/>
             <p className='text-center pt-2'>Coinbase Wallet</p>
           </a>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/app/connect'>
+          <a className='d-block text-white' href='/wallets/status'>
             <img className='rounded wallet-logo' src={StatusWalletLogo} alt='status logo'/>
             <p className='text-center pt-2'>Status</p>
           </a>
