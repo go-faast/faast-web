@@ -82,14 +82,21 @@ export const replaceStringWithJSX = (source, match, fn) => {
 
 export const getTimeSinceDate = (date) => {
   const seconds = Math.floor((new Date() - date) / 1000)
-  console.log(date)
   let interval = Math.floor(seconds / 31536000)
   if (interval > 1) {
     return interval + ' years'
   }
   interval = Math.floor(seconds / 2592000)
-  if (interval > 1) {
-    return interval + ' months'
+  if (interval == 1) {
+    return '1 month'
+  } else if (interval > 1 && interval <= 11) {
+    return ` ${Math.floor(interval % 2592000)} months`
+  }
+  interval = Math.floor(seconds / 604800)
+  if (interval == 1) {
+    return '1 week'
+  } else if (interval > 1 && interval < 4) {
+    return ` ${Math.floor(interval % 604800)} weeks`
   }
   interval = Math.floor(seconds / 86400)
   if (interval > 1) {

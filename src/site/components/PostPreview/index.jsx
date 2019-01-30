@@ -11,10 +11,10 @@ export default compose(
   setDisplayName('PostPreview')
 )(({ post: { title, uniqueSlug, createdAt, virtuals: { subtitle, previewImage: { imageId } } } }) => (
   <Col className='mt-3' sm='4'>
-    <Card className={classNames(card, 'h-100')}>
+    <Card tag='a' href={`/blog/${uniqueSlug}`} className={classNames(card, 'h-100')}>
       <CardImg top src={`https://cdn-images-1.medium.com/max/1600/${imageId}`} />
       <CardBody>
-        <CardTitle className={darkText} tag='a' href={`/blog/${uniqueSlug}`}>
+        <CardTitle className={darkText}>
           <h5 className='font-weight-bold'>{title}</h5>
         </CardTitle>
         <CardText className={subtitleText}>{subtitle}</CardText>

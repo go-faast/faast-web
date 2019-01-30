@@ -10,12 +10,15 @@ import Footer from 'Site/components/Footer'
 import { darkText } from 'Site/components/PostPreview/style.scss'
 import classNames from 'class-names'
 
+/* eslint-disable no-unused-vars */
+import style from './style.scss?global'
+
 export default compose(
   setDisplayName('Blog'),
   withRouteData
 )(({ mediumPosts }) => (
   <Fragment>
-    <Header theme='light' bgColor='#F5F7F8' />
+    <Header theme='light' />
     <Container>
       <h4 className={classNames(darkText, 'mt-4 font-weight-bold')}>Newest Blog Posts</h4>
       <Row className='pb-5 mb-4'>

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { compose, setDisplayName, setPropTypes, defaultProps, lifecycle } from 'recompose'
+import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
 import { Link } from 'react-static'
 import siteConfig from 'Site/config'
 import FaastLogo64x64 from 'Img/faast-logo-64x64.png'
@@ -20,14 +20,6 @@ export default compose(
     theme: 'dark',
     bgColor: '#181818',
     headerColor: undefined,
-  }),
-  lifecycle({
-    componentWillMount() {
-      const { bgColor } = this.props
-      if (bgColor !== '#181818' && typeof document !== 'undefined') {
-        document.body.style.backgroundColor = bgColor
-      }
-    }
   })
 )(({ theme, headerColor }) => (
   <nav className={classNames(darkestText, 'navbar navbar-dark navbar-expand-md navigation-clean-button')}
@@ -46,7 +38,7 @@ export default compose(
             <a className={classNames(theme == 'light' ? darkestText : 'text-light', 'nav-link')} href='/app/swap'>Swap</a>
           </li>
           <li className='nav-item' role='presentation'>
-            <a className={classNames(theme == 'light' ? darkestText : 'text-light', 'nav-link')} href='https://medium.com/faast' target='_blank noopener noreferrer' rel='noopener'>Blog</a>
+            <a className={classNames(theme == 'light' ? darkestText : 'text-light', 'nav-link')} href='/blog' target='_blank noopener noreferrer' rel='noopener'>Blog</a>
           </li>
           <li className='nav-item' role='presentation'>
             <a className='nav-link py-1' href='/app'>
