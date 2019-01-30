@@ -15,7 +15,7 @@ export default compose(
   withRouteData
 )(({ mediumPosts }) => (
   <Fragment>
-    <Header theme='light' />
+    <Header theme='light' bgColor='#F5F7F8' />
     <Container>
       <h4 className={classNames(darkText, 'mt-4 font-weight-bold')}>Newest Blog Posts</h4>
       <Row className='pb-5 mb-4'>

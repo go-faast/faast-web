@@ -24,7 +24,7 @@ export default compose(
   lifecycle({
     componentWillMount() {
       const { bgColor } = this.props
-      if (bgColor !== '#181818') {
+      if (bgColor !== '#181818' && typeof document !== 'undefined') {
         document.body.style.backgroundColor = bgColor
       }
     }

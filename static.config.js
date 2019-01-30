@@ -1,3 +1,4 @@
+import { uniqBy } from 'lodash'
 import React, { Fragment } from 'react'
 import path from 'path'
 import axios from 'axios'
@@ -13,6 +14,8 @@ const getBaseConfig = require('./etc/webpack.config.base.js')
 const siteConfig = require('./src/site/config.js')
 
 const siteUrlProd = 'https://faa.st'
+
+const storageKey = process.env.STORAGE_KEY
 
 /**
  * Redirect to site root at runtime. Needs to be included as inline script
@@ -93,7 +96,41 @@ export default {
     const supportedWallets = Object.values(Wallets)
     let mediumProfile = await axios.get('https://medium.com/faast?format=json')
     mediumProfile = JSON.parse(mediumProfile.data.replace('])}while(1);</x>', ''))
-    const mediumPosts = Object.values(mediumProfile.payload.references.Post)
+    let mediumPosts = Object.values(mediumProfile.payload.references.Post)
+    let dbPosts = []
+    try {
+      const posts = await axios.get('https://api.faa.st/api/v1/storage/blog', {
+        headers: {
+          'Content-Type': 'application/json',
+          'key': storageKey
+        }
+      })
+      dbPosts = posts.data.records ? posts.data.records : dbPosts
+    } catch (err) {
+      console.log('error retrieving posts')
+    }
+    mediumPosts.map(async (post) => {
+      if (!dbPosts.some(savedPost => savedPost.data.uniqueSlug == post.uniqueSlug)) {
+        try {
+          await axios.post(`https://api.faa.st/api/v1/storage/blog/${post.uniqueSlug}`, {
+            ...post,
+            uniqueSlug: post.uniqueSlug,
+          }, 
+          {
+            headers: {
+              'Content-Type': 'application/json',
+              'key': storageKey
+            }
+          })
+        } catch (err) {
+          // error saving post
+          console.log('error saving post')
+        }
+      }
+    })
+    dbPosts = dbPosts.filter(p => p.uniqueSlug)
+    mediumPosts = dbPosts ? dbPosts.concat(mediumPosts) : mediumPosts
+    mediumPosts = uniqBy(mediumPosts, 'uniqueSlug')
     return [
       {
         path: '/',
@@ -169,7 +206,7 @@ export default {
             path: `/${post.uniqueSlug}`,
             component: 'src/site/pages/BlogPost',
             getData: async () => ({
-              mediumPost,
+              mediumPost
             }),
           })
         })) 
