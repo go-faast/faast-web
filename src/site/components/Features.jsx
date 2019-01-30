@@ -67,30 +67,30 @@ export default compose(
           <div className='col-12 col-md-12 col-lg-8 col-xl-8'>
             <h3 className='text-center text-dark' style={{ marginTop: '3rem' }}>Leave more in your wallet</h3>
             <p className='text-center' style={{ marginTop: '0.5rem', marginBottom: '2rem' }}>
-        Amount received from trading $100 of Aragon for Aeternity
+        Amount received from trading $100 of different cryptocurrency pairs.
             </p>
-            <div style={{ height: '64px', backgroundColor: '#00d7b8', marginBottom: '20px', width: '90%' }}>
-              <h6 className='text-dark mb-2' style={{ marginLeft: '8px', paddingTop: '8px' }}>Faast</h6>
-              <p className='text-dark' style={{ marginLeft: '8px' }}><strong>$95.80</strong><br/></p>
+            <div className='p-1' style={{ height: 'auto', backgroundColor: '#00d7b8', marginBottom: '20px', width: '90%' }}>
+              <h6 className='text-dark mb-2' style={{ marginLeft: '8px', paddingTop: '8px' }}>Faast - MTL/WINGS</h6>
+              <p className='text-dark mb-0' style={{ marginLeft: '8px' }}><strong>$98.74</strong><br/></p>
             </div>
-            <div style={{ height: '64px', backgroundColor: '#E3E5E8', marginBottom: '20px', width: '40%' }}>
-              <h6 className='text-dark mb-2' style={{ marginLeft: '8px', paddingTop: '8px' }}>Kyber Network<br/></h6>
-              <p className='text-dark' style={{ marginLeft: '8px' }}><strong>$90.79</strong><br/></p>
+            <div className='p-1' style={{ height: 'auto', backgroundColor: '#E3E5E8', marginBottom: '20px', width: '60%' }}>
+              <h6 className='text-dark mb-2' style={{ marginLeft: '8px', paddingTop: '8px' }}>Kyber Network - MTL/WINGS<br/></h6>
+              <p className='text-dark mb-0' style={{ marginLeft: '8px' }}><strong>$95.80</strong><br/></p>
             </div>
-            <div style={{ height: '64px', backgroundColor: '#E3E5E8', marginBottom: '20px', width: '30%' }}>
-              <h6 className='text-dark mb-2' style={{ marginLeft: '8px', paddingTop: '8px' }}>Binance & Bittrex<br/></h6>
-              <p className='text-dark' style={{ marginLeft: '8px' }}><strong>$89.91</strong><br/></p>
+            <div className='p-1' style={{ height: 'auto', backgroundColor: '#E3E5E8', marginBottom: '20px', width: '45%' }}>
+              <h6 className='text-dark mb-2' style={{ marginLeft: '8px', paddingTop: '8px' }}>Binance & Bittrex - ANT/BCPT <br/></h6>
+              <p className='text-dark mb-0' style={{ marginLeft: '8px' }}><strong>$88.83</strong><br/></p>
             </div>
             <p className='text-center' style={{ marginTop: '2rem', marginBottom: '3rem' }}>
               <small>
-          Method: this graph shows the estimated amount received from trading $100 worth of Aragon (ANT) for Aeternity (AE) using Faast versus other popular cryptocurrency providers.
-          Click <a className='text-dark' href='https://medium.com/faast/binance-vs-kyber-vs-faast-which-exchange-will-save-you-the-most-money-e19972dd11df' target='_blank noopener'>
+          Method: this graph shows the estimated amount received from trading $100 worth of cryptocurrency using Faast versus other popular cryptocurrency providers.
+          Click <a className='text-dark' href='https://medium.com/faast/faast-vs-kyber-swap-vs-bittrex-binance-which-saves-you-the-most-on-token-swaps-1ee9c4b16c79' target='_blank noopener'>
             here
                 </a> to learn more.
               </small>
             </p>
             <p className='lead text-center py-3 px-3 mb-4' style={{ backgroundColor: '#F3F5F8' }}>
-              <a className='text-dark' href='https://medium.com/faast/binance-vs-kyber-vs-faast-which-exchange-will-save-you-the-most-money-e19972dd11df' target='_blank noopener'>
+              <a className='text-dark' href='https://medium.com/faast/faast-vs-kyber-swap-vs-bittrex-binance-which-saves-you-the-most-on-token-swaps-1ee9c4b16c79' target='_blank noopener'>
           Read our Medium post on end-to-end price comparisons
               </a>
             </p>
