@@ -19,7 +19,6 @@ export default compose(
     <Container>
       <h4 className={classNames(darkText, 'mt-4 font-weight-bold')}>Newest Blog Posts</h4>
       <Row className='pb-5 mb-4'>
-        {console.log(mediumPosts)}
         {mediumPosts.map(post => (
           <PostPreview key={post.id} post={post} />
         ))}
