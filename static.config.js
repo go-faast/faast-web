@@ -198,6 +198,10 @@ export default {
         component: 'src/site/pages/Blog',
         getData: async () => ({
           mediumPosts,
+          meta: {
+            title: 'Faa.st Cryptocurrency Blog',
+            description: 'Blog posts about trading on Faa.st as well as the state of crypto including regulation, pricing, wallets, and mining.'
+          }
         }),
         children: await Promise.all(mediumPosts.map(async post => {
           let mediumPost = await axios.get(`https://medium.com/faast/${post.uniqueSlug}?format=json`)
@@ -206,7 +210,11 @@ export default {
             path: `/${post.uniqueSlug}`,
             component: 'src/site/pages/BlogPost',
             getData: async () => ({
-              mediumPost
+              mediumPost,
+              meta: {
+                title: `${post.title} - Faa.st Blog`,
+                description: `${post.virtuals.subtitle}`
+              }
             }),
           })
         })) 
