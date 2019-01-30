@@ -32,7 +32,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
   const percentChange = timeFrame === '1d' ? change24 : timeFrame === '7d' ? change7d : change1
   return (
     <tr {...props}>
-      <td className='pl-3 pl-md-4'>
+      <td className='pl-3 pl-md-4 d-none d-sm-table-cell'>
         <WatchlistStar
           symbol={symbol}
         />
@@ -40,6 +40,11 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
       <td onClick={() => push(routes.assetDetail(symbol))}>
         <Media>
           <Media left>
+            <span style={{ verticalAlign: 'sub' }} className='d-inline d-sm-none mr-2'>
+              <WatchlistStar
+                symbol={symbol}
+              />
+            </span>
             <CoinIcon 
               className='mr-2 mt-2' 
               symbol={symbol} 
@@ -52,50 +57,75 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
             <small style={{ position: 'relative', top: '-2px' }} className='text-muted'>[{symbol}]</small>
           </Media>
         </Media>
-        <div className='d-block d-lg-none pl-4 ml-2 font-xs'>
-          <div className='mt-1'>
-            <span style={{ width: 45 }} className='mr-2 d-inline-block'>Mkt Cap:</span>
-            <span>
-              <Units
-                className='text-nowrap'
-                value={marketCap} 
-                symbol={'$'} 
-                precision={6}
-                symbolSpaced={false}
-                prefixSymbol
-                abbreviate
-              />
-            </span>
-          </div>
-          <div className='mt-1'>
-            <span style={{ width: 45 }} className='mr-2 d-inline-block'>24h Vol:</span>
-            <span>
-              <Units
-                className='text-nowrap'
-                value={volume24} 
+        <Row className='d-flex d-sm-none'>
+          <Col className='position-relative' xs='8'>
+            <div className='pl-3 ml-2 font-xs text-muted'>
+              <div className='mt-1'>
+                <span style={{ width: 45 }} className='mr-2 d-inline-block'>Mkt Cap:</span>
+                <span>
+                  <Units
+                    className='text-nowrap'
+                    value={marketCap} 
+                    symbol={'$'} 
+                    precision={6}
+                    symbolSpaced={false}
+                    prefixSymbol
+                    abbreviate
+                  />
+                </span>
+              </div>
+              <div className='mt-1'>
+                <span style={{ width: 45 }} className='mr-2 d-inline-block'>24h Vol:</span>
+                <span>
+                  <Units
+                    className='text-nowrap'
+                    value={volume24} 
+                    symbol={'$'} 
+                    precision={6} 
+                    symbolSpaced={false}
+                    prefixSymbol
+                    abbreviate
+                  />
+                </span>
+              </div>
+              <div className='mt-1'>
+                <span style={{ width: 45 }} className='mr-2 d-inline-block'>Supply:</span>
+                <span>
+                  <Units
+                    className='text-nowrap'
+                    value={availableSupply} 
+                    symbol={symbol} 
+                    precision={6} 
+                    abbreviate
+                  />
+                </span>
+              </div>
+            </div>
+          </Col>
+          <Col style={{ top: -37 }} className='position-relative text-right' xs='1'>
+          <span className='position-relative'>
+              <Units 
+                className='my-1 d-inline-block'
+                value={price} 
                 symbol={'$'} 
                 precision={6} 
-                symbolSpaced={false}
                 prefixSymbol
-                abbreviate
+                symbolSpaced={false}
               />
+              <div>
+                <ChangePercent>{percentChange}</ChangePercent>
+                <PriceArrowIcon
+                  style={{ position: 'relative', top: '0px' }}
+                  className={classNames('swapChangeArrow', percentChange.isZero() ? 'd-none' : null)} 
+                  size={.58} dir={percentChange < 0 ? 'down' : 'up'} 
+                  color={percentChange < 0 ? 'danger' : percentChange > 0 ? 'success' : null}
+                />
+              </div>
             </span>
-          </div>
-          <div className='mt-1'>
-            <span style={{ width: 45 }} className='mr-2 d-inline-block'>Supply:</span>
-            <span>
-              <Units
-                className='text-nowrap'
-                value={availableSupply} 
-                symbol={symbol} 
-                precision={6} 
-                abbreviate
-              />
-            </span>
-          </div>
-        </div>
+          </Col>
+        </Row>
       </td>
-      <td onClick={() => push(routes.assetDetail(symbol))}>
+      <td className='d-none d-sm-table-cell' onClick={() => push(routes.assetDetail(symbol))}>
         <Units 
           className='mt-1 d-inline-block'
           value={price} 
@@ -105,7 +135,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           symbolSpaced={false}
         />
       </td>
-      <td className='d-none d-lg-table-cell' onClick={() => push(routes.assetDetail(symbol))}>
+      <td className='d-none d-sm-table-cell' onClick={() => push(routes.assetDetail(symbol))}>
         <Units
           className='text-nowrap'
           value={marketCap} 
@@ -116,7 +146,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           abbreviate
         />
       </td>
-      <td className='d-none d-lg-table-cell' onClick={() => push(routes.assetDetail(symbol))}>
+      <td className='d-none d-sm-table-cell' onClick={() => push(routes.assetDetail(symbol))}>
         <Units
           className='text-nowrap'
           value={volume24} 
@@ -127,7 +157,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           abbreviate
         />
       </td>
-      <td className='d-none d-lg-table-cell' onClick={() => push(routes.assetDetail(symbol))}>
+      <td className='d-none d-sm-table-cell' onClick={() => push(routes.assetDetail(symbol))}>
         <Units
           className='text-nowrap'
           value={availableSupply} 
@@ -136,7 +166,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           abbreviate
         />
       </td>
-      <td onClick={() => push(routes.assetDetail(symbol))}>
+      <td className='d-none d-sm-table-cell' onClick={() => push(routes.assetDetail(symbol))}>
         <div>
           <ChangePercent>{percentChange}</ChangePercent>
           <PriceArrowIcon
@@ -178,23 +208,23 @@ const AssetIndexTable = ({ assetList, push, toggleDropdownOpen, isDropdownOpen, 
             <Table hover striped responsive className={indexTable}>
               <thead>
                 <tr>
-                  <th className='border-0'></th>
-                  <th onClick={() => handleSortKey('name')} className='pl-3 pl-md-5 border-0'>
+                  <th className='border-0 d-none d-sm-table-cell'></th>
+                  <th onClick={() => handleSortKey('name')} className='pl-3 pl-md-5 border-0 d-none d-sm-table-cell'>
                     Coin {sortKey === 'name' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
                   </th>
-                  <th onClick={() => handleSortKey('price')} className='border-0'>
+                  <th onClick={() => handleSortKey('price')} className='border-0 d-none d-sm-table-cell'>
                     Price {sortKey === 'price' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
                   </th>
-                  <th onClick={() => handleSortKey('marketCap')} className='border-0 d-none d-lg-table-cell'>
+                  <th onClick={() => handleSortKey('marketCap')} className='border-0 d-none d-sm-table-cell'>
                     Market Cap {sortKey === 'marketCap' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
                   </th>
-                  <th onClick={() => handleSortKey('volume24')} className='border-0 d-none d-lg-table-cell'>
+                  <th onClick={() => handleSortKey('volume24')} className='border-0 d-none d-sm-table-cell'>
                     Volume {sortKey === 'volume24' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
                   </th>
-                  <th onClick={() => handleSortKey('availableSupply')} className='border-0 d-none d-lg-table-cell'>
+                  <th onClick={() => handleSortKey('availableSupply')} className='border-0 d-none d-sm-table-cell'>
                     Supply {sortKey === 'availableSupply' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
                   </th>
-                  <th className={classNames('border-0', !defaultPriceChange ? 'p-0' : null)}>
+                  <th className={classNames('border-0 d-none d-sm-table-cell', !defaultPriceChange ? 'p-0' : null)}>
                     {!defaultPriceChange ? (
                       <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
                         <DropdownToggle 
