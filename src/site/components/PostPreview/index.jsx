@@ -15,7 +15,7 @@ export default compose(
       <CardImg top src={`https://cdn-images-1.medium.com/max/1600/${imageId}`} />
       <CardBody>
         <CardTitle className={darkText}>
-          <h5 className='font-weight-bold'>{title}</h5>
+          <span className='font-weight-bold'>{title}</span>
         </CardTitle>
         <CardText className={subtitleText}>{subtitle}</CardText>
         <CardText>

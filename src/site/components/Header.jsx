@@ -13,12 +13,10 @@ export default compose(
   setDisplayName('Header'),
   setPropTypes({
     theme: PropTypes.string,
-    bgColor: PropTypes.string,
     headerColor: PropTypes.string,
   }),
   defaultProps({
     theme: 'dark',
-    bgColor: '#181818',
     headerColor: undefined,
   })
 )(({ theme, headerColor }) => (

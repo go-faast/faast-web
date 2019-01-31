@@ -75,7 +75,7 @@ const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
           </Fragment>
         )}
       </Head>
-      <Body>{children}</Body>
+      <Body style={{ backgroundColor: routeInfo.bgColor ? routeInfo.bgColor : null }}>{children}</Body>
     </Html>
   )
 }
@@ -201,7 +201,8 @@ export default {
           meta: {
             title: 'Faa.st Cryptocurrency Blog',
             description: 'Blog posts about trading on Faa.st as well as the state of crypto including regulation, pricing, wallets, and mining.'
-          }
+          },
+          bgColor: '#F5F7F8'
         }),
         children: await Promise.all(mediumPosts.map(async post => {
           let mediumPost = await axios.get(`https://medium.com/faast/${post.uniqueSlug}?format=json`)
@@ -214,7 +215,8 @@ export default {
               meta: {
                 title: `${post.title} - Faa.st Blog`,
                 description: `${post.virtuals.subtitle}`
-              }
+              },
+              bgColor: '#F5F7F8'
             }),
           })
         })) 

@@ -10,9 +10,6 @@ import Footer from 'Site/components/Footer'
 import { darkText } from 'Site/components/PostPreview/style.scss'
 import classNames from 'class-names'
 
-/* eslint-disable no-unused-vars */
-import style from './style.scss'
-
 export default compose(
   setDisplayName('Blog'),
   withRouteData
