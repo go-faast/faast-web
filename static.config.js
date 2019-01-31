@@ -15,7 +15,7 @@ const siteConfig = require('./src/site/config.js')
 
 const siteUrlProd = 'https://faa.st'
 
-const storageKey = process.env.STORAGE_KEY || 'storage-dvuJ7YNdxgxdLrLzganVfReG'
+const storageKey = process.env.STORAGE_KEY
 
 /**
  * Redirect to site root at runtime. Needs to be included as inline script
