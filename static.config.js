@@ -58,14 +58,14 @@ const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
       <Head>
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
-        <meta name='description' content={get(routeInfo, 'routeData.meta.description', siteData.description)}/>
+        <meta name='description' content={get(routeInfo, 'allProps.meta.description', siteData.description)}/>
         <meta name='author' content={siteConfig.author}/>
         <meta name='referrer' content='origin-when-cross-origin'/>
         <link rel="canonical" href={urlJoin(siteUrlProd, routeInfo ? routeInfo.path : '')}/>
         <link href='/static/vendor/ionicons-2.0/css/ionicons.min.css' rel='stylesheet'/>
         <link href='/static/vendor/font-awesome-5.5/css/all.min.css' rel='stylesheet'/>
         <link rel="icon" href="/favicon.png"/>
-        <title>{get(routeInfo, 'routeData.meta.title', siteData.title)}</title>
+        <title>{get(routeInfo, 'allProps.meta.title', siteData.title)}</title>
         <script dangerouslySetInnerHTML={{ __html: runtimeRedirect }}/>
         {/* Google analytics */}
         {!isDev && (
@@ -75,7 +75,7 @@ const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
           </Fragment>
         )}
       </Head>
-      <Body style={{ backgroundColor: routeInfo.bgColor ? routeInfo.bgColor : null }}>{children}</Body>
+      <Body style={{ backgroundColor: get(routeInfo, 'allProps.bgColor', '#181818') }}>{children}</Body>
     </Html>
   )
 }
