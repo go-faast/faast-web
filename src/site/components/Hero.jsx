@@ -67,7 +67,7 @@ export default compose(
           </Col>
           {showMacScreenShot && (
             <div className='intro d-md-none d-block mx-auto' style={{ paddingTop: '60px', maxWidth: 400 }}>
-              <LazyLoad height={200}>
+              <LazyLoad offset={200} height={200}>
                 <img className='img-fluid' src={MacbookScreenshot1} style={{ height: '100%', width: '730px' }}/>	
               </LazyLoad>
             </div>

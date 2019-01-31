@@ -62,7 +62,7 @@ export default compose(
       {items.map(({ key, label, iconUrl, link }, i) => (
         <div key={key} className={style.icon} {...(i === 0 ? { ref: refs.firstIcon } : {})}>
           <a className='d-block text-white' href={link}>
-            <LazyLoad height={72}>
+            <LazyLoad offset={200} height={72}>
               <img className={style.iconImg} src={iconUrl}/>
             </LazyLoad>
             <div className={style.iconLabel}>{label}</div>
