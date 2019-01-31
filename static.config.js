@@ -67,15 +67,15 @@ const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
         <link rel="icon" href="/favicon.png"/>
         <title>{get(routeInfo, 'allProps.meta.title', siteData.title)}</title>
         <script dangerouslySetInnerHTML={{ __html: runtimeRedirect }}/>
-        {/* Google analytics */}
-        {!isDev && (
-          <Fragment>
-            <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100689193-1"></script>
-            <script dangerouslySetInnerHTML={{ __html: analyticsCode }}/>
-          </Fragment>
-        )}
       </Head>
       <Body style={{ backgroundColor: get(routeInfo, 'allProps.bgColor', '#181818') }}>{children}</Body>
+      {/* Google analytics */}
+      {!isDev && (
+        <Fragment>
+          <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100689193-1"></script>
+          <script dangerouslySetInnerHTML={{ __html: analyticsCode }}/>
+        </Fragment>
+      )}
     </Html>
   )
 }
