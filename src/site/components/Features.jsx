@@ -131,7 +131,7 @@ export default compose(
           seconds with only a single transaction.<br/></p><a className='btn btn-light active' role='button' href='/app'>Start Trading</a></div>
           </div>
           <div className='col-sm-12 col-md-6 col-lg-7 col-xl-6 offset-md-0 offset-lg-0 offset-xl-0 align-self-center' style={{ paddingTop: '30px' }}>
-            <LazyLoad offset={200} height={300}>
+            <LazyLoad offset={300} height={300}>
               <img className='img-fluid' src={MacbookScreenshot2} style={{ marginTop: '0px' }}/>
             </LazyLoad>
           </div>
@@ -143,7 +143,7 @@ export default compose(
       <div className='row no-gutters justify-content-center'>
         <div className='col-auto'>
           <a className='d-block text-white' href='/wallets/trezor'>
-            <LazyLoad offset={200} height={72}>
+            <LazyLoad offset={300} height={72}>
               <img className='rounded wallet-logo' src={TrezorWalletLogo} alt='trezor'/>
             </LazyLoad>
             <p className='text-center pt-2'>TREZOR</p>
@@ -151,7 +151,7 @@ export default compose(
         </div>
         <div className='col-auto'>
           <a className='d-block text-white' href='/wallets/ledger-wallet'>
-            <LazyLoad offset={200} height={72}>
+            <LazyLoad offset={300} height={72}>
               <img className='rounded wallet-logo' src={LedgerWalletLogo} alt='ledger logo'/>
             </LazyLoad>
             <p className='text-center pt-2'>Ledger Wallet</p>
@@ -159,7 +159,7 @@ export default compose(
         </div>
         <div className='col-auto'>
           <a className='d-block text-white' href='/wallets/metamask'>
-            <LazyLoad offset={200} height={72}>
+            <LazyLoad offset={300} height={72}>
               <img className='rounded wallet-logo' src={MetaMaskLogo} alt='metamask logo'/>
             </LazyLoad>
             <p className='text-center pt-2'>MetaMask</p>
@@ -167,7 +167,7 @@ export default compose(
         </div>
         <div className='col-auto'>
           <a className='d-block text-white' href='/wallets/mist-browser'>
-            <LazyLoad offset={200} height={72}>
+            <LazyLoad offset={300} height={72}>
               <img className='rounded wallet-logo' src={MistLogo} alt='mist logo'/>
             </LazyLoad>
             <p className='text-center pt-2'>Mist</p>
@@ -175,7 +175,7 @@ export default compose(
         </div>
         <div className='col-auto'>
           <a className='d-block text-white' href='/wallets/trust-wallet'>
-            <LazyLoad offset={200} height={72}>
+            <LazyLoad offset={300} height={72}>
               <img className='rounded wallet-logo' src={TrustWalletLogo} alt='trust wallet logo'/>
             </LazyLoad>
             <p className='text-center pt-2'>Trust Wallet</p>
@@ -183,7 +183,7 @@ export default compose(
         </div>
         <div className='col-auto'>
           <a className='d-block text-white' href='/wallets/coinbase-wallet'>
-            <LazyLoad offset={200} height={72}>
+            <LazyLoad offset={300} height={72}>
               <img className='rounded wallet-logo' src={CoinbaseWalletLogo} alt='coinbase wallet logo'/>
             </LazyLoad>
             <p className='text-center pt-2'>Coinbase Wallet</p>
@@ -191,7 +191,7 @@ export default compose(
         </div>
         <div className='col-auto'>
           <a className='d-block text-white' href='/wallets/status'>
-            <LazyLoad offset={200} height={72}>
+            <LazyLoad offset={300} height={72}>
               <img className='rounded wallet-logo' src={StatusWalletLogo} alt='status logo'/>
             </LazyLoad>
             <p className='text-center pt-2'>Status</p>
@@ -199,7 +199,7 @@ export default compose(
         </div>
         <div className='col-auto'>
           <a className='d-block text-white' href='/app/connect'>
-            <LazyLoad offset={200} height={72}>
+            <LazyLoad offset={300} height={72}>
               <img className='rounded wallet-logo' src={MewLogo} alt='my ether wallet logo'/>
             </LazyLoad>
             <p className='text-center pt-2'>Keystore</p>
@@ -212,14 +212,14 @@ export default compose(
         <div className='intro'></div>
         <div className='row people'>
           <div className='col-sm-4 col-md-4 col-lg-4 item pt-2r'>
-            <LazyLoad offset={200} height={161}>
+            <LazyLoad offset={300} height={161}>
               <img src={SecureIcon} style={{ height: '161px', width: '316px', backgroundColor: 'rgba(243,245,248,0)', padding: '25px' }}/>
             </LazyLoad>
             <h5 className='name' style={{ fontWeight: 'normal' }}>Secure</h5>
             <p className='description'>The safest trading method in the world— we don’t have your money; if we got hacked, you’d lose nothing.<br/></p>
           </div>
           <div className='col-sm-4 col-md-4 col-lg-4 offset-md-3 offset-lg-0 item ml-0 pt-2r'>
-            <LazyLoad offset={200} height={161}>
+            <LazyLoad offset={300} height={161}>
               <img src={SimpleIcon} style={{ width: '306px', padding: '36px', backgroundColor: 'rgba(243,245,248,0)', height: '161px' }}/>
             </LazyLoad>
             <h5 className='name' style={{ fontWeight: 'normal' }}>Simple</h5>
@@ -227,7 +227,7 @@ export default compose(
             <p className='description'>Intuitive and mobile friendly UI makes crypto trading simple and easy.<br/></p>
           </div>
           <div className='col-sm-4 col-md-4 col-lg-4 item pt-2r'>
-            <LazyLoad offset={200} height={161}>
+            <LazyLoad offset={300} height={161}>
               <img className='rounded-circle' src={PrivacyIcon} style={{ width: '234px', height: '161px', padding: '36px', backgroundColor: 'rgba(243,245,248,0)' }}/>
             </LazyLoad>
             <h5 className='name' style={{ fontWeight: 'normal' }}>Private</h5>
@@ -246,7 +246,7 @@ export default compose(
         <div className='row justify-content-center features' style={{ paddingTop: '0px', marginTop: '-60px' }}>
           <div className='col-sm-4 col-md-4 col-lg-3 item'>
             <div className='box'>
-              <LazyLoad offset={200} height={55}>
+              <LazyLoad offset={300} height={55}>
                 <img src={AddWalletIcon} style={{ marginBottom: '23px' }}/>
               </LazyLoad>
               <h3 className='name' style={{ fontWeight: 'normal' }}>Add Wallet</h3>
@@ -254,7 +254,7 @@ export default compose(
           </div>
           <div className='col-sm-4 col-md-4 col-lg-3 item'>
             <div className='box'>
-              <LazyLoad offset={200} height={55}>
+              <LazyLoad offset={300} height={55}>
                 <img src={ViewDashboardIcon} style={{ marginBottom: '30px' }}/>
               </LazyLoad>
               <h3 className='name' style={{ fontWeight: 'normal' }}>View Dashboard</h3>
@@ -262,7 +262,7 @@ export default compose(
           </div>
           <div className='col-sm-4 col-md-4 col-lg-3 item'>
             <div className='box'>
-              <LazyLoad offset={200} height={55}>
+              <LazyLoad offset={300} height={55}>
                 <img src={SwapFundsIcon} style={{ marginBottom: '20px' }}/>
               </LazyLoad>
               <h3 className='name' style={{ fontWeight: 'normal' }}>Swap Funds</h3>
@@ -276,12 +276,12 @@ export default compose(
       <div className='container'>
         <div className='text-center w-100 mb-4'>
           <p className='text-white'>Vote for us on Product Hunt</p>
-          <LazyLoad offset={200} height={55}>
+          <LazyLoad offset={300} height={55}>
             <iframe src='https://yvoschaap.com/producthunt/counter.html#href=https%3A%2F%2Fwww.producthunt.com%2Fr%2Fp%2F114880&layout=tall'
               width='56px' height='65px' scrolling='no' frameBorder={0}></iframe>
           </LazyLoad>
         </div>
-        <LazyLoad offset={200} height={100}>
+        <LazyLoad offset={300} height={100}>
           <EmailSubscriptionForm/>
         </LazyLoad>
       </div>
@@ -289,7 +289,7 @@ export default compose(
     <div className='brands'>
       <a className='text-white-50' href='https://bitaccess.ca/' target='_blank noopener' style={{ backgroundColor: '#364B5E', height: '185px', textDecoration: 'none' }}>
         <p className='text-center text-white'>Made by the team at<br/></p>
-        <LazyLoad offset={200} height={69}>
+        <LazyLoad offset={300} height={69}>
           <img src={BitaccessLogo} style={{ marginTop: '0px' }}/>
         </LazyLoad>
       </a>
