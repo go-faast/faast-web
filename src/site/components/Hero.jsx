@@ -10,6 +10,7 @@ import MacbookScreenshot1 from 'Img/macbook-screenshot-01.png'
 
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
+import LazyLoad from 'react-lazyload'
 
 export default compose(
   setDisplayName('Hero'),
@@ -65,8 +66,10 @@ export default compose(
             <SwapWidget assets={supportedAssets} defaultDeposit={from} defaultReceive={to} />
           </Col>
           {showMacScreenShot && (
-            <div className='intro d-md-none d-block mx-auto' style={{ paddingTop: '60px', maxWidth: 400 }}>	
-              <img className='img-fluid' src={MacbookScreenshot1} style={{ height: '100%', width: '730px' }}/>	
+            <div className='intro d-md-none d-block mx-auto' style={{ paddingTop: '60px', maxWidth: 400 }}>
+              <LazyLoad height={200}>
+                <img className='img-fluid' src={MacbookScreenshot1} style={{ height: '100%', width: '730px' }}/>	
+              </LazyLoad>
             </div>
           )}
         </Row>
