@@ -162,8 +162,7 @@ export default {
                 descriptions,
                 meta: {
                   title: `Instantly ${type} ${name} (${symbol}) - Faa.st`,
-                  description: `Safely trade your ${name} crypto directly from your hardware or software wallet.
-                  View ${name} (${symbol}) pricing charts, market cap, daily volume and other coin data.`
+                  description: `Safely trade your ${name} crypto directly from your hardware or software wallet. View ${name} (${symbol}) pricing charts, market cap, daily volume and other coin data.`
                 }
               }
             },
@@ -186,8 +185,7 @@ export default {
               wallet,
               meta: {
                 title: `Trade Your Crypto from your ${metaName.replace(' Wallet', '')} Wallet - Faa.st`,
-                description: `Safely trade your crypto directly from your ${metaName} Wallet.
-                Connect your ${metaName} wallet and trade 100+ cryptocurrencies on Faa.st.`
+                description: `Safely trade your crypto directly from your ${metaName} Wallet. Connect your ${metaName} wallet and trade 100+ cryptocurrencies on Faa.st.`
               }
             })
           }
