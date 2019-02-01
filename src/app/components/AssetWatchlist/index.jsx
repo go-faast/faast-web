@@ -25,7 +25,7 @@ export default compose(
   connect(createStructuredSelector({
     watchlist: getWatchlist,
     pricesLoaded: areAssetPricesLoaded,
-    pricesErorr: getAssetPricesError
+    pricesError: getAssetPricesError
   }), {
   }),
 )(AssetWatchlist)
