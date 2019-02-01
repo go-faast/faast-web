@@ -1,40 +1,47 @@
 import bchaddr from 'bchaddrjs'
 
-import { Tester, FormatConfig, safeTest, validateFromTest } from '../common'
+import { Tester, Converter, Validator, FormatConfig, AddressFormat, safeTest, validateFromTest } from '../common'
 
 const bchTestLegacy = safeTest(bchaddr.isLegacyAddress)
 const bchTestCashAddress = safeTest(bchaddr.isCashAddress)
 const bchTestBitpay = safeTest(bchaddr.isBitpayAddress)
 
-const bchValidate = (test: Tester) => validateFromTest(test, 'Bitcoin Cash')
+class BchAddressFormat implements AddressFormat {
+
+  validate: Validator
+
+  constructor(
+    public type: string, public label: string, public description: string,
+    public test: Tester, public convert: Converter,
+  ) {
+    this.validate = validateFromTest(test, 'Bitcoin Cash', `(${label} format)`)
+  }
+}
 
 const config: FormatConfig = {
-  default: 'cashaddr',
+  default: bchaddr.Format.Cashaddr,
   formats: [
-    {
-      type: bchaddr.Format.Legacy,
-      label: 'Legacy',
-      description: 'Legacy base58 address format. Inherited from forking Bitcoin.',
-      test: bchTestLegacy,
-      validate: bchValidate(bchTestLegacy),
-      convert: bchaddr.toLegacyAddress,
-    },
-    {
-      type: bchaddr.Format.Cashaddr,
-      label: 'Cash Address',
-      description: 'New Bitcoin Cash address format introduced in 2018.',
-      test: bchTestCashAddress,
-      validate: bchValidate(bchTestCashAddress),
-      convert: bchaddr.toCashAddress,
-    },
-    {
-      type: bchaddr.Format.Bitpay,
-      label: 'BitPay',
-      description: 'Proprietary format created by BitPay for their Copay app. Not widely used.',
-      test: bchTestBitpay,
-      validate: bchValidate(bchTestBitpay),
-      convert: bchaddr.toBitpayAddress,
-    },
+    new BchAddressFormat(
+      bchaddr.Format.Legacy,
+      'Legacy',
+      'Legacy base58 address format. Inherited from forking Bitcoin.',
+      bchTestLegacy,
+      bchaddr.toLegacyAddress,
+    ),
+    new BchAddressFormat(
+      bchaddr.Format.Cashaddr,
+      'CashAddr',
+      'Standard Bitcoin Cash address format introduced in 2018.',
+      bchTestCashAddress,
+      bchaddr.toCashAddress,
+    ),
+    new BchAddressFormat(
+      bchaddr.Format.Bitpay,
+      'BitPay',
+      'Proprietary format created by BitPay for their Copay app. Not widely used.',
+      bchTestBitpay,
+      bchaddr.toBitpayAddress,
+    ),
   ],
 }
 
