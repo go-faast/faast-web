@@ -65,7 +65,10 @@ if [ -z "$RELEASE" ]; then
   echo "release-tag must be passed in as argument or $PROMOTE_REF must be tagged"
   exit 1
 fi
-TARGET_BRANCH_RELEASE=$(git tag --points-at $TARGET_BRANCH)
+
+git fetch
+
+TARGET_BRANCH_RELEASE=$(git tag --points-at origin/$TARGET_BRANCH)
 if [ "$TARGET_BRANCH_RELEASE" == "$RELEASE" ]; then
   echo "$BRANCH_LABEL is already on $RELEASE"
   exit 0
@@ -76,6 +79,7 @@ read -p "Deploying $RELEASE to $BRANCH_LABEL (currently $TARGET_BRANCH_RELEASE).
 START_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
 git checkout $TARGET_BRANCH
+git pull --ff-only
 git merge --ff-only $RELEASE
 git push
 if [ "$START_BRANCH" != "$TARGET_BRANCH" ]; then
