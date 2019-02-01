@@ -74,7 +74,7 @@ if [ "$TARGET_BRANCH_RELEASE" == "$RELEASE" ]; then
   exit 0
 fi
 
-read -p "Deploying $RELEASE to $BRANCH_LABEL (currently $TARGET_BRANCH_RELEASE). Hit enter to continue or ctrl-c to abort."
+read -p "Deploying $RELEASE to $BRANCH_LABEL (currently $TARGET_BRANCH_RELEASE). Hit any key to continue or ctrl-c to abort."
 
 START_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 
