@@ -32,7 +32,6 @@ export const TableRow = ({
     rate, createdAtFormatted, status: { details } },
   ...props
 }) => {
-  console.log(swap)
   return (
     <Fragment>
       <tr className='cursor-pointer d-none d-sm-table-row' {...props}>

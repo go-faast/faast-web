@@ -10,7 +10,7 @@ import Layout from 'Components/Layout'
 import { getWatchlist } from 'Selectors'
 
 const AssetWatchlist = ({ watchlist }) => (
-  <Layout className='pt-3 p-0 p-sm-3'>
+  <Layout className='pt-3'>
     <AssetIndexTable tableHeader={'Watchlist'} assets={watchlist}/>
   </Layout>
 )

@@ -18,7 +18,7 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
   isDropdownOpen, toggleDropdownOpen, timeFrame, push
 }) => {
   return (
-    <Layout className='pt-3 p-0 p-sm-3'>
+    <Layout className='pt-3'>
       <AssetIndexTable 
         defaultPriceChange={timeFrame} 
         tableHeader={'Biggest Gainers'} 
