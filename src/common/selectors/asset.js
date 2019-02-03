@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
-import { localStorageGetJson } from 'Utilities/storage'
 import { toBigNumber } from 'Utilities/convert'
 import { mapValues } from 'Utilities/helpers'
 import { createItemSelector, selectItemId, fieldSelector } from 'Utilities/selector'
+
 import Config from 'Config'
 
 export const getAssetState = ({ asset }) => asset
@@ -11,8 +11,6 @@ export const getAllAssets = createSelector(getAssetState, ({ data }) => mapValue
   let { price, change1, change24, change7d, volume24, marketCap, 
     availableSupply, lastUpdatedPrice, symbol, ERC20, validate } = asset
   const bip21Prefix = !ERC20 ? Config.bip21Prefixes[symbol] : Config.bip21Prefixes[validate]
-  const watchlist = localStorageGetJson('watchlist') || Config.defaultWatchlist
-  const onWatchlist = watchlist.indexOf(symbol) >= 0
   price = toBigNumber(price)
   change24 = toBigNumber(change24)
   change1 = toBigNumber(change1)
@@ -20,7 +18,6 @@ export const getAllAssets = createSelector(getAssetState, ({ data }) => mapValue
   return {
     ...asset,
     bip21Prefix,
-    onWatchlist,
     price,
     change1,
     change24,
@@ -35,7 +32,9 @@ export const getAllAssets = createSelector(getAssetState, ({ data }) => mapValue
   }
 }))
 
+
 export const getAllAssetsArray = createSelector(getAllAssets, Object.values)
+
 export const getAllAssetSymbols = createSelector(getAllAssets, Object.keys)
 export const getNumberOfAssets = createSelector(getAllAssetsArray, (assets) => assets.length)
 

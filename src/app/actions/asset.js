@@ -1,7 +1,8 @@
 import { uniq } from 'lodash'
 import { newScopedCreateAction } from 'Utilities/action'
 import { localStorageSetJson, localStorageGetJson } from 'Utilities/storage'
-import config from 'Config'
+
+import { getTop10MarketCapSymbols } from 'Common/selectors/asset'
 
 export * from 'Common/actions/asset'
 
@@ -9,8 +10,8 @@ const createAction = newScopedCreateAction(__filename)
 
 export const watchlistUpdated = createAction('WATCHLIST_UPDATED', (symbol, onWatchlist) => ({ symbol, onWatchlist }))
 
-export const handleWatchlist = (symbol) => (dispatch) => {
-  let watchlist = localStorageGetJson('watchlist') || config.defaultWatchlist
+export const handleWatchlist = (symbol) => (dispatch, getState) => {
+  let watchlist = localStorageGetJson('watchlist') || getTop10MarketCapSymbols(getState())
   const index = watchlist.indexOf(symbol)
   let added
   if (index < 0) {
