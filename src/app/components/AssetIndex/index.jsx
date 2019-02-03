@@ -9,15 +9,19 @@ import withToggle from 'Hoc/withToggle'
 import AssetIndexTable from 'Components/AssetIndexTable'
 import Layout from 'Components/Layout'
 import Paginator from 'Components/Paginator'
+import LoadingFullscreen from 'Components/LoadingFullscreen'
 
-import { getAssetIndexPage, getNumberOfAssets } from 'Selectors'
+import { getAssetIndexPage, getNumberOfAssets, areAssetPricesLoaded, getAssetPricesError } from 'Selectors'
 
-const AssetIndex = ({ assets, currentPage, numberOfAssets, title }) => {
+const AssetIndex = ({ assets, currentPage, numberOfAssets, title, pricesLoaded, pricesError }) => {
   return (
-    <Layout className='pt-3'>
-      <AssetIndexTable tableHeader={title} assets={assets}/>
-      <Paginator page={currentPage} pages={Math.ceil(numberOfAssets / 50)}/>
-    </Layout>
+    pricesLoaded ? (
+      <Layout className='pt-3 p-0 p-sm-3'>
+        <AssetIndexTable tableHeader={title} assets={assets}/>
+        <Paginator page={currentPage} pages={Math.ceil(numberOfAssets / 50)}/>
+      </Layout>) : (
+      <LoadingFullscreen center label='Loading market data...' error={pricesError}/>   
+    )
   )
 }
 
@@ -43,7 +47,9 @@ export default compose(
   }),
   connect(createStructuredSelector({
     assets: (state, { page, limit, sortField }) => getAssetIndexPage(state, { page, limit, sortField }),
-    numberOfAssets: getNumberOfAssets
+    numberOfAssets: getNumberOfAssets,
+    pricesLoaded: areAssetPricesLoaded,
+    pricesError: getAssetPricesError
   }), {
   }),
 )(AssetIndex)

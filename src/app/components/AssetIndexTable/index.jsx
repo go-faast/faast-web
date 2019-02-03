@@ -1,7 +1,6 @@
 import React, { Fragment } from 'react'
 import routes from 'Routes'
 import { connect } from 'react-redux'
-import { createStructuredSelector } from 'reselect'
 import { push as pushAction } from 'react-router-redux'
 import { compose, setDisplayName, setPropTypes, defaultProps, withState, withHandlers, lifecycle } from 'recompose'
 import { Table, Media, Dropdown, DropdownToggle, DropdownMenu, 
@@ -17,12 +16,10 @@ import CoinIcon from 'Components/CoinIcon'
 import Expandable from 'Components/Expandable'
 import WatchlistStar from 'Components/WatchlistStar'
 import AssetSearchBox from 'Components/AssetSearchBox'
-import Loading from 'Components/Loading'
 import Icon from 'Components/Icon'
 
 import PriceArrowIconSvg from 'Img/price-arrow.svg?inline'
 import { sortObjOfArray } from 'Utilities/helpers'
-import { areAssetPricesLoaded, getAssetPricesError } from 'Selectors'
 
 import { indexTable, mediaBody, sortingArrow } from './style'
 
@@ -183,8 +180,8 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
   )
 }
 
-const AssetIndexTable = ({ assetList, push, toggleMobileDropdownOpen, isMobileDropdownOpen, toggleDropdownOpen, isDropdownOpen, updateTimeFrame, 
-  timeFrame, tableHeader, defaultPriceChange, heading, pricesLoaded, pricesError, showSearch, handleSortKey,
+const AssetIndexTable = ({ assetList, push, toggleDropdownOpen, isDropdownOpen, updateTimeFrame, 
+  timeFrame, tableHeader, defaultPriceChange, heading, showSearch, handleSortKey,
   sortKey, sortDesc
 }) => (
   <Fragment>
@@ -270,65 +267,60 @@ const AssetIndexTable = ({ assetList, push, toggleMobileDropdownOpen, isMobileDr
                           style={{ top: '-4px' }}
                           color='dark' 
                           caret
+                      >
+                        {timeFrame} Change
+                      </DropdownToggle>
+                      <DropdownMenu className='p-0' right>
+                        <DropdownItem
+                          active={timeFrame === '7d'} 
+                          onClick={() => updateTimeFrame('7d')}
+                          className='py-2'
                         >
-                          {timeFrame} Change
-                        </DropdownToggle>
-                        <DropdownMenu className='p-0' right>
-                          <DropdownItem
-                            active={timeFrame === '7d'} 
-                            onClick={() => updateTimeFrame('7d')}
-                            className='py-2'
-                          >
                       7d
-                          </DropdownItem>
-                          <DropdownItem className='m-0' divider/>
-                          <DropdownItem 
-                            active={timeFrame === '1d'} 
-                            onClick={() => updateTimeFrame('1d')}
-                            className='py-2'
-                          >
+                        </DropdownItem>
+                        <DropdownItem className='m-0' divider/>
+                        <DropdownItem 
+                          active={timeFrame === '1d'} 
+                          onClick={() => updateTimeFrame('1d')}
+                          className='py-2'
+                        >
                       1d
-                          </DropdownItem>
-                          <DropdownItem className='m-0' divider/>
-                          <DropdownItem 
-                            active={timeFrame === '1h'} 
-                            onClick={() => updateTimeFrame('1h')}
-                            className='py-2'
-                          >
+                        </DropdownItem>
+                        <DropdownItem className='m-0' divider/>
+                        <DropdownItem 
+                          active={timeFrame === '1h'} 
+                          onClick={() => updateTimeFrame('1h')}
+                          className='py-2'
+                        >
                       1h
-                          </DropdownItem>
-                        </DropdownMenu>
-                      </Dropdown>) : `${defaultPriceChange} Change`}
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {assetList.map((asset) => (
-                  <TableRow 
-                    key={asset.symbol} 
-                    asset={asset} 
-                    push={push}
-                    timeFrame={timeFrame}
-                    defaultPriceChange={defaultPriceChange}
-                  />
-                )
-                )}
-              </tbody>
-            </Table>
-          )}
-        </CardBody>
-      </Card>) : (
-      <Loading center label='Loading market data...' error={pricesError}/>
-    )}
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>) : `${defaultPriceChange} Change`}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {assetList.map((asset) => (
+                <TableRow 
+                  key={asset.symbol} 
+                  asset={asset} 
+                  push={push}
+                  timeFrame={timeFrame}
+                  defaultPriceChange={defaultPriceChange}
+                />
+              )
+              )}
+            </tbody>
+          </Table>
+        )}
+      </CardBody>
+    </Card>
   </Fragment>
 )
 
 export default compose(
   setDisplayName('AssetIndexTable'),
-  connect(createStructuredSelector({
-    pricesLoaded: areAssetPricesLoaded,
-    pricesError: getAssetPricesError, 
-  }),{
+  connect(null, {
     push: pushAction
   }),
   setPropTypes({
@@ -340,7 +332,7 @@ export default compose(
     allowSorting: PropTypes.bool
   }),
   defaultProps({
-    assets: [],
+    assets: [{}],
     tableHeader: 'Assets',
     defaultPriceChange: undefined,
     heading: undefined,

@@ -4,6 +4,7 @@ import {
   compose, setDisplayName, setPropTypes, withProps, withState, withHandlers,
 } from 'recompose'
 import classNames from 'class-names'
+import LazyLoad from 'react-lazyload'
 
 import style from './style.scss'
 
@@ -61,7 +62,9 @@ export default compose(
       {items.map(({ key, label, iconUrl, link }, i) => (
         <div key={key} className={style.icon} {...(i === 0 ? { ref: refs.firstIcon } : {})}>
           <a className='d-block text-white' href={link}>
-            <img className={style.iconImg} src={iconUrl}/>
+            <LazyLoad offset={300} height={72}>
+              <img className={style.iconImg} src={iconUrl}/>
+            </LazyLoad>
             <div className={style.iconLabel}>{label}</div>
           </a>
         </div>

@@ -42,10 +42,10 @@ export function safeTest(test: Tester): Tester {
   }
 }
 
-export function validateFromTest(test: Tester, assetName: string): Validator {
+export function validateFromTest(test: Tester, assetName: string, extra?: string): Validator {
   return (address: string) => {
     if (!test(address)) {
-      return `Invalid ${assetName} address`
+      return `Invalid ${assetName} address${extra ? ` ${extra}` : ''}`
     }
   }
 }

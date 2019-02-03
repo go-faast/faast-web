@@ -9,8 +9,9 @@ import { Dropdown, DropdownItem, DropdownToggle, DropdownMenu } from 'reactstrap
 
 import AssetIndexTable from 'Components/AssetIndexTable'
 import Layout from 'Components/Layout'
+import LoadingFullscreen from 'Components/LoadingFullscreen'
 
-import { getTrendingPositive, getTrendingNegative } from 'Selectors'
+import { getTrendingPositive, getTrendingNegative, areAssetPricesLoaded, getAssetPricesError } from 'Selectors'
 
 const getQuery = ({ match }) => match.params.timeFrame
 
@@ -41,7 +42,6 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
                   onClick={() => push(routes.trending('7d'))}
                   className='py-2'
                 >
-                7d
                 </DropdownItem>
                 <DropdownItem className='m-0' divider/>
                 <DropdownItem 
@@ -58,20 +58,22 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
                   className='py-2'
                 >
                 1h
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </h4>
-        )}
-      />
-      <AssetIndexTable 
-        tableHeader={'Biggest Losers'} 
-        assets={trendingNegative}
-        defaultPriceChange={timeFrame}
-        allowSorting={false}
-        showSearch={false}
-      />
-    </Layout>
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </h4>
+          )}
+        />
+        <AssetIndexTable 
+          tableHeader={'Biggest Losers'} 
+          assets={trendingNegative}
+          defaultPriceChange={timeFrame}
+          allowSorting={false}
+          showSearch={false}
+        />
+      </Layout>) : (
+      <LoadingFullscreen center label='Loading market data...' error={pricesError}/>
+    )
   )
 }
 
@@ -89,6 +91,8 @@ export default compose(
   connect(createStructuredSelector({
     trendingPositive: (state, { trendingTimeFrame }) => getTrendingPositive(state, { sortField: trendingTimeFrame, n: 15 }),
     trendingNegative: (state, { trendingTimeFrame }) => getTrendingNegative(state, { sortField: trendingTimeFrame, n: 15 }),
+    pricesLoaded: areAssetPricesLoaded,
+    pricesError: getAssetPricesError
   }), {
     push: pushAction
   }),
