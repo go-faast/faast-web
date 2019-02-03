@@ -16,7 +16,7 @@ import { getAssetIndexPage, getNumberOfAssets, areAssetPricesLoaded, getAssetPri
 const AssetIndex = ({ assets, currentPage, numberOfAssets, title, pricesLoaded, pricesError }) => {
   return (
     pricesLoaded ? (
-      <Layout className='pt-3 p-0 p-sm-3'>
+      <Layout className='pt-3'>
         <AssetIndexTable tableHeader={title} assets={assets}/>
         <Paginator page={currentPage} pages={Math.ceil(numberOfAssets / 50)}/>
       </Layout>) : (

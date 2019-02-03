@@ -12,7 +12,7 @@ import { getWatchlist, areAssetPricesLoaded, getAssetPricesError } from 'Selecto
 
 const AssetWatchlist = ({ watchlist, pricesLoaded, pricesError }) => (
   pricesLoaded ? (
-    <Layout className='pt-3 p-0 p-sm-3'>
+    <Layout className='pt-3'>
       <AssetIndexTable tableHeader={'Watchlist'} assets={watchlist}/>
     </Layout>) : (
     <LoadingFullscreen center label='Loading market data...' error={pricesError}/>
