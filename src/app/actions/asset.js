@@ -1,7 +1,6 @@
 import { uniq } from 'lodash'
 import { newScopedCreateAction } from 'Utilities/action'
 import { localStorageSetJson, localStorageGetJson } from 'Utilities/storage'
-import config from 'Config'
 
 import { getTop10MarketCapSymbols } from 'Common/selectors/asset'
 

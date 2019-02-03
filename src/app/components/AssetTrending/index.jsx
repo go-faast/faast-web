@@ -16,9 +16,9 @@ import { getTrendingPositive, getTrendingNegative, areAssetPricesLoaded, getAsse
 const getQuery = ({ match }) => match.params.timeFrame
 
 const AssetTrending = ({ trendingPositive, trendingNegative,
-  isDropdownOpen, toggleDropdownOpen, timeFrame, push
+  isDropdownOpen, toggleDropdownOpen, timeFrame, push, pricesLoaded, pricesError
 }) => {
-  return (
+  return pricesLoaded ? (
     <Layout className='pt-3'>
       <AssetIndexTable 
         defaultPriceChange={timeFrame} 
@@ -58,22 +58,21 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
                   className='py-2'
                 >
                 1h
-                  </DropdownItem>
-                </DropdownMenu>
-              </Dropdown>
-            </h4>
-          )}
-        />
-        <AssetIndexTable 
-          tableHeader={'Biggest Losers'} 
-          assets={trendingNegative}
-          defaultPriceChange={timeFrame}
-          allowSorting={false}
-          showSearch={false}
-        />
-      </Layout>) : (
-      <LoadingFullscreen center label='Loading market data...' error={pricesError}/>
-    )
+                </DropdownItem>
+              </DropdownMenu>
+            </Dropdown>
+          </h4>
+        )}
+      />
+      <AssetIndexTable 
+        tableHeader={'Biggest Losers'} 
+        assets={trendingNegative}
+        defaultPriceChange={timeFrame}
+        allowSorting={false}
+        showSearch={false}
+      />
+    </Layout>) : (
+    <LoadingFullscreen center label='Loading market data...' error={pricesError}/>
   )
 }
 
