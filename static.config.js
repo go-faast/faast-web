@@ -98,36 +98,40 @@ export default {
     mediumProfile = JSON.parse(mediumProfile.data.replace('])}while(1);</x>', ''))
     let mediumPosts = Object.values(mediumProfile.payload.references.Post)
     let dbPosts = []
-    try {
-      const posts = await axios.get('https://api.faa.st/api/v1/storage/blog', {
-        headers: {
-          'Content-Type': 'application/json',
-          'key': storageKey
+    if (!storageKey) {
+      console.log('No STORAGE_KEY provided, skipping blog post caching')
+    } else {
+      try {
+        const posts = await axios.get('https://api.faa.st/api/v1/storage/blog', {
+          headers: {
+            'Content-Type': 'application/json',
+            'key': storageKey
+          }
+        })
+        dbPosts = posts.data.records ? posts.data.records : dbPosts
+      } catch (err) {
+        console.log('error retrieving posts')
+      }
+      mediumPosts.map(async (post) => {
+        if (!dbPosts.some(savedPost => savedPost.data.uniqueSlug == post.uniqueSlug)) {
+          try {
+            await axios.post(`https://api.faa.st/api/v1/storage/blog/${post.uniqueSlug}`, {
+              ...post,
+              uniqueSlug: post.uniqueSlug,
+            }, 
+            {
+              headers: {
+                'Content-Type': 'application/json',
+                'key': storageKey
+              }
+            })
+          } catch (err) {
+            // error saving post
+            console.log('error saving post')
+          }
         }
       })
-      dbPosts = posts.data.records ? posts.data.records : dbPosts
-    } catch (err) {
-      console.log('error retrieving posts')
     }
-    mediumPosts.map(async (post) => {
-      if (!dbPosts.some(savedPost => savedPost.data.uniqueSlug == post.uniqueSlug)) {
-        try {
-          await axios.post(`https://api.faa.st/api/v1/storage/blog/${post.uniqueSlug}`, {
-            ...post,
-            uniqueSlug: post.uniqueSlug,
-          }, 
-          {
-            headers: {
-              'Content-Type': 'application/json',
-              'key': storageKey
-            }
-          })
-        } catch (err) {
-          // error saving post
-          console.log('error saving post')
-        }
-      }
-    })
     dbPosts = dbPosts.filter(p => p.uniqueSlug)
     mediumPosts = dbPosts ? dbPosts.concat(mediumPosts) : mediumPosts
     mediumPosts = uniqBy(mediumPosts, 'uniqueSlug')
