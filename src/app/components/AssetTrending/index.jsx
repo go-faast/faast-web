@@ -42,6 +42,7 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
                   onClick={() => push(routes.trending('7d'))}
                   className='py-2'
                 >
+                7d
                 </DropdownItem>
                 <DropdownItem className='m-0' divider/>
                 <DropdownItem 

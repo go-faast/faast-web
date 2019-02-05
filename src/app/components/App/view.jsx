@@ -42,7 +42,6 @@ const AppView = ({ hasNoWallets }) => (
       {/* Routes requiring a connected wallet */}
       <WalletOpened path={dashboard.path} component={Dashboard}/>
       <WalletOpened path={rebalance.path} component={Modify}/>
-      <WalletOpened path={tradeHistory.path} component={TradeHistory}/>
 
       {/* Routes that don't require a connected wallet */}
       <Route path={connect.path} component={Connect}/>
@@ -59,6 +58,7 @@ const AppView = ({ hasNoWallets }) => (
       <Route path={affiliatePayouts.path} component={AffiliatePayouts}/>
       <Route path={affiliateSwaps.path} component={AffiliateSwaps}/>
       <Route path={affiliateTerms.path} component={AffiliateTerms}/>
+      <Route path={tradeHistory.path} component={TradeHistory}/>
       
 
       {/* Legacy routes */}

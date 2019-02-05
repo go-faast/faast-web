@@ -1,12 +1,13 @@
 import React from 'react'
-import { compose, setDisplayName } from 'recompose'
+import { push as pushAction } from 'react-router-redux'
+import { compose, setDisplayName, lifecycle } from 'recompose'
 import { createStructuredSelector } from 'reselect' 
 import { connect } from 'react-redux'
 
 import Layout from 'Components/Layout'
 import TradeTable from 'Components/TradeTable'
 
-import { getConnectedWalletsPendingSwaps, getConnectedWalletsCompletedSwaps } from 'Selectors'
+import { getConnectedWalletsPendingSwaps, getConnectedWalletsCompletedSwaps, isDefaultPortfolioEmpty } from 'Selectors'
 
 export const tableHeadings = [
   { text: '', mobile: false },
@@ -40,7 +41,17 @@ export default compose(
   setDisplayName('TradeHistory'),
   connect(createStructuredSelector({
     pendingSwaps: getConnectedWalletsPendingSwaps,
-    completedSwaps: getConnectedWalletsCompletedSwaps
+    completedSwaps: getConnectedWalletsCompletedSwaps,
+    hasZeroWallets: isDefaultPortfolioEmpty
   }), {
+    push: pushAction,
   }),
+  lifecycle({
+    componentWillMount() {
+      const { hasZeroWallets, push } = this.props
+      if (hasZeroWallets && !window.location.pathname.split('/')[3]) {
+        push('/connect')
+      }
+    }
+  })
 )(TradeHistory)
