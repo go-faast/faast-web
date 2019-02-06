@@ -205,26 +205,27 @@ export class Bitcore extends BitcoreBlockchain {
     let outputTotal = outputs.reduce((total, { amount }) => total + amount, 0)
 
     /* Select inputs and calculate appropriate fee */
+    const minTxFee = this.network.minTxFee
     let fee = 0 // Total fee is recalculated when adding each input
     let amountWithFee = outputTotal + fee
     const inputUtxos = []
     let inputTotal = 0
     for (const utxo of sortedUtxos) {
       fee = estimateTxFee(feeRate, inputUtxos.length + 1, outputCount, isSegwit)
+
+      // Ensure calculated fee is above network minimum
+      if (minTxFee) {
+        const minTxFeeSat = estimateTxFee(minTxFee, inputUtxos.length, outputCount, isSegwit)
+        if (fee < minTxFeeSat) {
+          fee = minTxFeeSat
+        }
+      }
+
       amountWithFee = outputTotal + fee
       inputTotal = inputTotal + utxo.value
       inputUtxos.push(utxo)
       if (inputTotal >= amountWithFee) {
         break
-      }
-    }
-
-    // Ensure calculated fee is above network minimum
-    const minTxFee = this.network.minTxFee
-    if (minTxFee) {
-      const minTxFeeSat = estimateTxFee(minTxFee, inputUtxos.length, outputCount, isSegwit)
-      if (fee < minTxFeeSat) {
-        fee = minTxFeeSat
       }
     }
 
