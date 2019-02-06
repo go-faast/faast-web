@@ -61,9 +61,13 @@ export const BTC = network({
   symbol: 'BTC',
   name: 'Bitcoin',
   bitcoreUrls: [
-    'https://btc.faa.st', 'https://btc1.trezor.io', 'https://btc2.trezor.io',
-    'https://btc3.trezor.io', 'https://btc4.trezor.io', 'https://btc5.trezor.io',
-    // 'https://blockexplorer.com',
+    'https://btc.faa.st',
+    'https://btc1.trezor.io',
+    'https://btc2.trezor.io',
+    'https://btc3.trezor.io',
+    'https://btc4.trezor.io',
+    'https://btc5.trezor.io',
+    // 'https://blockexplorer.com', // not segwit compatible
   ],
   minTxFee: {
     rate: 1,
@@ -186,8 +190,13 @@ export const BCH = network({
   symbol: 'BCH',
   name: 'Bitcoin Cash',
   bitcoreUrls: [
-    'https://bitcoincash.blockexplorer.com', 'https://bch1.trezor.io', 'https://bch2.trezor.io',
-    'https://bch3.trezor.io', 'https://bch4.trezor.io', 'https://bch5.trezor.io',
+    'https://bch1.trezor.io',
+    'https://bch2.trezor.io',
+    'https://bch3.trezor.io',
+    'https://bch4.trezor.io',
+    'https://bch5.trezor.io',
+    'https://bch-insight.bitpay.com',
+    // 'https://bitcoincash.blockexplorer.com', // not bchabc compatible
   ],
   minTxFee: {
     rate: 1,
@@ -212,8 +221,12 @@ export const LTC = network({
   symbol: 'LTC',
   name: 'Litecoin',
   bitcoreUrls: [
-    'https://ltc1.trezor.io', 'https://ltc2.trezor.io',
-    'https://ltc3.trezor.io', 'https://ltc4.trezor.io', 'https://ltc5.trezor.io',
+    'https://ltc1.trezor.io',
+    'https://ltc2.trezor.io',
+    'https://ltc3.trezor.io',
+    'https://ltc4.trezor.io',
+    'https://ltc5.trezor.io',
+    'https://insight.litecore.io',
   ],
   minTxFee: {
     rate: 10,
@@ -266,8 +279,11 @@ export const VTC = network({
   symbol: 'VTC',
   name: 'Vertcoin',
   bitcoreUrls: [
-    'https://vtc1.trezor.io', 'https://vtc2.trezor.io',
-    'https://vtc3.trezor.io', 'https://vtc4.trezor.io', 'https://vtc5.trezor.io',
+    'https://vtc1.trezor.io',
+    'https://vtc2.trezor.io',
+    'https://vtc3.trezor.io',
+    'https://vtc4.trezor.io',
+    'https://vtc5.trezor.io',
   ],
   paymentTypes: [
     {

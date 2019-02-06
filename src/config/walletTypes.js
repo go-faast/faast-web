@@ -25,6 +25,26 @@ const switchPathSegwit = {
   secondaryLabel: 'legacy (non-segwit) account',
 }
 
+const commonSupportedAssets = {
+  BTC: {
+    derivationPath: 'm/49\'/0\'/0\'',
+    switchPath: switchPathSegwit,
+  },
+  BCH: {
+    derivationPath: 'm/44\'/145\'/0\'',
+    switchPath: {
+      primaryPrefix: 'm/44\'/145\'',
+      primaryLabel: 'post-fork account',
+      secondaryPrefix: 'm/44\'/0\'',
+      secondaryLabel: 'legacy (pre-fork) account',
+    }
+  },
+  LTC: {
+    derivationPath: 'm/49\'/2\'/0\'',
+    switchPath: switchPathSegwit,
+  }
+}
+
 export default {
   ledger: {
     name: 'Ledger Wallet',
@@ -39,23 +59,7 @@ export default {
       ETH: {
         derivationPath: 'm/44\'/60\'/0\''
       },
-      BTC: {
-        derivationPath: 'm/49\'/0\'/0\'',
-        switchPath: switchPathSegwit,
-      },
-      BCH: {
-        derivationPath: 'm/44\'/145\'/0\'',
-        switchPath: {
-          primaryPrefix: 'm/44\'/145\'',
-          primaryLabel: 'post-fork account',
-          secondaryPrefix: 'm/44\'/0\'',
-          secondaryLabel: 'legacy (pre-fork) account',
-        }
-      },
-      LTC: {
-        derivationPath: 'm/49\'/2\'/0\'',
-        switchPath: switchPathSegwit,
-      }
+      ...commonSupportedAssets,
     }
   },
   trezor: {
@@ -71,15 +75,7 @@ export default {
       ETH: {
         derivationPath: 'm/44\'/60\'/0\'/0'
       },
-      BTC: {
-        derivationPath: null
-      },
-      BCH: {
-        derivationPath: null
-      },
-      LTC: {
-        derivationPath: null
-      }
+      ...commonSupportedAssets,
     }
   },
   blockstack: {

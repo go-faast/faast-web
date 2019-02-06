@@ -305,7 +305,9 @@ export const restoreSwapPolling = (swapId) => (dispatch, getState) => {
     const { tx } = swap
     if (tx && tx.sent && !tx.receipt) {
       dispatch(pollTxReceipt(swap.txId))
+        .then(() => pollOrderStatus(swap))
+    } else {
+      dispatch(pollOrderStatus(swap))
     }
-    dispatch(pollOrderStatus(swap))
   })
 }
