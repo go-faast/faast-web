@@ -186,8 +186,9 @@ export const BCH = network({
   symbol: 'BCH',
   name: 'Bitcoin Cash',
   bitcoreUrls: [
-    'https://bitcoincash.blockexplorer.com', 'https://bch1.trezor.io', 'https://bch2.trezor.io',
-    'https://bch3.trezor.io', 'https://bch4.trezor.io', 'https://bch5.trezor.io',
+    'https://bch1.trezor.io', 'https://bch2.trezor.io', 'https://bch3.trezor.io',
+    'https://bch4.trezor.io', 'https://bch5.trezor.io', 'https://bch-insight.bitpay.com',
+    // 'https://bitcoincash.blockexplorer.com',
   ],
   minTxFee: {
     rate: 1,
