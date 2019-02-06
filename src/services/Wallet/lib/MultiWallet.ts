@@ -194,6 +194,6 @@ export default class MultiWallet extends Wallet {
 
   getAllBalances(options: object): Promise<Balances> {
     return Promise.all(this.getWallets().map((wallet) => wallet.getAllBalances(options)))
-      .then((walletBalances) => reduceByKey(walletBalances, plus, ZERO))
+      .then((walletBalances) => reduceByKey(walletBalances, plus, ZERO) as Balances)
   }
 }
