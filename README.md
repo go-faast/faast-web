@@ -2,7 +2,8 @@
 
 [![Package version](https://img.shields.io/badge/dynamic/json.svg?label=version&url=https%3A%2F%2Fraw.githubusercontent.com%2Fgo-faast%2Ffaast-portfolio%2Fdevelop%2Fpackage.json&query=%24.version&colorB=blue&prefix=v)](https://github.com/go-faast/faast-portfolio/blob/develop/package.json)
 [![GitHub license](https://img.shields.io/github/license/go-faast/faast-portfolio.svg)](https://github.com/go-faast/faast-portfolio/blob/develop/LICENSE)
-[![Build Status](https://travis-ci.org/go-faast/faast-portfolio.svg?branch=develop)](https://travis-ci.org/go-faast/faast-portfolio)
+[![Build Status](https://travis-ci.com/go-faast/faast-portfolio.svg?branch=develop)](https://travis-ci.com/go-faast/faast-portfolio)
+[![Netlify Status](https://api.netlify.com/api/v1/badges/66a9ab90-10e6-407b-a37d-f711bec26609/deploy-status)](https://app.netlify.com/sites/faast/deploys)
 
 A decentralized cryptocurrency portfolio manager and exchange.
 <https://faa.st>
