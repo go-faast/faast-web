@@ -13,6 +13,7 @@
     "removeComments": false,
     "preserveConstEnums": true,
     "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": {
       "Pkg": ["package.json"],
