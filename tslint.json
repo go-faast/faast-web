@@ -1,7 +1,7 @@
 {
   "extends": "tslint:recommended",
   "linterOptions": {
-    "exclude": ["**/*.js", "**/*.jsx"]
+    "exclude": ["**/*.js", "**/*.jsx", "**/*.json"]
   },
   "rules": {
       "max-line-length": {
