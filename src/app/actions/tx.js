@@ -145,14 +145,16 @@ export const updateTxReceipt = (txId) => (dispatch, getState) => {
 }
 
 export const pollTxReceipt = (txId) => (dispatch) => {
-  const receiptInterval = window.setInterval(() => {
-    dispatch(updateTxReceipt(txId))
-      .then((receipt) => {
-        if (receipt && receipt.confirmed) {
-          clearInterval(receiptInterval)
-        }
-      })
-  }, 5000)
-
-  window.faast.intervals.txReceipt.push(receiptInterval)
+  return new Promise((resolve) => {
+    const receiptInterval = window.setInterval(() => {
+      dispatch(updateTxReceipt(txId))
+        .then((receipt) => {
+          if (receipt && receipt.confirmed) {
+            clearInterval(receiptInterval)
+            resolve(receipt)
+          }
+        })
+    }, 5000)
+    window.faast.intervals.txReceipt.push(receiptInterval)
+  })
 }

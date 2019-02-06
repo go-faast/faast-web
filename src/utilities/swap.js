@@ -25,43 +25,45 @@ export const getSwapStatus = (swap) => {
   if (!rate) {
     return statusPending('fetching_rate', 'Fetching market info')
   }
-  if (!isManual) {
-    if (!(tx && tx.walletId)) {
-      return statusPending('creating_tx', 'Generating deposit transaction')
+  if (orderStatus === 'awaiting deposit') {
+    if (isManual) {
+      return statusPending('awaiting_deposit', 'Waiting for deposit')
+    } else {
+      if (!(tx && tx.walletId)) {
+        return statusPending('creating_tx', 'Generating deposit transaction')
+      }
+      if (!tx.receipt) {
+        if (tx.sendingError) {
+          return statusFailed('send_tx_error', 'Failed to send deposit transaction, please try again')
+        }
+        if (tx.sending) {
+          return statusPending('sending', 'Sending deposit transaction')
+        }
+        if (tx.sent) {
+          return statusPending('pending_receipt', 'Waiting for transaction confirmation')
+        }
+        if (tx.signingError) {
+          return statusFailed('sign_tx_error', 'Failed to sign deposit transaction, please try again')
+        }
+        if (tx.signing) {
+          return statusPending('signing', 'Awaiting signature')
+        }
+        if (tx.signed) {
+          return statusPending('signed', 'Ready to send')
+        }
+        if (!tx.signingSupported) {
+          return statusPending('signing_unsupported', 'Ready to send')
+        }
+        return statusPending('unsigned', 'Ready to sign')
+      }
     }
-    if (!tx.receipt) {
-      if (tx.sendingError) {
-        return statusFailed('send_tx_error', 'Failed to send deposit transaction, please try again')
-      }
-      if (tx.sending) {
-        return statusPending('sending', 'Sending deposit transaction')
-      }
-      if (tx.sent) {
-        return statusPending('pending_receipt', 'Waiting for transaction confirmation')
-      }
-      if (tx.signingError) {
-        return statusFailed('sign_tx_error', 'Failed to sign deposit transaction, please try again')
-      }
-      if (tx.signing) {
-        return statusPending('signing', 'Awaiting signature')
-      }
-      if (tx.signed) {
-        return statusPending('signed', 'Ready to send')
-      }
-      if (!tx.signingSupported) {
-        return statusPending('signing_unsupported', 'Ready to send')
-      }
-      return statusPending('unsigned', 'Ready to sign')
-    }
-  } else if (orderStatus === 'awaiting deposit') {
-    return statusPending('awaiting_deposit', 'Waiting for deposit')
   }
 
   const timeSinceCreated = createdAt ? new Date(createdAt).getTime() : Date.now()
   if ((Date.now() - timeSinceCreated) / 3600000 >= 4) {
     return statusPending('contact_support', 'There may be an issue. Contact support@faa.st for more info.')
   }
-  return statusPending('processing', 'Processing swap')
+  return statusPending('processing', `Processing swap (${orderStatus})`)
 }
 
 export const statusAllSwaps = (swaps) => {
