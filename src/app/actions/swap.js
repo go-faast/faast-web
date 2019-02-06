@@ -16,6 +16,9 @@ import { walletOrdersLoading, walletOrdersLoaded, walletOrdersAllLoaded } from '
 
 import { getSwap, getTx, getWallet } from 'Selectors'
 
+/** A special value passed to the backend when not sending/receiving from a connected wallet */
+const EXTERNAL_WALLET_TYPE = 'External'
+
 const createAction = newScopedCreateAction(__filename)
 
 export const resetSwaps = createAction('RESET_ALL')
@@ -83,8 +86,8 @@ const createSwapFinish = (type, swap) => (dispatch, getState) => (errorMessage, 
   return getSwap(getState(), swap.id)
 }
 
-const getFreshAddress = (walletId, symbol) => walletId
-  ? getWalletForAsset(walletId, symbol).getFreshAddress(symbol)
+const getFreshAddress = (walletInstance, symbol) => walletInstance
+  ? walletInstance.getFreshAddress(symbol)
   : undefined
 
 export const createOrder = (swap) => (dispatch) => {
@@ -111,11 +114,15 @@ export const createOrder = (swap) => (dispatch) => {
         if (!receiveWalletId && !swap.receiveAddress) {
           throw new Error('Must specify receive wallet or receive address')
         }
-        const userId = sendWalletId ? getWalletForAsset(sendWalletId, sendSymbol).getId() : undefined
+        const sendWalletInstance = sendWalletId ? getWalletForAsset(sendWalletId, sendSymbol) : null
+        const receiveWalletInstance = receiveWalletId ? getWalletForAsset(receiveWalletId, receiveSymbol) : null
+        const userId = sendWalletInstance ? sendWalletInstance.getId() : undefined
+        const sendWalletType = sendWalletInstance ? sendWalletInstance.getType() : EXTERNAL_WALLET_TYPE
+        const receiveWalletType = receiveWalletInstance ? receiveWalletInstance.getType() : EXTERNAL_WALLET_TYPE
         log.info(`Creating faast order for swap ${id}`)
         return Promise.all([
-          swap.receiveAddress || getFreshAddress(receiveWalletId, receiveSymbol),
-          swap.refundAddress || getFreshAddress(sendWalletId, sendSymbol),
+          swap.receiveAddress || getFreshAddress(receiveWalletInstance, receiveSymbol),
+          swap.refundAddress || getFreshAddress(sendWalletInstance, sendSymbol),
         ]).then(([receiveAddress, refundAddress]) => Faast.createNewOrder({
           sendSymbol,
           receiveSymbol,
@@ -123,6 +130,10 @@ export const createOrder = (swap) => (dispatch) => {
           refundAddress,  // optional
           sendAmount: sendAmount ? toNumber(sendAmount) : undefined, // optional
           userId, // optional
+          meta: {
+            sendWalletType, // optional
+            receiveWalletType, // optional
+          },
         }))
           .then((order) => {
             return finish(null, order)

@@ -5,6 +5,7 @@ import { sessionStorageGet } from 'Utilities/storage'
 import log from 'Log'
 import config from 'Config'
 import crypto from 'crypto'
+import { version as appVersion } from 'Pkg'
 
 import { Asset, SwapOrder } from 'Types'
 
@@ -85,6 +86,21 @@ export const refreshSwap = (id: string) =>
   fetchPost(`${apiUrl}/api/v2/public/swaps/${id}/refresh`)
     .then(formatOrderResult)
 
+export type CreateNewOrderParams = {
+  sendSymbol: string,
+  receiveSymbol: string,
+  receiveAddress: string,
+  refundAddress?: string,
+  sendAmount?: number,
+  userId?: string,
+  meta?: {
+    sendWalletType?: string, // sending wallet type
+    receiveWalletType?: string, // receiving wallet type
+    appVersion?: string, // defaults to package.json version
+    path?: string, // defaults to window.location.pathname
+  },
+}
+
 export const createNewOrder = ({
   sendSymbol,
   receiveSymbol,
@@ -92,14 +108,8 @@ export const createNewOrder = ({
   refundAddress,
   sendAmount,
   userId,
-}: {
-  sendSymbol: string,
-  receiveSymbol: string,
-  receiveAddress: string,
-  refundAddress?: string,
-  sendAmount?: number,
-  userId?: string,
-}): Promise<SwapOrder> => fetchPost(`${apiUrl}/api/v2/public/swap`, {
+  meta = {},
+}: CreateNewOrderParams): Promise<SwapOrder> => fetchPost(`${apiUrl}/api/v2/public/swap`, {
   user_id: userId,
   deposit_amount: sendAmount,
   deposit_currency: sendSymbol,
@@ -107,6 +117,11 @@ export const createNewOrder = ({
   withdrawal_currency: receiveSymbol,
   refund_address: refundAddress,
   ...getAffiliateSettings(),
+  meta: {
+    appVersion,
+    path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+    ...meta,
+  },
 }).then(formatOrderResult)
   .catch((e: any) => {
     log.error(e)
