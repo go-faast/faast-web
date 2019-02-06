@@ -13,7 +13,7 @@ import { getWalletWithHoldings, getConnectedWalletsPendingSwaps } from 'Selector
 import withToggle from 'Hoc/withToggle'
 
 import TradeTable from 'Components/TradeTable'
-import { tableHeadings } from 'Components/TradeHistory'
+import { tableHeadingsOpen } from 'Components/TradeHistory'
 import ChangePercent from 'Components/ChangePercent'
 import Address from 'Components/Address'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
@@ -118,7 +118,7 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
         <TradeTable 
           tableTitle='Open Orders'
           swaps={pendingSwaps}
-          tableHeadings={tableHeadings}
+          tableHeadings={tableHeadingsOpen}
           hideIfNone
           classProps='mt-3'
         />

@@ -9,7 +9,16 @@ import TradeTable from 'Components/TradeTable'
 
 import { getConnectedWalletsPendingSwaps, getConnectedWalletsCompletedSwaps, isDefaultPortfolioEmpty } from 'Selectors'
 
-export const tableHeadings = [
+export const tableHeadingsOpen = [
+  { text: '', mobile: false },
+  { text: 'Date', mobile: false },
+  { text: 'Pair', mobile: false },
+  { text: 'Receiving', mobile: false },
+  { text: 'Cost', mobile: false },
+  { text: 'Rate', mobile: false }
+]
+
+export const tableHeadingsCompleted = [
   { text: '', mobile: false },
   { text: 'Date', mobile: false },
   { text: 'Pair', mobile: false },
@@ -24,13 +33,13 @@ const TradeHistory = ({ pendingSwaps, completedSwaps }) => (
     <TradeTable 
       swaps={pendingSwaps} 
       tableTitle='Open Orders' 
-      tableHeadings={tableHeadings}
+      tableHeadings={tableHeadingsOpen}
       zeroOrdersMessage='No open orders right now'
     />
     <TradeTable 
       swaps={completedSwaps} 
       tableTitle='Previous Orders' 
-      tableHeadings={tableHeadings} 
+      tableHeadings={tableHeadingsCompleted} 
       zeroOrdersMessage='No previous orders to show'
       showMore
     />
