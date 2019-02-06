@@ -32,7 +32,7 @@ export default class EthereumWalletLedger extends EthereumWallet {
 
   getTypeLabel() { return typeLabel }
 
-  static connect = (derivationPath = 'm/44\'/60\'/0\'') => {
+  static connect = (derivationPath: string) => {
     return Ledger.eth.getAppConfiguration()
       .then((data) => {
         log.info(`Ledger connected, version ${data.version}`)

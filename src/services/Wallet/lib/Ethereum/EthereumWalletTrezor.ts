@@ -5,7 +5,6 @@ import HDKey from 'hdkey'
 import config from 'Config'
 import log from 'Utilities/log'
 import { stripHexPrefix, addHexPrefix } from 'Utilities/helpers'
-import { toHex } from 'Utilities/convert'
 import Trezor from 'Services/Trezor'
 
 import EthereumWallet from './EthereumWallet'
@@ -36,8 +35,8 @@ export default class EthereumWalletTrezor extends EthereumWallet {
 
   getTypeLabel() { return typeLabel }
 
-  static connect(derivationPath = 'm/44\'/60\'/0\'/0'): Promise<ConnectResult> {
-    return Trezor.getXPubKey(derivationPath)
+  static connect(derivationPath: string): Promise<ConnectResult> {
+    return Trezor.getXPubKey('ETH', derivationPath)
       .then(({ publicKey, chainCode }) => {
         log.info('Trezor getXPubKey success')
         const hdKey = new HDKey()
@@ -54,26 +53,16 @@ export default class EthereumWalletTrezor extends EthereumWallet {
 
   _signTx(tx: EthTransaction, options: object): Promise<Partial<EthTransaction>> {
     return Promise.resolve().then(() => {
-      Trezor.closeAfterSuccess(false)
       const { txData } = tx
-      const { nonce, gasPrice, gas, to, value, data, chainId } = txData
       return Trezor.signEthereumTx(
         this.derivationPath,
-        stripHexPrefix(nonce),
-        stripHexPrefix(gasPrice),
-        stripHexPrefix(gas),
-        stripHexPrefix(to),
-        stripHexPrefix(value),
-        stripHexPrefix(data) || null,
-        chainId,
-      ).then((result) => {
-        log.info('trezor signed tx', result)
+        txData,
+      ).then(({ r, s, v }) => {
+        log.info('trezor signed tx', { r, s, v })
         return {
           signedTxData: this._signedEthJsTxToObject(new EthereumjsTx({
             ...txData,
-            r: addHexPrefix(result.r),
-            s: addHexPrefix(result.s),
-            v: toHex(result.v),
+            r, s, v,
           })),
         }
       }).catch((e) => {

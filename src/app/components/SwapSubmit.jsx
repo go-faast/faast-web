@@ -172,16 +172,15 @@ export default compose(
   withHandlers({
     handleCancel: ({ swap, onCancel, toggle }) => () => {
       onCancel(swap)
-      Trezor.close()
+      Trezor.cancel()
       toggle()
     },
     handleSignTxs: ({ swap, onSign }) => () => {
       Promise.resolve(onSign(swap))
-        .then(() => Trezor.close())
         .catch((e) => {
           toastr.error(e.message || e)
           log.error(e)
-          Trezor.close()
+          Trezor.cancel()
         })
     },
     handleSendTxs: ({ swap, onSend, toggle, routerPush }) => () => {

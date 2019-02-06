@@ -196,9 +196,6 @@ export const createConnectLedger = (startConnecting) => (walletType, assetSymbol
 }
 
 export const createConnectTrezor = (startConnecting) => (walletType, assetSymbol) => (dispatch) => {
-  if (!Trezor) {
-    return toastr.error('Error: Trezor Connect unavailable')
-  }
 
   const handleTrezorError = (e) => {
     const message = e.message
@@ -266,7 +263,7 @@ export const retryConnect = () => (dispatch, getState) => {
 export const cancelConnect = () => (dispatch, getState) => {
   const walletType = getWalletType(getState())
   if (walletType === 'trezor') {
-    Trezor.close()
+    Trezor.cancel()
   }
   dispatch(clearAsync())
   dispatch(resetConnectBatch())

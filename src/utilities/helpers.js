@@ -7,6 +7,15 @@ import baseX from 'base-x'
 import urlJoin from 'url-join'
 import { toBigNumber } from './numbers'
 
+/** Used to remove bitcoincash: prefix from addresses */
+export function stripAddressNamespace(address: string): string {
+  const separatorIndex = address.indexOf(':')
+  if (separatorIndex > -1) {
+    return address.slice(separatorIndex + 1)
+  }
+  return address
+}
+
 export const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export function retry(promiseCreator, { retries = 3, delay: retryDelay = 1000, multiplier = 2, before } = {}) {

@@ -18,31 +18,33 @@ class BchAddressFormat implements AddressFormat {
   }
 }
 
+export const bchLegacyFormat = new BchAddressFormat(
+  bchaddr.Format.Legacy,
+  'Legacy',
+  'Legacy base58 address format. Inherited from forking Bitcoin.',
+  bchTestLegacy,
+  bchaddr.toLegacyAddress,
+)
+
+export const bchCashAddrFormat = new BchAddressFormat(
+  bchaddr.Format.Cashaddr,
+  'CashAddr',
+  'Standard Bitcoin Cash address format introduced in 2018.',
+  bchTestCashAddress,
+  bchaddr.toCashAddress,
+)
+
+export const bchBitPayFormat = new BchAddressFormat(
+  bchaddr.Format.Bitpay,
+  'BitPay',
+  'Proprietary format created by BitPay for their Copay app. Not widely used.',
+  bchTestBitpay,
+  bchaddr.toBitpayAddress,
+)
+
 const config: FormatConfig = {
-  default: bchaddr.Format.Cashaddr,
-  formats: [
-    new BchAddressFormat(
-      bchaddr.Format.Legacy,
-      'Legacy',
-      'Legacy base58 address format. Inherited from forking Bitcoin.',
-      bchTestLegacy,
-      bchaddr.toLegacyAddress,
-    ),
-    new BchAddressFormat(
-      bchaddr.Format.Cashaddr,
-      'CashAddr',
-      'Standard Bitcoin Cash address format introduced in 2018.',
-      bchTestCashAddress,
-      bchaddr.toCashAddress,
-    ),
-    new BchAddressFormat(
-      bchaddr.Format.Bitpay,
-      'BitPay',
-      'Proprietary format created by BitPay for their Copay app. Not widely used.',
-      bchTestBitpay,
-      bchaddr.toBitpayAddress,
-    ),
-  ],
+  default: bchCashAddrFormat.type,
+  formats: [bchLegacyFormat, bchCashAddrFormat, bchBitPayFormat],
 }
 
 export default config
