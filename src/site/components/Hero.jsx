@@ -37,12 +37,12 @@ export default compose(
     <Header/>
     <div className='jumbotron jumbotron-fluid hero-technology mb-0' style={{
       backgroundImage: `url(${MoonBackground})`,
-      height: '759px',
+      height: '824px',
       backgroundPosition: '50% 25px',
       backgroundSize: '1400px',
       backgroundRepeat: 'no-repeat',
-      marginTop: '-160px',
-      paddingTop: '220px',
+      marginTop: '-225px',
+      paddingTop: '285px',
       backgroundColor: 'rgba(0,26,23)',
     }}>
       <Container>

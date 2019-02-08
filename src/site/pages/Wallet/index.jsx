@@ -24,22 +24,22 @@ export default compose(
   name = name.replace(' Wallet', '')
   return (
     <div style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
-      <Header theme='light' headerColor='#fff' />
+      <Header theme='light' headerColor='#fff' light dark={false}/>
       <div className={classNames(graphicSection, 'mb-0 py-5')}>
         <div className={gradient}></div>
         <Row className='py-3 mx-auto' style={{ maxWidth: 1280 }}>
-          <Col sm='12' lg='8' className='text-left pl-md-5 pl-0 ml-5'>
-            <h1 className='position-relative w-lg-75 w-100'>Trade Instantly, Directly from your {name} Wallet with Faa.st</h1>
+          <Col sm='12' lg='8' className='text-left pl-md-5 pl-0 ml-xs-5 ml-4'>
+            <h1 className='position-relative w-xs-75 w-100'>Trade Instantly, Directly from your {name} Wallet with Faa.st</h1>
             <h4 className='mb-5 text-muted'>{slogan}</h4>
-            <Button tag='a' href='https://faa.st/app/connect' className='mr-3' color='primary'>Connect Your {name}</Button>
-            <Button style={{ backgroundColor: 'transparent' }} tag='a' href={website} target='_blank noopener noreferrer' outline color='primary'>Learn more</Button>
+            <Button tag='a' href='https://faa.st/app/connect' className='mr-3 d-xs-inline-block d-block' color='primary'>Connect Your {name}</Button>
+            <Button className='mr-3 mt-xs-0 mt-3 d-xs-inline-block d-block' style={{ backgroundColor: 'transparent' }} tag='a' href={website} target='_blank noopener noreferrer' outline color='primary'>Learn more</Button>
           </Col>
           <Col sm='12' md='2' className='text-sm-left text-center mt-sm-0 mt-5'>
             <img style={{ maxWidth: 200, maxHeight: 200 }} src={graphic} />
           </Col>
         </Row>
       </div>
-      <Row className='mx-auto' style={{ background: 'rgb(243, 245, 248)', minHeight: 320, maxWidth: 1280 }}>
+      <Row className='mx-auto pb-xs-0 pb-4' style={{ background: 'rgb(243, 245, 248)', minHeight: 320, maxWidth: 1280 }}>
         <Col sm='12' lg='8' className={classNames(text, 'text-left pl-md-5 pl-0 mt-2 pt-5 ml-5')}>
           <h1>{name} and Faa.st</h1>
           <p className='w-75 mt-3'>
@@ -54,17 +54,17 @@ export default compose(
             style={{ background: 'transparent' }}
             target='_blank noopener noreferrer'
           >
-            {howTo ? `How to trade from your ${name}` : `Get started with ${name}` }
+            {howTo ? `How to trade from your ${name} Wallet` : `Get started with ${name} Wallet` }
           </Button>
         </Col>
-        <Col sm='12' md='2'>
+        <Col className='text-xs-left text-center' sm='12' md='2'>
           <img className='mt-4 pt-5' src={MacbookScreenshot1} style={{ maxWidth: 300 }} />
         </Col>
       </Row>
       <Row className={classNames(text,'text-center py-5 px-4')} style={{ background: '#fff' }}>
         <span className='mx-auto row' style={{ maxWidth: 1280 }}>
           <Col sm='12'>
-            <h1 className={text}>Why trade from your {name}?</h1>
+            <h1 className={text}>Why trade from your {name} Wallet?</h1>
           </Col>
           <Col sm='4'>
             <img src={SecureIcon} style={{ height: '161px', width: '316px', backgroundColor: 'rgba(243,245,248,0)', padding: '25px' }}/>

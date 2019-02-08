@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import { createStructuredSelector } from 'reselect'
+import { compose } from 'recompose'
 import PropTypes from 'prop-types'
 import { Card, CardHeader, CardBody, Col, Row, Dropdown, DropdownMenu, DropdownToggle,
   DropdownItem
@@ -8,7 +9,8 @@ import classNames from 'class-names'
 import { connect } from 'react-redux'
 
 import display from 'Utilities/display'
-import { getWalletWithHoldings, getConnectedWalletsPendingSwaps } from 'Selectors'
+import { getWalletWithHoldings } from 'Selectors'
+import { getConnectedWalletsPendingSwaps } from 'Selectors/swap'
 
 import withToggle from 'Hoc/withToggle'
 
@@ -156,7 +158,6 @@ Balances.defaultProps = {
 
 const ConnectedBalances = connect(createStructuredSelector({
   wallet: (state, { id }) => getWalletWithHoldings(state, id),
-  pendingSwaps: getConnectedWalletsPendingSwaps,
 }))(Balances)
 
 ConnectedBalances.propTypes = {
@@ -165,6 +166,10 @@ ConnectedBalances.propTypes = {
 
 Balances.Connected = ConnectedBalances
 
+const mapStateToProps = connect(createStructuredSelector({
+  pendingSwaps: getConnectedWalletsPendingSwaps,
+}))
+
 
 export { Balances, ConnectedBalances }
-export default withToggle('dropdownOpen')(Balances)
+export default compose(withToggle('dropdownOpen'), mapStateToProps)(Balances)

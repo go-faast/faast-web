@@ -21,6 +21,7 @@ import AffiliateTerms from 'Components/Affiliate/Terms'
 import AffiliateAccountModal from 'Components/Affiliate/AccountModal'
 import AssetWatchlist from 'Components/AssetWatchlist'
 import AssetTrending from 'Components/AssetTrending'
+import Footer from 'Components/Footer'
 
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
@@ -77,6 +78,7 @@ const AppView = ({ hasNoWallets }) => (
     <ModalRoute closePath={affiliateDashboard.path} path={affiliateAccountModal.path} render={(props) => (
       <AffiliateAccountModal {...props}/>
     )}/>
+    <Footer />
   </Fragment>
 )
 

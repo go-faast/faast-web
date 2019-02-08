@@ -105,7 +105,7 @@ export const getConnectedWalletsCompletedSwaps = createSelector(
 
 export const getConnectedWalletsPendingSwaps = createSelector(
   getConnectedWalletSentSwaps,
-  (swaps) => swaps.filter(({ status: { code } }) => 
+  (swaps) => swaps.filter(({ status: { code } }) =>
     code === 'pending')
 )
 
