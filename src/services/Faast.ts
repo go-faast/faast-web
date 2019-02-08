@@ -292,10 +292,20 @@ export const affiliateRegister = (
 
 export const getAffiliateSwaps = (
   id: string,
+  key: string,
   i: number = 1,
 ): Promise<void> => {
-  return fetchGet(`${apiUrl}/api/v2/public/swaps`,
-  { affiliate_id: id, limit: 100, page: i })
+  const nonce = String(Date.now())
+  const signature = createAffiliateSignature(undefined, key, nonce)
+  return fetchGet(`${apiUrl}/api/v2/public/affiliate/swaps`,
+  { limit: 100, page: i },
+  {
+    headers: {
+      'affiliate-id': id,
+      nonce,
+      signature,
+    },
+  })
   .then((swaps) => swaps)
   .catch((e: any) => {
     log.error(e)

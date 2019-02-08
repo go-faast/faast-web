@@ -50,7 +50,7 @@ export const getStats = (id, key) => (dispatch, getState) => {
 export const affiliateLogin = (id, key) => (dispatch) => {
   dispatch(affiliateDataUpdated())
   dispatch(getAffiliateWithdrawals(id, key))
-  dispatch(getAffiliateSwaps(id))
+  dispatch(getAffiliateSwaps(id, key))
   dispatch(getBalance(id, key))
   dispatch(getStats(id, key))
   dispatch(getAccountDetails(id, key))
@@ -94,9 +94,9 @@ export const getAffiliateWithdrawals = (id, key) => (dispatch) => {
     .catch((e) => dispatch(withdrawalsError(e)))
 }
 
-export const getAffiliateSwaps = (id) => (dispatch) => {
+export const getAffiliateSwaps = (id, key) => (dispatch) => {
   dispatch(swapsLoading())
-  return Faast.getAffiliateSwaps(id)
+  return Faast.getAffiliateSwaps(id, key)
     .then((swaps) => {
       //const totalPages = Math.ceil(swaps.total / swaps.limit)
       swaps = swaps.orders.map(Faast.formatOrderResult)
@@ -105,29 +105,6 @@ export const getAffiliateSwaps = (id) => (dispatch) => {
       return dispatch(swapsRetrieved(swaps))
     })
     .catch((e) => dispatch(swapsError(e)))
-}
-
-export const getSwapsChart = (id, totalPages) => (dispatch) => {
-  dispatch(swapChartLoading())
-  for (var i = 1; i <= totalPages; i++) {
-    Faast.getAffiliateSwaps(id, i)
-      .then((swaps) => {
-        let data = []
-        swaps.orders.map((order) => {
-          let orderData = { name: '', data: [] }
-          orderData.name = order.created_at
-          orderData.data.push(1)
-          data.push(orderData)
-        })
-        let swaps_chart = JSON.parse(sessionStorageGet('state:swaps_chart')) || []
-        data = swaps_chart.concat(data)
-        sessionStorageSet('state:swaps_chart', JSON.stringify(data))
-        if (i >= totalPages) {
-          return dispatch(updateSwapsChart(data.sort((a, b) => a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0)))
-        }
-      })
-      .catch((e) => dispatch(swapsError(e)))
-  }
 }
 
 export const restoreCachedAffiliateInfo = () => (dispatch, getState) => {
