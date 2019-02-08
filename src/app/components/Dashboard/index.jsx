@@ -4,7 +4,7 @@ import { Redirect, withRouter } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
 
 import {
-  getCurrentWalletWithHoldings, isDefaultPortfolioEmpty,
+  getCurrentWalletWithHoldings, isDefaultPortfolioEmpty
 } from 'Selectors'
 import { updateAllHoldings, removePortfolio, defaultPortfolioId } from 'Actions/portfolio'
 
@@ -36,7 +36,7 @@ class Dashboard extends Component {
   }
 
   render () {
-    const { wallet, isDefaultPortfolioEmpty, pendingSwaps } = this.props
+    const { wallet, isDefaultPortfolioEmpty } = this.props
     const isViewOnly = wallet.isReadOnly
 
     if (isDefaultPortfolioEmpty && !isViewOnly) {
@@ -51,7 +51,6 @@ class Dashboard extends Component {
         viewOnly={isViewOnly}
         disableRemove={disableRemove}
         isDefaultPortfolioEmpty={isDefaultPortfolioEmpty}
-        pendingSwaps={pendingSwaps}
         {...this.props}
       />
     )

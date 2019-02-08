@@ -202,7 +202,7 @@ export default compose(
           log.error(e)
         })
     },
-    handleTimerEnd: ({ swaps }) => () => {
+    handleTimerEnd: ({ swaps, refreshSwap }) => () => {
       swaps.map(swap => refreshSwap(swap.orderId))
     },
   }),

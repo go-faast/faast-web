@@ -3,6 +3,19 @@ import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
 import { Link } from 'react-static'
 import siteConfig from 'Site/config'
 import FaastLogo64x64 from 'Img/faast-logo-64x64.png'
+import { pick } from 'lodash'
+import {
+  Container,
+  Collapse,
+  Navbar,
+  NavbarBrand,
+  Nav,
+  NavItem,
+  NavLink,
+  NavbarToggler,
+} from 'reactstrap'
+import withToggle from 'Hoc/withToggle'
+import config from 'Config'
 
 import { darkestText } from './PostPreview/style.scss'
 
@@ -14,37 +27,39 @@ export default compose(
   setPropTypes({
     theme: PropTypes.string,
     headerColor: PropTypes.string,
+    ...Navbar.propTypes
   }),
   defaultProps({
     theme: 'dark',
     headerColor: undefined,
-  })
-)(({ theme, headerColor }) => (
-  <nav className={classNames(darkestText, 'navbar navbar-dark navbar-expand-md navigation-clean-button')}
-    style={{ backgroundColor: headerColor ? headerColor : 'transparent', paddingLeft: '12px' }}>
-    <div className='container'>
-      <Link exact to='/' className={classNames(theme == 'light' ? darkestText : 'text-white','navbar-brand')} style={{ fontWeight: 400 }}>
+    dark: true,
+    light: false,
+    expand: config.navbar.expand,
+  }),
+  withToggle('expanded'),
+)(({ theme, headerColor, toggleExpanded, isExpanded, ...props }) => (
+  <Navbar {...pick(props, Object.keys(Navbar.propTypes))} expand='sm' className={classNames(darkestText, 'mt-2')}
+    style={{ border: 0, backgroundColor: headerColor ? headerColor : 'transparent', paddingLeft: '12px' }}>
+    <Container>
+      <NavbarBrand tag={Link} to='/' className={classNames((theme == 'light' ? darkestText : 'text-white'))} style={{ fontWeight: 400 }}>
         <img src={FaastLogo64x64} style={{ height: '32px', marginRight: '16px' }}/>{siteConfig.name}
-      </Link>
-      <button className='navbar-toggler' data-toggle='collapse' data-target='#navcol-1'>
-        <span className='sr-only'>Toggle navigation</span>
-        <span className={classNames(theme == 'light' ? darkestText : 'text-white','navbar-toggler-icon')}></span>
-      </button>
-      <div className='collapse navbar-collapse' id='navcol-1'>
-        <ul className='nav navbar-nav ml-auto'>
-          <li className='nav-item' role='presentation'>
-            <a className={classNames(theme == 'light' ? darkestText : 'text-light', 'nav-link')} href='/app/swap'>Swap</a>
-          </li>
-          <li className='nav-item' role='presentation'>
-            <a className={classNames(theme == 'light' ? darkestText : 'text-light', 'nav-link')} href='/blog' target='_blank noopener noreferrer' rel='noopener'>Blog</a>
-          </li>
-          <li className='nav-item' role='presentation'>
-            <a className='nav-link py-1' href='/app'>
-              <button className={classNames(theme == 'light' ? 'btn-primary' : 'btn-light', 'btn')}>Portfolio</button>
-            </a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
+      </NavbarBrand>
+      <NavbarToggler onClick={toggleExpanded} />
+      <Collapse isOpen={isExpanded} navbar>
+        <Nav className='ml-auto' navbar>
+          <NavItem className='mr-4' key='swap'>
+            <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/app/swap'>Swap</NavLink>
+          </NavItem>
+          <NavItem className='mr-4' key='blog'>
+            <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/blog' target='_blank noopener noreferrer' rel='noopener'>Blog</NavLink>
+          </NavItem>
+          <NavItem className='mr-4' key='portfolio'>
+            <NavLink tag='a' className='nav-link py-1' href='/app'>
+              <button className={classNames((theme == 'light' ? 'btn-primary' : 'btn-light'), 'btn')}>Portfolio</button>
+            </NavLink>
+          </NavItem>
+        </Nav>
+      </Collapse>
+    </Container>
+  </Navbar>
 ))
