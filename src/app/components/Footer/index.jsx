@@ -1,9 +1,8 @@
 import * as React from 'react'
 import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
 import { Container, Row, Col } from 'reactstrap'
-import classNames from 'class-names'
 import PropTypes from 'prop-types'
-import { name as appName, version as appVersion, homepage as githubLink} from 'Pkg'
+import { name as appName, version as appVersion, homepage as githubLink } from 'Pkg'
 
 export default compose(
   setDisplayName('Footer'),

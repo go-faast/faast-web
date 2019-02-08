@@ -38,7 +38,7 @@ export default compose(
   }),
   withToggle('expanded'),
 )(({ theme, headerColor, toggleExpanded, isExpanded, ...props }) => (
-  <Navbar {...pick(props, Object.keys(Navbar.propTypes))} expand='sm' className={classNames(darkestText, 'mt-2')}
+  <Navbar {...pick(props, Object.keys(Navbar.propTypes))} expand='sm' className={darkestText}
     style={{ border: 0, backgroundColor: headerColor ? headerColor : 'transparent', paddingLeft: '12px' }}>
     <Container>
       <NavbarBrand tag={Link} to='/' className={classNames((theme == 'light' ? darkestText : 'text-white'))} style={{ fontWeight: 400 }}>
