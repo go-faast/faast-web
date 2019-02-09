@@ -8,12 +8,12 @@ const defaultTrezorInstructions = (assetName) => [
     text: 'Connect your TREZOR to begin'
   },
   {
-    icon: 'fa-unlock',
-    text: 'If required, enter your pin or password to unlock the TREZOR'
-  },
-  {
     icon: 'fa-refresh',
     text: 'Ensure your TREZOR firmware is up to date using the TREZOR wallet website'
+  },
+  {
+    icon: 'fa-unlock',
+    text: 'If required, enter your pin or password to unlock the TREZOR'
   },
   {
     icon: 'fa-window-restore',
