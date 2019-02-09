@@ -58,7 +58,6 @@ const Access = () => (
       <span className='px-3'>open source and secure</span>
       <i className='fa fa-lock fa-2x align-middle'/>
     </Button>
-    <p className='mt-3 text-muted'>{appName} v{appVersion}</p>
   </div>
 )
 

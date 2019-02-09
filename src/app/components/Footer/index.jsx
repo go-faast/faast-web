@@ -36,7 +36,7 @@ export default compose(
                 <small><a className='text-muted' href={githubLink}>{appName} v{appVersion}</a></small>
               </li>
               <li className='list-inline-item'>
-                <small><a className='text-muted' href='mailto:support@faa.st'>support@faa.st</a></small>
+                <small><p className='text-muted'>support@faa.st</p></small>
               </li>
             </ul>
           </Col>
