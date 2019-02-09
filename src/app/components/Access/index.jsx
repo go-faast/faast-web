@@ -1,6 +1,5 @@
 import React from 'react'
 import { Row, Col, Button } from 'reactstrap'
-import { name as appName, version as appVersion } from 'Pkg'
 import CoinIcon from 'Components/CoinIcon'
 import Web3Wallet from './Web3Wallet'
 import CreateWallet from './CreateWallet'
