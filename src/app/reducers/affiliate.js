@@ -2,7 +2,7 @@ import { createReducer } from 'redux-act'
 import { statsRetrieved, statsError, login, swapsRetrieved, swapsError, loginError,
   updateAffiliateId, updateSecretKey, resetAffiliate, logout, updateBalance, updateBalanceSwaps,
   withdrawalsRetrieved, withdrawalsError, swapsLoading, affiliateDataUpdated, updateSwapsChart,
-  swapChartLoading,
+  swapChartLoading, swapHistoryTotalUpdated,
 } from 'Actions/affiliate'
 
 const initialState = {
@@ -18,6 +18,7 @@ const initialState = {
   statsError: '',
   stats: {},
   swaps: {},
+  swapHistoryTotal: null,
   swapChartData: [],
   swapChartLoading: false,
   withdrawals: {},
@@ -38,6 +39,10 @@ export default createReducer({
     ...state,
     statsError: '',
     stats: { ...stats },
+  }),
+  [swapHistoryTotalUpdated]: (state, total) => ({ 
+    ...state,
+    swapHistoryTotal: total,
   }),
   [statsError]: (state, error) => ({ ...state, statsError: error }),
   [swapsLoading]: (state) => ({ ...state, swapsLoading: true }),

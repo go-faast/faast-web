@@ -17,7 +17,7 @@ const AssetIndex = ({ assets, currentPage, numberOfAssets, title, pricesLoaded, 
   return (
     pricesLoaded ? (
       <Layout className='pt-3'>
-        <AssetIndexTable tableHeader={title} assets={assets}/>
+        <AssetIndexTable tableHeader={title} assets={assets} />
         <Paginator page={currentPage} pages={Math.ceil(numberOfAssets / 50)}/>
       </Layout>) : (
       <LoadingFullscreen center label='Loading market data...' error={pricesError}/>   

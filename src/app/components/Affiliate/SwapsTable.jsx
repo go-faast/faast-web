@@ -1,8 +1,10 @@
 import React, { Fragment } from 'react'
+import * as qs from 'query-string'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers } from 'recompose'
+import { withRouter } from 'react-router'
+import { compose, setDisplayName, setPropTypes, defaultProps, withProps, withHandlers, lifecycle } from 'recompose'
 import { Table, Card, CardHeader, CardBody, CardFooter } from 'reactstrap'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
@@ -10,8 +12,10 @@ import classNames from 'class-names'
 import { createStatusLabel, CoinSymbol } from 'Components/TradeTable'
 import Loading from 'Components/Loading'
 import Units from 'Components/Units'
+import Paginator from 'Components/Paginator'
 
-import { affiliateSentSwapsArray, areSwapsLoading } from 'Selectors/affiliate'
+import { affiliateSentSwapsArray, areSwapsLoading, swapHistoryTotal, affiliateId, secretKey } from 'Selectors/affiliate'
+import { getAffiliateSwaps } from 'Actions/affiliate'
 
 import { text, affilateTable, card, cardHeader, cardFooter, smallCard } from './style'
 
@@ -47,12 +51,13 @@ const TableRow = ({
   </tr>
 )
 
-const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading }) => {
+const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading, currentPage, title, 
+  swapHistoryTotal, handlePageClick }) => {
   swaps = swaps && size === 'small' ? swaps.slice(0,5) : swaps
   return (
     <Fragment>
       <Card className={classNames(card, size === 'small' && smallCard, size !== 'small' && 'mx-auto')}>
-        <CardHeader className={cardHeader}>Recent Swaps</CardHeader>
+        <CardHeader className={cardHeader}>{title}</CardHeader>
         <CardBody className={classNames(swaps.length > 0 && 'p-0','text-center')}>
           {areSwapsLoading ? (<Loading />) :
             swaps.length > 0 ? (
@@ -61,7 +66,7 @@ const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading }) => {
                   <thead>
                     <tr>
                       <th></th>
-                      {size === 'large' ? (<th>Date</th>) : null}
+                      {size === 'large' ? (<th className='d-none d-sm-table-cell'>Date</th>) : null}
                       <th className='d-none d-sm-table-cell'>Pair</th>
                       <th>Received</th>
                       <th>Sent</th>
@@ -92,6 +97,15 @@ const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading }) => {
           }
         </CardBody>
       </Card>
+      {size === 'large' && swapHistoryTotal > 1 && (
+        <Paginator 
+          className='mt-3'
+          onPageClick={handlePageClick} 
+          page={currentPage} 
+          pages={Math.ceil(swapHistoryTotal / 50)}
+          theme='light'
+        />
+      )}
     </Fragment>
   )
 }
@@ -100,8 +114,12 @@ export default compose(
   setDisplayName('AffiliateSwapsTable'),
   connect(createStructuredSelector({
     swaps: affiliateSentSwapsArray,
-    areSwapsLoading: areSwapsLoading,
+    areSwapsLoading,
+    swapHistoryTotal,
+    affiliateId,
+    secretKey,
   }), {
+    getAffiliateSwaps
   }),
   setPropTypes({
     size: PropTypes.string
@@ -109,6 +127,26 @@ export default compose(
   defaultProps({
     size: 'large'
   }),
-  withHandlers({
+  withRouter,
+  withProps(({ location }) => {
+    const urlParams = qs.parse(location.search)
+    let { page: currentPage = 1 } = urlParams
+    currentPage = parseInt(currentPage)
+    let title = currentPage > 1 ? (<span>Recent Swaps - Page {currentPage}</span>) : 'Recent Swaps'
+    return ({
+      currentPage,
+      title
+    })
   }),
+  withHandlers({
+    handlePageClick: ({ getAffiliateSwaps, affiliateId, secretKey }) => (page) => {
+      getAffiliateSwaps(affiliateId, secretKey, page)
+    }
+  }),
+  lifecycle({
+    componentWillMount() {
+      const { getAffiliateSwaps, affiliateId, secretKey, currentPage } = this.props
+      getAffiliateSwaps(affiliateId, secretKey, currentPage)
+    }
+  })
 )(AffiliateSwapsTable)
