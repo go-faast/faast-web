@@ -12,8 +12,16 @@ const defaultTrezorInstructions = (assetName) => [
     text: 'If required, enter your pin or password to unlock the TREZOR'
   },
   {
-    icon: 'fa-th-list',
-    text: `When shown a list of ${assetName} accounts, select the one you want to use`,
+    icon: 'fa-refresh',
+    text: 'Ensure your TREZOR firmware is up to date using the TREZOR wallet website'
+  },
+  {
+    icon: 'fa-window-restore',
+    text: (<span>When asked if you want to export the public key of your ${assetName} account, select <b>Export</b></span>)
+  },
+  {
+    icon: 'fa-exclamation-triangle',
+    text: 'If you see a "Popup Closed" error, please enable popups in your browser settings and try again'
   }
 ]
 
@@ -27,6 +35,10 @@ const defaultLedgerInstructions = (assetName) => [
     text: 'Enter your pin to unlock the Ledger'
   },
   {
+    icon: 'fa-refresh',
+    text: `Ensure your Ledger firmware and ${assetName} app are up to date using the Ledger Live desktop app`
+  },
+  {
     icon: 'fa-mobile',
     text: `Open the ${assetName} app on your Ledger`
   },
@@ -36,23 +48,11 @@ const assetInstructionOverrides = {
   ledger: {
     ETH: [
       ...defaultLedgerInstructions('Ethereum'),
-      {
-        icon: 'fa-cogs',
-        text: 'Ensure that Browser Support is enabled in Settings'
-      },
-      {
-        icon: 'fa-download',
-        text: 'You may need to update the firmware if Browser Support is not available'
-      },
     ],
   },
   trezor: {
     ETH: [
-      ...defaultTrezorInstructions('Ethereum').slice(0, 2),
-      {
-        icon: 'fa-window-restore',
-        text: (<span>When asked if you want to export the public key, select <b>Export</b></span>)
-      },
+      ...defaultTrezorInstructions('Ethereum'),
     ],
   }
 }
