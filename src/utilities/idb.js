@@ -2,7 +2,7 @@ import pkg from 'Pkg'
 import { dateNowString, downloadJson } from './helpers'
 import idbWrapper from 'idb-wrapper'
 
-const DAYS_TO_STORE = 5
+const DAYS_TO_STORE = 14
 const stores = {}
 
 /** Polyfill idb-wrapper for react-static */
