@@ -17,7 +17,7 @@ const defaultTrezorInstructions = (assetName) => [
   },
   {
     icon: 'fa-window-restore',
-    text: (<span>When asked if you want to export the public key of your ${assetName} account, select <b>Export</b></span>)
+    text: (<span>When asked if you want to export the public key of your {assetName} account, select <b>Export</b></span>)
   },
   {
     icon: 'fa-exclamation-triangle',
