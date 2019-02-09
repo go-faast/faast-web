@@ -1,6 +1,5 @@
 import React from 'react'
 import { Row, Col, Button } from 'reactstrap'
-import { name as appName, version as appVersion } from 'Pkg'
 import CoinIcon from 'Components/CoinIcon'
 import Web3Wallet from './Web3Wallet'
 import CreateWallet from './CreateWallet'
@@ -58,7 +57,6 @@ const Access = () => (
       <span className='px-3'>open source and secure</span>
       <i className='fa fa-lock fa-2x align-middle'/>
     </Button>
-    <p className='mt-3 text-muted'>{appName} v{appVersion}</p>
   </div>
 )
 

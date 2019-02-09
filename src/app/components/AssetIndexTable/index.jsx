@@ -369,8 +369,8 @@ export default compose(
   }),
   lifecycle({
     componentWillUpdate(nextProps) {
-      const { updateAssetList, assets, assetList, allowSorting } = nextProps
-      if ((assets != assetList) && !allowSorting) {
+      const { updateAssetList, assets, assetList } = nextProps
+      if (assets != assetList) {
         updateAssetList(assets)
       }
     }
