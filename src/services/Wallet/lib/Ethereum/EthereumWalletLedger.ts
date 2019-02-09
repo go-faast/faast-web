@@ -35,7 +35,7 @@ export default class EthereumWalletLedger extends EthereumWallet {
   static connect = (derivationPath: string) => {
     return Ledger.eth.getAppConfiguration()
       .then((data) => {
-        log.info(`Ledger connected, version ${data.version}`)
+        log.info(`Ledger connected, version ${data.version}`, data)
         return createAccountGetter(derivationPath)
       })
       .then((getAccount) => getAccount(0)

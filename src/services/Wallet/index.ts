@@ -220,7 +220,7 @@ export class WalletService {
         wallet.walletIds = new Set(Array.from(wallet.walletIds).filter((walletId) => activeWalletIds.has(walletId)))
       }
     })
-    log.debug('wallets restored', activeWalletsList)
+    log.debug('wallets restored', Object.keys(this.activeWallets))
     return activeWalletsList
   }
 }

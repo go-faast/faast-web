@@ -104,16 +104,25 @@ const loadAccountBalance = (index = 0) => (dispatch, getState) => {
   const accountRetriever = getAccountRetriever(getState())
   const assetSymbol = getAssetSymbol(getState())
   const asset = getAsset(getState(), assetSymbol)
-  accountRetriever(index).then((walletInstance) => Promise.all([
-    dispatch(accountLoadStart(index, walletInstance.getLabel(), walletInstance.getAddress && walletInstance.getAddress())),
-    walletInstance.getBalance(asset)
-      .then((balance) => dispatch(accountLoadSuccess(index, balance)))
-      .catch((e) => {
-        log.error(`Error loading ${assetSymbol} account #${index}`, e)
-        return dispatch(accountLoadError(index, e.message))
-      })
-  ]))
-    .catch(log.error)
+  accountRetriever(index).then((walletInstance) => {
+    const walletAddress = walletInstance.getAddress && walletInstance.getAddress()
+    const walletLabel = walletInstance.getLabel()
+    log.debug(`Loading ${assetSymbol} account balance for account #${index} (label=${walletLabel}, walletAddress=${walletAddress})`)
+    return Promise.all([
+      dispatch(accountLoadStart(index, walletLabel, walletAddress)),
+      walletInstance.getBalance(asset)
+        .then((balance) => {
+          log.debug(`Wallet balance for ${assetSymbol} account ${index} is ${balance}`)
+          dispatch(accountLoadSuccess(index, balance))
+        })
+        .catch((e) => {
+          log.error(`Error loading ${assetSymbol} account #${index}`, e)
+          return dispatch(accountLoadError(index, e.message))
+        })
+    ])
+  }).catch((e) => {
+    log.error(`Failed to retrieve ${assetSymbol} account #${index}`, e)
+  })
 }
 
 const loadAccountPage = (page = 0) => (dispatch, getState) => {
@@ -148,14 +157,17 @@ export const changeAccountPage = (page = 0) => (dispatch) => {
 const createStartConnecting = (walletFactory) => (walletType, assetSymbol, errorHandler) => (dispatch, getState) => {
   dispatch(setStatusConnecting(walletType, assetSymbol))
   const derivationPath = getDerivationPath(getState())
+  log.debug(`Connecting hardware wallet ${walletType} ${assetSymbol} using derivation path ${derivationPath}`)
   return walletFactory(derivationPath)
     .then((result) => {
       if (isStatusReset(getState())) {
         return
       }
       if (result instanceof Wallet) {
+        log.debug('walletFactory returned wallet', result.getLabel(), result.getId())
         dispatch(setStatusConnected(() => Promise.resolve(result), false))
       } else if (result.getAccount) {
+        log.debug('walletFactory returned getAccount', result)
         dispatch(setStatusConnected(result.getAccount, true))
       } else {
         throw new Error(`Invalid walletFactory result of type ${typeof result}`)
@@ -300,6 +312,7 @@ export const confirmAccountSelection = () => (dispatch, getState) => {
   const selectedAccountIndex = getSelectedAccountIndex(getState())
   const accountRetriever = getAccountRetriever(getState())
   accountRetriever(selectedAccountIndex).then((walletInstance) => {
+    log.debug(`User selected ${assetSymbol} account #${selectedAccountIndex} with ID ${walletInstance.getId()}`)
     walletInstance.setPersistAllowed(false)
     dispatch(loadWallet(walletInstance))
     dispatch(accountAdded(assetSymbol, walletInstance.getId()))
@@ -314,6 +327,7 @@ export const removeConnectedAccount = (assetSymbol) => (dispatch, getState) => {
     log.debug(`No connected account to remove for ${assetSymbol}`)
     return
   }
+  log.debug(`User removed connected ${assetSymbol} account ${accountId}`)
   dispatch(removeWallet(accountId))
   dispatch(accountRemoved(assetSymbol))
 }
@@ -352,6 +366,9 @@ export const saveConnectedAccounts = () => (dispatch, getState) => {
         return dispatch(updateWallet(connectedAccountId))
       })
     ))
-    .then(() => dispatch(addNestedWallets(multiWalletId, ...connectedAccountIds)))
+    .then(() => {
+      log.debug(`Adding hardware wallet accounts to multiwallet ${multiWalletId}`, connectedAccountIds)
+      dispatch(addNestedWallets(multiWalletId, ...connectedAccountIds))
+    })
     .then(() => dispatch(routerPush(routes.dashboard())))
 }
