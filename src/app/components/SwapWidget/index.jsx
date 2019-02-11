@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
+import { Helmet } from 'react-helmet'
 import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, withPropsOnChange } from 'recompose'
 import Layout from 'Components/Layout'
@@ -13,6 +14,10 @@ import StepTwo from './StepTwo'
 
 const SwapWidget = ({ orderId, blocked, stepOne }) => (
   <Fragment>
+    <Helmet>
+      <title>Instantly Swap 100+ different cryptocurrencies - Faa.st</title>
+      <meta name='description' content='Trade your crypto directly from your hardware or software wallet. With no trading pairs, Faa.st makes it easy to trade altcoins quicker and cheaper than on an exchange.' /> 
+    </Helmet>
     {blocked ? (
       <Blocked/>
     ) : null}
