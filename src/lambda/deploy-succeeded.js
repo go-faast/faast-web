@@ -24,13 +24,13 @@ exports.handler = async (event) => {
   const {
     commit_ref: commitRef, commit_url: commitUrl, published_at: publishedAtString,
     branch: deployBranch, title: deployTitle, admin_url: adminUrl, build_id: buildId,
-    committer: commitAuthor, deploy_ssl_url: deployUrl, deploy_time: deployTimeMs
+    committer: commitAuthor, deploy_ssl_url: deployUrl, deploy_time: deployTime
   } = e.payload
   const shortCommitRef = commitRef.slice(0, 12)
   const buildLogUrl = urlJoin(adminUrl, 'deploys', buildId)
   const siteUrl = context === 'production' ? PROD_URL : deployUrl
   const deployEnv = context === 'production' ? context : deployBranch
-  const deployTimeString = formatDuration(deployTimeMs / 1000)
+  const deployTimeString = formatDuration(deployTime)
   const hookData = {
     text: `Successful deploy of *faast* to *${deployEnv}*`,
     attachments: [{
@@ -41,7 +41,7 @@ exports.handler = async (event) => {
       'title_link': siteUrl,
       'text': `View on ${siteUrl}\nOr check out the <${buildLogUrl}|build log>\n_Deploy took ${deployTimeString}_`,
       'footer': `Using git branch ${deployBranch}, commit <${commitUrl}|${shortCommitRef}> by ${commitAuthor}`,
-      'ts': Date.parse(publishedAtString),
+      'ts': Date.parse(publishedAtString) / 1000,
     }]
   }
   try {
