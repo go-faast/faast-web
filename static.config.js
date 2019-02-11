@@ -85,7 +85,7 @@ export default {
   siteRoot: siteRoot,
   stagingSiteRoot: '',
   getSiteData: () => ({
-    title: 'Trade Crypto - Faast',
+    title: siteConfig.title,
     lastBuilt: Date.now(),
   }),
   Document,
@@ -140,7 +140,11 @@ export default {
         path: '/',
         component: 'src/site/pages/Home',
         getData: async () => ({
-          supportedAssets
+          supportedAssets,
+          meta: {
+            title: siteConfig.title,
+            description: siteConfig.description
+          }
         }),
         children: generateCombinationsFromArray(supportedAssets, 'symbol').map(pair => {
           const symbol = pair.symbol

@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { Fragment } from 'react'
+import { Helmet } from 'react-helmet'
 import * as qs from 'query-string'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
@@ -16,10 +17,16 @@ import { getAssetIndexPage, getNumberOfAssets, areAssetPricesLoaded, getAssetPri
 const AssetIndex = ({ assets, currentPage, numberOfAssets, title, pricesLoaded, pricesError }) => {
   return (
     pricesLoaded ? (
-      <Layout className='pt-3'>
-        <AssetIndexTable tableHeader={title} assets={assets} />
-        <Paginator page={currentPage} pages={Math.ceil(numberOfAssets / 50)}/>
-      </Layout>) : (
+      <Fragment>
+        <Helmet>
+          <title>Cryptocurrency Market Capitalization Rankings - Faa.st</title>
+          <meta name='description' content='An aggregated list of top cryptocurrencies sorted by market cap, volume, supply, and other data metrics.' /> 
+        </Helmet>
+        <Layout className='pt-3'>
+          <AssetIndexTable tableHeader={title} assets={assets} />
+          <Paginator page={currentPage} pages={Math.ceil(numberOfAssets / 50)}/>
+        </Layout>
+      </Fragment>) : (
       <LoadingFullscreen center label='Loading market data...' error={pricesError}/>   
     )
   )

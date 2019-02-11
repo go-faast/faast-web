@@ -1,4 +1,5 @@
-import React from 'react'
+import React, { Fragment } from 'react'
+import { Helmet } from 'react-helmet'
 import { push as pushAction } from 'react-router-redux'
 import routes from 'Routes'
 import { connect } from 'react-redux'
@@ -19,60 +20,66 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
   isDropdownOpen, toggleDropdownOpen, timeFrame, push, pricesLoaded, pricesError
 }) => {
   return pricesLoaded ? (
-    <Layout className='pt-3'>
-      <AssetIndexTable 
-        defaultPriceChange={timeFrame} 
-        tableHeader={'Biggest Gainers'} 
-        assets={trendingPositive}
-        allowSorting={false}
-        heading={(
-          <h4 className='mb-3 text-primary'>
-            <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
-              <DropdownToggle 
-                tag='div'
-                className='py-0 px-2 flat d-inline-block position-relative cursor-pointer' 
-                style={{ top: '-1px', width: '100%' }}
-                caret
-              >
+    <Fragment>
+      <Helmet>
+        <title>Cryptocurrency Trending Price Gainers and Losers - Faa.st</title>
+        <meta name='description' content='The biggest gainers and losers trending in the cryptocurrency space over the last hour, day, and week.' /> 
+      </Helmet>
+      <Layout className='pt-3'>
+        <AssetIndexTable 
+          defaultPriceChange={timeFrame} 
+          tableHeader={'Biggest Gainers'} 
+          assets={trendingPositive}
+          allowSorting={false}
+          heading={(
+            <h4 className='mb-3 text-primary'>
+              <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
+                <DropdownToggle 
+                  tag='div'
+                  className='py-0 px-2 flat d-inline-block position-relative cursor-pointer' 
+                  style={{ top: '-1px', width: '100%' }}
+                  caret
+                >
                 Trending {timeFrame}
-              </DropdownToggle>
-              <DropdownMenu className='p-0'>
-                <DropdownItem 
-                  active={timeFrame === '7d'} 
-                  onClick={() => push(routes.trending('7d'))}
-                  className='py-2'
-                >
+                </DropdownToggle>
+                <DropdownMenu className='p-0'>
+                  <DropdownItem 
+                    active={timeFrame === '7d'} 
+                    onClick={() => push(routes.trending('7d'))}
+                    className='py-2'
+                  >
                 7d
-                </DropdownItem>
-                <DropdownItem className='m-0' divider/>
-                <DropdownItem 
-                  active={timeFrame === '1d'} 
-                  onClick={() => push(routes.trending('1d'))}
-                  className='py-2'
-                >
+                  </DropdownItem>
+                  <DropdownItem className='m-0' divider/>
+                  <DropdownItem 
+                    active={timeFrame === '1d'} 
+                    onClick={() => push(routes.trending('1d'))}
+                    className='py-2'
+                  >
                 1d
-                </DropdownItem>
-                <DropdownItem className='m-0' divider/>
-                <DropdownItem 
-                  active={timeFrame === '1h'} 
-                  onClick={() => push(routes.trending('1h'))}
-                  className='py-2'
-                >
+                  </DropdownItem>
+                  <DropdownItem className='m-0' divider/>
+                  <DropdownItem 
+                    active={timeFrame === '1h'} 
+                    onClick={() => push(routes.trending('1h'))}
+                    className='py-2'
+                  >
                 1h
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </h4>
-        )}
-      />
-      <AssetIndexTable 
-        tableHeader={'Biggest Losers'} 
-        assets={trendingNegative}
-        defaultPriceChange={timeFrame}
-        allowSorting={false}
-        showSearch={false}
-      />
-    </Layout>) : (
+                  </DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            </h4>
+          )}
+        />
+        <AssetIndexTable 
+          tableHeader={'Biggest Losers'} 
+          assets={trendingNegative}
+          defaultPriceChange={timeFrame}
+          allowSorting={false}
+          showSearch={false}
+        />
+      </Layout>
+    </Fragment>) : (
     <LoadingFullscreen center label='Loading market data...' error={pricesError}/>
   )
 }

@@ -137,6 +137,7 @@
     "react": "^16.4.1",
     "react-dom": "^16.4.1",
     "react-dropzone": "^4.1.2",
+    "react-helmet": "^5.2.0",
     "react-highcharts": "^13.0.0",
     "react-hot-loader": "^4.0.0",
     "react-lazyload": "^2.5.0",
