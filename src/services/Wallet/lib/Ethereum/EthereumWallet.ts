@@ -19,6 +19,8 @@ import { Amount, Balances, Transaction, Receipt } from '../types'
 const DEFAULT_GAS_PRICE = 21e9 // 21 Gwei
 const DEFAULT_GAS_LIMIT_ETH = toBigNumber(21000)
 const DEFAULT_GAS_LIMIT_TOKEN = toBigNumber(100000)
+const MIN_GAS_LIMIT_ETH = DEFAULT_GAS_LIMIT_ETH
+const MIN_GAS_LIMIT_TOKEN = DEFAULT_GAS_LIMIT_TOKEN
 
 /**
  * Batch size used when loaded token balances. Anything greater than 646 will exceed the
@@ -35,6 +37,10 @@ function estimateGasLimit(txData: Partial<TxData>): Promise<BigNumber> {
   try {
     return getWeb3().eth.estimateGas(txData)
       .then(toBigNumber)
+      .then((gasLimit) => {
+        const minGasLimit = txData.data ? MIN_GAS_LIMIT_TOKEN : MIN_GAS_LIMIT_ETH
+        return gasLimit.lt(minGasLimit) ? minGasLimit : gasLimit
+      })
       .catch(errorFallback)
   } catch (e) {
     return errorFallback(e)
