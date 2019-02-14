@@ -24,6 +24,7 @@ import { getRateMinimumDeposit, getRatePrice, isRateLoaded, getRateMaximumDeposi
 import { getAllAssetSymbols, getAsset } from 'Selectors/asset'
 import { getWallet } from 'Selectors/wallet'
 import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
+import { getGeoLimit } from 'Selectors/app'
 
 import ReduxFormField from 'Components/ReduxFormField'
 import Checkbox from 'Components/Checkbox'
@@ -60,7 +61,7 @@ const SwapStepOne = ({
   validateReceiveAddress, validateRefundAddress, validateDepositAmount,
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
   onChangeDepositAmount, handleSelectMax, maxSendAmount, maxSendAmountLoaded,
-  sendWallet, defaultRefundAddress, defaultReceiveAddress,
+  sendWallet, defaultRefundAddress, defaultReceiveAddress
 }) => (
   <Fragment>
     <ProgressBar steps={['Create Swap', `Send ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
@@ -224,6 +225,7 @@ export default compose(
     sendAmount: (state) => getFormValue(state, 'sendAmount'),
     sendWallet: (state) => getWallet(state, getFormValue(state, 'sendWalletId')),
     balancesLoaded: areCurrentPortfolioBalancesLoaded,
+    limit: getGeoLimit,
   }), {
     createSwap: createSwapAction,
     push: pushAction,
@@ -235,18 +237,21 @@ export default compose(
     sendSymbol, receiveSymbol,
     defaultSendAmount, defaultReceiveAmount,
     defaultRefundAddress, defaultReceiveAddress,
-    sendWallet
-  }) => ({
-    pair: `${sendSymbol}_${receiveSymbol}`,
-    initialValues: {
-      sendAmount: defaultSendAmount,
-      receiveAmount: defaultReceiveAmount,
-      refundAddress: defaultRefundAddress,
-      receiveAddress: defaultReceiveAddress,
-    },
-    maxSendAmount: sendWallet && (sendWallet.balances[sendSymbol] || '0'),
-    maxSendAmountLoaded: sendWallet && sendWallet.balancesLoaded,
-  })),
+    sendWallet, sendAsset, limit
+  }) => { 
+    const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : null
+    return ({
+      pair: `${sendSymbol}_${receiveSymbol}`,
+      initialValues: {
+        sendAmount: defaultSendAmount,
+        receiveAmount: defaultReceiveAmount,
+        refundAddress: defaultRefundAddress,
+        receiveAddress: defaultReceiveAddress,
+      },
+      maxSendAmount: sendWallet && (sendWallet.balances[sendSymbol] || '0'),
+      maxSendAmountLoaded: sendWallet && sendWallet.balancesLoaded,
+      maxGeoBuy
+    })}),
   connect(createStructuredSelector({
     rateLoaded: (state, { pair }) => isRateLoaded(state, pair),
     minimumDeposit: (state, { pair }) => getRateMinimumDeposit(state, pair),
@@ -284,13 +289,19 @@ export default compose(
       validator.walletAddress(receiveAsset)
     ),
     validateRefundAddress: ({ sendAsset }) => validator.walletAddress(sendAsset),
-    validateDepositAmount: ({ minimumDeposit, maximumDeposit, sendSymbol, sendWallet, maxSendAmount }) => validator.all(
-      ...(sendWallet ? [validator.required()] : []),
-      validator.number(),
-      validator.gt(minimumDeposit, `Send amount must be at least ${minimumDeposit} ${sendSymbol}.`),
-      validator.lt(maximumDeposit, `Send amount cannot be greater than ${maximumDeposit} ${sendSymbol} to ensure efficient pricing.`),
-      ...(sendWallet ? [validator.lte(maxSendAmount, 'Cannot send more than you have.')] : []),
-    ),
+    validateDepositAmount: ({ minimumDeposit, maximumDeposit, 
+      sendSymbol, sendWallet, maxSendAmount, maxGeoBuy }) => {
+      return (
+        validator.all(
+          ...(sendWallet ? [validator.required()] : []),
+          validator.number(),
+          validator.gt(minimumDeposit, `Send amount must be at least ${minimumDeposit} ${sendSymbol}.`),
+          ...(maxGeoBuy ? [validator.lt(maxGeoBuy, <span key={Math.random()}>Send amount cannot be greater than {maxGeoBuy} {sendSymbol} <a key={Math.random()} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noopener noreferrer'>due to your location.</a></span>)] : []),
+          validator.lte(maximumDeposit, `Send amount cannot be greater than ${maximumDeposit} ${sendSymbol} to ensure efficient pricing.`),
+          ...(sendWallet ? [validator.lte(maxSendAmount, 'Cannot send more than you have.')] : []),
+        )
+      )
+    },
     onSubmit: ({
       sendSymbol, receiveAsset, 
       createSwap, openViewOnly, push
