@@ -9,7 +9,7 @@ export const initialState = {
 }
 
 export const reducerFunctions = {
-  [restrictionsUpdated]: (state, { blocked, restricted }) => ({ ...state, blocked, restricted }),
+  [restrictionsUpdated]: (state, { res }) => ({ ...state, ...res }),
   [restrictionsError]: (state, error) => ({ ...state, error })
 }
 

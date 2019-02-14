@@ -21,6 +21,7 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { toggleOrderModal } from 'Actions/orderModal'
 import { refreshSwap } from 'Actions/swap'
+import { getGeoLimit } from 'Selectors/app'
 import { push } from 'react-router-redux'
 import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
@@ -33,11 +34,16 @@ const SwapSubmit = ({
   isOpen, swaps, headerText, continueText, continueDisabled, continueLoading,
   errorMessage, handleCancel, currentSwap, secondsUntilPriceExpiry, totalTxFee,
   handleTimerEnd, handleSubmit, invalid, submitting, modal, termsAccepted, singleSwap,
+  geoLimit
 }) => {
   const Wrapper = modal ? Modal : RenderChildren
   const Header = modal ? ModalHeader : RenderNothing
   const Body = modal ? ModalBody : RenderChildren
   const Footer = modal ? ModalFooter : RenderChildren
+  const totalSent = swaps.reduce((a, b) => {
+    return !b.sendAmount ? a : b.sendAmount.plus(a)
+  }, 500)
+  const overGeoLimit = geoLimit && (totalSent > geoLimit.per_transaction.amount)
   return (
     <Fragment>
       <Wrapper size='lg' backdrop='static' isOpen={isOpen} toggle={handleCancel}>
@@ -48,6 +54,11 @@ const SwapSubmit = ({
           <Body className='modal-text'>
             {errorMessage && (
               <Alert color='danger'>{errorMessage}</Alert>
+            )}
+            {overGeoLimit && (
+              <Alert color='danger' className='text-center w-100'>
+                <span>Send amount cannot be greater than ${geoLimit.per_transaction.amount} <a href='https://medium.com/@goFaast/9b14e100d828' target='_blank noopener noreferrer'>due to your location.</a></span>
+              </Alert>
             )}
             {!singleSwap && (
               <p>
@@ -92,7 +103,7 @@ const SwapSubmit = ({
           <Footer>
             <div className='w-100 d-flex justify-content-between'>
               <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
-              <Button type='submit' color='primary' disabled={continueDisabled || invalid || submitting}>
+              <Button type='submit' color='primary' disabled={continueDisabled || invalid || submitting || overGeoLimit}>
                 {continueText}
                 {continueLoading && (<i className='fa fa-spinner fa-pulse ml-2'/>)}
               </Button>
@@ -133,6 +144,7 @@ export default compose(
   }),
   connect(createStructuredSelector({
     isOpen: ({ orderModal: { show } }) => show,
+    geoLimit: getGeoLimit
   }), {
     toggle: toggleOrderModal,
     routerPush: push,

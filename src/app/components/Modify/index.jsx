@@ -390,7 +390,7 @@ const mapStateToProps = createStructuredSelector({
   portfolio: getCurrentPortfolioWithWalletHoldings,
   allAssets: getAllAssets,
   isAppRestricted: isAppRestricted,
-  blocked: isAppBlocked
+  blocked: isAppBlocked,
 })
 
 const mapDispatchToProps = {
