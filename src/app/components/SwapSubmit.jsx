@@ -42,7 +42,7 @@ const SwapSubmit = ({
   const Footer = modal ? ModalFooter : RenderChildren
   const totalSent = swaps.reduce((a, b) => {
     return !b.sendAmount ? a : b.sendAmount.plus(a)
-  }, 500)
+  }, 0)
   const overGeoLimit = geoLimit && (totalSent > geoLimit.per_transaction.amount)
   return (
     <Fragment>
