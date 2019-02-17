@@ -8,7 +8,7 @@ import config from 'Config'
 import {
   addWallet, removeWallet, restoreAllWallets, updateWalletBalances, addNestedWallets
 } from 'Actions/wallet'
-import { retrieveAssetPrices } from 'Actions/asset'
+import { retrieveAssets } from 'Common/actions/asset'
 import { getDefaultPortfolio } from 'Selectors'
 
 const createAction = newScopedCreateAction(__filename)
@@ -81,14 +81,14 @@ export const restoreAllPortfolios = () => (dispatch) => dispatch(restoreAllWalle
 
 export const updateHoldings = (walletId) => (dispatch) => {
   return Promise.all([
-    dispatch(retrieveAssetPrices()),
+    dispatch(retrieveAssets()),
     dispatch(updateWalletBalances(walletId)),
   ]).catch(log.error)
 }
 
 export const updateAllHoldings = () => (dispatch) => {
   return Promise.all([
-    dispatch(retrieveAssetPrices()),
+    dispatch(retrieveAssets()),
     dispatch(updateWalletBalances(defaultPortfolioId)),
   ]).catch(log.error)
 }

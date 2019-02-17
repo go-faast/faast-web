@@ -19,8 +19,8 @@ const getAffiliateSettings = () => {
   }
 }
 
-export function fetchAssets(): Promise<Asset[]> {
-  return fetchGet(`${apiUrl}/api/v2/public/currencies`, null, { retries: 2 })
+export function fetchAssets(): Promise<any[]> {
+  return fetchGet(`${apiUrl}/api/v2/public/currencies`, { include: 'marketInfo' }, { retries: 2 })
     .then((assets: Array<Partial<Asset>>) => assets.filter((asset) => {
       if (!asset.symbol) {
         log.warn('omitting asset without symbol', asset)
@@ -32,11 +32,50 @@ export function fetchAssets(): Promise<Asset[]> {
       }
       return true
     }).map((asset) => {
+      asset = formatAssetMarketData(asset)
       if (!asset.decimals) {
         asset.decimals = 0
       }
-      return asset as Asset
+      console.log(asset)
+      return asset as any
     }))
+}
+
+export const formatAssetMarketData = (r: any): any => {
+  r.marketInfo = r.marketInfo ? r.marketInfo : {}
+  const { total_supply = null, max_supply = null, num_market_pairs = null,
+    tags = null, cmc_rank = null, quote = {} } = r.marketInfo
+  const { USD = {} } = quote
+  const { price = null, volume_24h = null, percent_change_1h = null, percent_change_24h = null,
+    percent_change_7d = null, market_cap = null } = USD
+  return ({
+    name: r.name,
+    symbol: r.symbol,
+    walletUrl: r.walletUrl,
+    deposit: r.deposit,
+    ERC20: r.ERC20 ? r.ERC20 : null,
+    receive: r.receive,
+    infoUrl: r.infoUrl,
+    decimals: r.decimals,
+    cmcID: r.cmcID,
+    cmcIDno: r.cmcIDno,
+    restricted: r.restricted,
+    confirmations: r.confirmations,
+    iconUrl: r.iconUrl,
+    contractAddress: r.contractAddress,
+    terms: r.terms,
+    price,
+    volume_24h,
+    percent_change_1h,
+    percent_change_24h,
+    percent_change_7d,
+    market_cap,
+    total_supply,
+    max_supply,
+    num_market_pairs,
+    tags,
+    cmc_rank,
+  })
 }
 
 export const fetchAssetPrice = (symbol: string) => fetchGet(`${siteUrl}/api/portfolio-price/${symbol}`)
