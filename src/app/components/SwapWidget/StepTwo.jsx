@@ -10,8 +10,6 @@ import { push as pushAction } from 'react-router-redux'
 import classNames from 'class-names'
 import { Card } from 'reactstrap'
 
-import routes from 'Routes'
-
 import { retrieveSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
 
