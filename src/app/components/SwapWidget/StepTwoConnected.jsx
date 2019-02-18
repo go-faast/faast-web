@@ -34,9 +34,8 @@ export default compose(
         Confirm Swap Transaction
       </h4>
     </CardHeader>
-
     <CardBody className='pt-1'>
-      <SingleSwapSubmit swap={swap} termsAccepted onCancel={onCancel}/>
+      <SingleSwapSubmit forwardTo={`/orders/widget/${swap.id}`} swap={swap} termsAccepted onCancel={onCancel}/>
     </CardBody>
   </Fragment>
 ))

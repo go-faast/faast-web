@@ -65,7 +65,8 @@ export default compose(
       swap = swap || {}
       const { orderStatus = '', orderId = '' } = swap
       if (orderStatus && orderStatus !== 'awaiting deposit') {
-        push(routes.tradeDetail(orderId))
+        console.log('this is forwarding it')
+        push(`/orders/widget/${orderId}`)
       }
     },
   }),

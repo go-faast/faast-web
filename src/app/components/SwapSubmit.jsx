@@ -132,6 +132,7 @@ export default compose(
     onCancel: PropTypes.func,
     modal: PropTypes.bool,
     termsAccepted: PropTypes.bool,
+    forwardTo: PropTypes.string
   }),
   branch(
     ({ swap }) => !swap,
@@ -141,6 +142,7 @@ export default compose(
     onCancel: () => undefined,
     modal: false,
     termsAccepted: false,
+    forwardTo: undefined
   }),
   connect(createStructuredSelector({
     isOpen: ({ orderModal: { show } }) => show,
@@ -195,7 +197,7 @@ export default compose(
           Trezor.cancel()
         })
     },
-    handleSendTxs: ({ swap, onSend, toggle, routerPush }) => () => {
+    handleSendTxs: ({ swap, onSend, toggle, routerPush, forwardTo }) => () => {
       Promise.resolve(onSend(swap))
         .then((updatedSwap) => {
           if (!updatedSwap) {
@@ -204,9 +206,12 @@ export default compose(
           if (Array.isArray(updatedSwap) && updatedSwap.every(({ tx }) => tx.sent)) {
             toggle()
             routerPush(routes.tradeHistory())
-          } else if (updatedSwap.tx.sent) {
+          } else if (updatedSwap.tx.sent && !forwardTo) {
             toggle()
             routerPush(routes.tradeDetail(updatedSwap.orderId))
+          } else if (updatedSwap.tx.sent && forwardTo) {
+            toggle()
+            routerPush(forwardTo)
           }
         })
         .catch((e) => {
