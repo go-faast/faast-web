@@ -45,9 +45,11 @@ const StepTwoManual = ({
     <CardBody className='pt-1 text-center'>
       <DepositQRCode className='mt-3' scan size={150} address={depositAddress} asset={sendAsset} amount={sendAmount}/>
       <ClipboardCopyField value={depositAddress}/>
-      <Alert color='danger' className='mx-auto mt-3 text-center'>
-        <small>Please note: The maximum you can send is <Units precision={8} roundingType='dp' value={maxGeoBuy}/> {sendSymbol} <a href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>due to your location.</a></small>
-      </Alert>
+      {maxGeoBuy && (
+        <Alert color='info' className='mx-auto mt-3 text-center'>
+          <small>Please note: The maximum you can send is <Units precision={8} roundingType='dp' value={maxGeoBuy}/> {sendSymbol} <a style={{ color: 'rgba(0, 255, 222, 1)' }} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>due to your location.</a></small>
+        </Alert>
+      )}
     </CardBody>
     <CardFooter style={{ border: 'none', position: 'relative', wordBreak: 'break-word' }}>
       <div className={style.receipt}></div>

@@ -65,11 +65,13 @@ const SwapStepOne = ({
 }) => (
   <Fragment>
     <ProgressBar steps={['Create Swap', `Send ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
-    <Alert color='danger' className='mx-auto mt-3 w-75 text-center'>
-      <small>
-      Please note: The maximum you can send is <Button color='link-plain' onClick={handleSelectGeoMax}><Units precision={8} roundingType='dp' value={maxGeoBuy}/></Button> {sendSymbol} <a href='https://medium.com/@goFaast/9b14e100d828'  target='_blank noreferrer noopener'>due to your location.</a>
-      </small>
-    </Alert>
+    {maxGeoBuy && (
+      <Alert color='info' className='mx-auto mt-3 w-75 text-center'>
+        <small>
+      Please note: The maximum you can send is <Button style={{ color: 'rgba(0, 255, 222, 1)' }} color='link-plain' onClick={handleSelectGeoMax}><Units precision={8} roundingType='dp' value={maxGeoBuy}/></Button> {sendSymbol} <a style={{ color: 'rgba(0, 255, 222, 1)' }} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>due to your location.</a>
+        </small>
+      </Alert>
+    )}
     <Form onSubmit={handleSubmit}>
       <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
         {!balancesLoaded && (
@@ -338,7 +340,7 @@ export default compose(
         validator.all(
           ...(sendWallet ? [validator.required()] : []),
           validator.number(),
-          validator.gt(minimumDeposit, `Send amount must be at least ${minimumDeposit} ${sendSymbol}.`),
+          ...(minimumDeposit ? [validator.gt(minimumDeposit, `Send amount must be at least ${minimumDeposit} ${sendSymbol}.`)] : []),
           ...(maxGeoBuy ? [validator.lte(maxGeoBuy, <span key={Math.random()}>Send amount cannot be greater than <Button color='link-plain' onClick={handleSelectGeoMax}>
             <Units precision={8} roundingType='dp' value={maxGeoBuy}/>
           </Button> {sendSymbol} <a key={Math.random()} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noopener noreferrer'>due to your location.</a></span>)] : []),
