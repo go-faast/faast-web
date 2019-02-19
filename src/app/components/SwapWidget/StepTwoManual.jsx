@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { push as pushAction } from 'react-router-redux'
 import { compose, setDisplayName, lifecycle, setPropTypes, withHandlers, withProps } from 'recompose'
-import { CardHeader, CardBody, CardFooter } from 'reactstrap'
+import { CardHeader, CardBody, CardFooter, Alert } from 'reactstrap'
 
 import routes from 'Routes'
 
@@ -19,11 +19,13 @@ import { refreshSwap } from 'Actions/swap'
 import { getRateMinimumDeposit, getRatePrice } from 'Selectors/rate'
 import DataLayout from 'Components/DataLayout'
 
+import { getGeoLimit } from 'Selectors/app'
+
 import style from './style.scss'
 
 /* eslint-disable react/jsx-key */
 const StepTwoManual = ({
-  handleTimerEnd, secondsUntilPriceExpiry, minimumDeposit, quotedRate,
+  handleTimerEnd, secondsUntilPriceExpiry, minimumDeposit, quotedRate, maxGeoBuy,
   swap: {
     orderId = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
     sendAmount, receiveAmount, orderStatus = '', refundAddress = '', isFixedPrice, sendAsset,
@@ -35,14 +37,17 @@ const StepTwoManual = ({
         Send {(sendAmount && sendAmount > 0)
           ? (<Units value={sendAmount} symbol={sendSymbol} precision={8} showIcon/>)
           : (minimumDeposit ? (
-            <Fragment>at least <Units value={minimumDeposit} symbol={sendSymbol} precision={8} showIcon/></Fragment>
+            <Fragment>at least <Units value={minimumDeposit} symbol={sendSymbol} precision={8} showIcon/>
+            </Fragment>
           ) : null)} to address:
       </h4>
     </CardHeader>
-
     <CardBody className='pt-1 text-center'>
       <DepositQRCode className='mt-3' scan size={150} address={depositAddress} asset={sendAsset} amount={sendAmount}/>
       <ClipboardCopyField value={depositAddress}/>
+      <Alert color='danger' className='mx-auto mt-3 text-center'>
+        <small>Please note: The maximum you can send is <Units precision={8} roundingType='dp' value={maxGeoBuy}/> {sendSymbol} <a href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>due to your location.</a></small>
+      </Alert>
     </CardBody>
     <CardFooter style={{ border: 'none', position: 'relative', wordBreak: 'break-word' }}>
       <div className={style.receipt}></div>
@@ -91,15 +96,21 @@ export default compose(
   connect((state, { swap: { pair } }) => ({
     minimumDeposit: getRateMinimumDeposit(state, pair),
     estimatedRate: getRatePrice(state, pair),
+    limit: getGeoLimit(state),
   }), {
     push: pushAction,
     refreshSwap,
     retrievePairData: retrievePairData,
   }),
-  withProps(({ swap: { rateLockedUntil, rate }, estimatedRate }) => ({
-    secondsUntilPriceExpiry: (Date.parse(rateLockedUntil) - Date.now()) / 1000,
-    quotedRate: rate || estimatedRate,
-  })),
+  withProps(({ swap: { rateLockedUntil, rate, sendAsset }, estimatedRate, limit }) => {
+    console.log(limit)
+    const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : null
+    return ({
+      secondsUntilPriceExpiry: (Date.parse(rateLockedUntil) - Date.now()) / 1000,
+      quotedRate: rate || estimatedRate,
+      maxGeoBuy
+    })
+  }),
   withHandlers({
     handleTimerEnd: ({ refreshSwap, swap }) => () => {
       refreshSwap(swap.orderId)
