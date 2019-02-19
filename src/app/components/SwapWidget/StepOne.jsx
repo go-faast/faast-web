@@ -8,7 +8,7 @@ import { push as pushAction } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
 import {
   Form, Button, Modal, ModalHeader, ModalBody, Card, CardHeader, CardBody, InputGroupAddon, Row, Col,
-  FormText,
+  FormText, Alert
 } from 'reactstrap'
 
 import log from 'Log'
@@ -61,10 +61,15 @@ const SwapStepOne = ({
   validateReceiveAddress, validateRefundAddress, validateDepositAmount,
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
   onChangeDepositAmount, handleSelectMax, maxSendAmount, maxSendAmountLoaded,
-  sendWallet, defaultRefundAddress, defaultReceiveAddress
+  sendWallet, defaultRefundAddress, defaultReceiveAddress, maxGeoBuy, handleSelectGeoMax
 }) => (
   <Fragment>
     <ProgressBar steps={['Create Swap', `Send ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
+    <Alert color='danger' className='mx-auto mt-3 w-75 text-center'>
+      <small>
+      Please note: The maximum you can send is <Button color='link-plain' onClick={handleSelectGeoMax}><Units precision={8} roundingType='dp' value={maxGeoBuy}/></Button> {sendSymbol} <a href='https://medium.com/@goFaast/9b14e100d828'  target='_blank noreferrer noopener'>due to your location.</a>
+      </small>
+    </Alert>
     <Form onSubmit={handleSubmit}>
       <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
         {!balancesLoaded && (
@@ -239,7 +244,7 @@ export default compose(
     defaultRefundAddress, defaultReceiveAddress,
     sendWallet, sendAsset, limit
   }) => { 
-    const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : null
+    const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : undefined
     return ({
       pair: `${sendSymbol}_${receiveSymbol}`,
       initialValues: {
@@ -263,24 +268,6 @@ export default compose(
     isAssetDisabled: ({ assetSelect }) => ({ deposit, receive }) =>
       !((assetSelect === 'send' && deposit) || 
       (assetSelect === 'receive' && receive)),
-    handleSelectedAsset: ({ assetSelect, updateQueryString, setAssetSelect, sendSymbol, receiveSymbol }) => (asset) => {
-      const { symbol } = asset
-      let from = sendSymbol
-      let to = receiveSymbol
-      if (assetSelect === 'send') {
-        if (symbol === receiveSymbol) {
-          to = from
-        }
-        from = symbol
-      } else { // receive
-        if (symbol === sendSymbol) {
-          from = to
-        }
-        to = symbol
-      }
-      setAssetSelect(null)
-      updateQueryString({ from, to })
-    },
     handleSwitchAssets: ({ updateQueryString, sendSymbol, receiveSymbol }) => () => {
       updateQueryString({ from: receiveSymbol, to: sendSymbol })
     },
@@ -289,19 +276,6 @@ export default compose(
       validator.walletAddress(receiveAsset)
     ),
     validateRefundAddress: ({ sendAsset }) => validator.walletAddress(sendAsset),
-    validateDepositAmount: ({ minimumDeposit, maximumDeposit, 
-      sendSymbol, sendWallet, maxSendAmount, maxGeoBuy }) => {
-      return (
-        validator.all(
-          ...(sendWallet ? [validator.required()] : []),
-          validator.number(),
-          validator.gt(minimumDeposit, `Send amount must be at least ${minimumDeposit} ${sendSymbol}.`),
-          ...(maxGeoBuy ? [validator.lt(maxGeoBuy, <span key={Math.random()}>Send amount cannot be greater than {maxGeoBuy} {sendSymbol} <a key={Math.random()} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noopener noreferrer'>due to your location.</a></span>)] : []),
-          validator.lte(maximumDeposit, `Send amount cannot be greater than ${maximumDeposit} ${sendSymbol} to ensure efficient pricing.`),
-          ...(sendWallet ? [validator.lte(maxSendAmount, 'Cannot send more than you have.')] : []),
-        )
-      )
-    },
     onSubmit: ({
       sendSymbol, receiveAsset, 
       createSwap, openViewOnly, push
@@ -343,6 +317,9 @@ export default compose(
       handleSelectMax: ({ maxSendAmount }) => () => {
         setDepositAmount(maxSendAmount)
       },
+      handleSelectGeoMax: ({ maxGeoBuy }) => () => {
+        setDepositAmount(maxGeoBuy)
+      },
       calculateReceiveAmount: ({ sendAmount, receiveAsset, estimatedRate }) => () => {
         if (estimatedRate && sendAmount) {
           sendAmount = toBigNumber(sendAmount)
@@ -353,6 +330,41 @@ export default compose(
         }
       }
     }
+  }),
+  withHandlers({
+    validateDepositAmount: ({ minimumDeposit, maximumDeposit, 
+      sendSymbol, sendWallet, maxSendAmount, maxGeoBuy, handleSelectGeoMax }) => {
+      return (
+        validator.all(
+          ...(sendWallet ? [validator.required()] : []),
+          validator.number(),
+          validator.gt(minimumDeposit, `Send amount must be at least ${minimumDeposit} ${sendSymbol}.`),
+          ...(maxGeoBuy ? [validator.lte(maxGeoBuy, <span key={Math.random()}>Send amount cannot be greater than <Button color='link-plain' onClick={handleSelectGeoMax}>
+            <Units precision={8} roundingType='dp' value={maxGeoBuy}/>
+          </Button> {sendSymbol} <a key={Math.random()} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noopener noreferrer'>due to your location.</a></span>)] : []),
+          ...(maximumDeposit ? [validator.lte(maximumDeposit, `Send amount cannot be greater than ${maximumDeposit} ${sendSymbol} to ensure efficient pricing.`)] : []),
+          ...(sendWallet ? [validator.lte(maxSendAmount, 'Cannot send more than you have.')] : []),
+        )
+      )
+    },
+    handleSelectedAsset: ({ assetSelect, updateQueryString, setAssetSelect, sendSymbol, receiveSymbol }) => (asset) => {
+      const { symbol } = asset
+      let from = sendSymbol
+      let to = receiveSymbol
+      if (assetSelect === 'send') {
+        if (symbol === receiveSymbol) {
+          to = from
+        }
+        from = symbol
+      } else { // receive
+        if (symbol === sendSymbol) {
+          from = to
+        }
+        to = symbol
+      }
+      setAssetSelect(null)
+      updateQueryString({ from, to })
+    },
   }),
   lifecycle({
     componentDidUpdate(prevProps) {
@@ -376,6 +388,12 @@ export default compose(
         updateQueryString({ to, from })
       } else {
         retrievePairData(pair)
+      }
+    },
+    componentDidMount() {
+      const { maxGeoBuy, handleSelectGeoMax } = this.props
+      if (maxGeoBuy && maxGeoBuy < 1) {
+        handleSelectGeoMax()
       }
     }
   }),
