@@ -105,7 +105,6 @@ export default compose(
     retrievePairData: retrievePairData,
   }),
   withProps(({ swap: { rateLockedUntil, rate, sendAsset }, estimatedRate, limit }) => {
-    console.log(limit)
     const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : null
     return ({
       secondsUntilPriceExpiry: (Date.parse(rateLockedUntil) - Date.now()) / 1000,
