@@ -110,7 +110,7 @@ export const sendTx = (tx, sendOptions) => (dispatch) => Promise.resolve().then(
   return walletInstance.sendTransaction(tx, { ...eventListeners, ...sendOptions })
     .then((sentTx) => {
       dispatch(pollTxReceipt(tx.id))
-      return dispatch(txSendingSuccess(sentTx)).payload
+      return dispatch(txSendingSuccess(sentTx)).payload 
     })
     .catch(newTxErrorHandler(dispatch, tx, 'sendTx', txSendingFailed, (message) => {
       if (message.includes('User denied transaction signature') || message.includes('denied by the user')) {

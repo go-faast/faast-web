@@ -251,11 +251,12 @@ export const sendSwap = (swap, sendOptions) => (dispatch, getState) => Promise.r
     return dispatch(sendTx(tx, sendOptions))
       .then((sentTx) => {
         if (sentTx && sentTx.sent && sentTx.hash) {
-          Faast.provideSwapDepositTx(swap.orderId, sentTx.hash)
+          console.log('HERRRRRRREEEEEEE')
+          return Faast.provideSwapDepositTx(swap.orderId, sentTx.hash)
         }
       })
   })
-  .then(() => dispatch(pollOrderStatus(swap)))
+  .then(() => { console.log('ok now polling for real brah'); const updatedSwap = getSwap(getState(), swap.id); return dispatch(pollOrderStatus(updatedSwap)) })
   .then(() => getSwap(getState(), swap.id))
 
 const updateOrderStatus = (swap) => (dispatch) => {
@@ -267,6 +268,7 @@ const updateOrderStatus = (swap) => (dispatch) => {
   return Faast.fetchSwap(orderId)
     .then((order) => {
       if (order.orderStatus !== orderStatus) {
+        console.log('order status does not equal so updating!')
         dispatch(swapOrderStatusUpdated(id, order.orderStatus))
       }
       return order
@@ -287,13 +289,17 @@ export const pollOrderStatus = (swap) => (dispatch) => {
     return
   }
   if (orderStatus === 'awaiting deposit' && (errorType === 'createSwapTx' || (tx && !tx.sent))) {
+    console.log('no tx so not polling', swap)
     // log.debug(`pollOrderStatus: swap ${id} has unsent tx, won't poll`)
     return
   }
   const orderStatusInterval = window.setInterval(() => {
+    console.log('setting poll!')
     dispatch(updateOrderStatus(swap))
       .then((order) => {
+        console.log('order status updated returned', order)
         if (isSwapFinalized(order)) {
+          console.log('finalized')
           clearInterval(orderStatusInterval)
         }
       })
@@ -316,7 +322,7 @@ export const restoreSwapPolling = (swapId) => (dispatch, getState) => {
     const { tx } = swap
     if (tx && tx.sent && !tx.receipt) {
       dispatch(pollTxReceipt(swap.txId))
-        .then(() => pollOrderStatus(swap))
+        .then(() => { console.log('has tx receipt so now poll swap'); return pollOrderStatus(swap) })
     } else {
       dispatch(pollOrderStatus(swap))
     }
