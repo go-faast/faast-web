@@ -232,6 +232,30 @@ export default {
         component: 'src/site/pages/Terms',
       },
       {
+        path: '/what-is-an-ico',
+        component: 'src/site/pages/IcoIntro',
+      },
+      {
+        path: '/what-is-the-difference-between-ico-ipo-ito',
+        component: 'src/site/pages/IcoItoIpo',
+      },
+      {
+        path: '/how-to-buy-ethereum',
+        component: 'src/site/pages/BuyEthereum',
+      },
+      {
+        path: '/what-are-smart-contracts',
+        component: 'src/site/pages/SmartContracts',
+      },
+      {
+        path: '/what-is-a-dao',
+        component: 'src/site/pages/Dao',
+      },
+      {
+        path: '/what-is-ethereum',
+        component: 'src/site/pages/WhatIsEthereum',
+      },
+      {
         path: '/privacy',
         component: 'src/site/pages/Privacy',
       },
