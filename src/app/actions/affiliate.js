@@ -19,6 +19,8 @@ export const updateBalance = createAction('UPDATE_BALANCE')
 export const updateBalanceSwaps = createAction('UPDATE_BALANCE_SWAPS')
 export const resetAffiliate = createAction('RESET_ALL')
 export const statsRetrieved = createAction('STATS_RETRIEVED')
+export const updateSwapExportLink = createAction('UPDATE_SWAP_EXPORT_LINK')
+export const swapExportLinkLoading = createAction('SWAP_EXPORT_LINK_LOADING')
 export const withdrawalsRetrieved = createAction('WITHDRAWALS_RETRIEVED')
 export const swapsRetrieved = createAction('SWAPS_RETRIEVED')
 export const swapsError = createAction('SWAPS_RETRIEVED')
@@ -50,7 +52,7 @@ export const getStats = (id, key) => (dispatch, getState) => {
 export const affiliateLogin = (id, key) => (dispatch) => {
   dispatch(affiliateDataUpdated())
   dispatch(getAffiliateWithdrawals(id, key))
-  dispatch(getAffiliateSwaps(id, key))
+  dispatch(getAffiliateSwaps(id, key, 1, 5))
   dispatch(getBalance(id, key))
   dispatch(getStats(id, key))
   dispatch(getAccountDetails(id, key))
@@ -65,6 +67,19 @@ export const getBalance = (id, key) => (dispatch, getState) => {
       sessionStorageSet('state:affiliate_balance_swaps', swaps)
       dispatch(updateBalance(balance))
       return dispatch(updateBalanceSwaps(swaps))
+    })
+    .catch(() => { 
+      if (!isAffiliateLoggedIn(getState())) {
+        dispatch(loginError())
+      }
+    })
+}
+
+export const getSwapsExportLink = (id, key) => (dispatch, getState) => {
+  dispatch(swapExportLinkLoading())
+  return Faast.getAffiliateExportLink(id, key)
+    .then((result) => {
+      return dispatch(updateSwapExportLink(result.url))
     })
     .catch(() => { 
       if (!isAffiliateLoggedIn(getState())) {
@@ -94,9 +109,9 @@ export const getAffiliateWithdrawals = (id, key) => (dispatch) => {
     .catch((e) => dispatch(withdrawalsError(e)))
 }
 
-export const getAffiliateSwaps = (id, key, page = 1) => (dispatch) => {
+export const getAffiliateSwaps = (id, key, page, limit) => (dispatch) => {
   dispatch(swapsLoading())
-  return Faast.getAffiliateSwaps(id, key, page)
+  return Faast.getAffiliateSwaps(id, key, page, limit)
     .then((swaps) => {
       dispatch(swapHistoryTotalUpdated(swaps.total))
       sessionStorageSetJson('state:swap_history_total', swaps.total)

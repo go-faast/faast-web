@@ -1,6 +1,5 @@
 import React from 'react'
 import { compose, setDisplayName } from 'recompose'
-
 import AffiliateLayout from 'Components/Affiliate/Layout'
 import SwapsTable from 'Components/Affiliate/SwapsTable'
 

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router'
 import { compose, setDisplayName, setPropTypes, defaultProps, withProps, withHandlers, lifecycle } from 'recompose'
-import { Table, Card, CardHeader, CardBody, CardFooter } from 'reactstrap'
+import { Table, Card, CardHeader, CardBody, CardFooter, Button, Row, Col } from 'reactstrap'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
 
@@ -14,8 +14,9 @@ import Loading from 'Components/Loading'
 import Units from 'Components/Units'
 import Paginator from 'Components/Paginator'
 
-import { affiliateSentSwapsArray, areSwapsLoading, swapHistoryTotal, affiliateId, secretKey } from 'Selectors/affiliate'
-import { getAffiliateSwaps } from 'Actions/affiliate'
+import { affiliateSentSwapsArray, areSwapsLoading, swapHistoryTotal, 
+  affiliateId, secretKey, swapsExportLink, isSwapExportLinkLoading } from 'Selectors/affiliate'
+import { getAffiliateSwaps, getSwapsExportLink } from 'Actions/affiliate'
 
 import { text, affilateTable, card, cardHeader, cardFooter, smallCard } from './style'
 
@@ -52,14 +53,25 @@ const TableRow = ({
 )
 
 const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading, currentPage, title, 
-  swapHistoryTotal, handlePageClick }) => {
+  swapHistoryTotal, handlePageClick, handleExportSwaps, swapsExportLink, isSwapExportLinkLoading }) => {
   swaps = swaps && size === 'small' ? swaps.slice(0,5) : swaps
   return (
     <Fragment>
       <Card className={classNames(card, size === 'small' && smallCard, size !== 'small' && 'mx-auto')}>
-        <CardHeader className={cardHeader}>{title}</CardHeader>
+        <CardHeader className={cardHeader}>
+          <Row>
+            <Col>{title}</Col>
+            <Col style={{ height: 0 }} className='ml-auto'>
+              {isSwapExportLinkLoading ? (
+                <i style={{ top: 4 }} className='float-right position-relative fa fa-spinner fa-pulse'/>
+              ) : !isSwapExportLinkLoading &&  !swapsExportLink ? (
+                <Button color='white' style={{ top: -3 }} className='float-right position-relative flat' size='sm' onClick={handleExportSwaps}>Export CSV <i className='fa fa-external-link' aria-hidden='true'></i></Button>
+              ) : <a className='float-right' href={swapsExportLink} download='export.csv'>Download CSV</a>}
+            </Col>
+          </Row>
+        </CardHeader>
         <CardBody className={classNames(swaps.length > 0 && 'p-0','text-center')}>
-          {areSwapsLoading ? (<Loading />) :
+          {areSwapsLoading ? (<Loading className='py-4' />) :
             swaps.length > 0 ? (
               <Fragment>
                 <Table className={classNames('text-left', text, affilateTable)} striped responsive>
@@ -118,8 +130,11 @@ export default compose(
     swapHistoryTotal,
     affiliateId,
     secretKey,
+    swapsExportLink,
+    isSwapExportLinkLoading,
   }), {
-    getAffiliateSwaps
+    getAffiliateSwaps,
+    getSwapsExportLink
   }),
   setPropTypes({
     size: PropTypes.string
@@ -141,6 +156,9 @@ export default compose(
   withHandlers({
     handlePageClick: ({ getAffiliateSwaps, affiliateId, secretKey }) => (page) => {
       getAffiliateSwaps(affiliateId, secretKey, page)
+    },
+    handleExportSwaps: ({ getSwapsExportLink, affiliateId, secretKey }) => () => {
+      getSwapsExportLink(affiliateId, secretKey)
     }
   }),
   lifecycle({
