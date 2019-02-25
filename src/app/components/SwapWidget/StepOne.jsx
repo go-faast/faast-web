@@ -422,10 +422,12 @@ export default compose(
     },
     componentDidMount() {
       const { maxGeoBuy, handleSelectGeoMax, calculateReceiveAmount } = this.props
+      if (!maxGeoBuy) {
+        calculateReceiveAmount()
+      }
       if (maxGeoBuy && maxGeoBuy < 1) {
         handleSelectGeoMax()
       }
-      calculateReceiveAmount()
     }
   }),
 )(SwapStepOne)
