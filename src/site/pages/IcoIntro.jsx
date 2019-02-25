@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { Fragment } from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { Card, CardHeader, CardBody } from 'reactstrap'
@@ -13,7 +14,6 @@ export default compose(
     <div className='container my-4'>
       <Card>
         <CardHeader className='font-weight-bold'>
-          {/* eslint-disable-next-line react/no-unescaped-entities */}
           <h4>An introduction to ICO's</h4>
         </CardHeader>
         <CardBody className='text-muted'>
