@@ -10,8 +10,6 @@ import { push as pushAction } from 'react-router-redux'
 import classNames from 'class-names'
 import { Card } from 'reactstrap'
 
-import routes from 'Routes'
-
 import { retrieveSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
 
@@ -65,7 +63,7 @@ export default compose(
       swap = swap || {}
       const { orderStatus = '', orderId = '' } = swap
       if (orderStatus && orderStatus !== 'awaiting deposit') {
-        push(routes.tradeDetail(orderId))
+        push(`/orders/widget/${orderId}`)
       }
     },
   }),

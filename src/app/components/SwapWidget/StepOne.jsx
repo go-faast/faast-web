@@ -294,7 +294,7 @@ export default compose(
         refundAddress,
       })
         .then((swap) => {
-          push(`/swap?id=${swap.orderId}`)
+          push(`/swap/send?id=${swap.orderId}`)
           if (receiveSymbol === 'ETH' || ERC20) { 
             return openViewOnly(receiveAddress, null)
           }

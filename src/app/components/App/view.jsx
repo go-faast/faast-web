@@ -9,6 +9,7 @@ import SearchResults from 'Components/SearchResults'
 import ModalRoute from 'Components/ModalRoute'
 import TradeDetailModal from 'Components/TradeDetailModal'
 import SwapWidget from 'Components/SwapWidget'
+import SwapWidgetStepTwo from 'Components/SwapWidget/StepTwo'
 import AssetDetail from 'Components/AssetDetail'
 import AssetIndex from 'Components/AssetIndex'
 import AffiliateLogin from 'Components/Affiliate/Login'
@@ -28,7 +29,7 @@ import {
   tradeHistory, tradeDetail, swapWidget, assetDetail, assetIndex,
   affiliateLogin, affiliateSignup, affiliateDashboard, affiliateSettings,
   affiliatePayouts, affiliateSwaps, affiliateAccountModal,
-  watchlist, trending, affiliateTerms
+  watchlist, trending, affiliateTerms, swapWidgetStepTwo, tradeWidgetDetail
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => (
@@ -48,6 +49,7 @@ const AppView = ({ hasNoWallets }) => (
       <Route path={connect.path} component={Connect}/>
       <Route path={viewOnlyAddress.path} component={SearchResults}/>
       <Route path={swapWidget.path} component={SwapWidget}/>
+      <Route path={swapWidgetStepTwo.path} component={SwapWidgetStepTwo}/>
       <Route path={watchlist.path} component={AssetWatchlist}/>
       <Route path={trending.path} component={AssetTrending}/>
       <Route path={assetDetail.path} component={AssetDetail}/>
@@ -72,7 +74,10 @@ const AppView = ({ hasNoWallets }) => (
     </Switch>
 
     {/* Routes that show a modal over one of the above pages */}
-    <ModalRoute closePath={tradeHistory.path} path={tradeDetail.path} render={(props) => (
+    <ModalRoute exact closePath={tradeHistory.path} path={tradeDetail.path} render={(props) => (
+      <TradeDetailModal tradeId={props.match.params.tradeId} {...props}/>
+    )}/>
+    <ModalRoute closePath={tradeHistory.path} path={tradeWidgetDetail.path} render={(props) => (
       <TradeDetailModal tradeId={props.match.params.tradeId} {...props}/>
     )}/>
     <ModalRoute closePath={affiliateDashboard.path} path={affiliateAccountModal.path} render={(props) => (
