@@ -61,7 +61,8 @@ const SwapStepOne = ({
   validateReceiveAddress, validateRefundAddress, validateDepositAmount,
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
   onChangeDepositAmount, handleSelectMax, maxSendAmount, maxSendAmountLoaded,
-  sendWallet, defaultRefundAddress, defaultReceiveAddress, maxGeoBuy, handleSelectGeoMax
+  sendWallet, defaultRefundAddress, defaultReceiveAddress, maxGeoBuy, handleSelectGeoMax,
+  onChangeReceiveAmount
 }) => (
   <Fragment>
     <ProgressBar steps={['Create Swap', `Send ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
@@ -123,9 +124,9 @@ const SwapStepOne = ({
               <StepOneField
                 name='receiveAmount'
                 type='number'
-                disabled
                 placeholder='Estimated receive amount'
                 label='You receive'
+                onChange={onChangeReceiveAmount}
                 addonAppend={({ invalid }) => (
                   <InputGroupAddon addonType="append">
                     <Button color={invalid ? 'danger' : 'dark'} size='sm' onClick={() => setAssetSelect('receive')}>
@@ -230,6 +231,7 @@ export default compose(
     sendAsset: (state, { sendSymbol }) => getAsset(state, sendSymbol),
     receiveAsset: (state, { receiveSymbol }) => getAsset(state, receiveSymbol),
     sendAmount: (state) => getFormValue(state, 'sendAmount'),
+    receiveAmount: (state) => getFormValue(state, 'receiveAmount'),
     sendWallet: (state) => getWallet(state, getFormValue(state, 'sendWalletId')),
     balancesLoaded: areCurrentPortfolioBalancesLoaded,
     limit: getGeoLimit,
@@ -266,12 +268,19 @@ export default compose(
     estimatedRate: (state, { pair }) => getRatePrice(state, pair),
   })),
   withState('assetSelect', 'setAssetSelect', null), // send, receive, or null
+  withState('lastUpdatedField', 'setLastUpdatedField', 'send'), // send or receive
   withHandlers({
     isAssetDisabled: ({ assetSelect }) => ({ deposit, receive }) =>
       !((assetSelect === 'send' && deposit) || 
       (assetSelect === 'receive' && receive)),
     handleSwitchAssets: ({ updateQueryString, sendSymbol, receiveSymbol }) => () => {
       updateQueryString({ from: receiveSymbol, to: sendSymbol })
+    },
+    onChangeReceiveAmount: ({ setLastUpdatedField }) => () => {
+      setLastUpdatedField('receive')
+    },
+    onChangeDepositAmount: ({ setLastUpdatedField }) => () => {
+      setLastUpdatedField('send')
     },
     validateReceiveAddress: ({ receiveAsset }) => validator.all(
       validator.required(),
@@ -309,6 +318,7 @@ export default compose(
   }),
   withHandlers(({ change, touch }) => {
     const setEstimatedReceiveAmount = (x) => change('receiveAmount', x)
+    const setEstimatedDepositAmount = (x) => change('sendAmount', x)
     const setDepositAmount = (x) => {
       change('sendAmount', log.debugInline('setDepositAmount', x))
       touch('sendAmount')
@@ -316,19 +326,32 @@ export default compose(
     return {
       setDepositAmount,
       setEstimatedReceiveAmount,
+      setEstimatedDepositAmount,
       handleSelectMax: ({ maxSendAmount }) => () => {
         setDepositAmount(maxSendAmount)
       },
       handleSelectGeoMax: ({ maxGeoBuy }) => () => {
         setDepositAmount(maxGeoBuy)
       },
-      calculateReceiveAmount: ({ sendAmount, receiveAsset, estimatedRate }) => () => {
+      calculateReceiveAmount: ({ sendAmount, receiveAsset, estimatedRate, receiveAmount }) => () => {
         if (estimatedRate && sendAmount) {
           sendAmount = toBigNumber(sendAmount)
           const estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals)
           setEstimatedReceiveAmount(estimatedReceiveAmount.toNumber())
         } else {
           setEstimatedReceiveAmount(null)
+        }
+        if (!sendAmount && !receiveAmount) {
+          setEstimatedDepositAmount(1)
+        }
+      },
+      calculateDepositAmount: ({ receiveAmount, sendAsset, estimatedRate }) => () => {
+        if (estimatedRate && receiveAmount) {
+          receiveAmount = toBigNumber(receiveAmount)
+          const estimatedDepositAmount = receiveAmount.times(estimatedRate).round(sendAsset.decimals)
+          setEstimatedDepositAmount(estimatedDepositAmount.toNumber())
+        } else {
+          setEstimatedDepositAmount(null)
         }
       }
     }
@@ -370,12 +393,16 @@ export default compose(
   }),
   lifecycle({
     componentDidUpdate(prevProps) {
-      const { rateLoaded, pair, retrievePairData, sendAmount, estimatedRate, calculateReceiveAmount } = this.props
+      const { rateLoaded, pair, retrievePairData, sendAmount, estimatedRate, calculateDepositAmount, 
+        receiveAmount, calculateReceiveAmount, lastUpdatedField } = this.props
       if (pair && !rateLoaded) {
         retrievePairData(pair)
       }
-      if (prevProps.sendAmount !== sendAmount || prevProps.estimatedRate !== estimatedRate) {
+      if ((prevProps.sendAmount !== sendAmount || prevProps.estimatedRate !== estimatedRate) && lastUpdatedField !== 'receive') {
         calculateReceiveAmount()
+      }
+      if ((prevProps.receiveAmount !== receiveAmount || prevProps.estimatedRate !== estimatedRate) && lastUpdatedField !== 'send') {
+        calculateDepositAmount()
       }
     },
     componentWillMount() {
@@ -391,12 +418,14 @@ export default compose(
       } else {
         retrievePairData(pair)
       }
+     
     },
     componentDidMount() {
-      const { maxGeoBuy, handleSelectGeoMax } = this.props
+      const { maxGeoBuy, handleSelectGeoMax, calculateReceiveAmount } = this.props
       if (maxGeoBuy && maxGeoBuy < 1) {
         handleSelectGeoMax()
       }
+      calculateReceiveAmount()
     }
   }),
 )(SwapStepOne)
