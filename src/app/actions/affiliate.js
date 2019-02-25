@@ -52,7 +52,7 @@ export const getStats = (id, key) => (dispatch, getState) => {
 export const affiliateLogin = (id, key) => (dispatch) => {
   dispatch(affiliateDataUpdated())
   dispatch(getAffiliateWithdrawals(id, key))
-  dispatch(getAffiliateSwaps(id, key))
+  dispatch(getAffiliateSwaps(id, key, 1, 5))
   dispatch(getBalance(id, key))
   dispatch(getStats(id, key))
   dispatch(getAccountDetails(id, key))
@@ -109,9 +109,9 @@ export const getAffiliateWithdrawals = (id, key) => (dispatch) => {
     .catch((e) => dispatch(withdrawalsError(e)))
 }
 
-export const getAffiliateSwaps = (id, key, page = 1) => (dispatch) => {
+export const getAffiliateSwaps = (id, key, page, limit) => (dispatch) => {
   dispatch(swapsLoading())
-  return Faast.getAffiliateSwaps(id, key, page)
+  return Faast.getAffiliateSwaps(id, key, page, limit)
     .then((swaps) => {
       dispatch(swapHistoryTotalUpdated(swaps.total))
       sessionStorageSetJson('state:swap_history_total', swaps.total)

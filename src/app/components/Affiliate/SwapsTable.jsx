@@ -55,7 +55,6 @@ const TableRow = ({
 const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading, currentPage, title, 
   swapHistoryTotal, handlePageClick, handleExportSwaps, swapsExportLink, isSwapExportLinkLoading }) => {
   swaps = swaps && size === 'small' ? swaps.slice(0,5) : swaps
-  console.log(swapsExportLink)
   return (
     <Fragment>
       <Card className={classNames(card, size === 'small' && smallCard, size !== 'small' && 'mx-auto')}>
@@ -73,7 +72,7 @@ const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading, currentPage, title,
         </CardHeader>
         <CardBody className={classNames(swaps.length > 0 && 'p-0','text-center')}>
           {areSwapsLoading ? (<Loading className='py-4' />) :
-            swaps.length > 0 && Array.isArray(swaps) ? (
+            swaps.length > 0 ? (
               <Fragment>
                 <Table className={classNames('text-left', text, affilateTable)} striped responsive>
                   <thead>

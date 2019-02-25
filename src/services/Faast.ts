@@ -314,11 +314,12 @@ export const getAffiliateSwaps = (
   id: string,
   key: string,
   page: number = 1,
+  limit: number = 50,
 ): Promise<void> => {
   const nonce = String(Date.now())
   const signature = createAffiliateSignature(undefined, key, nonce)
   return fetchGet(`${apiUrl}/api/v2/public/affiliate/swaps`,
-  { limit: 50, page },
+  { limit, page },
   {
     headers: {
       'affiliate-id': id,

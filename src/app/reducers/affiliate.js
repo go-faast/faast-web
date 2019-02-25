@@ -51,9 +51,9 @@ export default createReducer({
   [swapChartLoading]: (state) => ({ ...state, swapChartLoading: true }),
   [swapsRetrieved]: (state, swaps) => ({ 
     ...state,
+    swaps: { ...swaps },
     swapsError: '',
     swapsLoading: false,
-    swaps: { ...swaps },
   }),
   [withdrawalsRetrieved]: (state, withdrawals) => ({ 
     ...state,
