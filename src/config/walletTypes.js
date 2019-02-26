@@ -122,7 +122,7 @@ export default {
     graphic: coinbaseGraphic,
     slogan: 'The easiest and most secure crypto wallet.',
     description: 'Coinbase: the simple, safe way to buy, manage and sell your cryptocurrency.',
-    howTo: 'https://medium.com/faast/how-to-swap-btc-for-eth-with-coinbase-and-save-3d3dc27e18d2'
+    howTo: 'https://medium.com/faast/how-to-use-coinbase-wallet-with-faast-and-swap-cryptocurrency-on-your-smartphone-846e8a5f93d1'
   },
   trust: {
     name: 'Trust Wallet',
