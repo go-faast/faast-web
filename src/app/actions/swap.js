@@ -319,7 +319,10 @@ export const restoreSwapPolling = (swapId) => (dispatch, getState) => {
     const { tx } = swap
     if (tx && tx.sent && !tx.receipt) {
       dispatch(pollTxReceipt(swap.txId))
-        .then(() => pollOrderStatus(swap))
+        .then(() => {
+          Faast.provideSwapDepositTx(swap.orderId, tx.hash)
+          return pollOrderStatus(swap)
+        })
     } else {
       dispatch(pollOrderStatus(swap))
     }
