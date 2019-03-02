@@ -93,6 +93,7 @@ export type CreateNewOrderParams = {
   refundAddress?: string,
   sendAmount?: number,
   userId?: string,
+  withdrawalAmount?: number,
   meta?: {
     sendWalletType?: string, // sending wallet type
     receiveWalletType?: string, // receiving wallet type
@@ -107,6 +108,7 @@ export const createNewOrder = ({
   receiveAddress,
   refundAddress,
   sendAmount,
+  withdrawalAmount,
   userId,
   meta = {},
 }: CreateNewOrderParams): Promise<SwapOrder> => fetchPost(`${apiUrl}/api/v2/public/swap`, {
@@ -115,6 +117,7 @@ export const createNewOrder = ({
   deposit_currency: sendSymbol,
   withdrawal_address: receiveAddress,
   withdrawal_currency: receiveSymbol,
+  withdrawal_amount: withdrawalAmount,
   refund_address: refundAddress,
   ...getAffiliateSettings(),
   meta: {

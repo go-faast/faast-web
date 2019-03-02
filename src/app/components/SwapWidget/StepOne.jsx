@@ -62,7 +62,7 @@ const SwapStepOne = ({
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
   onChangeDepositAmount, handleSelectMax, maxSendAmount, maxSendAmountLoaded,
   sendWallet, defaultRefundAddress, defaultReceiveAddress, maxGeoBuy, handleSelectGeoMax,
-  onChangeReceiveAmount
+  onChangeReceiveAmount, lastUpdatedField
 }) => (
   <Fragment>
     <ProgressBar steps={['Create Swap', `Send ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
@@ -90,7 +90,7 @@ const SwapStepOne = ({
                 step='any'
                 placeholder={`Send amount${sendWallet ? '' : ' (optional)'}`}
                 validate={validateDepositAmount}
-                label='You send'
+                label={`You send ${lastUpdatedField == 'receive' ? ('(approx)') : '(exact)'}`}
                 onChange={onChangeDepositAmount}
                 addonAppend={({ invalid }) => (
                   <InputGroupAddon addonType="append">
@@ -124,8 +124,8 @@ const SwapStepOne = ({
               <StepOneField
                 name='receiveAmount'
                 type='number'
-                placeholder='Estimated receive amount'
-                label='You receive'
+                placeholder='Receive amount'
+                label={`You receive ${lastUpdatedField == 'send' ? ('(approx)') : '(exact)'}`}
                 onChange={onChangeReceiveAmount}
                 addonAppend={({ invalid }) => (
                   <InputGroupAddon addonType="append">
@@ -289,18 +289,20 @@ export default compose(
     validateRefundAddress: ({ sendAsset }) => validator.walletAddress(sendAsset),
     onSubmit: ({
       sendSymbol, receiveAsset, 
-      createSwap, openViewOnly, push
+      createSwap, openViewOnly, push, lastUpdatedField
     }) => (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
-      const { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId } = values
+      const { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId, receiveAmount } = values
+
       return createSwap({
         sendSymbol: sendSymbol,
-        sendAmount: sendAmount ? toBigNumber(sendAmount) : undefined,
+        sendAmount: sendAmount && lastUpdatedField === 'send' ? toBigNumber(sendAmount) : undefined,
         sendWalletId,
         receiveSymbol,
         receiveWalletId,
         receiveAddress,
         refundAddress,
+        receiveAmount: sendAmount && lastUpdatedField === 'receive' ? toBigNumber(receiveAmount) : undefined
       })
         .then((swap) => {
           push(`/swap/send?id=${swap.orderId}`)
@@ -421,12 +423,14 @@ export default compose(
      
     },
     componentDidMount() {
-      const { maxGeoBuy, handleSelectGeoMax, calculateReceiveAmount } = this.props
-      if (!maxGeoBuy) {
-        calculateReceiveAmount()
-      }
-      if (maxGeoBuy && maxGeoBuy < 1) {
-        handleSelectGeoMax()
+      const { maxGeoBuy, handleSelectGeoMax, calculateReceiveAmount, defaultSendAmount } = this.props
+      if (defaultSendAmount == DEFAULT_SEND_AMOUNT) {
+        if (!maxGeoBuy) {
+          calculateReceiveAmount()
+        }
+        if (maxGeoBuy && maxGeoBuy < 1) {
+          handleSelectGeoMax()
+        }
       }
     }
   }),
