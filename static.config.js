@@ -227,6 +227,10 @@ export default {
           })
         })) 
       },
+      { 
+        path: '/market-maker',
+        component: 'src/site/pages/MarketMaker',
+      },
       {
         path: '/terms',
         component: 'src/site/pages/Terms',
