@@ -68,7 +68,7 @@ const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
         <title>{get(routeInfo, 'allProps.meta.title', siteData.title)}</title>
         <script dangerouslySetInnerHTML={{ __html: runtimeRedirect }}/>
       </Head>
-      <Body style={{ backgroundColor: get(routeInfo, 'allProps.bgColor', '#181818') }}>{children}</Body>
+      <Body style={{ backgroundColor: get(routeInfo, 'allProps.bgColor', '#fff') }}>{children}</Body>
       {/* Google analytics */}
       {!isDev && (
         <Fragment>
