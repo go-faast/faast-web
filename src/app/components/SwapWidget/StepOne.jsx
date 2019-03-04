@@ -62,7 +62,7 @@ const SwapStepOne = ({
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
   onChangeDepositAmount, handleSelectMax, maxSendAmount, maxSendAmountLoaded,
   sendWallet, defaultRefundAddress, defaultReceiveAddress, maxGeoBuy, handleSelectGeoMax,
-  onChangeReceiveAmount
+  onChangeReceiveAmount, lastUpdatedField, sendAmount, receiveAmount
 }) => (
   <Fragment>
     <ProgressBar steps={['Create Swap', `Send ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
@@ -90,7 +90,7 @@ const SwapStepOne = ({
                 step='any'
                 placeholder={`Send amount${sendWallet ? '' : ' (optional)'}`}
                 validate={validateDepositAmount}
-                label='You send'
+                label={'You send'}
                 onChange={onChangeDepositAmount}
                 addonAppend={({ invalid }) => (
                   <InputGroupAddon addonType="append">
@@ -110,8 +110,12 @@ const SwapStepOne = ({
                       <i className='fa fa-spinner fa-pulse'/>
                     )} {sendSymbol}
                   </FormText>
+                ) : !sendAmount ? (
+                  <FormText color="muted">When omitted, a variable market rate is used.</FormText>
+                ) : lastUpdatedField !== 'send' ? (
+                  <FormText color="muted">Only an estimate. Not a guaranteed quote.</FormText>
                 ) : (
-                  <FormText color="muted">If omitted, a variable market rate is used.</FormText>
+                  <FormText color="muted">The send amount above is guaranteed.</FormText>
                 )}
               />
             </Col>
@@ -124,8 +128,8 @@ const SwapStepOne = ({
               <StepOneField
                 name='receiveAmount'
                 type='number'
-                placeholder='Estimated receive amount'
-                label='You receive'
+                placeholder='Receive amount'
+                label={'You receive'}
                 onChange={onChangeReceiveAmount}
                 addonAppend={({ invalid }) => (
                   <InputGroupAddon addonType="append">
@@ -135,8 +139,12 @@ const SwapStepOne = ({
                     </Button>
                   </InputGroupAddon>
                 )}
-                helpText={(
+                helpText={lastUpdatedField !== 'receive' && receiveAmount ? (
                   <FormText color="muted">Only an estimate. Not a guaranteed quote.</FormText>
+                ) : !receiveAmount ? (
+                  null
+                ) : (
+                  <FormText color="muted">The receive amount above is guaranteed.</FormText>
                 )}
               />
             </Col>
@@ -289,18 +297,20 @@ export default compose(
     validateRefundAddress: ({ sendAsset }) => validator.walletAddress(sendAsset),
     onSubmit: ({
       sendSymbol, receiveAsset, 
-      createSwap, openViewOnly, push
+      createSwap, openViewOnly, push, lastUpdatedField
     }) => (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
-      const { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId } = values
+      const { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId, receiveAmount } = values
+
       return createSwap({
         sendSymbol: sendSymbol,
-        sendAmount: sendAmount ? toBigNumber(sendAmount) : undefined,
+        sendAmount: sendAmount && lastUpdatedField === 'send' ? toBigNumber(sendAmount) : undefined,
         sendWalletId,
         receiveSymbol,
         receiveWalletId,
         receiveAddress,
         refundAddress,
+        receiveAmount: sendAmount && lastUpdatedField === 'receive' ? toBigNumber(receiveAmount) : undefined
       })
         .then((swap) => {
           push(`/swap/send?id=${swap.orderId}`)
@@ -421,12 +431,14 @@ export default compose(
      
     },
     componentDidMount() {
-      const { maxGeoBuy, handleSelectGeoMax, calculateReceiveAmount } = this.props
-      if (!maxGeoBuy) {
-        calculateReceiveAmount()
-      }
-      if (maxGeoBuy && maxGeoBuy < 1) {
-        handleSelectGeoMax()
+      const { maxGeoBuy, handleSelectGeoMax, calculateReceiveAmount, defaultSendAmount } = this.props
+      if (defaultSendAmount == DEFAULT_SEND_AMOUNT) {
+        if (!maxGeoBuy) {
+          calculateReceiveAmount()
+        }
+        if (maxGeoBuy && maxGeoBuy < 1) {
+          handleSelectGeoMax()
+        }
       }
     }
   }),
