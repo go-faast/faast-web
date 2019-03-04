@@ -62,7 +62,7 @@ const SwapStepOne = ({
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
   onChangeDepositAmount, handleSelectMax, maxSendAmount, maxSendAmountLoaded,
   sendWallet, defaultRefundAddress, defaultReceiveAddress, maxGeoBuy, handleSelectGeoMax,
-  onChangeReceiveAmount, lastUpdatedField
+  onChangeReceiveAmount, lastUpdatedField, sendAmount, receiveAmount
 }) => (
   <Fragment>
     <ProgressBar steps={['Create Swap', `Send ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
@@ -90,7 +90,7 @@ const SwapStepOne = ({
                 step='any'
                 placeholder={`Send amount${sendWallet ? '' : ' (optional)'}`}
                 validate={validateDepositAmount}
-                label={`You send ${lastUpdatedField == 'receive' ? ('(approx)') : '(exact)'}`}
+                label={'You send'}
                 onChange={onChangeDepositAmount}
                 addonAppend={({ invalid }) => (
                   <InputGroupAddon addonType="append">
@@ -110,8 +110,12 @@ const SwapStepOne = ({
                       <i className='fa fa-spinner fa-pulse'/>
                     )} {sendSymbol}
                   </FormText>
+                ) : !sendAmount ? (
+                  <FormText color="muted">When omitted, a variable market rate is used.</FormText>
+                ) : lastUpdatedField !== 'send' ? (
+                  <FormText color="muted">Only an estimate. Not a guaranteed quote.</FormText>
                 ) : (
-                  <FormText color="muted">If omitted, a variable market rate is used.</FormText>
+                  <FormText color="muted">The send amount above is guaranteed.</FormText>
                 )}
               />
             </Col>
@@ -125,7 +129,7 @@ const SwapStepOne = ({
                 name='receiveAmount'
                 type='number'
                 placeholder='Receive amount'
-                label={`You receive ${lastUpdatedField == 'send' ? ('(approx)') : '(exact)'}`}
+                label={'You receive'}
                 onChange={onChangeReceiveAmount}
                 addonAppend={({ invalid }) => (
                   <InputGroupAddon addonType="append">
@@ -135,8 +139,12 @@ const SwapStepOne = ({
                     </Button>
                   </InputGroupAddon>
                 )}
-                helpText={(
+                helpText={lastUpdatedField !== 'receive' && receiveAmount ? (
                   <FormText color="muted">Only an estimate. Not a guaranteed quote.</FormText>
+                ) : !receiveAmount ? (
+                  null
+                ) : (
+                  <FormText color="muted">The receive amount above is guaranteed.</FormText>
                 )}
               />
             </Col>
