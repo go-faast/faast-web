@@ -133,7 +133,7 @@ export default compose(
   lifecycle({
     componentWillMount() {
       const { updateFilter } = this.props
-      const checked = localStorageGet('filterTradeable')
+      const checked = Boolean.prototype.valueOf(localStorageGet('filterTradeable'))
       updateFilter(checked)
     }
   })
