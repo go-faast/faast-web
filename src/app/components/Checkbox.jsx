@@ -16,7 +16,7 @@ export default compose(
     required: true,
   }),
   withHandlers({
-    validate: ({ required }) => () => required ? validator.checked() : null,
+    validate: ({ required }) =>  validator.all(...(required ? [validator.checked()] : [])),
   }),
   withProps(() => ({
     type: 'checkbox',
