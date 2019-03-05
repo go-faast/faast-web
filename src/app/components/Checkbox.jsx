@@ -8,13 +8,15 @@ export default compose(
   setPropTypes({
     name: PropTypes.string,
     label: PropTypes.node,
+    required: PropTypes.bool
   }),
   defaultProps({
     name: 'requiredCheckbox',
     label: '',
+    required: true,
   }),
   withHandlers({
-    validate: () => validator.checked(),
+    validate: ({ required }) => () => required ? validator.checked() : null,
   }),
   withProps(() => ({
     type: 'checkbox',
