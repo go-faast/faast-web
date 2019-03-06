@@ -24,7 +24,7 @@ export default compose(
           <Col sm='12' className='text-center'>
             <h1 className='font-weight-bold text-white mt-3'>Put your Bitcoin to work</h1>
             <h5 className='w-50 mx-auto mt-3' style={{ color: '#9BA5B6' }}>
-              Run a Faa.st powered market-maker node, help power the movement to democratize the financial world, and watch your BTC multiply
+              Run a Faa.st powered market-maker node, help power the movement to decentralize the financial world, and watch your BTC multiply
             </h5>
             <Button 
               className='mt-4 d-inline-block font-weight-bold' 
@@ -34,7 +34,7 @@ export default compose(
               target='_blank noopener noreferrer' 
               color='primary'
             >
-              I want to learn more
+              Sign up for beta
             </Button>
             <small><span style={{ color: '#A9A9B6' }} className='font-xxs d-block mb-4 mt-2'>*beta is invite only, USA citizens are unable to participate</span></small>
           </Col>
@@ -77,7 +77,7 @@ export default compose(
       <Row style={{ background: '#F6FAFE' }} className='text-center pb-5'>
         <Col>
           <h1 className='font-weight-bold mt-5 pt-3' style={{ color: blueColor }}>Why Become a Market Maker?</h1>
-          <h5 style={{ color: '#85889B' }}>A market maker uses their cryptocurrencies to fulfill trades and in return receives a fee</h5>
+          <h5 style={{ color: '#85889B' }}>A market maker uses their cryptocurrencies to fulfill trades and earns interest in return</h5>
           <Row className='mt-5 text-center'>
             <Col className='mt-md-0 mt-3' sm='12' md='12' lg='4'>
               <div 
@@ -114,7 +114,7 @@ export default compose(
               target='_blank noopener noreferrer' 
               color='primary'
             >
-              Learn more about the beta
+              Learn more
             </Button>
           </Row>
         </Col>
@@ -132,7 +132,7 @@ export default compose(
               target='_blank noopener noreferrer' 
               color='primary'
             >
-              Fill out Google Form
+              Sign up for beta
             </Button>
           </Container>
         </Col>
