@@ -1,7 +1,7 @@
 import qs from 'query-string'
 
 import { newScopedCreateAction } from 'Utilities/action'
-import { localStorageGetJson, sessionStorageSet } from 'Utilities/storage'
+import { localStorageGetJson, sessionStorageSet, localStorageSet, localStorageGet } from 'Utilities/storage'
 import blockstack from 'Utilities/blockstack'
 import { filterUrl } from 'Utilities/helpers'
 import log from 'Utilities/log'
@@ -14,6 +14,8 @@ import { restoreTxs } from './tx'
 import { retrieveAllSwaps, restoreSwapTxIds, restoreSwapPolling } from './swap'
 import { fetchGeoRestrictions } from 'Common/actions/app'
 
+import { getTradeableAssetFilter } from 'Selectors/app'
+
 export * from 'Common/actions/app'
 
 const createAction = newScopedCreateAction(__filename)
@@ -21,9 +23,11 @@ const createAction = newScopedCreateAction(__filename)
 export const appReady = createAction('READY')
 export const appError = createAction('ERROR')
 export const resetAll = createAction('RESET_ALL')
+export const updateAssetsFilterByTradeable = createAction('UPDATE_ASSETS_TRADEABLE_FILTER')
 
 export const restoreState = (dispatch) => Promise.resolve()
   .then(() => {
+    dispatch(toggleAssetsByTradeable())
     dispatch(restoreCachedAffiliateInfo())
     const assetCache = localStorageGetJson('state:asset')
     if (assetCache) {
@@ -70,6 +74,14 @@ export const setupBlockstack = (dispatch) => Promise.resolve()
   })
   .catch((e) => {
     log.error('Failed to setup Blockstack', e)
+  })
+
+export const toggleAssetsByTradeable = () => (dispatch, getState) => Promise.resolve()
+  .then(() => {
+    let filter = getTradeableAssetFilter(getState())
+    filter = typeof filter !== 'undefined' ? !filter : localStorageGet('filterTradeableAssets')
+    localStorageSet('filterTradeableAssets', filter)
+    dispatch(updateAssetsFilterByTradeable(filter))
   })
 
 export const setupAffiliateReferral = () => Promise.resolve()

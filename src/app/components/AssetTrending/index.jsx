@@ -5,7 +5,7 @@ import routes from 'Routes'
 import { connect } from 'react-redux'
 import { reduxForm } from 'redux-form'
 import { createStructuredSelector } from 'reselect'
-import { compose, setDisplayName, withProps, withHandlers, withState, lifecycle } from 'recompose'
+import { compose, setDisplayName, withProps, withHandlers } from 'recompose'
 import withToggle from 'Hoc/withToggle'
 import { Dropdown, DropdownItem, DropdownToggle, DropdownMenu,  } from 'reactstrap'
 
@@ -14,9 +14,9 @@ import Layout from 'Components/Layout'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 
 import Checkbox from 'Components/Checkbox'
-import { localStorageGet, localStorageSet } from 'Utilities/storage'
 
-import { getTrendingPositive, getTrendingNegative, areAssetPricesLoaded, getAssetPricesError } from 'Selectors'
+import { getTrendingPositive, getTrendingNegative, areAssetPricesLoaded, getAssetPricesError, getTradeableAssetFilter } from 'Selectors'
+import { toggleAssetsByTradeable } from 'Actions/app'
 
 const getQuery = ({ match }) => match.params.timeFrame
 
@@ -111,30 +111,24 @@ export default compose(
       trendingTimeFrame,
     })
   }),
-  withState('filterTradeable', 'updateFilter', false),
-  withHandlers({
-    handleFilterTradeable: ({ filterTradeable, updateFilter }) => () => {
-      filterTradeable = !filterTradeable
-      localStorageSet('filterTradeable', filterTradeable)
-      updateFilter(filterTradeable)
-    }
-  }),
+  connect(createStructuredSelector({
+    filterTradeable: getTradeableAssetFilter
+  })),
   connect(createStructuredSelector({
     trendingPositive: (state, { trendingTimeFrame, filterTradeable }) => getTrendingPositive(state, { sortField: trendingTimeFrame, n: 15, filterTradeable }),
     trendingNegative: (state, { trendingTimeFrame, filterTradeable }) => getTrendingNegative(state, { sortField: trendingTimeFrame, n: 15, filterTradeable }),
     pricesLoaded: areAssetPricesLoaded,
-    pricesError: getAssetPricesError
+    pricesError: getAssetPricesError,
   }), {
-    push: pushAction
+    push: pushAction,
+    toggleAssetsByTradeable
+  }),
+  withHandlers({
+    handleFilterTradeable: ({ toggleAssetsByTradeable }) => () => {
+      toggleAssetsByTradeable()
+    }
   }),
   reduxForm({
     form: 'tradeableForm'
-  }),
-  lifecycle({
-    componentWillMount() {
-      const { updateFilter } = this.props
-      const checked = Boolean.prototype.valueOf(localStorageGet('filterTradeable'))
-      updateFilter(checked)
-    }
   })
 )(AssetTrending)
