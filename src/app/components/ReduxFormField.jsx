@@ -11,7 +11,7 @@ import Expandable from 'Components/Expandable'
 const RenderInput = (props) => {
   const {
     meta: { touched, error, warning, form: formName },
-    label, type, step, placeholder, id, disabled, autoComplete, size,
+    label, type, step, placeholder, id, disabled, autoComplete, size, checked,
     addonPrepend, addonAppend, row, className, inputClass,
     labelProps, labelClass, labelCol, inputCol, autoFocus,
     renderInput, helpText, style, requiredLabel,
@@ -22,6 +22,7 @@ const RenderInput = (props) => {
   if (!labelPosition) {
     labelPosition = check ? 'append' : 'prepend'
   }
+  const alreadyChecked = type === 'checkbox' ? checked : undefined
   const invalid = touched && (error || warning)
   const inputId = id || (label ? `form-${formName}-${reduxFormInput.name}` : undefined)
   inputProps = {
@@ -32,6 +33,7 @@ const RenderInput = (props) => {
     invalid: Boolean(invalid),
     className: inputClass,
     autoFocus,
+    checked: alreadyChecked
   }
   const inputElement = renderInput ? renderInput(inputProps) : (
     <Input key='input' {...inputProps} />

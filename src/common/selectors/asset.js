@@ -56,14 +56,24 @@ export const isAssetPriceLoaded = createItemSelector(getAsset, fieldSelector('pr
 export const getTrendingPositive = createItemSelector(
   getAllAssetsArray, 
   selectItemId,
-  (assets, { sortField, n = 5 }) => {
-    return assets.filter(asset => asset.volume24.gt(50000)).sort((a, b) => b[sortField].comparedTo(a[sortField])).slice(0,n)
+  (assets, { sortField, n = 5, filterTradeable }) => {
+    if (filterTradeable) {
+      assets = assets.filter(asset => asset.volume24.gt(50000) && asset.swapEnabled)
+    } else {
+      assets = assets.filter(asset => asset.volume24.gt(50000))
+    }
+    return assets.sort((a, b) => b[sortField].comparedTo(a[sortField])).slice(0,n)
   })
 
 export const getTrendingNegative = createItemSelector(
   getAllAssetsArray, 
   selectItemId,
-  (assets, { sortField, n = 5 }) => {
+  (assets, { sortField, n = 5, filterTradeable }) => {
+    if (filterTradeable) {
+      assets = assets.filter(asset => asset.volume24.gt(50000) && asset.swapEnabled)
+    } else {
+      assets = assets.filter(asset => asset.volume24.gt(50000))
+    }
     return assets.filter(asset => asset.volume24.gt(50000)).sort((a, b) => a[sortField].comparedTo(b[sortField])).slice(0,n)
   })
 
