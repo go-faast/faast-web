@@ -15,5 +15,5 @@ export default createReducer({
   ...commonInitialState,
   ready: false,
   error: '',
-  filterTradeableAssets: false,
+  filterTradeableAssets: undefined,
 })

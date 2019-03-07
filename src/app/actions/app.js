@@ -79,7 +79,7 @@ export const setupBlockstack = (dispatch) => Promise.resolve()
 export const toggleAssetsByTradeable = () => (dispatch, getState) => Promise.resolve()
   .then(() => {
     let filter = getTradeableAssetFilter(getState())
-    filter = typeof filter !== 'undefined' ? !filter : localStorageGet('filterTradeableAssets')
+    filter = typeof filter !== 'undefined' ? !filter : (localStorageGet('filterTradeableAssets') == 'true')
     localStorageSet('filterTradeableAssets', filter)
     dispatch(updateAssetsFilterByTradeable(filter))
   })
