@@ -1,14 +1,14 @@
 import * as React from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { withRouteData } from 'react-static'
-import { Row, Col, Button, Container } from 'reactstrap'
+import { Row, Col, Button, Container, Card, CardBody, Collapse } from 'reactstrap'
 
 import Header from 'Site/components/Header'
 import Footer from 'Site/components/Footer'
 
 import classNames from 'class-names'
 
-import { blobs, blob } from './style.scss'
+import { blobs, blob, faq, numbers } from './style.scss'
 
 const blueColor = '#323540'
 
@@ -84,6 +84,7 @@ export default compose(
                 className='d-inline-block px-4 py-2' 
                 style={{ background: '#fff', boxShadow: '0px 5px 11px 1px rgba(200,216,236,0.5)', width: 318, borderRadius: 4 }}
               >
+                <img style={{ width: 40 }} src='https://i.imgur.com/24WeJaL.png' />
                 <h4 className='font-weight-bold mt-2' style={{ color: '#23D6B8' }}>Earn interest on your BTC</h4>
                 <p style={{ color: '#2D303A' }}>In return for helping complete trades on Faa.st you will receive a BTC payout</p>
               </div>
@@ -93,6 +94,7 @@ export default compose(
                 className='d-inline-block px-4 py-2' 
                 style={{ background: '#fff', boxShadow: '0px 5px 11px 1px rgba(200,216,236,0.5)', width: 318, borderRadius: 4 }}
               >
+                <img style={{ width: 40 }} src='https://i.imgur.com/FLaUbIm.png' />
                 <h4 className='font-weight-bold mt-2' style={{ color: '#23D6B8' }}>Access more liquidity</h4>
                 <p style={{ color: '#2D303A' }}>Have tokens with low volume? Provide the market a controlled way to access your liquidity</p>
               </div>
@@ -102,6 +104,7 @@ export default compose(
                 className='d-inline-block px-4 py-2' 
                 style={{ background: '#fff', boxShadow: '0px 5px 11px 1px rgba(200,216,236,0.5)', width: 318, borderRadius: 4 }}
               >
+                <img style={{ width: 40 }} src='https://i.imgur.com/LmLTn27.png' />
                 <h4 className='font-weight-bold mt-2' style={{ color: '#23D6B8' }}>Support decentalization</h4>
                 <p style={{ color: '#2D303A' }}>A majority of crypto trading volume is currently through centralized exchanges</p>
               </div>
@@ -119,22 +122,111 @@ export default compose(
           </Row>
         </Col>
       </Row>
-      <Row className='text-center' style={{ background: '#fff' }}>
-        <Col sm='12'>
-          <h1 className='font-weight-bold mt-5 pt-3' style={{ color: blueColor }}>How Will A Market Maker Node Work?</h1>
-          <Container className='my-5 py-3'>
-            <img style={{ maxWidth: 766, padding: 20, border: '1px dashed #eef2f6' }} src='https://i.imgur.com/ZdHpAmO.png' />
-            <Button 
-              className='mt-5 d-block font-weight-bold mx-auto' 
-              style={{ backgroundColor: '#56C8B8', borderRadius: 20, color: '#fff', width: 240 }} 
-              tag='a' 
-              href={''} 
-              target='_blank noopener noreferrer' 
-              color='primary'
-            >
-              Sign up for beta
-            </Button>
+      <Row style={{ background: '#fff' }} className='text-center pb-5'>
+        <Col>
+          <h1 className='font-weight-bold mt-5 pt-3' style={{ color: blueColor }}>Frequently Asked Questions</h1>
+          <Container>
+            <Row className='text-left mb-3 mt-5'>
+              <Col>
+                <Collapse isOpen={true}>
+                  <Card>
+                    <CardBody className={faq}>
+                      <h5 style={{ color: blueColor }}>Can you run me through an example trade situation?</h5>
+                      Alice is the market taker and Bob is the market maker. Alice has 10 ETH and wants 1 BTC. The market rate is 10 ETH to 1 BTC. Alice submits her trade and it is routed through the Faa.st API. Alice's 10 ETH is sent to Bob. Bob sends 1 BTC from his market maker node's built-in hot wallet to Alice. Once the 10 ETH transaction is confirmed received, Bob sells the ETH for BTC, afterwhich the BTC is deposited back to his node's hot wallet - readily available for the next trade Bob needs to fulfill.
+                    </CardBody>
+                  </Card>
+                </Collapse>
+              </Col>
+            </Row>
+            <Row className='text-left mb-3'>
+              <Col>
+                <Collapse isOpen={true}>
+                  <Card>
+                    <CardBody className={faq}>
+                      <h5 style={{ color: blueColor }}>Would I need any extra hardware to run a market maker node?</h5>
+                      No, but it is recommended that you run your node on a server. This will allow you to complete trades 24 hours/day and make the most interest off your Bitcoin.
+                    </CardBody>
+                  </Card>
+                </Collapse>
+              </Col>
+            </Row>
+            <Row className='text-left mb-3'>
+              <Col>
+                <Collapse isOpen={true}>
+                  <Card>
+                    <CardBody className={faq}>
+                      <h5 style={{ color: blueColor }}>What is the maximum amount of trade value I will be able to fulfill at any one time?</h5>
+                      In order to account for trade failures you must deposit BTC collateral with Faa.st. The amount of collateral you deposit will be the max amount in trade value you will be able to fulfill at any one time.
+                    </CardBody>
+                  </Card>
+                </Collapse>
+              </Col>
+            </Row>
+            <Row className='text-left mb-3'>
+              <Col>
+                <Collapse isOpen={true}>
+                  <Card>
+                    <CardBody className={faq}>
+                      <h5 style={{ color: blueColor }}>How are wallet/exchange/api keys proven safe?</h5>
+                      The market maker node will be completely open source and auditable by the community.
+                    </CardBody>
+                  </Card>
+                </Collapse>
+              </Col>
+            </Row>
+            <Row className='text-left mb-3'>
+              <Col>
+                <Collapse isOpen={true}>
+                  <Card>
+                    <CardBody className={faq}>
+                      <h5 style={{ color: blueColor }}>Do I need to keep my crypto on an exchange in order to complete trades?</h5>
+                      It is possible that for a short period of time, a small percentage of your crypto being used to fulfill trades will be on an exchange. 
+                    </CardBody>
+                  </Card>
+                </Collapse>
+              </Col>
+            </Row>
+            <Row className='text-left mb-3'>
+              <Col>
+                <Collapse isOpen={true}>
+                  <Card>
+                    <CardBody className={faq}>
+                      <h5 style={{ color: blueColor }}>When is the planned release of the market maker node?</h5>
+                      Right now, the end of 2019 is the targeted release time.
+                    </CardBody>
+                  </Card>
+                </Collapse>
+              </Col>
+            </Row>
           </Container>
+        </Col>
+      </Row>
+      <Row className='text-center pt-5' style={{ backgroundColor: '#374B5D' }}>
+        <Col>
+          <h1 className={classNames(numbers, 'font-weight-bold')}>1</h1>
+          <p>Sign up for beta</p>
+        </Col>
+        <Col>
+          <h1 className={classNames(numbers, 'font-weight-bold')}>2</h1>
+          <p>Connect market maker node</p>
+        </Col>
+        <Col>
+          <h1 className={classNames(numbers, 'font-weight-bold')}>3</h1>
+          <p>Earn interest on your BTC</p>
+        </Col>
+      </Row>
+      <Row className='text-center pb-5' style={{ backgroundColor: '#374B5D' }}>
+        <Col sm='12'>
+          <Button 
+            className='mt-4 d-inline-block font-weight-bold' 
+            style={{ backgroundColor: '#56C8B8', borderRadius: 20, color: '#fff', width: 240 }} 
+            tag='a' 
+            href={'hello'} 
+            target='_blank noopener noreferrer' 
+            color='primary'
+          >
+            Sign up for beta
+          </Button>
         </Col>
       </Row>
       <Footer />
