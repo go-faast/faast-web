@@ -1,3 +1,4 @@
+/* eslint-disable */
 import * as React from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { withRouteData } from 'react-static'
