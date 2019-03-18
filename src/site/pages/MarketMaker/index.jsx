@@ -106,7 +106,7 @@ export default compose(
                 style={{ background: '#fff', boxShadow: '0px 5px 11px 1px rgba(200,216,236,0.5)', width: 318, borderRadius: 4 }}
               >
                 <img style={{ width: 40 }} src='https://i.imgur.com/LmLTn27.png' />
-                <h4 className='font-weight-bold mt-2' style={{ color: '#23D6B8' }}>Support decentalization</h4>
+                <h4 className='font-weight-bold mt-2' style={{ color: '#23D6B8' }}>Support decentralization</h4>
                 <p style={{ color: '#2D303A' }}>A majority of crypto trading volume is currently through centralized exchanges</p>
               </div>
             </Col>
