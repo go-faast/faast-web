@@ -96,11 +96,11 @@ export class Logger {
   debug(...args: any[]) { this._print('debug', ...args) }
   trace(...args: any[]) { this._print('trace', ...args) }
   errorInline<T>(text: string, data: T) { this.error(text, data); return data }
-  warnInline<T>(text: string, data: T) { this.error(text, data); return data }
-  infoInline<T>(text: string, data: T) { this.error(text, data); return data }
-  logInline<T>(text: string, data: T) { this.error(text, data); return data }
-  debugInline<T>(text: string, data: T) { this.error(text, data); return data }
-  traceInline<T>(text: string, data: T) { this.error(text, data); return data }
+  warnInline<T>(text: string, data: T) { this.warn(text, data); return data }
+  infoInline<T>(text: string, data: T) { this.info(text, data); return data }
+  logInline<T>(text: string, data: T) { this.log(text, data); return data }
+  debugInline<T>(text: string, data: T) { this.debug(text, data); return data }
+  traceInline<T>(text: string, data: T) { this.trace(text, data); return data }
 }
 
 let query: any = {}
