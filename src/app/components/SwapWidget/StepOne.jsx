@@ -302,13 +302,13 @@ export default compose(
 
       return createSwap({
         sendSymbol: sendSymbol,
-        sendAmount: sendAmount && estimatedField === 'send' ? toBigNumber(sendAmount) : undefined,
+        sendAmount: sendAmount && estimatedField !== 'send' ? toBigNumber(sendAmount) : undefined,
         sendWalletId,
         receiveSymbol,
         receiveWalletId,
         receiveAddress,
         refundAddress,
-        receiveAmount: sendAmount && estimatedField === 'receive' ? toBigNumber(receiveAmount) : undefined
+        receiveAmount: sendAmount && estimatedField !== 'receive' ? toBigNumber(receiveAmount) : undefined
       })
         .then((swap) => {
           push(`/swap/send?id=${swap.orderId}`)
@@ -326,12 +326,12 @@ export default compose(
   }),
   withHandlers(({ change }) => {
     const setEstimatedReceiveAmount = (x) => {
-      log.debugInline('setEstimatedReceiveAmount', x)
-      change('receiveAmount', toBigNumber(x).toString())
+      log.trace('setEstimatedReceiveAmount', x)
+      change('receiveAmount', x && toBigNumber(x).toString())
     }
     const setEstimatedSendAmount = (x) => {
-      log.debugInline('setEstimatedSendAmount', x)
-      change('sendAmount', toBigNumber(x).toString())
+      log.trace('setEstimatedSendAmount', x)
+      change('sendAmount', x && toBigNumber(x).toString())
     }
     return {
       calculateReceiveEstimate: ({
@@ -363,7 +363,7 @@ export default compose(
   withHandlers({
     setSendAmount: ({ change, touch, calculateReceiveEstimate }) => (x) => {
       log.debug('setSendAmount', x)
-      change('sendAmount', toBigNumber(x).toString())
+      change('sendAmount', x && toBigNumber(x).toString())
       touch('sendAmount')
       calculateReceiveEstimate(x)
     },
