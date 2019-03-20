@@ -11,7 +11,7 @@ import { themeColor } from 'Utilities/style'
 const priceSeriesName = 'Price (USD)'
 
 const PriceChart = ({ config, isPriceChartLoading }) => {
-  return  isPriceChartLoading ? 
+  return isPriceChartLoading ? 
     <i className='fa fa-spinner fa-pulse'/> : <ReactHighstock config={config}/>
 }
 
@@ -145,13 +145,13 @@ const initialConfig = {
 export default compose(
   setDisplayName('PriceChart'),
   connect(createStructuredSelector({
-    data: (state, { symbol }) => getPriceChartData(state, symbol),
-    isPriceChartLoading: (state, { symbol }) => isPriceChartLoading(state, symbol)
+    data: (state, { cmcIDno }) => getPriceChartData(state, cmcIDno),
+    isPriceChartLoading: (state, { cmcIDno }) => isPriceChartLoading(state, cmcIDno)
   }), {
     fetchPriceChart: fetchPriceChartData
   }),
   setPropTypes({
-    symbol: PropTypes.string.isRequired,
+    cmcIDno: PropTypes.number.isRequired,
     chartOpen: PropTypes.bool,
     toggle: PropTypes.bool
   }),
@@ -173,15 +173,15 @@ export default compose(
   }),
   lifecycle({
     componentDidUpdate (prevProps) {
-      const { symbol, chartOpen, fetchPriceChart, toggle } = this.props
+      const { cmcIDno, chartOpen, fetchPriceChart, toggle } = this.props
       if (!prevProps.chartOpen && chartOpen || !toggle && chartOpen) {
-        fetchPriceChart(symbol)
+        fetchPriceChart(cmcIDno)
       }
     },
     componentWillMount() {
-      const { symbol, chartOpen, fetchPriceChart, toggle } = this.props
+      const { cmcIDno, chartOpen, fetchPriceChart, toggle } = this.props
       if (!toggle && chartOpen) {
-        fetchPriceChart(symbol)
+        fetchPriceChart(cmcIDno)
       }
     }
   }),

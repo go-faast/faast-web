@@ -9,7 +9,7 @@ import { version as appVersion } from 'Pkg'
 
 import { Asset, SwapOrder } from 'Types'
 
-const { siteUrl, apiUrl, affiliateSettings } = config
+const { apiUrl, affiliateSettings } = config
 
 const getAffiliateSettings = () => {
   const affiliateId = sessionStorageGet('affiliateId')
@@ -36,18 +36,18 @@ export function fetchAssets(): Promise<any[]> {
       if (!asset.decimals) {
         asset.decimals = 0
       }
-      console.log(asset)
       return asset as any
     }))
 }
 
 export const formatAssetMarketData = (r: any): any => {
   r.marketInfo = r.marketInfo ? r.marketInfo : {}
-  const { total_supply = null, max_supply = null, num_market_pairs = null,
-    tags = null, cmc_rank = null, quote = {} } = r.marketInfo
+  const { total_supply: totalSupply = null, max_supply: maxSupply = null, num_market_pairs: numMarketPairs = null,
+    tags = null, cmc_rank: cmcRank = null, quote = {} } = r.marketInfo
   const { USD = {} } = quote
-  const { price = null, volume_24h = null, percent_change_1h = null, percent_change_24h = null,
-    percent_change_7d = null, market_cap = null } = USD
+  const { price = null, volume_24h: volume24h = null, percent_change_1h: percentChange1h = null,
+     percent_change_24h: percentChange24h = null, percent_change_7d: percentChange7d = null,
+     market_cap: marketCap = null } = USD
   return ({
     name: r.name,
     symbol: r.symbol,
@@ -65,24 +65,23 @@ export const formatAssetMarketData = (r: any): any => {
     contractAddress: r.contractAddress,
     terms: r.terms,
     price,
-    volume_24h,
-    percent_change_1h,
-    percent_change_24h,
-    percent_change_7d,
-    market_cap,
-    total_supply,
-    max_supply,
-    num_market_pairs,
+    volume24h,
+    percentChange1h,
+    percentChange24h,
+    percentChange7d,
+    marketCap,
+    totalSupply,
+    maxSupply,
+    numMarketPairs,
     tags,
-    cmc_rank,
+    cmcRank,
   })
 }
 
-export const fetchAssetPrice = (symbol: string) => fetchGet(`${siteUrl}/api/portfolio-price/${symbol}`)
-
-export const fetchAssetPrices = () => fetchGet(`${siteUrl}/api/portfolio-price`, null, { retries: 2 })
-
-export const fetchPriceChart = (symbol: string) => fetchGet(`${siteUrl}/api/portfolio-chart/${symbol}`)
+export const fetchPriceChart = (cmcIDno: number) => {
+  const cmcID = cmcIDno.toString()
+  return fetchGet(`${apiUrl}/api/v1/data/cmc/price/${cmcID}`, { dataset: 'historical' })
+}
 
 export const fetchPairData = (pair: string) => fetchGet(`${apiUrl}/api/v2/public/price/${pair}`)
 
@@ -362,8 +361,6 @@ export const createAffiliateSignature = (requestJSON: string | boolean, secret: 
 
 export default {
   fetchAssets,
-  fetchAssetPrice,
-  fetchAssetPrices,
   fetchPriceChart,
   createNewOrder,
   fetchOrders,

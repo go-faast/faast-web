@@ -8,7 +8,7 @@ import Config from 'Config'
 export const getAssetState = ({ asset }) => asset
 
 export const getAllAssets = createSelector(getAssetState, ({ data }) => mapValues(data, (asset) => {
-  let { price, change1, change24, change7d, volume_24h, market_cap, 
+  let { price, change1, change24, change7d, volume24h, marketCap, 
     availableSupply, lastUpdatedPrice, symbol, ERC20, validate } = asset
   const bip21Prefix = !ERC20 ? Config.bip21Prefixes[symbol] : Config.bip21Prefixes[validate]
   price = toBigNumber(price)
@@ -25,8 +25,8 @@ export const getAllAssets = createSelector(getAssetState, ({ data }) => mapValue
     price1hAgo: price.div(change1.plus(100).div(100)),
     price24hAgo: price.div(change24.plus(100).div(100)),
     price7dAgo: price.div(change7d.plus(100).div(100)),
-    volume24: toBigNumber(volume_24h),
-    marketCap: toBigNumber(market_cap),
+    volume24: toBigNumber(volume24h),
+    marketCap: toBigNumber(marketCap),
     availableSupply: toBigNumber(availableSupply),
     lastUpdatedPrice: new Date(Number.parseInt(lastUpdatedPrice) * 1000),
   }

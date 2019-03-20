@@ -26,7 +26,7 @@ export default compose(
   }),
   withProps(({ assets }) => ({
     assetList: assets.filter(({ deposit, receive }) => deposit || receive)
-      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl'))
+      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl', 'cmcIDno'))
   })),
   lifecycle({
     componentWillMount() {
@@ -36,7 +36,7 @@ export default compose(
     }
   }),
   withRouteData,
-)(({ supportedAssets, areAssetsLoaded, assetList, symbol, name, type, descriptions = {} }) => {
+)(({ supportedAssets, areAssetsLoaded, assetList, symbol, name, cmcIDno, type, descriptions = {} }) => {
   supportedAssets = areAssetsLoaded ? assetList : supportedAssets
   const toSymbol = type === 'buy' ? symbol : symbol === 'ETH' ? 'BTC' : 'ETH'
   const fromSymbol = type === 'sell' ? symbol : symbol === 'BTC' ? 'ETH' : 'BTC'
@@ -62,7 +62,7 @@ export default compose(
           </h2>
           <div className='mx-auto' style={{ minHeight: 300, maxWidth: 960 }}>
             <p>{descriptions[symbol] ? descriptions[symbol].overview : null}</p>
-            <PriceChart symbol={symbol} chartOpen/> 
+            <PriceChart cmcIDno={cmcIDno} chartOpen/> 
           </div>
         </div>
       </div>

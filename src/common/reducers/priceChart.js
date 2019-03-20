@@ -17,10 +17,10 @@ const priceChartInitialState = {
   error: ''
 }
 
-const upsertAsset = createUpserter('symbol', priceChartInitialState)
+const upsertAsset = createUpserter('cmcIDno', priceChartInitialState)
 
 export default createReducer({
-  [priceChartLoading]: (state, symbol) => upsertAsset(state, { symbol, loading: true }),
-  [priceChartUpdated]: (state, { symbol, data }) => upsertAsset(state, { symbol, data, loading: false, lastUpdated: Date.now()  }),
-  [priceChartError]: (state, { symbol, error }) => upsertAsset(state, { symbol, error }),
+  [priceChartLoading]: (state, cmcIDno) => upsertAsset(state, { cmcIDno, loading: true }),
+  [priceChartUpdated]: (state, { cmcIDno, data }) => upsertAsset(state, { cmcIDno, data, loading: false, lastUpdated: Date.now() }),
+  [priceChartError]: (state, { cmcIDno, error }) => upsertAsset(state, { cmcIDno, error }),
 }, initialState)
