@@ -43,7 +43,7 @@ export function fetchAssets(): Promise<any[]> {
 export const formatAssetMarketData = (r: any): any => {
   r.marketInfo = r.marketInfo ? r.marketInfo : {}
   const { total_supply: totalSupply = null, max_supply: maxSupply = null, num_market_pairs: numMarketPairs = null,
-    tags = null, cmc_rank: cmcRank = null, quote = {} } = r.marketInfo
+    tags = null, cmc_rank: cmcRank = null, circulating_supply: availableSupply = null, quote = {} } = r.marketInfo
   const { USD = {} } = quote
   const { price = null, volume_24h: volume24h = null, percent_change_1h: percentChange1h = null,
      percent_change_24h: percentChange24h = null, percent_change_7d: percentChange7d = null,
@@ -60,6 +60,7 @@ export const formatAssetMarketData = (r: any): any => {
     cmcID: r.cmcID,
     cmcIDno: r.cmcIDno,
     restricted: r.restricted,
+    availableSupply,
     confirmations: r.confirmations,
     iconUrl: r.iconUrl,
     contractAddress: r.contractAddress,
