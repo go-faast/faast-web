@@ -148,6 +148,7 @@ export default {
         }),
         children: generateCombinationsFromArray(supportedAssets, 'symbol').map(pair => {
           const symbol = pair.symbol
+          const cmcIDno = pair.cmcIDno
           const name = pair.name
           const type = pair.type
           return {
@@ -166,6 +167,7 @@ export default {
                 supportedAssets,
                 symbol,
                 name,
+                cmcIDno,
                 type,
                 descriptions,
                 meta: {

@@ -44,17 +44,17 @@ export const assetInitialState = {
 }
 
 const priceDataToAsset = (priceData) => {
-  const change24 = priceData.percent_change_24h || 0
+  const change24 = priceData.percentChange24h || 0
   return {
     symbol: priceData.symbol,
     change24,
     change24decrease: toBigNumber(change24).isNegative(),
-    price: priceData.price_usd || 0,
-    change1: priceData.percent_change_1h || 0,
-    change7d: priceData.percent_change_7d || 0,
-    volume24: priceData['24h_volume_usd'] || 0,
-    marketCap: priceData.market_cap_usd || 0,
-    availableSupply: priceData.available_supply || 0,
+    price: priceData.price || 0,
+    change1: priceData.percentChange1h || 0,
+    change7d: priceData.percentChange7d || 0,
+    volume24: priceData.volume24h || 0,
+    marketCap: priceData.marketCap || 0,
+    availableSupply: priceData.availableSupply || 0,
     lastUpdatedPrice: priceData.last_updated || 0,
     priceLoading: false,
     priceLoaded: true,
