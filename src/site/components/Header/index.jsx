@@ -17,10 +17,12 @@ import {
 import withToggle from 'Hoc/withToggle'
 import config from 'Config'
 
-import { darkestText } from './PostPreview/style.scss'
+import { darkestText } from '../PostPreview/style.scss'
 
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
+
+import { betaTag } from './style.scss'
 
 export default compose(
   setDisplayName('Header'),
@@ -51,7 +53,7 @@ export default compose(
             <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/app/swap'>Swap</NavLink>
           </NavItem>
           <NavItem className='mr-4' key='marketmaker'>
-            <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/market-maker'>Market Maker <sup className='text-primary'><i>beta</i></sup></NavLink>
+            <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/market-maker'>Market Maker <sup className={classNames(betaTag, 'text-primary')}><i>beta</i></sup></NavLink>
           </NavItem>
           <NavItem className='mr-4' key='blog'>
             <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/blog' target='_blank noopener noreferrer' rel='noopener'>Blog</NavLink>
