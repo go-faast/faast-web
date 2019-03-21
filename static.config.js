@@ -229,6 +229,16 @@ export default {
           })
         })) 
       },
+      { 
+        path: '/market-maker',
+        component: 'src/site/pages/MarketMaker',
+        getData: async () => ({
+          meta: {
+            title: 'Faa.st Market Maker Beta Program',
+            description: 'Earn interest on your Bitcoin by fulfilling trades placed on the Faa.st marketplace. Sign up for the Beta now.'
+          },
+        }),
+      },
       {
         path: '/terms',
         component: 'src/site/pages/Terms',

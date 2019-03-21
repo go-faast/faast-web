@@ -48,10 +48,10 @@ export default compose(
       <Container>
         <Row>
           <Col sm='12' lg='6' className='text-left pl-md-5 pl-0 ml-4'>
-            <a href='https://medium.com/faast/faast-swap-api-is-now-available-959091bc85ca' target='_blank noopener'>
+            <a href='/market-maker'>
               <div className='notification'>
                 <span className='new-pill'>new</span>
-            Read about the Faa.st affiliate program
+            Read about the Faa.st Market Maker Beta
               </div>
             </a>
             {headline}

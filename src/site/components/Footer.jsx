@@ -22,6 +22,7 @@ export default compose(
             <ul>
               <li><a className='text-white' href='/app' target='_blank noopener noreferrer'>Portfolio</a></li>
               <li><a className='text-white' href='/app/swap' target='_blank noopener noreferrer'>Swap</a></li>
+              <li><a className='text-white' href='/market-maker' target='_blank noopener noreferrer'>Market Maker Beta</a></li>
               <li><a className='text-white' href='https://medium.com/faast' target='_blank noopener noreferrer'>Blog</a></li>
             </ul>
           </div>
