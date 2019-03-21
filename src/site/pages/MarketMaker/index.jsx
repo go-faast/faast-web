@@ -9,7 +9,7 @@ import Footer from 'Site/components/Footer'
 
 import classNames from 'class-names'
 
-import { blobs, blob, faq, numbers } from './style.scss'
+import { blobs, blob, faq, numbers, subtitle, why } from './style.scss'
 
 const blueColor = '#323540'
 
@@ -71,7 +71,7 @@ export default compose(
         <Row className='py-3 mx-auto position-relative' style={{ maxWidth: 1280, zIndex: 99 }}>
           <Col sm='12' className='text-center'>
             <h1 className='font-weight-bold text-white mt-3'>Put your Bitcoin to work</h1>
-            <h5 className='w-50 mx-auto mt-3' style={{ color: '#9BA5B6' }}>
+            <h5 className={classNames(subtitle, 'mx-auto mt-3')} style={{ color: '#9BA5B6' }}>
               Run a Faa.st powered market maker node, help power the movement to decentralize the financial world, and watch your BTC multiply
             </h5>
             <Button 
@@ -125,8 +125,8 @@ export default compose(
       <Row style={{ background: '#F6FAFE' }} className='text-center pb-5'>
         <Col>
           <h1 className='font-weight-bold mt-5 pt-3' style={{ color: blueColor }}>Why Become a Market Maker?</h1>
-          <h5 className='mx-auto mt-3 font-weight-bold' style={{ color: '#85889B', maxWidth: '80%' }}>Running a market maker node allows you to fulfill swaps on the Faa.st marketplace, and earn interest in return.</h5>
-          <h5 className='mx-auto mt-3' style={{ color: '#85889B', maxWidth: '80%' }}>In the early days, earning Bitcoin was as simple as downloading the node software and mining on your computer. Those days are long gone, but Faa.st now provides a way to earn Bitcoin by running a market maker node.</h5>
+          <h5 className={classNames(why, 'mx-auto mt-3 font-weight-bold')} style={{ color: '#85889B' }}>Running a market maker node allows you to fulfill swaps on the Faa.st marketplace, and earn interest in return.</h5>
+          <h5 className={classNames(why, 'mx-auto mt-3')} style={{ color: '#85889B'}}>In the early days, earning Bitcoin was as simple as downloading the node software and mining on your computer. Those days are long gone, but Faa.st now provides a way to earn Bitcoin by running a market maker node.</h5>
           <Row className='mt-5 text-center'>
             <Col className='mt-md-0 mt-3' sm='12' md='12' lg='4'>
               <div 

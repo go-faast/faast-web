@@ -5,6 +5,14 @@
   color: rgb(97, 103, 121);
 }
 
+.subtitle {
+  width: 50%;
+}
+
+.why {
+  width: 80%;
+}
+
 .blobs {
   -webkit-filter: url("#goo");
           filter: url("#goo");
@@ -197,4 +205,13 @@
 .blob:nth-child(4) {
   -webkit-animation-name: blob-right-bottom-anim;
           animation-name: blob-right-bottom-anim;
+}
+
+@media screen and (max-width: 768px) {
+  .subtitle {
+    width: 90%;
+  }
+  .why {
+    width: 95%;
+  }
 }
