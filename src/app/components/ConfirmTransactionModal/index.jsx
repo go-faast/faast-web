@@ -4,7 +4,7 @@ import { compose, setDisplayName, setPropTypes, defaultProps, withProps } from '
 import { Modal, ModalHeader, ModalBody, ModalFooter, Button } from 'reactstrap'
 
 import {
-  EthereumWalletLedger, EthereumWalletTrezor,
+  EthereumWalletLedger, EthereumWalletTrezor, EthereumWalletKeystore,
 } from 'Services/Wallet'
 
 import LedgerEthInstructions from './LedgerEthInstructions'
@@ -13,10 +13,12 @@ import TrezorEthInstructions from './TrezorEthInstructions'
 import TrezorBtcInstructions from './TrezorBtcInstructions'
 import MetaMaskInstructions from './MetaMaskInstructions'
 import EthereumInstructions from './EthereumInstructions'
+import WalletPasswordPrompt from 'Components/WalletPasswordPrompt'
 
 const instructionComponentMap = {
   [EthereumWalletLedger.type]: LedgerEthInstructions,
   [EthereumWalletTrezor.type]: TrezorEthInstructions,
+  [EthereumWalletKeystore.type]: WalletPasswordPrompt,
 }
 
 function getInstructionComponent(tx, wallet) {

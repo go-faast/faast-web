@@ -56,7 +56,7 @@ export default compose(
             <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/market-maker'>Market Maker <sup className={classNames(betaTag, 'text-primary')}><i>beta</i></sup></NavLink>
           </NavItem>
           <NavItem className='mr-4' key='blog'>
-            <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/blog' target='_blank noopener noreferrer' rel='noopener'>Blog</NavLink>
+            <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/blog'>Blog</NavLink>
           </NavItem>
           <NavItem className='mr-4' key='portfolio'>
             <NavLink tag='a' className='nav-link py-1' href='/app'>

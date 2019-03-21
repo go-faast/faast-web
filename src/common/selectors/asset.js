@@ -8,7 +8,7 @@ import Config from 'Config'
 export const getAssetState = ({ asset }) => asset
 
 export const getAllAssets = createSelector(getAssetState, ({ data }) => mapValues(data, (asset) => {
-  let { price, change1, change24, change7d, volume24, marketCap, 
+  let { price, change1, change24, change7d, volume24h, marketCap, 
     availableSupply, lastUpdatedPrice, symbol, ERC20, validate } = asset
   const bip21Prefix = !ERC20 ? Config.bip21Prefixes[symbol] : Config.bip21Prefixes[validate]
   price = toBigNumber(price)
@@ -25,7 +25,7 @@ export const getAllAssets = createSelector(getAssetState, ({ data }) => mapValue
     price1hAgo: price.div(change1.plus(100).div(100)),
     price24hAgo: price.div(change24.plus(100).div(100)),
     price7dAgo: price.div(change7d.plus(100).div(100)),
-    volume24: toBigNumber(volume24),
+    volume24: toBigNumber(volume24h),
     marketCap: toBigNumber(marketCap),
     availableSupply: toBigNumber(availableSupply),
     lastUpdatedPrice: new Date(Number.parseInt(lastUpdatedPrice) * 1000),
@@ -56,14 +56,24 @@ export const isAssetPriceLoaded = createItemSelector(getAsset, fieldSelector('pr
 export const getTrendingPositive = createItemSelector(
   getAllAssetsArray, 
   selectItemId,
-  (assets, { sortField, n = 5 }) => {
-    return assets.filter(asset => asset.volume24.gt(50000)).sort((a, b) => b[sortField].comparedTo(a[sortField])).slice(0,n)
+  (assets, { sortField, n = 5, filterTradeable }) => {
+    if (filterTradeable) {
+      assets = assets.filter(asset => asset.volume24.gt(50000) && asset.swapEnabled)
+    } else {
+      assets = assets.filter(asset => asset.volume24.gt(50000))
+    }
+    return assets.sort((a, b) => b[sortField].comparedTo(a[sortField])).slice(0,n)
   })
 
 export const getTrendingNegative = createItemSelector(
   getAllAssetsArray, 
   selectItemId,
-  (assets, { sortField, n = 5 }) => {
+  (assets, { sortField, n = 5, filterTradeable }) => {
+    if (filterTradeable) {
+      assets = assets.filter(asset => asset.volume24.gt(50000) && asset.swapEnabled)
+    } else {
+      assets = assets.filter(asset => asset.volume24.gt(50000))
+    }
     return assets.filter(asset => asset.volume24.gt(50000)).sort((a, b) => a[sortField].comparedTo(b[sortField])).slice(0,n)
   })
 

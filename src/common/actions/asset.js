@@ -29,7 +29,10 @@ export const retrieveAssets = () => (dispatch, getState) => {
   }
   dispatch(assetsLoading())
   return Faast.fetchAssets()
-    .then((assets) => dispatch(assetsLoaded(assets)))
+    .then((assets) => { 
+      dispatch(assetsLoaded(assets))
+      dispatch(assetPricesUpdated(assets))
+    })
     .catch((e) => {
       log.error(e)
       const message = 'Failed to load asset list'

@@ -6,21 +6,21 @@ import { isPriceChartLoading, isPriceChartStale } from 'Common/selectors/priceCh
 
 const createAction = newScopedCreateAction(__filename)
 
-export const priceChartLoading = createAction('PRICE_CHART_DATA_LOADING', (symbol) => (symbol))
-export const priceChartUpdated = createAction('PRICE_CHART_DATA_UPDATED', (symbol, data) => ({ symbol, data }))
-export const priceChartError = createAction('PRICE_CHART_DATA_ERROR', (symbol, error) => ({ symbol, error }))
+export const priceChartLoading = createAction('PRICE_CHART_DATA_LOADING', (cmcIDno) => (cmcIDno))
+export const priceChartUpdated = createAction('PRICE_CHART_DATA_UPDATED', (cmcIDno, data) => ({ cmcIDno, data }))
+export const priceChartError = createAction('PRICE_CHART_DATA_ERROR', (cmcIDno, error) => ({ cmcIDno, error }))
 
-export const fetchPriceChartData = (symbol) => (dispatch, getState) => {
-  if (isPriceChartLoading(getState(), symbol) || !isPriceChartStale(getState(), symbol)) {
+export const fetchPriceChartData = (cmcIDno) => (dispatch, getState) => {
+  if (isPriceChartLoading(getState(), cmcIDno) || !isPriceChartStale(getState(), cmcIDno)) {
     return
   }
-  dispatch(priceChartLoading(symbol))
-  Faast.fetchPriceChart(symbol)
-    .then((priceData) => dispatch(priceChartUpdated(symbol, priceData)))
+  dispatch(priceChartLoading(cmcIDno))
+  Faast.fetchPriceChart(cmcIDno)
+    .then((priceData) => dispatch(priceChartUpdated(cmcIDno, priceData.data)))
     .catch((e) => {
       log.error(e)
-      const message = `Failed to load ${symbol} price`
-      dispatch(priceChartError(symbol, message))
+      const message = `Failed to load ${cmcIDno} price`
+      dispatch(priceChartError(cmcIDno, message))
       throw new Error(message)
     })
 }

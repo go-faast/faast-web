@@ -61,7 +61,7 @@ export const TableRow = ({
           <Row style={{ justifyContent: 'space-between' }} className='gutter-2 align-items-center text-center pb-2'>
             <Col xs='5'>
               <CoinSymbol symbol={sendSymbol} size='md'/>
-              <p className='mt-2 mb-0 font-xs'>{sendAsset.name}</p>
+              <p className='mt-2 mb-0 font-xs'>{sendAsset && sendAsset.name}</p>
               <div className='mt-1 text-muted font-xs'>
                 {sendAmount
                   ? (<Units value={sendAmount} precision={6} symbol={sendSymbol} showSymbol/>)
@@ -73,7 +73,7 @@ export const TableRow = ({
             </Col>
             <Col xs='5'>
               <CoinSymbol symbol={receiveSymbol} size='md'/>
-              <p className='mt-2 mb-0 font-xs'>{receiveAsset.name}</p>
+              <p className='mt-2 mb-0 font-xs'>{receiveAsset && receiveAsset.name}</p>
               <div className='mt-1 text-muted font-xs'>
                 {receiveAmount
                   ? (<Units value={receiveAmount} symbol={receiveSymbol} precision={6} showSymbol/>)

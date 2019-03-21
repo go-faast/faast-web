@@ -90,12 +90,23 @@ const getFreshAddress = (walletInstance, symbol) => walletInstance
   ? walletInstance.getFreshAddress(symbol)
   : undefined
 
+const getMetaWalletType = (walletInstance) => {
+  if (!walletInstance) {
+    return EXTERNAL_WALLET_TYPE
+  }
+  const type = walletInstance.getType()
+  if (walletInstance.providerName) {
+    return `${type}_${walletInstance.providerName}`
+  }
+  return type
+}
+
 export const createOrder = (swap) => (dispatch) => {
   if (!swap) {
     log.error(`Cannot create swap order for ${swap}`)
     return
   }
-  const { id, sendAmount, sendSymbol, receiveSymbol, sendWalletId, receiveWalletId } = swap
+  const { id, sendAmount, sendSymbol, receiveSymbol, sendWalletId, receiveWalletId, receiveAmount: withdrawalAmount } = swap
   return Promise.resolve().then(() => {
     if (swap.error) return swap
     const finish = dispatch(createSwapFinish('createOrder', swap))
@@ -117,8 +128,8 @@ export const createOrder = (swap) => (dispatch) => {
         const sendWalletInstance = sendWalletId ? getWalletForAsset(sendWalletId, sendSymbol) : null
         const receiveWalletInstance = receiveWalletId ? getWalletForAsset(receiveWalletId, receiveSymbol) : null
         const userId = sendWalletInstance ? sendWalletInstance.getId() : undefined
-        const sendWalletType = sendWalletInstance ? sendWalletInstance.getType() : EXTERNAL_WALLET_TYPE
-        const receiveWalletType = receiveWalletInstance ? receiveWalletInstance.getType() : EXTERNAL_WALLET_TYPE
+        const sendWalletType = getMetaWalletType(sendWalletInstance)
+        const receiveWalletType = getMetaWalletType(receiveWalletInstance)
         log.info(`Creating faast order for swap ${id}`)
         return Promise.all([
           swap.receiveAddress || getFreshAddress(receiveWalletInstance, receiveSymbol),
@@ -127,6 +138,7 @@ export const createOrder = (swap) => (dispatch) => {
           sendSymbol,
           receiveSymbol,
           receiveAddress,
+          withdrawalAmount: withdrawalAmount ? toNumber(withdrawalAmount) : undefined, // optional
           refundAddress,  // optional
           sendAmount: sendAmount ? toNumber(sendAmount) : undefined, // optional
           userId, // optional

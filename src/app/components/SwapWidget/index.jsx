@@ -41,10 +41,6 @@ export default compose(
     let { id, from, fromAmount, fromAddress, to, toAmount, toAddress } = urlParams
     fromAmount = fromAmount && Number.parseFloat(fromAmount)
     toAmount = toAmount && Number.parseFloat(toAmount)
-    if (fromAmount && toAmount) {
-      // Can't set both
-      toAmount = undefined
-    }
     return {
       orderId: id,
       stepOne: {

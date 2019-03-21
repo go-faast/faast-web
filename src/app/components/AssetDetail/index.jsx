@@ -43,7 +43,7 @@ const marketData = [
 ]
 
 const AssetDetail = ({ symbol, asset }) => {
-  const { name, price, change24, deposit, receive } = asset
+  const { name, price, change24, deposit, receive, cmcIDno } = asset
   const buySellButtons = (
     <Row className='gutter-2 justify-content-md-end'>
       <Col xs='auto'>
@@ -135,7 +135,7 @@ const AssetDetail = ({ symbol, asset }) => {
             </Row>
           </CardHeader>
           <CardBody className='text-center'>
-            <PriceChart symbol={symbol} chartOpen/> 
+            <PriceChart cmcIDno={cmcIDno} chartOpen/> 
           </CardBody>
         </Card>
       </Layout>
