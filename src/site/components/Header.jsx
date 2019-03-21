@@ -50,6 +50,9 @@ export default compose(
           <NavItem className='mr-4' key='swap'>
             <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/app/swap'>Swap</NavLink>
           </NavItem>
+          <NavItem className='mr-4' key='marketmaker'>
+            <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/market-maker'>Market Maker <sup className='text-primary'><i>beta</i></sup></NavLink>
+          </NavItem>
           <NavItem className='mr-4' key='blog'>
             <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/blog' target='_blank noopener noreferrer' rel='noopener'>Blog</NavLink>
           </NavItem>
