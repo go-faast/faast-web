@@ -25,13 +25,13 @@ export default compose(
           <Col sm='12' className='text-center'>
             <h1 className='font-weight-bold text-white mt-3'>Put your Bitcoin to work</h1>
             <h5 className='w-50 mx-auto mt-3' style={{ color: '#9BA5B6' }}>
-              Run a Faa.st powered market-maker node, help power the movement to decentralize the financial world, and watch your BTC multiply
+              Run a Faa.st powered market maker node, help power the movement to decentralize the financial world, and watch your BTC multiply
             </h5>
             <Button 
               className='mt-4 d-inline-block font-weight-bold' 
               style={{ backgroundColor: '#56C8B8', borderRadius: 20, color: '#fff', width: 240 }} 
               tag='a' 
-              href={'hello'} 
+              href={'https://docs.google.com/forms/d/e/1FAIpQLSfxnI0SPvQu-4oVi2YCa7Lp_UEK8WyDFNFSMoXVxZD7Ioxjzw/formResponse'} 
               target='_blank noopener noreferrer' 
               color='primary'
             >
@@ -78,7 +78,8 @@ export default compose(
       <Row style={{ background: '#F6FAFE' }} className='text-center pb-5'>
         <Col>
           <h1 className='font-weight-bold mt-5 pt-3' style={{ color: blueColor }}>Why Become a Market Maker?</h1>
-          <h5 style={{ color: '#85889B' }}>A market maker uses their cryptocurrencies to fulfill trades and earns interest in return</h5>
+          <h5 className='mx-auto mt-3 font-weight-bold' style={{ color: '#85889B', maxWidth: '80%' }}>Running a market maker node allows you to fulfill swaps on the Faa.st marketplace, and earn interest in return.</h5>
+          <h5 className='mx-auto mt-3' style={{ color: '#85889B', maxWidth: '80%' }}>In the early days, earning Bitcoin was as simple as downloading the node software and mining on your computer. Those days are long gone, but Faa.st now provides a way to earn Bitcoin by running a market maker node.</h5>
           <Row className='mt-5 text-center'>
             <Col className='mt-md-0 mt-3' sm='12' md='12' lg='4'>
               <div 
@@ -87,7 +88,7 @@ export default compose(
               >
                 <img style={{ width: 40 }} src='https://i.imgur.com/24WeJaL.png' />
                 <h4 className='font-weight-bold mt-2' style={{ color: '#23D6B8' }}>Earn interest on your BTC</h4>
-                <p style={{ color: '#2D303A' }}>In return for helping complete trades on Faa.st you will receive a BTC payout</p>
+                <p style={{ color: '#2D303A' }}>Earn a BTC commission in return for helping complete swaps on the Faa.st marketplace</p>
               </div>
             </Col>
             <Col className='mt-md-0 mt-3' sm='12' md='12' lg='4'>
@@ -97,7 +98,7 @@ export default compose(
               >
                 <img style={{ width: 40 }} src='https://i.imgur.com/FLaUbIm.png' />
                 <h4 className='font-weight-bold mt-2' style={{ color: '#23D6B8' }}>Access more liquidity</h4>
-                <p style={{ color: '#2D303A' }}>Have tokens with low volume? Provide the market a controlled way to access your liquidity</p>
+                <p style={{ color: '#2D303A' }}>Own tokens with low volume? Provide the market access to your holdings</p>
               </div>
             </Col>
             <Col className='mt-md-0 mt-3' sm='12' md='12' lg='4'>
@@ -114,7 +115,7 @@ export default compose(
               className='mt-5 d-inline-block font-weight-bold mx-auto' 
               style={{ backgroundColor: '#56C8B8', borderRadius: 20, color: '#fff', width: 240 }} 
               tag='a' 
-              href={''} 
+              href={'https://docs.google.com/forms/d/e/1FAIpQLSfxnI0SPvQu-4oVi2YCa7Lp_UEK8WyDFNFSMoXVxZD7Ioxjzw/formResponse'} 
               target='_blank noopener noreferrer' 
               color='primary'
             >
@@ -132,8 +133,8 @@ export default compose(
                 <Collapse isOpen={true}>
                   <Card>
                     <CardBody className={faq}>
-                      <h5 style={{ color: blueColor }}>Can you run me through an example trade situation?</h5>
-                      Alice is the market taker and Bob is the market maker. Alice has 10 ETH and wants 1 BTC. The market rate is 10 ETH to 1 BTC. Alice submits her trade and it is routed through the Faa.st API. Alice's 10 ETH is sent to Bob. Bob sends 1 BTC from his market maker node's built-in hot wallet to Alice. Once the 10 ETH transaction is confirmed received, Bob sells the ETH for BTC, afterwhich the BTC is deposited back to his node's hot wallet - readily available for the next trade Bob needs to fulfill.
+                      <h5 style={{ color: blueColor }}>Can you run me through an example swap?</h5>
+                      Alice is the market taker and Bob is the market maker. Alice has 10 ETH and wants 1 BTC. The market rate is 9.9 ETH to 1 BTC. Alice submits her swap request is routed through the Faa.st API to Bob. Alice's 10 ETH is sent to Bob. Bob sends 1 BTC from his market maker node's built-in hot wallet to Alice. Once the 10 ETH transaction is confirmed received, Bob sells the ETH for BTC on his exchange account for 1.01 BTC. The BTC is then deposited back to Bob’s node wallet - readily available for the next trade Bob needs to fulfill. Bob earned 0.01 BTC for this swap.
                     </CardBody>
                   </Card>
                 </Collapse>
@@ -144,7 +145,31 @@ export default compose(
                 <Collapse isOpen={true}>
                   <Card>
                     <CardBody className={faq}>
-                      <h5 style={{ color: blueColor }}>Would I need any extra hardware to run a market maker node?</h5>
+                      <h5 style={{ color: blueColor }}>What do I need to run a node?</h5>
+                      You will need 3 things to run a market maker node: Bitcoin, a computer, and an account on a cryptocurrency exchange.
+                    </CardBody>
+                  </Card>
+                </Collapse>
+              </Col>
+            </Row>
+            <Row className='text-left mb-3'>
+              <Col>
+                <Collapse isOpen={true}>
+                  <Card>
+                    <CardBody className={faq}>
+                      <h5 style={{ color: blueColor }}>How much will I earn?</h5>
+                      Market makers earn Bitcoins by fulfilling swaps. The amount a market maker earns depends on the amount of Bitcoin they have available on their node, the time their node is online, as well as the number of swaps completed. Faa.st limits the amount of market makers on the platform to ensure each market maker earns sufficient commission.
+                    </CardBody>
+                  </Card>
+                </Collapse>
+              </Col>
+            </Row>
+            <Row className='text-left mb-3'>
+              <Col>
+                <Collapse isOpen={true}>
+                  <Card>
+                    <CardBody className={faq}>
+                      <h5 style={{ color: blueColor }}>Do I need any extra hardware to run a market maker node?</h5>
                       No, but it is recommended that you run your node on a server. This will allow you to complete trades 24 hours/day and make the most interest off your Bitcoin.
                     </CardBody>
                   </Card>
@@ -157,7 +182,7 @@ export default compose(
                   <Card>
                     <CardBody className={faq}>
                       <h5 style={{ color: blueColor }}>What is the maximum amount of trade value I will be able to fulfill at any one time?</h5>
-                      In order to account for trade failures you must deposit BTC collateral with Faa.st. The amount of collateral you deposit will be the max amount in trade value you will be able to fulfill at any one time.
+                      For security purposes, market makers deposit BTC collateral with Faa.st. The amount of collateral deposited will be the maximum amount in trade value a market maker will be able to fulfill at any one time.
                     </CardBody>
                   </Card>
                 </Collapse>
@@ -169,7 +194,7 @@ export default compose(
                   <Card>
                     <CardBody className={faq}>
                       <h5 style={{ color: blueColor }}>How are wallet/exchange/api keys proven safe?</h5>
-                      The market maker node will be completely open source and auditable by the community.
+                      The market maker node will be completely open source and auditable by the community. All private keys and API keys are stored locally on the market maker node, and are not transmitted remotely.
                     </CardBody>
                   </Card>
                 </Collapse>
@@ -181,7 +206,7 @@ export default compose(
                   <Card>
                     <CardBody className={faq}>
                       <h5 style={{ color: blueColor }}>Do I need to keep my crypto on an exchange in order to complete trades?</h5>
-                      It is possible that for a short period of time, a small percentage of your crypto being used to fulfill trades will be on an exchange. 
+                      Generally, all crypto is withdrawn from your exchange account after a swap is complete.
                     </CardBody>
                   </Card>
                 </Collapse>
@@ -193,7 +218,43 @@ export default compose(
                   <Card>
                     <CardBody className={faq}>
                       <h5 style={{ color: blueColor }}>When is the planned release of the market maker node?</h5>
-                      Right now, the end of 2019 is the targeted release time.
+                      The market maker program is currently live in a private alpha. We are building a waiting list for a public beta near the end of Q3 2019.
+                    </CardBody>
+                  </Card>
+                </Collapse>
+              </Col>
+            </Row>
+            <Row className='text-left mb-3'>
+              <Col>
+                <Collapse isOpen={true}>
+                  <Card>
+                    <CardBody className={faq}>
+                      <h5 style={{ color: blueColor }}>What is a Market Maker?</h5>
+                      A market maker is a participant in a market that fulfills orders for market takers. For example, a market maker will quote a specific price to either buy or sell BTC for TUSD.
+                    </CardBody>
+                  </Card>
+                </Collapse>
+              </Col>
+            </Row>
+            <Row className='text-left mb-3'>
+              <Col>
+                <Collapse isOpen={true}>
+                  <Card>
+                    <CardBody className={faq}>
+                      <h5 style={{ color: blueColor }}>What is a Market Taker?</h5>
+                      A market taker is a participant in a market that is looking to immediately swap from one asset to another. For example, if you have 1 BTC and want 5000 TUSD immediately, you are a market taker. You sell 1 BTC and take whatever price the market has available.
+                    </CardBody>
+                  </Card>
+                </Collapse>
+              </Col>
+            </Row>
+            <Row className='text-left mb-3'>
+              <Col>
+                <Collapse isOpen={true}>
+                  <Card>
+                    <CardBody className={faq}>
+                      <h5 style={{ color: blueColor }}>Are swaps Atomic?</h5>
+                      Sadly, swaps on Faa.st are not currently atomic. The technology for cross chain atomic swaps remains very new, and incomplete. Faa.st is working hard to ensure that swaps are atomic once the technology supporting this is sufficiently tested. The market maker program will evolve into a network of atomic swaps as these become more reliable.
                     </CardBody>
                   </Card>
                 </Collapse>
@@ -209,7 +270,7 @@ export default compose(
         </Col>
         <Col>
           <h1 className={classNames(numbers, 'font-weight-bold')}>2</h1>
-          <p>Connect market maker node</p>
+          <p>Run a maker node</p>
         </Col>
         <Col>
           <h1 className={classNames(numbers, 'font-weight-bold')}>3</h1>
@@ -222,7 +283,7 @@ export default compose(
             className='mt-4 d-inline-block font-weight-bold' 
             style={{ backgroundColor: '#56C8B8', borderRadius: 20, color: '#fff', width: 240 }} 
             tag='a' 
-            href={'hello'} 
+            href={'https://docs.google.com/forms/d/e/1FAIpQLSfxnI0SPvQu-4oVi2YCa7Lp_UEK8WyDFNFSMoXVxZD7Ioxjzw/formResponse'} 
             target='_blank noopener noreferrer' 
             color='primary'
           >
