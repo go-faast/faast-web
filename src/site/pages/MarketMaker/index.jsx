@@ -13,6 +13,53 @@ import { blobs, blob, faq, numbers } from './style.scss'
 
 const blueColor = '#323540'
 
+const faqCopy = [
+  {
+    q: 'Can you run me through an example swap?',
+    a: "Alice is the market taker and Bob is the market maker. Alice has 10 ETH and wants 1 BTC. The market rate is 9.9 ETH to 1 BTC. Alice submits her swap request is routed through the Faa.st API to Bob. Alice's 10 ETH is sent to Bob. Bob sends 1 BTC from his market maker node's built-in hot wallet to Alice. Once the 10 ETH transaction is confirmed received, Bob sells the ETH for BTC on his exchange account for 1.01 BTC. The BTC is then deposited back to Bob’s node wallet - readily available for the next trade Bob needs to fulfill. Bob earned 0.01 BTC for this swap.",
+  },
+  {
+    q: 'What do I need to run a node?',
+    a: 'You will need 3 things to run a market maker node: Bitcoin, a computer, and an account on a cryptocurrency exchange.',
+  },
+  {
+    q: 'How much will I earn?',
+    a: 'Market makers earn Bitcoins by fulfilling swaps. The amount a market maker earns depends on the amount of Bitcoin they have available on their node, the time their node is online, as well as the number of swaps completed. Faa.st limits the amount of market makers on the platform to ensure each market maker earns sufficient commission.',
+  },
+  {
+    q: 'Do I need any extra hardware to run a market maker node?',
+    a: 'No, but it is recommended that you run your node on a server. This will allow you to complete trades 24 hours/day and make the most interest off your Bitcoin.',
+  },
+  {
+    q: 'What is the maximum amount of trade value I will be able to fulfill at any one time?',
+    a: 'For security purposes, market makers deposit BTC collateral with Faa.st. The amount of collateral deposited will be the maximum amount in trade value a market maker will be able to fulfill at any one time.',
+  },
+  {
+    q: 'How are wallet/exchange/api keys proven safe?',
+    a: 'The market maker node will be completely open source and auditable by the community. All private keys and API keys are stored locally on the market maker node, and are not transmitted remotely.',
+  },
+  {
+    q: 'Do I need to keep my crypto on an exchange in order to complete trades?',
+    a: 'Generally, all crypto is withdrawn from your exchange account after a swap is complete.',
+  },
+  {
+    q: 'When is the planned release of the market maker node?',
+    a: 'The market maker program is currently live in a private alpha. We are building a waiting list for a public beta near the end of Q3 2019.',
+  },
+  {
+    q: 'What is a Market Maker?',
+    a: 'A market maker is a participant in a market that fulfills orders for market takers. For example, a market maker will quote a specific price to either buy or sell BTC for TUSD.',
+  },
+  {
+    q: 'What is a Market Taker?',
+    a: 'A market taker is a participant in a market that is looking to immediately swap from one asset to another. For example, if you have 1 BTC and want 5000 TUSD immediately, you are a market taker. You sell 1 BTC and take whatever price the market has available.',
+  },
+  {
+    q: 'Are swaps Atomic?',
+    a: 'Sadly, swaps on Faa.st are not currently atomic. The technology for cross chain atomic swaps remains very new, and incomplete. Faa.st is working hard to ensure that swaps are atomic once the technology supporting this is sufficiently tested. The market maker program will evolve into a network of atomic swaps as these become more reliable.',
+  },
+]
+
 export default compose(
   setDisplayName('MarketMaker'),
   withRouteData
@@ -128,138 +175,22 @@ export default compose(
         <Col>
           <h1 className='font-weight-bold mt-5 pt-3' style={{ color: blueColor }}>Frequently Asked Questions</h1>
           <Container>
-            <Row className='text-left mb-3 mt-5'>
-              <Col>
-                <Collapse isOpen={true}>
-                  <Card>
-                    <CardBody className={faq}>
-                      <h5 style={{ color: blueColor }}>Can you run me through an example swap?</h5>
-                      Alice is the market taker and Bob is the market maker. Alice has 10 ETH and wants 1 BTC. The market rate is 9.9 ETH to 1 BTC. Alice submits her swap request is routed through the Faa.st API to Bob. Alice's 10 ETH is sent to Bob. Bob sends 1 BTC from his market maker node's built-in hot wallet to Alice. Once the 10 ETH transaction is confirmed received, Bob sells the ETH for BTC on his exchange account for 1.01 BTC. The BTC is then deposited back to Bob’s node wallet - readily available for the next trade Bob needs to fulfill. Bob earned 0.01 BTC for this swap.
-                    </CardBody>
-                  </Card>
-                </Collapse>
-              </Col>
-            </Row>
-            <Row className='text-left mb-3'>
-              <Col>
-                <Collapse isOpen={true}>
-                  <Card>
-                    <CardBody className={faq}>
-                      <h5 style={{ color: blueColor }}>What do I need to run a node?</h5>
-                      You will need 3 things to run a market maker node: Bitcoin, a computer, and an account on a cryptocurrency exchange.
-                    </CardBody>
-                  </Card>
-                </Collapse>
-              </Col>
-            </Row>
-            <Row className='text-left mb-3'>
-              <Col>
-                <Collapse isOpen={true}>
-                  <Card>
-                    <CardBody className={faq}>
-                      <h5 style={{ color: blueColor }}>How much will I earn?</h5>
-                      Market makers earn Bitcoins by fulfilling swaps. The amount a market maker earns depends on the amount of Bitcoin they have available on their node, the time their node is online, as well as the number of swaps completed. Faa.st limits the amount of market makers on the platform to ensure each market maker earns sufficient commission.
-                    </CardBody>
-                  </Card>
-                </Collapse>
-              </Col>
-            </Row>
-            <Row className='text-left mb-3'>
-              <Col>
-                <Collapse isOpen={true}>
-                  <Card>
-                    <CardBody className={faq}>
-                      <h5 style={{ color: blueColor }}>Do I need any extra hardware to run a market maker node?</h5>
-                      No, but it is recommended that you run your node on a server. This will allow you to complete trades 24 hours/day and make the most interest off your Bitcoin.
-                    </CardBody>
-                  </Card>
-                </Collapse>
-              </Col>
-            </Row>
-            <Row className='text-left mb-3'>
-              <Col>
-                <Collapse isOpen={true}>
-                  <Card>
-                    <CardBody className={faq}>
-                      <h5 style={{ color: blueColor }}>What is the maximum amount of trade value I will be able to fulfill at any one time?</h5>
-                      For security purposes, market makers deposit BTC collateral with Faa.st. The amount of collateral deposited will be the maximum amount in trade value a market maker will be able to fulfill at any one time.
-                    </CardBody>
-                  </Card>
-                </Collapse>
-              </Col>
-            </Row>
-            <Row className='text-left mb-3'>
-              <Col>
-                <Collapse isOpen={true}>
-                  <Card>
-                    <CardBody className={faq}>
-                      <h5 style={{ color: blueColor }}>How are wallet/exchange/api keys proven safe?</h5>
-                      The market maker node will be completely open source and auditable by the community. All private keys and API keys are stored locally on the market maker node, and are not transmitted remotely.
-                    </CardBody>
-                  </Card>
-                </Collapse>
-              </Col>
-            </Row>
-            <Row className='text-left mb-3'>
-              <Col>
-                <Collapse isOpen={true}>
-                  <Card>
-                    <CardBody className={faq}>
-                      <h5 style={{ color: blueColor }}>Do I need to keep my crypto on an exchange in order to complete trades?</h5>
-                      Generally, all crypto is withdrawn from your exchange account after a swap is complete.
-                    </CardBody>
-                  </Card>
-                </Collapse>
-              </Col>
-            </Row>
-            <Row className='text-left mb-3'>
-              <Col>
-                <Collapse isOpen={true}>
-                  <Card>
-                    <CardBody className={faq}>
-                      <h5 style={{ color: blueColor }}>When is the planned release of the market maker node?</h5>
-                      The market maker program is currently live in a private alpha. We are building a waiting list for a public beta near the end of Q3 2019.
-                    </CardBody>
-                  </Card>
-                </Collapse>
-              </Col>
-            </Row>
-            <Row className='text-left mb-3'>
-              <Col>
-                <Collapse isOpen={true}>
-                  <Card>
-                    <CardBody className={faq}>
-                      <h5 style={{ color: blueColor }}>What is a Market Maker?</h5>
-                      A market maker is a participant in a market that fulfills orders for market takers. For example, a market maker will quote a specific price to either buy or sell BTC for TUSD.
-                    </CardBody>
-                  </Card>
-                </Collapse>
-              </Col>
-            </Row>
-            <Row className='text-left mb-3'>
-              <Col>
-                <Collapse isOpen={true}>
-                  <Card>
-                    <CardBody className={faq}>
-                      <h5 style={{ color: blueColor }}>What is a Market Taker?</h5>
-                      A market taker is a participant in a market that is looking to immediately swap from one asset to another. For example, if you have 1 BTC and want 5000 TUSD immediately, you are a market taker. You sell 1 BTC and take whatever price the market has available.
-                    </CardBody>
-                  </Card>
-                </Collapse>
-              </Col>
-            </Row>
-            <Row className='text-left mb-3'>
-              <Col>
-                <Collapse isOpen={true}>
-                  <Card>
-                    <CardBody className={faq}>
-                      <h5 style={{ color: blueColor }}>Are swaps Atomic?</h5>
-                      Sadly, swaps on Faa.st are not currently atomic. The technology for cross chain atomic swaps remains very new, and incomplete. Faa.st is working hard to ensure that swaps are atomic once the technology supporting this is sufficiently tested. The market maker program will evolve into a network of atomic swaps as these become more reliable.
-                    </CardBody>
-                  </Card>
-                </Collapse>
-              </Col>
-            </Row>
+            {faqCopy.map((x, i) => {
+              return (
+                <Row className={classNames('text-left mb-3', i == 0 && 'mt-5')}>
+                  <Col>
+                    <Collapse isOpen={true}>
+                      <Card className='flat border-0'>
+                        <CardBody className={faq}>
+                          <h5 style={{ color: blueColor }}>{x.q}</h5>
+                          {x.a}
+                        </CardBody>
+                      </Card>
+                    </Collapse>
+                  </Col>
+                </Row>
+              )
+            })}
           </Container>
         </Col>
       </Row>
