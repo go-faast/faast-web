@@ -66,7 +66,7 @@ export default compose(
 )(() => {
   return (
     <div style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
-      <Header theme='dark' headerColor={blueColor} />
+      <Header theme='dark' style={{ zIndex: 9 }} className='position-relative' headerColor={blueColor} />
       <div style={{ minHeight: '85vh', backgroundColor: blueColor }} className={classNames('mb-0 py-5 position-relative')}>
         <Row className='py-3 mx-auto position-relative' style={{ maxWidth: 1280, zIndex: 99 }}>
           <Col sm='12' className='text-center'>
@@ -104,8 +104,8 @@ export default compose(
             </svg>
           </Col>
         </Row>
-        <div style={{ bottom: 0, left: 0 }} className='position-absolute'>
-          <img style={{ width: '100%', height: '100%', pointerEvents: 'none' }} src='https://i.imgur.com/CKbwoEu.png' />
+        <div style={{ bottom: 0, left: 0, zIndex: 1 }} className='position-absolute'>
+          <img style={{ width: '100%', maxHeight: 551, pointerEvents: 'none' }} src='https://i.imgur.com/CKbwoEu.png' />
         </div>
       </div>
       <Row style={{ background: '#F6FAFE' }} className='text-center pb-5'>
