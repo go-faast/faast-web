@@ -105,21 +105,7 @@ export default compose(
           </Col>
         </Row>
         <div style={{ bottom: 0, left: 0 }} className='position-absolute'>
-          <svg width="1280px" height="551px" viewBox="0 0 1280 551" version="1.1" xmlns="http://www.w3.org/2000/svg">
-            <defs>
-              <linearGradient x1="50%" y1="0%" x2="50%" y2="100%" id="linearGradient-1">
-                <stop stopColor="#FFFFFF" offset="0%"></stop>
-                <stop stopColor="#979797" stopOpacity="0" offset="100%"></stop>
-              </linearGradient>
-            </defs>
-            <g id="Page-1" stroke="none" strokeWidth="1" fill="none" fillRule="evenodd" opacity="0.039475125">
-              <g id="mac-browser" transform="translate(0.000000, -129.000000)" fill="#9B9B9B" stroke="url(#linearGradient-1)">
-                <g id="Area-chart" transform="translate(0.000000, 130.000000)">
-                  <path d="M0,275 C71.1111111,275 71.1111111,206.25 142.222222,206.25 C213.333333,206.25 213.333333,247.5 284.444444,247.5 C355.555556,247.5 355.555556,137.5 426.666667,137.5 C497.777778,137.5 497.777778,0 568.888889,0 C640,0 640,68.75 711.111111,68.75 C782.222222,68.75 782.222222,96.25 853.333333,96.25 C924.444444,96.25 924.444444,137.5 995.555556,137.5 C1066.66667,137.5 1066.66667,55 1137.77778,55 C1208.88889,55 1208.88889,0 1280,0 L1280,550 L0,550 L0,275 Z" id="area_1"></path>
-                </g>
-              </g>
-            </g>
-          </svg>
+          <img style={{ width: '100%', height: '100%', pointerEvents: 'none' }} src='https://i.imgur.com/CKbwoEu.png' />
         </div>
       </div>
       <Row style={{ background: '#F6FAFE' }} className='text-center pb-5'>
@@ -177,7 +163,7 @@ export default compose(
           <Container>
             {faqCopy.map((x, i) => {
               return (
-                <Row className={classNames('text-left mb-3', i == 0 && 'mt-5')}>
+                <Row key={i} className={classNames('text-left mb-3', i == 0 && 'mt-5')}>
                   <Col>
                     <Collapse isOpen={true}>
                       <Card className='flat border-0'>
