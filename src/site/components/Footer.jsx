@@ -52,7 +52,7 @@ export default compose(
               <li><a className='text-white' href='/wallets/status'>Status</a></li>
             </ul>
           </div>
-          <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-3'>
+          <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-0'>
             <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>Knowledge</h3>
             <ul>
               <li><a className='text-white' href='/what-is-an-ico'>What is an ICO?</a></li>
