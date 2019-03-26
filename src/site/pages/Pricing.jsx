@@ -18,7 +18,6 @@ export default compose(
           <h2 className='text-primary'>Pricing</h2>
           <div className='page-desc'>faa.st is the cheapest way to <b>instantly</b> exchange crypto currencies</div>
         </div>
-
         <div className='bg-ultra-dark py-4 px-2 my-3'>
           <div>
             <Icon 
