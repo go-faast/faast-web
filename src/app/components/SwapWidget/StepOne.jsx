@@ -65,7 +65,7 @@ const SwapStepOne = ({
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
   onChangeSendAmount, handleSelectFullBalance, fullBalanceAmount, fullBalanceAmountLoaded,
   sendWallet, defaultRefundAddress, defaultReceiveAddress, maxGeoBuy, handleSelectGeoMax,
-  onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount
+  onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs
 }) => (
   <Fragment>
     <ProgressBar steps={['Create Swap', `Send ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
@@ -168,7 +168,7 @@ const SwapStepOne = ({
                 symbol={sendSymbol}
                 change={change}
                 untouch={untouch}
-                defaultValue={defaultRefundAddress}
+                defaultValue={previousSwapInputs ? previousSwapInputs.fromAddress : defaultRefundAddress}
                 formName={FORM_NAME}
                 disableNoBalance
               />
@@ -185,7 +185,7 @@ const SwapStepOne = ({
                 validate={validateReceiveAddress}
                 symbol={receiveSymbol}
                 change={change}
-                defaultValue={defaultReceiveAddress}
+                defaultValue={previousSwapInputs ? previousSwapInputs.toAddress : defaultReceiveAddress}
                 untouch={untouch}
                 formName={FORM_NAME}
                 requiredLabel
@@ -283,7 +283,7 @@ export default compose(
       },
       fullBalanceAmount: sendWallet && (sendWallet.balances[sendSymbol] || '0'),
       fullBalanceAmountLoaded: sendWallet && sendWallet.balancesLoaded,
-      maxGeoBuy
+      maxGeoBuy,
     })}),
   connect(createStructuredSelector({
     rateLoaded: (state, { pair }) => isRateLoaded(state, pair),
@@ -490,12 +490,17 @@ export default compose(
         retrievePairData(pair)
       }
       if (previousSwapInputs) {
-        updateURLParams({ to: previousSwapInputs.to, from: previousSwapInputs.from })
+        updateURLParams({ 
+          to: previousSwapInputs.to, 
+          from: previousSwapInputs.from, 
+          fromAddress: previousSwapInputs.refundAddress 
+        })
       }
       calculateReceiveEstimate(sendAmount)
     },
     componentDidMount() {
-      const { maxGeoBuy, handleSelectGeoMax, defaultSendAmount } = this.props
+      const { maxGeoBuy, handleSelectGeoMax, defaultSendAmount, refundAddress } = this.props
+      console.log(refundAddress)
       if (maxGeoBuy && maxGeoBuy < defaultSendAmount) {
         handleSelectGeoMax()
       }

@@ -103,10 +103,7 @@ export default compose(
   connect(createStructuredSelector({
     connectedWallets: (state, { symbol }) => getCurrentPortfolioWalletsForSymbol(state, symbol),
     balancesLoaded: areCurrentPortfolioBalancesLoaded,
-    address: (state, { addressFieldName, getFormValue }) => { 
-      const value = getFormValue(state, addressFieldName) 
-      return value
-    },
+    address: (state, { addressFieldName, getFormValue }) => getFormValue(state, addressFieldName),
   }), {
     push: pushAction
   }),
@@ -161,7 +158,6 @@ export default compose(
         symbol, selectedWallet, selectableWallets, selectDefault, handleSelect, balancesLoaded, defaultValue,
         address
       } = this.props
-      //console.log(address)
       const symbolChange = prevProps.symbol !== symbol
       if (symbolChange && !address) {
         selectDefault()
