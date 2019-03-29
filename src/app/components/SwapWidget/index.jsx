@@ -39,8 +39,8 @@ export default compose(
   withPropsOnChange(['location'], ({ location }) => {
     const urlParams = qs.parse(location.search)
     let { id, from, fromAmount, fromAddress, to, toAmount, toAddress } = urlParams
-    fromAmount = fromAmount && Number.parseFloat(fromAmount)
-    toAmount = toAmount && Number.parseFloat(toAmount)
+    fromAmount = fromAmount && parseFloat(fromAmount)
+    toAmount = toAmount && parseFloat(toAmount)
     return {
       orderId: id,
       stepOne: {

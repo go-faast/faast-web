@@ -19,12 +19,13 @@ import { createSwap as createSwapAction } from 'Actions/swap'
 import { updateQueryStringReplace } from 'Actions/router'
 import { retrievePairData } from 'Actions/rate'
 import { openViewOnlyWallet } from 'Actions/access'
+import { saveSwapWidgetInputs } from 'Actions/app'
 
 import { getRateMinimumDeposit, getRatePrice, isRateLoaded, getRateMaximumDeposit } from 'Selectors/rate'
 import { getAllAssetSymbols, getAsset } from 'Selectors/asset'
 import { getWallet } from 'Selectors/wallet'
 import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
-import { getGeoLimit } from 'Selectors/app'
+import { getGeoLimit, getSavedSwapWidgetInputs } from 'Selectors/app'
 
 import ReduxFormField from 'Components/ReduxFormField'
 import Checkbox from 'Components/Checkbox'
@@ -34,6 +35,7 @@ import ProgressBar from 'Components/ProgressBar'
 import WalletSelectField from 'Components/WalletSelectField'
 import Units from 'Components/Units'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
+import debounceHandler from 'Hoc/debounceHandler'
 
 import SwapIcon from 'Img/swap-icon.svg?inline'
 
@@ -43,6 +45,7 @@ const DEFAULT_SEND_SYMBOL = 'BTC'
 const DEFAULT_RECEIVE_SYMBOL = 'ETH'
 const DEFAULT_SEND_AMOUNT = 1
 const FORM_NAME = 'swapWidget'
+const DEBOUNCE_WAIT = 5000 // ms
 
 const getFormValue = formValueSelector(FORM_NAME)
 
@@ -60,7 +63,7 @@ const SwapStepOne = ({
   sendSymbol, receiveSymbol, assetSymbols, assetSelect, setAssetSelect, 
   validateReceiveAddress, validateRefundAddress, validateSendAmount, validateReceiveAmount,
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
-  onChangeSendAmount, handleSelectMax, maxSendAmount, maxSendAmountLoaded,
+  onChangeSendAmount, handleSelectFullBalance, fullBalanceAmount, fullBalanceAmountLoaded,
   sendWallet, defaultRefundAddress, defaultReceiveAddress, maxGeoBuy, handleSelectGeoMax,
   onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount
 }) => (
@@ -103,9 +106,9 @@ const SwapStepOne = ({
                 )}
                 helpText={sendWallet ? (
                   <FormText color="muted">
-                    You have {maxSendAmountLoaded ? (
-                      <Button color='link-plain' onClick={handleSelectMax}>
-                        <Units precision={8} roundingType='dp' value={maxSendAmount}/>
+                    You have {fullBalanceAmountLoaded ? (
+                      <Button color='link-plain' onClick={handleSelectFullBalance}>
+                        <Units precision={8} roundingType='dp' value={fullBalanceAmount}/>
                       </Button>
                     ) : (
                       <i className='fa fa-spinner fa-pulse'/>
@@ -166,6 +169,7 @@ const SwapStepOne = ({
                 change={change}
                 untouch={untouch}
                 defaultValue={defaultRefundAddress}
+                formName={FORM_NAME}
                 disableNoBalance
               />
             </Col>
@@ -183,6 +187,7 @@ const SwapStepOne = ({
                 change={change}
                 defaultValue={defaultReceiveAddress}
                 untouch={untouch}
+                formName={FORM_NAME}
                 requiredLabel
               />
             </Col>
@@ -244,33 +249,40 @@ export default compose(
     receiveAsset: (state, { receiveSymbol }) => getAsset(state, receiveSymbol),
     sendAmount: (state) => getFormValue(state, 'sendAmount'),
     receiveAmount: (state) => getFormValue(state, 'receiveAmount'),
+    refundAddress: (state) => getFormValue(state, 'refundAddress'),
+    receiveAddress: (state) => getFormValue(state, 'receiveAddress'),
     sendWallet: (state) => getWallet(state, getFormValue(state, 'sendWalletId')),
     balancesLoaded: areCurrentPortfolioBalancesLoaded,
     limit: getGeoLimit,
+    previousSwapInputs: getSavedSwapWidgetInputs
+    
   }), {
     createSwap: createSwapAction,
     push: pushAction,
     updateQueryString: updateQueryStringReplace,
     retrievePairData: retrievePairData,
     openViewOnly: openViewOnlyWallet,
+    saveSwapWidgetInputs: saveSwapWidgetInputs
+
   }),
   withProps(({
     sendSymbol, receiveSymbol,
     defaultSendAmount, defaultReceiveAmount,
     defaultRefundAddress, defaultReceiveAddress,
-    sendWallet, sendAsset, limit
+    sendWallet, sendAsset, limit, previousSwapInputs
   }) => { 
     const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : undefined
+    const { toAmount, fromAmount, toAddress, fromAddress } = previousSwapInputs || {}
     return ({
       pair: `${sendSymbol}_${receiveSymbol}`,
       initialValues: {
-        sendAmount: defaultSendAmount,
-        receiveAmount: defaultReceiveAmount,
-        refundAddress: defaultRefundAddress,
-        receiveAddress: defaultReceiveAddress,
+        sendAmount: fromAmount ? fromAmount : defaultSendAmount,
+        receiveAmount: toAmount ? toAmount : defaultReceiveAmount,
+        refundAddress: fromAddress ? fromAddress : defaultRefundAddress,
+        receiveAddress: toAddress ? toAddress : defaultReceiveAddress,
       },
-      maxSendAmount: sendWallet && (sendWallet.balances[sendSymbol] || '0'),
-      maxSendAmountLoaded: sendWallet && sendWallet.balancesLoaded,
+      fullBalanceAmount: sendWallet && (sendWallet.balances[sendSymbol] || '0'),
+      fullBalanceAmountLoaded: sendWallet && sendWallet.balancesLoaded,
       maxGeoBuy
     })}),
   connect(createStructuredSelector({
@@ -285,9 +297,6 @@ export default compose(
     isAssetDisabled: ({ assetSelect }) => ({ deposit, receive }) =>
       !((assetSelect === 'send' && deposit) || 
       (assetSelect === 'receive' && receive)),
-    handleSwitchAssets: ({ updateQueryString, sendSymbol, receiveSymbol }) => () => {
-      updateQueryString({ from: receiveSymbol, to: sendSymbol })
-    },
     validateReceiveAddress: ({ receiveAsset }) => validator.all(
       validator.required(),
       validator.walletAddress(receiveAsset)
@@ -369,11 +378,22 @@ export default compose(
     },
   }),
   withHandlers({
-    handleSelectMax: ({ maxSendAmount, setSendAmount }) => () => {
-      setSendAmount(maxSendAmount)
-    },
     handleSelectGeoMax: ({ maxGeoBuy, setSendAmount }) => () => {
       setSendAmount(maxGeoBuy)
+    },
+    handleSelectMinimum: ({ minimumSend, setSendAmount }) => () => {
+      setSendAmount(minimumSend)
+    },
+    handleSelectMaximum: ({ maximumSend, setSendAmount }) => () => {
+      setSendAmount(maximumSend)
+    },
+    updateURLParams: ({ updateQueryString }) => (params) => {
+      updateQueryString(params)
+    }
+  }),
+  withHandlers({
+    handleSelectFullBalance: ({ fullBalanceAmount, setSendAmount }) => () => {
+      setSendAmount(fullBalanceAmount)
     },
     onChangeReceiveAmount: ({ calculateSendEstimate }) => (_, newReceiveAmount) => {
       calculateSendEstimate(newReceiveAmount)
@@ -382,24 +402,28 @@ export default compose(
       calculateReceiveEstimate(newSendAmount)
     },
     validateSendAmount: ({ minimumSend, maximumSend, 
-      sendSymbol, sendWallet, maxSendAmount, maxGeoBuy, handleSelectGeoMax }) => {
+      sendSymbol, sendWallet, fullBalanceAmount, maxGeoBuy, handleSelectGeoMax, handleSelectMinimum,
+      handleSelectMaximum }) => {
       return (
         validator.all(
           ...(sendWallet ? [validator.required()] : []),
           validator.number(),
-          ...(minimumSend ? [validator.gt(minimumSend, `Send amount must be at least ${minimumSend} ${sendSymbol}.`)] : []),
+          ...(minimumSend ? [validator.gte(minimumSend, <span key={'minimumSend'}>Send amount must be at least <Button key={'minimumSend1'} color='link-plain' onClick={handleSelectMinimum}>
+            <Units key={'minimumSend2'} precision={8} roundingType='dp' value={minimumSend}/>
+          </Button> {sendSymbol} </span>)] : []),
           ...(maxGeoBuy ? [validator.lte(maxGeoBuy, <span key={Math.random()}>Send amount cannot be greater than <Button color='link-plain' onClick={handleSelectGeoMax}>
             <Units precision={8} roundingType='dp' value={maxGeoBuy}/>
           </Button> {sendSymbol} <a key={Math.random()} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noopener noreferrer'>due to your location.</a></span>)] : []),
-          ...(maximumSend ? [validator.lte(maximumSend, `Send amount cannot be greater than ${maximumSend} ${sendSymbol} to ensure efficient pricing.`)] : []),
-          ...(sendWallet ? [validator.lte(maxSendAmount, 'Cannot send more than you have.')] : []),
+          ...(sendWallet ? [validator.lte(fullBalanceAmount, 'Cannot send more than you have.')] : []),
+          ...(maximumSend ? [validator.lte(maximumSend, <span key={'maxSend'}>Send amount cannot be greater than <Button key={'maxSend1'} color='link-plain' onClick={handleSelectMaximum}>
+            <Units key={'maxSend2'} precision={8} roundingType='dp' value={maximumSend}/></Button> to ensure efficient pricing.</span>)] : []),
         )
       )
     },
     validateReceiveAmount: () => {
       return validator.number()
     },
-    handleSelectedAsset: ({ assetSelect, updateQueryString, setAssetSelect, sendSymbol, receiveSymbol }) => (asset) => {
+    handleSelectedAsset: ({ assetSelect, updateURLParams, setAssetSelect, sendSymbol, receiveSymbol }) => (asset) => {
       const { symbol } = asset
       let from = sendSymbol
       let to = receiveSymbol
@@ -415,15 +439,31 @@ export default compose(
         to = symbol
       }
       setAssetSelect(null)
-      updateQueryString({ from, to })
+      updateURLParams({ from, to })
+    },
+  }),
+  withHandlers({
+    handleSwitchAssets: ({ updateURLParams, sendSymbol, receiveSymbol }) => () => {
+      updateURLParams({ from: receiveSymbol, to: sendSymbol })
     },
   }),
   lifecycle({
     componentDidUpdate(prevProps) {
       const {
         rateLoaded, pair, retrievePairData, estimatedRate, calculateSendEstimate, 
-        calculateReceiveEstimate, estimatedField, sendAmount, receiveAmount,
+        calculateReceiveEstimate, estimatedField, sendAmount, receiveAmount, refundAddress,
+        receiveAddress, updateURLParams, sendSymbol, receiveSymbol
       } = this.props
+      if (prevProps !== this.props) {
+        updateURLParams({ 
+          from: sendSymbol, 
+          to: receiveSymbol, 
+          fromAmount: sendAmount ? parseFloat(sendAmount) : undefined,
+          toAmount: receiveAmount ? parseFloat(receiveAmount) : undefined,
+          fromAddress: refundAddress,
+          toAddress: receiveAddress,
+        })
+      }
       if (pair && !rateLoaded) {
         retrievePairData(pair)
       }
@@ -436,7 +476,8 @@ export default compose(
       }
     },
     componentWillMount() {
-      const { updateQueryString, sendSymbol, receiveSymbol, retrievePairData, pair } = this.props
+      const { updateURLParams, calculateReceiveEstimate, sendAmount = 1, 
+        sendSymbol, receiveSymbol, retrievePairData, pair, previousSwapInputs } = this.props
       if (sendSymbol === receiveSymbol) {
         let from = DEFAULT_SEND_SYMBOL
         let to = DEFAULT_RECEIVE_SYMBOL
@@ -444,17 +485,32 @@ export default compose(
           from = to
           to = DEFAULT_SEND_SYMBOL
         }
-        updateQueryString({ to, from })
+        updateURLParams({ to, from })
       } else {
         retrievePairData(pair)
       }
-     
+      if (previousSwapInputs) {
+        updateURLParams({ to: previousSwapInputs.to, from: previousSwapInputs.from })
+      }
+      calculateReceiveEstimate(sendAmount)
     },
     componentDidMount() {
       const { maxGeoBuy, handleSelectGeoMax, defaultSendAmount } = this.props
       if (maxGeoBuy && maxGeoBuy < defaultSendAmount) {
         handleSelectGeoMax()
       }
+    },
+    componentWillUnmount() {
+      const { saveSwapWidgetInputs, sendAmount, receiveAmount, refundAddress, receiveAddress, sendSymbol, receiveSymbol } = this.props
+      saveSwapWidgetInputs({
+        from: sendSymbol,
+        to: receiveSymbol,
+        toAddress: receiveAddress,
+        fromAddress: refundAddress,
+        toAmount: receiveAmount,
+        fromAmount: sendAmount
+      })
     }
   }),
+  debounceHandler('updateURLParams', DEBOUNCE_WAIT),
 )(SwapStepOne)

@@ -3,6 +3,7 @@ import {
   compose, setDisplayName, setPropTypes, defaultProps, withHandlers, withState, lifecycle, withProps,
 } from 'recompose'
 import { connect } from 'react-redux'
+import { formValueSelector } from 'redux-form'
 import {
   ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap'
@@ -79,11 +80,12 @@ export default compose(
     untouch: PropTypes.func.isRequired, // untouch prop passed into decorated redux-form component
     dropDownStyle: PropTypes.object,
     handleSelect: PropTypes.func,
-    symbol: PropTypes.string,
+    asset: PropTypes.string,
     tag: propTypes.tag,
     disableNoBalance: PropTypes.bool,
     showBalances: PropTypes.bool,
     defaultValue: PropTypes.string,
+    formName: PropTypes.string
   }),
   defaultProps({
     dropDownStyle: {},
@@ -92,9 +94,19 @@ export default compose(
     disableNoBalance: false,
     showBalances: true,
   }),
+  withProps(({
+    formName
+  }) => { 
+    return ({
+      getFormValue: formValueSelector(formName)
+    })}),
   connect(createStructuredSelector({
     connectedWallets: (state, { symbol }) => getCurrentPortfolioWalletsForSymbol(state, symbol),
     balancesLoaded: areCurrentPortfolioBalancesLoaded,
+    address: (state, { addressFieldName, getFormValue }) => { 
+      const value = getFormValue(state, addressFieldName) 
+      return value
+    },
   }), {
     push: pushAction
   }),
@@ -107,7 +119,7 @@ export default compose(
     handleSelect: ({ setSelectedWallet, change, untouch, addressFieldName, walletIdFieldName, symbol }) => (wallet) => {
       if (!wallet) {
         setSelectedWallet(null)
-        change(walletIdFieldName, null)
+        change(walletIdFieldName, 'null')
         change(addressFieldName, '')
         untouch(addressFieldName)
         return
@@ -132,19 +144,28 @@ export default compose(
   }),
   lifecycle({
     componentWillMount() {
-      const { defaultValue, selectDefault, handleSelect, selectableWallets } = this.props
+      const { defaultValue, selectDefault, handleSelect, selectableWallets, change, addressFieldName } = this.props
       if (!defaultValue) {
         selectDefault()
       } else {
-        const wallet = selectableWallets.find(wallet => wallet.id === defaultValue)
-        handleSelect(wallet)
+        const wallet = selectableWallets.find(wallet => wallet.id === defaultValue.toLowerCase())
+        if (wallet) {
+          handleSelect(wallet)
+        } else {
+          change(addressFieldName, defaultValue)
+        }
       }
     },
     componentDidUpdate(prevProps) {
       const {
         symbol, selectedWallet, selectableWallets, selectDefault, handleSelect, balancesLoaded, defaultValue,
+        address
       } = this.props
+      //console.log(address)
       const symbolChange = prevProps.symbol !== symbol
+      if (symbolChange && !address) {
+        selectDefault()
+      }
       if (selectedWallet && symbolChange) {
         if (!selectableWallets.includes(selectedWallet)) {
           selectDefault()
