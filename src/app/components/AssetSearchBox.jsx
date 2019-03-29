@@ -111,7 +111,6 @@ export default compose(
   withState('results', 'updateResults', []),
   withHandlers({
     performSearch: ({ updateResults, fuse }) => (_, query) => {
-      console.log({ query })
       let results
       if (!query) {
         results = []

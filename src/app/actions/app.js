@@ -24,6 +24,7 @@ export const appReady = createAction('READY')
 export const appError = createAction('ERROR')
 export const resetAll = createAction('RESET_ALL')
 export const updateAssetsFilterByTradeable = createAction('UPDATE_ASSETS_TRADEABLE_FILTER')
+export const updateSwapWidgetInputs = createAction('UPDATE_SWAP_WIDGET_INPUTS', (inputs) => (inputs))
 
 export const restoreState = (dispatch) => Promise.resolve()
   .then(() => {
@@ -83,6 +84,11 @@ export const toggleAssetsByTradeable = () => (dispatch, getState) => Promise.res
     localStorageSet('filterTradeableAssets', filter)
     dispatch(updateAssetsFilterByTradeable(filter))
   })
+
+export const saveSwapWidgetInputs = (inputs) => (dispatch) => Promise.resolve()
+  .then(() => {
+    dispatch(updateSwapWidgetInputs(inputs))
+  })  
 
 export const setupAffiliateReferral = () => Promise.resolve()
   .then(() => {
