@@ -161,6 +161,11 @@ export default compose(
       const symbolChange = prevProps.symbol !== symbol
       if (symbolChange && !address) {
         selectDefault()
+      } else if (symbolChange && defaultValue) {
+        const wallet = selectableWallets.find(wallet => wallet.id === defaultValue.toLowerCase())
+        if (wallet) {
+          handleSelect(wallet)
+        }
       }
       if (selectedWallet && symbolChange) {
         if (!selectableWallets.includes(selectedWallet)) {

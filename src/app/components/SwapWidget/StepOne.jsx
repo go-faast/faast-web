@@ -76,138 +76,139 @@ const SwapStepOne = ({
         </small>
       </Alert>
     )}
-    <Form onSubmit={handleSubmit}>
-      <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
-        {!balancesLoaded && (
-          <LoadingFullscreen label='Loading balances...'/>
-        )}
-        <CardHeader className='text-center'>
-          <h4 className='my-1'>Swap Instantly</h4>
-        </CardHeader>
-        <CardBody className='pt-3'>
-          <Row className='gutter-0'>
-            <Col xs={{ size: 12, order: 1 }} lg>
-              <StepOneField
-                name='sendAmount'
-                type='number'
-                step='any'
-                placeholder={`Send amount${sendWallet ? '' : ' (optional)'}`}
-                validate={validateSendAmount}
-                label={'You send'}
-                onChange={onChangeSendAmount}
-                inputClass={classNames({ 'font-italic': estimatedField === 'send' })}
-                addonAppend={({ invalid }) => (
-                  <InputGroupAddon addonType="append">
-                    <Button color={invalid ? 'danger' : 'dark'} size='sm' onClick={() => setAssetSelect('send')}>
-                      <CoinIcon key={sendSymbol} symbol={sendSymbol} size={1.25} className='mr-2'/>
-                      {sendSymbol} <i className='fa fa-caret-down'/>
-                    </Button>
-                  </InputGroupAddon>
-                )}
-                helpText={sendWallet ? (
-                  <FormText color="muted">
-                    You have {fullBalanceAmountLoaded ? (
-                      <Button color='link-plain' onClick={handleSelectFullBalance}>
-                        <Units precision={8} roundingType='dp' value={fullBalanceAmount}/>
+    {!balancesLoaded ? (
+      <LoadingFullscreen label='Loading balances...'/>
+    ) : (
+      <Form onSubmit={handleSubmit}>
+        <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
+          <CardHeader className='text-center'>
+            <h4 className='my-1'>Swap Instantly</h4>
+          </CardHeader>
+          <CardBody className='pt-3'>
+            <Row className='gutter-0'>
+              <Col xs={{ size: 12, order: 1 }} lg>
+                <StepOneField
+                  name='sendAmount'
+                  type='number'
+                  step='any'
+                  placeholder={`Send amount${sendWallet ? '' : ' (optional)'}`}
+                  validate={validateSendAmount}
+                  label={'You send'}
+                  onChange={onChangeSendAmount}
+                  inputClass={classNames({ 'font-italic': estimatedField === 'send' })}
+                  addonAppend={({ invalid }) => (
+                    <InputGroupAddon addonType="append">
+                      <Button color={invalid ? 'danger' : 'dark'} size='sm' onClick={() => setAssetSelect('send')}>
+                        <CoinIcon key={sendSymbol} symbol={sendSymbol} size={1.25} className='mr-2'/>
+                        {sendSymbol} <i className='fa fa-caret-down'/>
                       </Button>
-                    ) : (
-                      <i className='fa fa-spinner fa-pulse'/>
-                    )} {sendSymbol}
-                  </FormText>
-                ) : !sendAmount ? (
-                  <FormText color="muted">When omitted, a variable market rate is used.</FormText>
-                ) : estimatedField === 'send' ? (
-                  <FormText color="muted">Approximately how much you need to send. Click Create to receive a guaranteed quote.</FormText>
-                ) : (
-                  <FormText color="muted">The amount we expect you to send.</FormText>
-                )}
+                    </InputGroupAddon>
+                  )}
+                  helpText={sendWallet ? (
+                    <FormText color="muted">
+                    You have {fullBalanceAmountLoaded ? (
+                        <Button color='link-plain' onClick={handleSelectFullBalance}>
+                          <Units precision={8} roundingType='dp' value={fullBalanceAmount}/>
+                        </Button>
+                      ) : (
+                        <i className='fa fa-spinner fa-pulse'/>
+                      )} {sendSymbol}
+                    </FormText>
+                  ) : !sendAmount ? (
+                    <FormText color="muted">When omitted, a variable market rate is used.</FormText>
+                  ) : estimatedField === 'send' ? (
+                    <FormText color="muted">Approximately how much you need to send. Click Create to receive a guaranteed quote.</FormText>
+                  ) : (
+                    <FormText color="muted">The amount we expect you to send.</FormText>
+                  )}
+                />
+              </Col>
+              <Col xs={{ size: 12, order: 3 }} lg={{ size: 1, order: 2 }} className='text-right text-lg-center'>
+                <Button color='primary' onClick={handleSwitchAssets} className={style.reverse}>
+                  <SwapIcon/>
+                </Button>
+              </Col>
+              <Col xs={{ size: 12, order: 4 }} lg={{ size: true, order: 3 }}>
+                <StepOneField
+                  name='receiveAmount'
+                  type='number'
+                  step='any'
+                  placeholder='Receive amount'
+                  validate={validateReceiveAmount}
+                  label={'You receive'}
+                  onChange={onChangeReceiveAmount}
+                  inputClass={classNames({ 'font-italic': estimatedField === 'receive' })}
+                  addonAppend={({ invalid }) => (
+                    <InputGroupAddon addonType="append">
+                      <Button color={invalid ? 'danger' : 'dark'} size='sm' onClick={() => setAssetSelect('receive')}>
+                        <CoinIcon key={receiveSymbol} symbol={receiveSymbol} size={1.25} className='mr-2'/>
+                        {receiveSymbol} <i className='fa fa-caret-down'/>
+                      </Button>
+                    </InputGroupAddon>
+                  )}
+                  helpText={estimatedField === 'receive' && receiveAmount ? (
+                    <FormText color="muted">Approximately how much you will receive. Click Create to receive a guaranteed quote.</FormText>
+                  ) : !receiveAmount ? (
+                    null
+                  ) : (
+                    <FormText color="muted">The amount you are guaranteed to receive.</FormText>
+                  )}
+                />
+              </Col>
+              <div className='w-100 order-3'/>
+              <Col xs={{ size: 12, order: 2 }} lg={{ size: true, order: 4 }}>
+                <WalletSelectField
+                  tag={StepOneField}
+                  addressFieldName='refundAddress'
+                  walletIdFieldName='sendWalletId'
+                  placeholder={`${sendSymbol} return address (optional)`}
+                  label='From wallet'
+                  labelClass='mt-3 mt-sm-0 mt-lg-3'
+                  validate={validateRefundAddress}
+                  symbol={sendSymbol}
+                  change={change}
+                  untouch={untouch}
+                  defaultValue={previousSwapInputs ? previousSwapInputs.fromAddress : defaultRefundAddress}
+                  formName={FORM_NAME}
+                  disableNoBalance
+                />
+              </Col>
+              <Col lg={{ size: 1, order: 5 }}/>
+              <Col xs={{ size: 12, order: 6 }} lg>
+                <WalletSelectField 
+                  tag={StepOneField}
+                  addressFieldName='receiveAddress'
+                  walletIdFieldName='receiveWalletId'
+                  placeholder={`${receiveSymbol} receive address`}
+                  label='To wallet'
+                  labelClass='mt-3 mt-sm-0 mt-lg-3'
+                  validate={validateReceiveAddress}
+                  symbol={receiveSymbol}
+                  change={change}
+                  defaultValue={previousSwapInputs ? previousSwapInputs.toAddress : defaultReceiveAddress}
+                  untouch={untouch}
+                  formName={FORM_NAME}
+                  requiredLabel
+                />
+              </Col>
+            </Row>
+            <div className='mt-2 mb-4'>
+              <Checkbox
+                label={
+                  <small className='pl-1 text-white'>I accept the 
+                    <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'> Faa.st Terms & Conditions</a>
+                  </small>
+                }
+                labelClass='p-0'
               />
-            </Col>
-            <Col xs={{ size: 12, order: 3 }} lg={{ size: 1, order: 2 }} className='text-right text-lg-center'>
-              <Button color='primary' onClick={handleSwitchAssets} className={style.reverse}>
-                <SwapIcon/>
-              </Button>
-            </Col>
-            <Col xs={{ size: 12, order: 4 }} lg={{ size: true, order: 3 }}>
-              <StepOneField
-                name='receiveAmount'
-                type='number'
-                step='any'
-                placeholder='Receive amount'
-                validate={validateReceiveAmount}
-                label={'You receive'}
-                onChange={onChangeReceiveAmount}
-                inputClass={classNames({ 'font-italic': estimatedField === 'receive' })}
-                addonAppend={({ invalid }) => (
-                  <InputGroupAddon addonType="append">
-                    <Button color={invalid ? 'danger' : 'dark'} size='sm' onClick={() => setAssetSelect('receive')}>
-                      <CoinIcon key={receiveSymbol} symbol={receiveSymbol} size={1.25} className='mr-2'/>
-                      {receiveSymbol} <i className='fa fa-caret-down'/>
-                    </Button>
-                  </InputGroupAddon>
-                )}
-                helpText={estimatedField === 'receive' && receiveAmount ? (
-                  <FormText color="muted">Approximately how much you will receive. Click Create to receive a guaranteed quote.</FormText>
-                ) : !receiveAmount ? (
-                  null
-                ) : (
-                  <FormText color="muted">The amount you are guaranteed to receive.</FormText>
-                )}
-              />
-            </Col>
-            <div className='w-100 order-3'/>
-            <Col xs={{ size: 12, order: 2 }} lg={{ size: true, order: 4 }}>
-              <WalletSelectField
-                tag={StepOneField}
-                addressFieldName='refundAddress'
-                walletIdFieldName='sendWalletId'
-                placeholder={`${sendSymbol} return address (optional)`}
-                label='From wallet'
-                labelClass='mt-3 mt-sm-0 mt-lg-3'
-                validate={validateRefundAddress}
-                symbol={sendSymbol}
-                change={change}
-                untouch={untouch}
-                defaultValue={previousSwapInputs ? previousSwapInputs.fromAddress : defaultRefundAddress}
-                formName={FORM_NAME}
-                disableNoBalance
-              />
-            </Col>
-            <Col lg={{ size: 1, order: 5 }}/>
-            <Col xs={{ size: 12, order: 6 }} lg>
-              <WalletSelectField 
-                tag={StepOneField}
-                addressFieldName='receiveAddress'
-                walletIdFieldName='receiveWalletId'
-                placeholder={`${receiveSymbol} receive address`}
-                label='To wallet'
-                labelClass='mt-3 mt-sm-0 mt-lg-3'
-                validate={validateReceiveAddress}
-                symbol={receiveSymbol}
-                change={change}
-                defaultValue={previousSwapInputs ? previousSwapInputs.toAddress : defaultReceiveAddress}
-                untouch={untouch}
-                formName={FORM_NAME}
-                requiredLabel
-              />
-            </Col>
-          </Row>
-          <div className='mt-2 mb-4'>
-            <Checkbox
-              label={
-                <small className='pl-1 text-white'>I accept the 
-                  <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'> Faa.st Terms & Conditions</a>
-                </small>
-              }
-              labelClass='p-0'
-            />
-          </div>
-          <Button className={classNames('mt-2 mb-2 mx-auto', style.submitButton)} color='primary' type='submit' disabled={submitting}>
-            {!submitting ? 'Create Swap' : 'Generating Swap...' }
-          </Button>
-        </CardBody>
-      </Card>
-    </Form>
+            </div>
+            <Button className={classNames('mt-2 mb-2 mx-auto', style.submitButton)} color='primary' type='submit' disabled={submitting}>
+              {!submitting ? 'Create Swap' : 'Generating Swap...' }
+            </Button>
+          </CardBody>
+        </Card>
+      </Form>
+    )}
     <Modal size='lg' isOpen={Boolean(assetSelect)} toggle={() => setAssetSelect(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
       <ModalHeader toggle={() => setAssetSelect(null)} tag='h4' className='text-primary'>
         Choose Asset to {assetSelect === 'send' ? 'Send' : 'Receive'}
@@ -499,8 +500,7 @@ export default compose(
       calculateReceiveEstimate(sendAmount)
     },
     componentDidMount() {
-      const { maxGeoBuy, handleSelectGeoMax, defaultSendAmount, refundAddress } = this.props
-      console.log(refundAddress)
+      const { maxGeoBuy, handleSelectGeoMax, defaultSendAmount } = this.props
       if (maxGeoBuy && maxGeoBuy < defaultSendAmount) {
         handleSelectGeoMax()
       }
