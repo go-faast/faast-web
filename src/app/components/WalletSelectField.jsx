@@ -24,8 +24,8 @@ import WalletLabel from 'Components/WalletLabel'
 const WalletSelectField = ({
   tag: Tag, symbol, handleSelect, dropDownStyle, disableNoBalance, walletHasBalance, showBalances,
   toggleDropdownOpen, isDropdownOpen, connectedWallets, handleConnect,
-  selectedWallet, handleSelectManual, addressFieldName, walletIdFieldName, 
-  ...props,
+  selectedWallet, handleSelectManual, addressFieldName, walletIdFieldName,
+  onChange, ...props,
 }) => {
   const renderInput = ({ className }) => (
     <WalletLabel
@@ -41,6 +41,7 @@ const WalletSelectField = ({
         autoCorrect='false'
         autoCapitalize='false'
         spellCheck='false'
+        onChange={onChange}
         renderInput={selectedWallet && renderInput}
         addonAppend={({ invalid }) => (
           <ButtonDropdown addonType='append' isOpen={isDropdownOpen} toggle={toggleDropdownOpen}>
@@ -80,12 +81,13 @@ export default compose(
     untouch: PropTypes.func.isRequired, // untouch prop passed into decorated redux-form component
     dropDownStyle: PropTypes.object,
     handleSelect: PropTypes.func,
-    asset: PropTypes.string,
+    symbol: PropTypes.string,
     tag: propTypes.tag,
     disableNoBalance: PropTypes.bool,
     showBalances: PropTypes.bool,
     defaultValue: PropTypes.string,
-    formName: PropTypes.string
+    formName: PropTypes.string,
+    onChange: PropTypes.func,
   }),
   defaultProps({
     dropDownStyle: {},
@@ -104,6 +106,7 @@ export default compose(
     connectedWallets: (state, { symbol }) => getCurrentPortfolioWalletsForSymbol(state, symbol),
     balancesLoaded: areCurrentPortfolioBalancesLoaded,
     address: (state, { addressFieldName, getFormValue }) => getFormValue(state, addressFieldName),
+    walletId: (state, { walletIdFieldName, getFormValue }) => getFormValue(state, walletIdFieldName),
   }), {
     push: pushAction
   }),
@@ -136,7 +139,7 @@ export default compose(
     handleSelectManual: ({ handleSelect }) => () => handleSelect(null),
     selectDefault: ({ selectableWallets, handleSelect }) => () => {
       const ordered = sortByProperty(selectableWallets, 'isReadOnly')
-      handleSelect(ordered[0] || null) // Select first non view only wallet
+      handleSelect(ordered[0] || null)
     },
   }),
   lifecycle({
@@ -155,8 +158,7 @@ export default compose(
     },
     componentDidUpdate(prevProps) {
       const {
-        symbol, selectedWallet, selectableWallets, selectDefault, handleSelect, balancesLoaded, defaultValue,
-        address
+        symbol, selectedWallet, selectableWallets, selectDefault, handleSelect, balancesLoaded, defaultValue, address
       } = this.props
       const symbolChange = prevProps.symbol !== symbol
       if (symbolChange && !address) {

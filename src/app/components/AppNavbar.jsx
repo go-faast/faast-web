@@ -16,18 +16,19 @@ import {
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { setDisplayName, compose } from 'recompose'
+import { setDisplayName, compose, withProps } from 'recompose'
 import { pick } from 'lodash'
 
 import config from 'Config'
 import { isDefaultPortfolioEmpty } from 'Selectors'
+import { getSavedSwapWidgetInputs } from 'Selectors/app'
 import withToggle from 'Hoc/withToggle'
 
 import Icon from 'Components/Icon'
 import FaastLogo from 'Img/faast-logo.png'
 
 const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, 
-  toggleExpanded, isDropdownOpen, toggleDropdownOpen, ...props }) => (
+  toggleExpanded, isDropdownOpen, toggleDropdownOpen, queryString, ...props }) => (
   <Navbar {...pick(props, Object.keys(Navbar.propTypes))}>
     <Container>
       <NavbarBrand tag={Link} to='/' className='mr-auto'>
@@ -74,7 +75,7 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded,
             </NavItem>
           ])}
           <NavItem key='swap'>
-            <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/swap'>
+            <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to={queryString ? queryString : '/swap'}>
               <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-exchange'/>
               <span className='nav-link-label d-sm-inline'>Swap</span>
             </NavLink>
@@ -115,8 +116,14 @@ export default compose(
   setDisplayName('AppNavBar'),
   connect(createStructuredSelector({
     disablePortfolioLinks: isDefaultPortfolioEmpty,
+    previousSwapInputs: getSavedSwapWidgetInputs
   }), {
   }),
+  withProps(({ previousSwapInputs }) => { 
+    const { toAmount, fromAmount, toAddress, fromAddress, to = 'ETH', from = 'BTC' } = previousSwapInputs || {}
+    return ({
+      queryString: `/swap?${to && `to=${to}`}${from && `&from=${from}`}${toAmount && `&toAmount=${toAmount}`}${fromAmount && `&fromAmount=${fromAmount}`}${toAddress && `&toAddress=${toAddress}`}${fromAddress && `&fromAddress=${fromAddress}`}`
+    })}),
   withToggle('expanded'),
   withToggle('dropdownOpen'),
 )(AppNavbar)

@@ -14,7 +14,7 @@ import {
 import log from 'Log'
 import { toBigNumber } from 'Utilities/convert'
 import * as validator from 'Utilities/validator'
-
+import * as qs from 'query-string'
 import { createSwap as createSwapAction } from 'Actions/swap'
 import { updateQueryStringReplace } from 'Actions/router'
 import { retrievePairData } from 'Actions/rate'
@@ -65,7 +65,8 @@ const SwapStepOne = ({
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
   onChangeSendAmount, handleSelectFullBalance, fullBalanceAmount, fullBalanceAmountLoaded,
   sendWallet, defaultRefundAddress, defaultReceiveAddress, maxGeoBuy, handleSelectGeoMax,
-  onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs
+  onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs,
+  onChangeRefundAddress, onChangeReceiveAddress
 }) => (
   <Fragment>
     <ProgressBar steps={['Create Swap', `Send ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
@@ -170,6 +171,7 @@ const SwapStepOne = ({
                   untouch={untouch}
                   defaultValue={previousSwapInputs ? previousSwapInputs.fromAddress : defaultRefundAddress}
                   formName={FORM_NAME}
+                  onChange={onChangeRefundAddress}
                   disableNoBalance
                 />
               </Col>
@@ -188,6 +190,7 @@ const SwapStepOne = ({
                   defaultValue={previousSwapInputs ? previousSwapInputs.toAddress : defaultReceiveAddress}
                   untouch={untouch}
                   formName={FORM_NAME}
+                  onChange={onChangeReceiveAddress}
                   requiredLabel
                 />
               </Col>
@@ -264,7 +267,6 @@ export default compose(
     retrievePairData: retrievePairData,
     openViewOnly: openViewOnlyWallet,
     saveSwapWidgetInputs: saveSwapWidgetInputs
-
   }),
   withProps(({
     sendSymbol, receiveSymbol,
@@ -277,8 +279,8 @@ export default compose(
     return ({
       pair: `${sendSymbol}_${receiveSymbol}`,
       initialValues: {
-        sendAmount: fromAmount ? fromAmount : defaultSendAmount,
-        receiveAmount: toAmount ? toAmount : defaultReceiveAmount,
+        sendAmount: fromAmount ? parseFloat(fromAmount) : defaultSendAmount,
+        receiveAmount: toAmount ? parseFloat(toAmount) : defaultReceiveAmount,
         refundAddress: fromAddress ? fromAddress : defaultRefundAddress,
         receiveAddress: toAddress ? toAddress : defaultReceiveAddress,
       },
@@ -326,6 +328,18 @@ export default compose(
             return openViewOnly(receiveAddress, null)
           }
         })
+    },
+    handleSaveSwapWidgetInputs: ({ saveSwapWidgetInputs, receiveAsset, sendAsset, 
+      receiveAddress, refundAddress, receiveAmount, sendAmount }) => (inputs) => {
+        const { to, from, toAddress, fromAddress, toAmount, fromAmount } = inputs
+      saveSwapWidgetInputs({
+        to: to ? to : receiveAsset.symbol,
+        from: from ? from : sendAsset.symbol,
+        toAddress: toAddress ? toAddress : receiveAddress,
+        fromAddress: fromAddress ? fromAddress : refundAddress,
+        toAmount: toAmount ? toAmount : receiveAmount ? parseFloat(receiveAmount) : undefined,
+        fromAmount: fromAmount ? fromAmount : sendAmount ? parseFloat(sendAmount) : undefined,
+      })
     }
   }),
   reduxForm({
@@ -333,6 +347,12 @@ export default compose(
     enableReinitialize: true,
     keepDirtyOnReinitialize: true,
     updateUnregisteredFields: true,
+  }),
+  withHandlers({
+    updateURLParams: ({ updateQueryString, handleSaveSwapWidgetInputs }) => (params) => {
+      updateQueryString(params)
+      handleSaveSwapWidgetInputs(params)
+    }
   }),
   withHandlers(({ change }) => {
     const setEstimatedReceiveAmount = (x) => {
@@ -345,11 +365,12 @@ export default compose(
     }
     return {
       calculateReceiveEstimate: ({
-        receiveAsset, estimatedRate, setEstimatedField,
+        receiveAsset, estimatedRate, setEstimatedField, updateURLParams
       }) => (sendAmount) => {
         if (estimatedRate && sendAmount) {
           sendAmount = toBigNumber(sendAmount)
           const estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals)
+          updateURLParams({ toAmount: estimatedReceiveAmount ? parseFloat(estimatedReceiveAmount) : undefined })
           setEstimatedReceiveAmount(estimatedReceiveAmount.toString())
         } else {
           setEstimatedReceiveAmount(null)
@@ -357,11 +378,12 @@ export default compose(
         setEstimatedField('receive')
       },
       calculateSendEstimate: ({
-        sendAsset, estimatedRate, setEstimatedField,
+        sendAsset, estimatedRate, setEstimatedField, updateURLParams,
       }) => (receiveAmount) => {
         if (estimatedRate && receiveAmount) {
           receiveAmount = toBigNumber(receiveAmount)
           const estimatedSendAmount = receiveAmount.times(estimatedRate).round(sendAsset.decimals)
+          updateURLParams({ fromAmount: estimatedSendAmount ? parseFloat(estimatedSendAmount) : undefined })
           setEstimatedSendAmount(estimatedSendAmount.toString())
         } else {
           setEstimatedSendAmount(null)
@@ -371,9 +393,10 @@ export default compose(
     }
   }),
   withHandlers({
-    setSendAmount: ({ change, touch, calculateReceiveEstimate }) => (x) => {
+    setSendAmount: ({ change, touch, calculateReceiveEstimate, updateURLParams }) => (x) => {
       log.debug('setSendAmount', x)
       change('sendAmount', x && toBigNumber(x).toString())
+      updateURLParams({ fromAmount: x ? parseFloat(x) : undefined })
       touch('sendAmount')
       calculateReceiveEstimate(x)
     },
@@ -387,20 +410,26 @@ export default compose(
     },
     handleSelectMaximum: ({ maximumSend, setSendAmount }) => () => {
       setSendAmount(maximumSend)
-    },
-    updateURLParams: ({ updateQueryString }) => (params) => {
-      updateQueryString(params)
     }
   }),
   withHandlers({
     handleSelectFullBalance: ({ fullBalanceAmount, setSendAmount }) => () => {
       setSendAmount(fullBalanceAmount)
     },
-    onChangeReceiveAmount: ({ calculateSendEstimate }) => (_, newReceiveAmount) => {
+    onChangeReceiveAmount: ({ calculateSendEstimate, updateURLParams }) => (_, newReceiveAmount) => {
+      updateURLParams({ toAmount: newReceiveAmount ? parseFloat(newReceiveAmount) : undefined })
       calculateSendEstimate(newReceiveAmount)
     },
-    onChangeSendAmount: ({ calculateReceiveEstimate }) => (_, newSendAmount) => {
+    onChangeSendAmount: ({ calculateReceiveEstimate, updateURLParams }) => (_, newSendAmount) => {
+      updateURLParams({ fromAmount: newSendAmount ? parseFloat(newSendAmount) : undefined })
       calculateReceiveEstimate(newSendAmount)
+    },
+    onChangeRefundAddress: ({ updateURLParams }) => (_, newRefundAddress) => {
+      updateURLParams({ fromAddress: newRefundAddress })
+    },
+    onChangeReceiveAddress: ({ updateURLParams }) => (_, newReceiveAddress) => {
+      console.log('changing r add', newReceiveAddress)
+      updateURLParams({ toAddress: newReceiveAddress })
     },
     validateSendAmount: ({ minimumSend, maximumSend, 
       sendSymbol, sendWallet, fullBalanceAmount, maxGeoBuy, handleSelectGeoMax, handleSelectMinimum,
@@ -447,23 +476,23 @@ export default compose(
     handleSwitchAssets: ({ updateURLParams, sendSymbol, receiveSymbol }) => () => {
       updateURLParams({ from: receiveSymbol, to: sendSymbol })
     },
+    checkQueryParams: () => () => {
+      const urlParams = qs.parse(location.search)
+      //console.log(urlParams)
+      return urlParams
+    }
   }),
   lifecycle({
     componentDidUpdate(prevProps) {
       const {
         rateLoaded, pair, retrievePairData, estimatedRate, calculateSendEstimate, 
-        calculateReceiveEstimate, estimatedField, sendAmount, receiveAmount, refundAddress,
-        receiveAddress, updateURLParams, sendSymbol, receiveSymbol
+        calculateReceiveEstimate, estimatedField, sendAmount, receiveAmount, checkQueryParams,
+        previousSwapInputs, updateURLParams,
       } = this.props
-      if (prevProps !== this.props) {
-        updateURLParams({ 
-          from: sendSymbol, 
-          to: receiveSymbol, 
-          fromAmount: sendAmount ? parseFloat(sendAmount) : undefined,
-          toAmount: receiveAmount ? parseFloat(receiveAmount) : undefined,
-          fromAddress: refundAddress,
-          toAddress: receiveAddress,
-        })
+      const urlParams = checkQueryParams()
+      if (Object.keys(urlParams).length === 0 && previousSwapInputs) {
+        console.log('prev input', previousSwapInputs)
+        updateURLParams(previousSwapInputs)
       }
       if (pair && !rateLoaded) {
         retrievePairData(pair)
@@ -479,6 +508,7 @@ export default compose(
     componentWillMount() {
       const { updateURLParams, calculateReceiveEstimate, sendAmount = 1, 
         sendSymbol, receiveSymbol, retrievePairData, pair, previousSwapInputs } = this.props
+        console.log(previousSwapInputs)
       if (sendSymbol === receiveSymbol) {
         let from = DEFAULT_SEND_SYMBOL
         let to = DEFAULT_RECEIVE_SYMBOL
@@ -490,13 +520,6 @@ export default compose(
       } else {
         retrievePairData(pair)
       }
-      if (previousSwapInputs) {
-        updateURLParams({ 
-          to: previousSwapInputs.to, 
-          from: previousSwapInputs.from, 
-          fromAddress: previousSwapInputs.refundAddress 
-        })
-      }
       calculateReceiveEstimate(sendAmount)
     },
     componentDidMount() {
@@ -505,17 +528,6 @@ export default compose(
         handleSelectGeoMax()
       }
     },
-    componentWillUnmount() {
-      const { saveSwapWidgetInputs, sendAmount, receiveAmount, refundAddress, receiveAddress, sendSymbol, receiveSymbol } = this.props
-      saveSwapWidgetInputs({
-        from: sendSymbol,
-        to: receiveSymbol,
-        toAddress: receiveAddress,
-        fromAddress: refundAddress,
-        toAmount: receiveAmount,
-        fromAmount: sendAmount
-      })
-    }
   }),
   debounceHandler('updateURLParams', DEBOUNCE_WAIT),
 )(SwapStepOne)
