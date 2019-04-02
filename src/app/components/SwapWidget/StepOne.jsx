@@ -519,7 +519,6 @@ export default compose(
       } else {
         retrievePairData(pair)
       }
-      calculateReceiveEstimate(sendAmount)
     },
     componentDidMount() {
       const { maxGeoBuy, handleSelectGeoMax, defaultSendAmount } = this.props
