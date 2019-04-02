@@ -121,8 +121,9 @@ export default compose(
   }),
   withProps(({ previousSwapInputs }) => { 
     const { toAmount, fromAmount, toAddress, fromAddress, to = 'ETH', from = 'BTC' } = previousSwapInputs || {}
+    
     return ({
-      queryString: `/swap?${to && `to=${to}`}${from && `&from=${from}`}${toAmount && `&toAmount=${toAmount}`}${fromAmount && `&fromAmount=${fromAmount}`}${toAddress && `&toAddress=${toAddress}`}${fromAddress && `&fromAddress=${fromAddress}`}`
+      queryString: `/swap?${to && `to=${to}`}${from && `&from=${from}`}${toAmount ? `&toAmount=${toAmount}` : ''}${fromAmount ? `&fromAmount=${fromAmount}` : ''}${toAddress ? `&toAddress=${toAddress}` : '' }${fromAddress ? `&fromAddress=${fromAddress}` : ''}`
     })}),
   withToggle('expanded'),
   withToggle('dropdownOpen'),

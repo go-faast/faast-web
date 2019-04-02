@@ -158,12 +158,10 @@ export default compose(
     },
     componentDidUpdate(prevProps) {
       const {
-        symbol, selectedWallet, selectableWallets, selectDefault, handleSelect, balancesLoaded, defaultValue, address
+        symbol, selectedWallet, selectableWallets, selectDefault, handleSelect, balancesLoaded, defaultValue
       } = this.props
       const symbolChange = prevProps.symbol !== symbol
-      if (symbolChange && !address) {
-        selectDefault()
-      } else if (symbolChange && defaultValue) {
+      if (symbolChange && defaultValue) {
         const wallet = selectableWallets.find(wallet => wallet.id === defaultValue.toLowerCase())
         if (wallet) {
           handleSelect(wallet)
