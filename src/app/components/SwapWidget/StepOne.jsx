@@ -506,8 +506,7 @@ export default compose(
       }
     },
     componentWillMount() {
-      const { updateURLParams, calculateReceiveEstimate, sendAmount = 1, 
-        sendSymbol, receiveSymbol, retrievePairData, pair } = this.props
+      const { updateURLParams, sendSymbol, receiveSymbol, retrievePairData, pair } = this.props
       if (sendSymbol === receiveSymbol) {
         let from = DEFAULT_SEND_SYMBOL
         let to = DEFAULT_RECEIVE_SYMBOL
