@@ -428,7 +428,6 @@ export default compose(
       updateURLParams({ fromAddress: newRefundAddress })
     },
     onChangeReceiveAddress: ({ updateURLParams }) => (_, newReceiveAddress) => {
-      console.log('changing r add', newReceiveAddress)
       updateURLParams({ toAddress: newReceiveAddress })
     },
     validateSendAmount: ({ minimumSend, maximumSend, 
@@ -478,7 +477,6 @@ export default compose(
     },
     checkQueryParams: () => () => {
       const urlParams = qs.parse(location.search)
-      //console.log(urlParams)
       return urlParams
     }
   }),
@@ -491,7 +489,6 @@ export default compose(
       } = this.props
       const urlParams = checkQueryParams()
       if (Object.keys(urlParams).length === 0 && previousSwapInputs) {
-        console.log('prev input', previousSwapInputs)
         updateURLParams(previousSwapInputs)
       }
       if (pair && !rateLoaded) {
@@ -508,7 +505,6 @@ export default compose(
     componentWillMount() {
       const { updateURLParams, calculateReceiveEstimate, sendAmount = 1, 
         sendSymbol, receiveSymbol, retrievePairData, pair, previousSwapInputs } = this.props
-        console.log(previousSwapInputs)
       if (sendSymbol === receiveSymbol) {
         let from = DEFAULT_SEND_SYMBOL
         let to = DEFAULT_RECEIVE_SYMBOL
