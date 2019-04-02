@@ -59,6 +59,7 @@ export const affiliateSwaps = createPath('/affiliates/swaps')
 export const affiliatePayouts = createPath('/affiliates/withdrawals')
 export const affiliateTerms = createPath('/affiliates/terms')
 
+export const connectMobileWallet = createPath(connect, '/mobile/connect/:walletType')
 export const connect = createPath('/connect')
 export const connectHwWallet = createPath(connect, '/hw/:walletType')
 export const walletInfoModal = createPath(connect, '/:walletType')

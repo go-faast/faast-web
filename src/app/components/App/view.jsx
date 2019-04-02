@@ -23,13 +23,15 @@ import AffiliateAccountModal from 'Components/Affiliate/AccountModal'
 import AssetWatchlist from 'Components/AssetWatchlist'
 import AssetTrending from 'Components/AssetTrending'
 import Footer from 'Components/Footer'
+import MobileWalletModal from 'Components/MobileWalletModal'
 
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
   tradeHistory, tradeDetail, swapWidget, assetDetail, assetIndex,
   affiliateLogin, affiliateSignup, affiliateDashboard, affiliateSettings,
   affiliatePayouts, affiliateSwaps, affiliateAccountModal,
-  watchlist, trending, affiliateTerms, swapWidgetStepTwo, tradeWidgetDetail
+  watchlist, trending, affiliateTerms, swapWidgetStepTwo, tradeWidgetDetail,
+  connectMobileWallet
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => (
@@ -73,6 +75,9 @@ const AppView = ({ hasNoWallets }) => (
     </Switch>
 
     {/* Routes that show a modal over one of the above pages */}
+    <ModalRoute exact closePath={connect.path} path={connectMobileWallet.path} render={(props) => (
+      <MobileWalletModal walletType={props.match.params.walletType} {...props}/>
+    )}/>
     <ModalRoute exact closePath={tradeHistory.path} path={tradeDetail.path} render={(props) => (
       <TradeDetailModal tradeId={props.match.params.tradeId} {...props}/>
     )}/>
