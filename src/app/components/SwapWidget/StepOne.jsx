@@ -331,7 +331,7 @@ export default compose(
     },
     handleSaveSwapWidgetInputs: ({ saveSwapWidgetInputs, receiveAsset, sendAsset, 
       receiveAddress, refundAddress, receiveAmount, sendAmount }) => (inputs) => {
-        const { to, from, toAddress, fromAddress, toAmount, fromAmount } = inputs
+      const { to, from, toAddress, fromAddress, toAmount, fromAmount } = inputs
       saveSwapWidgetInputs({
         to: to ? to : receiveAsset.symbol,
         from: from ? from : sendAsset.symbol,
@@ -370,7 +370,10 @@ export default compose(
         if (estimatedRate && sendAmount) {
           sendAmount = toBigNumber(sendAmount)
           const estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals)
-          updateURLParams({ toAmount: estimatedReceiveAmount ? parseFloat(estimatedReceiveAmount) : undefined })
+          updateURLParams({ 
+            toAmount: estimatedReceiveAmount ? parseFloat(estimatedReceiveAmount) : undefined,
+            fromAmount: sendAmount ? parseFloat(sendAmount) : undefined
+          })
           setEstimatedReceiveAmount(estimatedReceiveAmount.toString())
         } else {
           setEstimatedReceiveAmount(null)
@@ -383,7 +386,10 @@ export default compose(
         if (estimatedRate && receiveAmount) {
           receiveAmount = toBigNumber(receiveAmount)
           const estimatedSendAmount = receiveAmount.times(estimatedRate).round(sendAsset.decimals)
-          updateURLParams({ fromAmount: estimatedSendAmount ? parseFloat(estimatedSendAmount) : undefined })
+          updateURLParams({ 
+            fromAmount: estimatedSendAmount ? parseFloat(estimatedSendAmount) : undefined,
+            toAmount: receiveAmount ? parseFloat(receiveAmount) : undefined
+          })
           setEstimatedSendAmount(estimatedSendAmount.toString())
         } else {
           setEstimatedSendAmount(null)
@@ -393,10 +399,9 @@ export default compose(
     }
   }),
   withHandlers({
-    setSendAmount: ({ change, touch, calculateReceiveEstimate, updateURLParams }) => (x) => {
+    setSendAmount: ({ change, touch, calculateReceiveEstimate }) => (x) => {
       log.debug('setSendAmount', x)
       change('sendAmount', x && toBigNumber(x).toString())
-      updateURLParams({ fromAmount: x ? parseFloat(x) : undefined })
       touch('sendAmount')
       calculateReceiveEstimate(x)
     },
@@ -416,12 +421,10 @@ export default compose(
     handleSelectFullBalance: ({ fullBalanceAmount, setSendAmount }) => () => {
       setSendAmount(fullBalanceAmount)
     },
-    onChangeReceiveAmount: ({ calculateSendEstimate, updateURLParams }) => (_, newReceiveAmount) => {
-      updateURLParams({ toAmount: newReceiveAmount ? parseFloat(newReceiveAmount) : undefined })
+    onChangeReceiveAmount: ({ calculateSendEstimate }) => (_, newReceiveAmount) => {
       calculateSendEstimate(newReceiveAmount)
     },
-    onChangeSendAmount: ({ calculateReceiveEstimate, updateURLParams }) => (_, newSendAmount) => {
-      updateURLParams({ fromAmount: newSendAmount ? parseFloat(newSendAmount) : undefined })
+    onChangeSendAmount: ({ calculateReceiveEstimate }) => (_, newSendAmount) => {
       calculateReceiveEstimate(newSendAmount)
     },
     onChangeRefundAddress: ({ updateURLParams }) => (_, newRefundAddress) => {
@@ -504,7 +507,7 @@ export default compose(
     },
     componentWillMount() {
       const { updateURLParams, calculateReceiveEstimate, sendAmount = 1, 
-        sendSymbol, receiveSymbol, retrievePairData, pair, previousSwapInputs } = this.props
+        sendSymbol, receiveSymbol, retrievePairData, pair } = this.props
       if (sendSymbol === receiveSymbol) {
         let from = DEFAULT_SEND_SYMBOL
         let to = DEFAULT_RECEIVE_SYMBOL
@@ -524,6 +527,18 @@ export default compose(
         handleSelectGeoMax()
       }
     },
+    componentWillUnmount() {
+      const { saveSwapWidgetInputs, sendAsset, receiveAsset, 
+        refundAddress, receiveAddress, sendAmount, receiveAmount } = this.props
+      saveSwapWidgetInputs({
+        to: receiveAsset ? receiveAsset.symbol : undefined,
+        from: sendAsset ? sendAsset.symbol : undefined,
+        fromAddress: refundAddress,
+        toAddress: receiveAddress,
+        fromAmount: sendAmount ? parseFloat(sendAmount) : undefined,
+        toAmount: receiveAmount ? parseFloat(receiveAmount) : undefined
+      })
+    }
   }),
   debounceHandler('updateURLParams', DEBOUNCE_WAIT),
 )(SwapStepOne)
