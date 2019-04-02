@@ -16,7 +16,7 @@ const blueColor = '#323540'
 const faqCopy = [
   {
     q: 'Can you run me through an example swap?',
-    a: "Alice is the market taker and Bob is the market maker. Alice has 10 ETH and wants 1 BTC. The market rate is 9.9 ETH to 1 BTC. Alice submits her swap request is routed through the Faa.st API to Bob. Alice's 10 ETH is sent to Bob. Bob sends 1 BTC from his market maker node's built-in hot wallet to Alice. Once the 10 ETH transaction is confirmed received, Bob sells the ETH for BTC on his exchange account for 1.01 BTC. The BTC is then deposited back to Bob’s node wallet - readily available for the next trade Bob needs to fulfill. Bob earned 0.01 BTC for this swap.",
+    a: "Alice is the market taker and Bob is the market maker. Alice has 10 ETH and wants 1 BTC. The market rate is 9.9 ETH to 1 BTC. Alice submits her swap, and her request is routed through the Faa.st API to Bob. Alice’s 10 ETH is sent directly to Bob. Once the 10 ETH transaction is confirmed received, Bob’s market maker node then sends 1 BTC directly back to Alice. Bob sells the ETH for BTC on his exchange account for 1.01 BTC. The BTC is then deposited back to Bob’s node wallet — readily available for the next trade Bob needs to fulfill. Bob earned 0.01 BTC for this swap.",
   },
   {
     q: 'What do I need to run a node?',

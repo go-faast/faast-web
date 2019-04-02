@@ -28,7 +28,6 @@ export default compose(
               <li><a className='text-white font-xs' href='/app'>Portfolio</a></li>
               <li><a className='text-white' href='/app/swap'>Swap</a></li>
               <li><a className='text-white' href='/market-maker'>Market Maker <sup className={classNames(betaTag, 'text-primary')}><i>beta</i></sup></a></li>
-              <li><a className='text-white' href='/pricing'>Pricing</a></li>
               <li><a className='text-white' href='/blog'>Blog</a></li>
             </ul>
           </div>
