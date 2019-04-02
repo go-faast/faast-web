@@ -144,11 +144,11 @@ export default compose(
   }),
   lifecycle({
     componentWillMount() {
-      const { defaultValue, selectDefault, handleSelect, selectableWallets, change, addressFieldName } = this.props
+      const { defaultValue, selectDefault, handleSelect, selectableWallets, change, addressFieldName, } = this.props
       if (!defaultValue) {
         selectDefault()
       } else {
-        const wallet = selectableWallets.find(wallet => wallet.id === defaultValue.toLowerCase())
+        let wallet = selectableWallets.find(wallet => wallet.id === defaultValue.toLowerCase())
         if (wallet) {
           handleSelect(wallet)
         } else {
