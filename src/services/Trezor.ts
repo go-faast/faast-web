@@ -1,4 +1,4 @@
-import TrezorConnect, {
+import {
   ResponseSuccess,
   ResponseMessage,
   Input,
@@ -7,6 +7,9 @@ import TrezorConnect, {
   SignedTransaction,
   EthereumSignedTransaction,
 } from 'trezor-connect'
+
+// tslint:disable-next-line:no-var-requires
+const TrezorConnect = require('trezor-connect').default
 
 import log from 'Utilities/log'
 import { NetworkConfig } from 'Utilities/networks'
@@ -27,6 +30,11 @@ export {
   SignedTransaction as TrezorSignedTransaction,
   EthereumSignedTransaction as TrezorEthereumSignedTransaction,
 }
+
+TrezorConnect.manifest({
+  email: 'dev@faa.st',
+  appUrl: 'https://faa.st/app',
+})
 
 const requiredAddressFormats: { [symbol: string]: AddressFormat } = {
   BCH: bchCashAddrFormat,
