@@ -23,19 +23,23 @@ export default abstract class BitcoinWallet extends BitcoreWallet {
   }
 
   _getDefaultFeeRate(
-    asset: Asset,
+    asset?: Asset,
     { level = 'medium' }: { level?: 'high' | 'medium' | 'low' } = {},
+    networkNo = 0,
   ): Promise<FeeRate> {
-    return fetchGet('https://api.blockcypher.com/v1/btc/main')
-      .then((result) => {
-        const feePerKb = result[`${level}_fee_per_kb`] || (DEFAULT_FEE_PER_BYTE * 1000)
-        return feePerKb / 1000
+    const url = `${networks.BTC.bitcoreUrls[networkNo]}/api/estimatefee/1`
+    console.log(url)
+    return fetchGet(url)
+      .then(({ result }) => {
+        const feePerKb: number = parseFloat(result) * 100000 || (DEFAULT_FEE_PER_BYTE * 1000)
+        console.log('fee', feePerKb)
+        return Math.round(feePerKb)
       })
       .catch((e) => {
         log.error('Failed to get bitcoin dynamic fee, using default', e)
         return DEFAULT_FEE_PER_BYTE
       })
-      .then((feePerByte) => ({
+      .then((feePerByte: number) => ({
         rate: feePerByte,
         unit: 'sat/byte',
       }))

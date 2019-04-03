@@ -61,7 +61,7 @@ export const BTC = network({
   symbol: 'BTC',
   name: 'Bitcoin',
   bitcoreUrls: [
-    'https://btc.faa.st',
+    // 'https://btc.faa.st',
     'https://btc1.trezor.io',
     'https://btc2.trezor.io',
     'https://btc3.trezor.io',
@@ -195,7 +195,7 @@ export const BCH = network({
     'https://bch3.trezor.io',
     'https://bch4.trezor.io',
     'https://bch5.trezor.io',
-    'https://bch-insight.bitpay.com',
+    // 'https://bch-insight.bitpay.com',
     // 'https://bitcoincash.blockexplorer.com', // not bchabc compatible
   ],
   minTxFee: {
@@ -226,7 +226,7 @@ export const LTC = network({
     'https://ltc3.trezor.io',
     'https://ltc4.trezor.io',
     'https://ltc5.trezor.io',
-    'https://insight.litecore.io',
+    // 'https://insight.litecore.io',
   ],
   minTxFee: {
     rate: 10,
