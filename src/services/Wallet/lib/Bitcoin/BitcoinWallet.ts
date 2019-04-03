@@ -7,7 +7,7 @@ import BitcoreWallet from '../BitcoreWallet'
 import { Asset } from 'Types'
 import { BitcoreTransaction, FeeRate } from '../types'
 
-const DEFAULT_FEE_PER_BYTE = 10
+const DEFAULT_FEE_PER_BYTE = 50
 
 export default abstract class BitcoinWallet extends BitcoreWallet {
 
