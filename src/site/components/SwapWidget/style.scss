@@ -18,6 +18,12 @@ button {
     height: 140px;
     min-height: 102px;
     line-height: 67px;
+    background: #F2F5FB;
+    color: #8796BF;
+    transition: all .25s ease-in-out;
+    &:hover {
+      background: #eceff7;
+    }
     p {
         position: relative;
         bottom: 2px;
@@ -120,11 +126,6 @@ button {
     .btn {
       display: block !important;
       margin: 25px auto 25px auto;
-    }
-    .swap {
-      display:block;
-      margin: 15px auto 0 auto;
-      transform: rotate(90deg)
     }
 }
 @media screen and (max-width: 610px) {

@@ -6,11 +6,9 @@ import Header from 'Site/components/Header'
 import SwapWidget from 'Site/components/SwapWidget'
 
 import MoonBackground from 'Img/moon-background.jpg'
-import MacbookScreenshot1 from 'Img/macbook-screenshot-01.png'
 
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
-import LazyLoad from 'react-lazyload'
 
 export default compose(
   setDisplayName('Hero'),
@@ -32,7 +30,7 @@ export default compose(
     ),
     showMacScreenShot: true
   }),
-)(({ supportedAssets, to, from, headline, showMacScreenShot }) => (
+)(({ supportedAssets, to, from, headline }) => (
   <div>
     <Header/>
     <div className='jumbotron jumbotron-fluid hero-technology mb-0' style={{
@@ -49,7 +47,7 @@ export default compose(
         <Row>
           <Col sm='12' lg='6' className='text-left pl-md-5 pl-0 ml-4'>
             <a href='/market-maker'>
-              <div className='notification'>
+              <div className='notification mt-md-4 mt-0 mb-4'>
                 <span className='new-pill'>new</span>
             Read about the Faa.st Market Maker Beta
               </div>
@@ -62,16 +60,9 @@ export default compose(
       Create A Portfolio
             </a></p>
           </Col>
-          <Col className={classNames(!showMacScreenShot ? 'd-lg-block' : 'd-md-block','pr-3 d-none')}>
+          <Col className={classNames('pr-3 d-block')}>
             <SwapWidget assets={supportedAssets} defaultDeposit={from} defaultReceive={to} />
           </Col>
-          {showMacScreenShot && (
-            <div className='intro d-md-none d-block mx-auto' style={{ paddingTop: '60px', maxWidth: 400 }}>
-              <LazyLoad offset={300} height={200}>
-                <img className='img-fluid' src={MacbookScreenshot1} style={{ height: '100%', width: '730px' }}/>	
-              </LazyLoad>
-            </div>
-          )}
         </Row>
       </Container>
     </div>

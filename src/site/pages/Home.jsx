@@ -40,7 +40,7 @@ export default compose(
   supportedAssets = areAssetsLoaded ? assetList : supportedAssets
   return (
     <div>
-      <Hero supportedAssets={supportedAssets} />
+      <Hero supportedAssets={supportedAssets} className='mb-md-5 mb-0'/>
       <Features supportedAssets={supportedAssets} />
       <Footer/>
     </div>
