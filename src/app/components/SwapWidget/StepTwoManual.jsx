@@ -47,7 +47,7 @@ const StepTwoManual = ({
       <ClipboardCopyField value={depositAddress}/>
       {maxGeoBuy && (
         <Alert color='info' className='mx-auto mt-3 text-center'>
-          <small>Please note: The maximum you can send is <Units precision={8} roundingType='dp' value={maxGeoBuy}/> {sendSymbol} <a style={{ color: 'rgba(0, 255, 222, 1)' }} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>due to your location.</a></small>
+          <small>Please note: The maximum you can swap is <Units precision={8} roundingType='dp' value={maxGeoBuy}/> {sendSymbol} <a style={{ color: 'rgba(0, 255, 222, 1)' }} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>due to your location.</a></small>
         </Alert>
       )}
     </CardBody>

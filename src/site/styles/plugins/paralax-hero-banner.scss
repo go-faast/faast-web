@@ -28,14 +28,23 @@ h1.hero-title, h2.hero-title, h3.hero-title {
   color: #23D6B8;
 }
 
+@media screen and (max-width: 767px) {
+  .features-clean {
+    margin-top: 350px;
+  }
+}
+@media screen and (max-width: 370px) {
+  .features-clean {
+    margin-top: 380px;
+  }
+}
+
 .notification {
   background: rgba(255,255,255,.08);
   border-radius: 4px;
   padding: 3px 0;
   font-weight: 600;
   font-size: 13px;
-  margin-bottom: 30px;
-  margin-top: 30px;
   cursor: pointer;
   color: #fff;
 }
