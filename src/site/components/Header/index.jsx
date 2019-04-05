@@ -60,7 +60,7 @@ export default compose(
           </NavItem>
           <NavItem className='mr-4' key='portfolio'>
             <NavLink tag='a' className='nav-link py-1' href='/app'>
-              <button className={classNames((theme == 'light' ? 'btn-primary' : 'btn-light'), 'btn')}>Portfolio</button>
+              <button className={classNames((theme == 'light' ? 'btn-primary' : 'btn-light'), 'btn')}>Exchange</button>
             </NavLink>
           </NavItem>
         </Nav>
