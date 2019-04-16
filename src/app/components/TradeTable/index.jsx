@@ -11,6 +11,7 @@ import routes from 'Routes'
 import Units from 'Components/Units'
 import Expandable from 'Components/Expandable'
 import CoinIcon from 'Components/CoinIcon'
+import T from 'Components/i18n/T'
 
 import { areAnyWalletOrdersLoading, areAllWalletOrdersLoaded } from 'Selectors/wallet'
 import { retrievePaginatedSwaps } from 'Actions/swap'
@@ -148,7 +149,7 @@ const TradeTable = ({ handleClick, hideIfNone, tableTitle,
             style={{ bottom: 0 }}
           >
             {!areOrdersLoading ? (
-              <span className='hover'>Show more orders...</span>
+              <T tag='span' i18nKey='app.orders.showMore' className='hover'>Show more orders...</T>
             ) : (
               <i className='fa fa-spinner fa-pulse'/>
             )}

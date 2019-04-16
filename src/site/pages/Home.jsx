@@ -15,8 +15,13 @@ import { fetchGeoRestrictions } from 'Common/actions/app'
 import { retrieveAssets } from 'Common/actions/asset'
 import { getAllAssetsArray, areAssetsLoaded } from 'Common/selectors/asset'
 
+import { withTranslation } from 'react-i18next'
+
+
+
 export default compose(
   setDisplayName('Home'),
+  withTranslation(),
   connect(createStructuredSelector({
     assets: getAllAssetsArray,
     areAssetsLoaded: areAssetsLoaded

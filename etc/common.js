@@ -26,6 +26,7 @@ const appPath = 'app'
 const bundleOutputPath = 'bundle'
 const faviconOutputPath = 'favicon'
 const staticOutputPath = 'static'
+const localesOutputPath = 'locales'
 const imgOutputPath = path.join(staticOutputPath, 'img')
 const fontOutputPath = path.join(staticOutputPath, 'font')
 const fileOutputPath = path.join(staticOutputPath, 'file')
@@ -43,4 +44,5 @@ module.exports = Object.assign({}, envConfig, {
   fontOutputPath,
   fileOutputPath,
   vendorOutputPath,
+  localesOutputPath
 })

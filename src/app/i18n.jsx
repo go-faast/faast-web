@@ -1,12 +1,26 @@
 import i18n from 'i18next'
 import LngDetector from 'i18next-browser-languagedetector'
-import LocizeBackend from 'i18next-locize-backend'
 import Cache from 'i18next-localstorage-cache'
+import XHR from 'i18next-xhr-backend'
+import { initReactI18next } from 'react-i18next'
+
+import * as en from 'Src/locales/en/translations.json'
 
 import config from '../config'
 
+console.log(en)
+
 const options = {
   ...config.i18next,
+
+  ns: ['translations'],
+  defaultNS: 'translations',
+
+  resources: {
+    en: { translations: en },
+  },
+
+  saveMissing: true,
 
   detection: {
     order: ['querystring', 'localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
@@ -37,7 +51,7 @@ const options = {
 
     // Contrary to cookies behavior, the cache will respect updates to expirationTime.
     // If you set 7 days and later update to 10 days, the cache will persist for 10 days
-    expirationTime: 1 * 24 * 60 * 60 * 1000, // 1 day
+    expirationTime: (1 * 24 * 60 * 60 * 1000), // 1 day
 
     // Passing in a versions object (ex.: versions: { en: 'v1.2', fr: 'v1.1' }) will give
     // you control over the cache based on translations version. This setting works along
@@ -54,13 +68,14 @@ const options = {
   },
 }
 
-if (process.env.NODE_ENV === 'development') {  
-  i18n.use(require('locize-editor'))
-}
+// if (process.env.NODE_ENV === 'development') {  
+//   i18n.use(require('locize-editor'))
+// }
 
 i18n
+  .use(initReactI18next)
   .use(Cache)
-  .use(LocizeBackend)
+  .use(XHR)
   .use(LngDetector)
   .init(options)
 

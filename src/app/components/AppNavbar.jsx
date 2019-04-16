@@ -25,6 +25,7 @@ import { getSavedSwapWidgetInputs } from 'Selectors/app'
 import withToggle from 'Hoc/withToggle'
 
 import Icon from 'Components/Icon'
+import T from 'Components/i18n/T'
 import FaastLogo from 'Img/faast-logo.png'
 
 const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, 
@@ -41,7 +42,7 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded,
             <NavItem key='dashboard'>
               <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/dashboard'>
                 <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-pie-chart'/>
-                <span className='nav-link-label d-sm-inline'>Dashboard</span>
+                <T tag='span' i18nKey='app.nav.dashboard' className='nav-link-label d-sm-inline'>Dashboard</T>
               </NavLink>
             </NavItem>
           )}
@@ -56,10 +57,12 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded,
               nav
             >
               <i className="d-inline d-md-none d-lg-inline nav-link-icon fa fa-align-left" aria-hidden="true"></i>
-              <span className='nav-link-label d-sm-inline'>Assets</span>
+              <T tag='span' i18nKey='app.nav.assets' className='nav-link-label d-sm-inline'>Assets</T>
             </DropdownToggle>
             <DropdownMenu className='p-0'>
-              <DropdownItem tag={Link} to={'/assets'} className='text-muted py-2'>All Assets</DropdownItem>
+              <DropdownItem tag={Link} to={'/assets'} className='text-muted py-2'>
+                All Assets
+              </DropdownItem>
               <DropdownItem className='m-0' divider/>
               <DropdownItem tag={Link} to={'/assets/trending'} className='text-muted py-2'>Trending</DropdownItem>
               <DropdownItem className='m-0' divider/>
@@ -70,28 +73,28 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded,
             <NavItem key='rebalance'>
               <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/rebalance'>
                 <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-sliders'/>
-                <span className='nav-link-label d-sm-inline'>Rebalance</span>
+                <T tag='span' i18nKey='app.nav.rebalance' className='nav-link-label d-sm-inline'>Rebalance</T>
               </NavLink>
             </NavItem>
           ])}
           <NavItem key='swap'>
             <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to={queryString ? queryString : '/swap'}>
               <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-exchange'/>
-              <span className='nav-link-label d-sm-inline'>Swap</span>
+              <T tag='span' i18nKey='app.nav.swap' className='nav-link-label d-sm-inline'>Swap</T>
             </NavLink>
           </NavItem>
           {!disablePortfolioLinks && (
             <NavItem key='orders'>
               <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/orders'>
                 <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-history'/>
-                <span className='nav-link-label d-sm-inline'>Orders</span>
+                <T tag='span' i18nKey='app.nav.orders' className='nav-link-label d-sm-inline'>Orders</T>
               </NavLink>
             </NavItem>
           )}
           <NavItem key='connect'>
             <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/connect'>
               <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-plus'/>
-              <span className='nav-link-label d-sm-inline'>Add wallet</span>
+              <T tag='span' i18nKey='app.nav.addWallet' className='nav-link-label d-sm-inline'>Add wallet</T>
             </NavLink>
           </NavItem>
         </Nav>

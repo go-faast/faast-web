@@ -1,0 +1,51 @@
+{
+  "static": {
+    "home": {
+      "heroTitle": "sup"
+    }
+  },
+  "app": {
+    "dashboard": {
+      "holdingsTitle": "P. Holdings"
+    },
+    "connect": {
+      "select": "Select your wallets",
+      "hardware": "Hardware Wallets",
+      "recommended": "Recommended",
+      "ledger": "Ledger Wallet",
+      "desktopWallets": "<0></0> Ethereum Desktop Wallets",
+      "mobileWallets": "<0></0> Ethereum Mobile Wallets",
+      "mist": "Mist Browser",
+      "trust": "Trust Wallet",
+      "coinbase": "Coinbase Wallet",
+      "manual": "Manual",
+      "createWallet": "Create Wallet",
+      "generate": "Generate a new keystore file",
+      "importWallet": "importWallet",
+      "dragAndDrop": "Drag and drop your keystore file",
+      "openSource": "Open source and secure"
+    },
+    "nav": {
+      "dashboard": "Dashboard",
+      "assets": "Assets",
+      "allAssets": "All",
+      "trending": "Trending",
+      "watchlist": "Watchlist",
+      "rebalance": "Rebalance",
+      "swap": "Swap",
+      "orders": "Orders",
+      "addWallet": "Add Wallet"
+    },
+    "orders": {
+      "orderHistory": "Order History",
+      "showMore": "Show more orders..."
+    },
+    "rebalance": {
+      "saveChanges": "<0></0> Save Changes",
+      "addAsset": "<0></0> add asset",
+      "remove": "<0></0> remove",
+      "availableBalance": "available balance",
+      "how": "<0><0></0> How do I use this? </0>"
+    }
+  }
+}

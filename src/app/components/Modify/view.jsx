@@ -25,14 +25,15 @@ import CoinIcon from 'Components/CoinIcon'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import WalletLabel from 'Components/WalletLabel'
 import ModalRoute from 'Components/ModalRoute'
+import T from 'Components/i18n/T'
 
 import styles from './style'
 
 const ModifyView = (props) => {
   const { portfolio, handleSave, disableSave, isAppRestricted } = props
-  const saveButtonContent = (<Fragment><i className='fa fa-check mr-2' />Save Changes</Fragment>)
-  const addButtonContent = (<Fragment><i className='fa fa-plus'/> add asset</Fragment>)
-  const removeButtonContent = (<Fragment><i className='fa fa-times'/> remove</Fragment>)
+  const saveButtonContent = (<T i18nKey='app.rebalance.saveChanges'><i className='fa fa-check mr-2' />Save Changes</T>)
+  const addButtonContent = (<T i18nKey='app.rebalance.addAsset'><i className='fa fa-plus'/> add asset</T>)
+  const removeButtonContent = (<T i18nKey='app.rebalance.remove'><i className='fa fa-times'/> remove</T>)
 
   const renderHoldings = (wallets) => wallets
     .map((wallet) => {
@@ -236,7 +237,7 @@ const ModifyView = (props) => {
           </Col>
           <Col xs='auto' className='text-left text-md-right mr-auto mr-md-0 ml-md-auto'>
             <h4 className='m-0 text-primary font-weight-bold'>{display.fiat(props.allowance.fiat)} <small className='text-muted'>{display.percentage(props.allowance.weight)}</small></h4>
-            <small className='text-muted'>available balance</small>
+            <T tag='small' i18nKey='app.rebalance.availableBalance' className='text-muted'>available balance</T>
           </Col>
           <Col xs='auto' className='text-right'>
             <Button color='primary' onClick={handleSave} disabled={Boolean(disableSave)} className='flat'>{saveButtonContent}</Button>
@@ -261,9 +262,11 @@ const ModifyView = (props) => {
         </Alert>
       ) : (
         <Fragment>
-          <Button color='link' className='mb-3' tag={Link} to={routes.rebalanceInstructions()}>
-            <i className='fa fa-question-circle'/> How do I use this?
-          </Button>
+          <T i18nKey='app.rebalance.how'>
+            <Button color='link' className='mb-3' tag={Link} to={routes.rebalanceInstructions()}>
+              <i className='fa fa-question-circle'/> How do I use this?
+            </Button>
+          </T>
           <ModalRoute closePath={routes.rebalance.path} path={routes.rebalanceInstructions.path} render={({ isOpen, toggle }) => (
             <Modal isOpen={isOpen} toggle={toggle}>
               <ModalHeader toggle={toggle}>

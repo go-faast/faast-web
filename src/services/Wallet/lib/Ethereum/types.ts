@@ -3,6 +3,7 @@ import { BatchRequest } from 'web3/eth/types'
 import { EncodedTransaction } from 'web3/types'
 import EthereumjsTx from 'ethereumjs-tx'
 import { Transaction, Receipt } from '../types'
+import { BigNumber } from 'Src/types';
 
 export { Web3Tx, Web3TxReceipt }
 

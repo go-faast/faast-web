@@ -5,6 +5,8 @@ import { Container, Row, Col } from 'reactstrap'
 import Header from 'Site/components/Header'
 import SwapWidget from 'Site/components/SwapWidget'
 
+import T from 'Components/i18n/T'
+
 import MoonBackground from 'Img/moon-background.jpg'
 
 import PropTypes from 'prop-types'
@@ -24,9 +26,9 @@ export default compose(
     from: 'BTC',
     supportedAssets: [{}],
     headline: (
-      <h1 className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
+      <T tag='h1' i18nKey='static.home.heroTitle' className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
         <span className='special-word'>Instantly</span> trade directly from your Ledger, Trezor, or MetaMask.
-      </h1>
+      </T>
     ),
     showMacScreenShot: true
   }),

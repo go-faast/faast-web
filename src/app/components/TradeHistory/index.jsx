@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 
 import Layout from 'Components/Layout'
 import TradeTable from 'Components/TradeTable'
+import T from 'Components/i18n/T'
 
 import { getConnectedWalletsPendingSwaps, getConnectedWalletsCompletedSwaps, isDefaultPortfolioEmpty } from 'Selectors'
 
@@ -29,7 +30,7 @@ export const tableHeadingsCompleted = [
 
 const TradeHistory = ({ pendingSwaps, completedSwaps }) => (
   <Layout className='pt-3'>
-    <h4 className='mt-2 text-primary'>Order History</h4>
+    <T tag='h4' i18nKey='app.orders.orderHistory' className='mt-2 text-primary'>Order History</T>
     <TradeTable 
       swaps={pendingSwaps} 
       tableTitle='Open Orders' 
