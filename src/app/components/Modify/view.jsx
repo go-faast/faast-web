@@ -62,7 +62,7 @@ const ModifyView = (props) => {
                 {!holdingsLoaded && (
                   <LoadingFullscreen label='Loading balances...' />
                 )}
-                {assetHoldings.filter(({ shown }) => shown).map((a) => {
+                {assetHoldings.filter(({ shown }) => shown).sort((b,c) => (b.swapEnabled === c.swapEnabled) ? 0 : b.swapEnabled ? -1 : 1).map((a) => {
                   const { walletId, symbol, name, change24, price, units, fiat, weight, swapEnabled, priceDecrease } = a
                   let unsendable = wallet.unsendableAssets.includes(symbol)
                   const restricted = a.restricted && isAppRestricted

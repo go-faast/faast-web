@@ -2,7 +2,7 @@ import { uniq } from 'lodash'
 import { newScopedCreateAction } from 'Utilities/action'
 import { localStorageSetJson, localStorageGetJson } from 'Utilities/storage'
 
-import { getTop10MarketCapSymbols } from 'Common/selectors/asset'
+import { getTop10MarketCapSymbols } from 'Selectors/asset'
 
 export * from 'Common/actions/asset'
 
