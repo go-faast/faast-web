@@ -24,7 +24,7 @@ export default abstract class BitcoinWallet extends BitcoreWallet {
 
   _getDefaultFeeRate(
     asset: Asset,
-    { level = 'medium' }: { level?: 'high' | 'medium' | 'low' } = {},
+    { level = 'high' }: { level?: 'high' | 'medium' | 'low' } = {},
   ): Promise<FeeRate> {
     return fetchGet('https://api.blockcypher.com/v1/btc/main')
       .then((result) => {
