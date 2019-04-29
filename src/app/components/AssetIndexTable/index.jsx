@@ -17,6 +17,7 @@ import Expandable from 'Components/Expandable'
 import WatchlistStar from 'Components/WatchlistStar'
 import AssetSearchBox from 'Components/AssetSearchBox'
 import Icon from 'Components/Icon'
+import T from 'Components/i18n/T'
 
 import PriceArrowIconSvg from 'Img/price-arrow.svg?inline'
 import { sortObjOfArray } from 'Utilities/helpers'
@@ -244,19 +245,19 @@ const AssetIndexTable = ({ assetList, push, isMobileDropdownOpen, toggleMobileDr
               <tr>
                 <th className='border-0 d-none d-md-table-cell'></th>
                 <th onClick={() => handleSortKey('name')} className='pl-3 pl-md-5 border-0 d-none d-md-table-cell'>
-                    Coin {sortKey === 'name' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
+                  <T tag='span' i18nKey='app.assetIndexTable.coin'>Coin</T> {sortKey === 'name' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
                 </th>
                 <th onClick={() => handleSortKey('price')} className='border-0 d-none d-md-table-cell'>
-                    Price {sortKey === 'price' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
+                  <T tag='span' i18nKey='app.assetIndexTable.price'>Price</T> {sortKey === 'price' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
                 </th>
                 <th onClick={() => handleSortKey('marketCap')} className='border-0 d-none d-md-table-cell'>
-                    Market Cap {sortKey === 'marketCap' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
+                  <T tag='span' i18nKey='app.assetIndexTable.marketCap'>Market Cap</T> {sortKey === 'marketCap' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
                 </th>
                 <th onClick={() => handleSortKey('volume24')} className='border-0 d-none d-md-table-cell'>
-                    Volume {sortKey === 'volume24' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
+                  <T tag='span' i18nKey='app.assetIndexTable.volume'>Volume</T> {sortKey === 'volume24' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
                 </th>
                 <th onClick={() => handleSortKey('availableSupply')} className='border-0 d-none d-md-table-cell'>
-                    Supply {sortKey === 'availableSupply' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
+                  <T tag='span' i18nKey='app.assetIndexTable.supply'>Supply</T> {sortKey === 'availableSupply' && (<Icon src={PriceArrowIconSvg} className={sortingArrow} rotate={sortDesc ? 'down' : 'up'} />)}
                 </th>
                 <th className={classNames('border-0 d-none d-md-table-cell', !defaultPriceChange ? 'p-0' : null)}>
                   {!defaultPriceChange ? (
@@ -267,7 +268,7 @@ const AssetIndexTable = ({ assetList, push, isMobileDropdownOpen, toggleMobileDr
                         color='dark' 
                         caret
                       >
-                        {timeFrame} Change
+                        {timeFrame} <T tag='span' i18nKey='app.assetIndexTable.change'>Change</T>
                       </DropdownToggle>
                       <DropdownMenu className='p-0' right>
                         <DropdownItem

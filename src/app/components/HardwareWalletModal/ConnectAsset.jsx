@@ -15,6 +15,8 @@ import {
 } from 'Actions/connectHardwareWallet'
 import conditionalRedirect from 'Hoc/conditionalRedirect'
 
+import T from 'Components/i18n/T'
+
 import SwitchPathButton from './SwitchPathButton'
 import DerivationPathChanger from './DerivationPathChanger'
 import BackButton from './BackButton'
@@ -66,8 +68,12 @@ export default compose(
       </div>
     </ModalBody>
     <ModalFooter>
-      <BackButton onClick={handleBack}>Back</BackButton>
-      <Button tag={Link} to={continuePath} color='success' disabled={!isConnected}>Continue</Button>
+      <BackButton onClick={handleBack}>
+        <T tag='span' i18nKey='app.hardwareWalletModal.connectAsset.back'>Back</T>
+      </BackButton>
+      <Button tag={Link} to={continuePath} color='success' disabled={!isConnected}>
+        <T tag='span' i18nKey='app.hardwareWalletModal.connectAsset.continue'>Continue</T>
+      </Button>
     </ModalFooter>
   </div>
 ))

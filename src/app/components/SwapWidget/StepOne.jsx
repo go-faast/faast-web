@@ -33,6 +33,7 @@ import CoinIcon from 'Components/CoinIcon'
 import AssetSelector from 'Components/AssetSelector'
 import ProgressBar from 'Components/ProgressBar'
 import WalletSelectField from 'Components/WalletSelectField'
+import T from 'Components/i18n/T'
 import Units from 'Components/Units'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import debounceHandler from 'Hoc/debounceHandler'
@@ -69,7 +70,13 @@ const SwapStepOne = ({
   onChangeRefundAddress, onChangeReceiveAddress
 }) => (
   <Fragment>
-    <ProgressBar steps={['Create Swap', `Send ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={0}/>
+    <ProgressBar steps={[
+      <T key='1' tag='span' i18nKey='app.progressBar.createSwap'>Create Swap</T>, 
+      <T key='2' tag='span' i18nKey='app.progressBar.sendSymbol'>Send {sendSymbol}</T>, 
+      <T key='3' tag='span' i18nKey='app.progressBar.receiveSymbol'>Receive {receiveSymbol}</T>
+    ]} 
+    currentStep={0}
+    />
     {maxGeoBuy && (
       <Alert color='info' className='mx-auto mt-3 w-75 text-center'>
         <small>
@@ -83,7 +90,7 @@ const SwapStepOne = ({
       <Form onSubmit={handleSubmit}>
         <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
           <CardHeader className='text-center'>
-            <h4 className='my-1'>Swap Instantly</h4>
+            <T tag='h4' i18nKey='app.widget.swapInstantly' className='my-1'>Swap Instantly</T>
           </CardHeader>
           <CardBody className='pt-3'>
             <Row className='gutter-0'>
@@ -107,7 +114,7 @@ const SwapStepOne = ({
                   )}
                   helpText={sendWallet ? (
                     <FormText color="muted">
-                    You have {fullBalanceAmountLoaded ? (
+                      <T tag='span' i18nKey='app.widget.youHave'>You have</T> {fullBalanceAmountLoaded ? (
                         <Button color='link-plain' onClick={handleSelectFullBalance}>
                           <Units precision={8} roundingType='dp' value={fullBalanceAmount}/>
                         </Button>
@@ -116,11 +123,11 @@ const SwapStepOne = ({
                       )} {sendSymbol}
                     </FormText>
                   ) : !sendAmount ? (
-                    <FormText color="muted">When omitted, a variable market rate is used.</FormText>
+                    <T tag='span' i18nKey='app.widget.omitted'><FormText color="muted">When omitted, a variable market rate is used.</FormText></T>
                   ) : estimatedField === 'send' ? (
-                    <FormText color="muted">Approximately how much you need to send. Click Create to receive a guaranteed quote.</FormText>
+                    <T tag='span' i18nKey='app.widget.approxSend'><FormText color="muted">Approximately how much you need to send. Click Create to receive a guaranteed quote.</FormText></T>
                   ) : (
-                    <FormText color="muted">The amount we expect you to send.</FormText>
+                    <T tag='span' i18nKey='app.widget.expectSend'><FormText color="muted">The amount we expect you to send.</FormText></T>
                   )}
                 />
               </Col>
@@ -148,11 +155,11 @@ const SwapStepOne = ({
                     </InputGroupAddon>
                   )}
                   helpText={estimatedField === 'receive' && receiveAmount ? (
-                    <FormText color="muted">Approximately how much you will receive. Click Create to receive a guaranteed quote.</FormText>
+                    <T tag='span' i18nKey='app.widget.approxReceive'><FormText color="muted">Approximately how much you will receive. Click Create to receive a guaranteed quote.</FormText></T>
                   ) : !receiveAmount ? (
                     null
                   ) : (
-                    <FormText color="muted">The amount you are guaranteed to receive.</FormText>
+                    <T tag='span' i18nKey='app.widget.guaranteeReceive'><FormText color="muted">The amount you are guaranteed to receive.</FormText></T>
                   )}
                 />
               </Col>
@@ -198,15 +205,15 @@ const SwapStepOne = ({
             <div className='mt-2 mb-4'>
               <Checkbox
                 label={
-                  <small className='pl-1 text-white'>I accept the 
+                  <T tag='small' i18nKey='app.widget.acceptTerms' className='pl-1 text-white'>I accept the 
                     <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'> Faa.st Terms & Conditions</a>
-                  </small>
+                  </T>
                 }
                 labelClass='p-0'
               />
             </div>
             <Button className={classNames('mt-2 mb-2 mx-auto', style.submitButton)} color='primary' type='submit' disabled={submitting}>
-              {!submitting ? 'Create Swap' : 'Generating Swap...' }
+              {!submitting ? <T tag='span' i18nKey='app.widget.createSwap'>Create Swap</T> : <T tag='span' i18nKey='app.widget.generatingSwap'>Generating Swap...</T> }
             </Button>
           </CardBody>
         </Card>
@@ -214,7 +221,11 @@ const SwapStepOne = ({
     )}
     <Modal size='lg' isOpen={Boolean(assetSelect)} toggle={() => setAssetSelect(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
       <ModalHeader toggle={() => setAssetSelect(null)} tag='h4' className='text-primary'>
-        Choose Asset to {assetSelect === 'send' ? 'Send' : 'Receive'}
+        {assetSelect === 'send' ? (
+          <T tag='span' i18nKey='app.widget.chooseSend'>Choose Asset to Send</T>
+        ) : (
+          <T tag='span' i18nKey='app.widget.chooseReceive'>Choose Asset to Receive</T>
+        )}
       </ModalHeader>
       <ModalBody>
         {assetSelect && (

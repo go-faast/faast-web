@@ -179,15 +179,15 @@ export default compose(
   setDisplayName('TradeTable'),
   setPropTypes({
     hideIfNone: PropTypes.bool,
-    tableTitle: PropTypes.string,
+    tableTitle: PropTypes.node,
     tableHeadings: PropTypes.arrayOf(PropTypes.object),
-    zeroOrdersMessage: PropTypes.string,
+    zeroOrdersMessage: PropTypes.node,
     swaps: PropTypes.arrayOf(PropTypes.object),
     showMore: PropTypes.bool,
     classProps: PropTypes.string
   }),
   defaultProps({
-    tableTitle: 'Orders',
+    tableTitle: <span>Orders</span>,
     hideIfNone: false,
     tableHeadings: [],
     zeroOrdersMessage: 'No orders to show',

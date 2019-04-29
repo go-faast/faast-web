@@ -11,6 +11,7 @@ import { removeConnectedAccount, startConnectBatch, saveConnectedAccounts } from
 
 import BackButton from './BackButton'
 import ConnectAssetButton from './ConnectAssetButton'
+import T from 'Components/i18n/T'
 
 import config from 'Config'
 
@@ -50,7 +51,7 @@ export default compose(
       <Button color='primary' size='lg' className='text-center' disabled={isConnectAllDisabled} onClick={handleConnectAll}>
         {ADD_ALL_TEXT}
       </Button>
-      <h5 className='mt-4 mb-3'>Or, add a specific account by choosing one of the following supported currencies.</h5>
+      <T tag='h5' i18nKey='app.hardwareWalletModal.assetSelect.addSpecific' className='mt-4 mb-3'>Or, add a specific account by choosing one of the following supported currencies.</T>
       <Row className='gutter-3 justify-content-center'>
         {assetSymbols.map((assetSymbol) => (
           <Col key={assetSymbol} xs='6' md='4' lg='3'>
@@ -59,12 +60,16 @@ export default compose(
         ))}
       </Row>
       <p style={{ fontSize: '14px' }} className='mt-5 mb-0 text-left'>
-        <a href={config.walletTypes[walletType].website}><i className='fa fa-info-circle'></i> Learn more about {walletType}</a>
+        <a href={config.walletTypes[walletType].website}><i className='fa fa-info-circle'></i> <T tag='span' i18nKey='app.hardwareWalletModal.assetSelect.learnMore'></T> {walletType}</a>
       </p>
     </ModalBody>
     <ModalFooter>
-      <BackButton onClick={handleCancel}>Cancel</BackButton>
-      <Button color='success' onClick={handleDone} disabled={isDoneDisabled}>Done</Button>
+      <BackButton onClick={handleCancel}>
+        <T tag='span' i18nKey='app.hardwareWalletModal.assetSelect.cancel'>Cancel</T>
+      </BackButton>
+      <Button color='success' onClick={handleDone} disabled={isDoneDisabled}>
+        <T tag='span' i18nKey='app.hardwareWalletModal.assetSelect.done'>Done</T>
+      </Button>
     </ModalFooter>
   </div>
 ))

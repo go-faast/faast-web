@@ -61,12 +61,16 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded,
             </DropdownToggle>
             <DropdownMenu className='p-0'>
               <DropdownItem tag={Link} to={'/assets'} className='text-muted py-2'>
-                All Assets
+                <T tag='span' i18nKey='app.nav.allAssets'>All Assets</T>
               </DropdownItem>
               <DropdownItem className='m-0' divider/>
-              <DropdownItem tag={Link} to={'/assets/trending'} className='text-muted py-2'>Trending</DropdownItem>
+              <DropdownItem tag={Link} to={'/assets/trending'} className='text-muted py-2'>
+                <T tag='span' i18nKey='app.nav.trending'>Trending</T>
+              </DropdownItem>
               <DropdownItem className='m-0' divider/>
-              <DropdownItem tag={Link} to={'/assets/watchlist'} className='text-muted py-2'>Watchlist</DropdownItem>
+              <DropdownItem tag={Link} to={'/assets/watchlist'} className='text-muted py-2'>
+                <T tag='span' i18nKey='app.nav.watchlist'>Watchlist</T>
+              </DropdownItem>
             </DropdownMenu>
           </Dropdown>
           {!disablePortfolioLinks && ([

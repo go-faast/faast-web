@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import {
@@ -17,6 +18,7 @@ import SwapStatusCard from 'Components/SwapStatusCard'
 import Timer from 'Components/Timer'
 import Spinner from 'Components/Spinner'
 import ConfirmTransactionModal from 'Components/ConfirmTransactionModal'
+import T from 'Components/i18n/T'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { toggleOrderModal } from 'Actions/orderModal'
@@ -57,13 +59,13 @@ const SwapSubmit = ({
             )}
             {overGeoLimit && (
               <Alert color='danger' className='text-center w-100'>
-                <span>Send amount cannot be greater than ${geoLimit.per_transaction.amount} <a href='https://medium.com/@goFaast/9b14e100d828' target='_blank noopener noreferrer'>due to your location.</a></span>
+                <T tag='span' i18nKey='app.swapSubmit.geoLimit'>Send amount cannot be greater than ${geoLimit.per_transaction.amount} <a href='https://medium.com/@goFaast/9b14e100d828' target='_blank noopener noreferrer'>due to your location.</a></T>
               </Alert>
             )}
             {!singleSwap && (
-              <p>
-                The following swaps will take place to save the changes you made to your portfolio. Please review them and click {`"${continueText}"`} to proceed.
-              </p>
+              <T tag='p' i18nKey='app.swapSubmit.multipleSwaps'>
+                The following swaps will take place to save the changes you made to your portfolio. Please review them and click "${continueText}" to proceed.
+              </T>
             )}
             <div className='my-3'>
               <Row className='gutter-2'>
@@ -75,13 +77,13 @@ const SwapSubmit = ({
               </Row>
             </div>
             {totalTxFee && (
-              <p>Total network fee: {totalTxFee
+              <p><T tag='span' i18nKey='app.swapSubmit.networkFee'>Total network fee: </T>{totalTxFee
                 ? display.fiat(totalTxFee)
                 : <Spinner inline size='sm'/>}
               </p>
             )}
             {(secondsUntilPriceExpiry > 0)
-              ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={'* Quoted rates are guaranteed if submitted within:'} onTimerEnd={handleTimerEnd}/></small></span>)
+              ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={<T tag='span' i18nKey='app.swapSubmit.timer'>* Quoted rates are guaranteed if submitted within:</T>} onTimerEnd={handleTimerEnd}/></small></span>)
               : null}
             <p><small className='text-muted'>
               {'** Additional fees may apply depending on '
@@ -91,9 +93,9 @@ const SwapSubmit = ({
               <div className='mb-3'>
                 <Checkbox
                   label={
-                    <small className='pl-1 text-white'>I accept the 
+                    <T tag='small' i18nKey='app.swapSubmit.terms' className='pl-1 text-white'>I accept the 
                       <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'> Faast Terms & Conditions</a>
-                    </small>
+                    </T>
                   }
                   labelClass='p-0'
                 />
@@ -102,7 +104,7 @@ const SwapSubmit = ({
           </Body>
           <Footer>
             <div className='w-100 d-flex justify-content-between'>
-              <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
+              <Button type='button' color='primary' outline onClick={handleCancel}><T tag='span' i18nKey='app.swapSubmit.cancel'>Cancel</T></Button>
               <Button type='submit' color='primary' disabled={continueDisabled || invalid || submitting || overGeoLimit}>
                 {continueText}
                 {continueLoading && (<i className='fa fa-spinner fa-pulse ml-2'/>)}
@@ -167,8 +169,8 @@ export default compose(
     const showSubmit = !requiresSigning || startedSigning // True if continue button triggers tx sending, false for signing
     const continueDisabled = showSubmit ? (!readyToSend || startedSending) : (!readyToSign || startedSigning)
     const continueLoading = showSubmit ? startedSending : startedSigning
-    const continueText = showSubmit ? (singleSwap ? 'Submit' : 'Submit all') : 'Begin signing'
-    const headerText = showSubmit ? 'Confirm and Submit' : 'Review and Sign'
+    const continueText = showSubmit ? (singleSwap ? <T tag='span' i18nKey='app.swapSubmit.submit'>Submit</T> : <T tag='span' i18nKey='app.swapSubmit.submitAll'>Submit all</T>) : <T tag='span' i18nKey='app.swapSubmit.beginSigning'>Begin signing</T>
+    const headerText = showSubmit ? <T tag='span' i18nKey='app.swapSubmit.confirmSubmit'>Confirm and Submit</T> : <T tag='span' i18nKey='app.swapSubmit.reviewSign'>Review and Sign</T>
     return {
       swaps,
       singleSwap,

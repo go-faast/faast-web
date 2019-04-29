@@ -4,11 +4,12 @@ import { Modal, ModalHeader, ModalBody, Button } from 'reactstrap'
 import QRCode from 'qrcode.react'
 
 import AddressLink from 'Components/AddressLink'
+import T from 'Components/i18n/T'
 
 const AddressModal = ({ address, showModal, toggleModal }) => (
   <Modal isOpen={showModal} toggle={toggleModal}>
     <ModalHeader tag='h4' toggle={toggleModal} className='text-primary'>
-      Address
+      <T tag='span' i18nKey='app.addressModal.address'>Address</T>
     </ModalHeader>
     <ModalBody className='text-center d-flex flex-column align-items-center'>
       <div className='word-break-all'>{address}</div>
@@ -17,8 +18,12 @@ const AddressModal = ({ address, showModal, toggleModal }) => (
           <QRCode size={210} level='L' value={address} />
         </div>
       </a>
-      <Button tag={AddressLink} outline color='primary' size='sm' address={address}>View on Explorer</Button>
-      <Button color='link' onClick={toggleModal} className='mt-4'>close</Button>
+      <Button tag={AddressLink} outline color='primary' size='sm' address={address}>
+        <T tag='span' i18nKey='app.addressModal.viewOnExplorer'>View on Explorer</T>
+      </Button>
+      <Button color='link' onClick={toggleModal} className='mt-4'>
+        <T tag='span' i18nKey='app.addressModal.close'>close</T>
+      </Button>
     </ModalBody>
   </Modal>
 )

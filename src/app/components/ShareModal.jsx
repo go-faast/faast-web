@@ -8,6 +8,7 @@ import routes from 'Routes'
 import { routerPathToUri } from 'Utilities/helpers'
 import toastr from 'Utilities/toastrWrapper'
 import WalletSummary from 'Components/WalletSummary'
+import T from 'Components/i18n/T'
 
 const closeCondition = ({ wallet }) => !wallet.address
 
@@ -55,13 +56,13 @@ export default compose(
 )(({ wallet, walletUri, showDirectLink, toggle, handleRef, handleFocus, handleCopy, ...props }) => (
   <Modal size='sm' toggle={toggle} {...pick(props, Object.keys(Modal.propTypes))}>
     <ModalHeader tag='h3' className='text-primary' toggle={toggle}>
-      Share Portfolio
+      <T tag='span' i18nKey='app.shareModal.share'>Share Portfolio</T>
     </ModalHeader>
     <ModalBody>
       <Card tag={CardBody} color='ultra-dark' className='flat mb-3'>
         <WalletSummary wallet={wallet} showLink={showDirectLink}/>
       </Card>
-      <p className='mb-2'>Permalink:</p>
+      <T tag='p' i18nKey='app.shareModal.permalink' className='mb-2'>Permalink:</T>
       <Row className='gutter-2'>
         <Col>
           <Input type='text' autoFocus readOnly onFocus={handleFocus} innerRef={handleRef}

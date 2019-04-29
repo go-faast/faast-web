@@ -6,7 +6,13 @@
   },
   "app": {
     "dashboard": {
-      "holdingsTitle": "P. Holdings"
+      "holdingsTitle": "P. Holdings",
+      "distribution": "Distribution",
+      "address": "address",
+      "removeWallet": "Remove Wallet",
+      "addWallet": "Add Wallet",
+      "walletHoldings": "<0></0> Holdings",
+      "portfolioHoldings": "Portfolio Holdings"
     },
     "connect": {
       "select": "Select your wallets",
@@ -28,7 +34,7 @@
     "nav": {
       "dashboard": "Dashboard",
       "assets": "Assets",
-      "allAssets": "All",
+      "allAssets": "All Assets",
       "trending": "Trending",
       "watchlist": "Watchlist",
       "rebalance": "Rebalance",
@@ -36,16 +42,271 @@
       "orders": "Orders",
       "addWallet": "Add Wallet"
     },
+    "assetIndex": {
+      "titlePage": "All Assets - Page <1></1>",
+      "title": "All Assets"
+    },
+    "assetIndexTable": {
+      "coin": "Coin",
+      "price": "Price",
+      "marketCap": "Market Cap",
+      "volume": "Volume",
+      "supply": "Supply",
+      "change": "Change"
+    },
     "orders": {
       "orderHistory": "Order History",
-      "showMore": "Show more orders..."
+      "showMore": "Show more orders...",
+      "date": "Date",
+      "pair": "Pair",
+      "cost": "Cost",
+      "received": "Received",
+      "receiving": "Receiving",
+      "noOpen": "No open orders right now",
+      "noPrevious": "No previous orders to show",
+      "openOrdersTitle": "Open Orders",
+      "previousOrdersTitle": "Previous Orders"
+    },
+    "sidebar": {
+      "watchlist": "<0>Watchlist</0>",
+      "trending": "Trending"
     },
     "rebalance": {
-      "saveChanges": "<0></0> Save Changes",
+      "saveChanges": "<0></0>Save Changes",
       "addAsset": "<0></0> add asset",
       "remove": "<0></0> remove",
       "availableBalance": "available balance",
-      "how": "<0><0></0> How do I use this? </0>"
+      "how": "<0><0></0> How do I use this? </0>",
+      "24hChange": "24h Change",
+      "currentPrice": "current price",
+      "after": "After",
+      "before": "Before",
+      "value": "Value",
+      "weight": "Weight",
+      "units": "Units",
+      "addAssetBottom": "add asset",
+      "empty": "This portfolio is empty. To begin swapping you must <1>add a wallet</1> first.",
+      "instructions": "Instructions",
+      "instructions1": "Rebalance your Portfolio - 3 simple steps:",
+      "instructions2": " Drag a slider left to decrease weight of an asset. Use ",
+      "instructions3": "to remove entire asset",
+      "instructions4": "Drag a slider right to increase weight of an asset. Use ",
+      "instructions5": " to add a new asset.<1/><2>(Note: To increase weight, you must have decreased weight of another asset)</2>",
+      "instructions6": "Click",
+      "instructions7": "when finished to review changes."
+    },
+    "widget": {
+      "swapInstantly": "Swap Instantly",
+      "omitted": "<0>When omitted, a variable market rate is used.</0>",
+      "approxSend": "<0>Approximately how much you need to send. Click Create to receive a guaranteed quote.</0>",
+      "expectSend": "<0>The amount we expect you to send.</0>",
+      "approxReceive": "<0>Approximately how much you will receive. Click Create to receive a guaranteed quote.</0>",
+      "guaranteeReceive": "<0>The amount you are guaranteed to receive.</0>",
+      "youHave": "You have",
+      "acceptTerms": "I accept the <1> Faa.st Terms & Conditions</1>",
+      "createSwap": "Create Swap",
+      "generatingSwap": "Generating Swap...",
+      "chooseSend": "Choose Asset to Send",
+      "chooseReceive": "Choose Asset to Receive"
+    },
+    "progressBar": {
+      "createSwap": "Create Swap",
+      "sendSymbol": "Send <1></1>",
+      "receiveSymbol": "Receive <1></1>"
+    },
+    "footer": {
+      "website": "Faa.st Website",
+      "termsConditions": "Terms & Conditions",
+      "privacy": "Privacy Policy"
+    },
+    "coinDetail": {
+      "buy": "Buy",
+      "sell": "Sell",
+      "marketCap": "Market Cap",
+      "volume": "24h Volume",
+      "supply": "Supply"
+    },
+    "assetTable": {
+      "noAssets": "No assets to show",
+      "th1": "Asset",
+      "th2": "Units",
+      "th3": "Holdings",
+      "th4": "Weight",
+      "th5": "Price",
+      "th6": "24h Change"
+    },
+    "swapSubmit": {
+      "geoLimit": "Send amount cannot be greater than $<1></1> <2>due to your location.</2>",
+      "multipleSwaps": "The following swaps will take place to save the changes you made to your portfolio. Please review them and click '<1></1>' to proceed.",
+      "networkFee": "Total network fee: ",
+      "timer": "* Quoted rates are guaranteed if submitted within:",
+      "terms": "I accept the <1>Faast Terms & Conditions</1>",
+      "cancel": "Cancel",
+      "submit": "Submit",
+      "submitAll": "Submit all",
+      "beginSigning": "Begin signing",
+      "confirmSubmit": "Confirm and Submit",
+      "reviewSign": "Review and Sign"
+    },
+    "ethInstructions": {
+      "to": "To:",
+      "value": "Value:",
+      "gas": "Gas:",
+      "gasPrice": "Gas Price:",
+      "data": "Data:",
+      "confirm": "Please confirm the following transaction details when prompted by your wallet.",
+      "sending": "Sending <1></1> to <3><4></4></3>."
+    },
+    "swapStatusCard": {
+      "signed": "Signed",
+      "ready": "Ready",
+      "awaiting": "Awaiting signature",
+      "failed": "Failed",
+      "sending": "Sending",
+      "status": "Status:",
+      "rate": "Rate:",
+      "network": "Network fee:",
+      "swapFee": "Swap fee:",
+      "usingWallet": "using wallet",
+      "atAddress": "at address",
+      "date": "Date:",
+      "orderId": "Order ID:",
+      "sentTx": "Sent txn:"
+    },
+    "searchResults": {
+      "view": "View in portfolio",
+      "add": "Add to portfolio"
+    },
+    "blocked": {
+      "restricted": "Restricted Area",
+      "sorry": "Sorry, you are accessing faa.st from a blocked location. If you are getting this message in error, you can learn more <1>here.</1>"
+    },
+    "selectPortfolioDropdown": {
+      "add": "add portfolio"
+    },
+    "shareModal": {
+      "share": "Share Portfolio",
+      "permalink": "Permalink:"
+    },
+    "walletSelector": {
+      "wallets": "Wallets",
+      "addWallet": "add wallet",
+      "noWallets": "No wallets in this portfolio"
+    },
+    "tradeDetailModal": {
+      "orderDetails": "Order Details"
+    },
+    "walletInfoModal": {
+      "metamask1": "<0></0> is a desktop browser extension that provides an Ethereum wallet. You can get it <2>here.</2>",
+      "metamask2": "If you already have <1></1>, ensure the extension is enabled on this browser.",
+      "mist1": "<0></0> is a desktop web browser with a built-in Ethereum wallet. You can get it <2>here.</2>",
+      "mist2": "If you already have <1></1>, open <3>faa.st</3> using its built in web browser.",
+      "status1": "<0></0> is a mobile Ethereum OS for iOS and Android. You can learn more about it <2>here.</2>",
+      "status2": "If you already have <1></1>, open <3>faa.st</3> using its built in web browser.",
+      "coinbase1": "<0></0> is a mobile Ethereum OS for iOS and Android. You can get it <2>here</2> or use one of the links below.",
+      "coinbase2": "If you already have <1></1>, open <3>faa.st</3> using its built in web browser."
+    },
+    "createWalletModal": {
+      "ack1": "The <1></1> file can used to send any funds it contains.",
+      "ack2": "The <1></1> file contains a sensitive private key that is encrypted and can only be accessed using the password I entered.",
+      "ack3": "Faast does not have a backup of the file or password. This <1></1> was generated in my web browser and was never sent over the internet.",
+      "ack4": "If I lose access to the file or forget the password I forfeit all funds it contains.",
+      "ack5": "I have downloaded and stored this file in a secure location on my computer.",
+      "ack6": "The <1></1> file, in combination with my password, can be used to send funds using applications other than Faast."
+    },
+    "assetSelector": {
+      "comingSoon": "coming soon",
+      "alreadyAdded": "already added",
+      "unavailable": "unavailable in your location",
+      "unsupported": "unsupported wallet"
+    },
+    "addressModal": {
+      "address": "Address",
+      "viewOnExplorer": "View on Explorer",
+      "close": "close"
+    },
+    "stepTwoConnected": {
+      "title": "Confirm Swap Transaction"
+    },
+    "stepTwoManual": {
+      "geoLimit": "Please note: The maximum you can swap is <1></1> <3></3> <5>due to your location.</5>",
+      "status": "Status:",
+      "updatesAuto": "Order status is updated automatically. You do not need to refresh.",
+      "orderID": "Order ID:",
+      "receiveAddress": "Receive address:",
+      "refundAddress": "Refund address:",
+      "rate": "Rate:",
+      "depositAmount": "Deposit amount:",
+      "minimumAmount": "Minimum deposit:",
+      "receiveAmount": "Receive amount:",
+      "fixedPrice": "* Quoted rate is an estimate based on current market conditions. Actual rate may vary.",
+      "quotedRate": "* Quoted rate is guaranteed if deposit is sent within:"
+    },
+    "hardwareWalletModal": {
+      "accountSelect": {
+        "heading": "Please select the account you'd like to add.",
+        "showAccounts": "showing accounts",
+        "next": "next",
+        "back": "Back"
+      },
+      "assetSelect": {
+        "addSpecific": "Or, add a specific account by choosing one of the following supported currencies.",
+        "learnMore": "Learn more about",
+        "cancel": "Cancel",
+        "done": "Done"
+      },
+      "confirmAccount": {
+        "changeAccount": "Change account",
+        "back": "Back",
+        "confirm": "Confirm"
+      },
+      "connectAsset": {
+        "back": "Back",
+        "continue": "Continue"
+      },
+      "connectionInstructions": {
+        "trezor": {
+          "connect": "Connect your TREZOR to begin",
+          "version": "Ensure your TREZOR firmware is up to date using the TREZOR wallet website",
+          "pin": "If required, enter your pin or password to unlock the TREZOR",
+          "export": "When asked if you want to export the public key of your <1></1> account, select <3>Export</3>",
+          "popup": "If you see a 'Popup Closed' error, please enable popups in your browser settings and try again"
+        }, 
+        "ledger": {
+          "connect": "Connect your Ledger device to begin",
+          "pin": "Enter your pin to unlock the Ledger",
+          "version": "Ensure your Ledger firmware and <1></1> app are up to date using the Ledger Live desktop app",
+          "open": "Open the <1></1> app on your Ledger"
+        }
+      },
+      "connectionStatus": {
+        "unable": "Unable to connect, trying again in <1><2></2></1> seconds",
+        "retryNow": "Retry Now",
+        "retry": "Retry"
+      },
+      "derivationPath": {
+        "change": "Change derivation path"
+      },
+      "index": {
+        "adding": "Adding"
+      },
+      "switchPathButton": {
+        "switch": "Switch to"
+      }
+    },
+    "access": {
+      "createWallet": {
+        "create": "<0></0>Create wallet",
+        "generate": "Generate a new keystore file"
+      },
+      "importKeystore": {
+        "import": "<0></0>Import wallet",
+        "drag": "Drag and drop your keystore file"
+      }
+    },
+    "confirmTransactionModal": {
+      "title": "Confirm Transaction",
+      "cancel": "Cancel"
     }
   }
 }

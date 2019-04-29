@@ -9,6 +9,7 @@ import { getStatus, getRetryTimerSeconds, getConnectingAsset } from 'Selectors/c
 import { retryConnect } from 'Actions/connectHardwareWallet'
 
 import CoinIcon from 'Components/CoinIcon'
+import T from 'Components/i18n/T'
 
 const StatusPending = ({ status, icon }) => (
   <h5>
@@ -18,9 +19,9 @@ const StatusPending = ({ status, icon }) => (
 
 const StatusWaiting = ({ retrySeconds, icon, handleRetry }) => (
   <div>
-    <i className={classNames('fa fa-lg', icon)}/> Unable to connect, trying again in <b>{retrySeconds}</b> seconds<br/>
+    <i className={classNames('fa fa-lg', icon)}/><T tag='span' i18nKey='app.hardwareWalletModal.connectionStatus.unable'>Unable to connect, trying again in <b>{retrySeconds}</b> seconds</T><br/>
     <Button size='sm' color='link' onClick={handleRetry}>
-      Retry Now <i className='fa fa-repeat'/>
+      <T tag='span' i18nKey='app.hardwareWalletModal.connectionStatus.retryNow'>Retry Now</T> <i className='fa fa-repeat'/>
     </Button>
   </div>
 )
@@ -35,7 +36,7 @@ const StatusFailed = ({ status, icon, handleRetry }) => (
   <div>
     <h5><i className={classNames('fa fa-lg', icon)}/> {status.toUpperCase()}</h5>
     <Button size='sm' color='link' onClick={handleRetry}>
-      Retry <i className='fa fa-repeat'/>
+      <T tag='span' i18nKey='app.hardwareWalletModal.connectionStatus.retry'>Retry</T> <i className='fa fa-repeat'/>
     </Button>
   </div>
 )

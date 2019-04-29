@@ -8,6 +8,7 @@ import { push as pushAction } from 'react-router-redux'
 import routes from 'Routes'
 import { ensureSwapTxCreated } from 'Actions/swap'
 import SingleSwapSubmit from 'Components/SingleSwapSubmit'
+import T from 'Components/i18n/T'
 
 export default compose(
   setDisplayName('StepTwoConnected'),
@@ -37,9 +38,9 @@ export default compose(
 )(({ swap, onCancel }) => (
   <Fragment>
     <CardHeader className='text-center'>
-      <h4>
+      <T tag='h4' i18nKey='app.stepTwoConnected.title'>
         Confirm Swap Transaction
-      </h4>
+      </T>
     </CardHeader>
     <CardBody className='pt-1'>
       <SingleSwapSubmit forwardTo={`/orders/widget/${swap.id}`} swap={swap} termsAccepted onCancel={onCancel}/>

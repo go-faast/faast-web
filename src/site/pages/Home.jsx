@@ -21,7 +21,6 @@ import { withTranslation } from 'react-i18next'
 
 export default compose(
   setDisplayName('Home'),
-  withTranslation(),
   connect(createStructuredSelector({
     assets: getAllAssetsArray,
     areAssetsLoaded: areAssetsLoaded

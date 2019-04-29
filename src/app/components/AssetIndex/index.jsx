@@ -11,6 +11,7 @@ import AssetIndexTable from 'Components/AssetIndexTable'
 import Layout from 'Components/Layout'
 import Paginator from 'Components/Paginator'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
+import T from 'Components/i18n/T'
 
 import { getAssetIndexPage, getNumberOfAssets, areAssetPricesLoaded, getAssetPricesError } from 'Selectors'
 
@@ -40,7 +41,7 @@ export default compose(
     const urlParams = qs.parse(location.search)
     let { page: currentPage = 1 } = urlParams
     currentPage = parseInt(currentPage)
-    let title = currentPage > 1 ? (<span>All Assets - Page {currentPage}</span>) : 'All Assets'
+    let title = currentPage > 1 ? (<T tag='span' i18nKey='app.assetIndex.titlePage'>All Assets - Page {currentPage}</T>) : <T tag='span' i18nKey='app.assetIndex.title'>All Assets</T>
     const page = currentPage - 1
     const sortField = 'marketCap'
     const limit = 50

@@ -21,22 +21,23 @@ import ChangePercent from 'Components/ChangePercent'
 import PriceArrowIcon from 'Components/PriceArrowIcon'
 import AssetSearchBox from 'Components/AssetSearchBox'
 import WatchlistStar from 'Components/WatchlistStar'
+import T from 'Components/i18n/T'
 
 const getQuery = ({ match }) => match.params.symbol
 
 const marketData = [
   {
-    title: 'Market Cap',
+    title: <T tag='span' i18nKey='app.coinDetail.marketCap'>Market Cap</T>,
     jsonKey: 'marketCap',
     fiat: true,
   },
   {
-    title: '24hr Volume',
+    title: <T tag='span' i18nKey='app.coinDetail.volume'>24hr Volume</T>,
     jsonKey: 'volume24',
     fiat: true,
   },
   {
-    title: 'Supply',
+    title: <T tag='span' i18nKey='app.coinDetail.supply'>Supply</T>,
     jsonKey: 'availableSupply',
     fiat: false,
   }
@@ -48,12 +49,12 @@ const AssetDetail = ({ symbol, asset }) => {
     <Row className='gutter-2 justify-content-md-end'>
       <Col xs='auto'>
         <Link to={`/swap?to=${symbol}`}>
-          <Button color='success' size='sm' disabled={!receive}>Buy {symbol}</Button>
+          <Button color='success' size='sm' disabled={!receive}><T tag='span' i18nKey='app.coinDetail.buy'>Buy</T> {symbol}</Button>
         </Link>
       </Col>
       <Col xs='auto'>
         <Link to={`/swap?from=${symbol}`} className='d-inline-block'>
-          <Button color='danger' size='sm' disabled={!deposit}>Sell {symbol}</Button>
+          <Button color='danger' size='sm' disabled={!deposit}><T tag='span' i18nKey='app.coinDetail.sell'>Sell</T> {symbol}</Button>
         </Link>
       </Col>
     </Row>

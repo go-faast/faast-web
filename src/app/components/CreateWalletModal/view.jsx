@@ -6,16 +6,17 @@ import { Button } from 'reactstrap'
 
 import ReduxFormField from 'Components/ReduxFormField'
 import HiddenUsernameField from 'Components/HiddenUsernameField'
+import T from 'Components/i18n/T'
 
 const getAcks = ({ isNewWallet, walletName }) => [
-  `The ${walletName} file can used to send any funds it contains.`,
-  `The ${walletName} file contains a sensitive private key that is encrypted and can only be accessed using the password I entered.`,
+  <T tag='span' i18nKey='app.createWalletModal.ack1' key='1'>The {walletName} file can used to send any funds it contains.</T>,
+  <T tag='span' i18nKey='app.createWalletModal.ack2' key='2'>The {walletName} file contains a sensitive private key that is encrypted and can only be accessed using the password I entered.</T>,
   ...(isNewWallet ? [
-    `Faast does not have a backup of the file or password. This ${walletName} was generated in my web browser and was never sent over the internet.`,
-    'If I lose access to the file or forget the password I forfeit all funds it contains.',
-    'I have downloaded and stored this file in a secure location on my computer.',
+    <T tag='span' i18nKey='app.createWalletModal.ack3' key='3'>Faast does not have a backup of the file or password. This {walletName} was generated in my web browser and was never sent over the internet.</T>,
+    <T tag='span' i18nKey='app.createWalletModal.ack4' key='4'>If I lose access to the file or forget the password I forfeit all funds it contains.</T>,
+    <T tag='span' i18nKey='app.createWalletModal.ack5' key='5'>I have downloaded and stored this file in a secure location on my computer.</T>,
   ] : [
-    `The ${walletName} file, in combination with my password, can be used to send funds using applications other than Faast.`,
+    <T tag='span' i18nKey='app.createWalletModal.ack6' key='6'>The {walletName} file, in combination with my password, can be used to send funds using applications other than Faast.</T>,
   ])
 ]
 

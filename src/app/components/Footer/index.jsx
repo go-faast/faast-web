@@ -4,6 +4,8 @@ import { Container, Row, Col } from 'reactstrap'
 import PropTypes from 'prop-types'
 import { name as appName, version as appVersion, homepage as githubLink } from 'Pkg'
 
+import T from 'Components/i18n/T'
+
 export default compose(
   setDisplayName('Footer'),
   setPropTypes({
@@ -20,13 +22,19 @@ export default compose(
           <Col xs='4'>
             <ul className='list-inline'>
               <li className='list-inline-item mr-3'>
-                <small><a className='text-muted' href='https://faa.st'>Faa.st Website</a></small>
+                <small><a className='text-muted' href='https://faa.st'>
+                  <T tag='span' i18nKey='app.footer.website'>Faa.st Website</T>
+                </a></small>
               </li>
               <li className='list-inline-item mr-3'>
-                <small><a className='text-muted' href='https://faa.st/terms'>Terms & Conditions</a></small>
+                <small><a className='text-muted' href='https://faa.st/terms'>
+                  <T tag='span' i18nKey='app.footer.termsConditions'>Terms & Conditions</T>
+                </a></small>
               </li>
               <li className='list-inline-item'>
-                <small><a className='text-muted' href='https://faa.st/privacy'>Privacy Policy</a></small>
+                <small><a className='text-muted' href='https://faa.st/privacy'>
+                  <T tag='span' i18nKey='app.footer.privacy'>Privacy Policy</T>
+                </a></small>
               </li>
             </ul>
           </Col>

@@ -22,6 +22,7 @@ import LoadingFullscreen from 'Components/LoadingFullscreen'
 import PieChart from 'Components/PieChart'
 import AssetTable from 'Components/AssetTable'
 import ShareButton from 'Components/ShareButton'
+import T from 'Components/i18n/T'
 
 import { statLabel } from './style'
 
@@ -72,9 +73,13 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
           </DropdownToggle>
           <DropdownMenu className='p-0' right>
             {isAlreadyInPortfolio ? (
-              <DropdownItem className='py-2' onClick={handleRemove}>Remove Wallet</DropdownItem>
+              <DropdownItem className='py-2' onClick={handleRemove}>
+                <T tag='span' i18nKey='app.dashboard.removeWallet'>Remove Wallet</T>
+              </DropdownItem>
             ) : (
-              <DropdownItem className='py-2' onClick={handleAdd}>Add Wallet</DropdownItem>
+              <DropdownItem className='py-2' onClick={handleAdd}>
+                <T tag='span' i18nKey='app.dashboard.addWallet'>Add Wallet</T>
+              </DropdownItem>
             )}
           </DropdownMenu>
         </Dropdown>
@@ -93,7 +98,10 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
             <Col className='px-0' xs='12'>
               <Row className='gutter-3 align-items-center'>
                 <Col className='px-2'>
-                  <h5>{address ? label : 'Portfolio'} Holdings</h5>
+                  <h5>{address ? (
+                    <T tag='span' i18nKey='app.dashboard.walletHoldings'>{label} Holdings</T>
+                  ) : (<T tag='span' i18nKey='app.dashboard.portfolioHoldings'>Portfolio Holdings</T>)}
+                  </h5>
                 </Col>
                 {address ?
                   searchAndShare
@@ -118,7 +126,7 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
       </Card>
       {pendingSwaps && (
         <TradeTable 
-          tableTitle='Open Orders'
+          tableTitle={<T tag='span' i18nKey='app.orders.openOrderTitle'>Open Orders</T>}
           swaps={pendingSwaps}
           tableHeadings={tableHeadingsOpen}
           hideIfNone
@@ -127,13 +135,13 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
       )}
       {assetRows.length > 0 && (<Card className='mt-3'>
         <CardHeader>
-          <h5>Distribution</h5>
+          <T tag='h5' i18nKey='app.dashboard.distribution'>Distribution</T>
         </CardHeader>
         <CardBody>
           {address && (
             <div className='text-right' style={{ lineHeight: 1 }}>
               <Address address={address} />
-              <small className='text-muted'>address</small>
+              <T tag='small' i18nKey='app.dashboard.address' className='text-muted'>address</T>
             </div>
           )}
           <PieChart portfolio={wallet} />
