@@ -307,6 +307,48 @@
     "confirmTransactionModal": {
       "title": "Confirm Transaction",
       "cancel": "Cancel"
+    },
+    "ledgerBTCInstructions": {
+      "confirm": "Confirm",
+      "output": "output #<1></1>",
+      "amount": "Amount",
+      "address": "Address",
+      "transaction": "transaction",
+      "fees": "Fees"
+    },
+    "ledgerETHInstructions": {
+      "amount": "Amount",
+      "address": "Address",
+      "maxFees": "Maximum fees"
+    },
+    "ledgerInstructions": {
+      "pleaseConfirm": "Please confirm the transaction on your device. You should see the following information on screen.",
+      "tip": "<0>Tip: If you don't see the transaction on your device, ensure you've unlocked it using your PIN and have opened the <2></2> app.</0>",
+      "confirmWithin": "Please confirm within:"
+    },
+    "metaMaskInstructions": {
+      "pleaseConfirm": "Please confirm the transaction. You should see the following information in your MetaMask.",
+      "tip": "<0>Tip: If you don't see a pop up with your order details, click the MetaMask icon in your browser extension menu as shown <2> here.</2></0>",
+      "myWallet": "My Wallet",
+      "gasFee": "GAS FEE",
+      "total": "TOTAL"
+    },
+    "trezorBTCInstructions": {
+      "confirmSending": "Confirm sending",
+      "to": "to",
+      "reallySend": "Really send",
+      "fromWallet": "from your wallet?",
+      "feeIncluded": "Fee included:"
+    },
+    "trezorETHInstructions": {
+      "send": "Send",
+      "to": "to",
+      "reallySend": "Really send",
+      "paying": "paying up to",
+      "forGas": "for gas?"
+    },
+    "trezorInstructions": {
+      "pleaseConfirm": "Please confirm the transaction on your device. You should see the following information on screen."
     }
   }
 }
