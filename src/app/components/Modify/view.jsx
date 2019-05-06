@@ -296,9 +296,9 @@ const ModifyView = (props) => {
                     <span className='text-danger'>{removeButtonContent}</span> <T tag='span' i18nKey='app.rebalance.instructions3'>to remove entire asset.</T>
                   </li>
                   <li className='mb-1'>
-                  <T tag='span' i18nKey='app.rebalance.instructions4'> Drag a slider right to increase weight of an asset.
+                    <T tag='span' i18nKey='app.rebalance.instructions4'> Drag a slider right to increase weight of an asset.
                     Use </T> <span className='text-success'>{addButtonContent}</span><T tag='span' i18nKey='app.rebalance.instructions5'> to add a new asset.<br/>
-                    <i>(Note: To increase weight, you must have decreased weight of another asset)</i></T>
+                      <i>(Note: To increase weight, you must have decreased weight of another asset)</i></T>
                   </li>
                   <li>
                     <T tag='span' i18nKey='app.rebalance.instructions6'>Click</T> <span className='text-primary'>{saveButtonContent}</span> <T tag='span' i18nKey='app.rebalance.instructions7'>when finished to review changes.</T>
