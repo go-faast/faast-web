@@ -42,10 +42,10 @@ const generateCombinationsFromArray = (array, property) => {
   let results = []
   for (let i = 0; i <= array.length - 1; i++) {
     if (array[i]['receive']) {
-      results.push({ name: array[i]['name'], symbol: array[i][property], type: 'buy' })
+      results.push({ name: array[i]['name'], symbol: array[i][property], cmcIDno: array[i]['cmcIDno'], type: 'buy' })
     }
     if (array[i]['deposit']) {
-      results.push({ name: array[i]['name'], symbol: array[i][property], type: 'sell' })
+      results.push({ name: array[i]['name'], symbol: array[i][property], cmcIDno: array[i]['cmcIDno'], type: 'sell' })
     }
     if (i == array.length - 1) {
       return results
@@ -93,7 +93,7 @@ export default {
   getRoutes: async () => {
     const { data: assets } = await axios.get('https://api.faa.st/api/v2/public/currencies')
     const supportedAssets = assets.filter(({ deposit, receive }) => deposit || receive)
-      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl', 'deposit', 'receive'))
+      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl', 'deposit', 'receive', 'cmcIDno'))
     const supportedWallets = Object.values(Wallets)
     let mediumProfile = await axios.get('https://medium.com/faast?format=json')
     mediumProfile = JSON.parse(mediumProfile.data.replace('])}while(1);</x>', ''))

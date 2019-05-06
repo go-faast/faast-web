@@ -16,7 +16,7 @@ import Expandable from 'Components/Expandable'
 import Units from 'Components/Units'
 import { retrievePairData } from 'Actions/rate'
 import { refreshSwap } from 'Actions/swap'
-import { getRateMinimumDeposit, getRatePrice } from 'Selectors/rate'
+import { getRateMinimumDeposit, getRatePrice, getRateMaximumDeposit } from 'Selectors/rate'
 import DataLayout from 'Components/DataLayout'
 import T from 'Components/i18n/T'
 
@@ -26,7 +26,7 @@ import style from './style.scss'
 
 /* eslint-disable react/jsx-key */
 const StepTwoManual = ({
-  handleTimerEnd, secondsUntilPriceExpiry, minimumDeposit, quotedRate, maxGeoBuy,
+  handleTimerEnd, secondsUntilPriceExpiry, minimumDeposit, maxiumumDeposit, quotedRate, maxGeoBuy,
   swap: {
     orderId = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
     sendAmount, receiveAmount, orderStatus = '', refundAddress = '', isFixedPrice, sendAsset,
@@ -70,6 +70,7 @@ const StepTwoManual = ({
         sendAmount
           ? [<T tag='span' i18nKey='app.stepTwoManual.depositAmount'>Deposit amount:</T>, <Units value={sendAmount} symbol={sendSymbol} precision={8}/>]
           : (minimumDeposit && [<T tag='span' i18nKey='app.stepTwoManual.minimumAmount'>Minimum deposit:</T>, <Units value={minimumDeposit} symbol={sendSymbol} precision={8}/>]),
+        !sendAmount && (maxiumumDeposit && ['Maximum deposit:', <Units value={maxiumumDeposit} symbol={sendSymbol} precision={8}/>]),
         receiveAmount && [<T tag='span' i18nKey='app.stepTwoManual.receiveAmount'>Receive amount:</T>, <Units value={receiveAmount} symbol={receiveSymbol} precision={8}/>]
       ]}/>
       <div className='mt-2'>
@@ -98,6 +99,7 @@ export default compose(
   ),
   connect((state, { swap: { pair } }) => ({
     minimumDeposit: getRateMinimumDeposit(state, pair),
+    maxiumumDeposit: getRateMaximumDeposit(state,pair),
     estimatedRate: getRatePrice(state, pair),
     limit: getGeoLimit(state),
   }), {

@@ -23,6 +23,9 @@ const initialConfig = {
   navigator: {
     enabled: false
   },
+  credits: {
+    enabled: false
+  },
   tooltip: {
     followPointer: true
   },
@@ -139,7 +142,7 @@ const initialConfig = {
       width: 1,
       color: '#808080'
     }]
-  }
+  },
 }
 
 export default compose(
