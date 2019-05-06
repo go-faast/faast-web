@@ -8,6 +8,7 @@ import { pick, get } from 'lodash'
 import urlJoin from 'url-join'
 
 import Wallets from './src/config/walletTypes'
+import { translations } from './src/config/translations'
 
 const { isDev, dirs, useHttps, siteRoot } = require('./etc/common.js')
 const getBaseConfig = require('./etc/webpack.config.base.js')
@@ -54,7 +55,7 @@ const generateCombinationsFromArray = (array, property) => {
 
 const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
   return (
-    <Html lang='en'>
+    <Html lang={get(routeInfo, 'allProps.meta.language', 'en')}>
       <Head>
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
@@ -141,6 +142,35 @@ export default {
         component: 'src/site/pages/Home',
         getData: async () => ({
           supportedAssets,
+          translations: translations[0].translations,
+          meta: {
+            title: siteConfig.title,
+            description: siteConfig.description
+          }
+        }),
+        children: translations.map(t => {
+          return {
+            path: `/${t.url}`,
+            component: 'src/site/pages/Home',
+            getData: () => {
+              return {
+                translations: t.translations,
+                meta: {
+                  title: siteConfig.title,
+                  description: siteConfig.description,
+                  language: t.language
+                }
+              }
+            },
+          }
+        })
+      },
+      {
+        path: '/assets',
+        noindex: true,
+        component: 'src/site/pages/Home',
+        getData: async () => ({
+          supportedAssets,
           meta: {
             title: siteConfig.title,
             description: siteConfig.description
@@ -188,14 +218,32 @@ export default {
         }),
         children: supportedWallets.map(wallet => {
           const metaName = wallet.name.replace(' Wallet', '')
+          const urlName = wallet.name.replace(/\s+/g, '-').toLowerCase()
           return {
-            path: `/${wallet.name.replace(/\s+/g, '-').toLowerCase()}`,
+            path: `/${urlName}`,
             component: 'src/site/pages/Wallet',
             getData: () => ({
               wallet,
+              translations: translations[0].translations,
               meta: {
                 title: `Trade Your Crypto from your ${metaName.replace(' Wallet', '')} Wallet - Faa.st`,
                 description: `Safely trade your crypto directly from your ${metaName} Wallet. Connect your ${metaName} wallet and trade 100+ cryptocurrencies on Faa.st.`
+              }
+            }),
+            children: translations.map(t => {
+              return {
+                path: `/${t.url}`,
+                component: 'src/site/pages/Wallet',
+                getData: () => {
+                  return {
+                    translations: t.translations,
+                    meta: {
+                      title: `Trade Your Crypto from your ${metaName.replace(' Wallet', '')} Wallet - Faa.st`,
+                      description: `Safely trade your crypto directly from your ${metaName} Wallet. Connect your ${metaName} wallet and trade 100+ cryptocurrencies on Faa.st.`,
+                      language: t.language
+                    }
+                  }
+                },
               }
             })
           }
@@ -233,11 +281,28 @@ export default {
         path: '/market-maker',
         component: 'src/site/pages/MarketMaker',
         getData: async () => ({
+          translations: translations[0].translations,
           meta: {
             title: 'Faa.st Market Maker Beta Program',
             description: 'Earn interest on your Bitcoin by fulfilling trades placed on the Faa.st marketplace. Sign up for the Beta now.'
           },
         }),
+        children: translations.map(t => {
+          return {
+            path: `/${t.url}`,
+            component: 'src/site/pages/MarketMaker',
+            getData: () => {
+              return {
+                translations: t.translations,
+                meta: {
+                  title: 'Faa.st Market Maker Beta Program',
+                  description: 'Earn interest on your Bitcoin by fulfilling trades placed on the Faa.st marketplace. Sign up for the Beta now.',
+                  language: t.language
+                }
+              }
+            },
+          }
+        })
       },
       {
         path: '/terms',

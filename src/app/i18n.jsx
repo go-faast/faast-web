@@ -4,7 +4,7 @@ import Cache from 'i18next-localstorage-cache'
 import XHR from 'i18next-xhr-backend'
 import { initReactI18next } from 'react-i18next'
 
-import * as en from 'Src/locales/en/translations.json'
+import * as en from 'Src/locales/en/translations.app.json'
 
 import config from '../config'
 

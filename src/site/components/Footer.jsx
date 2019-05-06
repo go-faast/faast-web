@@ -15,7 +15,7 @@ export default compose(
   defaultProps({
     footerClass: ''
   }),
-)(({ footerClass }) => (
+)(({ footerClass, translations: { static: { footer: t } } }) => (
   <div className='footer-clean' style={{ backgroundColor: 'rgb(24,24,24)', paddingTop: '0px', height: '394px' }}>
     <footer>
       <div className={classNames('container', footerClass)} style={{ paddingTop: '40px' }}>
@@ -23,50 +23,50 @@ export default compose(
           <div className='col-6 col-sm-6 col-md-2 col-xl-2 offset-xl-1 item px-3'>
             <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>Faa.st</h3>
             <ul>
-              <li><a className='text-white' href='https://bitaccess.ca/about-us/' target='_blank noopener noreferrer'>About Us</a></li>
-              <li><a className='text-white' href='/affiliates'>Affiliate Program</a></li>
-              <li><a className='text-white font-xs' href='/app'>Portfolio</a></li>
-              <li><a className='text-white' href='/app/swap'>Swap</a></li>
-              <li><a className='text-white' href='/market-maker'>Market Maker <sup className={classNames(betaTag, 'text-primary')}><i>beta</i></sup></a></li>
-              <li><a className='text-white' href='/blog'>Blog</a></li>
+              <li><a className='text-white' href='https://bitaccess.ca/about-us/' target='_blank noopener noreferrer'>{t.aboutUs}</a></li>
+              <li><a className='text-white' href='/affiliates'>{t.affiliate}</a></li>
+              <li><a className='text-white font-xs' href='/app'>{t.portfolio}</a></li>
+              <li><a className='text-white' href='/app/swap'>{t.swap}</a></li>
+              <li><a className='text-white' href='/market-maker'>{t.marketMaker} <sup className={classNames(betaTag, 'text-primary')}><i>{t.beta}</i></sup></a></li>
+              <li><a className='text-white' href='/blog'>{t.blog}</a></li>
             </ul>
           </div>
           <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-3'>
-            <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>Assets</h3>
+            <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>{t.assets}</h3>
             <ul>
-              <li><a className='text-white' href='/app/assets'>Market Cap Rankings</a></li>
-              <li><a className='text-white' href='/app/assets/trending'>Trending</a></li>
-              <li><a className='text-white' href='/app/assets/watchlist'>Watchlist</a></li>
+              <li><a className='text-white' href='/app/assets'>{t.marketCap}</a></li>
+              <li><a className='text-white' href='/app/assets/trending'>{t.trending}</a></li>
+              <li><a className='text-white' href='/app/assets/watchlist'>{t.watchlist}</a></li>
             </ul>
           </div>
           <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-3'>
-            <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>Wallets</h3>
+            <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>{t.wallets}</h3>
             <ul>
-              <li><a className='text-white' href='/wallets/trezor'>Trezor</a></li>
-              <li><a className='text-white' href='/wallets/ledger-wallet'>Ledger</a></li>
-              <li><a className='text-white' href='/wallets/metamask'>MetaMask</a></li>
-              <li><a className='text-white' href='/wallets/mist-browser'>Mist Browser</a></li>
-              <li><a className='text-white' href='/wallets/trust-wallet'>Trust Wallet</a></li>
-              <li><a className='text-white' href='/wallets/coinbase-wallet'>Coinbase Wallet</a></li>
-              <li><a className='text-white' href='/wallets/status'>Status</a></li>
+              <li><a className='text-white' href='/wallets/trezor'>{t.trezor}</a></li>
+              <li><a className='text-white' href='/wallets/ledger-wallet'>{t.ledger}</a></li>
+              <li><a className='text-white' href='/wallets/metamask'>{t.metaMask}</a></li>
+              <li><a className='text-white' href='/wallets/mist-browser'>{t.mistBrowser}</a></li>
+              <li><a className='text-white' href='/wallets/trust-wallet'>{t.trustWallet}</a></li>
+              <li><a className='text-white' href='/wallets/coinbase-wallet'>{t.coinbaseWallet}</a></li>
+              <li><a className='text-white' href='/wallets/status'>{t.status}</a></li>
             </ul>
           </div>
           <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-0'>
-            <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>Knowledge</h3>
+            <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>{t.knowledge}</h3>
             <ul>
-              <li><a className='text-white' href='/what-is-an-ico'>What is an ICO?</a></li>
-              <li><a className='text-white' href='/what-are-smart-contracts'>What are smart contracts?</a></li>
-              <li><a className='text-white' href='/what-is-a-dao'>What is a DAO?</a></li>
-              <li><a className='text-white' href='/what-is-ethereum'>What is Ethereum?</a></li>
-              <li><a className='text-white' href='/what-is-the-difference-between-ico-ipo-ito'>ICO, IPO, and ITO</a></li>
-              <li><a className='text-white' href='/how-to-buy-ethereum'>How to buy Ethereum</a></li>
+              <li><a className='text-white' href='/what-is-an-ico'>{t.whatIsIco}</a></li>
+              <li><a className='text-white' href='/what-are-smart-contracts'>{t.smartContracts}</a></li>
+              <li><a className='text-white' href='/what-is-a-dao'>{t.dao}</a></li>
+              <li><a className='text-white' href='/what-is-ethereum'>{t.whatIsEth}</a></li>
+              <li><a className='text-white' href='/what-is-the-difference-between-ico-ipo-ito'>{t.icoIpoIto}</a></li>
+              <li><a className='text-white' href='/how-to-buy-ethereum'>{t.buyEthereum}</a></li>
             </ul>
           </div>
           <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-3'>
-            <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>Resources</h3>
+            <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>{t.resources}</h3>
             <ul>
-              <li><a href='https://api.faa.st/' target='_blank noopener noreferrer' style={{ color: 'rgb(255,255,255)' }}>API</a></li>
-              <li><a href='/static/faast-press-kit.zip' target='_blank noopener noreferrer' style={{ color: 'rgb(255,255,255)' }}>Press Kit</a></li>
+              <li><a href='https://api.faa.st/' target='_blank noopener noreferrer' style={{ color: 'rgb(255,255,255)' }}>{t.api}</a></li>
+              <li><a href='/static/faast-press-kit.zip' target='_blank noopener noreferrer' style={{ color: 'rgb(255,255,255)' }}>{t.pressKit}</a></li>
             </ul>
           </div>
         </div>
@@ -74,8 +74,8 @@ export default compose(
           <Col className='item social text-white text-left'>
             <ul className='mt-4'>
               <li className='d-inline-block mr-4'><a href='mailto:support@faa.st' style={{ color: 'rgb(255,255,255)' }}>support@faa.st</a></li>
-              <li className='d-inline-block mr-4'><a className='text-white' href='/terms' target='_blank noopener noreferrer'>Terms of use</a></li>
-              <li className='d-inline-block'><a className='text-white' href='/privacy' target='_blank noopener noreferrer'>Privacy Policy</a></li>
+              <li className='d-inline-block mr-4'><a className='text-white' href='/terms' target='_blank noopener noreferrer'>{t.terms}</a></li>
+              <li className='d-inline-block'><a className='text-white' href='/privacy' target='_blank noopener noreferrer'>{t.privacy}</a></li>
             </ul>
           </Col>
           <Col className='item social text-white'>

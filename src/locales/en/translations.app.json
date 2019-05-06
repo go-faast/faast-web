@@ -1,9 +1,4 @@
 {
-  "static": {
-    "home": {
-      "heroTitle": "sup"
-    }
-  },
   "app": {
     "dashboard": {
       "holdingsTitle": "P. Holdings",

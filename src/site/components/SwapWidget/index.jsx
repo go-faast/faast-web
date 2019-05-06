@@ -16,7 +16,7 @@ import PropTypes from 'prop-types'
 import SwapIcon from 'Img/swap-icon.svg?inline'
 
 const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwitchAssets, 
-  supportedAssets, assetSelect, setAssetSelect, depositSymbol, receiveSymbol, areAssetsLoaded }) => {
+  supportedAssets, assetSelect, setAssetSelect, depositSymbol, receiveSymbol, areAssetsLoaded, translations: { static: { swapWidget } } }) => {
   return (
     <Fragment>
       <Card 
@@ -24,7 +24,7 @@ const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwit
         className={classNames('container justify-content-center p-0 border-0', swapContainer)}
       >
         <CardHeader style={{ background: '#fff' }} className={classNames('text-center pb-4 h-100', cardHeader)}>
-          <h4 style={{ fontSize: 25 }} className={classNames('mb-4 mt-3', cardTitle)}>Swap Instantly</h4>
+          <h4 style={{ fontSize: 25 }} className={classNames('mb-4 mt-3', cardTitle)}>{swapWidget.swapInstantly}</h4>
           <Row style={{ justifyContent: 'space-around' }}>
             <Col sm='12' md='5' className='pl-md-5 pl-0 pr-0'>
               <Button 
@@ -36,7 +36,7 @@ const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwit
                   <div className={classNames('pt-1', asset)}>
                     <CoinIcon key={depositSymbol} symbol={depositSymbol} style={{ width: 60, height: 60 }} className='mt-4 mb-2'/>
                     <h4 style={{ fontWeight: 600 }} className='m-0'>{depositSymbol}</h4>
-                    <p className='mt-2'>You send</p>
+                    <p className='mt-2'>{swapWidget.youSend}</p>
                   </div>
                 ) : (
                   <i className='fa fa-spinner fa-pulse'/>
@@ -58,7 +58,7 @@ const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwit
                   <div className={classNames('pt-1', asset)}>
                     <CoinIcon key={receiveSymbol} symbol={receiveSymbol} style={{ width: 60, height: 60 }} className='mt-4 mb-2'/>
                     <h4 style={{ fontWeight: 600 }} className='m-0'>{receiveSymbol}</h4>
-                    <p className='mt-2'>You receive</p>
+                    <p className='mt-2'>{swapWidget.youReceive}</p>
                   </div>
                 ) : (
                   <i className='fa fa-spinner fa-pulse'/>
@@ -73,13 +73,13 @@ const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwit
             color='primary'
             onClick={onSubmit}
           >
-              Continue
+            {swapWidget.continue}
           </Button>
         </CardHeader>
       </Card>
       <Modal size='lg' isOpen={Boolean(assetSelect)} toggle={() => setAssetSelect(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
         <ModalHeader toggle={() => setAssetSelect(null)} tag='h4' className='text-primary'>
-      Choose Asset to {assetSelect === 'deposit' ? 'Send' : 'Receive'}
+          <span>{assetSelect === 'deposit' ? swapWidget.chooseSend : swapWidget.receive}</span>
         </ModalHeader>
         <ModalBody>
           {assetSelect && (
