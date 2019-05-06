@@ -8,8 +8,6 @@ import * as en from 'Src/locales/en/translations.app.json'
 
 import config from '../config'
 
-console.log(en)
-
 const options = {
   ...config.i18next,
 
