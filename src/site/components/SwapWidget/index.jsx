@@ -79,7 +79,7 @@ const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwit
       </Card>
       <Modal size='lg' isOpen={Boolean(assetSelect)} toggle={() => setAssetSelect(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
         <ModalHeader toggle={() => setAssetSelect(null)} tag='h4' className='text-primary'>
-          <span>{assetSelect === 'deposit' ? swapWidget.chooseSend : swapWidget.receive}</span>
+          <span>{assetSelect === 'deposit' ? swapWidget.chooseSend : swapWidget.chooseReceive}</span>
         </ModalHeader>
         <ModalBody>
           {assetSelect && (
