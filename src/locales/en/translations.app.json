@@ -249,7 +249,7 @@
         "back": "Back"
       },
       "assetSelect": {
-        "express": "or an express setup click '<1></1>'",
+        "express": "For an express setup click '<1></1>'",
         "addAll": "Add All Currencies",
         "addSpecific": "Or, add a specific account by choosing one of the following supported currencies.",
         "learnMore": "Learn more about",
