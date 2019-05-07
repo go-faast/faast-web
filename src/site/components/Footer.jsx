@@ -15,7 +15,7 @@ export default compose(
   defaultProps({
     footerClass: ''
   }),
-)(({ footerClass, translations: { static: { footer: t } } }) => (
+)(({ footerClass, translations: { static: { footer: t } = {} } }) => (
   <div className='footer-clean' style={{ backgroundColor: 'rgb(24,24,24)', paddingTop: '0px', height: '394px' }}>
     <footer>
       <div className={classNames('container', footerClass)} style={{ paddingTop: '40px' }}>
