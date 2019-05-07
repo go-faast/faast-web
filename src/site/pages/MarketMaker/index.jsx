@@ -16,7 +16,7 @@ const blueColor = '#323540'
 export default compose(
   setDisplayName('MarketMaker'),
   withRouteData
-)(({ translations, translations: { static: { marketMaker: t } } }) => {
+)(({ translations = {}, translations: { static: { marketMaker: t } } }) => {
   const faqCopy = [
     {
       q: t.q1,
