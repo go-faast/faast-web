@@ -28,7 +28,7 @@ import BitaccessLogo from 'Img/bitaccess.svg'
 
 export default compose(
   setDisplayName('Features'),
-)(({ supportedAssets = [], translations: { static: { features: t } = {} } }) => (
+)(({ supportedAssets = [], translations: { static: { features: t = {} } = {} } }) => (
   <Fragment>
     <div className='features-clean'>
       <div className='container' style={{ paddingTop: '100px' }}>
