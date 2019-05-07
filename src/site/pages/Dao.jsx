@@ -2,12 +2,14 @@
 import React, { Fragment } from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { Card, CardHeader, CardBody } from 'reactstrap'
+import { withRouteData } from 'react-static'
 import Header from 'Site/components/Header'
 import EmailSubscriptionForm from 'Site/components/EmailSubscriptionForm'
 import Footer from 'Site/components/Footer'
 
 export default compose(
   setDisplayName('Dao'),
+  withRouteData
 )(({ translations }) => (
   <Fragment>
     <Header translations={translations} />

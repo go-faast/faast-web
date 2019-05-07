@@ -312,16 +312,14 @@ export default {
       {
         path: '/terms',
         component: 'src/site/pages/Terms',
-        getData: () => {
-          return {
-            translations: translations[0].translations,
-          }
-        },
+        getData: async () => ({
+          translations: translations[0].translations,
+        }),
       },
       {
         path: '/what-is-an-ico',
         component: 'src/site/pages/IcoIntro',
-        getData: () => {
+        getData: async () => {
           return {
             translations: translations[0].translations,
           }
@@ -330,7 +328,7 @@ export default {
       {
         path: '/what-is-the-difference-between-ico-ipo-ito',
         component: 'src/site/pages/IcoItoIpo',
-        getData: () => {
+        getData: async () => {
           return {
             translations: translations[0].translations,
           }
@@ -339,7 +337,7 @@ export default {
       {
         path: '/how-to-buy-ethereum',
         component: 'src/site/pages/BuyEthereum',
-        getData: () => {
+        getData: async () => {
           return {
             translations: translations[0].translations,
           }
@@ -348,7 +346,7 @@ export default {
       {
         path: '/what-are-smart-contracts',
         component: 'src/site/pages/SmartContracts',
-        getData: () => {
+        getData: async () => {
           return {
             translations: translations[0].translations,
           }
@@ -357,7 +355,7 @@ export default {
       {
         path: '/what-is-a-dao',
         component: 'src/site/pages/Dao',
-        getData: () => {
+        getData: async () => {
           return {
             translations: translations[0].translations,
           }
@@ -366,7 +364,7 @@ export default {
       {
         path: '/what-is-ethereum',
         component: 'src/site/pages/WhatIsEthereum',
-        getData: () => {
+        getData: async () => {
           return {
             translations: translations[0].translations,
           }
@@ -375,7 +373,7 @@ export default {
       {
         path: '/privacy',
         component: 'src/site/pages/Privacy',
-        getData: () => {
+        getData: async () => {
           return {
             translations: translations[0].translations,
           }
@@ -384,7 +382,7 @@ export default {
       {
         path: '/pricing',
         component: 'src/site/pages/Pricing',
-        getData: () => {
+        getData: async () => {
           return {
             translations: translations[0].translations,
           }
