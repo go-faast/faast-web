@@ -36,7 +36,7 @@ export default compose(
     }
   }),
   withRouteData,
-)(({ supportedAssets, areAssetsLoaded, assetList, symbol, name, cmcIDno, type, descriptions = {} }) => {
+)(({ supportedAssets, areAssetsLoaded, translations, assetList, symbol, name, cmcIDno, type, descriptions = {} }) => {
   supportedAssets = areAssetsLoaded ? assetList : supportedAssets
   const toSymbol = type === 'buy' ? symbol : symbol === 'ETH' ? 'BTC' : 'ETH'
   const fromSymbol = type === 'sell' ? symbol : symbol === 'BTC' ? 'ETH' : 'BTC'
@@ -46,6 +46,7 @@ export default compose(
         to={toSymbol} 
         from={fromSymbol} 
         supportedAssets={supportedAssets}
+        translations={translations}
         headline={(
           <h1 className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
             <span className='special-word'>Instantly</span> {type} {name} ({symbol}) from your Ledger, Trezor, or MetaMask.
@@ -66,8 +67,8 @@ export default compose(
           </div>
         </div>
       </div>
-      <Features supportedAssets={supportedAssets} />
-      <Footer/>
+      <Features translations={translations} supportedAssets={supportedAssets} />
+      <Footer translations={translations} />
     </div>
   )
 })

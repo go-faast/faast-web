@@ -7,9 +7,9 @@ import Footer from 'Site/components/Footer'
 
 export default compose(
   setDisplayName('Privacy'),
-)(() => (
+)(({ translations }) => (
   <Fragment>
-    <Header/>
+    <Header translations={translations} />
     <div className='container my-4'>
       <Card>
         <CardHeader className='font-weight-bold'>
@@ -234,6 +234,6 @@ export default compose(
       </Card>
     </div>
     <EmailSubscriptionForm/>
-    <Footer/>
+    <Footer translations={translations} />
   </Fragment>
 ))

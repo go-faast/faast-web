@@ -171,6 +171,7 @@ export default {
         component: 'src/site/pages/Home',
         getData: async () => ({
           supportedAssets,
+          translations: translations[0].translations,
           meta: {
             title: siteConfig.title,
             description: siteConfig.description
@@ -200,6 +201,7 @@ export default {
                 cmcIDno,
                 type,
                 descriptions,
+                translations: translations[0].translations,
                 meta: {
                   title: `Instantly ${type} ${name} (${symbol}) - Faa.st`,
                   description: `Safely trade your ${name} crypto directly from your hardware or software wallet. View ${name} (${symbol}) pricing charts, market cap, daily volume and other coin data.`
@@ -255,6 +257,7 @@ export default {
         component: 'src/site/pages/Blog',
         getData: async () => ({
           mediumPosts,
+          translations: translations[0].translations,
           meta: {
             title: 'Faa.st Cryptocurrency Blog',
             description: 'Blog posts about trading on Faa.st as well as the state of crypto including regulation, pricing, wallets, and mining.'
@@ -269,6 +272,7 @@ export default {
             component: 'src/site/pages/BlogPost',
             getData: async () => ({
               mediumPost,
+              translations: translations[0].translations,
               meta: {
                 title: `${post.title} - Faa.st Blog`,
                 description: `${post.virtuals.subtitle}`
@@ -308,38 +312,83 @@ export default {
       {
         path: '/terms',
         component: 'src/site/pages/Terms',
+        getData: () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         path: '/what-is-an-ico',
         component: 'src/site/pages/IcoIntro',
+        getData: () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         path: '/what-is-the-difference-between-ico-ipo-ito',
         component: 'src/site/pages/IcoItoIpo',
+        getData: () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         path: '/how-to-buy-ethereum',
         component: 'src/site/pages/BuyEthereum',
+        getData: () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         path: '/what-are-smart-contracts',
         component: 'src/site/pages/SmartContracts',
+        getData: () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         path: '/what-is-a-dao',
         component: 'src/site/pages/Dao',
+        getData: () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         path: '/what-is-ethereum',
         component: 'src/site/pages/WhatIsEthereum',
+        getData: () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         path: '/privacy',
         component: 'src/site/pages/Privacy',
+        getData: () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         path: '/pricing',
         component: 'src/site/pages/Pricing',
+        getData: () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         is404: true,
