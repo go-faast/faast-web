@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
+import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
 import { compose, setDisplayName, withProps, withState, withHandlers, setPropTypes, defaultProps, lifecycle } from 'recompose'
 import classNames from 'class-names'
@@ -317,7 +318,7 @@ export default compose(
     ),
     validateRefundAddress: ({ sendAsset }) => validator.walletAddress(sendAsset),
     onSubmit: ({
-      sendSymbol, receiveAsset, 
+      sendSymbol, receiveAsset, sendAsset,
       createSwap, openViewOnly, push, estimatedField
     }) => (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
@@ -325,13 +326,13 @@ export default compose(
 
       return createSwap({
         sendSymbol: sendSymbol,
-        sendAmount: sendAmount && estimatedField !== 'send' ? toBigNumber(sendAmount) : undefined,
+        sendAmount: sendAmount && estimatedField !== 'send' ? toBigNumber(sendAmount).round(sendAsset.decimals) : undefined,
         sendWalletId,
         receiveSymbol,
         receiveWalletId,
         receiveAddress,
         refundAddress,
-        receiveAmount: sendAmount && estimatedField !== 'receive' ? toBigNumber(receiveAmount) : undefined
+        receiveAmount: sendAmount && estimatedField !== 'receive' ? toBigNumber(receiveAmount).round(receiveAsset.decimals) : undefined
       })
         .then((swap) => {
           push(`/swap/send?id=${swap.orderId}`)
@@ -365,14 +366,14 @@ export default compose(
       handleSaveSwapWidgetInputs(params)
     }
   }),
-  withHandlers(({ change }) => {
+  withHandlers(({ change, sendAsset, receiveAsset }) => {
     const setEstimatedReceiveAmount = (x) => {
       log.trace('setEstimatedReceiveAmount', x)
-      change('receiveAmount', x && toBigNumber(x).toString())
+      change('receiveAmount', x && toBigNumber(x).toFormat(receiveAsset.decimals).replace(/,/g, ''))
     }
     const setEstimatedSendAmount = (x) => {
       log.trace('setEstimatedSendAmount', x)
-      change('sendAmount', x && toBigNumber(x).toString())
+      change('sendAmount', x && toBigNumber(x).toFormat(sendAsset.decimals).replace(/,/g, ''))
     }
     return {
       calculateReceiveEstimate: ({
