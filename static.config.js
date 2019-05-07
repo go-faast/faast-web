@@ -236,6 +236,7 @@ export default {
                 component: 'src/site/pages/Wallet',
                 getData: () => {
                   return {
+                    wallet,
                     translations: t.translations,
                     meta: {
                       title: `Trade Your Crypto from your ${metaName.replace(' Wallet', '')} Wallet - Faa.st`,
