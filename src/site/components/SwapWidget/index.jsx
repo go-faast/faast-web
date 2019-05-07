@@ -16,7 +16,7 @@ import PropTypes from 'prop-types'
 import SwapIcon from 'Img/swap-icon.svg?inline'
 
 const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwitchAssets, 
-  supportedAssets, assetSelect, setAssetSelect, depositSymbol, receiveSymbol, areAssetsLoaded, translations: { static: { swapWidget } = {} } }) => {
+  supportedAssets, assetSelect, setAssetSelect, depositSymbol, receiveSymbol, areAssetsLoaded, translations: { static: { swapWidget = {} } = {} } }) => {
   return (
     <Fragment>
       <Card 
