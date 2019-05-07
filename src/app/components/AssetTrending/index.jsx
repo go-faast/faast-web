@@ -12,6 +12,7 @@ import { Dropdown, DropdownItem, DropdownToggle, DropdownMenu,  } from 'reactstr
 import AssetIndexTable from 'Components/AssetIndexTable'
 import Layout from 'Components/Layout'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
+import T from 'Components/i18n/T'
 
 import Checkbox from 'Components/Checkbox'
 
@@ -46,7 +47,7 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
                     style={{ top: '-1px', width: '100%' }}
                     caret
                   >
-                Trending {timeFrame}
+                    <T tag='span' i18nKey='app.trending.trending'>Trending</T> {timeFrame}
                   </DropdownToggle>
                   <DropdownMenu className='p-0'>
                     <DropdownItem 
@@ -80,7 +81,7 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
                   checked={filterTradeable}
                   className='ml-2 d-inline-block'
                   onChange={handleFilterTradeable} 
-                  label={<span style={{ top: 2 }} className='text-muted d-inline-block position-relative'>Show only tradeable assets</span>}
+                  label={<T tag='span' i18nKey='app.trending.tradeable' style={{ top: 2 }} className='text-muted d-inline-block position-relative'>Show only tradeable assets</T>}
                   required={false}
                 />
               </small>
