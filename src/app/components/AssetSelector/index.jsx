@@ -10,6 +10,8 @@ import { sortByProperty } from 'Utilities/helpers'
 import { getAllAssetsArray } from 'Selectors/asset'
 import { isAppRestricted } from 'Selectors/app'
 
+import T from 'Components/i18n/T'
+
 const DEBOUNCE_WAIT = 400
 const MAX_RESULTS = 50
 
@@ -27,14 +29,14 @@ function getInitState (props) {
       const restricted = a.restricted && isAppRestricted
       const disabled = swapDisabled || unsupportedWallet || alreadyInPortfolio || restricted
       const disabledMessage = swapDisabled
-        ? 'coming soon'
+        ? <T tag='span' i18nKey='app.assetSelector.comingSoon'>coming soon</T>
         : (restricted ? 
-          'unavailable in your location' : 
+          <T tag='span' i18nKey='app.assetSelector.unavailable'>unavailable in your location</T> : 
           (unsupportedWallet
-            ? 'unsupported wallet'
+            ? <T tag='span' i18nKey='app.assetSelector.unsupported'>unsupported wallet</T>
             : (alreadyInPortfolio
-              ? 'already added'
-              : 'unavailable')))
+              ? <T tag='span' i18nKey='app.assetSelector.alreadyAdded'>already added</T>
+              : <T tag='span' i18nKey='app.assetSelector.unavailable'>unavailable in your location</T>)))
       return {
         ...a,
         restricted,

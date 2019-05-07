@@ -21,6 +21,7 @@ import CoinIcon from 'Components/CoinIcon'
 import Icon from 'Components/Icon'
 import WalletLabel from 'Components/WalletLabel'
 import Units from 'Components/Units'
+import T from 'Components/i18n/T'
 
 import chart from 'Img/chart.svg?inline'
 import display from 'Utilities/display'
@@ -106,7 +107,7 @@ const Sidebar = ({
           </div>
         </ListGroupItem>
         <ListGroupItem className='p-0 text-center d-none d-md-block'>
-          <small><p className={sidebarLabel}>Watchlist</p></small>
+          <T tag='small' i18nKey='app.sidebar.watchlist'><p className={sidebarLabel}>Watchlist</p></T>
           <div style={{ maxHeight: '171px', overflowY: 'auto' }}>
             {watchlist.map((asset) => {
               const { symbol, price, change24, change7d, change1, price24hAgo, price7dAgo, price1hAgo } = asset
@@ -147,7 +148,7 @@ const Sidebar = ({
         </ListGroupItem>
         <ListGroupItem className='border-bottom-0 p-0 text-center d-none d-md-block'>
           <small>
-            <div className={sidebarLabel}>Trending
+            <div className={sidebarLabel}><T tag='span' i18nKey='app.sidebar.trending'>Trending</T>
               <Dropdown group isOpen={isTrendingDropDownOpen} size="sm" toggle={toggleTrendingDropDownOpen}>
                 <DropdownToggle 
                   tag='span' 

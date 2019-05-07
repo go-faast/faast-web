@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React from 'react'
 import PropTypes from 'prop-types'
 import { compose, setDisplayName, setPropTypes, lifecycle, withProps, withHandlers } from 'recompose'
@@ -7,6 +8,7 @@ import { Row, Col, Button, ListGroup, ModalBody, ModalFooter } from 'reactstrap'
 import { isUndefined } from 'lodash'
 import { push } from 'react-router-redux'
 import { Link } from 'react-router-dom'
+import T from 'Components/i18n/T'
 
 import routes from 'Routes'
 import {
@@ -63,7 +65,7 @@ export default compose(
   <div>
     <ModalBody className='py-4'>
       <ConnectionStatus />
-      <h5 className='mb-3'>{'Please select the account you\'d like to add.'}</h5>
+      <T tag='h5' i18nKey='app.hardwareWalletModal.accountSelect.heading' className='mb-3'>Please select the account you'd like to add.</T>
       <ListGroup>
         {accounts.map(({ index, address, balance }) => (
           <ListGroupButton key={index} className='px-3' onClick={() => selectIndex(index)} disabled={isUndefined(address)}>
@@ -88,15 +90,19 @@ export default compose(
           <Button color='link' onClick={() => changePage(page - 1)} disabled={page <= 0}><i className='fa fa-long-arrow-left'/> previous</Button>
         </Col>
         <Col className='text-muted'>
-          showing accounts {startIndex + 1} - {endIndex + 1}
+          <T tag='span' i18nKey='app.hardwareWalletModal.accountSelect.showAccounts'>showing accounts</T> {startIndex + 1} - {endIndex + 1}
         </Col>
         <Col xs='3' className='text-right'>
-          <Button color='link' onClick={() => changePage(page + 1)}>next <i className='fa fa-long-arrow-right'/></Button>
+          <Button color='link' onClick={() => changePage(page + 1)}>
+            <T tag='span' i18nKey='app.hardwareWalletModal.accountSelect.next'>next</T> <i className='fa fa-long-arrow-right'/>
+          </Button>
         </Col>
       </Row>
     </ModalBody>
     <ModalFooter>
-      <BackButton tag={Link} to={backPath}>Back</BackButton>
+      <BackButton tag={Link} to={backPath}>
+        <T tag='span' i18nKey='app.hardwareWalletModal.accountSelect.back'>Back</T>
+      </BackButton>
     </ModalFooter>
   </div>
 ))

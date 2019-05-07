@@ -10,7 +10,7 @@ const ProgressBar = ({ steps, currentStep }) => (
   <div>
     <Row className='no-gutters justify-content-center'>
       {steps.map((description, i) => (
-        <Col key={description} xs='4' sm='3' lg='2'>
+        <Col key={i} xs='4' sm='3' lg='2'>
           <div className={classNames(step,  currentStep >= i ? current : '')}>
             {i + 1}. {description}
           </div>

@@ -16,6 +16,7 @@ import Layout from 'Components/Layout'
 import Balances from 'Components/Balances'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import ShareButton from 'Components/ShareButton'
+import T from 'Components/i18n/T'
 
 const getQuery = ({ match }) => match.params.addressQuery
 
@@ -60,11 +61,11 @@ export default compose(
         <Col xs='auto'>
           {isAlreadyInPortfolio ? (
             <Button size='sm' color='primary' onClick={handleViewInPortfolio}>
-              View in portfolio
+              <T tag='span' i18nKey='app.searchResults.view'>View in portfolio</T>
             </Button>
           ) : (
             <Button size='sm' color='primary' onClick={() => handleAddToPortfolio(routes.dashboard())}>
-              Add to portfolio
+              <T tag='span' i18nKey='app.searchResults.add'>Add to portfolio</T>
             </Button>
           )}
         </Col>

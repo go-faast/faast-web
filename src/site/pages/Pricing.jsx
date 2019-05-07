@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import { compose, setDisplayName } from 'recompose'
 import txFees from 'Img/txFees.png'
 import Icon from 'Components/Icon'
+import { withRouteData } from 'react-static'
 import SwapIcon from 'Img/swap-icon.svg?inline'
 import Header from 'Site/components/Header'
 import EmailSubscriptionForm from 'Site/components/EmailSubscriptionForm'
@@ -9,9 +10,10 @@ import Footer from 'Site/components/Footer'
 
 export default compose(
   setDisplayName('Pricing'),
-)(() => (
+  withRouteData
+)(({ translations }) => (
   <Fragment>
-    <Header/>
+    <Header translations={translations} />
     <div className='mb-4'>
       <div className='container text-center'>
         <div className='mb-4'>
@@ -64,6 +66,6 @@ export default compose(
       </div>
     </div>
     <EmailSubscriptionForm />
-    <Footer/>
+    <Footer translations={translations} />
   </Fragment>
 ))

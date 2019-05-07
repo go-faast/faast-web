@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { compose, setDisplayName, setPropTypes } from 'recompose'
@@ -6,6 +7,7 @@ import classNames from 'class-names'
 import { toNumber } from 'Utilities/convert'
 import { ellipsize } from 'Utilities/display'
 import Units from 'Components/Units'
+import T from 'Components/i18n/T'
 import {
   metaMaskContainer, metaMaskAddressRow, metaMaskArrow,
   metaMaskTransfer, metaMaskNonce, metaMaskAmountRow,
@@ -23,15 +25,15 @@ const Web3Instructions = ({
   }
 }) => (
   <div>
-    <p>Please confirm the transaction. You should see the following information in your MetaMask.</p>
-    <p><small>
-      {'Tip: If you don\'t see a pop up with your order details, click the MetaMask icon in your browser extension menu as shown'}
+    <T tag='p' i18nKey='app.metaMaskInstructions.pleaseConfirm'>Please confirm the transaction. You should see the following information in your MetaMask.</T>
+    <T tag='p' i18nKey='app.metaMaskInstructions.tip'><small>
+      Tip: If you don't see a pop up with your order details, click the MetaMask icon in your browser extension menu as shown
       <a href='https://i.imgur.com/Gqn7JUM.mp4' target='_blank' rel='noopener noreferrer'> here.</a>
-    </small></p>
+    </small></T>
     <div className={metaMaskContainer}>
       <Row className={classNames('no-gutters justify-content-center align-items-center', metaMaskAddressRow)}>
         <Col>
-          My Wallet
+          <T tag='span' i18nKey='app.metaMaskInstructions.myWallet'>My Wallet</T>
         </Col>
         <Col xs='auto'>
           <div className={metaMaskArrow}>
@@ -53,13 +55,13 @@ const Web3Instructions = ({
       </div>
       <div className={metaMaskFeeRow}>
         <div>
-          GAS FEE
+          <T tag='span' i18nKey='app.metaMaskInstructions.gasFee'>GAS FEE</T>
           <span className='font-weight-bold float-right'>
             <Units value={feeAmount} precision={6} roundingType='dp' {...unitProps(feeSymbol)}/>
           </span>
         </div>
         <div>
-          TOTAL
+          <T tag='span' i18nKey='app.metaMaskInstructions.total'>TOTAL</T>
           <span className='font-weight-bold float-right'>
             {assetSymbol === 'ETH' ? (
               <Units value={totalSent} precision={6} roundingType='dp' {...unitProps(assetSymbol)}/>

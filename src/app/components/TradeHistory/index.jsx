@@ -6,41 +6,42 @@ import { connect } from 'react-redux'
 
 import Layout from 'Components/Layout'
 import TradeTable from 'Components/TradeTable'
+import T from 'Components/i18n/T'
 
 import { getConnectedWalletsPendingSwaps, getConnectedWalletsCompletedSwaps, isDefaultPortfolioEmpty } from 'Selectors'
 
 export const tableHeadingsOpen = [
   { text: '', mobile: false },
-  { text: 'Date', mobile: false },
-  { text: 'Pair', mobile: false },
-  { text: 'Receiving', mobile: false },
-  { text: 'Cost', mobile: false },
-  { text: 'Rate', mobile: false }
+  { text: <T tag='span' i18nKey='app.orders.date'>Date</T>, mobile: false },
+  { text: <T tag='span' i18nKey='app.orders.pair'>Pair</T>, mobile: false },
+  { text: <T tag='span' i18nKey='app.orders.receiving'>Receiving</T>, mobile: false },
+  { text: <T tag='span' i18nKey='app.orders.cost'>Cost</T>, mobile: false },
+  { text: <T tag='span' i18nKey='app.orders.rate'>Rate</T>, mobile: false }
 ]
 
 export const tableHeadingsCompleted = [
   { text: '', mobile: false },
-  { text: 'Date', mobile: false },
-  { text: 'Pair', mobile: false },
-  { text: 'Received', mobile: false },
-  { text: 'Cost', mobile: false },
-  { text: 'Rate', mobile: false }
+  { text: <T tag='span' i18nKey='app.orders.date'>Date</T>, mobile: false },
+  { text: <T tag='span' i18nKey='app.orders.pair'>Pair</T>, mobile: false },
+  { text: <T tag='span' i18nKey='app.orders.received'>Received</T>, mobile: false },
+  { text: <T tag='span' i18nKey='app.orders.cost'>Cost</T>, mobile: false },
+  { text: <T tag='span' i18nKey='app.orders.rate'>Rate</T>, mobile: false }
 ]
 
 const TradeHistory = ({ pendingSwaps, completedSwaps }) => (
   <Layout className='pt-3'>
-    <h4 className='mt-2 text-primary'>Order History</h4>
+    <T tag='h4' i18nKey='app.orders.orderHistory' className='mt-2 text-primary'>Order History</T>
     <TradeTable 
       swaps={pendingSwaps} 
-      tableTitle='Open Orders' 
+      tableTitle={<T tag='span' i18nKey='app.orders.openOrdersTitle'>Open Orders</T>} 
       tableHeadings={tableHeadingsOpen}
-      zeroOrdersMessage='No open orders right now'
+      zeroOrdersMessage={<T tag='span' i18nKey='app.orders.noOpen'>No open orders right now</T>}
     />
     <TradeTable 
       swaps={completedSwaps} 
-      tableTitle='Previous Orders' 
+      tableTitle={<T tag='span' i18nKey='app.orders.previousOrdersTitle'>Previous Orders</T>} 
       tableHeadings={tableHeadingsCompleted} 
-      zeroOrdersMessage='No previous orders to show'
+      zeroOrdersMessage={<T tag='span' i18nKey='app.orders.noPrevious'>No previous orders to show</T>}
       showMore
     />
   </Layout>

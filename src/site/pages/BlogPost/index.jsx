@@ -76,9 +76,9 @@ const parseParagraph = (p, title) => {
 export default compose(
   setDisplayName('BlogPost'),
   withRouteData
-)(({ mediumPost: { payload: { value: { title, mediumUrl, content: { bodyModel: { paragraphs } } } } } }) => (
+)(({ translations, mediumPost: { payload: { value: { title, mediumUrl, content: { bodyModel: { paragraphs } } } } } }) => (
   <Fragment>
-    <Header theme='light' bgColor={'#FFFFFF'} />
+    <Header translations={translations} theme='light' bgColor={'#FFFFFF'} />
     <Container>
       <div className={classNames(darkText, 'mx-auto mb-5 pb-5')} style={{ maxWidth: 1000 }}>
         <h1 className='mb-4 mt-5 font-weight-bold'>{title}</h1>
@@ -88,6 +88,6 @@ export default compose(
         </div>
       </div>      
     </Container>
-    <Footer />
+    <Footer translations={translations} />
   </Fragment>
 ))

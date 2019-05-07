@@ -14,6 +14,7 @@ import TrezorBtcInstructions from './TrezorBtcInstructions'
 import MetaMaskInstructions from './MetaMaskInstructions'
 import EthereumInstructions from './EthereumInstructions'
 import WalletPasswordPrompt from 'Components/WalletPasswordPrompt'
+import T from 'Components/i18n/T'
 
 const instructionComponentMap = {
   [EthereumWalletLedger.type]: LedgerEthInstructions,
@@ -59,7 +60,7 @@ export default compose(
 )(({ swap, InstructionComponent, handleCancel, isOpen }) => (
   <Modal backdrop='static' isOpen={isOpen}>
     <ModalHeader className='text-primary'>
-      Confirm Transaction
+      <T tag='span' i18nKey='app.confirmTransactionModal.title'>Confirm Transaction</T>
     </ModalHeader>
     <ModalBody>
       {InstructionComponent && (
@@ -67,7 +68,9 @@ export default compose(
       )}
     </ModalBody>
     <ModalFooter className='justify-content-between'>
-      <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
+      <Button type='button' color='primary' outline onClick={handleCancel}>
+        <T tag='span' i18nKey='app.confirmTransactionModal.cancel'>Cancel</T>
+      </Button>
     </ModalFooter>
   </Modal>
 ))

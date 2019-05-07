@@ -13,6 +13,7 @@ import ChangePercent from 'Components/ChangePercent'
 import Units from 'Components/Units'
 import CoinIcon from 'Components/CoinIcon'
 import WatchlistStar from 'Components/WatchlistStar'
+import T from 'Components/i18n/T'
 
 import { tableStyle, expandedOnly, collapsedOnly, collapsedRow } from './style'
 
@@ -75,19 +76,19 @@ export default compose(
   <Fragment>
     {assetRows.length === 0 ? (
       <p className='text-center mt-3'>
-        <i>No assets to show</i>
+        <T tag='i' i18nKey='app.assetTable.noAssets'>No assets to show</T>
       </p>
     ) : (
       <Table hover striped responsive className={tableStyle}>
         <thead>
           <tr>
             <th className='border-0'></th>
-            <th className='border-0'><h6>Asset</h6></th>
-            <th className='border-0'><h6>Units</h6></th>
-            <th className='border-0'><h6>Holdings</h6></th>
-            <th className={classNames(expandedOnly, 'border-0')}><h6>Weight</h6></th>
-            <th className='border-0'><h6>Price</h6></th>
-            <th className={classNames(expandedOnly, 'border-0')}><h6>24h change</h6></th>
+            <th className='border-0'><T tag='h6' i18nKey='app.assetTable.th1'>Asset</T></th>
+            <th className='border-0'><T tag='h6' i18nKey='app.assetTable.th2'>Units</T></th>
+            <th className='border-0'><T tag='h6' i18nKey='app.assetTable.th3'>Holdings</T></th>
+            <th className={classNames(expandedOnly, 'border-0')}><T tag='h6' i18nKey='app.assetTable.th4'>Weight</T></th>
+            <th className='border-0'><T tag='h6' i18nKey='app.assetTable.th5'>Price</T></th>
+            <th className={classNames(expandedOnly, 'border-0')}><T tag='h6' i18nKey='app.assetTable.th6'>24h change</T></th>
           </tr>
         </thead>
         <tbody>

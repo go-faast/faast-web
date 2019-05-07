@@ -3,14 +3,16 @@ import React, { Fragment } from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { Card, CardHeader, CardBody } from 'reactstrap'
 import Header from 'Site/components/Header'
+import { withRouteData } from 'react-static'
 import EmailSubscriptionForm from 'Site/components/EmailSubscriptionForm'
 import Footer from 'Site/components/Footer'
 
 export default compose(
   setDisplayName('IcoIntro'),
-)(() => (
+  withRouteData
+)(({ translations }) => (
   <Fragment>
-    <Header/>
+    <Header translations={translations} />
     <div className='container my-4'>
       <Card>
         <CardHeader className='font-weight-bold'>
@@ -31,6 +33,6 @@ export default compose(
       </Card>
     </div>
     <EmailSubscriptionForm/>
-    <Footer/>
+    <Footer translations={translations} />
   </Fragment>
 ))

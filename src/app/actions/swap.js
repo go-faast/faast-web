@@ -215,7 +215,6 @@ export const retrieveSwap = (swapOrderId) => (dispatch, getState)  => Promise.re
       .then((swap) => {
         const existingSwap = getSwap(getState(), swapOrderId)
         swap.id = existingSwap ? existingSwap.id : swap.orderId
-        console.log(swap)
         dispatch(swapAdded(swap))
         dispatch(pollOrderStatus(swap))
         return getSwap(getState(), swap.id)

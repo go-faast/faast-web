@@ -25,14 +25,15 @@ import CoinIcon from 'Components/CoinIcon'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import WalletLabel from 'Components/WalletLabel'
 import ModalRoute from 'Components/ModalRoute'
+import T from 'Components/i18n/T'
 
 import styles from './style'
 
 const ModifyView = (props) => {
   const { portfolio, handleSave, disableSave, isAppRestricted } = props
-  const saveButtonContent = (<Fragment><i className='fa fa-check mr-2' />Save Changes</Fragment>)
-  const addButtonContent = (<Fragment><i className='fa fa-plus'/> add asset</Fragment>)
-  const removeButtonContent = (<Fragment><i className='fa fa-times'/> remove</Fragment>)
+  const saveButtonContent = (<T i18nKey='app.rebalance.saveChanges'><i className='fa fa-check mr-2' />Save Changes</T>)
+  const addButtonContent = (<T i18nKey='app.rebalance.addAsset'><i className='fa fa-plus'/> add asset</T>)
+  const removeButtonContent = (<T i18nKey='app.rebalance.remove'><i className='fa fa-times'/> remove</T>)
 
   const renderHoldings = (wallets) => wallets
     .map((wallet) => {
@@ -120,13 +121,13 @@ const ModifyView = (props) => {
                                 <Col xs='auto'><ArrowIcon size='md' dir={changeIconDirection} color={changeColor} /></Col>
                                 <Col>
                                   <div className={`h5 m-0 text-${changeColor}`}>{percentChange24}</div>
-                                  <small className='text-muted'>24h change</small>
+                                  <T tag='small' i18nKey='app.rebalance.24hChange' className='text-muted'>24h change</T>
                                 </Col>
                               </Row>
                             </Col>
                             <Col xs='auto'>
                               <div className='h5 m-0'>{fiatPrice}</div>
-                              <small className='text-muted'>current price</small>
+                              <T tag='small' i18nKey='app.rebalance.currentPrice' className='text-muted'>current price</T>
                             </Col>
                           </Row>
                         </Col>
@@ -135,13 +136,19 @@ const ModifyView = (props) => {
                             <Col xs='12' sm='2' lg='auto'>
                               <Row className='gutter-3 flex-sm-column'>
                                 <Col xs='3' sm='12'>&nbsp;</Col>
-                                <Col xs='4' sm='12' className='text-muted text-sm-right'>Before</Col>
-                                <Col xs='5' sm='12' className='text-muted text-sm-right'>After</Col>
+                                <Col xs='4' sm='12' className='text-muted text-sm-right'>
+                                  <T tag='span' i18nKey='app.rebalance.before'>Before</T>
+                                </Col>
+                                <Col xs='5' sm='12' className='text-muted text-sm-right'>
+                                  <T tag='span' i18nKey='app.rebalance.after'>After</T>
+                                </Col>
                               </Row>
                             </Col>
                             <Col xs='12' sm='3' lg>
                               <Row className='gutter-3 flex-sm-column'>
-                                <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>Value</Col>
+                                <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>
+                                  <T tag='span' i18nKey='app.rebalance.value'>Value</T>
+                                </Col>
                                 <Col xs='4' sm='12'>{originalFiat}</Col>
                                 <Col xs='5' sm='12'>
                                   {disabled ? (
@@ -165,7 +172,9 @@ const ModifyView = (props) => {
                             </Col>
                             <Col xs='12' sm='3' lg>
                               <Row className='gutter-3 flex-sm-column'>
-                                <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>Weight</Col>
+                                <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>
+                                  <T tag='span' i18nKey='app.rebalance.weight'>Weight</T>
+                                </Col>
                                 <Col xs='4' sm='12'>{originalWeight}</Col>
                                 <Col xs='5' sm='12'>
                                   {disabled ? (
@@ -190,7 +199,9 @@ const ModifyView = (props) => {
                             </Col>
                             <Col xs='12' sm>
                               <Row className='gutter-3 flex-sm-column'>
-                                <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>Units</Col>
+                                <Col xs='3' sm='12' className='text-muted text-right text-sm-left'>
+                                  <T tag='span' i18nKey='app.rebalance.units'>Units</T>
+                                </Col>
                                 <Col xs='4' sm='12'>{originalUnits}</Col>
                                 <Col xs='5' sm='12'>{adjustedUnits}</Col>
                               </Row>
@@ -217,7 +228,7 @@ const ModifyView = (props) => {
                 })}
                 <ListGroupButton action onClick={() => props.showAssetList(id, 'bottom')} className='text-center text-success'>
                   <i className='fa fa-plus fa-2x align-middle' />
-                  <span className='pl-2 h5'>add asset</span>
+                  <T tag='span' i18nKey='app.rebalance.addAssetBottom' className='pl-2 h5'>add asset</T>
                 </ListGroupButton>
               </ListGroup>
             )}
@@ -236,7 +247,7 @@ const ModifyView = (props) => {
           </Col>
           <Col xs='auto' className='text-left text-md-right mr-auto mr-md-0 ml-md-auto'>
             <h4 className='m-0 text-primary font-weight-bold'>{display.fiat(props.allowance.fiat)} <small className='text-muted'>{display.percentage(props.allowance.weight)}</small></h4>
-            <small className='text-muted'>available balance</small>
+            <T tag='small' i18nKey='app.rebalance.availableBalance' className='text-muted'>available balance</T>
           </Col>
           <Col xs='auto' className='text-right'>
             <Button color='primary' onClick={handleSave} disabled={Boolean(disableSave)} className='flat'>{saveButtonContent}</Button>
@@ -257,32 +268,40 @@ const ModifyView = (props) => {
     <Layout className='pt-3 px-0 px-md-3' navbarProps={{ className: 'flat' }} afterNav={secondNavbar}>
       {(portfolio.nestedWallets.length === 0) ? (
         <Alert color='info' className='text-center w-100'>
-          This portfolio is empty. To begin swapping you must <Link to='/connect' className='alert-link'>add a wallet</Link> first.
+          <T tag='span' i18nKey='app.rebalance.empty'>
+            This portfolio is empty. To begin swapping you must <Link to='/connect' className='alert-link'>add a wallet</Link> first.
+          </T>
         </Alert>
       ) : (
         <Fragment>
-          <Button color='link' className='mb-3' tag={Link} to={routes.rebalanceInstructions()}>
-            <i className='fa fa-question-circle'/> How do I use this?
-          </Button>
+          <T i18nKey='app.rebalance.how'>
+            <Button color='link' className='mb-3' tag={Link} to={routes.rebalanceInstructions()}>
+              <i className='fa fa-question-circle'/> How do I use this?
+            </Button>
+          </T>
           <ModalRoute closePath={routes.rebalance.path} path={routes.rebalanceInstructions.path} render={({ isOpen, toggle }) => (
             <Modal isOpen={isOpen} toggle={toggle}>
               <ModalHeader toggle={toggle}>
-                Instructions
+                <T tag='span' i18nKey='app.rebalance.instructions'>Instructions</T>
               </ModalHeader>
               <ModalBody>
-                <p className='mb-2'><b>Rebalance your Portfolio - 3 simple steps:</b></p>
+                <p className='mb-2'><b>
+                  <T tag='span' i18nKey='app.rebalance.instructions1'>Rebalance your Portfolio - 3 simple steps:</T>
+                </b></p>
                 <ol>
                   <li className='mb-1'>
-                    Drag a slider left to decrease weight of an asset.
-                    Use <span className='text-danger'>{removeButtonContent}</span> to remove entire asset.
+                    <T tag='span' i18nKey='app.rebalance.instructions2'>
+                      Drag a slider left to decrease weight of an asset.
+                      Use </T> 
+                    <span className='text-danger'>{removeButtonContent}</span> <T tag='span' i18nKey='app.rebalance.instructions3'>to remove entire asset.</T>
                   </li>
                   <li className='mb-1'>
-                    Drag a slider right to increase weight of an asset.
-                    Use <span className='text-success'>{addButtonContent}</span> to add a new asset.<br/>
-                    <i>(Note: To increase weight, you must have decreased weight of another asset)</i>
+                    <T tag='span' i18nKey='app.rebalance.instructions4'> Drag a slider right to increase weight of an asset.
+                    Use </T> <span className='text-success'>{addButtonContent}</span><T tag='span' i18nKey='app.rebalance.instructions5'> to add a new asset.<br/>
+                      <i>(Note: To increase weight, you must have decreased weight of another asset)</i></T>
                   </li>
                   <li>
-                    Click <span className='text-primary'>{saveButtonContent}</span> when finished to review changes.
+                    <T tag='span' i18nKey='app.rebalance.instructions6'>Click</T> <span className='text-primary'>{saveButtonContent}</span> <T tag='span' i18nKey='app.rebalance.instructions7'>when finished to review changes.</T>
                   </li>
                 </ol>
               </ModalBody>

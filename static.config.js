@@ -8,6 +8,7 @@ import { pick, get } from 'lodash'
 import urlJoin from 'url-join'
 
 import Wallets from './src/config/walletTypes'
+import { translations } from './src/config/translations'
 
 const { isDev, dirs, useHttps, siteRoot } = require('./etc/common.js')
 const getBaseConfig = require('./etc/webpack.config.base.js')
@@ -54,7 +55,7 @@ const generateCombinationsFromArray = (array, property) => {
 
 const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
   return (
-    <Html lang='en'>
+    <Html lang={get(routeInfo, 'allProps.meta.language', 'en')}>
       <Head>
         <meta charSet='utf-8' />
         <meta name='viewport' content='width=device-width, initial-scale=1' />
@@ -141,6 +142,36 @@ export default {
         component: 'src/site/pages/Home',
         getData: async () => ({
           supportedAssets,
+          translations: translations[0].translations,
+          meta: {
+            title: siteConfig.title,
+            description: siteConfig.description
+          }
+        }),
+        children: translations.map(t => {
+          return {
+            path: `/${t.url}`,
+            component: 'src/site/pages/Home',
+            getData: () => {
+              return {
+                translations: t.translations,
+                meta: {
+                  title: siteConfig.title,
+                  description: siteConfig.description,
+                  language: t.language
+                }
+              }
+            },
+          }
+        })
+      },
+      {
+        path: '/assets',
+        noindex: true,
+        component: 'src/site/pages/Home',
+        getData: async () => ({
+          supportedAssets,
+          translations: translations[0].translations,
           meta: {
             title: siteConfig.title,
             description: siteConfig.description
@@ -170,6 +201,7 @@ export default {
                 cmcIDno,
                 type,
                 descriptions,
+                translations: translations[0].translations,
                 meta: {
                   title: `Instantly ${type} ${name} (${symbol}) - Faa.st`,
                   description: `Safely trade your ${name} crypto directly from your hardware or software wallet. View ${name} (${symbol}) pricing charts, market cap, daily volume and other coin data.`
@@ -188,14 +220,33 @@ export default {
         }),
         children: supportedWallets.map(wallet => {
           const metaName = wallet.name.replace(' Wallet', '')
+          const urlName = wallet.name.replace(/\s+/g, '-').toLowerCase()
           return {
-            path: `/${wallet.name.replace(/\s+/g, '-').toLowerCase()}`,
+            path: `/${urlName}`,
             component: 'src/site/pages/Wallet',
             getData: () => ({
               wallet,
+              translations: translations[0].translations,
               meta: {
                 title: `Trade Your Crypto from your ${metaName.replace(' Wallet', '')} Wallet - Faa.st`,
                 description: `Safely trade your crypto directly from your ${metaName} Wallet. Connect your ${metaName} wallet and trade 100+ cryptocurrencies on Faa.st.`
+              }
+            }),
+            children: translations.map(t => {
+              return {
+                path: `/${t.url}`,
+                component: 'src/site/pages/Wallet',
+                getData: () => {
+                  return {
+                    wallet,
+                    translations: t.translations,
+                    meta: {
+                      title: `Trade Your Crypto from your ${metaName.replace(' Wallet', '')} Wallet - Faa.st`,
+                      description: `Safely trade your crypto directly from your ${metaName} Wallet. Connect your ${metaName} wallet and trade 100+ cryptocurrencies on Faa.st.`,
+                      language: t.language
+                    }
+                  }
+                },
               }
             })
           }
@@ -206,6 +257,7 @@ export default {
         component: 'src/site/pages/Blog',
         getData: async () => ({
           mediumPosts,
+          translations: translations[0].translations,
           meta: {
             title: 'Faa.st Cryptocurrency Blog',
             description: 'Blog posts about trading on Faa.st as well as the state of crypto including regulation, pricing, wallets, and mining.'
@@ -220,6 +272,7 @@ export default {
             component: 'src/site/pages/BlogPost',
             getData: async () => ({
               mediumPost,
+              translations: translations[0].translations,
               meta: {
                 title: `${post.title} - Faa.st Blog`,
                 description: `${post.virtuals.subtitle}`
@@ -233,47 +286,107 @@ export default {
         path: '/market-maker',
         component: 'src/site/pages/MarketMaker',
         getData: async () => ({
+          translations: translations[0].translations,
           meta: {
             title: 'Faa.st Market Maker Beta Program',
             description: 'Earn interest on your Bitcoin by fulfilling trades placed on the Faa.st marketplace. Sign up for the Beta now.'
           },
         }),
+        children: translations.map(t => {
+          return {
+            path: `/${t.url}`,
+            component: 'src/site/pages/MarketMaker',
+            getData: () => {
+              return {
+                translations: t.translations,
+                meta: {
+                  title: 'Faa.st Market Maker Beta Program',
+                  description: 'Earn interest on your Bitcoin by fulfilling trades placed on the Faa.st marketplace. Sign up for the Beta now.',
+                  language: t.language
+                }
+              }
+            },
+          }
+        })
       },
       {
         path: '/terms',
         component: 'src/site/pages/Terms',
+        getData: async () => ({
+          translations: translations[0].translations,
+        }),
       },
       {
         path: '/what-is-an-ico',
         component: 'src/site/pages/IcoIntro',
+        getData: async () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         path: '/what-is-the-difference-between-ico-ipo-ito',
         component: 'src/site/pages/IcoItoIpo',
+        getData: async () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         path: '/how-to-buy-ethereum',
         component: 'src/site/pages/BuyEthereum',
+        getData: async () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         path: '/what-are-smart-contracts',
         component: 'src/site/pages/SmartContracts',
+        getData: async () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         path: '/what-is-a-dao',
         component: 'src/site/pages/Dao',
+        getData: async () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         path: '/what-is-ethereum',
         component: 'src/site/pages/WhatIsEthereum',
+        getData: async () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         path: '/privacy',
         component: 'src/site/pages/Privacy',
+        getData: async () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         path: '/pricing',
         component: 'src/site/pages/Pricing',
+        getData: async () => {
+          return {
+            translations: translations[0].translations,
+          }
+        },
       },
       {
         is404: true,

@@ -16,6 +16,8 @@ import AssetSelect from './AssetSelect'
 import ConfirmAccountSelection from './ConfirmAccountSelection'
 import AccountSelect from './AccountSelect'
 
+import T from 'Components/i18n/T'
+
 export default compose(
   setDisplayName('HardwareWalletModal'),
   setPropTypes({
@@ -45,7 +47,7 @@ export default compose(
 )(({ isOpen, toggle, walletType, walletName, walletSupportedSymbols }) => (
   <Modal size='md' className='text-center' backdrop='static' isOpen={isOpen} toggle={toggle}>
     <ModalHeader tag='h3' className='text-primary' toggle={toggle}>
-      Adding {walletName}
+      <T tag='span' i18nKey='app.hardwareWalletModal.index.adding'>Adding</T> {walletName}
     </ModalHeader>
     <Switch>
       <Route path={routes.connectHwWalletAssetAccounts(walletType)} render={({ match: { params: { assetSymbol } } }) => (

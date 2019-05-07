@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as ReactDOM from 'react-dom'
 
 import Root from './Root'
+import 'Src/app/i18n'
 
 export default Root
 

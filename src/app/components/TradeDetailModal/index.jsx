@@ -9,6 +9,7 @@ import { pick } from 'lodash'
 import { retrieveSwap } from 'Actions/swap'
 import { getSwap } from 'Selectors/swap'
 import SwapStatusCard from 'Components/SwapStatusCard'
+import T from 'Components/i18n/T'
 
 export default compose(
   setDisplayName('TradeDetailModal'),
@@ -34,7 +35,7 @@ export default compose(
     size='md' toggle={toggle} className='mt-6 mx-md-auto' contentClassName='p-0'
     {...pick(props, Object.keys(Modal.propTypes))}>
     <ModalHeader tag='h4' toggle={toggle} className='text-primary'>
-      Order Details
+      <T tag='span' i18nKey='app.tradeDetailModal.orderDetails'>Order Details</T>
     </ModalHeader>
     <ModalBody className='p-0 p-sm-3'>
       <SwapStatusCard swap={swap} expanded/>

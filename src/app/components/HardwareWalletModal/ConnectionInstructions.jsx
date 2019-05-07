@@ -1,46 +1,48 @@
+/* eslint-disable react/no-unescaped-entities */
 import React from 'react'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
+import T from 'Components/i18n/T'
 
 const defaultTrezorInstructions = (assetName) => [
   {
     icon: 'fa-usb',
-    text: 'Connect your TREZOR to begin'
+    text: <T tag='span' i18nKey='app.hardwareWalletModal.connectionInstructions.trezor.connect'>Connect your TREZOR to begin</T>
   },
   {
     icon: 'fa-refresh',
-    text: 'Ensure your TREZOR firmware is up to date using the TREZOR wallet website'
+    text: <T tag='span' i18nKey='app.hardwareWalletModal.connectionInstructions.trezor.version'>Ensure your TREZOR firmware is up to date using the TREZOR wallet website</T>
   },
   {
     icon: 'fa-unlock',
-    text: 'If required, enter your pin or password to unlock the TREZOR'
+    text: <T tag='span' i18nKey='app.hardwareWalletModal.connectionInstructions.trezor.pin'>If required, enter your pin or password to unlock the TREZOR</T>
   },
   {
     icon: 'fa-window-restore',
-    text: (<span>When asked if you want to export the public key of your {assetName} account, select <b>Export</b></span>)
+    text: (<T tag='span' i18nKey='app.hardwareWalletModal.connectionInstructions.trezor.export'>When asked if you want to export the public key of your {assetName} account, select <b>Export</b></T>)
   },
   {
     icon: 'fa-exclamation-triangle',
-    text: 'If you see a "Popup Closed" error, please enable popups in your browser settings and try again'
+    text: <T tag='span' i18nKey='app.hardwareWalletModal.connectionInstructions.trezor.popup'>If you see a "Popup Closed" error, please enable popups in your browser settings and try again</T>
   }
 ]
 
 const defaultLedgerInstructions = (assetName) => [
   {
     icon: 'fa-usb',
-    text: 'Connect your Ledger device to begin'
+    text: <T tag='span' i18nKey='app.hardwareWalletModal.connectionInstructions.ledger.connect'>Connect your Ledger device to begin</T>
   },
   {
     icon: 'fa-unlock',
-    text: 'Enter your pin to unlock the Ledger'
+    text: <T tag='span' i18nKey='app.hardwareWalletModal.connectionInstructions.ledger.pin'>Enter your pin to unlock the Ledger</T>
   },
   {
     icon: 'fa-refresh',
-    text: `Ensure your Ledger firmware and ${assetName} app are up to date using the Ledger Live desktop app`
+    text: <T tag='span' i18nKey='app.hardwareWalletModal.connectionInstructions.ledger.version'>Ensure your Ledger firmware and {assetName} app are up to date using the Ledger Live desktop app</T>
   },
   {
     icon: 'fa-mobile',
-    text: `Open the ${assetName} app on your Ledger`
+    text: <T tag='span' i18nKey='app.hardwareWalletModal.connectionInstructions.ledger.open'>Open the {assetName} app on your Ledger</T>
   },
 ]
 

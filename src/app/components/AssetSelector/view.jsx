@@ -41,7 +41,7 @@ const AssetCol = ({
         <div>{name}</div>
         <div><small className='text-muted'>[{symbol}]</small></div>
         {disabled && !restricted && (
-          <div className={style.assetDisabledMessage}>{`(${disabledMessage})`}</div>
+          <div className={style.assetDisabledMessage}>{disabledMessage}</div>
         )}
         {restricted && disabled && (
           <a 
@@ -49,7 +49,7 @@ const AssetCol = ({
             target='_blank noopener noreferrer'
             className={style.assetDisabledMessage}
           >
-            {`(${disabledMessage})`}
+            {disabledMessage}
           </a>
         )}
       </Button>

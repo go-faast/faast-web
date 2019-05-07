@@ -10,6 +10,8 @@ import config from 'Config'
 import { changeDerivationPath } from 'Actions/connectHardwareWallet'
 import { getDerivationPath } from 'Selectors/connectHardwareWallet'
 
+import T from 'Components/i18n/T'
+
 const extraPropTypes = {
   walletType: PropTypes.string.isRequired,
   assetSymbol: PropTypes.string.isRequired,
@@ -54,7 +56,7 @@ export default compose(
   })
 )(({ isPrimary, primaryLabel, secondaryLabel, canSwitch, handleClick, buttonProps }) => canSwitch && (
   <Button color='dark' onClick={handleClick} {...buttonProps}>
-    Switch to {isPrimary 
+    <T tag='span' i18nKey='app.hardwareWalletModal.switchPathButton.switch'>Switch to</T> {isPrimary 
       ? (secondaryLabel || 'secondary account')
       : (primaryLabel || 'primary account')}
   </Button>

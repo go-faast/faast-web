@@ -15,6 +15,7 @@ import UnitsLoading from 'Components/UnitsLoading'
 import WalletLabel from 'Components/WalletLabel'
 import Spinner from 'Components/Spinner'
 import DataLayout from 'Components/DataLayout'
+import T from 'Components/i18n/T'
 
 const StatusFooter = ({ className, children, ...props }) => (
   <CardFooter className={classNames('font-size-xs py-2 px-3', className)} {...props}>
@@ -44,15 +45,15 @@ const priceChange = (date, asset) => {
 const getShortStatus = (swap) => {
   const { tx, status: { code, detailsCode, labelClass, label } } = swap
   if (detailsCode === 'signed') {
-    return (<span className='text-success'>Signed</span>)
+    return (<T tag='span' i18nKey='app.swapStatusCard.signed' className='text-success'>Signed</T>)
   } else if (detailsCode === 'signing_unsupported') {
-    return (<span className='text-success'>Ready</span>)
+    return (<T tag='span' i18nKey='app.swapStatusCard.ready' className='text-success'>Ready</T>)
   } else if (detailsCode === 'signing') {
-    return (<span className='text-warning blink'>Awaiting signature</span>)
+    return (<T tag='span' i18nKey='app.swapStatusCard.awaiting' className='text-warning blink'>Awaiting signature</T>)
   } else if (detailsCode.includes('error')) {
-    return (<span className='text-danger'>Failed</span>)
+    return (<T tag='span' i18nKey='app.swapStatusCard.failed' className='text-danger'>Failed</T>)
   } else if (detailsCode === 'sending') {
-    return (<span className='text-primary'>Sending</span>)
+    return (<T tag='span' i18nKey='app.swapStatusCard.sending' className='text-primary'>Sending</T>)
   } else if ((tx && tx.sent) || code === 'failed') {
     return (<span className={labelClass}>{label}</span>)
   } else if (detailsCode === 'unsigned') {
@@ -155,7 +156,7 @@ export default compose(
         <StatusFooter>
           <DataLayout rows={[
             [
-              'Status:',
+              <T tag='span' i18nKey='app.swapStatusCard.status'>Status:</T>,
               <span className={classNames({
                 'text-success': isComplete,
                 'text-warning': detailsCode === 'contact_support',
@@ -163,15 +164,15 @@ export default compose(
               })}>{details}</span>
             ],
             (!isManual || rate) && [
-              'Rate:',
+              <T tag='span' i18nKey='app.swapStatusCard.rate'>Rate:</T>,
               <UnitsLoading value={rate} symbol={sendSymbol} error={error} precision={null} prefix={`1 ${receiveSymbol} = `}/>
             ],
             (txFee || initializing) && [
-              'Network fee:',
+              <T tag='span' i18nKey='app.swapStatusCard.network'>Network fee:</T>,
               <UnitsLoading value={txFee} symbol={txFeeSymbol} error={error} precision={null} showFiat/>
             ],
             hasSwapFee && [
-              'Swap fee:',
+              <T tag='span' i18nKey='app.swapStatusCard.swapFee'>Swap fee:</T>,
               <UnitsLoading value={swapFee} symbol={receiveSymbol} error={error} precision={null}/>
             ],
             [
@@ -180,7 +181,7 @@ export default compose(
                 <UnitsLoading value={sendAmount} symbol={sendSymbol} error={error} precision={null}/>
                 {sendWalletId && (
                   <span className='d-none d-xs-inline ml-2'>
-                    <i>using wallet</i> <WalletLabel.Connected id={sendWalletId} tag='span' hideIcon/>
+                    <T tag='i' i18nKey='app.swapStatusCard.usingWallet'>using wallet</T> <WalletLabel.Connected id={sendWalletId} tag='span' hideIcon/>
                   </span>
                 )}
               </Fragment>
@@ -191,23 +192,23 @@ export default compose(
                 <UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} precision={null}/>
                 <span className='d-none d-xs-inline ml-2'>
                   {receiveWalletId ? (
-                    <Fragment><i>using wallet</i> <WalletLabel.Connected id={receiveWalletId} tag='span' hideIcon/></Fragment>
+                    <Fragment><T tag='i' i18nKey='app.swapStatusCard.usingWallet'>using wallet</T> <WalletLabel.Connected id={receiveWalletId} tag='span' hideIcon/></Fragment>
                   ) : (
-                    <Fragment><i>at address</i> {receiveAddress}</Fragment>
+                    <Fragment><T tag='i' i18nKey='app.swapStatusCard.atAddress'>at address</T> {receiveAddress}</Fragment>
                   )}
                 </span>
               </Fragment>
             ],
             [
-              'Date:',
+              <T tag='span' i18nKey='app.swapStatusCard.date'>Date:</T>,
               !createdAtFormatted ? loadingValue : createdAtFormatted
             ],
             [
-              'Order ID:',
+              <T tag='span' i18nKey='app.swapStatusCard.orderId'>Order ID:</T>,
               orderId ? orderId : loadingValue
             ],
             txHash && [
-              'Sent txn:',
+              <T tag='span' i18nKey='app.swapStatusCard.sentTx'>Sent txn:</T>,
               <Fragment>
                 <a href={`${config.explorerUrls[txFeeSymbol]}/tx/${txHash}`} target='_blank' rel='noopener noreferrer' className='word-break-all mr-2'>{txHash}</a> 
                 {!confirmed ? (

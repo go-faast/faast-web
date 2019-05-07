@@ -9,6 +9,7 @@ import { changeDerivationPath } from 'Actions/connectHardwareWallet'
 import { getDerivationPath } from 'Selectors/connectHardwareWallet'
 
 import ReduxFormField from 'Components/ReduxFormField'
+import T from 'Components/i18n/T'
 
 const validateDerivationPath = (path) => {
   if (!(typeof path === 'string'
@@ -65,6 +66,6 @@ export default compose(
     onSubmit={handleSubmit}
     initialValues={{ derivationPath }}/>)
   : (<Button color='dark' className='mx-auto' onClick={toggleShowForm}>
-      Change derivation path
+    <T tag='span' i18nKey='app.hardwareWalletModal.derivationPath.change'>Change derivation path</T>
   </Button>)
 )

@@ -15,6 +15,8 @@ import { fetchGeoRestrictions } from 'Common/actions/app'
 import { retrieveAssets } from 'Common/actions/asset'
 import { getAllAssetsArray, areAssetsLoaded } from 'Common/selectors/asset'
 
+
+
 export default compose(
   setDisplayName('Home'),
   connect(createStructuredSelector({
@@ -36,13 +38,13 @@ export default compose(
     }
   }),
   withRouteData,
-)(({ supportedAssets, areAssetsLoaded, assetList }) => {
+)(({ supportedAssets, areAssetsLoaded, assetList, translations = {} }) => {
   supportedAssets = areAssetsLoaded ? assetList : supportedAssets
   return (
     <div>
-      <Hero supportedAssets={supportedAssets} className='mb-md-5 mb-0'/>
-      <Features supportedAssets={supportedAssets} />
-      <Footer/>
+      <Hero supportedAssets={supportedAssets} translations={translations} className='mb-md-5 mb-0'/>
+      <Features translations={translations} supportedAssets={supportedAssets} />
+      <Footer translations={translations} />
     </div>
   )
 })

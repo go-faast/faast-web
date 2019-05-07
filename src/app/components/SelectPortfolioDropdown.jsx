@@ -6,6 +6,7 @@ import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from
 import { setCurrentPortfolio, createNewPortfolio } from 'Actions/portfolio'
 import { getAllPortfolioIds, getCurrentPortfolioId, getCurrentPortfolioLabel } from 'Selectors'
 import WalletSummary from 'Components/WalletSummary'
+import T from 'Components/i18n/T'
 
 const SelectPortfolioDropdown = ({ portfolioIds, currentPortfolioId, currentPortfolioLabel, changePortfolio, createPortfolio, showCreatePortfolio, togglerProps, ...props }) => (
   <UncontrolledDropdown {...props}>
@@ -21,7 +22,7 @@ const SelectPortfolioDropdown = ({ portfolioIds, currentPortfolioId, currentPort
       {showCreatePortfolio && ([
         <DropdownItem key='1' divider />,
         <DropdownItem key='2' onClick={() => createPortfolio(true)}>
-          <small className='m-0 font-weight-normal text-primary'><i className='fa fa-plus'/> add portfolio</small>
+          <small className='m-0 font-weight-normal text-primary'><i className='fa fa-plus'/> <T tag='span' i18nKey='app.selectPortfolioDropdown.add'>add portfolio</T></small>
         </DropdownItem>
       ])}
     </DropdownMenu>

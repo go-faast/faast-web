@@ -18,6 +18,7 @@ import { retrievePairData } from 'Actions/rate'
 import { refreshSwap } from 'Actions/swap'
 import { getRateMinimumDeposit, getRatePrice, getRateMaximumDeposit } from 'Selectors/rate'
 import DataLayout from 'Components/DataLayout'
+import T from 'Components/i18n/T'
 
 import { getGeoLimit } from 'Selectors/app'
 
@@ -47,7 +48,7 @@ const StepTwoManual = ({
       <ClipboardCopyField value={depositAddress}/>
       {maxGeoBuy && (
         <Alert color='info' className='mx-auto mt-3 text-center'>
-          <small>Please note: The maximum you can swap is <Units precision={8} roundingType='dp' value={maxGeoBuy}/> {sendSymbol} <a style={{ color: 'rgba(0, 255, 222, 1)' }} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>due to your location.</a></small>
+          <T tag='small' i18nKey='app.stepTwoManual.geoLimit'>Please note: The maximum you can swap is <Units precision={8} roundingType='dp' value={maxGeoBuy}/> {sendSymbol} <a style={{ color: 'rgba(0, 255, 222, 1)' }} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>due to your location.</a></T>
         </Alert>
       )}
     </CardBody>
@@ -55,30 +56,30 @@ const StepTwoManual = ({
       <div className={style.receipt}></div>
       <p className='mt-2 text-center' style={{ letterSpacing: 5 }}>ORDER DETAILS</p>
       <DataLayout rows={[
-        ['Status:', <span className='text-capitalize'>
+        [<T tag='span' i18nKey='app.stepTwoManual.status'>Status:</T>, <span className='text-capitalize'>
           {orderStatus} {orderStatus !== 'complete' && (
             <Expandable
               shrunk={<i className='fa fa-spinner fa-pulse'/>}
-              expanded={'Order status is updated automatically. You do not need to refresh.'}/>
+              expanded={<T tag='span' i18nKey='app.stepTwoManual.updatesAuto'>Order status is updated automatically. You do not need to refresh.</T>}/>
           )}
         </span>],
-        ['Order ID:', <span className='text-monospace'>{orderId}</span>],
-        ['Receive address:', <span className='text-monospace'>{receiveAddress}</span>],
-        refundAddress && ['RefundAddress:', <span className='text-monospace'>{refundAddress}</span>],
-        quotedRate && ['Rate:', <Rate rate={quotedRate} from={sendSymbol} to={receiveSymbol}/>],
+        [<T tag='span' i18nKey='app.stepTwoManual.orderID'>Order ID:</T>, <span className='text-monospace'>{orderId}</span>],
+        [<T tag='span' i18nKey='app.stepTwoManual.receiveAddress'>Receive address:</T>, <span className='text-monospace'>{receiveAddress}</span>],
+        refundAddress && [<T tag='span' i18nKey='app.stepTwoManual.refundAddress'>Refund address:</T>, <span className='text-monospace'>{refundAddress}</span>],
+        quotedRate && [<T tag='span' i18nKey='app.stepTwoManual.rate'>Rate:</T>, <Rate rate={quotedRate} from={sendSymbol} to={receiveSymbol}/>],
         sendAmount
-          ? ['Deposit amount:', <Units value={sendAmount} symbol={sendSymbol} precision={8}/>]
-          : (minimumDeposit && ['Minimum deposit:', <Units value={minimumDeposit} symbol={sendSymbol} precision={8}/>]),
+          ? [<T tag='span' i18nKey='app.stepTwoManual.depositAmount'>Deposit amount:</T>, <Units value={sendAmount} symbol={sendSymbol} precision={8}/>]
+          : (minimumDeposit && [<T tag='span' i18nKey='app.stepTwoManual.minimumAmount'>Minimum deposit:</T>, <Units value={minimumDeposit} symbol={sendSymbol} precision={8}/>]),
         !sendAmount && (maxiumumDeposit && ['Maximum deposit:', <Units value={maxiumumDeposit} symbol={sendSymbol} precision={8}/>]),
-        receiveAmount && ['Receive amount:', <Units value={receiveAmount} symbol={receiveSymbol} precision={8}/>]
+        receiveAmount && [<T tag='span' i18nKey='app.stepTwoManual.receiveAmount'>Receive amount:</T>, <Units value={receiveAmount} symbol={receiveSymbol} precision={8}/>]
       ]}/>
       <div className='mt-2'>
         <small className='text-muted'>
           {!isFixedPrice ? (
-            '* Quoted rate is an estimate based on current market conditions. Actual rate may vary.'
+            <T tag='span' i18nKey='app.stepTwoManual.fixedPrice'>* Quoted rate is an estimate based on current market conditions. Actual rate may vary.</T>
           ) : (secondsUntilPriceExpiry > 0 && (
             <Timer className='text-warning' seconds={secondsUntilPriceExpiry}
-              label={'* Quoted rate is guaranteed if deposit is sent within:'}
+              label={ <T tag='span' i18nKey='app.stepTwoManual.quotedRate'>* Quoted rate is guaranteed if deposit is sent within:</T>}
               onTimerEnd={handleTimerEnd}/>
           ))}
         </small>

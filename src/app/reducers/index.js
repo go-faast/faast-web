@@ -17,9 +17,11 @@ import walletPasswordPrompt from './walletPasswordPrompt'
 import connectHardwareWallet from './connectHardwareWallet'
 import tx from './tx'
 import rate from './rate'
+import i18n from './i18n'
 
 export default combineReducers({
   app,
+  i18n,
   accountSearch,
   portfolio,
   wallet,

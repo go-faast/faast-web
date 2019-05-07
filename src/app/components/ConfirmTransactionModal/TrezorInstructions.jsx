@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import { compose, setDisplayName, setPropTypes } from 'recompose'
 import TrezorScreen from './TrezorScreen'
 
+import T from 'Components/i18n/T'
+
 export default compose(
   setDisplayName('TrezorInstructions'),
   setPropTypes({
@@ -11,7 +13,7 @@ export default compose(
   })
 )(({ screens }) => (
   <div>
-    <p>Please confirm the transaction on your device. You should see the following information on screen.</p>
+    <T tag='p' i18nKey='app.trezorInstructions.pleaseConfirm'>Please confirm the transaction on your device. You should see the following information on screen.</T>
     <div className='pt-1 pb-1'>
       {screens.map((content, i) => (
         <TrezorScreen key={i}>{content}</TrezorScreen>

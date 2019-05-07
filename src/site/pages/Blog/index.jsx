@@ -13,9 +13,9 @@ import classNames from 'class-names'
 export default compose(
   setDisplayName('Blog'),
   withRouteData
-)(({ mediumPosts }) => (
+)(({ mediumPosts, translations }) => (
   <Fragment>
-    <Header theme='light' />
+    <Header translations={translations} theme='light' />
     <Container>
       <h4 className={classNames(darkText, 'mt-4 font-weight-bold')}>Newest Blog Posts</h4>
       <Row className='pb-5 mb-4'>
@@ -24,6 +24,6 @@ export default compose(
         ))}
       </Row>
     </Container>
-    <Footer />
+    <Footer translations={translations} />
   </Fragment>
 ))

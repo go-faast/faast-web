@@ -15,6 +15,7 @@ import { confirmAccountSelection } from 'Actions/connectHardwareWallet'
 
 import UnitsLoading from 'Components/UnitsLoading'
 import AddressLink from 'Components/AddressLink'
+import T from 'Components/i18n/T'
 
 import BackButton from './BackButton'
 import ConnectionStatus from './ConnectionStatus'
@@ -69,7 +70,9 @@ export default compose(
         <div className='w-100'/>
         {accountSelectEnabled && (
           <Col xs='auto'>
-            <Button tag={Link} to={routes.connectHwWalletAssetAccounts(walletType, assetSymbol)} color='primary'>Change account</Button>
+            <Button tag={Link} to={routes.connectHwWalletAssetAccounts(walletType, assetSymbol)} color='primary'>
+              <T tag='span' i18nKey='app.hardwareWalletModal.confirmAccount.changeAccount'>Change account</T>
+            </Button>
           </Col>
         )}
         <div className='w-100'/>
@@ -83,8 +86,12 @@ export default compose(
       </Row>
     </ModalBody>
     <ModalFooter>
-      <BackButton tag={Link} to={backPath}>Back</BackButton>
-      <Button color='success' onClick={handleConfirm} disabled={disableConfirm}>Confirm</Button>
+      <BackButton tag={Link} to={backPath}>
+        <T tag='span' i18nKey='app.hardwareWalletModal.confirmAccount.back'>Back</T>
+      </BackButton>
+      <Button color='success' onClick={handleConfirm} disabled={disableConfirm}>
+        <T tag='span' i18nKey='app.hardwareWalletModal.confirmAccount.confirm'>Confirm</T>
+      </Button>
     </ModalFooter>
   </div>
 ))

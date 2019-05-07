@@ -11,6 +11,7 @@ import routes from 'Routes'
 import Units from 'Components/Units'
 import Expandable from 'Components/Expandable'
 import CoinIcon from 'Components/CoinIcon'
+import T from 'Components/i18n/T'
 
 import { areAnyWalletOrdersLoading, areAllWalletOrdersLoaded } from 'Selectors/wallet'
 import { retrievePaginatedSwaps } from 'Actions/swap'
@@ -148,7 +149,7 @@ const TradeTable = ({ handleClick, hideIfNone, tableTitle,
             style={{ bottom: 0 }}
           >
             {!areOrdersLoading ? (
-              <span className='hover'>Show more orders...</span>
+              <T tag='span' i18nKey='app.orders.showMore' className='hover'>Show more orders...</T>
             ) : (
               <i className='fa fa-spinner fa-pulse'/>
             )}
@@ -178,15 +179,15 @@ export default compose(
   setDisplayName('TradeTable'),
   setPropTypes({
     hideIfNone: PropTypes.bool,
-    tableTitle: PropTypes.string,
+    tableTitle: PropTypes.node,
     tableHeadings: PropTypes.arrayOf(PropTypes.object),
-    zeroOrdersMessage: PropTypes.string,
+    zeroOrdersMessage: PropTypes.node,
     swaps: PropTypes.arrayOf(PropTypes.object),
     showMore: PropTypes.bool,
     classProps: PropTypes.string
   }),
   defaultProps({
-    tableTitle: 'Orders',
+    tableTitle: <span>Orders</span>,
     hideIfNone: false,
     tableHeadings: [],
     zeroOrdersMessage: 'No orders to show',

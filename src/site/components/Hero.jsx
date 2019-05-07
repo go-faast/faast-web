@@ -17,22 +17,18 @@ export default compose(
     from: PropTypes.string,
     headline: PropTypes.node,
     supportedAssets: PropTypes.arrayOf(PropTypes.object),
-    showMacScreenShot: PropTypes.bool
+    showMacScreenShot: PropTypes.bool,
+    translations: PropTypes.object
   }),
   defaultProps({
     to: 'ETH',
     from: 'BTC',
     supportedAssets: [{}],
-    headline: (
-      <h1 className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
-        <span className='special-word'>Instantly</span> trade directly from your Ledger, Trezor, or MetaMask.
-      </h1>
-    ),
     showMacScreenShot: true
   }),
-)(({ supportedAssets, to, from, headline }) => (
+)(({ supportedAssets, to, from, headline, translations = {}, translations: { static: { hero = {}, hero: { headline: headlineT = {}, subtitle = {} } = {} } = {} } }) => (
   <div>
-    <Header/>
+    <Header translations={translations}/>
     <div className='jumbotron jumbotron-fluid hero-technology mb-0' style={{
       backgroundImage: `url(${MoonBackground})`,
       height: '824px',
@@ -48,20 +44,24 @@ export default compose(
           <Col sm='12' lg='6' className='text-left pl-md-5 pl-0 ml-4'>
             <a href='/market-maker'>
               <div className='notification mt-md-4 mt-0 mb-4'>
-                <span className='new-pill'>new</span>
-            Read about the Faa.st Market Maker Beta
+                <span className='new-pill'>{hero.new}</span>
+                {hero.notification}
               </div>
             </a>
-            {headline}
+            {headline || (
+              <h1 className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
+                <span className='special-word'>{headlineT.instantly}</span> {headlineT.trade}
+              </h1>
+            )}
             <p className='hero-subtitle mb-4' style={{ fontWeight: 'normal' }}>
-            The <span className='special-word'>safest</span> way to to build a diversified cryptocurrency portfolio
+              {subtitle.the} <span className='special-word'>{subtitle.safest} </span> {subtitle.way} 
             </p>
             <p><a className='btn btn-primary btn-lg hero-button py-2' role='button' href='/app'>
-      Create A Portfolio
+              {hero.button}
             </a></p>
           </Col>
           <Col className={classNames('pr-3 d-block')}>
-            <SwapWidget assets={supportedAssets} defaultDeposit={from} defaultReceive={to} />
+            <SwapWidget assets={supportedAssets} defaultDeposit={from} defaultReceive={to} translations={translations} />
           </Col>
         </Row>
       </Container>

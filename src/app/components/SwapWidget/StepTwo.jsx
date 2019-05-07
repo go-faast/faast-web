@@ -15,6 +15,7 @@ import { getSwap } from 'Selectors/swap'
 
 import ProgressBar from 'Components/ProgressBar'
 import Loading from 'Components/Loading'
+import T from 'Components/i18n/T'
 
 import StepTwoManual from './StepTwoManual'
 import StepTwoConnected from './StepTwoConnected'
@@ -28,7 +29,13 @@ const SwapStepTwo = ({
   const { sendSymbol, receiveSymbol, isManual } = swap
   return (
     <Fragment>
-      <ProgressBar steps={['Create Swap', `Send ${sendSymbol}`, `Receive ${receiveSymbol}`]} currentStep={1}/>
+      <ProgressBar steps={[
+        <T key='1' tag='span' i18nKey='app.progressBar.createSwap'>Create Swap</T>, 
+        <T key='2' tag='span' i18nKey='app.progressBar.sendSymbol'>Send {sendSymbol}</T>, 
+        <T key='3' tag='span' i18nKey='app.progressBar.receiveSymbol'>Receive {receiveSymbol}</T>
+      ]} 
+      currentStep={1}
+      />
       <Card className={classNames('justify-content-center p-0', style.container, style.stepTwo)}>
         {isManual ? (
           <StepTwoManual swap={swap}/>

@@ -39,7 +39,7 @@ export default compose(
     expand: config.navbar.expand,
   }),
   withToggle('expanded'),
-)(({ theme, headerColor, toggleExpanded, isExpanded, ...props }) => (
+)(({ theme, headerColor, toggleExpanded, isExpanded, translations: { static: { header = {} } = {}  }, ...props }) => (
   <Navbar {...pick(props, Object.keys(Navbar.propTypes))} expand='sm' className={darkestText}
     style={{ border: 0, backgroundColor: headerColor ? headerColor : 'transparent', paddingLeft: '12px' }}>
     <Container>
@@ -50,17 +50,17 @@ export default compose(
       <Collapse isOpen={isExpanded} navbar>
         <Nav className='ml-auto' navbar>
           <NavItem className='mr-4' key='swap'>
-            <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/app/swap'>Swap</NavLink>
+            <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/app/swap'>{header.swap}</NavLink>
           </NavItem>
           <NavItem className='mr-4' key='marketmaker'>
-            <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/market-maker'>Market Maker <sup className={classNames(betaTag, 'text-primary')}><i>beta</i></sup></NavLink>
+            <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/market-maker'>{header.marketMaker} <sup className={classNames(betaTag, 'text-primary')}><i>{header.beta} </i></sup></NavLink>
           </NavItem>
           <NavItem className='mr-4' key='blog'>
-            <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/blog'>Blog</NavLink>
+            <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/blog'>{header.blog}</NavLink>
           </NavItem>
           <NavItem className='mr-4' key='portfolio'>
             <NavLink tag='a' className='nav-link py-1' href='/app'>
-              <button className={classNames((theme == 'light' ? 'btn-primary' : 'btn-light'), 'btn')}>Portfolio</button>
+              <button className={classNames((theme == 'light' ? 'btn-primary' : 'btn-light'), 'btn')}>{header.portfolio}</button>
             </NavLink>
           </NavItem>
         </Nav>
