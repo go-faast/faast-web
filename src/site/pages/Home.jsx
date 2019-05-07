@@ -38,7 +38,7 @@ export default compose(
     }
   }),
   withRouteData,
-)(({ supportedAssets, areAssetsLoaded, assetList, translations }) => {
+)(({ supportedAssets, areAssetsLoaded, assetList, translations = {} }) => {
   supportedAssets = areAssetsLoaded ? assetList : supportedAssets
   return (
     <div>
