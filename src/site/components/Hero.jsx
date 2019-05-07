@@ -26,7 +26,7 @@ export default compose(
     supportedAssets: [{}],
     showMacScreenShot: true
   }),
-)(({ supportedAssets, to, from, headline, translations, translations: { static: { hero = {}, hero: { headline: headlineT, subtitle } = {} } = {} } }) => (
+)(({ supportedAssets, to, from, headline, translations, translations: { static: { hero = {}, hero: { headline: headlineT = {}, subtitle = {} } = {} } = {} } }) => (
   <div>
     <Header translations={translations}/>
     <div className='jumbotron jumbotron-fluid hero-technology mb-0' style={{
