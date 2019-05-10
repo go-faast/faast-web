@@ -106,7 +106,8 @@
       "createSwap": "Create Swap",
       "generatingSwap": "Generating Swap...",
       "chooseSend": "Choose Asset to Send",
-      "chooseReceive": "Choose Asset to Receive"
+      "chooseReceive": "Choose Asset to Receive",
+      "noRate": "Unable to retreive rate"
     },
     "progressBar": {
       "createSwap": "Create Swap",

@@ -21,7 +21,7 @@ import { retrievePairData } from 'Actions/rate'
 import { openViewOnlyWallet } from 'Actions/access'
 import { saveSwapWidgetInputs } from 'Actions/app'
 
-import { getRateMinimumDeposit, getRatePrice, isRateLoaded, getRateMaximumDeposit } from 'Selectors/rate'
+import { getRateMinimumDeposit, getRatePrice, isRateLoaded, getRateMaximumDeposit, rateError } from 'Selectors/rate'
 import { getAllAssetSymbols, getAsset } from 'Selectors/asset'
 import { getWallet } from 'Selectors/wallet'
 import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
@@ -67,7 +67,7 @@ const SwapStepOne = ({
   onChangeSendAmount, handleSelectFullBalance, fullBalanceAmount, fullBalanceAmountLoaded,
   sendWallet, defaultRefundAddress, defaultReceiveAddress, maxGeoBuy, handleSelectGeoMax,
   onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs,
-  onChangeRefundAddress, onChangeReceiveAddress
+  onChangeRefundAddress, onChangeReceiveAddress, estimatedRate, rateError
 }) => (
   <Fragment>
     <ProgressBar steps={[
@@ -169,7 +169,7 @@ const SwapStepOne = ({
                   tag={StepOneField}
                   addressFieldName='refundAddress'
                   walletIdFieldName='sendWalletId'
-                  placeholder={`${sendSymbol} return address (optional)`}
+                  placeholder={sendSymbol !== 'XMR' ? `${sendSymbol} return address (optional)` : `${sendSymbol} return address`}
                   label='From wallet'
                   labelClass='mt-3 mt-sm-0 mt-lg-3'
                   validate={validateRefundAddress}
@@ -179,6 +179,7 @@ const SwapStepOne = ({
                   defaultValue={previousSwapInputs ? previousSwapInputs.fromAddress : defaultRefundAddress}
                   formName={FORM_NAME}
                   onChange={onChangeRefundAddress}
+                  requiredLabel={sendSymbol === 'XMR'}
                   disableNoBalance
                 />
               </Col>
@@ -212,8 +213,14 @@ const SwapStepOne = ({
                 labelClass='p-0'
               />
             </div>
-            <Button className={classNames('mt-2 mb-2 mx-auto', style.submitButton)} color='primary' type='submit' disabled={submitting}>
-              {!submitting ? <T tag='span' i18nKey='app.widget.createSwap'>Create Swap</T> : <T tag='span' i18nKey='app.widget.generatingSwap'>Generating Swap...</T> }
+            <Button className={classNames('mt-2 mb-2 mx-auto', style.submitButton)} color={rateError ? 'danger' : 'primary'} type='submit' disabled={submitting || rateError}>
+              {!submitting && !rateError ? (
+                <T tag='span' i18nKey='app.widget.createSwap'>Create Swap</T>
+               ) : rateError ? (
+                <T tag='span' i18nKey='app.widget.noRate'>Unable to retreive rate</T>
+                ) : (
+               <T tag='span' i18nKey='app.widget.generatingSwap'>Generating Swap...</T>
+              )}
             </Button>
           </CardBody>
         </Card>
@@ -304,6 +311,7 @@ export default compose(
     minimumSend: (state, { pair }) => getRateMinimumDeposit(state, pair),
     maximumSend: (state, { pair }) => getRateMaximumDeposit(state, pair),
     estimatedRate: (state, { pair }) => getRatePrice(state, pair),
+    rateError: (state, { pair }) => rateError(state, pair),
   })),
   withState('assetSelect', 'setAssetSelect', null), // send, receive, or null
   withState('estimatedField', 'setEstimatedField', 'receive'), // send or receive
@@ -315,7 +323,10 @@ export default compose(
       validator.required(),
       validator.walletAddress(receiveAsset)
     ),
-    validateRefundAddress: ({ sendAsset }) => validator.walletAddress(sendAsset),
+    validateRefundAddress: ({ sendAsset }) => validator.all(
+      ...(sendAsset.symbol === 'XMR' ? [validator.required()] : []),
+      validator.walletAddress(sendAsset)
+    ),
     onSubmit: ({
       sendSymbol, receiveAsset, sendAsset,
       createSwap, openViewOnly, push, estimatedField
@@ -368,18 +379,18 @@ export default compose(
   withHandlers(({ change, sendAsset, receiveAsset }) => {
     const setEstimatedReceiveAmount = (x) => {
       log.trace('setEstimatedReceiveAmount', x)
-      change('receiveAmount', x && toBigNumber(x).toFormat(receiveAsset.decimals).replace(/,/g, ''))
+      change('receiveAmount', x && toBigNumber(x))
     }
     const setEstimatedSendAmount = (x) => {
       log.trace('setEstimatedSendAmount', x)
-      change('sendAmount', x && toBigNumber(x).toFormat(sendAsset.decimals).replace(/,/g, ''))
+      change('sendAmount', x && toBigNumber(x))
     }
     return {
       calculateReceiveEstimate: ({
-        receiveAsset, estimatedRate, setEstimatedField, updateURLParams
+        receiveAsset, estimatedRate, setEstimatedField, updateURLParams, sendAsset
       }) => (sendAmount) => {
         if (estimatedRate && sendAmount) {
-          sendAmount = toBigNumber(sendAmount)
+          sendAmount = toBigNumber(sendAmount).round(sendAsset.decimals)
           const estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals)
           updateURLParams({ 
             toAmount: estimatedReceiveAmount ? parseFloat(estimatedReceiveAmount) : undefined,
@@ -392,10 +403,10 @@ export default compose(
         setEstimatedField('receive')
       },
       calculateSendEstimate: ({
-        sendAsset, estimatedRate, setEstimatedField, updateURLParams,
+        sendAsset, estimatedRate, setEstimatedField, updateURLParams, receiveAsset
       }) => (receiveAmount) => {
         if (estimatedRate && receiveAmount) {
-          receiveAmount = toBigNumber(receiveAmount)
+          receiveAmount = toBigNumber(receiveAmount).round(receiveAsset.decimals)
           const estimatedSendAmount = receiveAmount.times(estimatedRate).round(sendAsset.decimals)
           updateURLParams({ 
             fromAmount: estimatedSendAmount ? parseFloat(estimatedSendAmount) : undefined,
@@ -410,9 +421,9 @@ export default compose(
     }
   }),
   withHandlers({
-    setSendAmount: ({ change, touch, calculateReceiveEstimate }) => (x) => {
+    setSendAmount: ({ change, touch, calculateReceiveEstimate, sendAsset }) => (x) => {
       log.debug('setSendAmount', x)
-      change('sendAmount', x && toBigNumber(x).toString())
+      change('sendAmount', x && toBigNumber(x).round(sendAsset.decimals).toString())
       touch('sendAmount')
       calculateReceiveEstimate(x)
     },
@@ -446,7 +457,7 @@ export default compose(
     },
     validateSendAmount: ({ minimumSend, maximumSend, 
       sendSymbol, sendWallet, fullBalanceAmount, maxGeoBuy, handleSelectGeoMax, handleSelectMinimum,
-      handleSelectMaximum }) => {
+      handleSelectMaximum, sendAsset }) => {
       return (
         validator.all(
           ...(sendWallet ? [validator.required()] : []),
@@ -486,8 +497,15 @@ export default compose(
     },
   }),
   withHandlers({
-    handleSwitchAssets: ({ updateURLParams, sendSymbol, receiveSymbol }) => () => {
+    handleSwitchAssets: ({ updateURLParams, sendSymbol, receiveSymbol, sendAmount, 
+      calculateSendEstimate, estimatedField, calculateReceiveEstimate, receiveAmount }) => () => {
       updateURLParams({ from: receiveSymbol, to: sendSymbol })
+      if (estimatedField === 'receive') {
+        calculateReceiveEstimate(sendAmount)
+      } else {
+        calculateSendEstimate(receiveAmount)
+      }
+      
     },
     checkQueryParams: () => () => {
       const urlParams = qs.parse(location.search)

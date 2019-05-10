@@ -29,12 +29,14 @@ export default createReducer({
   [rateLoading]: (state, { pair }) => upsert(state, {
     pair,
     loading: true,
-    lastUpdated: Date.now()
+    lastUpdated: Date.now(),
+    error: ''
   }),
   [rateUpdated]: (state, data) => update(state, {
     ...data,
     loading: false,
     lastUpdated: Date.now(),
+    error: ''
   }),
   [rateError]: (state, { pair, error }) => update(state, { pair, error }),
 }, initialState)
