@@ -67,7 +67,7 @@ const SwapStepOne = ({
   onChangeSendAmount, handleSelectFullBalance, fullBalanceAmount, fullBalanceAmountLoaded,
   sendWallet, defaultRefundAddress, defaultReceiveAddress, maxGeoBuy, handleSelectGeoMax,
   onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs,
-  onChangeRefundAddress, onChangeReceiveAddress, estimatedRate, rateError
+  onChangeRefundAddress, onChangeReceiveAddress, rateError
 }) => (
   <Fragment>
     <ProgressBar steps={[
@@ -216,10 +216,10 @@ const SwapStepOne = ({
             <Button className={classNames('mt-2 mb-2 mx-auto', style.submitButton)} color={rateError ? 'danger' : 'primary'} type='submit' disabled={submitting || rateError}>
               {!submitting && !rateError ? (
                 <T tag='span' i18nKey='app.widget.createSwap'>Create Swap</T>
-               ) : rateError ? (
+              ) : rateError ? (
                 <T tag='span' i18nKey='app.widget.noRate'>Unable to retreive rate</T>
-                ) : (
-               <T tag='span' i18nKey='app.widget.generatingSwap'>Generating Swap...</T>
+              ) : (
+                <T tag='span' i18nKey='app.widget.generatingSwap'>Generating Swap...</T>
               )}
             </Button>
           </CardBody>
@@ -376,7 +376,7 @@ export default compose(
       handleSaveSwapWidgetInputs(params)
     }
   }),
-  withHandlers(({ change, sendAsset, receiveAsset }) => {
+  withHandlers(({ change }) => {
     const setEstimatedReceiveAmount = (x) => {
       log.trace('setEstimatedReceiveAmount', x)
       change('receiveAmount', x && toBigNumber(x))
@@ -457,7 +457,7 @@ export default compose(
     },
     validateSendAmount: ({ minimumSend, maximumSend, 
       sendSymbol, sendWallet, fullBalanceAmount, maxGeoBuy, handleSelectGeoMax, handleSelectMinimum,
-      handleSelectMaximum, sendAsset }) => {
+      handleSelectMaximum }) => {
       return (
         validator.all(
           ...(sendWallet ? [validator.required()] : []),
