@@ -24,8 +24,8 @@ export default compose(
   }),
   lifecycle({
     componentWillMount() {
-      const { tradeId, retrieveSwap, swap } = this.props
-      if (swap.isManual) {
+      const { tradeId, retrieveSwap, swap = {} } = this.props
+      if (swap.isManual || Object.entries(swap).length === 0) {
         retrieveSwap(tradeId)
       }
     }

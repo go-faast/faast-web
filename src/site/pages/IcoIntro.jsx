@@ -4,7 +4,6 @@ import { compose, setDisplayName } from 'recompose'
 import { Card, CardHeader, CardBody } from 'reactstrap'
 import Header from 'Site/components/Header'
 import { withRouteData } from 'react-static'
-import EmailSubscriptionForm from 'Site/components/EmailSubscriptionForm'
 import Footer from 'Site/components/Footer'
 
 export default compose(
@@ -32,7 +31,6 @@ export default compose(
         </CardBody>
       </Card>
     </div>
-    <EmailSubscriptionForm/>
     <Footer translations={translations} />
   </Fragment>
 ))

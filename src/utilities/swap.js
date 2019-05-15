@@ -22,6 +22,9 @@ export const getSwapStatus = (swap) => {
   if (orderStatus === 'complete') {
     return statusComplete('order_complete', 'Order completed successfully')
   }
+  if (orderStatus === 'refunded') {
+    return statusComplete('order_complete', 'Order Refunded successfully')
+  }
   if (!rate) {
     return statusPending('fetching_rate', 'Fetching market info')
   }

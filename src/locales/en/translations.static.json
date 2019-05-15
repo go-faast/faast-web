@@ -3,7 +3,7 @@
     "hero": {
       "new": "new",
       "notification": "Read about the Faa.st Market Maker Beta",
-      "button": "Create A Portfolio",
+      "button": "Connect Your Wallet",
       "headline": {
         "instantly": "Instantly",
         "trade": "trade directly from your Ledger, Trezor, or MetaMask."
@@ -19,7 +19,7 @@
       "marketMaker": "Market Maker",
       "beta": "beta",
       "blog": "Blog",
-      "portfolio": "Portfolio"
+      "button": "Connect"
     },
     "swapWidget": {
       "swapInstantly": "Swap Instantly",
