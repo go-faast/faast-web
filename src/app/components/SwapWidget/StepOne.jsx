@@ -213,7 +213,7 @@ const SwapStepOne = ({
                 labelClass='p-0'
               />
             </div>
-            <Button className={classNames('mt-2 mb-2 mx-auto', style.submitButton)} color={rateError ? 'danger' : 'primary'} type='submit' disabled={submitting || rateError}>
+            <Button className={classNames('mt-2 mb-2 mx-auto', style.submitButton)} color={rateError ? 'danger' : 'primary'} type='submit' disabled={Boolean(submitting || rateError)}>
               {!submitting && !rateError ? (
                 <T tag='span' i18nKey='app.widget.createSwap'>Create Swap</T>
               ) : rateError ? (

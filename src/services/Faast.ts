@@ -125,6 +125,18 @@ export const refreshSwap = (id: string) =>
   fetchPost(`${apiUrl}/api/v2/public/swaps/${id}/refresh`)
     .then(formatOrderResult)
 
+export const validateAddress = (address: string, symbol: string) => {
+  return fetchPost(`${apiUrl}/api/v2/public/address`, {
+    address,
+    currency: symbol,
+  })
+    .then(({ valid, standardized }) => ({ valid, standardized }))
+    .catch((e: any) => {
+      log.error(e)
+      throw(e)
+    })
+}
+
 export type CreateNewOrderParams = {
   sendSymbol: string,
   receiveSymbol: string,
@@ -403,4 +415,5 @@ export default {
   getAffiliateAccount,
   getAffiliateSwaps,
   formatOrderResult,
+  validateAddress,
 }

@@ -3,7 +3,6 @@ import { compose, setDisplayName } from 'recompose'
 import { Card, CardHeader, CardBody } from 'reactstrap'
 import { withRouteData } from 'react-static'
 import Header from 'Site/components/Header'
-import EmailSubscriptionForm from 'Site/components/EmailSubscriptionForm'
 import Footer from 'Site/components/Footer'
 
 export default compose(
@@ -48,7 +47,7 @@ export default compose(
           By accessing or using the Site, you represent and warrant that you are at least 18 years old and have not previously been suspended or removed from the Site. You also represent and warrant that you are not a resident of a Restricted Location as listed below. The list of Restricted States is subject to change at any time.
             </p>
             <p>
-          RESTRICTED LOCATIONS: NORTH KOREA, IRAN, CUBA, NEW YORK STATE (USA), WASHINGTON STATE (USA), NEW HAMPSHIRE (USA)
+          RESTRICTED LOCATIONS: NORTH KOREA, IRAN, CUBA, UNITED STATES, SUDAN
             </p>
           </div>
           <div>
@@ -221,7 +220,6 @@ export default compose(
         </CardBody>
       </Card>
     </div>
-    <EmailSubscriptionForm/>
     <Footer translations={translations} />
   </Fragment>
 ))

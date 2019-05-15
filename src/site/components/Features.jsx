@@ -2,7 +2,6 @@ import React, { Fragment } from 'react'
 import { compose, setDisplayName } from 'recompose'
 import LazyLoad from 'react-lazyload'
 
-import EmailSubscriptionForm from 'Site/components/EmailSubscriptionForm'
 import IconCarousel from 'Site/components/IconCarousel'
 
 import TrezorWalletLogo from 'Img/wallet/trezor.png'
@@ -282,9 +281,6 @@ export default compose(
               width='56px' height='65px' scrolling='no' frameBorder={0}></iframe>
           </LazyLoad>
         </div>
-        <LazyLoad offset={500} height={100}>
-          <EmailSubscriptionForm/>
-        </LazyLoad>
       </div>
     </div>
     <div className='brands'>

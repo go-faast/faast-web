@@ -5,7 +5,6 @@ import Icon from 'Components/Icon'
 import { withRouteData } from 'react-static'
 import SwapIcon from 'Img/swap-icon.svg?inline'
 import Header from 'Site/components/Header'
-import EmailSubscriptionForm from 'Site/components/EmailSubscriptionForm'
 import Footer from 'Site/components/Footer'
 
 export default compose(
@@ -65,7 +64,6 @@ export default compose(
         </div>
       </div>
     </div>
-    <EmailSubscriptionForm />
     <Footer translations={translations} />
   </Fragment>
 ))
