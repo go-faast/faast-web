@@ -50,11 +50,11 @@ export default compose(
             </a>
             {headline || (
               <h1 className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
-                <span className='special-word'>{headlineT.instantly}</span> {headlineT.trade}
+                <span className='special-word'>Instantly</span> Trade 70+ Coins from your Hardware or Software Wallet.
               </h1>
             )}
             <p className='hero-subtitle mb-4' style={{ fontWeight: 'normal' }}>
-              {subtitle.the} <span className='special-word'>{subtitle.safest} </span> {subtitle.way} 
+             Simply connect your wallet, and <span className='special-word'>safely</span> begin building a diversified portfolio.
             </p>
             <p><a className='btn btn-primary btn-lg hero-button py-2' role='button' href='/app'>
               {hero.button}
