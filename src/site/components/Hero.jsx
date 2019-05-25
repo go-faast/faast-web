@@ -56,7 +56,7 @@ export default compose(
             <p className='hero-subtitle mb-4' style={{ fontWeight: 'normal' }}>
               {subtitle.the} <span className='special-word'>{subtitle.safest} </span> {subtitle.way} 
             </p>
-            <p><a className='btn btn-primary btn-lg hero-button py-2' role='button' href='/app'>
+            <p><a className='btn btn-primary btn-lg hero-button py-2' role='button' href='/app/connect'>
               {hero.button}
             </a></p>
           </Col>

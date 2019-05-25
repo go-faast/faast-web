@@ -59,7 +59,7 @@ export default compose(
             <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/blog'>{header.blog}</NavLink>
           </NavItem>
           <NavItem className='mr-4' key='portfolio'>
-            <NavLink tag='a' className='nav-link py-1' href='/app'>
+            <NavLink tag='a' className='nav-link py-1' href='/app/connect'>
               <button className={classNames((theme == 'light' ? 'btn-primary' : 'btn-light'), 'btn')}>{header.button}</button>
             </NavLink>
           </NavItem>
