@@ -1,5 +1,7 @@
 import { createSelector } from 'reselect'
 
+export * from 'Common/selectors/app'
+
 const getAppState = ({ app }) => app
 
 // App selectors
