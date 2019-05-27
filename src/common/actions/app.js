@@ -6,6 +6,15 @@ const createAction = newScopedCreateAction(__filename)
 
 export const restrictionsUpdated = createAction('UPDATE_RESTRICTIONS', (res) => ({ res }))
 export const restrictionsError = createAction('RESTRICTIONS_ERROR')
+export const updateLanguage = createAction('UPDATE_LANGUAGE', (language) => ({ language }))
+
+export const staticAppLoad = () => (dispatch) => {
+  let lang = localStorage.getItem('i18nextLng') || window.navigator.language
+  if (lang.indexOf('-') >= 0) {
+    lang = lang.substring(0, lang.indexOf('-')).toLowerCase()
+  }
+  dispatch(selectLanguage(lang))
+}
 
 export const fetchGeoRestrictions = () => (dispatch) => Promise.resolve()
   .then(() => {
@@ -15,3 +24,8 @@ export const fetchGeoRestrictions = () => (dispatch) => Promise.resolve()
         log.error(e)
       })
   }) 
+
+export const selectLanguage = (lang) => (dispatch) => {
+  dispatch(updateLanguage(lang))
+  localStorage.setItem('i18nextLng', lang)
+}
