@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose, setDisplayName, withProps, withState, withHandlers, setPropTypes, defaultProps, lifecycle } from 'recompose'
 import classNames from 'class-names'
-import { reduxForm, formValueSelector } from 'redux-form'
+import { reduxForm, formValueSelector, SubmissionError } from 'redux-form'
 import { push as pushAction } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
 import {
@@ -41,6 +41,7 @@ import debounceHandler from 'Hoc/debounceHandler'
 import SwapIcon from 'Img/swap-icon.svg?inline'
 
 import style from './style.scss'
+import Faast from 'Src/services/Faast'
 
 const DEFAULT_SEND_SYMBOL = 'BTC'
 const DEFAULT_RECEIVE_SYMBOL = 'ETH'
@@ -330,9 +331,33 @@ export default compose(
     onSubmit: ({
       sendSymbol, receiveAsset, sendAsset,
       createSwap, openViewOnly, push, estimatedField
-    }) => (values) => {
+    }) => async (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
       const { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId, receiveAmount } = values
+      try {
+        const receiveValidation = await Faast.validateAddress(receiveAddress, receiveSymbol)
+        if (!receiveValidation.valid) {
+          throw `Invalid ${receiveSymbol} address`
+        } else if (receiveValidation.valid && receiveAddress !== receiveValidation.standardized) {
+          throw `Invalid ${receiveSymbol} address format. Here is your address converted to the correct format: ${receiveValidation.standardized}`
+        }
+      } catch (err) {
+        throw new SubmissionError({
+          receiveAddress: err,
+        })
+      }
+      try { 
+        const sendValidation = await Faast.validateAddress(refundAddress, sendSymbol)
+        if (!sendValidation.valid) {
+          throw `Invalid ${sendSymbol} address`
+        } else if (sendValidation.valid && refundAddress !== sendValidation.standardized) {
+          throw `Invalid ${sendSymbol} address format. Here is your address converted to the correct format: ${sendValidation.standardized}`
+        }
+      } catch (err) {
+        throw new SubmissionError({
+          refundAddress: err,
+        })
+      }
 
       return createSwap({
         sendSymbol: sendSymbol,
