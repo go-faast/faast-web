@@ -334,12 +334,12 @@ export default compose(
       createSwap, openViewOnly, push, estimatedField
     }) => async (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
-      const { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId, receiveAmount } = values
+      let { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId, receiveAmount } = values
       if (receiveSymbol == 'ETH' || ERC20) {
-        toChecksumAddress(receiveAddress)
+        receiveAddress = toChecksumAddress(receiveAddress)
       }
       if (sendSymbol == 'ETH' || sendAsset.ERC20) {
-        toChecksumAddress(refundAddress)
+        refundAddress = toChecksumAddress(refundAddress)
       }
       try {
         const receiveValidation = await Faast.validateAddress(receiveAddress, receiveSymbol)
