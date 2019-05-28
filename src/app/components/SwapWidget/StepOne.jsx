@@ -35,6 +35,7 @@ import ProgressBar from 'Components/ProgressBar'
 import WalletSelectField from 'Components/WalletSelectField'
 import T from 'Components/i18n/T'
 import Units from 'Components/Units'
+import { toChecksumAddress } from 'Utilities/convert'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import debounceHandler from 'Hoc/debounceHandler'
 
@@ -334,6 +335,12 @@ export default compose(
     }) => async (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
       const { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId, receiveAmount } = values
+      if (receiveSymbol == 'ETH' || ERC20) {
+        toChecksumAddress(receiveAddress)
+      }
+      if (sendSymbol == 'ETH' || sendAsset.ERC20) {
+        toChecksumAddress(refundAddress)
+      }
       try {
         const receiveValidation = await Faast.validateAddress(receiveAddress, receiveSymbol)
         if (!receiveValidation.valid) {
