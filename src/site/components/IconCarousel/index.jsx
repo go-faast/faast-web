@@ -1,7 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import {
-  compose, setDisplayName, setPropTypes, withProps, withState, withHandlers,
+  compose, setDisplayName, setPropTypes, withProps, withState, withHandlers, lifecycle,
 } from 'recompose'
 import classNames from 'class-names'
 import LazyLoad from 'react-lazyload'
@@ -17,11 +17,11 @@ export default compose(
       label: PropTypes.node.isRequired,
       iconUrl: PropTypes.string.isRequired,
       link: PropTypes.string.isRequired,
+      marketCap: PropTypes.oneOfType([PropTypes.number, PropTypes.object]).isRequired
     })).isRequired,
   }),
-  withProps(({ items }) => {
+  withProps(() => {
     return ({
-      items: sortObjOfArray(items, 'marketCap', 'desc'),
       refs: {
         wrapper: React.createRef(),
         carousel: React.createRef(),
@@ -32,6 +32,7 @@ export default compose(
     })
   }),
   withState('shiftAmount', 'setShiftAmount', 0),
+  withState('assetList', 'updateAssetList', ({ items }) => items),
   withHandlers(({ refs, setShiftAmount }) => {
     const getWidth = (elem) => (elem && elem.getBoundingClientRect().width) || 0
 
@@ -53,8 +54,14 @@ export default compose(
       handleClickRight: ({ shiftAmount }) => () => shiftIcons(shiftAmount, true),
       handleClickLeft: ({ shiftAmount }) => () => shiftIcons(shiftAmount, false),
     }
+  }),
+  lifecycle({
+    componentWillMount() {
+      const { items, updateAssetList } = this.props
+      updateAssetList(sortObjOfArray(items, 'marketCap', 'desc'))
+    }
   })
-)(({ items, refs, shiftAmount, handleClickLeft, handleClickRight }) => (
+)(({ assetList, refs, shiftAmount, handleClickLeft, handleClickRight }) => (
   <div className={style.wrapper} ref={refs.wrapper}>
     <div className={classNames(style.arrow, style.arrowLeft)} ref={refs.leftArrow} onClick={handleClickLeft}>
       <h2 className='fa fa-caret-left'></h2>
@@ -63,8 +70,7 @@ export default compose(
       <h2 className='fa fa-caret-right'></h2>
     </div>
     <div className={style.carousel} ref={refs.carousel} style={{ transform: `translate3d(-${shiftAmount}px, 0, 0)` }}>
-      {console.log(items)}
-      {items.map(({ key, label, iconUrl, link }, i) => (
+      {assetList.map(({ key, label, iconUrl, link }, i) => (
         <div key={key} className={style.icon} {...(i === 0 ? { ref: refs.firstIcon } : {})}>
           <a className='d-block text-white' href={link}>
             <LazyLoad offset={600} height={72}>
