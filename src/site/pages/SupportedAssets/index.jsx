@@ -42,16 +42,16 @@ const TableRow = ({ asset: { receive, deposit, name, symbol } }) => {
       </td>
       <td className='pt-2'>
         <span>{receive ? (
-          <Icon width='20' height='20' src={checkmark} color='#757682' />
+          <Icon src={checkmark} style={{ fill: '#757682', height: '20px', width: '20px' }} />
         ) : (
-          <Icon width='20' height='20' src={cross} color='#f77e9e' />
+          <Icon src={cross} style={{ fill: '#f77e9e', height: '20px', width: '20px' }} />
         )}</span>
       </td>
       <td className='pt-2'>
         <span>{deposit ? (
-          <Icon width='20' height='20' src={checkmark} color='#757682' />
+          <Icon src={checkmark} style={{ fill: '#757682', height: '20px', width: '20px' }} />
         ) : (
-          <Icon width='20' height='20' src={cross} color='#f77e9e' />
+          <Icon src={cross} color='#f77e9e' style={{ fill: '#f77e9e', height: '20px', width: '20px' }} />
         )}</span>
       </td>
       <td className='pt-2'>
