@@ -5,6 +5,7 @@ import {
 } from 'recompose'
 import classNames from 'class-names'
 import LazyLoad from 'react-lazyload'
+import { sortObjOfArray } from 'Utilities/helpers'
 
 import style from './style.scss'
 
@@ -18,14 +19,17 @@ export default compose(
       link: PropTypes.string.isRequired,
     })).isRequired,
   }),
-  withProps({
-    refs: {
-      wrapper: React.createRef(),
-      carousel: React.createRef(),
-      leftArrow: React.createRef(),
-      rightArrow: React.createRef(),
-      firstIcon: React.createRef(),
-    }
+  withProps(({ items }) => {
+    return ({
+      items: sortObjOfArray(items, 'marketCap', 'desc'),
+      refs: {
+        wrapper: React.createRef(),
+        carousel: React.createRef(),
+        leftArrow: React.createRef(),
+        rightArrow: React.createRef(),
+        firstIcon: React.createRef(),
+      }
+    })
   }),
   withState('shiftAmount', 'setShiftAmount', 0),
   withHandlers(({ refs, setShiftAmount }) => {
@@ -59,6 +63,7 @@ export default compose(
       <h2 className='fa fa-caret-right'></h2>
     </div>
     <div className={style.carousel} ref={refs.carousel} style={{ transform: `translate3d(-${shiftAmount}px, 0, 0)` }}>
+      {console.log(items)}
       {items.map(({ key, label, iconUrl, link }, i) => (
         <div key={key} className={style.icon} {...(i === 0 ? { ref: refs.firstIcon } : {})}>
           <a className='d-block text-white' href={link}>

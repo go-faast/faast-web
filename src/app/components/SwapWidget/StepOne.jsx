@@ -286,16 +286,17 @@ export default compose(
     updateQueryString: updateQueryStringReplace,
     retrievePairData: retrievePairData,
     openViewOnly: openViewOnlyWallet,
-    saveSwapWidgetInputs: saveSwapWidgetInputs
+    saveSwapWidgetInputs: saveSwapWidgetInputs,
   }),
   withProps(({
     sendSymbol, receiveSymbol,
     defaultSendAmount, defaultReceiveAmount,
     defaultRefundAddress, defaultReceiveAddress,
-    sendWallet, sendAsset, limit, previousSwapInputs
+    sendWallet, sendAsset, limit, previousSwapInputs, refundAddress
   }) => { 
     const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : undefined
     const { toAmount, fromAmount, toAddress, fromAddress } = previousSwapInputs || {}
+    console.log(refundAddress)
     return ({
       pair: `${sendSymbol}_${receiveSymbol}`,
       initialValues: {
@@ -340,6 +341,7 @@ export default compose(
       }
       if (sendSymbol == 'ETH' || sendAsset.ERC20) {
         refundAddress = toChecksumAddress(refundAddress)
+        console.log(refundAddress)
       }
       try {
         const receiveValidation = await Faast.validateAddress(receiveAddress, receiveSymbol)

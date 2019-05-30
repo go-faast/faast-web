@@ -28,7 +28,7 @@ export default compose(
   }),
   withProps(({ assets }) => ({
     assetList: assets.filter(({ deposit, receive }) => deposit || receive)
-      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl'))
+      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl', 'marketCap'))
   })),
   lifecycle({
     componentWillMount() {

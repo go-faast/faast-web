@@ -91,9 +91,13 @@ export default {
   }),
   Document,
   getRoutes: async () => {
-    const { data: assets } = await axios.get('https://api.faa.st/api/v2/public/currencies')
+    const { data: assets } = await axios.get('https://api.faa.st/api/v2/public/currencies', {
+      params: {
+        include: 'marketInfo'
+      }
+    })
     const supportedAssets = assets.filter(({ deposit, receive }) => deposit || receive)
-      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl', 'deposit', 'receive', 'cmcIDno'))
+      .map((asset) => ({ ...pick(asset, ['symbol', 'name', 'iconUrl', 'deposit', 'receive', 'cmcIDno']), marketCap: asset.marketInfo.quote.USD.market_cap || 0 }))
     const supportedWallets = Object.values(Wallets)
     let mediumProfile = await axios.get('https://medium.com/faast?format=json')
     mediumProfile = JSON.parse(mediumProfile.data.replace('])}while(1);</x>', ''))
