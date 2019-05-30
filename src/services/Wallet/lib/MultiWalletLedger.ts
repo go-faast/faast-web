@@ -11,6 +11,6 @@ export default class MultiWalletLedger extends MultiWallet {
 
   getTypeLabel() { return typeLabel }
 
-  getLabel() { return this.label || `${typeLabel} ${this.getId().slice(0, 8)}` }
+  getLabel() { return this.label || typeLabel }
 
 }
