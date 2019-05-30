@@ -20,16 +20,14 @@ export default compose(
       marketCap: PropTypes.oneOfType([PropTypes.number, PropTypes.object]).isRequired
     })).isRequired,
   }),
-  withProps(() => {
-    return ({
-      refs: {
-        wrapper: React.createRef(),
-        carousel: React.createRef(),
-        leftArrow: React.createRef(),
-        rightArrow: React.createRef(),
-        firstIcon: React.createRef(),
-      }
-    })
+  withProps({
+    refs: {
+      wrapper: React.createRef(),
+      carousel: React.createRef(),
+      leftArrow: React.createRef(),
+      rightArrow: React.createRef(),
+      firstIcon: React.createRef(),
+    }
   }),
   withState('shiftAmount', 'setShiftAmount', 0),
   withState('assetList', 'updateAssetList', ({ items }) => items),
@@ -49,7 +47,7 @@ export default compose(
       const newShift = right ? Math.min(maxShift, shiftAmount + increment) : Math.max(minShift, shiftAmount - increment)
       setShiftAmount(newShift)
     }
-
+    
     return {
       handleClickRight: ({ shiftAmount }) => () => shiftIcons(shiftAmount, true),
       handleClickLeft: ({ shiftAmount }) => () => shiftIcons(shiftAmount, false),
