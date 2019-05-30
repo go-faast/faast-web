@@ -12,18 +12,22 @@ import LazyLoad from 'react-lazyload'
 export default compose(
   setDisplayName('Footer'),
   setPropTypes({
-    footerClass: PropTypes.string
+    footerClass: PropTypes.string,
+    showEmail: PropTypes.bool
   }),
   defaultProps({
-    footerClass: ''
+    footerClass: '',
+    showEmail: true
   }),
-)(({ footerClass, translations: { static: { footer: t = {} } = {} } }) => (
+)(({ showEmail, footerClass, translations: { static: { footer: t = {} } = {} } }) => (
   <Fragment>
-    <div className='pt-5'>
-      <LazyLoad offset={1000} height={100}>
-        <EmailSubscriptionForm />
-      </LazyLoad>
-    </div>
+    {showEmail && (
+      <div className='pt-5'>
+        <LazyLoad offset={1000} height={100}>
+          <EmailSubscriptionForm />
+        </LazyLoad>
+      </div>
+    )}
     <div className='footer-clean' style={{ backgroundColor: 'rgb(24,24,24)', paddingTop: '0px', height: '394px' }}>
       <footer>
         <div className={classNames('container', footerClass)} style={{ paddingTop: '40px' }}>

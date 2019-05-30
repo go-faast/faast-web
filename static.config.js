@@ -172,7 +172,7 @@ export default {
       {
         path: '/assets',
         noindex: true,
-        component: 'src/site/pages/Home',
+        component: 'src/site/pages/SupportedAssets',
         getData: async () => ({
           supportedAssets,
           translations: translations[0].translations,
