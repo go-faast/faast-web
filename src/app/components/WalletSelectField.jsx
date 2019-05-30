@@ -67,7 +67,7 @@ const WalletSelectField = ({
             </DropdownMenu>
           </ButtonDropdown>
         )}/>
-      <ReduxFormField name={walletIdFieldName} type='text'/>
+      <ReduxFormField name={walletIdFieldName} type='hidden'/>
     </Fragment>
   )
 }
