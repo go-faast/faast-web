@@ -40,7 +40,7 @@ export default compose(
   }),
   withToggle('expanded'),
 )(({ theme, headerColor, toggleExpanded, isExpanded, translations: { static: { header = {} } = {}  }, ...props }) => (
-  <Navbar color='dark' {...pick(props, Object.keys(Navbar.propTypes))} expand='sm' className={darkestText}
+  <Navbar {...pick(props, Object.keys(Navbar.propTypes))} expand='sm' className={darkestText}
     style={{ border: 0, backgroundColor: headerColor ? headerColor : 'transparent', paddingLeft: '12px' }}>
     <Container>
       <NavbarBrand tag={Link} to='/' className={classNames((theme == 'light' ? darkestText : 'text-white'))} style={{ fontWeight: 400 }}>
@@ -51,9 +51,6 @@ export default compose(
         <Nav className='ml-auto' navbar>
           <NavItem className='mr-4' key='swap'>
             <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/app/swap'>{header.swap}</NavLink>
-          </NavItem>
-          <NavItem className='mr-4' key='supportedAssets'>
-            <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/assets'>Supported Assets</NavLink>
           </NavItem>
           <NavItem className='mr-4' key='marketmaker'>
             <NavLink tag='a' className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/market-maker'>{header.marketMaker} <sup className={classNames(betaTag, 'text-primary')}><i>{header.beta} </i></sup></NavLink>

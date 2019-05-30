@@ -341,15 +341,15 @@ export default compose(
       }
       if (sendSymbol == 'ETH' || sendAsset.ERC20) {
         refundAddress = toChecksumAddress(refundAddress)
-        console.log(refundAddress)
       }
       try {
         const receiveValidation = await Faast.validateAddress(receiveAddress, receiveSymbol)
         if (!receiveValidation.valid) {
           throw `Invalid ${receiveSymbol} address`
-        } else if (receiveValidation.valid && receiveAddress !== receiveValidation.standardized) {
-          throw `Invalid ${receiveSymbol} address format. Here is your address converted to the correct format: ${receiveValidation.standardized}`
-        }
+        } 
+        // else if (receiveValidation.valid && receiveAddress !== receiveValidation.standardized) {
+        //   throw `Invalid ${receiveSymbol} address format. Here is your address converted to the correct format: ${receiveValidation.standardized}`
+        // }
       } catch (err) {
         throw new SubmissionError({
           receiveAddress: err,
@@ -359,9 +359,10 @@ export default compose(
         const sendValidation = await Faast.validateAddress(refundAddress, sendSymbol)
         if (!sendValidation.valid) {
           throw `Invalid ${sendSymbol} address`
-        } else if (sendValidation.valid && refundAddress !== sendValidation.standardized) {
-          throw `Invalid ${sendSymbol} address format. Here is your address converted to the correct format: ${sendValidation.standardized}`
-        }
+        } 
+        // else if (sendValidation.valid && refundAddress !== sendValidation.standardized) {
+        //   throw `Invalid ${sendSymbol} address format. Here is your address converted to the correct format: ${sendValidation.standardized}`
+        // }
       } catch (err) {
         throw new SubmissionError({
           refundAddress: err,

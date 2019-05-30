@@ -46,6 +46,7 @@ export default compose(
             <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-3'>
               <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>{t.assets}</h3>
               <ul>
+                <li><a className='text-white' href='/assets'>Supported Assets</a></li>
                 <li><a className='text-white' href='/app/assets'>{t.marketCap}</a></li>
                 <li><a className='text-white' href='/app/assets/trending'>{t.trending}</a></li>
                 <li><a className='text-white' href='/app/assets/watchlist'>{t.watchlist}</a></li>

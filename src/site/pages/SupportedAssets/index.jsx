@@ -84,7 +84,7 @@ export default compose(
   supportedAssets = areAssetsLoaded ? assetList : supportedAssets
   return (
     <div style={{ backgroundColor: '#fcfdff' }}>
-      <Header translations={translations} theme='dark' />
+      <Header translations={translations} theme='dark' headerColor='#303030' />
       <Card className={classNames(whiteCard, 'mx-auto mt-4 flat')} style={{ maxWidth: 1200, borderColor: '#F3F5F8' }}>
         <CardHeader className={classNames(whiteCard, thColor)} style={{ borderColor: '#F3F5F8' }}>
           <span>Supported Assets</span>

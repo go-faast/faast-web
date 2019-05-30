@@ -118,6 +118,7 @@ export default compose(
             }))}/>
           </div>
         </div>
+        <p>For a comprensive table of supported coins <a href='/assets'>click here!</a></p>
       </div>
     </div>
     <div className='highlight-phone slick-interface-section'>
