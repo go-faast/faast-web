@@ -286,16 +286,17 @@ export default compose(
     updateQueryString: updateQueryStringReplace,
     retrievePairData: retrievePairData,
     openViewOnly: openViewOnlyWallet,
-    saveSwapWidgetInputs: saveSwapWidgetInputs
+    saveSwapWidgetInputs: saveSwapWidgetInputs,
   }),
   withProps(({
     sendSymbol, receiveSymbol,
     defaultSendAmount, defaultReceiveAmount,
     defaultRefundAddress, defaultReceiveAddress,
-    sendWallet, sendAsset, limit, previousSwapInputs
+    sendWallet, sendAsset, limit, previousSwapInputs, refundAddress
   }) => { 
     const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : undefined
     const { toAmount, fromAmount, toAddress, fromAddress } = previousSwapInputs || {}
+    console.log(refundAddress)
     return ({
       pair: `${sendSymbol}_${receiveSymbol}`,
       initialValues: {
@@ -345,9 +346,10 @@ export default compose(
         const receiveValidation = await Faast.validateAddress(receiveAddress, receiveSymbol)
         if (!receiveValidation.valid) {
           throw `Invalid ${receiveSymbol} address`
-        } else if (receiveValidation.valid && receiveAddress !== receiveValidation.standardized) {
-          throw `Invalid ${receiveSymbol} address format. Here is your address converted to the correct format: ${receiveValidation.standardized}`
-        }
+        } 
+        // else if (receiveValidation.valid && receiveAddress !== receiveValidation.standardized) {
+        //   throw `Invalid ${receiveSymbol} address format. Here is your address converted to the correct format: ${receiveValidation.standardized}`
+        // }
       } catch (err) {
         throw new SubmissionError({
           receiveAddress: err,
@@ -357,9 +359,10 @@ export default compose(
         const sendValidation = await Faast.validateAddress(refundAddress, sendSymbol)
         if (!sendValidation.valid) {
           throw `Invalid ${sendSymbol} address`
-        } else if (sendValidation.valid && refundAddress !== sendValidation.standardized) {
-          throw `Invalid ${sendSymbol} address format. Here is your address converted to the correct format: ${sendValidation.standardized}`
-        }
+        } 
+        // else if (sendValidation.valid && refundAddress !== sendValidation.standardized) {
+        //   throw `Invalid ${sendSymbol} address format. Here is your address converted to the correct format: ${sendValidation.standardized}`
+        // }
       } catch (err) {
         throw new SubmissionError({
           refundAddress: err,

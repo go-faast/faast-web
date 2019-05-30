@@ -109,14 +109,16 @@ export default compose(
             <h1 className='currency-count text-white font-weight-bold'>{supportedAssets.length} <small>{t.coinsSupported}</small></h1>
           </div>
           <div className='col px-2'>
-            <IconCarousel items={supportedAssets.map(({ symbol, name, iconUrl }) => ({
+            <IconCarousel items={supportedAssets.map(({ symbol, name, iconUrl, marketCap }) => ({
               key: symbol,
               label: (<p>{name}</p>),
               iconUrl,
+              marketCap,
               link: `/app/swap?to=${symbol}`,
             }))}/>
           </div>
         </div>
+        <p>For a comprensive table of supported coins <a href='/assets'>click here!</a></p>
       </div>
     </div>
     <div className='highlight-phone slick-interface-section'>
