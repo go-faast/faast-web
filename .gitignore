@@ -7,3 +7,6 @@ dist-dev/
 build/
 tmp/
 dist/
+test/e2e/reports/*
+!test/e2e/reports/.gitkeep
+.testcaferc.json

@@ -24,7 +24,9 @@
   },
   "scripts": {
     "start": "ws --config-file etc/lws.config.prod.js",
-    "test": "npm run lint",
+    "test": "npm run lint && npm run test:e2e",
+    "test:e2e": "gulp test:e2e",
+    "test:local": "testcafe",
     "dev:app": "cross-env NODE_ENV=development webpack-dev-server --config etc/webpack.config.app.js --progress",
     "dev:site": "cross-env NODE_ENV=development react-static start",
     "dev:proxy": "ws --config-file etc/lws.config.dev.js",
@@ -189,8 +191,11 @@
     "eslint": "^4.19.1",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-react": "^7.5.1",
+    "eslint-plugin-testcafe": "^0.2.1",
+    "gulp-testcafe": "^1.0.0",
     "local-web-server": "^2.5.2",
     "ngrok": "^3.1.0",
+    "testcafe": "^1.1.4",
     "webpack-dev-server": "^2.7.1"
   }
 }

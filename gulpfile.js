@@ -1,7 +1,9 @@
 const gulp = require('gulp')
 const path = require('path')
+const fs = require('fs')
 const gulpClean = require('gulp-clean')
 const run = require('gulp-run-command').default
+const testcafe = require('gulp-testcafe')
 
 const { dirs } = require('./etc/common.js')
 
@@ -23,6 +25,23 @@ gulp.task('clean', () =>
 gulp.task('lint:js', run('npm run lint:js'))
 gulp.task('lint:ts', run('npm run lint:ts'))
 gulp.task('lint', gulp.parallel(['lint:js', 'lint:ts']))
+
+gulp.task('test:e2e', () =>
+  gulp.src(path.join(dirs.testE2e, 'test.js'))
+    .pipe(testcafe({
+      // https://github.com/DevExpress/gulp-testcafe/blob/master/index.js
+      app: 'npm run start',
+      browsers: ['chrome', 'firefox'],
+      reporter: [
+        {
+          name: 'spec'
+        },
+        {
+          name: 'xunit',
+          output: fs.createWriteStream(path.join(dirs.testE2eReports, 'report.xml'))
+        }
+      ]
+    })))
 
 gulp.task('compile:app', run('webpack --config etc/webpack.config.app.js'))
 gulp.task('compile:site', run('react-static build'))
