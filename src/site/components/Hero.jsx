@@ -4,6 +4,7 @@ import { Container, Row, Col } from 'reactstrap'
 
 import Header from 'Site/components/Header'
 import SwapWidget from 'Site/components/SwapWidget'
+import LangLink from 'Site/components/LangLink'
 
 import MoonBackground from 'Img/moon-background.jpg'
 
@@ -42,12 +43,12 @@ export default compose(
       <Container>
         <Row>
           <Col sm='12' lg='6' className='text-left pl-md-5 pl-0 ml-4'>
-            <a href='/market-maker'>
+            <LangLink to='/market-maker'>
               <div className='notification mt-md-4 mt-0 mb-4'>
                 <span className='new-pill'>{hero.new}</span>
                 {hero.notification}
               </div>
-            </a>
+            </LangLink>
             {headline || (
               <h1 className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
                 <span className='special-word'>{headlineT.instantly}</span> {headlineT.trade}

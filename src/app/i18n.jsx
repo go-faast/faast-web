@@ -5,6 +5,8 @@ import XHR from 'i18next-xhr-backend'
 import { initReactI18next } from 'react-i18next'
 
 import * as en from 'Src/locales/en/translations.app.json'
+import * as es from 'Src/locales/es/translations.app.json'
+import * as ja from 'Src/locales/ja/translations.app.json'
 
 import config from '../config'
 
@@ -16,6 +18,8 @@ const options = {
 
   resources: {
     en: { translations: en },
+    es: { translations: es },
+    ja: { translations: ja },
   },
 
   saveMissing: true,

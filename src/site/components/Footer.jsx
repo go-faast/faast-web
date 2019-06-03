@@ -9,6 +9,8 @@ import { betaTag } from './Header/style.scss'
 import EmailSubscriptionForm from './EmailSubscriptionForm'
 import LazyLoad from 'react-lazyload'
 
+import LangLink from 'Site/components/LangLink'
+
 export default compose(
   setDisplayName('Footer'),
   setPropTypes({
@@ -50,13 +52,13 @@ export default compose(
             <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-3'>
               <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>{t.wallets}</h3>
               <ul>
-                <li><a className='text-white' href='/wallets/trezor'>{t.trezor}</a></li>
-                <li><a className='text-white' href='/wallets/ledger-wallet'>{t.ledger}</a></li>
-                <li><a className='text-white' href='/wallets/metamask'>{t.metaMask}</a></li>
-                <li><a className='text-white' href='/wallets/mist-browser'>{t.mistBrowser}</a></li>
-                <li><a className='text-white' href='/wallets/trust-wallet'>{t.trustWallet}</a></li>
-                <li><a className='text-white' href='/wallets/coinbase-wallet'>{t.coinbaseWallet}</a></li>
-                <li><a className='text-white' href='/wallets/status'>{t.status}</a></li>
+                <li><LangLink className='text-white' to='/wallets/trezor'>{t.trezor}</LangLink></li>
+                <li><LangLink className='text-white' to='/wallets/ledger-wallet'>{t.ledger}</LangLink></li>
+                <li><LangLink className='text-white' to='/wallets/metamask'>{t.metaMask}</LangLink></li>
+                <li><LangLink className='text-white' to='/wallets/mist-browser'>{t.mistBrowser}</LangLink></li>
+                <li><LangLink className='text-white' to='/wallets/trust-wallet'>{t.trustWallet}</LangLink></li>
+                <li><LangLink className='text-white' to='/wallets/coinbase-wallet'>{t.coinbaseWallet}</LangLink></li>
+                <li><LangLink className='text-white' to='/wallets/status'>{t.status}</LangLink></li>
               </ul>
             </div>
             <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-0'>
