@@ -94,7 +94,7 @@ export default compose(
   withToggle('expanded'),
   withToggle('dropdownOpen'),
   withRouter
-)(({ theme, location, selectLanguage, currentLanguage, headerColor, isDropdownOpen, toggleDropdownOpen,  toggleExpanded, isExpanded, translations: { static: { header = {} } = {}  }, ...props }) => (
+)(({ theme, selectLanguage, currentLanguage, headerColor, isDropdownOpen, toggleDropdownOpen,  toggleExpanded, isExpanded, translations: { static: { header = {} } = {}  }, ...props }) => (
   <Navbar {...pick(props, Object.keys(Navbar.propTypes))} expand='sm' className={darkestText}
     style={{ border: 0, backgroundColor: headerColor ? headerColor : 'transparent', paddingLeft: '12px' }}>
     <Container>
