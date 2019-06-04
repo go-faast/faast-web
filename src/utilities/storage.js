@@ -3,6 +3,7 @@ import { parseJson, stringifyJson } from 'Utilities/helpers'
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
 export const storageAvailable = (type) => {
+  if (typeof window === 'undefined') { return null }
   try {
     var storage = window[type]
     var x = '__storage_test__'
@@ -10,22 +11,18 @@ export const storageAvailable = (type) => {
     storage.removeItem(x)
     return true
   } catch (e) {
-    if (window) {
-      return e instanceof window.DOMException && (
-        // everything except Firefox
-        e.code === 22 ||
-        // Firefox
-        e.code === 1014 ||
-        // test name field too, because code might not be present
-        // everything except Firefox
-        e.name === 'QuotaExceededError' ||
-        // Firefox
-        e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-        // acknowledge QuotaExceededError only if there's something already stored
-        storage.length !== 0
-    } else {
-      return 
-    }
+    return e instanceof window.DOMException && (
+      // everything except Firefox
+      e.code === 22 ||
+      // Firefox
+      e.code === 1014 ||
+      // test name field too, because code might not be present
+      // everything except Firefox
+      e.name === 'QuotaExceededError' ||
+      // Firefox
+      e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
+      // acknowledge QuotaExceededError only if there's something already stored
+      storage.length !== 0
   }
 }
 
