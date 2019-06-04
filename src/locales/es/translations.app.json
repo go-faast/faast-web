@@ -268,17 +268,17 @@
       },
       "connectionInstructions": {
         "trezor": {
-          "conectar": "Conecte su TREZOR para empezar",
-          "versión": "Asegúrese de que el firmware de su TREZOR está actualizado consultando el sitio web del monedero TREZOR",
+          "connect": "Conecte su TREZOR para empezar",
+          "version": "Asegúrese de que el firmware de su TREZOR está actualizado consultando el sitio web del monedero TREZOR",
           "pin": "Si se le pide, introduzca su pin o contraseña para desbloquear el TREZOR",
-          "exportar": "Cuando le pregunten si quiere exportar la clave pública o su cuenta<1></1>, escoja <3>Exportar</3>",
-          "ventana emergente": "Si ve un error de 'Popup Closed' (ventana emergente cerrada), habilite las ventanas emergentes en la configuración de su navegador e inténtelo de nuevo"
+          "export": "Cuando le pregunten si quiere exportar la clave pública o su cuenta<1></1>, escoja <3>Exportar</3>",
+          "popup": "Si ve un error de 'Popup Closed' (ventana emergente cerrada), habilite las ventanas emergentes en la configuración de su navegador e inténtelo de nuevo"
         },
         "ledger": {
           "conectar": "Conecte su dispositivo Ledger para comenzar",
           "pin": "Introduzca su pin para desbloquear el Ledger",
-          "versión": "Asegúrese de que el firmware de su Ledger y su aplicación <1></1> están actualizados consultando la aplicación de escritorio Ledger Live",
-          "abrir": "Abrir la aplicación <1></1> en su Ledger"
+          "version": "Asegúrese de que el firmware de su Ledger y su aplicación <1></1> están actualizados consultando la aplicación de escritorio Ledger Live",
+          "open": "Abrir la aplicación <1></1> en su Ledger"
         }
       },
       "connectionStatus": {
