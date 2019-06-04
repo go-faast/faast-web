@@ -10,7 +10,7 @@ export const restrictionsError = createAction('RESTRICTIONS_ERROR')
 export const updateLanguage = createAction('UPDATE_LANGUAGE', (language) => ({ language }))
 
 export const staticAppLoad = () => (dispatch) => {
-  let lang = localStorageGet('i18nextLng') || window.navigator.language
+  let lang = localStorageGet('i18nextLng') || window ? window.navigator.language : 'en'
   if (lang.indexOf('-') >= 0) {
     lang = lang.substring(0, lang.indexOf('-')).toLowerCase()
   }
