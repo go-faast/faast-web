@@ -3,7 +3,6 @@ import { parseJson, stringifyJson } from 'Utilities/helpers'
 
 // https://developer.mozilla.org/en-US/docs/Web/API/Web_Storage_API/Using_the_Web_Storage_API
 export const storageAvailable = (type) => {
-  if (typeof window === 'undefined') { return null }
   try {
     var storage = window[type]
     var x = '__storage_test__'
@@ -11,6 +10,7 @@ export const storageAvailable = (type) => {
     storage.removeItem(x)
     return true
   } catch (e) {
+    window.DOMException = Object
     return e instanceof window.DOMException && (
       // everything except Firefox
       e.code === 22 ||
