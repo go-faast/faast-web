@@ -399,3 +399,10 @@ export const sortObjOfArray = (array, key, order = 'desc') => {
       ((d > c) ? 1 : ((c > d) ? -1 : 0))
   })
 }
+
+export const shortenLanguageCode = (lang) => {
+  if (lang.indexOf('-') >= 0) {
+    lang = lang.substring(0, lang.indexOf('-')).toLowerCase()
+  }
+  return lang
+}

@@ -126,7 +126,7 @@ export default compose(
               <span>{currentLanguage.code.toUpperCase()}</span>
             </DropdownToggle>
             <DropdownMenu style={{ borderRadius: 2, borderColor: '#fff' }} className='p-0'>
-              {languages.map((lang, i) => (
+              {languages.map((lang = {}, i) => (
                 <DropdownItem key={lang.url} onClick={() => selectLanguage(lang.code)} tag={Link} to={`${lang.url}`} style={{ backgroundColor: '#fff', borderTop: '1px solid #ECEFF7' }} className={classNames(i === 0 && 'border-0','border-left-0 text-muted py-2')}>
                   <Icon style={{ width: 20, height: 20, marginRight: 10 }} src={lang.flag} />
                   <span style={{ color: '#333' }}>{lang.name}</span>
