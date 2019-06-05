@@ -8,7 +8,7 @@ import urlJoin from 'url-join'
 import { toBigNumber } from './numbers'
 
 /** Used to remove bitcoincash: prefix from addresses */
-export function stripAddressNamespace(address: string): string {
+export function stripAddressNamespace(address) {
   const separatorIndex = address.indexOf(':')
   if (separatorIndex > -1) {
     return address.slice(separatorIndex + 1)
@@ -401,8 +401,10 @@ export const sortObjOfArray = (array, key, order = 'desc') => {
 }
 
 export const shortenLanguageCode = (lang = '') => {
-  if (lang.indexOf('-') >= 0) {
-    lang = lang.substring(0, lang.indexOf('-')).toLowerCase()
+  if (lang) {
+    if (lang.indexOf('-') >= 0) {
+      lang = lang.substring(0, lang.indexOf('-')).toLowerCase()
+    }
   }
   return lang
 }

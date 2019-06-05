@@ -10,7 +10,7 @@ import {
 import { compose, setDisplayName, withState, withProps } from 'recompose'
 import {
   getWatchlist, getTrendingPositive, getTrendingNegative, getCurrentPortfolioWalletIds,
-  getCurrentPortfolioId, getCurrentWalletWithHoldings,
+  getCurrentPortfolioId, getCurrentWalletWithHoldings, getTradeableAssetFilter
 } from 'Selectors'
 import { setCurrentPortfolioAndWallet } from 'Actions/portfolio'
 
@@ -280,6 +280,7 @@ export default compose(
   withToggle('trendingDropDownOpen'),
   connect(createStructuredSelector({
     currentWallet: getCurrentWalletWithHoldings,
+    filterTradeable: getTradeableAssetFilter
   }), {
   }),
   withState('timeFrame', 'updateTimeFrame', '1d'),
@@ -291,8 +292,8 @@ export default compose(
     })
   }),
   connect(createStructuredSelector({
-    trendingPositive: (state, { sortField }) => getTrendingPositive(state, { sortField }),
-    trendingNegative: (state, { sortField }) => getTrendingNegative(state, { sortField }),
+    trendingPositive: (state, { sortField, filterTradeable }) => getTrendingPositive(state, { sortField, filterTradeable }),
+    trendingNegative: (state, { sortField, filterTradeable }) => getTrendingNegative(state, { sortField, filterTradeable }),
     watchlist: getWatchlist,
     currentPortfolioId: getCurrentPortfolioId,
     currentWallet: getCurrentWalletWithHoldings,
