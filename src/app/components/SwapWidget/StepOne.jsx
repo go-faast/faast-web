@@ -292,11 +292,10 @@ export default compose(
     sendSymbol, receiveSymbol,
     defaultSendAmount, defaultReceiveAmount,
     defaultRefundAddress, defaultReceiveAddress,
-    sendWallet, sendAsset, limit, previousSwapInputs, refundAddress
+    sendWallet, sendAsset, limit, previousSwapInputs
   }) => { 
     const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : undefined
     const { toAmount, fromAmount, toAddress, fromAddress } = previousSwapInputs || {}
-    console.log(refundAddress)
     return ({
       pair: `${sendSymbol}_${receiveSymbol}`,
       initialValues: {

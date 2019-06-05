@@ -15,7 +15,7 @@ const TileCol = ({ children }) => (<Col xs='9' sm='6' md='4' lg='3'>{children}</
 const MOBILE_ORDER = 'order-1 order-md-2'
 const DESKTOP_ORDER = 'order-2 order-md-1'
 
-const Access = () => (
+const Access = ({ forwardurl }) => (
   <div className='text-center'>
     <T tag='h3' i18nKey='app.connect.select' className='mt-lg-3'>Select your wallets</T>
     <Row className='no-gutters'>
@@ -32,8 +32,8 @@ const Access = () => (
           <CoinIcon symbol='ETH' size='sm' inline /> Ethereum Desktop Wallets
         </T>
         <TileRow>
-          <TileCol><Web3Wallet type='metamask' /></TileCol>
-          <TileCol><Web3Wallet type='mist' /></TileCol>
+          <TileCol><Web3Wallet forwardurl={forwardurl} type='metamask' /></TileCol>
+          <TileCol><Web3Wallet forwardurl={forwardurl} type='mist' /></TileCol>
         </TileRow>
       </Col>
       <Col xs='12' className={MOBILE_ORDER}>
@@ -41,9 +41,9 @@ const Access = () => (
           <CoinIcon symbol='ETH' size='sm' inline /> Ethereum Mobile Wallets
         </T>
         <TileRow>
-          <TileCol><Web3Wallet type='trust' /></TileCol>
-          <TileCol><Web3Wallet type='coinbase' /></TileCol>
-          <TileCol><Web3Wallet type='status' /></TileCol>
+          <TileCol><Web3Wallet forwardurl={forwardurl} type='trust' /></TileCol>
+          <TileCol><Web3Wallet forwardurl={forwardurl} type='coinbase' /></TileCol>
+          <TileCol><Web3Wallet forwardurl={forwardurl} type='status' /></TileCol>
         </TileRow>
       </Col>
       <Col xs='12' className={MOBILE_ORDER}>

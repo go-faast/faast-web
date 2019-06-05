@@ -28,7 +28,6 @@ export const updateSwapWidgetInputs = createAction('UPDATE_SWAP_WIDGET_INPUTS', 
 
 export const restoreState = (dispatch) => Promise.resolve()
   .then(() => {
-    console.log('hellllllooo')
     dispatch(toggleAssetsByTradeable())
     dispatch(restoreCachedAffiliateInfo())
     const assetCache = localStorageGetJson('state:asset')
