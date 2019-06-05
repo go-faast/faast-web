@@ -20,14 +20,15 @@ export default compose(
     push: pushAction,
   }),
   withHandlers({
-    onCancel: ({ swap, push }) => () => { console.log(swap); return push(routes.swapWidget({ 
-      from: swap.sendSymbol, 
-      to: swap.receiveSymbol,
-      fromAmount: swap.sendAmount,
-      toAmount: swap.receiveAmount,
-      fromAddress: swap.sendWalletId,
-      toAddress: swap. receiveWalletId
-    })) }
+    onCancel: ({ swap, push }) => () => { 
+      return push(routes.swapWidget({ 
+        from: swap.sendSymbol, 
+        to: swap.receiveSymbol,
+        fromAmount: swap.sendAmount,
+        toAmount: swap.receiveAmount,
+        fromAddress: swap.sendWalletId,
+        toAddress: swap. receiveWalletId
+      })) }
   }),
   lifecycle({
     componentWillMount() {
