@@ -1,5 +1,6 @@
 import { newScopedCreateAction } from 'Utilities/action'
 import log from 'Utilities/log'
+import { localStorageSet, localStorageGet } from 'Utilities/storage'
 import Faast from 'Services/Faast'
 
 const createAction = newScopedCreateAction(__filename)
@@ -9,13 +10,11 @@ export const restrictionsError = createAction('RESTRICTIONS_ERROR')
 export const updateLanguage = createAction('UPDATE_LANGUAGE', (language) => ({ language }))
 
 export const staticAppLoad = () => (dispatch) => {
-  if (localStorage) {
-    let lang = localStorage.getItem('i18nextLng') || 'en'
-    if (lang.indexOf('-') >= 0) {
-      lang = lang.substring(0, lang.indexOf('-')).toLowerCase()
-    }
-    dispatch(selectLanguage(lang))
+  let lang = localStorageGet('i18nextLng') || 'en'
+  if (lang.indexOf('-') >= 0) {
+    lang = lang.substring(0, lang.indexOf('-')).toLowerCase()
   }
+  dispatch(selectLanguage(lang))
 }
 
 export const fetchGeoRestrictions = () => (dispatch) => Promise.resolve()
@@ -29,7 +28,5 @@ export const fetchGeoRestrictions = () => (dispatch) => Promise.resolve()
 
 export const selectLanguage = (lang) => (dispatch) => {
   dispatch(updateLanguage(lang))
-  if (localStorage) {
-    localStorage.setItem('i18nextLng', lang)
-  }
+  localStorageSet('i18nextLng', lang)
 }
