@@ -9,7 +9,7 @@ export const restrictionsError = createAction('RESTRICTIONS_ERROR')
 export const updateLanguage = createAction('UPDATE_LANGUAGE', (language) => ({ language }))
 
 export const staticAppLoad = () => (dispatch) => {
-  if (typeof window !== 'undefined') {
+  if (localStorage) {
     let lang = localStorage.getItem('i18nextLng') || 'en'
     if (lang.indexOf('-') >= 0) {
       lang = lang.substring(0, lang.indexOf('-')).toLowerCase()
@@ -29,7 +29,7 @@ export const fetchGeoRestrictions = () => (dispatch) => Promise.resolve()
 
 export const selectLanguage = (lang) => (dispatch) => {
   dispatch(updateLanguage(lang))
-  if (typeof window !== 'undefined') {
+  if (localStorage) {
     localStorage.setItem('i18nextLng', lang)
   }
 }
