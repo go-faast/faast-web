@@ -207,7 +207,7 @@
       "coinbase2": "If you already have <1></1>, open <3>faa.st</3> using its built in web browser."
     },
     "createWalletModal": {
-      "ack1": "The <1></1> file can used to send any funds it contains.",
+      "ack1": "The <1></1> file can be used to send any funds it contains.",
       "ack2": "The <1></1> file contains a sensitive private key that is encrypted and can only be accessed using the password I entered.",
       "ack3": "Faast does not have a backup of the file or password. This <1></1> was generated in my web browser and was never sent over the internet.",
       "ack4": "If I lose access to the file or forget the password I forfeit all funds it contains.",

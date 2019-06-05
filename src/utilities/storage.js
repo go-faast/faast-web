@@ -10,6 +10,9 @@ export const storageAvailable = (type) => {
     storage.removeItem(x)
     return true
   } catch (e) {
+    if (typeof window.DOMException !== 'object') {
+      window.DOMException = Object
+    }
     return e instanceof window.DOMException && (
       // everything except Firefox
       e.code === 22 ||
