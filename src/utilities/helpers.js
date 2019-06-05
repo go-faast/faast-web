@@ -400,7 +400,7 @@ export const sortObjOfArray = (array, key, order = 'desc') => {
   })
 }
 
-export const shortenLanguageCode = (lang) => {
+export const shortenLanguageCode = (lang = '') => {
   if (lang.indexOf('-') >= 0) {
     lang = lang.substring(0, lang.indexOf('-')).toLowerCase()
   }
