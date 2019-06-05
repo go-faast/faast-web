@@ -3,7 +3,7 @@ import { compose, setDisplayName } from 'recompose'
 import LazyLoad from 'react-lazyload'
 
 import IconCarousel from 'Site/components/IconCarousel'
-import LangLink from 'Site/components/LangLink'
+import LangLink from 'Components/LangLink'
 
 import TrezorWalletLogo from 'Img/wallet/trezor.png'
 import LedgerWalletLogo from 'Img/wallet/ledger.png'

@@ -4,7 +4,7 @@ import { Container, Row, Col } from 'reactstrap'
 
 import Header from 'Site/components/Header'
 import SwapWidget from 'Site/components/SwapWidget'
-import LangLink from 'Site/components/LangLink'
+import LangLink from 'Components/LangLink'
 
 import MoonBackground from 'Img/moon-background.jpg'
 

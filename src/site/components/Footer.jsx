@@ -9,7 +9,7 @@ import { betaTag } from './Header/style.scss'
 import EmailSubscriptionForm from './EmailSubscriptionForm'
 import LazyLoad from 'react-lazyload'
 
-import LangLink from 'Site/components/LangLink'
+import LangLink from 'Components/LangLink'
 
 export default compose(
   setDisplayName('Footer'),

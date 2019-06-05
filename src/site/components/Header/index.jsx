@@ -31,7 +31,7 @@ import Icon from 'Components/Icon'
 import { staticAppLoad, selectLanguage } from 'Common/actions/app'
 import { getAppLanguage } from 'Common/selectors/app'
 import { darkestText } from '../PostPreview/style.scss'
-import LangLink from 'Site/components/LangLink'
+import LangLink from 'Components/LangLink'
 
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
