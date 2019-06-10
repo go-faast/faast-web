@@ -10,6 +10,13 @@ import i18n from './i18n'
 import App from 'Components/App'
 import store from './store'
 import history from './history'
+import ReactGA from 'react-ga'
+
+ReactGA.initialize('UA-100689193-1')
+
+ReactGA.set({
+  dimension1: 'supppp'
+})
 
 if (!window.faast) window.faast = {}
 window.faast.intervals = {

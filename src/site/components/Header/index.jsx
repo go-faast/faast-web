@@ -23,6 +23,7 @@ import { languageLoad, selectLanguage, correctStaticURL } from 'Common/actions/a
 import { getAppLanguage } from 'Common/selectors/app'
 import { darkestText } from '../PostPreview/style.scss'
 import LangLink from 'Components/LangLink'
+import GAEventButton from 'Components/GAEventButton'
 
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
@@ -79,7 +80,14 @@ export default compose(
       <Collapse isOpen={isExpanded} navbar>
         <Nav className='ml-auto' navbar>
           <NavItem className='mr-4' key='swap'>
-            <NavLink tag={'a'} className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/app/swap'>{header.swap}</NavLink>
+            <GAEventButton 
+              tag={'a'} 
+              color='transparent'
+              event={{ category: 'Static', action: 'Go to Swap' }}
+              className={classNames((theme == 'light' ? darkestText : 'text-light'), 'nav-link')} 
+              href='/app/swap'>
+              {header.swap}
+            </GAEventButton>
           </NavItem>
           <NavItem className='mr-4' key='marketmaker'>
             <NavLink tag={LangLink} className={classNames((theme == 'light' ? darkestText : 'text-light'))} to='/market-maker'>{header.marketMaker} <sup className={classNames(betaTag, 'text-primary')}><i>{header.beta} </i></sup></NavLink>
@@ -89,9 +97,15 @@ export default compose(
           </NavItem>
           <LanguageSelector onSelect={handleSelectLanguage} theme={theme} />
           <NavItem className='mr-4' key='portfolio'>
-            <NavLink tag={'a'} className='nav-link py-1' href='/app/connect'>
+            <GAEventButton 
+              tag={'a'} 
+              className='nav-link py-1' 
+              href='/app/connect'
+              color='transparent'
+              event={{ category: 'Static', action: 'Go to Connect' }} 
+            >
               <button className={classNames((theme == 'light' ? 'btn-primary' : 'btn-light'), 'btn')}>{header.button}</button>
-            </NavLink>
+            </GAEventButton>
           </NavItem>
         </Nav>
       </Collapse>

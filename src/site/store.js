@@ -2,6 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import thunk from 'redux-thunk'
 import { routerMiddleware } from 'react-router-redux'
 import { createBrowserHistory as createHistory } from 'history'
+import { googleAnalytics } from 'Src/app/reactGA'
 
 import reducer from './reducers'
 
@@ -15,6 +16,7 @@ if (typeof window === 'undefined') {
 }
 const middleware = [
   thunk,
+  googleAnalytics,
   routerMiddleware(history)
 ]
 

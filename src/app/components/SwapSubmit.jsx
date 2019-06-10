@@ -29,6 +29,8 @@ import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 import routes from 'Routes'
 
+import GAEventButton from 'Components/GAEventButton'
+
 const RenderChildren = ({ children }) => children
 const RenderNothing = () => null
 
@@ -36,7 +38,7 @@ const SwapSubmit = ({
   isOpen, swaps, headerText, continueText, continueDisabled, continueLoading,
   errorMessage, handleCancel, currentSwap, secondsUntilPriceExpiry, totalTxFee,
   handleTimerEnd, handleSubmit, invalid, submitting, modal, termsAccepted, singleSwap,
-  geoLimit
+  geoLimit, forwardTo
 }) => {
   const Wrapper = modal ? Modal : RenderChildren
   const Header = modal ? ModalHeader : RenderNothing
@@ -105,10 +107,15 @@ const SwapSubmit = ({
           <Footer>
             <div className='w-100 d-flex justify-content-between'>
               <Button type='button' color='primary' outline onClick={handleCancel}><T tag='span' i18nKey='app.swapSubmit.cancel'>Cancel</T></Button>
-              <Button type='submit' color='primary' disabled={continueDisabled || invalid || submitting || overGeoLimit}>
+              <GAEventButton 
+                event={forwardTo.indexOf('/orders/widget') >= 0 && { category: 'Swap', action: 'Submit Swap' }}
+                type='submit' 
+                color='primary' 
+                disabled={continueDisabled || invalid || submitting || overGeoLimit}
+              >
                 {continueText}
                 {continueLoading && (<i className='fa fa-spinner fa-pulse ml-2'/>)}
-              </Button>
+              </GAEventButton>
             </div>
           </Footer>
         </Form>

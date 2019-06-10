@@ -4,9 +4,11 @@ import { Card, CardHeader, CardBody } from 'reactstrap'
 import Header from 'Site/components/Header'
 import { withRouteData } from 'react-static'
 import Footer from 'Site/components/Footer'
+import withTracker from 'Site/components/withTracker'
 
 export default compose(
   setDisplayName('Privacy'),
+  withTracker,
   withRouteData
 )(({ translations }) => (
   <Fragment>
