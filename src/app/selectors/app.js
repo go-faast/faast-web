@@ -12,3 +12,4 @@ export const isAppRestricted = createSelector(getAppState, ({ restricted }) => r
 export const getGeoLimit = createSelector(getAppState, ({ limit }) => limit)
 export const getTradeableAssetFilter = createSelector(getAppState, ({ filterTradeableAssets }) => filterTradeableAssets)
 export const getSavedSwapWidgetInputs = createSelector(getAppState, ({ savedSwapWidgetInputs }) => savedSwapWidgetInputs)
+export const getConnectForwardUrl = createSelector(getAppState, ({ connectForwardUrl }) => connectForwardUrl)

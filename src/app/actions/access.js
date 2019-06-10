@@ -16,7 +16,7 @@ import {
   EthereumWalletWeb3, EthereumWalletViewOnly
 } from 'Services/Wallet'
 
-import { getCurrentPortfolio, getWallet, isWalletAdded } from 'Selectors'
+import { getCurrentPortfolio, getWallet, isWalletAdded, getConnectForwardUrl } from 'Selectors'
 import { addWallet, addNestedWallet, updateWalletBalances } from 'Actions/wallet'
 import { defaultPortfolioId } from 'Actions/portfolio'
 import { retrieveSwaps } from 'Actions/swap'
@@ -46,7 +46,7 @@ export const loadWallet = (walletPromise) => (dispatch, getState) => Promise.res
   })
 
 /** Load a wallet, add it to the current portfolio, and optionally redirect user to another page */
-export const openWallet = (walletPromise, forwardUrl = null) => (dispatch, getState) =>
+export const openWallet = (walletPromise, forwardUrl) => (dispatch, getState) =>
   dispatch(loadWallet(walletPromise))
     .then((wallet) => {
       const { id: walletId } = wallet
@@ -60,6 +60,7 @@ export const openWallet = (walletPromise, forwardUrl = null) => (dispatch, getSt
         })
     })
     .then(() => {
+      forwardUrl = getConnectForwardUrl(getState()) || routes.dashboard()
       if (forwardUrl) {
         dispatch(push(forwardUrl))
       }
