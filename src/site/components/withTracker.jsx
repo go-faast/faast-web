@@ -4,7 +4,7 @@ import ReactGA from 'react-ga'
 ReactGA.initialize('UA-100689193-1')
 
 ReactGA.set({
-  dimension1: 'supppp'
+  dimension1: 'faast'
 })
 
 const withTracker = (WrappedComponent, options = {}) => {
