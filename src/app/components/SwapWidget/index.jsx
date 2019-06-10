@@ -15,8 +15,8 @@ import StepTwo from './StepTwo'
 const SwapWidget = ({ orderId, blocked, stepOne }) => (
   <Fragment>
     <Helmet>
-      <title>Instantly Swap 100+ different cryptocurrencies - Faa.st</title>
-      <meta name='description' content='Trade your crypto directly from your hardware or software wallet. With no trading pairs, Faa.st makes it easy to trade altcoins quicker and cheaper than on an exchange.' /> 
+      <title>Instantly and Safely Trade 70+ Cryptocurrencies - Faa.st</title>
+      <meta name='description' content='Trade your crypto directly from your hardware or software wallet. Swap Bitcoin, Ethereum, Litecoin, Monero, Tron, and more with near-zero fees.' /> 
     </Helmet>
     {blocked ? (
       <Blocked/>

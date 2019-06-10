@@ -22,6 +22,7 @@ const createAction = newScopedCreateAction(__filename)
 
 export const appReady = createAction('READY')
 export const appError = createAction('ERROR')
+export const updateConnectForwardUrl = createAction('UPDATE_CONNECT_FORWARD_URL')
 export const resetAll = createAction('RESET_ALL')
 export const updateAssetsFilterByTradeable = createAction('UPDATE_ASSETS_TRADEABLE_FILTER')
 export const updateSwapWidgetInputs = createAction('UPDATE_SWAP_WIDGET_INPUTS', (inputs) => (inputs))
@@ -90,6 +91,11 @@ export const saveSwapWidgetInputs = (inputs) => (dispatch) => Promise.resolve()
   .then(() => {
     dispatch(updateSwapWidgetInputs(inputs))
   })  
+
+export const updateConnectForward = (url) => (dispatch) => Promise.resolve()
+  .then(() => {
+    dispatch(updateConnectForwardUrl(url))
+  })
 
 export const setupAffiliateReferral = () => Promise.resolve()
   .then(() => {

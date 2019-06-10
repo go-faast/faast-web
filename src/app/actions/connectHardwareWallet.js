@@ -370,5 +370,4 @@ export const saveConnectedAccounts = () => (dispatch, getState) => {
       log.debug(`Adding hardware wallet accounts to multiwallet ${multiWalletId}`, connectedAccountIds)
       dispatch(addNestedWallets(multiWalletId, ...connectedAccountIds))
     })
-    .then(() => dispatch(routerPush(routes.dashboard())))
 }

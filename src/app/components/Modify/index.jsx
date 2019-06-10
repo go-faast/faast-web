@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
 import uuid from 'uuid/v4'
+import { Helmet } from 'react-helmet'
 
 import { toUnit, toPercentage } from 'Utilities/convert'
 import { updateObjectInArray, splice } from 'Utilities/helpers'
@@ -362,6 +363,10 @@ class Modify extends Component {
     }
     return (
       <Fragment>
+        <Helmet>
+          <title>Create Cryptocurrency Index Funds - Faa.st</title>
+          <meta name='description' content='Trade multiple cryptocurrencies at the same time and set percentage weights of the coins you want to buy.' /> 
+        </Helmet>
         {blocked ? (
           <Blocked/>
         ) : null}

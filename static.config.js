@@ -93,8 +93,8 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
             supportedAssets,
             translations: t.translations,
             meta: {
-              title: siteConfig.title,
-              description: siteConfig.description,
+              title: 'Full List of Supported Cryptocurrencies - Faa.st',
+              description: 'View a comprehnsive table of cryptocurrencies currently available to trade on Faa.st exchange.',
               language: t.code,
             }
           }),
@@ -207,6 +207,11 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
           component: 'src/site/pages/Terms',
           getData: async () => ({
             translations: t.translations,
+            meta: {
+              title: 'Cryptocurrency Exchange Terms & Conditions - Faa.st',
+              description: 'Read the necessary terms and conditions to follow while trading using Faa.st.',
+              language: t.code,
+            }
           }),
         },
         {
@@ -214,6 +219,11 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
           component: 'src/site/pages/IcoIntro',
           getData: async () => {
             return {
+              meta: {
+                title: 'What is an ICO? - Faa.st',
+                description: 'This article describes what an ICO is, how it came to be, and its role in the crypto space.',
+                language: t.code,
+              },
               translations: t.translations,
             }
           },
@@ -223,6 +233,11 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
           component: 'src/site/pages/IcoItoIpo',
           getData: async () => {
             return {
+              meta: {
+                title: 'What is the difference between an ICO, IPO, and ITO? - Faa.st',
+                description: 'This article describes the difference between and ICO, IPO, and ITO.',
+                language: t.code,
+              },
               translations: t.translations,
             }
           },
@@ -232,6 +247,11 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
           component: 'src/site/pages/BuyEthereum',
           getData: async () => {
             return {
+              meta: {
+                title: 'How to Buy Ethereum - Faa.st',
+                description: 'Ready to take the leap into crypto? This article describes how to buy Ethereum safely and quickly.',
+                language: t.code,
+              },
               translations: t.translations,
             }
           },
@@ -241,6 +261,11 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
           component: 'src/site/pages/SmartContracts',
           getData: async () => {
             return {
+              meta: {
+                title: 'What are Smart Contracts? - Faa.st',
+                description: 'This article describes what smart contracts are, and the role the play in the Ethereum ecosystem.',
+                language: t.code,
+              },
               translations: t.translations,
             }
           },
@@ -250,6 +275,11 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
           component: 'src/site/pages/Dao',
           getData: async () => {
             return {
+              meta: {
+                title: 'What is a DAO? - Faa.st',
+                description: 'Dive deep into decentralized exchanges, how they work, and why they are important.',
+                language: t.code,
+              },
               translations: t.translations,
             }
           },
@@ -259,6 +289,11 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
           component: 'src/site/pages/WhatIsEthereum',
           getData: async () => {
             return {
+              meta: {
+                title: 'What is Ethereum? - Faa.st',
+                description: 'Heard about Ethereum, but not sure what it is? This article tells you all you need to know.',
+                language: t.code,
+              },
               translations: t.translations,
             }
           },
@@ -268,6 +303,11 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
           component: 'src/site/pages/Privacy',
           getData: async () => {
             return {
+              meta: {
+                title: 'Privacy Policy - Faa.st',
+                description: "Our stance on our user's privacy and how you can trade crypto without the risk of losing funds.",
+                language: t.code,
+              },
               translations: t.translations,
             }
           },
@@ -277,6 +317,11 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
           component: 'src/site/pages/Pricing',
           getData: async () => {
             return {
+              meta: {
+                title: 'Exchange Fees and Pricing - Faa.st',
+                description: 'Faa.st enables users to trade crypto from their wallet for low and transparent fees.',
+                language: t.code,
+              },
               translations: t.translations,
             }
           },

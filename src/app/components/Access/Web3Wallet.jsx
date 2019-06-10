@@ -12,7 +12,6 @@ export default compose(
   setDisplayName('Web3WalletTile'),
   setPropTypes({
     type: PropTypes.oneOf(config.web3WalletTypes),
-    forwardurl: PropTypes.string
   }),
   connect(null, {
     openWallet: openWeb3Wallet
@@ -21,7 +20,7 @@ export default compose(
     ...config.walletTypes[type],
   })),
   withHandlers({
-    handleClick: ({ openWallet, type, forwardurl }) => () => openWallet(type, forwardurl)
+    handleClick: ({ openWallet, type }) => () => openWallet(type)
   }),
 )(({ name, icon, handleClick }) => (
   <AccessTile name={name} icon={icon} onClick={handleClick} />
