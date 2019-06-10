@@ -3,11 +3,13 @@ import React, { Fragment } from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { Card, CardHeader, CardBody } from 'reactstrap'
 import { withRouteData } from 'react-static'
+import withTracker from 'Site/components/withTracker'
 import Header from 'Site/components/Header'
 import Footer from 'Site/components/Footer'
 
 export default compose(
   setDisplayName('BuyEthereum'),
+  withTracker,
   withRouteData
 )(({ translations }) => (
   <Fragment>

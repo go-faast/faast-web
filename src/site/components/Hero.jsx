@@ -5,6 +5,7 @@ import { Container, Row, Col } from 'reactstrap'
 import Header from 'Site/components/Header'
 import SwapWidget from 'Site/components/SwapWidget'
 import LangLink from 'Components/LangLink'
+import GAEventButton from 'Components/GAEventButton'
 
 import MoonBackground from 'Img/moon-background.jpg'
 
@@ -57,9 +58,18 @@ export default compose(
             <p className='hero-subtitle mb-4' style={{ fontWeight: 'normal' }}>
               {subtitle.the} <span className='special-word'>{subtitle.safest} </span> {subtitle.way} 
             </p>
-            <p><a className='btn btn-primary btn-lg hero-button py-2' role='button' href='/app/connect'>
-              {hero.button}
-            </a></p>
+            <p>
+              <GAEventButton 
+                tag='a' 
+                event={{ category: 'Static', action: 'Go to Connect' }} 
+                className='btn btn-primary btn-lg hero-button py-2' 
+                color='primary'
+                role='button' 
+                href='/app/connect'
+              >
+                {hero.button}
+              </GAEventButton>
+            </p>
           </Col>
           <Col className={classNames('pr-3 d-block')}>
             <SwapWidget assets={supportedAssets} defaultDeposit={from} defaultReceive={to} translations={translations} />

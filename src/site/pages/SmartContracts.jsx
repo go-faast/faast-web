@@ -4,10 +4,12 @@ import { Card, CardHeader, CardBody } from 'reactstrap'
 import { withRouteData } from 'react-static'
 import Header from 'Site/components/Header'
 import Footer from 'Site/components/Footer'
+import withTracker from 'Site/components/withTracker'
 
 export default compose(
   setDisplayName('SmartContracts'),
-  withRouteData
+  withRouteData,
+  withTracker,
 )(({ translations }) => (
   <Fragment>
     <Header translations={translations} />

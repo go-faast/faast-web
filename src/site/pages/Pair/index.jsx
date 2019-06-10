@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { withRouteData } from 'react-static'
 import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, lifecycle, withProps } from 'recompose'
+import withTracker from 'Site/components/withTracker'
 
 import PriceChart from 'Components/PriceChart'
 
@@ -17,6 +18,7 @@ import { getAllAssetsArray, areAssetsLoaded } from 'Common/selectors/asset'
 
 export default compose(
   setDisplayName('Pairs'),
+  withTracker,
   connect(createStructuredSelector({
     assets: getAllAssetsArray,
     areAssetsLoaded: areAssetsLoaded,

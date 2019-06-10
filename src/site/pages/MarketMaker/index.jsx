@@ -3,6 +3,7 @@ import * as React from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { withRouteData } from 'react-static'
 import { Row, Col, Button, Container, Card, CardBody, Collapse } from 'reactstrap'
+import withTracker from 'Site/components/withTracker'
 
 import Header from 'Site/components/Header'
 import Footer from 'Site/components/Footer'
@@ -15,7 +16,8 @@ const blueColor = '#323540'
 
 export default compose(
   setDisplayName('MarketMaker'),
-  withRouteData
+  withTracker,
+  withRouteData,
 )(({ translations = {}, translations: { static: { marketMaker: t } } }) => {
   const faqCopy = [
     {

@@ -10,7 +10,7 @@ import { compose, setDisplayName, lifecycle, withProps } from 'recompose'
 import classNames from 'class-names'
 
 // import logoImg from 'Img/faast-logo.png'
-
+import withTracker from 'Site/components/withTracker'
 import Footer from 'Site/components/Footer'
 import Header from 'Site/components/Header'
 import CoinIcon from 'Components/CoinIcon'
@@ -63,6 +63,7 @@ const TableRow = ({ asset: { receive, deposit, name, symbol } }) => {
 
 export default compose(
   setDisplayName('SupportedAssets'),
+  withTracker,
   connect(createStructuredSelector({
     assets: getAllAssetsArray,
     areAssetsLoaded: areAssetsLoaded

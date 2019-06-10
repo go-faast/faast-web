@@ -27,6 +27,7 @@ import { getWallet } from 'Selectors/wallet'
 import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
 import { getGeoLimit, getSavedSwapWidgetInputs } from 'Selectors/app'
 
+import GAEventButton from 'Components/GAEventButton'
 import ReduxFormField from 'Components/ReduxFormField'
 import Checkbox from 'Components/Checkbox'
 import CoinIcon from 'Components/CoinIcon'
@@ -215,15 +216,21 @@ const SwapStepOne = ({
                 labelClass='p-0'
               />
             </div>
-            <Button className={classNames('mt-2 mb-2 mx-auto', style.submitButton)} color={rateError ? 'danger' : 'primary'} type='submit' disabled={Boolean(submitting || rateError)}>
+            <GAEventButton 
+              className={classNames('mt-2 mb-2 mx-auto', style.submitButton)} 
+              color={rateError ? 'danger' : 'primary'} 
+              type='submit' 
+              event={{ category: 'Swap', action: 'Create Swap' }}
+              disabled={Boolean(submitting || rateError)}
+            >
               {!submitting && !rateError ? (
                 <T tag='span' i18nKey='app.widget.createSwap'>Create Swap</T>
               ) : rateError ? (
-                <T tag='span' i18nKey='app.widget.noRate'>Unable to retreive rate</T>
+                <T tag='span' i18nKey='app.widget.noRate'>Unable to retrieve rate</T>
               ) : (
                 <T tag='span' i18nKey='app.widget.generatingSwap'>Generating Swap...</T>
               )}
-            </Button>
+            </GAEventButton>
           </CardBody>
         </Card>
       </Form>
