@@ -17,11 +17,11 @@ export default compose(
   hot(module),
 )(() => {
   return (
-  <I18nextProvider i18n={i18n}>
-    <Provider store={store}>
-      <Router>
-        <Routes />
-      </Router>
-    </Provider>
-  </I18nextProvider>
-)})
+    <I18nextProvider i18n={i18n}>
+      <Provider store={store}>
+        <Router>
+          <Routes />
+        </Router>
+      </Provider>
+    </I18nextProvider>
+  )})

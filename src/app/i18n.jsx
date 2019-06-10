@@ -33,7 +33,7 @@ const options = {
   react: {
     wait: true,
     bindI18n: 'languageChanged loaded',
-    bindStore: false,
+    bindStore: true,
     nsMode: 'default',
     hashTransKey: function(defaultValue) {
       throw new Error(`Missing i18nKey prop on Trans component surrounding "${defaultValue}"`)

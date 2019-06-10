@@ -13,7 +13,7 @@ export default compose(
   }),
 )(({ children, to, currentLanguage, ...props }) => (
   <Link 
-    to={currentLanguage !== 'en' ? `${to}/${currentLanguage}` : to}
+    to={currentLanguage === 'en' ? to : `/${currentLanguage}${to}`}
     {...props}
   >
     {children}

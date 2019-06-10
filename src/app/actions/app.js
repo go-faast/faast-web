@@ -12,7 +12,7 @@ import { setSettings } from './settings'
 import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
 import { restoreTxs } from './tx'
 import { retrieveAllSwaps, restoreSwapTxIds, restoreSwapPolling } from './swap'
-import { fetchGeoRestrictions } from 'Common/actions/app'
+import { fetchGeoRestrictions, languageLoad } from 'Common/actions/app'
 
 import { getTradeableAssetFilter } from 'Selectors/app'
 
@@ -30,6 +30,7 @@ export const restoreState = (dispatch) => Promise.resolve()
   .then(() => {
     dispatch(toggleAssetsByTradeable())
     dispatch(restoreCachedAffiliateInfo())
+    dispatch(languageLoad())
     const assetCache = localStorageGetJson('state:asset')
     if (assetCache) {
       dispatch(restoreAssets(assetCache))

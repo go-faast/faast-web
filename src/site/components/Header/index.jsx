@@ -1,14 +1,10 @@
 import * as React from 'react'
-import { compose, setDisplayName, setPropTypes, defaultProps, lifecycle, withProps } from 'recompose'
+import { compose, setDisplayName, setPropTypes, defaultProps, lifecycle, withHandlers } from 'recompose'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { Link } from 'react-static'
 import { withRouter } from 'react-router'
 import siteConfig from 'Site/config'
 import FaastLogo64x64 from 'Img/faast-logo-64x64.png'
-import BritishFlag from 'Img/united-kingdom.svg?inline'
-import JapaneseFlag from 'Img/japan.svg?inline'
-import SpanishFlag from 'Img/spain.svg?inline'
 import { pick } from 'lodash'
 import {
   Container,
@@ -19,16 +15,11 @@ import {
   NavItem,
   NavLink,
   NavbarToggler,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownToggle
 } from 'reactstrap'
 import withToggle from 'Hoc/withToggle'
 import config from 'Config'
 
-import Icon from 'Components/Icon'
-import { staticAppLoad, selectLanguage } from 'Common/actions/app'
+import { languageLoad, selectLanguage, correctStaticURL } from 'Common/actions/app'
 import { getAppLanguage } from 'Common/selectors/app'
 import { darkestText } from '../PostPreview/style.scss'
 import LangLink from 'Components/LangLink'
@@ -38,29 +29,11 @@ import classNames from 'class-names'
 
 import { betaTag } from './style.scss'
 
-const languages = [
-  {
-    flag: BritishFlag,
-    name: 'English',
-    url: '/',
-    code: 'en'
-  },
-  {
-    flag: SpanishFlag,
-    name: 'Español',
-    url: '/es',
-    code: 'es'
-  },
-  {
-    flag: JapaneseFlag,
-    name: '日本語',
-    url: '/ja',
-    code: 'ja'
-  }
-]
+import LanguageSelector from 'Components/LanguageSelector'
 
 export default compose(
   setDisplayName('Header'),
+  withRouter,
   setPropTypes({
     theme: PropTypes.string,
     headerColor: PropTypes.string,
@@ -69,19 +42,16 @@ export default compose(
   connect(createStructuredSelector({
     currentLanguage: getAppLanguage
   }), {
-    staticAppLoad,
-    selectLanguage
-  }),
-  withProps(({ currentLanguage }) => {
-    currentLanguage = languages.find(l => l.code === currentLanguage)
-    return ({
-      currentLanguage
-    })
+    languageLoad,
+    selectLanguage,
+    correctStaticURL,
   }),
   lifecycle({
-    componentWillMount() {
-      const { staticAppLoad } = this.props
-      staticAppLoad()
+    componentDidMount() {
+      const { history, languageLoad, correctStaticURL, currentLanguage } = this.props
+      languageLoad()
+      const url = correctStaticURL(currentLanguage)
+      if (url) history.push(`${url}`)
     },
   }),
   defaultProps({
@@ -91,10 +61,14 @@ export default compose(
     light: false,
     expand: config.navbar.expand,
   }),
+  withHandlers({
+    handleSelectLanguage: ({ history, correctStaticURL }) => (lang) => {
+      const url = correctStaticURL(lang)
+      if (url) history.push(`${url}`)
+    }
+  }),
   withToggle('expanded'),
-  withToggle('dropdownOpen'),
-  withRouter
-)(({ theme, selectLanguage, currentLanguage, headerColor, isDropdownOpen, toggleDropdownOpen,  toggleExpanded, isExpanded, translations: { static: { header = {} } = {}  }, ...props }) => (
+)(({ theme, handleSelectLanguage, headerColor, toggleExpanded, isExpanded, translations: { static: { header = {} } = {}  }, ...props }) => (
   <Navbar {...pick(props, Object.keys(Navbar.propTypes))} expand='sm' className={darkestText}
     style={{ border: 0, backgroundColor: headerColor ? headerColor : 'transparent', paddingLeft: '12px' }}>
     <Container>
@@ -113,27 +87,7 @@ export default compose(
           <NavItem className='mr-4' key='blog'>
             <NavLink tag={'a'} className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/blog'>{header.blog}</NavLink>
           </NavItem>
-          <Dropdown nav isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
-            <DropdownToggle 
-              tag={NavLink} 
-              to={'/assets'}
-              onClick={((e) => e.preventDefault())}
-              className={classNames((theme == 'light' ? darkestText : 'text-light'), 'cursor-pointer mr-4')}
-              caret
-              nav
-            >
-              <Icon style={{ width: 20, height: 20, marginRight: 10, position: 'relative', top: -1 }} src={currentLanguage.flag} />
-              <span>{currentLanguage.code.toUpperCase()}</span>
-            </DropdownToggle>
-            <DropdownMenu style={{ borderRadius: 2, borderColor: '#fff' }} className='p-0'>
-              {languages.map((lang = {}, i) => (
-                <DropdownItem key={lang.url} onClick={() => selectLanguage(lang.code)} tag={Link} to={`${lang.url}`} style={{ backgroundColor: '#fff', borderTop: '1px solid #ECEFF7' }} className={classNames(i === 0 && 'border-0','border-left-0 text-muted py-2')}>
-                  <Icon style={{ width: 20, height: 20, marginRight: 10 }} src={lang.flag} />
-                  <span style={{ color: '#333' }}>{lang.name}</span>
-                </DropdownItem>
-              ))}
-            </DropdownMenu>
-          </Dropdown>
+          <LanguageSelector onSelect={handleSelectLanguage} theme={theme} />
           <NavItem className='mr-4' key='portfolio'>
             <NavLink tag={'a'} className='nav-link py-1' href='/app/connect'>
               <button className={classNames((theme == 'light' ? 'btn-primary' : 'btn-light'), 'btn')}>{header.button}</button>
