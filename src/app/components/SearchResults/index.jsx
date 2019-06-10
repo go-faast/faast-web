@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, setPropTypes, lifecycle } from 'recompose'
 import { Row, Col, Button } from 'reactstrap'
+import { Helmet } from 'react-helmet'
 import routes from 'Routes'
 
 import {
@@ -51,6 +52,10 @@ export default compose(
   })
 )(({ pending, error, wallet, handleViewInPortfolio, handleAddToPortfolio, isAlreadyInPortfolio }) => (
   <Layout className='pt-3'>
+    <Helmet>
+      <title>Crypto Address Lookup Tool - Faa.st</title>
+      <meta name='description' content='Look up any cryptocurrency wallet address, and visualize holdings with charts.' /> 
+    </Helmet>
     {(pending || error || !wallet) ? (
       <LoadingFullscreen label='Loading wallet...' error={error}/>
     ) : (

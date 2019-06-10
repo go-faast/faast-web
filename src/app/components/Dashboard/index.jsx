@@ -1,7 +1,8 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Redirect, withRouter } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
+import { Helmet } from 'react-helmet'
 
 import {
   getCurrentWalletWithHoldings, isDefaultPortfolioEmpty
@@ -45,14 +46,20 @@ class Dashboard extends Component {
 
     const disableRemove = wallet.id === defaultPortfolioId
     return (
-      <DashboardView
-        wallet={wallet}
-        handleRemove={this._removeWallet}
-        viewOnly={isViewOnly}
-        disableRemove={disableRemove}
-        isDefaultPortfolioEmpty={isDefaultPortfolioEmpty}
-        {...this.props}
-      />
+      <Fragment>
+        <Helmet>
+          <title>Crypto Portfolio Dashboard - Faa.st</title>
+          <meta name='description' content='Connect your cryptocurrency wallet and visualize your portfolio holdings with charts and graphs.' /> 
+        </Helmet>
+        <DashboardView
+          wallet={wallet}
+          handleRemove={this._removeWallet}
+          viewOnly={isViewOnly}
+          disableRemove={disableRemove}
+          isDefaultPortfolioEmpty={isDefaultPortfolioEmpty}
+          {...this.props}
+        />
+      </Fragment>
     )
   }
 }
