@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { withRouteData } from 'react-static'
 import { Container, Button } from 'reactstrap'
+import withTracker from 'Site/components/withTracker'
 
 import Header from 'Site/components/Header'
 import Footer from 'Site/components/Footer'
@@ -75,6 +76,7 @@ const parseParagraph = (p, title) => {
 
 export default compose(
   setDisplayName('BlogPost'),
+  withTracker,
   withRouteData
 )(({ translations, mediumPost: { payload: { value: { title, mediumUrl, content: { bodyModel: { paragraphs } } } } } }) => (
   <Fragment>

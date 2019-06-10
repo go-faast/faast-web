@@ -1,5 +1,5 @@
 import { uniqBy } from 'lodash'
-import React, { Fragment } from 'react'
+import React from 'react'
 import path from 'path'
 import axios from 'axios'
 import merge from 'webpack-merge'
@@ -10,7 +10,7 @@ import urlJoin from 'url-join'
 import Wallets from './src/config/walletTypes'
 import { translations } from './src/config/translations'
 
-const { isDev, dirs, useHttps, siteRoot } = require('./etc/common.js')
+const { dirs, useHttps, siteRoot } = require('./etc/common.js')
 const getBaseConfig = require('./etc/webpack.config.base.js')
 const siteConfig = require('./src/site/config.js')
 
@@ -29,13 +29,6 @@ if (window.siteRoot
   && !window.location.search.includes('skipSiteRootRedirect')) {
   window.location.replace(window.siteRoot + window.location.pathname + window.location.search)
 }
-`
-
-const analyticsCode = `
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'UA-100689193-1');
 `
 
 const generateCombinationsFromArray = (array, property) => {
@@ -70,13 +63,6 @@ const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
         <script dangerouslySetInnerHTML={{ __html: runtimeRedirect }}/>
       </Head>
       <Body style={{ backgroundColor: get(routeInfo, 'allProps.bgColor', '#181818') }}>{children}</Body>
-      {/* Google analytics */}
-      {!isDev && (
-        <Fragment>
-          <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100689193-1"></script>
-          <script dangerouslySetInnerHTML={{ __html: analyticsCode }}/>
-        </Fragment>
-      )}
     </Html>
   )
 }

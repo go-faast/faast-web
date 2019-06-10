@@ -11,12 +11,14 @@ import { isAppReady } from 'Selectors'
 import config from 'Config'
 import { getAssetState, getTxState, getSentSwapOrderTxIds } from 'Selectors'
 import history from './history'
+import { googleAnalytics } from './reactGA'
 
 const { isDev } = config
 
 const middleware = [
   thunk,
-  routerMiddleware(history)
+  routerMiddleware(history),
+  googleAnalytics
 ]
 
 if (isDev && !window.__REDUX_DEVTOOLS_EXTENSION__) middleware.push(logger)

@@ -6,9 +6,11 @@ import { withRouteData } from 'react-static'
 import SwapIcon from 'Img/swap-icon.svg?inline'
 import Header from 'Site/components/Header'
 import Footer from 'Site/components/Footer'
+import withTracker from 'Site/components/withTracker'
 
 export default compose(
   setDisplayName('Pricing'),
+  withTracker,
   withRouteData
 )(({ translations }) => (
   <Fragment>

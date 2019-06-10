@@ -8,6 +8,7 @@ import { swapContainer, cardHeader, cardTitle, submitButton, asset, swap } from 
 
 import { areAssetsLoaded } from 'Common/selectors/asset'
 
+import GAEventButton from 'Components/GAEventButton'
 import CoinIcon from 'Components/CoinIcon'
 import AssetSelector from 'Components/AssetSelector'
 
@@ -66,15 +67,16 @@ const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwit
               </Button>
             </Col>
           </Row>
-          <Button 
-            tag='a'
+          <GAEventButton 
+            tag={Button}
+            event={{ category: 'Static', action: 'Go to Swap' }}
             href={`/app/swap?from=${depositSymbol}&to=${receiveSymbol}`}
             className={classNames('mt-1 mb-2 mx-auto flat', submitButton)} 
             color='primary'
             onClick={onSubmit}
           >
             {swapWidget.continue}
-          </Button>
+          </GAEventButton>
         </CardHeader>
       </Card>
       <Modal size='lg' isOpen={Boolean(assetSelect)} toggle={() => setAssetSelect(null)} className='m-0 mx-md-auto' contentClassName='p-0'>

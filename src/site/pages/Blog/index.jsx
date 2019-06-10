@@ -6,12 +6,14 @@ import { Container, Row } from 'reactstrap'
 import PostPreview from 'Site/components/PostPreview'
 import Header from 'Site/components/Header'
 import Footer from 'Site/components/Footer'
+import withTracker from 'Site/components/withTracker'
 
 import { darkText } from 'Site/components/PostPreview/style.scss'
 import classNames from 'class-names'
 
 export default compose(
   setDisplayName('Blog'),
+  withTracker,
   withRouteData
 )(({ mediumPosts, translations }) => (
   <Fragment>
