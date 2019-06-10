@@ -2,16 +2,35 @@ language: node_js
 node_js:
 - '8'
 before_install:
+- stty cols 80
 - npm install -g "npm@$(jq -r '.engines.npm' package.json)"
 install:
 - npm install --no-save
-- npm test
+- NODE_OPTIONS="--max-old-space-size=4096" npm run build
+before_script:
+- "export DISPLAY=:99.0"
+- "sh -e /etc/init.d/xvfb start"
+- sleep 3
+- fluxbox >/dev/null 2>&1 &
 after_success:
-- git fetch
-- "./bin/upgrade.sh"
+- echo $TRAVIS_TEST_RESULT
+after_failure:
+- echo $TRAVIS_TEST_RESULT
 env:
   global:
   #builduser
   - secure: BXJ7UahyYkf5dpA6bSX9pqsZQxPbZVARZV/x0OwftZI701yI2vdYRPfZzFdACTft0Zd3XrSQpacrY3kZ4vee9TT3hBPU3OwW555wjn9mv93QuYUWVtIlUEG6VmS55Ll6sq7LUXDX2ujXvV6TFa6lu9dBBlyL6FzhkSWH8ZY3lM/VRDOFfHRhRj4kZTGCI6nxHxByaFBZNs34EsG1Ee4TJfXaY9H0pXhx0DuEEt4G9Kv9GSEdEyRWHYmaTAf6ViW7z9XtWrBFg+a7K4+5IQQpqe3bcOjbwXoTJvRkfAsStZQjvej2NAhYmY6m0bGdOor01m1a/1CjzNB8BXGMp/5jbrOgwO1ASRLdYmRVg+euvfTk5i/gIkLSUXzFtDr71ap1Gak/jS3yEvTw70IswkFboHVDT+LMKOVDvlIXww5Z/0eEjFQdRcZIojsybPF3pzFj1j3UnQZbd66Q8zhZgvjqa5lLy1demQ5+KMzhJyHIR3zzZWvRWvHhzeean85NZ/S7QaC7V1LAm5kU8gGWTwDY5ZYRtQhmpfUBrJ4N/FYjL+lifR1vJR34Lw12kdhRHdX7wiKDH61g/Dt3hxNYi+KygvTLXx1IWICRgsCxITmHrfagYWmN9rd/cndfYNvz2ocncxqPz1xf4eoMYB6gA5aPCxDpmCv9Bnnp3TpO8e0t8Kw=
   #buildpassword
   - secure: klh87TvtcZcjZ5GSXRSOiB5USjYq30plJHokr3MzuSH5gyw48RX/+PEKxMavVP/VfJBBXf5rmeBGP1A7CxA8R0CxLTiLoPl5utQpw0uzrp6yNaaOUozz5Fjeghc4cw5T2ra49MtFO37S+MrHPfURNNGkdL6mVto8cJ0cP2izCuZ67XHfUG/gKZ7UOaWkgO0vodQmkVjtdg6cpmxB88yAsjoet2pXlCxp7zpPEQPKixbgu1/9Q6NSuCPY9UvLzT3HjJuQFowirxrEXwow6QvBfSz95NezrfNIrDKab0STRHuyFSvSz6clqFq4abf0YtxN2hrlWLe26o/aE9pNRx6OJwz8gBtK0dx4FgyhLUeTqK2hznFucYXc9n/Abmc2DPtDsLjFIDjMOAAZXUNKkFPhFT2lf8doQoLH8I9ujgMiiycPDRy+9DwgHAP1pl74Mom5bCaOy56mASIA0QKzH+pq5qJ5u5I/mkZhx062qP31mJvPvD7pVDaYxFlx/Sw7x4LfDhmIF1v83NutX5jSoGcLCyC38cBZX+er70/8bVi3Z67PPH1OI9ZiFXspH0QIT3bzOjwDYu5O7ce6jK4YBYN1fAT5AjgekxFcV8L6wYDyua95wO74cW8JKW8i5aN13NhlXWnXG3LrKg/p/aQ7vOjtRQwx7vSNwl++4/hzttpXDfQ=
+
+dist: trusty
+sudo: required
+
+addons:
+  firefox: latest
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable fluxbox
+

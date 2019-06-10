@@ -4,6 +4,8 @@ import { Container, Row, Col } from 'reactstrap'
 
 import Header from 'Site/components/Header'
 import SwapWidget from 'Site/components/SwapWidget'
+import LangLink from 'Components/LangLink'
+import GAEventButton from 'Components/GAEventButton'
 
 import MoonBackground from 'Img/moon-background.jpg'
 
@@ -28,7 +30,7 @@ export default compose(
   }),
 )(({ supportedAssets, to, from, headline, translations = {}, translations: { static: { hero = {}, hero: { headline: headlineT = {}, subtitle = {} } = {} } = {} } }) => (
   <div>
-    <Header translations={translations}/>
+    <Header translations={translations} />
     <div className='jumbotron jumbotron-fluid hero-technology mb-0' style={{
       backgroundImage: `url(${MoonBackground})`,
       height: '824px',
@@ -42,12 +44,12 @@ export default compose(
       <Container>
         <Row>
           <Col sm='12' lg='6' className='text-left pl-md-5 pl-0 ml-4'>
-            <a href='/market-maker'>
+            <LangLink to='/market-maker'>
               <div className='notification mt-md-4 mt-0 mb-4'>
                 <span className='new-pill'>{hero.new}</span>
                 {hero.notification}
               </div>
-            </a>
+            </LangLink>
             {headline || (
               <h1 className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
                 <span className='special-word'>Instantly</span> Trade 70+ Coins from your Hardware or Software Wallet.
@@ -56,9 +58,18 @@ export default compose(
             <p className='hero-subtitle mb-4' style={{ fontWeight: 'normal' }}>
              Simply connect your wallet, and <span className='special-word'>safely</span> begin building a diversified portfolio.
             </p>
-            <p><a className='btn btn-primary btn-lg hero-button py-2' role='button' href='/app/connect'>
-              {hero.button}
-            </a></p>
+            <p>
+              <GAEventButton 
+                tag='a' 
+                event={{ category: 'Static', action: 'Go to Connect' }} 
+                className='btn btn-primary btn-lg hero-button py-2' 
+                color='primary'
+                role='button' 
+                href='/app/connect'
+              >
+                {hero.button}
+              </GAEventButton>
+            </p>
           </Col>
           <Col className={classNames('pr-3 d-block')}>
             <SwapWidget assets={supportedAssets} defaultDeposit={from} defaultReceive={to} translations={translations} />

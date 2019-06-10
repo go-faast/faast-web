@@ -3,6 +3,7 @@ import { compose, setDisplayName } from 'recompose'
 import { withRouteData } from 'react-static'
 import { Row, Col, Button, } from 'reactstrap'
 
+import withTracker from 'Site/components/withTracker'
 import Header from 'Site/components/Header'
 import Footer from 'Site/components/Footer'
 import MacbookScreenshot1 from 'Img/macbook-screenshot-01.png'
@@ -17,6 +18,7 @@ import { gradient, graphicSection, text } from './style.scss'
 
 export default compose(
   setDisplayName('Wallet'),
+  withTracker,
   withRouteData
 )(({ translations, translations: { static: { wallet: t } }, wallet: { name, slogan, website, description, supportedAssets, howTo, } }) => {
   const graphic = Object.values(WalletTypes).find(obj => obj.name === name).graphic

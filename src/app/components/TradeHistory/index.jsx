@@ -3,6 +3,7 @@ import { push as pushAction } from 'react-router-redux'
 import { compose, setDisplayName, lifecycle } from 'recompose'
 import { createStructuredSelector } from 'reselect' 
 import { connect } from 'react-redux'
+import { Helmet } from 'react-helmet'
 
 import Layout from 'Components/Layout'
 import TradeTable from 'Components/TradeTable'
@@ -30,6 +31,10 @@ export const tableHeadingsCompleted = [
 
 const TradeHistory = ({ pendingSwaps, completedSwaps }) => (
   <Layout className='pt-3'>
+    <Helmet>
+      <title>Cryptocurrency Order History - Faa.st</title>
+      <meta name='description' content='Keep track of all your previous cryptocurrency trades and swaps, and analyze whether trades were positive or negative.' /> 
+    </Helmet>
     <T tag='h4' i18nKey='app.orders.orderHistory' className='mt-2 text-primary'>Order History</T>
     <TradeTable 
       swaps={pendingSwaps} 

@@ -1,5 +1,5 @@
 import { uniqBy } from 'lodash'
-import React, { Fragment } from 'react'
+import React from 'react'
 import path from 'path'
 import axios from 'axios'
 import merge from 'webpack-merge'
@@ -10,7 +10,7 @@ import urlJoin from 'url-join'
 import Wallets from './src/config/walletTypes'
 import { translations } from './src/config/translations'
 
-const { isDev, dirs, useHttps, siteRoot } = require('./etc/common.js')
+const { dirs, useHttps, siteRoot } = require('./etc/common.js')
 const getBaseConfig = require('./etc/webpack.config.base.js')
 const siteConfig = require('./src/site/config.js')
 
@@ -29,13 +29,6 @@ if (window.siteRoot
   && !window.location.search.includes('skipSiteRootRedirect')) {
   window.location.replace(window.siteRoot + window.location.pathname + window.location.search)
 }
-`
-
-const analyticsCode = `
-window.dataLayer = window.dataLayer || [];
-function gtag(){dataLayer.push(arguments);}
-gtag('js', new Date());
-gtag('config', 'UA-100689193-1');
 `
 
 const generateCombinationsFromArray = (array, property) => {
@@ -70,15 +63,282 @@ const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
         <script dangerouslySetInnerHTML={{ __html: runtimeRedirect }}/>
       </Head>
       <Body style={{ backgroundColor: get(routeInfo, 'allProps.bgColor', '#181818') }}>{children}</Body>
-      {/* Google analytics */}
-      {!isDev && (
-        <Fragment>
-          <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100689193-1"></script>
-          <script dangerouslySetInnerHTML={{ __html: analyticsCode }}/>
-        </Fragment>
-      )}
     </Html>
   )
+}
+
+const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
+  let routes = []
+  return new Promise((resolve, reject) => {
+    translations.forEach(async (t) => {
+      try {
+        const routeConfig = [{
+          path: `${t.url}`,
+          component: 'src/site/pages/Home',
+          getData: async () => ({
+            supportedAssets,
+            translations: t.translations,
+            meta: {
+              title: siteConfig.title,
+              description: siteConfig.description,
+              language: t.code,
+            }
+          }),
+        },
+        {
+          path: `${t.url}/assets`,
+          noindex: true,
+          component: 'src/site/pages/SupportedAssets',
+          getData: async () => ({
+            supportedAssets,
+            translations: t.translations,
+            meta: {
+              title: 'Full List of Supported Cryptocurrencies - Faa.st',
+              description: 'View a comprehnsive table of cryptocurrencies currently available to trade on Faa.st exchange.',
+              language: t.code,
+            }
+          }),
+          children: generateCombinationsFromArray(supportedAssets, 'symbol').map(pair => {
+            const symbol = pair.symbol
+            const cmcIDno = pair.cmcIDno
+            const name = pair.name
+            const type = pair.type
+            return {
+              path: `${t.url}/assets/${symbol}/${type}`,
+              component: 'src/site/pages/Pair',
+              getData: async () => {
+                let descriptions = {}
+                const sym = symbol.toLowerCase()
+                try {
+                  const coinInfo = await axios.get(`https://data.messari.io/api/v1/assets/${sym}/profile`)
+                  descriptions[symbol] = coinInfo.data.data
+                } catch (err) {
+                  // err
+                }
+                return {
+                  supportedAssets,
+                  symbol,
+                  name,
+                  cmcIDno,
+                  type,
+                  descriptions,
+                  translations: t.translations,
+                  meta: {
+                    title: `Instantly ${type} ${name} (${symbol}) - Faa.st`,
+                    description: `Safely trade your ${name} crypto directly from your hardware or software wallet. View ${name} (${symbol}) pricing charts, market cap, daily volume and other coin data.`,
+                    language: t.code,
+                  }
+                }
+              },
+            }
+          })
+        },
+        {
+          path: '/wallets',
+          noindex: true,
+          component: 'src/site/pages/Wallets',
+          getData: () => ({
+            supportedWallets
+          }),
+          children: supportedWallets.map(wallet => {
+            const metaName = wallet.name.replace(' Wallet', '')
+            const urlName = wallet.name.replace(/\s+/g, '-').toLowerCase()
+            return {
+              path: `${t.url}/${urlName}`,
+              component: 'src/site/pages/Wallet',
+              getData: () => ({
+                wallet,
+                translations: t.translations,
+                meta: {
+                  title: `Trade Your Crypto from your ${metaName.replace(' Wallet', '')} Wallet - Faa.st`,
+                  description: `Safely trade your crypto directly from your ${metaName} Wallet. Connect your ${metaName} wallet and trade 100+ cryptocurrencies on Faa.st.`,
+                  language: t.code,
+                }
+              }),
+            }
+          })
+        },
+        {
+          path: `${t.url}/blog`,
+          component: 'src/site/pages/Blog',
+          getData: async () => ({
+            mediumPosts,
+            translations: t.translations,
+            meta: {
+              title: 'Faa.st Cryptocurrency Blog',
+              description: 'Blog posts about trading on Faa.st as well as the state of crypto including regulation, pricing, wallets, and mining.',
+              language: t.code,
+            },
+            bgColor: '#F5F7F8'
+          }),
+          children: await Promise.all(mediumPosts.map(async post => {
+            let mediumPost = await axios.get(`https://medium.com/faast/${post.uniqueSlug}?format=json`)
+            mediumPost = JSON.parse(mediumPost.data.replace('])}while(1);</x>', ''))
+            return ({
+              path: `${t.url}/${post.uniqueSlug}`,
+              component: 'src/site/pages/BlogPost',
+              getData: async () => ({
+                mediumPost,
+                translations: t.translations,
+                meta: {
+                  title: `${post.title} - Faa.st Blog`,
+                  description: `${post.virtuals.subtitle}`,
+                  language: t.code,
+                },
+                bgColor: '#F5F7F8'
+              }),
+            })
+          })) 
+        },
+        { 
+          path: `${t.url}/market-maker`,
+          component: 'src/site/pages/MarketMaker',
+          getData: async () => ({
+            translations: t.translations,
+            meta: {
+              title: 'Faa.st Market Maker Beta Program',
+              description: 'Earn interest on your Bitcoin by fulfilling trades placed on the Faa.st marketplace. Sign up for the Beta now.',
+              language: t.code,
+            },
+          }),
+        },
+        {
+          path: `${t.url}/terms`,
+          component: 'src/site/pages/Terms',
+          getData: async () => ({
+            translations: t.translations,
+            meta: {
+              title: 'Cryptocurrency Exchange Terms & Conditions - Faa.st',
+              description: 'Read the necessary terms and conditions to follow while trading using Faa.st.',
+              language: t.code,
+            }
+          }),
+        },
+        {
+          path: `${t.url}/what-is-an-ico`,
+          component: 'src/site/pages/IcoIntro',
+          getData: async () => {
+            return {
+              meta: {
+                title: 'What is an ICO? - Faa.st',
+                description: 'This article describes what an ICO is, how it came to be, and its role in the crypto space.',
+                language: t.code,
+              },
+              translations: t.translations,
+            }
+          },
+        },
+        {
+          path: `${t.url}/what-is-the-difference-between-ico-ipo-ito`,
+          component: 'src/site/pages/IcoItoIpo',
+          getData: async () => {
+            return {
+              meta: {
+                title: 'What is the difference between an ICO, IPO, and ITO? - Faa.st',
+                description: 'This article describes the difference between and ICO, IPO, and ITO.',
+                language: t.code,
+              },
+              translations: t.translations,
+            }
+          },
+        },
+        {
+          path: `${t.url}/how-to-buy-ethereum`,
+          component: 'src/site/pages/BuyEthereum',
+          getData: async () => {
+            return {
+              meta: {
+                title: 'How to Buy Ethereum - Faa.st',
+                description: 'Ready to take the leap into crypto? This article describes how to buy Ethereum safely and quickly.',
+                language: t.code,
+              },
+              translations: t.translations,
+            }
+          },
+        },
+        {
+          path: `${t.url}/what-are-smart-contracts`,
+          component: 'src/site/pages/SmartContracts',
+          getData: async () => {
+            return {
+              meta: {
+                title: 'What are Smart Contracts? - Faa.st',
+                description: 'This article describes what smart contracts are, and the role the play in the Ethereum ecosystem.',
+                language: t.code,
+              },
+              translations: t.translations,
+            }
+          },
+        },
+        {
+          path: `${t.url}/what-is-a-dao`,
+          component: 'src/site/pages/Dao',
+          getData: async () => {
+            return {
+              meta: {
+                title: 'What is a DAO? - Faa.st',
+                description: 'Dive deep into decentralized exchanges, how they work, and why they are important.',
+                language: t.code,
+              },
+              translations: t.translations,
+            }
+          },
+        },
+        {
+          path: `${t.url}/what-is-ethereum`,
+          component: 'src/site/pages/WhatIsEthereum',
+          getData: async () => {
+            return {
+              meta: {
+                title: 'What is Ethereum? - Faa.st',
+                description: 'Heard about Ethereum, but not sure what it is? This article tells you all you need to know.',
+                language: t.code,
+              },
+              translations: t.translations,
+            }
+          },
+        },
+        {
+          path: `${t.url}/privacy`,
+          component: 'src/site/pages/Privacy',
+          getData: async () => {
+            return {
+              meta: {
+                title: 'Privacy Policy - Faa.st',
+                description: "Our stance on our user's privacy and how you can trade crypto without the risk of losing funds.",
+                language: t.code,
+              },
+              translations: t.translations,
+            }
+          },
+        },
+        {
+          path: `${t.url}/pricing`,
+          component: 'src/site/pages/Pricing',
+          getData: async () => {
+            return {
+              meta: {
+                title: 'Exchange Fees and Pricing - Faa.st',
+                description: 'Faa.st enables users to trade crypto from their wallet for low and transparent fees.',
+                language: t.code,
+              },
+              translations: t.translations,
+            }
+          },
+        },
+        {
+          is404: true,
+          component: 'src/site/pages/404',
+        }]
+        routes = routes.concat(routeConfig)
+        if (routes.length >= (translations.length * routeConfig.length)) {
+          resolve(routes)
+        }
+      } catch (err) {
+        reject(err)
+      }
+    })
+  })
 }
 
 export default {
@@ -91,9 +351,13 @@ export default {
   }),
   Document,
   getRoutes: async () => {
-    const { data: assets } = await axios.get('https://api.faa.st/api/v2/public/currencies')
+    const { data: assets } = await axios.get('https://api.faa.st/api/v2/public/currencies', {
+      params: {
+        include: 'marketInfo'
+      }
+    })
     const supportedAssets = assets.filter(({ deposit, receive }) => deposit || receive)
-      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl', 'deposit', 'receive', 'cmcIDno'))
+      .map((asset) => ({ ...pick(asset, ['symbol', 'name', 'iconUrl', 'deposit', 'receive', 'cmcIDno']), marketCap: asset.marketInfo.quote.USD.market_cap || 0 }))
     const supportedWallets = Object.values(Wallets)
     let mediumProfile = await axios.get('https://medium.com/faast?format=json')
     mediumProfile = JSON.parse(mediumProfile.data.replace('])}while(1);</x>', ''))
@@ -136,263 +400,9 @@ export default {
     dbPosts = dbPosts.filter(p => p.uniqueSlug)
     mediumPosts = dbPosts ? dbPosts.concat(mediumPosts) : mediumPosts
     mediumPosts = uniqBy(mediumPosts, 'uniqueSlug')
-    return [
-      {
-        path: '/',
-        component: 'src/site/pages/Home',
-        getData: async () => ({
-          supportedAssets,
-          translations: translations[0].translations,
-          meta: {
-            title: siteConfig.title,
-            description: siteConfig.description
-          }
-        }),
-        children: translations.map(t => {
-          return {
-            path: `/${t.url}`,
-            component: 'src/site/pages/Home',
-            getData: () => {
-              return {
-                translations: t.translations,
-                meta: {
-                  title: siteConfig.title,
-                  description: siteConfig.description,
-                  language: t.language
-                }
-              }
-            },
-          }
-        })
-      },
-      {
-        path: '/assets',
-        noindex: true,
-        component: 'src/site/pages/Home',
-        getData: async () => ({
-          supportedAssets,
-          translations: translations[0].translations,
-          meta: {
-            title: siteConfig.title,
-            description: siteConfig.description
-          }
-        }),
-        children: generateCombinationsFromArray(supportedAssets, 'symbol').map(pair => {
-          const symbol = pair.symbol
-          const cmcIDno = pair.cmcIDno
-          const name = pair.name
-          const type = pair.type
-          return {
-            path: `/assets/${symbol}/${type}`,
-            component: 'src/site/pages/Pair',
-            getData: async () => {
-              let descriptions = {}
-              const sym = symbol.toLowerCase()
-              try {
-                const coinInfo = await axios.get(`https://data.messari.io/api/v1/assets/${sym}/profile`)
-                descriptions[symbol] = coinInfo.data.data
-              } catch (err) {
-                // err
-              }
-              return {
-                supportedAssets,
-                symbol,
-                name,
-                cmcIDno,
-                type,
-                descriptions,
-                translations: translations[0].translations,
-                meta: {
-                  title: `Instantly ${type} ${name} (${symbol}) - Faa.st`,
-                  description: `Safely trade your ${name} crypto directly from your hardware or software wallet. View ${name} (${symbol}) pricing charts, market cap, daily volume and other coin data.`
-                }
-              }
-            },
-          }
-        })
-      },
-      {
-        path: '/wallets',
-        noindex: true,
-        component: 'src/site/pages/Wallets',
-        getData: () => ({
-          supportedWallets
-        }),
-        children: supportedWallets.map(wallet => {
-          const metaName = wallet.name.replace(' Wallet', '')
-          const urlName = wallet.name.replace(/\s+/g, '-').toLowerCase()
-          return {
-            path: `/${urlName}`,
-            component: 'src/site/pages/Wallet',
-            getData: () => ({
-              wallet,
-              translations: translations[0].translations,
-              meta: {
-                title: `Trade Your Crypto from your ${metaName.replace(' Wallet', '')} Wallet - Faa.st`,
-                description: `Safely trade your crypto directly from your ${metaName} Wallet. Connect your ${metaName} wallet and trade 100+ cryptocurrencies on Faa.st.`
-              }
-            }),
-            children: translations.map(t => {
-              return {
-                path: `/${t.url}`,
-                component: 'src/site/pages/Wallet',
-                getData: () => {
-                  return {
-                    wallet,
-                    translations: t.translations,
-                    meta: {
-                      title: `Trade Your Crypto from your ${metaName.replace(' Wallet', '')} Wallet - Faa.st`,
-                      description: `Safely trade your crypto directly from your ${metaName} Wallet. Connect your ${metaName} wallet and trade 100+ cryptocurrencies on Faa.st.`,
-                      language: t.language
-                    }
-                  }
-                },
-              }
-            })
-          }
-        })
-      },
-      {
-        path: '/blog',
-        component: 'src/site/pages/Blog',
-        getData: async () => ({
-          mediumPosts,
-          translations: translations[0].translations,
-          meta: {
-            title: 'Faa.st Cryptocurrency Blog',
-            description: 'Blog posts about trading on Faa.st as well as the state of crypto including regulation, pricing, wallets, and mining.'
-          },
-          bgColor: '#F5F7F8'
-        }),
-        children: await Promise.all(mediumPosts.map(async post => {
-          let mediumPost = await axios.get(`https://medium.com/faast/${post.uniqueSlug}?format=json`)
-          mediumPost = JSON.parse(mediumPost.data.replace('])}while(1);</x>', ''))
-          return ({
-            path: `/${post.uniqueSlug}`,
-            component: 'src/site/pages/BlogPost',
-            getData: async () => ({
-              mediumPost,
-              translations: translations[0].translations,
-              meta: {
-                title: `${post.title} - Faa.st Blog`,
-                description: `${post.virtuals.subtitle}`
-              },
-              bgColor: '#F5F7F8'
-            }),
-          })
-        })) 
-      },
-      { 
-        path: '/market-maker',
-        component: 'src/site/pages/MarketMaker',
-        getData: async () => ({
-          translations: translations[0].translations,
-          meta: {
-            title: 'Faa.st Market Maker Beta Program',
-            description: 'Earn interest on your Bitcoin by fulfilling trades placed on the Faa.st marketplace. Sign up for the Beta now.'
-          },
-        }),
-        children: translations.map(t => {
-          return {
-            path: `/${t.url}`,
-            component: 'src/site/pages/MarketMaker',
-            getData: () => {
-              return {
-                translations: t.translations,
-                meta: {
-                  title: 'Faa.st Market Maker Beta Program',
-                  description: 'Earn interest on your Bitcoin by fulfilling trades placed on the Faa.st marketplace. Sign up for the Beta now.',
-                  language: t.language
-                }
-              }
-            },
-          }
-        })
-      },
-      {
-        path: '/terms',
-        component: 'src/site/pages/Terms',
-        getData: async () => ({
-          translations: translations[0].translations,
-        }),
-      },
-      {
-        path: '/what-is-an-ico',
-        component: 'src/site/pages/IcoIntro',
-        getData: async () => {
-          return {
-            translations: translations[0].translations,
-          }
-        },
-      },
-      {
-        path: '/what-is-the-difference-between-ico-ipo-ito',
-        component: 'src/site/pages/IcoItoIpo',
-        getData: async () => {
-          return {
-            translations: translations[0].translations,
-          }
-        },
-      },
-      {
-        path: '/how-to-buy-ethereum',
-        component: 'src/site/pages/BuyEthereum',
-        getData: async () => {
-          return {
-            translations: translations[0].translations,
-          }
-        },
-      },
-      {
-        path: '/what-are-smart-contracts',
-        component: 'src/site/pages/SmartContracts',
-        getData: async () => {
-          return {
-            translations: translations[0].translations,
-          }
-        },
-      },
-      {
-        path: '/what-is-a-dao',
-        component: 'src/site/pages/Dao',
-        getData: async () => {
-          return {
-            translations: translations[0].translations,
-          }
-        },
-      },
-      {
-        path: '/what-is-ethereum',
-        component: 'src/site/pages/WhatIsEthereum',
-        getData: async () => {
-          return {
-            translations: translations[0].translations,
-          }
-        },
-      },
-      {
-        path: '/privacy',
-        component: 'src/site/pages/Privacy',
-        getData: async () => {
-          return {
-            translations: translations[0].translations,
-          }
-        },
-      },
-      {
-        path: '/pricing',
-        component: 'src/site/pages/Pricing',
-        getData: async () => {
-          return {
-            translations: translations[0].translations,
-          }
-        },
-      },
-      {
-        is404: true,
-        component: 'src/site/pages/404',
-      },
-    ]
+    return generateRoutes({ mediumPosts, supportedAssets, supportedWallets })
+      .then(routes => routes)
+      .catch(e => console.log(e))
   },
   paths: {
     dist: dirs.buildSite,

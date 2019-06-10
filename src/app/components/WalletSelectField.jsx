@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import routes from 'Routes'
 import {
   compose, setDisplayName, setPropTypes, defaultProps, withHandlers, withState, lifecycle, withProps,
 } from 'recompose'
@@ -114,7 +115,10 @@ export default compose(
   withToggle('dropdownOpen'),
   withHandlers({
     handleConnect: ({ push }) => () => {
-      push('/connect')
+      push({
+        pathname: '/connect',
+        state: { forwardurl: routes.swapWidget() }
+      })
     },
     handleSelect: ({ setSelectedWallet, change, untouch, addressFieldName, walletIdFieldName, symbol }) => (wallet) => {
       if (!wallet) {

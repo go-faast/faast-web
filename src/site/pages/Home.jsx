@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { withRouteData } from 'react-static'
 import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, lifecycle, withProps } from 'recompose'
+import withTracker from 'Site/components/withTracker'
 
 // import logoImg from 'Img/faast-logo.png'
 
@@ -19,6 +20,7 @@ import { getAllAssetsArray, areAssetsLoaded } from 'Common/selectors/asset'
 
 export default compose(
   setDisplayName('Home'),
+  withTracker,
   connect(createStructuredSelector({
     assets: getAllAssetsArray,
     areAssetsLoaded: areAssetsLoaded
@@ -28,7 +30,7 @@ export default compose(
   }),
   withProps(({ assets }) => ({
     assetList: assets.filter(({ deposit, receive }) => deposit || receive)
-      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl'))
+      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl', 'marketCap'))
   })),
   lifecycle({
     componentWillMount() {

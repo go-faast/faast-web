@@ -1,7 +1,7 @@
 {
   "name": "faast-web",
   "productName": "Faa.st",
-  "version": "3.1.41",
+  "version": "3.2.1",
   "description": "A decentralized cryptocurrency portfolio manager and exchange.",
   "contributors": [
     "Nathan Wood <nathan@bitaccess.co>",
@@ -24,7 +24,9 @@
   },
   "scripts": {
     "start": "ws --config-file etc/lws.config.prod.js",
-    "test": "npm run lint",
+    "test": "npm run lint && npm run test:e2e",
+    "test:e2e": "gulp test:e2e",
+    "test:local": "testcafe",
     "dev:app": "cross-env NODE_ENV=development webpack-dev-server --config etc/webpack.config.app.js --progress",
     "dev:site": "cross-env NODE_ENV=development react-static start",
     "dev:proxy": "ws --config-file etc/lws.config.dev.js",
@@ -115,6 +117,7 @@
     "gulp": "^4.0.0",
     "gulp-clean": "^0.4.0",
     "gulp-run-command": "0.0.9",
+    "gulp-testcafe": "^1.0.0",
     "har-validator": "^5.1.3",
     "hard-source-webpack-plugin": "^0.12.0",
     "hash.js": "^1.1.3",
@@ -144,6 +147,7 @@
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
     "react-dropzone": "^4.1.2",
+    "react-ga": "^2.5.7",
     "react-helmet": "^5.2.0",
     "react-highcharts": "^13.0.0",
     "react-hot-loader": "^4.0.0",
@@ -172,6 +176,7 @@
     "sass-loader": "^6.0.6",
     "style-loader": "^0.18.2",
     "svg-react-loader": "^0.4.5",
+    "testcafe": "^1.1.4",
     "trezor-connect": "^7.0.1",
     "ts-loader": "^3.5.0",
     "tslint": "^5.11.0",
@@ -189,6 +194,7 @@
     "eslint": "^4.19.1",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-react": "^7.5.1",
+    "eslint-plugin-testcafe": "^0.2.1",
     "local-web-server": "^2.5.2",
     "ngrok": "^3.1.0",
     "webpack-dev-server": "^2.7.1"

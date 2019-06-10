@@ -9,21 +9,27 @@ import { betaTag } from './Header/style.scss'
 import EmailSubscriptionForm from './EmailSubscriptionForm'
 import LazyLoad from 'react-lazyload'
 
+import LangLink from 'Components/LangLink'
+
 export default compose(
   setDisplayName('Footer'),
   setPropTypes({
-    footerClass: PropTypes.string
+    footerClass: PropTypes.string,
+    showEmail: PropTypes.bool
   }),
   defaultProps({
-    footerClass: ''
+    footerClass: '',
+    showEmail: true
   }),
-)(({ footerClass, translations: { static: { footer: t = {} } = {} } }) => (
+)(({ showEmail, footerClass, translations: { static: { footer: t = {} } = {} } }) => (
   <Fragment>
-    <div className='pt-5'>
-      <LazyLoad offset={1000} height={100}>
-        <EmailSubscriptionForm />
-      </LazyLoad>
-    </div>
+    {showEmail && (
+      <div className='pt-5'>
+        <LazyLoad offset={1000} height={100}>
+          <EmailSubscriptionForm />
+        </LazyLoad>
+      </div>
+    )}
     <div className='footer-clean' style={{ backgroundColor: 'rgb(24,24,24)', paddingTop: '0px', height: '394px' }}>
       <footer>
         <div className={classNames('container', footerClass)} style={{ paddingTop: '40px' }}>
@@ -35,13 +41,14 @@ export default compose(
                 <li><a className='text-white' href='/affiliates'>{t.affiliate}</a></li>
                 <li><a className='text-white font-xs' href='/app'>{t.portfolio}</a></li>
                 <li><a className='text-white' href='/app/swap'>{t.swap}</a></li>
-                <li><a className='text-white' href='/market-maker'>{t.marketMaker} <sup className={classNames(betaTag, 'text-primary')}><i>{t.beta}</i></sup></a></li>
+                <li><LangLink className='text-white' to='/market-maker'>{t.marketMaker} <sup className={classNames(betaTag, 'text-primary')}><i>{t.beta}</i></sup></LangLink></li>
                 <li><a className='text-white' href='/blog'>{t.blog}</a></li>
               </ul>
             </div>
             <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-3'>
               <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>{t.assets}</h3>
               <ul>
+                <li><a className='text-white' href='/assets'>Supported Assets</a></li>
                 <li><a className='text-white' href='/app/assets'>{t.marketCap}</a></li>
                 <li><a className='text-white' href='/app/assets/trending'>{t.trending}</a></li>
                 <li><a className='text-white' href='/app/assets/watchlist'>{t.watchlist}</a></li>
@@ -50,13 +57,13 @@ export default compose(
             <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-3'>
               <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>{t.wallets}</h3>
               <ul>
-                <li><a className='text-white' href='/wallets/trezor'>{t.trezor}</a></li>
-                <li><a className='text-white' href='/wallets/ledger-wallet'>{t.ledger}</a></li>
-                <li><a className='text-white' href='/wallets/metamask'>{t.metaMask}</a></li>
-                <li><a className='text-white' href='/wallets/mist-browser'>{t.mistBrowser}</a></li>
-                <li><a className='text-white' href='/wallets/trust-wallet'>{t.trustWallet}</a></li>
-                <li><a className='text-white' href='/wallets/coinbase-wallet'>{t.coinbaseWallet}</a></li>
-                <li><a className='text-white' href='/wallets/status'>{t.status}</a></li>
+                <li><LangLink className='text-white' to='/wallets/trezor'>{t.trezor}</LangLink></li>
+                <li><LangLink className='text-white' to='/wallets/ledger-wallet'>{t.ledger}</LangLink></li>
+                <li><LangLink className='text-white' to='/wallets/metamask'>{t.metaMask}</LangLink></li>
+                <li><LangLink className='text-white' to='/wallets/mist-browser'>{t.mistBrowser}</LangLink></li>
+                <li><LangLink className='text-white' to='/wallets/trust-wallet'>{t.trustWallet}</LangLink></li>
+                <li><LangLink className='text-white' to='/wallets/coinbase-wallet'>{t.coinbaseWallet}</LangLink></li>
+                <li><LangLink className='text-white' to='/wallets/status'>{t.status}</LangLink></li>
               </ul>
             </div>
             <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-0'>

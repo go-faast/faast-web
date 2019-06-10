@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose, setDisplayName, withProps, withState, withHandlers, setPropTypes, defaultProps, lifecycle } from 'recompose'
 import classNames from 'class-names'
-import { reduxForm, formValueSelector } from 'redux-form'
+import { reduxForm, formValueSelector, SubmissionError } from 'redux-form'
 import { push as pushAction } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
 import {
@@ -27,6 +27,7 @@ import { getWallet } from 'Selectors/wallet'
 import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
 import { getGeoLimit, getSavedSwapWidgetInputs } from 'Selectors/app'
 
+import GAEventButton from 'Components/GAEventButton'
 import ReduxFormField from 'Components/ReduxFormField'
 import Checkbox from 'Components/Checkbox'
 import CoinIcon from 'Components/CoinIcon'
@@ -35,12 +36,14 @@ import ProgressBar from 'Components/ProgressBar'
 import WalletSelectField from 'Components/WalletSelectField'
 import T from 'Components/i18n/T'
 import Units from 'Components/Units'
+import { toChecksumAddress } from 'Utilities/convert'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import debounceHandler from 'Hoc/debounceHandler'
 
 import SwapIcon from 'Img/swap-icon.svg?inline'
 
 import style from './style.scss'
+import Faast from 'Src/services/Faast'
 
 const DEFAULT_SEND_SYMBOL = 'BTC'
 const DEFAULT_RECEIVE_SYMBOL = 'ETH'
@@ -67,7 +70,7 @@ const SwapStepOne = ({
   onChangeSendAmount, handleSelectFullBalance, fullBalanceAmount, fullBalanceAmountLoaded,
   sendWallet, defaultRefundAddress, defaultReceiveAddress, maxGeoBuy, handleSelectGeoMax,
   onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs,
-  onChangeRefundAddress, onChangeReceiveAddress, rateError
+  onChangeRefundAddress, onChangeReceiveAddress, rateError, sendAsset
 }) => (
   <Fragment>
     <ProgressBar steps={[
@@ -80,7 +83,7 @@ const SwapStepOne = ({
     {maxGeoBuy && (
       <Alert color='info' className='mx-auto mt-3 w-75 text-center'>
         <small>
-      Please note: The maximum you can swap is <Button style={{ color: 'rgba(0, 255, 222, 1)' }} color='link-plain' onClick={handleSelectGeoMax}><Units precision={8} roundingType='dp' value={maxGeoBuy}/></Button> {sendSymbol} <a style={{ color: 'rgba(0, 255, 222, 1)' }} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>due to your location.</a>
+      Please note: The maximum you can swap is <Button style={{ color: 'rgba(0, 255, 222, 1)' }} color='link-plain' onClick={handleSelectGeoMax}><Units precision={sendAsset.decimals} roundingType='dp' value={maxGeoBuy}/></Button> {sendSymbol} <a style={{ color: 'rgba(0, 255, 222, 1)' }} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>due to your location.</a>
         </small>
       </Alert>
     )}
@@ -116,7 +119,7 @@ const SwapStepOne = ({
                     <FormText color="muted">
                       <T tag='span' i18nKey='app.widget.youHave'>You have</T> {fullBalanceAmountLoaded ? (
                         <Button color='link-plain' onClick={handleSelectFullBalance}>
-                          <Units precision={8} roundingType='dp' value={fullBalanceAmount}/>
+                          <Units precision={sendAsset.decimals} roundingType='dp' value={fullBalanceAmount}/>
                         </Button>
                       ) : (
                         <i className='fa fa-spinner fa-pulse'/>
@@ -213,15 +216,21 @@ const SwapStepOne = ({
                 labelClass='p-0'
               />
             </div>
-            <Button className={classNames('mt-2 mb-2 mx-auto', style.submitButton)} color={rateError ? 'danger' : 'primary'} type='submit' disabled={Boolean(submitting || rateError)}>
+            <GAEventButton 
+              className={classNames('mt-2 mb-2 mx-auto', style.submitButton)} 
+              color={rateError ? 'danger' : 'primary'} 
+              type='submit' 
+              event={{ category: 'Swap', action: 'Create Swap' }}
+              disabled={Boolean(submitting || rateError)}
+            >
               {!submitting && !rateError ? (
                 <T tag='span' i18nKey='app.widget.createSwap'>Create Swap</T>
               ) : rateError ? (
-                <T tag='span' i18nKey='app.widget.noRate'>Unable to retreive rate</T>
+                <T tag='span' i18nKey='app.widget.noRate'>Unable to retrieve rate</T>
               ) : (
                 <T tag='span' i18nKey='app.widget.generatingSwap'>Generating Swap...</T>
               )}
-            </Button>
+            </GAEventButton>
           </CardBody>
         </Card>
       </Form>
@@ -284,7 +293,7 @@ export default compose(
     updateQueryString: updateQueryStringReplace,
     retrievePairData: retrievePairData,
     openViewOnly: openViewOnlyWallet,
-    saveSwapWidgetInputs: saveSwapWidgetInputs
+    saveSwapWidgetInputs: saveSwapWidgetInputs,
   }),
   withProps(({
     sendSymbol, receiveSymbol,
@@ -330,9 +339,41 @@ export default compose(
     onSubmit: ({
       sendSymbol, receiveAsset, sendAsset,
       createSwap, openViewOnly, push, estimatedField
-    }) => (values) => {
+    }) => async (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
-      const { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId, receiveAmount } = values
+      let { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId, receiveAmount } = values
+      if (receiveSymbol == 'ETH' || ERC20) {
+        receiveAddress = toChecksumAddress(receiveAddress)
+      }
+      if (sendSymbol == 'ETH' || sendAsset.ERC20) {
+        refundAddress = toChecksumAddress(refundAddress)
+      }
+      try {
+        const receiveValidation = await Faast.validateAddress(receiveAddress, receiveSymbol)
+        if (!receiveValidation.valid) {
+          throw `Invalid ${receiveSymbol} address`
+        } 
+        // else if (receiveValidation.valid && receiveAddress !== receiveValidation.standardized) {
+        //   throw `Invalid ${receiveSymbol} address format. Here is your address converted to the correct format: ${receiveValidation.standardized}`
+        // }
+      } catch (err) {
+        throw new SubmissionError({
+          receiveAddress: err,
+        })
+      }
+      try { 
+        const sendValidation = await Faast.validateAddress(refundAddress, sendSymbol)
+        if (!sendValidation.valid) {
+          throw `Invalid ${sendSymbol} address`
+        } 
+        // else if (sendValidation.valid && refundAddress !== sendValidation.standardized) {
+        //   throw `Invalid ${sendSymbol} address format. Here is your address converted to the correct format: ${sendValidation.standardized}`
+        // }
+      } catch (err) {
+        throw new SubmissionError({
+          refundAddress: err,
+        })
+      }
 
       return createSwap({
         sendSymbol: sendSymbol,
@@ -455,7 +496,7 @@ export default compose(
     onChangeReceiveAddress: ({ updateURLParams }) => (_, newReceiveAddress) => {
       updateURLParams({ toAddress: newReceiveAddress })
     },
-    validateSendAmount: ({ minimumSend, maximumSend, 
+    validateSendAmount: ({ minimumSend, maximumSend, sendAsset,
       sendSymbol, sendWallet, fullBalanceAmount, maxGeoBuy, handleSelectGeoMax, handleSelectMinimum,
       handleSelectMaximum }) => {
       return (
@@ -463,14 +504,14 @@ export default compose(
           ...(sendWallet ? [validator.required()] : []),
           validator.number(),
           ...(minimumSend ? [validator.gte(minimumSend, <span key={'minimumSend'}>Send amount must be at least <Button key={'minimumSend1'} color='link-plain' onClick={handleSelectMinimum}>
-            <Units key={'minimumSend2'} precision={8} roundingType='dp' value={minimumSend}/>
+            <Units key={'minimumSend2'} precision={sendAsset.decimals} roundingType='dp' value={minimumSend}/>
           </Button> {sendSymbol} </span>)] : []),
           ...(maxGeoBuy ? [validator.lte(maxGeoBuy, <span key={Math.random()}>Send amount cannot be greater than <Button color='link-plain' onClick={handleSelectGeoMax}>
-            <Units precision={8} roundingType='dp' value={maxGeoBuy}/>
+            <Units precision={sendAsset.decimals} roundingType='dp' value={maxGeoBuy}/>
           </Button> {sendSymbol} <a key={Math.random()} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noopener noreferrer'>due to your location.</a></span>)] : []),
           ...(sendWallet ? [validator.lte(fullBalanceAmount, 'Cannot send more than you have.')] : []),
           ...(maximumSend ? [validator.lte(maximumSend, <span key={'maxSend'}>Send amount cannot be greater than <Button key={'maxSend1'} color='link-plain' onClick={handleSelectMaximum}>
-            <Units key={'maxSend2'} precision={8} roundingType='dp' value={maximumSend}/></Button> to ensure efficient pricing.</span>)] : []),
+            <Units key={'maxSend2'} precision={sendAsset.decimals} roundingType='dp' value={maximumSend}/></Button> to ensure efficient pricing.</span>)] : []),
         )
       )
     },

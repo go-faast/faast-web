@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import { name as appName, version as appVersion, homepage as githubLink } from 'Pkg'
 
 import T from 'Components/i18n/T'
+import LangLink from 'Components/LangLink'
 
 export default compose(
   setDisplayName('Footer'),
@@ -22,9 +23,11 @@ export default compose(
           <Col xs='4'>
             <ul className='list-inline'>
               <li className='list-inline-item mr-3'>
-                <small><a className='text-muted' href='https://faa.st'>
-                  <T tag='span' i18nKey='app.footer.website'>Faa.st Website</T>
-                </a></small>
+                <small>
+                  <LangLink className='text-muted' to='https://faa.st'>
+                    <T tag='span' i18nKey='app.footer.website'>Faa.st Website</T>
+                  </LangLink>
+                </small>
               </li>
               <li className='list-inline-item mr-3'>
                 <small><a className='text-muted' href='https://faa.st/terms'>

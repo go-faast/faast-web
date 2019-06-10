@@ -3,6 +3,7 @@ import { compose, setDisplayName } from 'recompose'
 import LazyLoad from 'react-lazyload'
 
 import IconCarousel from 'Site/components/IconCarousel'
+import LangLink from 'Components/LangLink'
 
 import TrezorWalletLogo from 'Img/wallet/trezor.png'
 import LedgerWalletLogo from 'Img/wallet/ledger.png'
@@ -109,14 +110,16 @@ export default compose(
             <h1 className='currency-count text-white font-weight-bold'>{supportedAssets.length} <small>{t.coinsSupported}</small></h1>
           </div>
           <div className='col px-2'>
-            <IconCarousel items={supportedAssets.map(({ symbol, name, iconUrl }) => ({
+            <IconCarousel items={supportedAssets.map(({ symbol, name, iconUrl, marketCap }) => ({
               key: symbol,
               label: (<p>{name}</p>),
               iconUrl,
+              marketCap,
               link: `/app/swap?to=${symbol}`,
             }))}/>
           </div>
         </div>
+        <p>For a comprensive table of supported coins <a href='/assets'>click here!</a></p>
       </div>
     </div>
     <div className='highlight-phone slick-interface-section'>
@@ -142,52 +145,52 @@ export default compose(
       <p className='lead text-center text-muted' style={{ marginTop: '0px', marginBottom: '20px' }}>{t.supportedWallets}<br/></p>
       <div className='row no-gutters justify-content-center'>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/wallets/trezor'>
+          <LangLink className='d-block text-white' to='/wallets/trezor'>
             <LazyLoad offset={500} height={72}>
               <img className='rounded wallet-logo' src={TrezorWalletLogo} alt='trezor'/>
             </LazyLoad>
             <p className='text-center pt-2'>{t.trezor}</p>
-          </a>
+          </LangLink>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/wallets/ledger-wallet'>
+          <LangLink className='d-block text-white' to='/wallets/ledger-wallet'>
             <LazyLoad offset={500} height={72}>
               <img className='rounded wallet-logo' src={LedgerWalletLogo} alt='ledger logo'/>
             </LazyLoad>
             <p className='text-center pt-2'>{t.ledgerWallet}</p>
-          </a>
+          </LangLink>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/wallets/metamask'>
+          <LangLink className='d-block text-white' to='/wallets/metamask'>
             <LazyLoad offset={500} height={72}>
               <img className='rounded wallet-logo' src={MetaMaskLogo} alt='metamask logo'/>
             </LazyLoad>
             <p className='text-center pt-2'>{t.metaMask}</p>
-          </a>
+          </LangLink>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/wallets/mist-browser'>
+          <LangLink className='d-block text-white' to='/wallets/mist-browser'>
             <LazyLoad offset={500} height={72}>
               <img className='rounded wallet-logo' src={MistLogo} alt='mist logo'/>
             </LazyLoad>
             <p className='text-center pt-2'>{t.mist}</p>
-          </a>
+          </LangLink>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/wallets/trust-wallet'>
+          <LangLink className='d-block text-white' to='/wallets/trust-wallet'>
             <LazyLoad offset={500} height={72}>
               <img className='rounded wallet-logo' src={TrustWalletLogo} alt='trust wallet logo'/>
             </LazyLoad>
             <p className='text-center pt-2'>{t.trustWallet}</p>
-          </a>
+          </LangLink>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/wallets/coinbase-wallet'>
+          <LangLink className='d-block text-white' to='/wallets/coinbase-wallet'>
             <LazyLoad offset={500} height={72}>
               <img className='rounded wallet-logo' src={CoinbaseWalletLogo} alt='coinbase wallet logo'/>
             </LazyLoad>
             <p className='text-center pt-2'>{t.coinbaseWallet}</p>
-          </a>
+          </LangLink>
         </div>
         <div className='col-auto'>
           <a className='d-block text-white' href='/wallets/status'>
@@ -198,12 +201,12 @@ export default compose(
           </a>
         </div>
         <div className='col-auto'>
-          <a className='d-block text-white' href='/app/connect'>
+          <LangLink className='d-block text-white' to='/app/connect'>
             <LazyLoad offset={500} height={72}>
               <img className='rounded wallet-logo' src={MewLogo} alt='my ether wallet logo'/>
             </LazyLoad>
             <p className='text-center pt-2'>{t.keystore}</p>
-          </a>
+          </LangLink>
         </div>
       </div>
     </div>

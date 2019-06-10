@@ -14,4 +14,4 @@ if [ "$CURRENT_TAG" ]; then
   exit 1
 fi
 
-npm run test
+npm run lint
