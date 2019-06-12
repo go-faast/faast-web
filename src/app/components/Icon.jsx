@@ -37,7 +37,7 @@ const Icon = ({ src, tag: Tag, inline, block, width, height, size: scale, rotate
     width = '1rem'
     height = '1rem'
   }
-  return (
+  return src ? (
     <Tag style={reduceStyles(
       { width, height },
       resize(scale),
@@ -49,7 +49,7 @@ const Icon = ({ src, tag: Tag, inline, block, width, height, size: scale, rotate
     )}
     {...props}
     />
-  )
+  ) : null
 }
 
 // Prop types that affect the appearance of the icon
@@ -65,7 +65,7 @@ Icon.stylePropTypes = {
 }
 
 Icon.propTypes = {
-  src: PropTypes.oneOfType([PropTypes.string, tagPropType]).isRequired, // Resource URL or component (e.g. from svg-react-loader)
+  src: PropTypes.oneOfType([PropTypes.string, tagPropType]), // Resource URL or component (e.g. from svg-react-loader)
   tag: tagPropType, // Component/HTML tag to render as
   ...Icon.stylePropTypes
 }

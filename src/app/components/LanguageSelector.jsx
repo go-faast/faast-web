@@ -38,7 +38,7 @@ export default compose(
     selectLanguage,
   }),
   withProps(({ currentLanguage }) => {
-    currentLanguage = languages.find(l => l.code === currentLanguage)
+    currentLanguage = languages.find(l => l.code === currentLanguage) || languages[0]
     return ({
       currentLanguage
     })
@@ -50,7 +50,7 @@ export default compose(
     }
   }),
   withToggle('dropdownOpen'),
-)(({ theme, showCode, handleSelect, currentLanguage, isDropdownOpen, toggleDropdownOpen, }) => (
+)(({ theme, showCode, handleSelect, currentLanguage = {}, isDropdownOpen, toggleDropdownOpen, }) => (
   <Dropdown nav isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
     <DropdownToggle 
       tag={NavLink} 
