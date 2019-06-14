@@ -81,7 +81,7 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
             meta: {
               title: siteConfig.title,
               description: siteConfig.description,
-              language: t.code,
+              language: t.code
             }
           }),
         },
@@ -104,7 +104,7 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
             const name = pair.name
             const type = pair.type
             return {
-              path: `${t.url}/assets/${symbol}/${type}`,
+              path: `/${symbol}/${type}`,
               component: 'src/site/pages/Pair',
               getData: async () => {
                 let descriptions = {}
@@ -134,7 +134,7 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
           })
         },
         {
-          path: '/wallets',
+          path: `${t.url}/wallets`,
           noindex: true,
           component: 'src/site/pages/Wallets',
           getData: () => ({
@@ -144,7 +144,7 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
             const metaName = wallet.name.replace(' Wallet', '')
             const urlName = wallet.name.replace(/\s+/g, '-').toLowerCase()
             return {
-              path: `${t.url}/${urlName}`,
+              path: `/${urlName}`,
               component: 'src/site/pages/Wallet',
               getData: () => ({
                 wallet,
@@ -175,7 +175,7 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
             let mediumPost = await axios.get(`https://medium.com/faast/${post.uniqueSlug}?format=json`)
             mediumPost = JSON.parse(mediumPost.data.replace('])}while(1);</x>', ''))
             return ({
-              path: `${t.url}/${post.uniqueSlug}`,
+              path: `/${post.uniqueSlug}`,
               component: 'src/site/pages/BlogPost',
               getData: async () => ({
                 mediumPost,

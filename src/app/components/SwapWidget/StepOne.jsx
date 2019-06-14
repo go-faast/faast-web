@@ -68,8 +68,8 @@ const SwapStepOne = ({
   validateReceiveAddress, validateRefundAddress, validateSendAmount, validateReceiveAmount,
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
   onChangeSendAmount, handleSelectFullBalance, fullBalanceAmount, fullBalanceAmountLoaded,
-  sendWallet, defaultRefundAddress, defaultReceiveAddress, maxGeoBuy, handleSelectGeoMax,
-  onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs,
+  sendWallet, maxGeoBuy, handleSelectGeoMax,
+  onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs = {},
   onChangeRefundAddress, onChangeReceiveAddress, rateError, sendAsset
 }) => (
   <Fragment>
@@ -179,7 +179,7 @@ const SwapStepOne = ({
                   symbol={sendSymbol}
                   change={change}
                   untouch={untouch}
-                  defaultValue={previousSwapInputs ? previousSwapInputs.fromAddress : defaultRefundAddress}
+                  defaultValue={!previousSwapInputs.sendWalletId ? previousSwapInputs.fromAddress : undefined}
                   formName={FORM_NAME}
                   onChange={onChangeRefundAddress}
                   requiredLabel={sendSymbol === 'XMR'}
@@ -198,7 +198,7 @@ const SwapStepOne = ({
                   validate={validateReceiveAddress}
                   symbol={receiveSymbol}
                   change={change}
-                  defaultValue={previousSwapInputs ? previousSwapInputs.toAddress : defaultReceiveAddress}
+                  defaultValue={!previousSwapInputs.receiveWalletId ? previousSwapInputs.toAddress : undefined}
                   untouch={untouch}
                   formName={FORM_NAME}
                   onChange={onChangeReceiveAddress}
@@ -282,6 +282,7 @@ export default compose(
     receiveAmount: (state) => getFormValue(state, 'receiveAmount'),
     refundAddress: (state) => getFormValue(state, 'refundAddress'),
     receiveAddress: (state) => getFormValue(state, 'receiveAddress'),
+    receiveWallet: (state) => getWallet(state, getFormValue(state, 'receiveWalletId')),
     sendWallet: (state) => getWallet(state, getFormValue(state, 'sendWalletId')),
     balancesLoaded: areCurrentPortfolioBalancesLoaded,
     limit: getGeoLimit,
@@ -302,14 +303,16 @@ export default compose(
     sendWallet, sendAsset, limit, previousSwapInputs
   }) => { 
     const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : undefined
-    const { toAmount, fromAmount, toAddress, fromAddress } = previousSwapInputs || {}
+    const { toAmount, fromAmount, toAddress, fromAddress, sendWalletId, receiveWalletId } = previousSwapInputs || {}
     return ({
       pair: `${sendSymbol}_${receiveSymbol}`,
       initialValues: {
         sendAmount: fromAmount ? parseFloat(fromAmount) : defaultSendAmount,
         receiveAmount: toAmount ? parseFloat(toAmount) : defaultReceiveAmount,
-        refundAddress: fromAddress ? fromAddress : defaultRefundAddress,
-        receiveAddress: toAddress ? toAddress : defaultReceiveAddress,
+        refundWallet: sendWalletId ? 'hi' : fromAddress ? fromAddress : defaultRefundAddress,
+        receiveWallet: receiveWalletId ? undefined : toAddress ? toAddress : defaultReceiveAddress,
+        sendWalletId: sendWalletId ? sendWalletId : undefined,
+        receiveWalletId: receiveWalletId ? receiveWalletId : undefined,
       },
       fullBalanceAmount: sendWallet && (sendWallet.balances[sendSymbol] || '0'),
       fullBalanceAmountLoaded: sendWallet && sendWallet.balancesLoaded,
@@ -395,8 +398,8 @@ export default compose(
         })
     },
     handleSaveSwapWidgetInputs: ({ saveSwapWidgetInputs, receiveAsset, sendAsset, 
-      receiveAddress, refundAddress, receiveAmount, sendAmount }) => (inputs) => {
-      const { to, from, toAddress, fromAddress, toAmount, fromAmount } = inputs
+      receiveAddress, refundAddress, receiveAmount, sendAmount, sendWallet, receiveWallet }) => (inputs) => {
+      const { to, from, toAddress, fromAddress, toAmount, fromAmount, sendWalletId, receiveWalletId } = inputs
       saveSwapWidgetInputs({
         to: to ? to : receiveAsset.symbol,
         from: from ? from : sendAsset.symbol,
@@ -404,6 +407,8 @@ export default compose(
         fromAddress: fromAddress ? fromAddress : refundAddress,
         toAmount: toAmount ? toAmount : receiveAmount ? parseFloat(receiveAmount) : undefined,
         fromAmount: fromAmount ? fromAmount : sendAmount ? parseFloat(sendAmount) : undefined,
+        sendWalletId: sendWalletId ? sendWalletId : sendWallet ? sendWallet.id : undefined,
+        receiveWalletId: receiveWalletId ? receiveWalletId : receiveWallet ? receiveWallet.id : undefined,
       })
     }
   }),
@@ -599,12 +604,15 @@ export default compose(
     },
     componentWillUnmount() {
       const { saveSwapWidgetInputs, sendAsset, receiveAsset, 
-        refundAddress, receiveAddress, sendAmount, receiveAmount } = this.props
+        refundAddress, receiveAddress, sendAmount, receiveAmount,
+        sendWallet, receiveWallet } = this.props
       saveSwapWidgetInputs({
         to: receiveAsset ? receiveAsset.symbol : undefined,
         from: sendAsset ? sendAsset.symbol : undefined,
         fromAddress: refundAddress,
         toAddress: receiveAddress,
+        sendWalletId: sendWallet ? sendWallet.id : undefined,
+        receiveWalletId: receiveWallet ? receiveWallet.id : undefined,
         fromAmount: sendAmount ? parseFloat(sendAmount) : undefined,
         toAmount: receiveAmount ? parseFloat(receiveAmount) : undefined
       })

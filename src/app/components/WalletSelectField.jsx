@@ -152,7 +152,7 @@ export default compose(
       if (!defaultValue) {
         selectDefault()
       } else {
-        let wallet = selectableWallets.find(wallet => wallet.id === defaultValue.toLowerCase())
+        let wallet = selectableWallets.find(wallet => wallet.id.toLowerCase() === defaultValue.toLowerCase())
         if (wallet) {
           handleSelect(wallet)
         } else {
@@ -166,7 +166,7 @@ export default compose(
       } = this.props
       const symbolChange = prevProps.symbol !== symbol
       if (symbolChange && defaultValue) {
-        const wallet = selectableWallets.find(wallet => wallet.id === defaultValue.toLowerCase())
+        const wallet = selectableWallets.find(wallet => wallet.id.toLowerCase() === defaultValue.toLowerCase())
         if (wallet) {
           handleSelect(wallet)
         }

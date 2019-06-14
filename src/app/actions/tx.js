@@ -107,6 +107,9 @@ export const sendTx = (tx, sendOptions) => (dispatch) => Promise.resolve().then(
   const walletInstance = walletService.getOrThrow(walletId)
   dispatch(txSendingStart(tx.id))
 
+  console.log(sendOptions)
+  console.log(tx)
+
   return walletInstance.sendTransaction(tx, { ...eventListeners, ...sendOptions })
     .then((sentTx) => {
       dispatch(pollTxReceipt(tx.id))
@@ -115,6 +118,9 @@ export const sendTx = (tx, sendOptions) => (dispatch) => Promise.resolve().then(
     .catch(newTxErrorHandler(dispatch, tx, 'sendTx', txSendingFailed, (message) => {
       if (message.includes('User denied transaction signature') || message.includes('denied by the user')) {
         return 'Transaction was rejected'
+      }
+      if (message.includes('insufficient funds for gas')) {
+        return `Insufficient ETH balance to pay the txn fees. Send more ETH to ${tx.txData.from} and try again.`
       }
       return message.replace('Returned error: ', '')
     }))

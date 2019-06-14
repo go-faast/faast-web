@@ -52,7 +52,7 @@ export default compose(
       const { history, languageLoad, correctStaticURL, currentLanguage } = this.props
       languageLoad()
       const url = correctStaticURL(currentLanguage)
-      if (url) history.push(`${url}`)
+      if (url) history.replace(`${url}`)
     },
   }),
   defaultProps({
@@ -65,7 +65,7 @@ export default compose(
   withHandlers({
     handleSelectLanguage: ({ history, correctStaticURL }) => (lang) => {
       const url = correctStaticURL(lang)
-      if (url) history.push(`${url}`)
+      if (url) history.replace(`${url}`)
     }
   }),
   withToggle('expanded'),
