@@ -605,7 +605,7 @@ export default compose(
     componentWillUnmount() {
       const { saveSwapWidgetInputs, sendAsset, receiveAsset, 
         refundAddress, receiveAddress, sendAmount, receiveAmount,
-      sendWallet, receiveWallet } = this.props
+        sendWallet, receiveWallet } = this.props
       saveSwapWidgetInputs({
         to: receiveAsset ? receiveAsset.symbol : undefined,
         from: sendAsset ? sendAsset.symbol : undefined,
