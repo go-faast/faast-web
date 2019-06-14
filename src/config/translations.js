@@ -13,6 +13,7 @@ export const translations = [
     code: 'en',
     flag:  BritishFlag,
     name: 'English',
+    selectable: true,
   },
   {
     translations: es,
@@ -20,6 +21,7 @@ export const translations = [
     code: 'es',
     flag:  SpanishFlag,
     name: 'Español',
+    selectable: true,
   },
   {
     translations: ja,
@@ -27,5 +29,14 @@ export const translations = [
     code: 'ja',
     flag:  JapaneseFlag,
     name: '日本語',
-  }
+    selectable: true,
+  },
+  {
+    translations: en,
+    url: '/en',
+    code: 'en',
+    flag:  BritishFlag,
+    name: 'English',
+    selectable: false,
+  },
 ]

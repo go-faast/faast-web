@@ -81,7 +81,7 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
             meta: {
               title: siteConfig.title,
               description: siteConfig.description,
-              language: t.code,
+              language: t.code
             }
           }),
         },
