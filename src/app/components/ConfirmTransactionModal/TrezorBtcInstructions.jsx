@@ -27,8 +27,8 @@ export default compose(
       const isLongAddress = formattedAddress.length > BITCOIN_ADDRESS_LENGTH
       return (
         <span key={`output-${i}`}>
-          <T tag='span' i18nKey='app.trezorBTCInstructions.confirmSending'>Confirm sending</T> <br/>
-          <Units value={amount} symbol={assetSymbol} precision={null}/> <T tag='span' i18nKey='app.trezorBTCInstructions.to'>to</T><br/>
+          <T tag='span' translate={false} i18nKey='app.trezorBTCInstructions.confirmSending'>Confirm sending</T> <br/>
+          <Units value={amount} symbol={assetSymbol} precision={null}/> <T tag='span' translate={false} i18nKey='app.trezorBTCInstructions.to'>to</T><br/>
           <code className={classNames('text-white', { 'font-xs': isLongAddress })}>
             {addressLines.map((addressLine, i) => (
               <Fragment key={i}>
@@ -41,10 +41,10 @@ export default compose(
       )
     }), (
       <span key='fee'>
-        <T tag='span' i18nKey='app.trezorBTCInstructions.reallySend'>Really send</T> <br/>
+        <T tag='span' translate={false} i18nKey='app.trezorBTCInstructions.reallySend'>Really send</T> <br/>
         <Units value={totalSent} symbol={assetSymbol} precision={null}/> <br/>
-        <T tag='span' i18nKey='app.trezorBTCInstructions.fromWallet'>from your wallet?</T> <br/>
-        <T tag='span' i18nKey='app.trezorBTCInstructions.feeIncluded'>Fee included:</T> <br/>
+        <T tag='span' translate={false} i18nKey='app.trezorBTCInstructions.fromWallet'>from your wallet?</T> <br/>
+        <T tag='span' translate={false} i18nKey='app.trezorBTCInstructions.feeIncluded'>Fee included:</T> <br/>
         <Units value={feeAmount} symbol={feeSymbol} precision={null}/>
       </span>
     )]}/>

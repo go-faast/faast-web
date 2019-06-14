@@ -60,14 +60,14 @@ export const openWallet = (walletPromise, forwardUrl) => (dispatch, getState) =>
         })
     })
     .then(() => {
-      forwardUrl = getConnectForwardUrl(getState())
+      forwardUrl = forwardUrl ? forwardUrl : (getConnectForwardUrl(getState()) || '/dashboard')
       if (forwardUrl) {
         dispatch(push(forwardUrl))
       }
     })
 
 /** Do everything in openWallet and then redirect to the dashboard */
-export const openWalletAndRedirect = (walletPromise, forwardUrl = routes.dashboard()) => (dispatch) =>
+export const openWalletAndRedirect = (walletPromise, forwardUrl) => (dispatch) =>
   dispatch(openWallet(walletPromise, forwardUrl))
     .catch((e) => {
       log.error(e)

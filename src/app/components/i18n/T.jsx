@@ -9,11 +9,13 @@ export default compose(
     block: PropTypes.bool,
     tag: PropTypes.string || PropTypes.func,
     ...Trans.propTypes,
-    i18nKey: PropTypes.string.isRequired 
+    i18nKey: PropTypes.string.isRequired,
+    translate: PropTypes.bool,
   }),
   defaultProps({
     block: false,
-    tag: 'span'
+    tag: 'span',
+    translate: true,
   }),
   mapProps(({ block, parent, tag, ...rest }) => ({
     parent: block ? 'div' : (parent || tag),
@@ -21,7 +23,10 @@ export default compose(
   })),
   getContext(Trans.contextTypes)
 )((props) => {
-  const { i18nKey, children } = props
+  const { i18nKey, children, translate, } = props
+  if (!translate) {
+    return children
+  }
   if (!(/^[\w.:]+$/).test(i18nKey)) {
     console.error(`Invalid i18nKey '${i18nKey}' provided to T for: ${children}`)
     return null

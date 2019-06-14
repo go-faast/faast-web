@@ -12,11 +12,11 @@ export default createReducer({
   [updateConnectForwardUrl]: (state, connectForwardUrl) => ({ ...state, connectForwardUrl }),
   [appError]: (state, error) => ({ ...state, error: error.message || error }),
   [updateAssetsFilterByTradeable]: (state, filterTradeableAssets) => ({ ...state, filterTradeableAssets }),
-  [updateSwapWidgetInputs]: (state, { to, from, toAddress, fromAddress, toAmount, fromAmount }) => 
-    ({ ...state, savedSwapWidgetInputs: { to, from, toAddress, fromAddress, toAmount, fromAmount } }),
+  [updateSwapWidgetInputs]: (state, { to, from, toAddress, fromAddress, toAmount, fromAmount, sendWalletId, receiveWalletId }) => 
+    ({ ...state, savedSwapWidgetInputs: { to, from, toAddress, fromAddress, toAmount, fromAmount, sendWalletId, receiveWalletId } }),
 }, {
   ...commonInitialState,
-  connectForwardUrl: undefined,
+  connectForwardUrl: '/dashboard',
   ready: false,
   error: '',
   filterTradeableAssets: undefined,

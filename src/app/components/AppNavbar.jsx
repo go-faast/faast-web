@@ -133,9 +133,9 @@ export default compose(
     push: pushAction
   }),
   withProps(({ previousSwapInputs }) => { 
-    const { toAmount, fromAmount, toAddress, fromAddress, to = 'ETH', from = 'BTC' } = previousSwapInputs || {}
+    const { toAmount, fromAmount, toAddress, sendWalletId, receiveWalletId, fromAddress, to = 'ETH', from = 'BTC' } = previousSwapInputs || {}
     return ({
-      queryString: `/swap?${to && `to=${to}`}${from && `&from=${from}`}${toAmount ? `&toAmount=${toAmount}` : ''}${fromAmount ? `&fromAmount=${fromAmount}` : ''}${toAddress ? `&toAddress=${toAddress}` : '' }${fromAddress ? `&fromAddress=${fromAddress}` : ''}`
+      queryString: `/swap?${to && `to=${to}`}${from && `&from=${from}`}${toAmount ? `&toAmount=${toAmount}` : ''}${fromAmount ? `&fromAmount=${fromAmount}` : ''}${toAddress ? `&toAddress=${toAddress}` : '' }${sendWalletId ? `&sendWalletId=${sendWalletId}` : '' }${receiveWalletId ? `&sendWalletId=${receiveWalletId}` : '' }${fromAddress ? `&fromAddress=${fromAddress}` : ''}`
     })}),
   withToggle('expanded'),
   withToggle('dropdownOpen'),
