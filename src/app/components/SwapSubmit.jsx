@@ -108,7 +108,7 @@ const SwapSubmit = ({
             <div className='w-100 d-flex justify-content-between'>
               <Button type='button' color='primary' outline onClick={handleCancel}><T tag='span' i18nKey='app.swapSubmit.cancel'>Cancel</T></Button>
               <GAEventButton 
-                event={forwardTo.indexOf('/orders/widget') >= 0 && { category: 'Swap', action: 'Submit Swap' }}
+                event={forwardTo ? forwardTo.indexOf('/orders/widget') >= 0 && { category: 'Swap', action: 'Submit Swap' } : undefined}
                 type='submit' 
                 color='primary' 
                 disabled={continueDisabled || invalid || submitting || overGeoLimit}
