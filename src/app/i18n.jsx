@@ -7,6 +7,8 @@ import { initReactI18next } from 'react-i18next'
 import * as en from 'Src/locales/en/translations.app.json'
 import * as es from 'Src/locales/es/translations.app.json'
 import * as ja from 'Src/locales/ja/translations.app.json'
+import * as ru from 'Src/locales/ru/translations.app.json'
+import * as zh from 'Src/locales/zh/translations.app.json'
 
 import config from '../config'
 
@@ -20,6 +22,8 @@ const options = {
     en: { translations: en },
     es: { translations: es },
     ja: { translations: ja },
+    ru: { translations: ru },
+    zh: { translations: zh }
   },
 
   saveMissing: true,
