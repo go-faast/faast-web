@@ -68,7 +68,7 @@ const SwapStepOne = ({
   validateReceiveAddress, validateRefundAddress, validateSendAmount, validateReceiveAmount,
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
   onChangeSendAmount, handleSelectFullBalance, fullBalanceAmount, fullBalanceAmountLoaded,
-  sendWallet, maxGeoBuy, handleSelectGeoMax,
+  sendWallet, maxGeoBuy, handleSelectGeoMax, receiveAsset, ethReceiveBalanceAmount,
   onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs = {},
   onChangeRefundAddress, onChangeReceiveAddress, rateError, sendAsset
 }) => (
@@ -203,6 +203,11 @@ const SwapStepOne = ({
                   formName={FORM_NAME}
                   onChange={onChangeReceiveAddress}
                   requiredLabel
+                  helpText={receiveAsset.ERC20 && parseFloat(ethReceiveBalanceAmount) === 0 && (
+                    <FormText className='text-muted'>
+                     Please note: The {receiveSymbol} you receive will be <a href='https://ethereum.stackexchange.com/questions/52937/cannot-send-erc20-tokens-because-user-has-no-ethereum' target='_blank noreferrer'>stuck upon arrival</a> because your receiving wallet does not have ETH to pay for future network fees.
+                    </FormText>
+                  )}
                 />
               </Col>
             </Row>
@@ -300,7 +305,7 @@ export default compose(
     sendSymbol, receiveSymbol,
     defaultSendAmount, defaultReceiveAmount,
     defaultRefundAddress, defaultReceiveAddress,
-    sendWallet, sendAsset, limit, previousSwapInputs
+    sendWallet, sendAsset, limit, previousSwapInputs, receiveWallet
   }) => { 
     const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : undefined
     const { toAmount, fromAmount, toAddress, fromAddress, sendWalletId, receiveWalletId } = previousSwapInputs || {}
@@ -315,6 +320,8 @@ export default compose(
         receiveWalletId: receiveWalletId ? receiveWalletId : undefined,
       },
       fullBalanceAmount: sendWallet && (sendWallet.balances[sendSymbol] || '0'),
+      ethSendBalanceAmount: sendWallet && (sendWallet.balances['ETH'] || '0'),
+      ethReceiveBalanceAmount: receiveWallet && (receiveWallet.balances['ETH'] || '0'),
       fullBalanceAmountLoaded: sendWallet && sendWallet.balancesLoaded,
       maxGeoBuy,
     })}),
@@ -341,7 +348,8 @@ export default compose(
     ),
     onSubmit: ({
       sendSymbol, receiveAsset, sendAsset,
-      createSwap, openViewOnly, push, estimatedField
+      createSwap, openViewOnly, push, estimatedField,
+      ethSendBalanceAmount,
     }) => async (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
       let { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId, receiveAmount } = values
@@ -350,6 +358,11 @@ export default compose(
       }
       if ((sendSymbol == 'ETH' || sendAsset.ERC20) && refundAddress) {
         refundAddress = toChecksumAddress(refundAddress)
+      }
+      if (sendAsset.ERC20 && parseFloat(ethSendBalanceAmount) === 0) {
+        throw new SubmissionError({
+          refundAddress: 'This wallet does not have enough ETH to cover the gas fees. Please deposit some ETH and try again.',
+        })
       }
       try {
         const receiveValidation = await Faast.validateAddress(receiveAddress, receiveSymbol)
