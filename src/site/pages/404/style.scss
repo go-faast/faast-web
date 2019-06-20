@@ -1,0 +1,30 @@
+@-moz-keyframes move-astronaut {
+  100% { -moz-transform: translate(-160px, -160px);}
+}
+@-webkit-keyframes move-astronaut {
+  100% { -webkit-transform: translate(-160px, -160px);}
+}
+@keyframes move-astronaut{
+  100% { -webkit-transform: translate(-160px, -160px); transform:translate(-160px, -160px); }
+}
+@-moz-keyframes rotate-astronaut {
+  100% { -moz-transform: rotate(-720deg);}
+}
+@-webkit-keyframes rotate-astronaut {
+  100% { -webkit-transform: rotate(-720deg);}
+}
+@keyframes rotate-astronaut{
+  100% { -webkit-transform: rotate(-720deg); transform:rotate(-720deg); }
+}
+
+.boxAstronaut {
+  z-index: 110 !important;
+  position: absolute;
+  top: 40%;
+  right: 10%;
+  will-change: transform;
+  animation: move-astronaut 50s infinite linear both alternate;
+}
+.imageAstronaut {
+  animation: rotate-astronaut 200s infinite linear both alternate;
+}
