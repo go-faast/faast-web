@@ -51,7 +51,6 @@ export const openWallet = (walletPromise, forwardUrl) => (dispatch, getState) =>
     .then((wallet) => {
       const { id: walletId } = wallet
       const { id: portfolioId, type: portfolioType } = getCurrentPortfolio(getState())
-
       return dispatch(addNestedWallet(defaultPortfolioId, walletId))
         .then(() => {
           if (portfolioType === MultiWallet.type && portfolioId !== defaultPortfolioId) {
