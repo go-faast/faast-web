@@ -406,7 +406,7 @@ export default compose(
         .then((swap) => {
           push(`/swap/send?id=${swap.orderId}`)
           if (receiveSymbol === 'ETH' || ERC20) { 
-            return openViewOnly(receiveAddress, null)
+            return openViewOnly(receiveAddress, `/swap/send?id=${swap.orderId}`)
           }
         })
     },
