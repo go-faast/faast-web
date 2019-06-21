@@ -328,7 +328,18 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
         },
         {
           is404: true,
+          noindex: true,
           component: 'src/site/pages/404',
+          getData: async () => {
+            return {
+              meta: {
+                title: '404 - Faa.st',
+                description: 'Unable to find the page you were looking for.',
+                language: t.code,
+              },
+              translations: translations[0].translations,
+            }
+          },
         }]
         routes = routes.concat(routeConfig)
         if (routes.length >= (translations.length * routeConfig.length)) {
