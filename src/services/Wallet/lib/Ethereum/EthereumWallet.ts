@@ -135,7 +135,7 @@ export default abstract class EthereumWallet extends Wallet {
     gasLimit?: Numerical,
     gas?: Numerical, // Alias for gasLimit
   }): Promise<EthTransaction> {
-    return Promise.resolve().then(() => {
+    return Promise.resolve().then(async () => {
       const web3 = getWeb3()
       log.debug(`Creating transaction sending ${amount} ${asset.symbol} from ${this.getAddress()} to ${address}`)
       const txData = {
@@ -166,11 +166,14 @@ export default abstract class EthereumWallet extends Wallet {
 
       const customGasPrice = options.gasPrice
       const customGasLimit = options.gasLimit || options.gas
+      const networkTxCount = await web3.eth.getTransactionCount(txData.from)
+      console.log(networkTxCount)
+      console.log(customNonce)
 
       const opts: Array<Numerical | Promise<Numerical>> = [
         customGasPrice || this._getDefaultFeeRate().then(({ rate }) => rate),
         customGasLimit || estimateGasLimit(txData),
-        customNonce || web3.eth.getTransactionCount(txData.from),
+        customNonce && customNonce >= networkTxCount ? customNonce : networkTxCount,
       ]
       return Promise.all(opts).then(([gasPrice, gasLimit, nonce]) => ({
         ...this._newTransaction(asset, [{ address, amount }]),
