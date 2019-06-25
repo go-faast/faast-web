@@ -34,9 +34,13 @@ export const selectLanguage = (lang) => (dispatch) => {
   localStorageSet('i18nextLng', lang)
 }
 
-export const correctStaticURL = (currentLanguage) => () => {
+export const correctStaticURL = (currentLanguage) => (dispatch) => {
   if (typeof window !== 'undefined' && currentLanguage) {
     const languageCodes = translations.map(t => t.code)
+    if (languageCodes.indexOf(currentLanguage) < 0) {
+      currentLanguage = 'en'
+      dispatch(selectLanguage(currentLanguage))
+    }
     const urlParts = window.location.pathname.split('/')
     const currentUrl = window.location.pathname
     if (urlParts.indexOf(currentLanguage) < 0) {
