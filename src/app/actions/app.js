@@ -1,11 +1,13 @@
 import qs from 'query-string'
-
+import toastr from 'Utilities/toastrWrapper'
+import { push } from 'react-router-redux'
 import { newScopedCreateAction } from 'Utilities/action'
 import { localStorageGetJson, sessionStorageSet, localStorageSet, localStorageGet } from 'Utilities/storage'
 import blockstack from 'Utilities/blockstack'
 import { filterUrl } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import { restoreCachedAffiliateInfo } from 'Actions/affiliate'
+import { isDefaultPortfolioEmpty } from 'Selectors/portfolio'
 
 import { retrieveAssets, restoreAssets } from './asset'
 import { setSettings } from './settings'
@@ -111,8 +113,17 @@ export const setupAffiliateReferral = () => Promise.resolve()
     log.error('Failed to setup affiliate referral', e)
   })
 
-export const postFeedbackForm = (type, link, email) => () => {
+export const postFeedbackForm = (type, link, email) => (dispatch, getState) => {
+  const hasNoConnectedWallets = isDefaultPortfolioEmpty(getState())
   return postFeedback(type, link, email)
+    .then(() => {
+      toastr.success('Your feedback has been successfully submitted!')
+      return dispatch(push(!hasNoConnectedWallets ? '/dashboard' : '/connect'))
+    })
+    .catch(() => {
+      toastr.success('Your feedback has been successfully submitted!')
+      return dispatch(push(!hasNoConnectedWallets ? '/dashboard' : '/connect'))
+    })
 }
 
 export const init = () => (dispatch) => Promise.resolve()

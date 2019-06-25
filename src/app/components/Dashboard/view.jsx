@@ -27,10 +27,18 @@ const DashboardView = (props) => {
         )}
         <Col xs='12' md='7' lg='8' xl='9'>
           <Row 
+            tag={Link}
+            to='/feedback'
             className='px-3 py-2 mb-3 mx-0' 
-            style={{ background: 'linear-gradient(to left, #00d7b8 0%,#008472 100%)', borderRadius: 2 }}>
+            style={{ background: 'linear-gradient(45deg, #00c19e 0%, #008472 100%)', borderRadius: 2, }}>
+            <div 
+              className='text-center'
+              style={{ backgroundColor: 'rgba(0,0,0,.13)', borderRadius: 2, height: 25, width: 25 }}
+            >
+              <i className='fa fa-star text-white' />
+            </div>
             <Col>
-              <Link className='text-white' to='/feedback'>Help us improve Faa.st with your feedback!</Link>
+              <span className='text-white'>Help us improve Faa.st with your feedback!</span>
             </Col>
           </Row>
           <Row className='gutter-3'>

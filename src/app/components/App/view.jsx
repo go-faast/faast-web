@@ -66,7 +66,7 @@ const AppView = ({ hasNoWallets }) => {
         <Route path={affiliateSwaps.path} component={AffiliateSwaps}/>
         <Route path={affiliateTerms.path} component={AffiliateTerms}/>
         <Route path={tradeHistory.path} component={TradeHistory}/>
-        <Route path={feedbackForm.path} component={Connect} />
+        <Route path={feedbackForm.path} component={hasNoWallets ? connect : Dashboard} />
       
         {/* Legacy routes */}
         <Redirect exact from='/affiliates' to={affiliateLogin.path}/>

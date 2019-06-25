@@ -1,5 +1,4 @@
 import { fetchGet, fetchPost, fetchDelete } from 'Utilities/fetch'
-import axios from 'axios'
 import { filterErrors } from 'Utilities/helpers'
 import { toBigNumber } from 'Utilities/convert'
 import { sessionStorageGet } from 'Utilities/storage'
@@ -22,17 +21,16 @@ const getAffiliateSettings = () => {
 
 export const postFeedback = (type: string, answer: string, email: string) => {
   // tslint:disable-next-line:max-line-length
-  return axios.get('https://docs.google.com/forms/d/e/1FAIpQLSc5j0rBhIfuPvsbzeEQiwUM2G1J2NvfA_ApcrVy5UqcQDlThA/formResponse', {
-    params: {
-      'entry.101588574': email,
-      'entry.1830217432': type,
-      'entry.324271904': answer,
-    },
+  return fetchGet('https://docs.google.com/forms/d/e/1FAIpQLSc5j0rBhIfuPvsbzeEQiwUM2G1J2NvfA_ApcrVy5UqcQDlThA/formResponse', {
+    'entry.101588574': email,
+    'entry.1830217432': type,
+    'entry.324271904': answer,
+  }, {
     headers: {
       accept: 'application/json',
     },
-  }).then((r) => console.log(r))
-  .catch((e) => console.log(e))
+  }).then((r) => r)
+  .catch((e) => e)
 }
 
 export function fetchAssets(): Promise<any[]> {
