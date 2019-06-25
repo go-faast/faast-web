@@ -31,10 +31,7 @@ const DashboardView = (props) => {
             to='/feedback'
             className='px-3 py-2 mb-3 mx-0' 
             style={{ background: 'linear-gradient(45deg, #00c19e 0%, #008472 100%)', borderRadius: 2, }}>
-            <div 
-              className='text-center'
-              style={{ backgroundColor: 'rgba(0,0,0,.13)', borderRadius: 2, height: 25, width: 25 }}
-            >
+            <div className='text-center'>
               <i className='fa fa-star text-white' />
             </div>
             <Col>
