@@ -19,6 +19,20 @@ const getAffiliateSettings = () => {
   }
 }
 
+export const postFeedback = (type: string, answer: string, email: string) => {
+  // tslint:disable-next-line:max-line-length
+  return fetchGet('https://docs.google.com/forms/d/e/1FAIpQLSc5j0rBhIfuPvsbzeEQiwUM2G1J2NvfA_ApcrVy5UqcQDlThA/formResponse', {
+    'entry.101588574': email,
+    'entry.1830217432': type,
+    'entry.324271904': answer,
+  }, {
+    headers: {
+      accept: 'application/json',
+    },
+  }).then((r) => r)
+  .catch((e) => e)
+}
+
 export function fetchAssets(): Promise<any[]> {
   return fetchGet(`${apiUrl}/api/v2/public/currencies`, { include: 'marketInfo' }, { retries: 2 })
     .then((assets: Array<Partial<Asset>>) => assets.filter((asset) => {

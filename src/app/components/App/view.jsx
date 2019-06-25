@@ -24,6 +24,7 @@ import AssetWatchlist from 'Components/AssetWatchlist'
 import AssetTrending from 'Components/AssetTrending'
 import Footer from 'Components/Footer'
 import MobileWalletModal from 'Components/MobileWalletModal'
+import FeedbackForm from 'Components/FeedbackForm'
 
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
@@ -31,64 +32,70 @@ import {
   affiliateLogin, affiliateSignup, affiliateDashboard, affiliateSettings,
   affiliatePayouts, affiliateSwaps, affiliateAccountModal,
   watchlist, trending, affiliateTerms, swapWidgetStepTwo, tradeWidgetDetail,
-  connectMobileWallet
+  connectMobileWallet, feedbackForm
 } from 'Routes'
 
-const AppView = ({ hasNoWallets }) => (
-  <Fragment>
-    <Switch>
-      <Route exact path={root.path} render={() => (
-        hasNoWallets
-          ? (<Redirect to='/connect' />)
-          : (<Redirect to='/dashboard' />)
-      )} />
+const AppView = ({ hasNoWallets }) => {
+  return (
+    <Fragment>
+      <Switch>
+        <Route exact path={root.path} render={() => (
+          hasNoWallets
+            ? (<Redirect to='/connect' />)
+            : (<Redirect to='/dashboard' />)
+        )} />
 
-      {/* Routes requiring a connected wallet */}
-      <WalletOpened path={dashboard.path} component={Dashboard}/>
-      <WalletOpened path={rebalance.path} component={Modify}/>
+        {/* Routes requiring a connected wallet */}
+        <WalletOpened path={dashboard.path} component={Dashboard}/>
+        <WalletOpened path={rebalance.path} component={Modify}/>
 
-      {/* Routes that don't require a connected wallet */}
-      <Route path={connect.path} component={Connect}/>
-      <Route path={viewOnlyAddress.path} component={SearchResults}/>
-      <Route path={swapWidget.path} component={SwapWidget} />
-      <Route path={swapWidgetStepTwo.path} component={SwapWidgetStepTwo}/>
-      <Route path={watchlist.path} component={AssetWatchlist}/>
-      <Route path={trending.path} component={AssetTrending}/>
-      <Route path={assetDetail.path} component={AssetDetail}/>
-      <Route path={assetIndex.path} component={AssetIndex}/>
-      <Route path={affiliateLogin.path} component={AffiliateLogin}/>
-      <Route path={affiliateSignup.path} component={AffiliateSignup}/>
-      <Route path={affiliateDashboard.path} component={AffiliateDashboard}/>
-      <Route path={affiliateSettings.path} component={AffiliateSettings}/>
-      <Route path={affiliatePayouts.path} component={AffiliatePayouts}/>
-      <Route path={affiliateSwaps.path} component={AffiliateSwaps}/>
-      <Route path={affiliateTerms.path} component={AffiliateTerms}/>
-      <Route path={tradeHistory.path} component={TradeHistory}/>
+        {/* Routes that don't require a connected wallet */}
+        <Route path={connect.path} component={Connect}/>
+        <Route path={viewOnlyAddress.path} component={SearchResults}/>
+        <Route path={swapWidget.path} component={SwapWidget} />
+        <Route path={swapWidgetStepTwo.path} component={SwapWidgetStepTwo}/>
+        <Route path={watchlist.path} component={AssetWatchlist}/>
+        <Route path={trending.path} component={AssetTrending}/>
+        <Route path={assetDetail.path} component={AssetDetail}/>
+        <Route path={assetIndex.path} component={AssetIndex}/>
+        <Route path={affiliateLogin.path} component={AffiliateLogin}/>
+        <Route path={affiliateSignup.path} component={AffiliateSignup}/>
+        <Route path={affiliateDashboard.path} component={AffiliateDashboard}/>
+        <Route path={affiliateSettings.path} component={AffiliateSettings}/>
+        <Route path={affiliatePayouts.path} component={AffiliatePayouts}/>
+        <Route path={affiliateSwaps.path} component={AffiliateSwaps}/>
+        <Route path={affiliateTerms.path} component={AffiliateTerms}/>
+        <Route path={tradeHistory.path} component={TradeHistory}/>
+        <Route path={feedbackForm.path} component={hasNoWallets ? connect : Dashboard} />
       
-      {/* Legacy routes */}
-      <Redirect exact from='/affiliates' to={affiliateLogin.path}/>
-      <Redirect exact from='/balances' to={dashboard.path}/>
-      <Redirect exact from='/modify' to={rebalance.path}/>
+        {/* Legacy routes */}
+        <Redirect exact from='/affiliates' to={affiliateLogin.path}/>
+        <Redirect exact from='/balances' to={dashboard.path}/>
+        <Redirect exact from='/modify' to={rebalance.path}/>
 
-      {/* Fallback for unknown routes */}
-      <Redirect to={dashboard.path}/>
-    </Switch>
+        {/* Fallback for unknown routes */}
+        <Redirect to={dashboard.path}/>
+      </Switch>
 
-    {/* Routes that show a modal over one of the above pages */}
-    <ModalRoute exact closePath={connect.path} path={connectMobileWallet.path} render={(props) => (
-      <MobileWalletModal walletType={props.match.params.walletType} {...props}/>
-    )}/>
-    <ModalRoute exact closePath={tradeHistory.path} path={tradeDetail.path} render={(props) => (
-      <TradeDetailModal tradeId={props.match.params.tradeId} {...props}/>
-    )}/>
-    <ModalRoute closePath={tradeHistory.path} path={tradeWidgetDetail.path} render={(props) => (
-      <TradeDetailModal tradeId={props.match.params.tradeId} {...props}/>
-    )}/>
-    <ModalRoute closePath={affiliateDashboard.path} path={affiliateAccountModal.path} render={(props) => (
-      <AffiliateAccountModal {...props}/>
-    )}/>
-    <Footer />
-  </Fragment>
-)
+      {/* Routes that show a modal over one of the above pages */}
+      <ModalRoute exact closePath={connect.path} path={connectMobileWallet.path} render={(props) => (
+        <MobileWalletModal walletType={props.match.params.walletType} {...props}/>
+      )}/>
+      <ModalRoute exact closePath={tradeHistory.path} path={tradeDetail.path} render={(props) => (
+        <TradeDetailModal tradeId={props.match.params.tradeId} {...props}/>
+      )}/>
+      <ModalRoute closePath={tradeHistory.path} path={tradeWidgetDetail.path} render={(props) => (
+        <TradeDetailModal tradeId={props.match.params.tradeId} {...props}/>
+      )}/>
+      <ModalRoute exact closePath={root.path} path={feedbackForm.path} render={(props) => (
+        <FeedbackForm {...props}/>
+      )}/>
+      <ModalRoute closePath={affiliateDashboard.path} path={affiliateAccountModal.path} render={(props) => (
+        <AffiliateAccountModal {...props}/>
+      )}/>
+      <Footer />
+    </Fragment>
+  )
+}
 
 export default AppView

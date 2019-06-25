@@ -292,7 +292,6 @@ export default compose(
     balancesLoaded: areCurrentPortfolioBalancesLoaded,
     limit: getGeoLimit,
     previousSwapInputs: getSavedSwapWidgetInputs
-    
   }), {
     createSwap: createSwapAction,
     push: pushAction,

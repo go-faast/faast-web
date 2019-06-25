@@ -66,6 +66,7 @@ export const walletInfoModal = createPath(connect, '/:walletType')
 export const connectHwWalletAsset = createPath(connectHwWallet, '/:assetSymbol')
 export const connectHwWalletAssetConfirm = createPath(connectHwWalletAsset, '/confirm')
 export const connectHwWalletAssetAccounts = createPath(connectHwWalletAsset, '/accounts')
+export const feedbackForm = createPath('/feedback')
 
 export default {
   root,
@@ -96,4 +97,5 @@ export default {
   affiliateTerms,
   watchlist,
   trending,
+  feedbackForm
 }

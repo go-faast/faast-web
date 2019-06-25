@@ -14,7 +14,7 @@ const RenderInput = (props) => {
     label, type, step, placeholder, id, disabled, autoComplete, size, checked,
     addonPrepend, addonAppend, row, className, inputClass,
     labelProps, labelClass, labelCol, inputCol, autoFocus,
-    renderInput, helpText, style, requiredLabel,
+    renderInput, helpText, style, requiredLabel, children
   } = props
   let { inputProps, input: reduxFormInput } = props
   const check = ['checkbox', 'radio'].includes(type)
@@ -36,7 +36,7 @@ const RenderInput = (props) => {
     checked: alreadyChecked
   }
   const inputElement = renderInput ? renderInput(inputProps) : (
-    <Input key='input' {...inputProps} />
+    <Input key='input' {...inputProps}>{children}</Input>
   )
 
   const feedbackElement = (
