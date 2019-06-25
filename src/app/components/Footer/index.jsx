@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
+import { Link } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap'
 import PropTypes from 'prop-types'
 import { name as appName, version as appVersion, homepage as githubLink } from 'Pkg'
@@ -27,6 +28,13 @@ export default compose(
                   <LangLink className='text-muted' to='https://faa.st'>
                     <T tag='span' i18nKey='app.footer.website'>Faa.st Website</T>
                   </LangLink>
+                </small>
+              </li>
+              <li className='list-inline-item'>
+                <small>
+                  <Link className='text-muted' to='/feedback'>
+                  Provide Feedback
+                  </Link>
                 </small>
               </li>
               <li className='list-inline-item mr-3'>

@@ -13,6 +13,7 @@ import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
 import { restoreTxs } from './tx'
 import { retrieveAllSwaps, restoreSwapTxIds, restoreSwapPolling } from './swap'
 import { fetchGeoRestrictions, languageLoad } from 'Common/actions/app'
+import { postFeedback } from 'Services/Faast'
 
 import { getTradeableAssetFilter } from 'Selectors/app'
 
@@ -109,6 +110,10 @@ export const setupAffiliateReferral = () => Promise.resolve()
   .catch((e) => {
     log.error('Failed to setup affiliate referral', e)
   })
+
+export const postFeedbackForm = (type, link, email) => () => {
+  return postFeedback(type, link, email)
+}
 
 export const init = () => (dispatch) => Promise.resolve()
   .then(() => dispatch(fetchGeoRestrictions()))

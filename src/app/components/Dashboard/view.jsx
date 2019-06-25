@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'Components/Link'
 import {
   Row, Col,
 } from 'reactstrap'
@@ -25,6 +26,13 @@ const DashboardView = (props) => {
           </Col>
         )}
         <Col xs='12' md='7' lg='8' xl='9'>
+          <Row 
+            className='px-3 py-2 mb-3 mx-0' 
+            style={{ background: 'linear-gradient(to left, #00d7b8 0%,#008472 100%)', borderRadius: 2 }}>
+            <Col>
+              <Link className='text-white' to='/feedback'>Help us improve Faa.st with your feedback!</Link>
+            </Col>
+          </Row>
           <Row className='gutter-3'>
             <Col xs='12'>
               <Balances 
