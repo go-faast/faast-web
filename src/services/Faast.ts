@@ -354,7 +354,7 @@ export const initiateAffiliateWithdrawal = (
   signature,
   },
 })
-.then((r) => r)
+  .then((r) => r)
   .catch((e: any) => {
     log.error(e)
     throw e
@@ -372,10 +372,10 @@ export const affiliateRegister = (
     contact_email: email,
   })
   .then((res) => res)
-    .catch((e: any) => {
-      log.error(e)
-      throw e
-    })
+  .catch((e: any) => {
+    log.error(e)
+    throw e
+  })
 }
 
 export const getAffiliateSwaps = (
@@ -398,7 +398,7 @@ export const getAffiliateSwaps = (
   .then((swaps) => swaps)
   .catch((e: any) => {
     log.error(e)
-    throw e
+    return e
   })
 }
 

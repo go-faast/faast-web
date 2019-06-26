@@ -12,7 +12,7 @@ import ReduxFormField from 'Components/ReduxFormField'
 import toastr from 'Utilities/toastrWrapper'
 import config from 'Config'
 
-import { affiliateId, secretKey, getAsset, getAffiliateBalance } from 'Selectors'
+import { affiliateId, secretKey, getAsset, getAffiliateBalance, getMinimumWithdrawal } from 'Selectors'
 import { initiateAffiliateWithdrawal } from 'Services/Faast'
 
 import AffiliateLayout from 'Components/Affiliate/Layout'
@@ -22,7 +22,7 @@ const FORM_NAME = 'affiliate_withdrawal'
 
 const getFormValue = formValueSelector(FORM_NAME)
 
-const AffiliateSettings = ({ isModalOpen, toggleModalOpen, affiliateId, secretKey, 
+const AffiliateSettings = ({ minimumWithdrawal, isModalOpen, toggleModalOpen, affiliateId, secretKey, 
   handleSubmit, validateWithdrawalAddress, invalid, balance, withdrawalAddress }) => {
   return (
     <AffiliateLayout className='pt-3'>
@@ -63,10 +63,15 @@ const AffiliateSettings = ({ isModalOpen, toggleModalOpen, affiliateId, secretKe
                       className='flat' 
                       color='primary' 
                       onClick={toggleModalOpen} 
-                      disabled={invalid || balance == 0}
+                      disabled={invalid || balance < minimumWithdrawal}
                     >
                       {balance == 0 ? 'Cannot withdrawal 0 BTC' : 'Withdrawal'}
                     </Button>
+                    {minimumWithdrawal && (
+                      <p className={classNames('mt-2',text)}>
+                        <small>** The minimum withdrawal is: {minimumWithdrawal} BTC</small>
+                      </p>
+                    )}
                     <Modal
                       size='md' isOpen={isModalOpen} toggle={toggleModalOpen} className={'border-0 mt-6 mx-md-auto'} contentClassName={classNames('p-0 border-0 flat')}>
                       <ModalHeader close={<span className='cursor-pointer' onClick={toggleModalOpen}>cancel</span>} tag='h4' toggle={toggleModalOpen} className={cardHeader}>
@@ -115,6 +120,7 @@ export default compose(
     balance: getAffiliateBalance,
     bitcoin: (state) => getAsset(state, 'BTC'),
     withdrawalAddress: (state) => getFormValue(state, 'withdrawal_address'),
+    minimumWithdrawal: getMinimumWithdrawal
   }), {
     change: change,
     untouch: untouch,

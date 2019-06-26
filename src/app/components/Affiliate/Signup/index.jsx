@@ -1,14 +1,9 @@
 import React, { Fragment } from 'react'
 import { Helmet } from 'react-helmet'
-import { push } from 'react-router-redux'
 import { Link } from 'react-router-dom'
-import { createStructuredSelector } from 'reselect'
 import { Card, CardHeader, CardBody } from 'reactstrap'
-import { connect } from 'react-redux'
 import { compose, setDisplayName } from 'recompose'
 import classNames from 'class-names'
-
-import { isAffiliateLoggedIn } from 'Selectors'
 import LoginForm from './form'
 
 import AffiliateLayout from 'Components/Affiliate/Layout'
@@ -43,9 +38,4 @@ const AffiliateSignup = () => {
 
 export default compose(
   setDisplayName('AffiliateSignup'),
-  connect(createStructuredSelector({
-    loggedIn: isAffiliateLoggedIn,
-  }), {
-    push: push,
-  })
 )(AffiliateSignup)

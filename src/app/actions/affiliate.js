@@ -16,6 +16,7 @@ export const loginError = createAction('LOGIN_ERROR')
 export const updateAffiliateId = createAction('UPDATE_ID')
 export const updateSecretKey = createAction('UPDATE_KEY')
 export const updateBalance = createAction('UPDATE_BALANCE')
+export const updateMinimumWithdrawal = createAction('UPDATE_MINIMUM_WITHDRAWAL')
 export const updateBalanceSwaps = createAction('UPDATE_BALANCE_SWAPS')
 export const resetAffiliate = createAction('RESET_ALL')
 export const statsRetrieved = createAction('STATS_RETRIEVED')
@@ -30,7 +31,7 @@ export const statsError = createAction('STATS_ERROR')
 export const withdrawalsError = createAction('WITHDRAWALS_ERROR')
 export const swapHistoryTotalUpdated = createAction('SWAP_HISTORY_TOTAL_UPDATED')
 
-export const getStats = (id, key) => (dispatch, getState) => {
+export const getStats = (id, key) => (dispatch) => {
   return Faast.getAffiliateStats(id, key)
     .then(({ totals, affiliate_id }) => {
       sessionStorageSet('state:affiliate_id', affiliate_id)
@@ -41,62 +42,53 @@ export const getStats = (id, key) => (dispatch, getState) => {
       dispatch(statsRetrieved(totals))
     })
     .catch((e) => { 
-      if (!isAffiliateLoggedIn(getState())) {
-        dispatch(loginError())
-        toastr.error('Affiliate ID or Secret Key is incorrect')
-      }
       dispatch(statsError(e))
     })
 }
 
 export const affiliateLogin = (id, key) => (dispatch) => {
-  dispatch(affiliateDataUpdated())
-  dispatch(getAffiliateWithdrawals(id, key))
-  dispatch(getAffiliateSwaps(id, key, 1, 5))
-  dispatch(getBalance(id, key))
-  dispatch(getStats(id, key))
   dispatch(getAccountDetails(id, key))
-  sessionStorageSet('state:affiliate_lastUpdated', Date.now())
-  return dispatch(dispatch(login()))
+    .then(() => {
+      dispatch(affiliateDataUpdated())
+      dispatch(getAffiliateWithdrawals(id, key))
+      dispatch(getAffiliateSwaps(id, key, 1, 5))
+      dispatch(getBalance(id, key))
+      dispatch(getStats(id, key))
+      dispatch(dispatch(login()))
+      sessionStorageSet('state:affiliate_lastUpdated', Date.now())
+    })
 }
 
-export const getBalance = (id, key) => (dispatch, getState) => {
+export const getBalance = (id, key) => (dispatch) => {
   return Faast.getAffiliateBalance(id, key)
-    .then(({ balance, swaps }) => {
+    .then(({ balance, swaps, minimum_withdrawal }) => {
       sessionStorageSet('state:affiliate_balance', balance)
       sessionStorageSet('state:affiliate_balance_swaps', swaps)
       dispatch(updateBalance(balance))
+      dispatch(updateMinimumWithdrawal(minimum_withdrawal))
       return dispatch(updateBalanceSwaps(swaps))
     })
-    .catch(() => { 
-      if (!isAffiliateLoggedIn(getState())) {
-        dispatch(loginError())
-      }
-    })
+    .catch((e) => e)
 }
 
-export const getSwapsExportLink = (id, key) => (dispatch, getState) => {
+export const getSwapsExportLink = (id, key) => (dispatch) => {
   dispatch(swapExportLinkLoading())
   return Faast.getAffiliateExportLink(id, key)
     .then((result) => {
       return dispatch(updateSwapExportLink(result.url))
     })
-    .catch(() => { 
-      if (!isAffiliateLoggedIn(getState())) {
-        dispatch(loginError())
-      }
-    })
+    .catch((e) => e)
 }
 
-export const getAccountDetails = (id, key) => (dispatch, getState) => {
+export const getAccountDetails = (id, key) => (dispatch) => {
   return Faast.getAffiliateAccount(id, key)
     .then((account) => {
       return account
     })
     .catch(() => { 
-      if (!isAffiliateLoggedIn(getState())) {
-        dispatch(loginError())
-      }
+      dispatch(loginError())
+      toastr.error('Affiliate ID or Secret Key is incorrect')
+      throw new Error()
     })
 }
 

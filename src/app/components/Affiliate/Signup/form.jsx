@@ -48,10 +48,6 @@ export default compose(
   }), {
     register
   }),
-  setPropTypes({
-  }),
-  defaultProps({
-  }),
   withHandlers({
     onSubmit: ({ register }) => ({ affiliateId, address, email }) => {
       register(affiliateId, address, email)
