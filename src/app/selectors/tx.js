@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 
 import { mapValues } from 'Utilities/helpers'
 import { createItemSelector, selectItemId } from 'Utilities/selector'
-import { ZERO } from 'Utilities/convert'
+import { ZERO, toNumber } from 'Utilities/convert'
 
 import { getAllAssets } from './asset'
 import { getAllWallets } from './wallet'
@@ -36,3 +36,11 @@ export const getAllTxs = createSelector(
   (txState, allAssets, allWallets) => mapValues(txState, createTxExtender(allAssets, allWallets)))
 export const getAllTxsArray = createSelector(getAllTxs, Object.values)
 export const getTx = createItemSelector(getAllTxs, selectItemId, (allTxs, id) => allTxs[id])
+export const getPreviousTransaction = createItemSelector(getAllTxsArray, selectItemId, (allTxs, address) => {
+  return allTxs.filter(tx => { 
+    const isTrezor = tx.type === 'EthereumWalletTrezor'
+    return tx.sent && tx.txData && isTrezor
+  }).sort((a,b) => {  
+    return toNumber(b.txData.nonce) - toNumber(a.txData.nonce)
+  }).find(tx => tx.txData.from.toLowerCase() === address.toLowerCase())
+})

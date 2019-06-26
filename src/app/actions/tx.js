@@ -4,7 +4,7 @@ import uuid from 'uuid/v4'
 import { getWalletPassword } from 'Actions/walletPasswordPrompt'
 import { newScopedCreateAction } from 'Utilities/action'
 import walletService from 'Services/Wallet'
-import { getTx } from 'Selectors'
+import { getTx, getPreviousTransaction } from 'Selectors'
 import log from 'Log'
 
 const createAction = newScopedCreateAction(__filename)
@@ -55,11 +55,13 @@ export const createAggregateTx = (walletId, outputs, assetSymbol, options) => (d
     .then((tx) => dispatch(addTx(tx)))
 })
 
-export const createTx = (walletId, address, amount, assetSymbol, options) => (dispatch) => Promise.resolve().then(() => {
+export const createTx = (walletId, address, amount, assetSymbol, options = {}) => (dispatch, getState) => Promise.resolve().then(() => {
   const walletInstance = walletService.get(walletId)
   if (!walletInstance) {
     throw new Error(`Cannot get wallet ${walletId}`)
   }
+  const previousTransaction = getPreviousTransaction(getState(), walletInstance.address)
+  options.previousTx = previousTransaction
   return walletInstance.createTransaction(address, amount, assetSymbol, options)
     .then((tx) => dispatch(addTx(tx)))
 })
@@ -106,9 +108,6 @@ export const sendTx = (tx, sendOptions) => (dispatch) => Promise.resolve().then(
   const eventListeners = dispatch(newSendTxEventListeners(tx.id))
   const walletInstance = walletService.getOrThrow(walletId)
   dispatch(txSendingStart(tx.id))
-
-  console.log(sendOptions)
-  console.log(tx)
 
   return walletInstance.sendTransaction(tx, { ...eventListeners, ...sendOptions })
     .then((sentTx) => {
