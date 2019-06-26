@@ -1,7 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers } from 'recompose'
+import { compose, setDisplayName, withHandlers } from 'recompose'
 import { Form, Button } from 'reactstrap'
 import { reduxForm } from 'redux-form'
 import ReduxFormField from 'Components/ReduxFormField'
