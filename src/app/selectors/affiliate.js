@@ -10,6 +10,8 @@ const getAffiliateState = ({ affiliate }) => affiliate
 
 // Affiliate selectors
 export const isAffiliateLoggedIn = createSelector(getAffiliateState, ({ loggedIn }) => loggedIn)
+export const hasLoginError = createSelector(getAffiliateState, ({ loginError }) => loginError)
+export const getMinimumWithdrawal = createSelector(getAffiliateState, ({ minimumWithdrawal }) => minimumWithdrawal)
 export const getSwapChartData = createSelector(getAffiliateState, ({ swapChartData }) => swapChartData)
 export const isSwapChartLoading = createSelector(getAffiliateState, ({ swapChartLoading }) => swapChartLoading)
 export const isAffiliateDataStale = createSelector(getAffiliateState, affiliate => {

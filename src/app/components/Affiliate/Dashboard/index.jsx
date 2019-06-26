@@ -14,13 +14,13 @@ import Units from 'Components/Units'
 import { getStats } from 'Actions/affiliate'
 import classNames from 'class-names'
 
-import { affiliateStats, getAffiliateBalance } from 'Selectors'
+import { affiliateStats, getAffiliateBalance, getMinimumWithdrawal } from 'Selectors'
 
 import { stat1, stat2, stat3, row, withdrawal } from './style'
 import { card, cardHeader, text, smallCard } from '../style'
 
 
-const AffiliateDashboard = ({ stats: { swaps_completed = 0, value_btc = 0, affiliate_payouts_btc = 0 } = {}, 
+const AffiliateDashboard = ({ minimumWithdrawal, stats: { swaps_completed = 0, value_btc = 0, affiliate_payouts_btc = 0 } = {}, 
   balance }) => {
   return (
     <AffiliateLayout className='pt-3'>
@@ -58,10 +58,15 @@ const AffiliateDashboard = ({ stats: { swaps_completed = 0, value_btc = 0, affil
                 to='/affiliates/settings' 
                 className={classNames(withdrawal, 'flat px-4 mb-3')} 
                 color='primary'
-                disabled={balance == 0}
+                disabled={balance < minimumWithdrawal}
               >
                 Initiate a Withdrawal
               </Button>
+              {minimumWithdrawal && (
+                <p className={text}>
+                  <small>** The minimum withdrawal is: {minimumWithdrawal} BTC</small>
+                </p>
+              )}
             </CardBody>
           </Card>
         </CardDeck>
@@ -86,6 +91,7 @@ export default compose(
   connect(createStructuredSelector({
     stats: affiliateStats,
     balance: getAffiliateBalance,
+    minimumWithdrawal: getMinimumWithdrawal
   }), {
     getStats,
   })
