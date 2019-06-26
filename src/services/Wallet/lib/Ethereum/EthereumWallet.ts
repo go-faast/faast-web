@@ -167,8 +167,6 @@ export default abstract class EthereumWallet extends Wallet {
       const customGasPrice = options.gasPrice
       const customGasLimit = options.gasLimit || options.gas
       const networkTxCount = await web3.eth.getTransactionCount(txData.from)
-      console.log(networkTxCount)
-      console.log(customNonce)
 
       const opts: Array<Numerical | Promise<Numerical>> = [
         customGasPrice || this._getDefaultFeeRate().then(({ rate }) => rate),

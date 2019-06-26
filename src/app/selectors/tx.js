@@ -37,11 +37,9 @@ export const getAllTxs = createSelector(
 export const getAllTxsArray = createSelector(getAllTxs, Object.values)
 export const getTx = createItemSelector(getAllTxs, selectItemId, (allTxs, id) => allTxs[id])
 export const getPreviousTransaction = createItemSelector(getAllTxsArray, selectItemId, (allTxs, address) => {
-  console.log(address)
   return allTxs.filter(tx => { 
     const isTrezor = tx.type === 'EthereumWalletTrezor'
-    const successfulTrezorTx = !isTrezor ? true : isTrezor && tx.succeeded ? true : false
-    return tx.sent && tx.txData && successfulTrezorTx
+    return tx.sent && tx.txData && isTrezor
   }).sort((a,b) => {  
     return toNumber(b.txData.nonce) - toNumber(a.txData.nonce)
   }).find(tx => tx.txData.from.toLowerCase() === address.toLowerCase())

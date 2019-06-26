@@ -62,7 +62,6 @@ export const createTx = (walletId, address, amount, assetSymbol, options = {}) =
   }
   const previousTransaction = getPreviousTransaction(getState(), walletInstance.address)
   options.previousTx = previousTransaction
-  console.log(previousTransaction)
   return walletInstance.createTransaction(address, amount, assetSymbol, options)
     .then((tx) => dispatch(addTx(tx)))
 })
@@ -109,9 +108,6 @@ export const sendTx = (tx, sendOptions) => (dispatch) => Promise.resolve().then(
   const eventListeners = dispatch(newSendTxEventListeners(tx.id))
   const walletInstance = walletService.getOrThrow(walletId)
   dispatch(txSendingStart(tx.id))
-
-  console.log(sendOptions)
-  console.log(tx)
 
   return walletInstance.sendTransaction(tx, { ...eventListeners, ...sendOptions })
     .then((sentTx) => {
