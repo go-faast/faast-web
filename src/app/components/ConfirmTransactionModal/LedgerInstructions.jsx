@@ -22,7 +22,7 @@ export default compose(
     <T tag='p' i18nKey='app.ledgerInstructions.tip'><small>
       Tip: If you don't see the transaction on your device, ensure you've unlocked it using your PIN and have opened the {appName} app.
     </small></T>
-    <small><Timer className='text-warning' seconds={120} label={<T tag='span' i18nKey='app.ledgerInstructions.confirmWithin'>Please confirm within:</T>}/></small>
+    <small><Timer className='text-warning' seconds={60} label={<T tag='span' i18nKey='app.ledgerInstructions.confirmWithin'>Please confirm within:</T>}/></small>
     {screens.map(({ top, bottom }, i) => (
       <LedgerScreen key={i} top={top} bottom={bottom}/>
     ))}

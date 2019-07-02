@@ -1,4 +1,4 @@
-import RLP from 'rlp'
+import * as RLP from 'rlp'
 import EthereumjsTx from 'ethereumjs-tx'
 
 import config from 'Config'

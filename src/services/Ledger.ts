@@ -7,6 +7,7 @@
 import Transport from '@ledgerhq/hw-transport-u2f'
 import AppEth from '@ledgerhq/hw-app-eth'
 import AppBtc from '@ledgerhq/hw-app-btc'
+import * as ledgerLogger from '@ledgerhq/logs'
 import HDKey from 'hdkey'
 import { NetworkConfig } from 'Utilities/networks'
 import { convertHdKeyPrefixForPath, getHdKeyPrefix, joinDerivationPath } from 'Utilities/bitcoin'
@@ -14,14 +15,17 @@ import { HdAccount } from 'Types'
 import log from 'Log'
 import { getBitcore, PaymentTx, UtxoInfo } from 'Services/Bitcore'
 
-const EXCHANGE_TIMEOUT = 120000 // ms user has to approve/deny transaction
+ledgerLogger.listen((logObject: ledgerLogger.Log) => {
+  log.debug('ledger log', logObject)
+})
+
+const EXCHANGE_TIMEOUT = 60000 // ms user has to approve/deny transaction
 
 type AppType = AppEth | AppBtc
 
 function createApp(appType: any): Promise<AppType> {
   return Transport.create().then((transport: Transport) => {
     transport.setExchangeTimeout(EXCHANGE_TIMEOUT)
-    transport.setDebugMode(false)
     return new appType(transport)
   })
 }
