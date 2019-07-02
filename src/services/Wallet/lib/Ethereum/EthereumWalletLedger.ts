@@ -17,6 +17,12 @@ const createAccountGetter = (baseDerivationPath: string) => (index: number) => {
     .then(({ address }) => new EthereumWalletLedger(address, fullDerivationPath))
 }
 
+const getVersion = () => Ledger.eth.getAppConfiguration()
+.then((data) => {
+  log.info(`Ledger ETH connected, version ${data.version}`, data)
+  return data
+})
+
 export default class EthereumWalletLedger extends EthereumWallet {
 
   static type = 'EthereumWalletLedger';
@@ -33,11 +39,8 @@ export default class EthereumWalletLedger extends EthereumWallet {
   getTypeLabel() { return typeLabel }
 
   static connect = (derivationPath: string) => {
-    return Ledger.eth.getAppConfiguration()
-      .then((data) => {
-        log.info(`Ledger connected, version ${data.version}`, data)
-        return createAccountGetter(derivationPath)
-      })
+    return getVersion()
+      .then(() => createAccountGetter(derivationPath))
       .then((getAccount) => getAccount(0)
         .then(() => ({
           derivationPath,
@@ -46,7 +49,10 @@ export default class EthereumWalletLedger extends EthereumWallet {
   }
 
   _signTx(tx: EthTransaction): Promise<Partial<EthTransaction>> {
-    return Promise.resolve().then(() => {
+    return getVersion().then((versionData) => {
+      if (versionData.arbitraryDataEnabled === 0) {
+        throw new Error('Please enable "Contract data" in your Ledger Ethereum app settings and try again')
+      }
       const { txData } = tx
       let ethJsTx
       ethJsTx = new EthereumjsTx(txData)
