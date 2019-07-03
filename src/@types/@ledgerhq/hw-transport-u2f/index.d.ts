@@ -1,9 +1,11 @@
+/// <reference types='@ledgerhq/hw-transport'/>
 
+declare namespace LedgerHQ {
+  export class TransportU2F extends LedgerHQ.Transport<null> {
+    static create(): Promise<TransportU2F>
+  }
+}
 
 declare module '@ledgerhq/hw-transport-u2f' {
-  export default class TransportU2F {
-    static create(): Promise<TransportU2F>
-    setExchangeTimeout(timeout: number): void
-    setDebugMode(on: boolean): void
-  }
+  export default LedgerHQ.TransportU2F
 }

@@ -8,7 +8,7 @@ import { timer, mapValues } from 'Utilities/helpers'
 import log from 'Utilities/log'
 
 import Trezor from 'Services/Trezor'
-import Ledger from 'Services/Ledger'
+import Ledger from 'Src/services/Wallet/Ledger'
 import walletService, {
   Wallet, MultiWallet, MultiWalletLedger, MultiWalletTrezor,
   EthereumWalletLedger, EthereumWalletTrezor,

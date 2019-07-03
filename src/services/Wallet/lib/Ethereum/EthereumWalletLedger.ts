@@ -4,7 +4,7 @@ import EthereumjsTx from 'ethereumjs-tx'
 import config from 'Config'
 import log from 'Utilities/log'
 import { addHexPrefix } from 'Utilities/helpers'
-import Ledger from 'Services/Ledger'
+import Ledger from 'Src/services/Wallet/Ledger'
 
 import EthereumWallet from './EthereumWallet'
 import { EthTransaction } from './types'
@@ -54,13 +54,13 @@ export default class EthereumWalletLedger extends EthereumWallet {
         throw new Error('Please enable "Contract data" in your Ledger Ethereum app settings and try again')
       }
       const { txData } = tx
-      let ethJsTx
-      ethJsTx = new EthereumjsTx(txData)
+      const ethJsTx = new EthereumjsTx(txData)
       ethJsTx.raw[6] = Buffer.from([txData.chainId])
       ethJsTx.raw[7] = 0
       ethJsTx.raw[8] = 0
 
-      return Ledger.eth.signTransaction(this.derivationPath, RLP.encode(ethJsTx.raw))
+      return Ledger.eth.setERC20ContractAddress(tx.txData.to)
+        .then(() => Ledger.eth.signTransaction(this.derivationPath, RLP.encode(ethJsTx.raw).toString('hex')))
         .then((result) => {
           log.debug('ledger wallet signed tx', result)
           return {
