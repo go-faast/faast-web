@@ -87,10 +87,11 @@ const SwapSubmit = ({
             {(secondsUntilPriceExpiry > 0)
               ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={<T tag='span' i18nKey='app.swapSubmit.timer'>* Quoted rates are guaranteed if submitted within:</T>} onTimerEnd={handleTimerEnd}/></small></span>)
               : null}
-            <p><small className='text-muted'>
-              {'** Additional fees may apply depending on '
-            + 'the asset being sent and the wallet you\'re using.'}
-            </small></p>
+            <p>
+              <T tag='small' i18nKey='app.swapSubmit.additionalFees' className='text-muted'>
+                ** Additional fees may apply depending on the asset being sent and the wallet you're using.
+              </T>
+            </p>
             {!termsAccepted && (
               <div className='mb-3'>
                 <Checkbox

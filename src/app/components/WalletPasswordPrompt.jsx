@@ -16,6 +16,8 @@ import ReduxFormField from 'Components/ReduxFormField'
 import HiddenUsernameField from 'Components/HiddenUsernameField'
 import WalletLabel from 'Components/WalletLabel'
 
+import T from 'Components/i18n/T'
+
 export default compose(
   setDisplayName('WalletPasswordPrompt'),
   connect(createStructuredSelector({
@@ -38,11 +40,13 @@ export default compose(
     {isOpen && (
       <Form onSubmit={handleSubmit}>
         <ModalHeader className='text-primary' toggle={handleCancel}>
-          Wallet Password
+          <T tag='span' i18nKey='app.walletPasswordPrompt.walletPassword'>Wallet Password</T>
         </ModalHeader>
         <ModalBody>
           <div className='mb-3'>
-            In order to continue, please enter your password for the following wallet
+            <T tag='span' i18nKey='app.walletPasswordPrompt.enterYourPassword'>
+              In order to continue, please enter your password for the following wallet
+            </T>
           </div>
 
           {walletId && (
@@ -62,8 +66,12 @@ export default compose(
           />
         </ModalBody>
         <ModalFooter className='justify-content-between'>
-          <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
-          <Button type='submit' color='primary' disabled={submitting || invalid}>Continue</Button>
+          <Button type='button' color='primary' outline onClick={handleCancel}>
+            <T tag='span' i18nKey='app.walletPasswordPrompt.cancel'>Cancel</T>
+          </Button>
+          <Button type='submit' color='primary' disabled={submitting || invalid}>
+            <T tag='span' i18nKey='app.walletPasswordPrompt.continue'>Continue</T>
+          </Button>
         </ModalFooter>
       </Form>
     )}

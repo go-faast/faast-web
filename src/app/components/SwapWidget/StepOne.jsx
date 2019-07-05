@@ -88,7 +88,7 @@ const SwapStepOne = ({
       </Alert>
     )}
     {!balancesLoaded ? (
-      <LoadingFullscreen label='Loading balances...'/>
+      <LoadingFullscreen label={<T tag='span' i18nKey='app.loading.balances'>Loading balances...</T>} />
     ) : (
       <Form onSubmit={handleSubmit}>
         <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>

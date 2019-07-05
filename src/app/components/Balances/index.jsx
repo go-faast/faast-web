@@ -90,7 +90,7 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
   return (
     <Fragment>
       {!holdingsLoaded && (
-        <LoadingFullscreen label='Loading balances...' error={holdingsError}/>
+        <LoadingFullscreen label={<T tag='span' i18nKey='app.loading.balances'>Loading balances...</T>}  error={holdingsError}/>
       )}
       <Card>
         <CardHeader className={showStats ? 'grid-group' : null}>

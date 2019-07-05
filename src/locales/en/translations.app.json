@@ -92,7 +92,8 @@
       "instructions4": "Drag a slider right to increase weight of an asset. Use ",
       "instructions5": " to add a new asset.<1/><2>(Note: To increase weight, you must have decreased weight of another asset)</2>",
       "instructions6": "Click",
-      "instructions7": "when finished to review changes."
+      "instructions7": "when finished to review changes.",
+      "//addAssetSelector": "Add Asset"
     },
     "widget": {
       "swapInstantly": "Swap Instantly",
@@ -146,7 +147,8 @@
       "submitAll": "Submit all",
       "beginSigning": "Begin signing",
       "confirmSubmit": "Confirm and Submit",
-      "reviewSign": "Review and Sign"
+      "reviewSign": "Review and Sign",
+      "additionalFees": "** Additional fees may apply depending on the asset being sent and the wallet you're using."
     },
     "ethInstructions": {
       "to": "To:",
@@ -207,12 +209,30 @@
       "coinbase2": "If you already have <1></1>, open <3>faa.st</3> using its built in web browser."
     },
     "createWalletModal": {
+      "//pleaseAck": "Please acknowledge the following disclaimer:",
       "ack1": "The <1></1> file can be used to send any funds it contains.",
       "ack2": "The <1></1> file contains a sensitive private key that is encrypted and can only be accessed using the password I entered.",
       "ack3": "Faast does not have a backup of the file or password. This <1></1> was generated in my web browser and was never sent over the internet.",
       "ack4": "If I lose access to the file or forget the password I forfeit all funds it contains.",
       "ack5": "I have downloaded and stored this file in a secure location on my computer.",
-      "ack6": "The <1></1> file, in combination with my password, can be used to send funds using applications other than Faast."
+      "ack6": "The <1></1> file, in combination with my password, can be used to send funds using applications other than Faast.",
+      "agree": "I understand and agree with all of the above",
+      "//createWallet": "Create wallet",
+      "//downloadKeystore": "Download keystore file",
+      "//download": "<0></0> Download <2></2> file",
+      "//cancel": "Cancel",
+      "//continue": "Continue",
+      "//importPrivateKey": "Import private key",
+      "//enterPrivateKey": "Enter the private key of your existing Ethereum wallet.",
+      "//enterPassword": "Enter a password for your <1></1>. Please make a note of your password. You will not be able to access the funds in your <3></3> without your password.",
+      "//passwordLabel": "Password",
+      "//confirmPasswordLabel": "Confirm Password"
+    },
+    "//walletPasswordPrompt": {
+      "walletPassword": "Wallet Password",
+      "enterYourPassword": "In order to continue, please enter your password for the following wallet",
+      "cancel": "Cancel",
+      "continue": "Continue"
     },
     "assetSelector": {
       "comingSoon": "coming soon",
@@ -258,6 +278,7 @@
         "done": "Done"
       },
       "confirmAccount": {
+        "pleaseConfirm": "Please confirm that you'd like to add the following account.",
         "changeAccount": "Change account",
         "back": "Back",
         "confirm": "Confirm"
@@ -351,6 +372,9 @@
     },
     "trezorInstructions": {
       "pleaseConfirm": "Please confirm the transaction on your device. You should see the following information on screen."
+    },
+    "//loading": {
+      "balances": "Loading balances..."
     }
   }
 }
