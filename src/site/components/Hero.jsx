@@ -44,7 +44,7 @@ export default compose(
       <Container>
         <Row>
           <Col sm='12' lg='6' className='text-left pl-md-5 pl-0 ml-4'>
-            <LangLink to='/market-maker'>
+            <LangLink style={{ textDecoration: 'none' }} to='/market-maker'>
               <div className='notification mt-md-4 mt-0 mb-4'>
                 <span className='new-pill'>{hero.new}</span>
                 {hero.notification}

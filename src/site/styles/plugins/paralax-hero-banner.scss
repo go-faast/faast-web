@@ -47,6 +47,10 @@ h1.hero-title, h2.hero-title, h3.hero-title {
   font-size: 13px;
   cursor: pointer;
   color: #fff;
+  transition: all .15s ease-in-out;
+  &:hover {
+    background: rgba(255,255,255,.12);
+  }
 }
 
 .new-pill {

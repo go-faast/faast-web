@@ -12,6 +12,7 @@ import Sidebar from 'Components/Sidebar'
 const DashboardView = (props) => {
   const {
     wallet, viewOnly, toggleChart, openCharts, handleRemove, isDefaultPortfolioEmpty,
+    doToggleFeedbackForm,
   } = props
 
   return (
@@ -28,8 +29,9 @@ const DashboardView = (props) => {
         <Col xs='12' md='7' lg='8' xl='9'>
           <Row 
             tag={Link}
-            to='/feedback'
-            className='px-3 py-2 mb-3 mx-0' 
+            to='/dashboard'
+            onClick={doToggleFeedbackForm}
+            className='px-3 py-2 mb-3 mx-0 custom-hover' 
             style={{ background: 'linear-gradient(45deg, #00c19e 0%, #008472 100%)', borderRadius: 2, }}>
             <div className='text-center'>
               <i className='fa fa-star text-white' />

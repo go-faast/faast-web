@@ -8,6 +8,7 @@ import {
   getCurrentWalletWithHoldings, isDefaultPortfolioEmpty
 } from 'Selectors'
 import { updateAllHoldings, removePortfolio, defaultPortfolioId } from 'Actions/portfolio'
+import { doToggleFeedbackForm } from 'Actions/app'
 
 import DashboardView from './view'
 
@@ -37,7 +38,7 @@ class Dashboard extends Component {
   }
 
   render () {
-    const { wallet, isDefaultPortfolioEmpty } = this.props
+    const { wallet, isDefaultPortfolioEmpty, doToggleFeedbackForm } = this.props
     const isViewOnly = wallet.isReadOnly
 
     if (isDefaultPortfolioEmpty && !isViewOnly) {
@@ -57,6 +58,7 @@ class Dashboard extends Component {
           viewOnly={isViewOnly}
           disableRemove={disableRemove}
           isDefaultPortfolioEmpty={isDefaultPortfolioEmpty}
+          doToggleFeedbackForm={doToggleFeedbackForm}
           {...this.props}
         />
       </Fragment>
@@ -71,7 +73,8 @@ const mapStateToProps = createStructuredSelector({
 
 const mapDispatchToProps = {
   updateAllHoldings,
-  removePortfolio
+  removePortfolio,
+  doToggleFeedbackForm,
 }
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Dashboard))
