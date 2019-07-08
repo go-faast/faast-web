@@ -24,7 +24,6 @@ import AssetWatchlist from 'Components/AssetWatchlist'
 import AssetTrending from 'Components/AssetTrending'
 import Footer from 'Components/Footer'
 import MobileWalletModal from 'Components/MobileWalletModal'
-import FeedbackForm from 'Components/FeedbackForm'
 
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
@@ -32,7 +31,7 @@ import {
   affiliateLogin, affiliateSignup, affiliateDashboard, affiliateSettings,
   affiliatePayouts, affiliateSwaps, affiliateAccountModal,
   watchlist, trending, affiliateTerms, swapWidgetStepTwo, tradeWidgetDetail,
-  connectMobileWallet, feedbackForm
+  connectMobileWallet
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -66,7 +65,6 @@ const AppView = ({ hasNoWallets }) => {
         <Route path={affiliateSwaps.path} component={AffiliateSwaps}/>
         <Route path={affiliateTerms.path} component={AffiliateTerms}/>
         <Route path={tradeHistory.path} component={TradeHistory}/>
-        <Route path={feedbackForm.path} component={hasNoWallets ? connect : Dashboard} />
       
         {/* Legacy routes */}
         <Redirect exact from='/affiliates' to={affiliateLogin.path}/>
@@ -86,9 +84,6 @@ const AppView = ({ hasNoWallets }) => {
       )}/>
       <ModalRoute closePath={tradeHistory.path} path={tradeWidgetDetail.path} render={(props) => (
         <TradeDetailModal tradeId={props.match.params.tradeId} {...props}/>
-      )}/>
-      <ModalRoute exact closePath={root.path} path={feedbackForm.path} render={(props) => (
-        <FeedbackForm {...props}/>
       )}/>
       <ModalRoute closePath={affiliateDashboard.path} path={affiliateAccountModal.path} render={(props) => (
         <AffiliateAccountModal {...props}/>

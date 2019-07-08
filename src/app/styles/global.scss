@@ -10,6 +10,16 @@
   }
 }
 
+.custom-hover {
+  transition: all .15s ease-in-out;
+  opacity: 1;
+  filter: brightness(1);
+  &:hover {
+    filter: brightness(1.1);
+    text-decoration: none !important;
+  }
+}
+
 .font-xs {
   font-size: 75%;
 }

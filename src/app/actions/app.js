@@ -1,13 +1,12 @@
 import qs from 'query-string'
+import crypto from 'crypto'
 import toastr from 'Utilities/toastrWrapper'
-import { push } from 'react-router-redux'
 import { newScopedCreateAction } from 'Utilities/action'
 import { localStorageGetJson, sessionStorageSet, localStorageSet, localStorageGet } from 'Utilities/storage'
 import blockstack from 'Utilities/blockstack'
 import { filterUrl } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import { restoreCachedAffiliateInfo } from 'Actions/affiliate'
-import { isDefaultPortfolioEmpty } from 'Selectors/portfolio'
 
 import { retrieveAssets, restoreAssets } from './asset'
 import { setSettings } from './settings'
@@ -17,7 +16,7 @@ import { retrieveAllSwaps, restoreSwapTxIds, restoreSwapPolling } from './swap'
 import { fetchGeoRestrictions, languageLoad } from 'Common/actions/app'
 import { postFeedback } from 'Services/Faast'
 
-import { getTradeableAssetFilter } from 'Selectors/app'
+import { getTradeableAssetFilter, shouldShowFeedbackForm, getUserIpAddress } from 'Selectors/app'
 
 export * from 'Common/actions/app'
 
@@ -29,6 +28,7 @@ export const updateConnectForwardUrl = createAction('UPDATE_CONNECT_FORWARD_URL'
 export const resetAll = createAction('RESET_ALL')
 export const updateAssetsFilterByTradeable = createAction('UPDATE_ASSETS_TRADEABLE_FILTER')
 export const updateSwapWidgetInputs = createAction('UPDATE_SWAP_WIDGET_INPUTS', (inputs) => (inputs))
+export const toggleFeedbackForm = createAction('TOGGLE_FEEDBACK', (value) => value)
 
 export const restoreState = (dispatch) => Promise.resolve()
   .then(() => {
@@ -63,6 +63,12 @@ export const restoreState = (dispatch) => Promise.resolve()
     log.error(e)
     throw new Error('Error loading app: ' + e.message)
   })
+
+
+export const doToggleFeedbackForm = () => (dispatch, getState) => {
+  const currentState = shouldShowFeedbackForm(getState())
+  return dispatch(toggleFeedbackForm(!currentState))
+}
 
 export const setupBlockstack = (dispatch) => Promise.resolve()
   .then(() => {
@@ -113,16 +119,17 @@ export const setupAffiliateReferral = () => Promise.resolve()
     log.error('Failed to setup affiliate referral', e)
   })
 
-export const postFeedbackForm = (type, link, email) => (dispatch, getState) => {
-  const hasNoConnectedWallets = isDefaultPortfolioEmpty(getState())
-  return postFeedback(type, link, email)
+export const postFeedbackForm = (type, link, email, asset, assetInfo) => (dispatch, getState) => {
+  const ipAddress = getUserIpAddress(getState())
+  const hash = crypto.createHash('md5').update(ipAddress).digest('hex')
+  return postFeedback(type, link, email, asset, assetInfo, hash)
     .then(() => {
       toastr.success('Your feedback has been successfully submitted!')
-      return dispatch(push(!hasNoConnectedWallets ? '/dashboard' : '/connect'))
+      return dispatch(doToggleFeedbackForm())
     })
     .catch(() => {
       toastr.success('Your feedback has been successfully submitted!')
-      return dispatch(push(!hasNoConnectedWallets ? '/dashboard' : '/connect'))
+      return dispatch(doToggleFeedbackForm())
     })
 }
 
