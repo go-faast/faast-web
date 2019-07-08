@@ -19,7 +19,7 @@ const StatusPending = ({ status, icon }) => (
 
 const StatusWaiting = ({ retrySeconds, icon, handleRetry }) => (
   <div>
-    <i className={classNames('fa fa-lg', icon)}/><T tag='span' i18nKey='app.hardwareWalletModal.connectionStatus.unable'>Unable to connect, trying again in <b>{retrySeconds}</b> seconds</T><br/>
+    <i className={classNames('fa fa-lg', icon)}/><T tag='span' i18nKey='app.hardwareWalletModal.connectionStatus.unable'>Unable to connect, trying again in <b>{{ retrySeconds }}</b> seconds</T><br/>
     <Button size='sm' color='link' onClick={handleRetry}>
       <T tag='span' i18nKey='app.hardwareWalletModal.connectionStatus.retryNow'>Retry Now</T> <i className='fa fa-repeat'/>
     </Button>

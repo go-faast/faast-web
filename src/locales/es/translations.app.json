@@ -282,7 +282,7 @@
         }
       },
       "connectionStatus": {
-        "unable": "No se ha podido conectar, se intentará de nuevo en <1><2></2></1> segundos",
+        "unable": "No se ha podido conectar, se intentará de nuevo en <1><2>{{retrySeconds}}</2></1> segundos",
         "retryNow": "Reintentar ahora",
         "retry": "Reintentar"
       },
@@ -325,7 +325,7 @@
     },
     "ledgerInstructions": {
       "pleaseConfirm": "Por favor, confirme la transacción en su dispositivo. Debería poder ver la información a continuación en la pantalla.",
-      "tip": "<0>Consejo: si no ve la transacción en su dispositivo, asegúrese de que lo ha desbloqueado usando su pin y que ha abierto la aplicación <2></2>.</0>",
+      "tip": "<0>Consejo: si no ve la transacción en su dispositivo, asegúrese de que lo ha desbloqueado usando su pin y que ha abierto la aplicación <2>{{appName}}</2>.</0>",
       "confirmWithin": "Por favor, confirme antes de:"
     },
     "metaMaskInstructions": {
