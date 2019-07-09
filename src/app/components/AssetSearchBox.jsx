@@ -17,6 +17,8 @@ import debounceHandler from 'Hoc/debounceHandler'
 import CoinIcon from 'Components/CoinIcon'
 import ReduxFormField from 'Components/ReduxFormField'
 
+import { withTranslation } from 'react-i18next'
+
 const DEBOUNCE_WAIT = 400 // ms
 const MAX_RESULTS = 10
 const FORM_NAME = 'assetSearch'
@@ -69,6 +71,7 @@ const AssetSearch = ({
 
 export default compose(
   setDisplayName('AssetSearchBox'),
+  withTranslation,
   setPropTypes({
     displayResults: PropTypes.func,
     size: PropTypes.string,

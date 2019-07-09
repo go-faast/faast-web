@@ -16,10 +16,12 @@ import ReduxFormField from 'Components/ReduxFormField'
 import HiddenUsernameField from 'Components/HiddenUsernameField'
 import WalletLabel from 'Components/WalletLabel'
 
+import { withTranslation } from 'react-i18next'
 import T from 'Components/i18n/T'
 
 export default compose(
   setDisplayName('WalletPasswordPrompt'),
+  withTranslation,
   connect(createStructuredSelector({
     isOpen: isPasswordPromptOpen,
     walletId: getPasswordPromptWalletId,
@@ -35,7 +37,7 @@ export default compose(
       password: '',
     }
   })
-)(({ isOpen, handleSubmit, handleCancel, submitting, invalid, walletId, username }) => (
+)(({ isOpen, handleSubmit, handleCancel, submitting, invalid, walletId, username, t }) => (
   <Modal isOpen={isOpen} toggle={handleCancel} backdrop='static'>
     {isOpen && (
       <Form onSubmit={handleSubmit}>
@@ -60,7 +62,7 @@ export default compose(
           <ReduxFormField
             name='password'
             type='password'
-            placeholder='Enter password...'
+            placeholder={t('app.walletPasswordPrompt.enterPasswordPlaceholder', 'Enter password...')}
             autoFocus
             autoComplete='current-password'
           />

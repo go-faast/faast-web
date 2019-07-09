@@ -8,6 +8,7 @@ import { downloadJson } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import { openWallet } from 'Actions/access'
 import { EthereumWalletKeystore } from 'Services/Wallet'
+import { withTranslation } from 'react-i18next'
 
 const initialState = {
   view: 'create',
@@ -18,8 +19,8 @@ const initialState = {
 }
 
 class CreateWalletModal extends Component {
-  constructor () {
-    super()
+  constructor (props) {
+    super(props)
     this.generateKeystore = this.generateKeystore.bind(this)
     this.state = {
       ...initialState,
@@ -42,18 +43,17 @@ class CreateWalletModal extends Component {
   getWalletName = () => this.props.isNewWallet ? 'wallet' : 'keystore'
 
   validatePassword = (password) => {
-    const walletName = this.getWalletName()
     if (!password) {
-      return 'Password is required'
+      return this.props.t('app.createWalletModal.passwordRequired', 'Password is required')
     }
     if (password.length < 8) {
-      return `Please at least 8 characters. It is important to secure your ${walletName} with a strong password.`
+      return this.props.t('app.createWalletModal.passwordLength', 'Please at least 8 characters. It is important to secure your wallet with a strong password.')
     }
   }
 
   validatePasswordConfirm = (passwordConfirm, { password }) => {
     if (passwordConfirm !== password) {
-      return 'Passwords do not match'
+      return this.props.t('app.createWalletModal.passwordsDontMatch', 'Passwords do not match')
     }
   }
 
@@ -137,6 +137,7 @@ class CreateWalletModal extends Component {
         hasDownloadedFile={hasDownloadedFile}
         walletName={this.getWalletName()}
         walletAddress={createdWallet && createdWallet.getAddress()}
+        t={this.props.t}
       />
     )
   }
@@ -152,4 +153,4 @@ const mapDispatchToProps = {
   routerPush: push,
 }
 
-export default connect(null, mapDispatchToProps)(CreateWalletModal)
+export default withTranslation()(connect(null, mapDispatchToProps)(CreateWalletModal))

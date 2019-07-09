@@ -1,5 +1,8 @@
 {
   "app": {
+    "//view": {
+      "loadingFaast": "Loading Faa.st"
+    },
     "dashboard": {
       "holdingsTitle": "P. Holdings",
       "distribution": "Distribution",
@@ -108,7 +111,13 @@
       "generatingSwap": "Generating Swap...",
       "chooseSend": "Choose Asset to Send",
       "chooseReceive": "Choose Asset to Receive",
-      "noRate": "Unable to retreive rate"
+      "noRate": "Unable to retreive rate",
+      "//sendAmountPlaceholder": "Send amount",
+      "//optionalPlaceholder": " (optional)",
+      "//receiveAmountPlaceholder": "Receive amount",
+      "//returnAddressOptionalPlaceholder": "return address (optional)",
+      "//returnAddressPlaceholder": "return address",
+      "//receiveAddressPlaceholder": "receive address"
     },
     "progressBar": {
       "createSwap": "Create Swap",
@@ -173,7 +182,8 @@
       "atAddress": "at address",
       "date": "Date:",
       "orderId": "Order ID:",
-      "sentTx": "Sent txn:"
+      "sentTx": "Sent txn:",
+      "//last": "Last"
     },
     "searchResults": {
       "view": "View in portfolio",
@@ -224,21 +234,29 @@
       "//continue": "Continue",
       "//importPrivateKey": "Import private key",
       "//enterPrivateKey": "Enter the private key of your existing Ethereum wallet.",
-      "//enterPassword": "Enter a password for your <1></1>. Please make a note of your password. You will not be able to access the funds in your <3></3> without your password.",
+      "//enterPassword": "Enter a password for your <1>{{walletName}}</1>. Please make a note of your password. You will not be able to access the funds in your <3>{{walletName}}</3> without your password.",
       "//passwordLabel": "Password",
-      "//confirmPasswordLabel": "Confirm Password"
+      "//confirmPasswordLabel": "Confirm Password",
+      "//passwordRequired": "Password is required",
+      "//passwordLength": "Please at least 8 characters. It is important to secure your wallet with a strong password.",
+      "//passwordsDontMatch": "Passwords do not match",
+      "//enterPasswordPlaceholder": "Enter a password...",
+      "//confirmPasswordPlaceholder": "Enter the password again...",
+      "//enterPrivateKeyPlaceholder": "Enter your private key..."
     },
     "//walletPasswordPrompt": {
       "walletPassword": "Wallet Password",
       "enterYourPassword": "In order to continue, please enter your password for the following wallet",
       "cancel": "Cancel",
-      "continue": "Continue"
+      "continue": "Continue",
+      "enterPasswordPlaceholder": "Enter password..."
     },
     "assetSelector": {
       "comingSoon": "coming soon",
       "alreadyAdded": "already added",
       "unavailable": "unavailable in your location",
-      "unsupported": "unsupported wallet"
+      "unsupported": "unsupported wallet",
+      "//searchByName": "Search by name or symbol..."
     },
     "addressModal": {
       "address": "Address",
@@ -308,7 +326,8 @@
         "retry": "Retry"
       },
       "derivationPath": {
-        "change": "Change derivation path"
+        "change": "Change derivation path",
+        "//derivationPathPlaceholder": "Derivation path"
       },
       "index": {
         "adding": "Adding"

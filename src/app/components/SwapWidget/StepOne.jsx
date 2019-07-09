@@ -35,6 +35,7 @@ import AssetSelector from 'Components/AssetSelector'
 import ProgressBar from 'Components/ProgressBar'
 import WalletSelectField from 'Components/WalletSelectField'
 import T from 'Components/i18n/T'
+import { withTranslation } from 'react-i18next'
 import Units from 'Components/Units'
 import { toChecksumAddress } from 'Utilities/convert'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
@@ -70,7 +71,7 @@ const SwapStepOne = ({
   onChangeSendAmount, handleSelectFullBalance, fullBalanceAmount, fullBalanceAmountLoaded,
   sendWallet, maxGeoBuy, handleSelectGeoMax, receiveAsset, ethReceiveBalanceAmount,
   onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs = {},
-  onChangeRefundAddress, onChangeReceiveAddress, rateError, sendAsset
+  onChangeRefundAddress, onChangeReceiveAddress, rateError, sendAsset, t
 }) => (
   <Fragment>
     <ProgressBar steps={[
@@ -102,7 +103,7 @@ const SwapStepOne = ({
                   name='sendAmount'
                   type='number'
                   step='any'
-                  placeholder={`Send amount${sendWallet ? '' : ' (optional)'}`}
+                  placeholder={`${t('app.widget.sendAmountPlaceholder', 'Send amount')}${sendWallet ? '' : t('app.widget.optionalPlaceholder', ' (optional)')}`}
                   validate={validateSendAmount}
                   label={'You send'}
                   onChange={onChangeSendAmount}
@@ -144,7 +145,7 @@ const SwapStepOne = ({
                   name='receiveAmount'
                   type='number'
                   step='any'
-                  placeholder='Receive amount'
+                  placeholder={t('app.widget.receiveAmountPlaceholder', 'Receive amount')}
                   validate={validateReceiveAmount}
                   label={'You receive'}
                   onChange={onChangeReceiveAmount}
@@ -172,7 +173,7 @@ const SwapStepOne = ({
                   tag={StepOneField}
                   addressFieldName='refundAddress'
                   walletIdFieldName='sendWalletId'
-                  placeholder={sendSymbol !== 'XMR' ? `${sendSymbol} return address (optional)` : `${sendSymbol} return address`}
+                  placeholder={sendSymbol !== 'XMR' ? `${sendSymbol} ${t('app.widget.returnAddressOptionalPlaceholder', 'return address (optional)')}` : `${sendSymbol} ${t('app.widget.returnAddressPlaceholder','return address')}`}
                   label='From wallet'
                   labelClass='mt-3 mt-sm-0 mt-lg-3'
                   validate={validateRefundAddress}
@@ -192,7 +193,7 @@ const SwapStepOne = ({
                   tag={StepOneField}
                   addressFieldName='receiveAddress'
                   walletIdFieldName='receiveWalletId'
-                  placeholder={`${receiveSymbol} receive address`}
+                  placeholder={`${receiveSymbol} ${t('app.widget.receiveAddressPlaceholder', 'receive address')}`}
                   label='To wallet'
                   labelClass='mt-3 mt-sm-0 mt-lg-3'
                   validate={validateReceiveAddress}
@@ -263,6 +264,7 @@ const SwapStepOne = ({
 
 export default compose(
   setDisplayName('SwapStepOne'),
+  withTranslation,
   setPropTypes({
     sendSymbol: PropTypes.string, 
     receiveSymbol: PropTypes.string,

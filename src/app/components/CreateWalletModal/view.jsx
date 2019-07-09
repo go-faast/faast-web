@@ -75,13 +75,13 @@ CreateWalletModalView.propTypes = {
 
 let CreatePasswordForm = ({
   walletName, walletAddress, handleSubmit, handleCancel, submitting,
-  invalid, validatePassword, validatePasswordConfirm
+  invalid, validatePassword, validatePasswordConfirm, t
 }) => (
   <Form onSubmit={handleSubmit}>
     <ModalBody className='text-left'>
       <div className='mb-3'>
         <T tag='span' i18nKey='app.createWalletModal.enterPassword'>
-          Enter a password for your {walletName}. Please make a note of your password. You will not be able to access the funds in your {walletName} without your password.
+          Enter a password for your {{ walletName }}. Please make a note of your password. You will not be able to access the funds in your {{ walletName }} without your password.
         </T>
       </div>
 
@@ -94,7 +94,7 @@ let CreatePasswordForm = ({
         name='password'
         type='password'
         label={<T tag='span' i18nKey='app.createWalletModal.passwordLabel'>Password</T>}
-        placeholder='Enter a password...'
+        placeholder={t('app.createWalletModal.enterPasswordPlaceholder', 'Enter a password...')}
         autoFocus
         autoComplete='new-password'
         validate={validatePassword}
@@ -108,7 +108,7 @@ let CreatePasswordForm = ({
         name='passwordConfirm'
         type='password'
         label={<T tag='span' i18nKey='app.createWalletModal.confirmPasswordLabel'>Confirm Password</T>}
-        placeholder='Enter the password again...'
+        placeholder={t('app.createWalletModal.confirmPasswordPlaceholder', 'Enter the password again...')}
         autoComplete='new-password'
         validate={validatePasswordConfirm}
         labelProps={{ xs: '12', md: '4' }}
@@ -136,7 +136,7 @@ CreatePasswordForm = reduxForm({
 })(CreatePasswordForm)
 
 let ImportWalletForm = ({
-  invalid, handleSubmit, handleCancel
+  invalid, handleSubmit, handleCancel, t
 }) => (
   <Form onSubmit={handleSubmit}>
     <ModalBody>
@@ -148,7 +148,7 @@ let ImportWalletForm = ({
             tag={Field}
             name='privateKey'
             component='textarea'
-            placeholder='Enter your private key...'
+            placeholder={t('app.createWalletModal.enterPrivateKeyPlaceholder', 'Enter your private key...')}
             autoComplete='off'
           />
         </FormGroup>

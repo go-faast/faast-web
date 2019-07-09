@@ -10,6 +10,7 @@ import { getDerivationPath } from 'Selectors/connectHardwareWallet'
 
 import ReduxFormField from 'Components/ReduxFormField'
 import T from 'Components/i18n/T'
+import { withTranslation } from 'react-i18next'
 
 const validateDerivationPath = (path) => {
   if (!(typeof path === 'string'
@@ -20,12 +21,12 @@ const validateDerivationPath = (path) => {
 
 const DerivationPathForm = reduxForm({
   form: 'derivationPathChanger'
-})(({ handleSubmit }) => (
+})(({ handleSubmit, t }) => (
   <Form onSubmit={handleSubmit}>
     <ReduxFormField
       name='derivationPath'
       label='Derivation path'
-      placeholder='Derivation path'
+      placeholder={t('app.derivationPath.derivationPathPlaceholder', 'Derivation path')}
       type='text'
       bsSize='md'
       autoCorrect='false'
@@ -43,6 +44,7 @@ const DerivationPathForm = reduxForm({
 
 export default compose(
   setDisplayName('DerivationPathChanger'),
+  withTranslation,
   connect(createStructuredSelector({
     derivationPath: getDerivationPath
   }), {
@@ -61,8 +63,9 @@ export default compose(
       }
     }
   })
-)(({ derivationPath, showForm, toggleShowForm, handleSubmit }) => showForm
+)(({ derivationPath, showForm, toggleShowForm, handleSubmit, t }) => showForm
   ? (<DerivationPathForm
+    t={t}
     onSubmit={handleSubmit}
     initialValues={{ derivationPath }}/>)
   : (<Button color='dark' className='mx-auto' onClick={toggleShowForm}>
