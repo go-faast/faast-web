@@ -21,7 +21,7 @@ import T from 'Components/i18n/T'
 
 export default compose(
   setDisplayName('WalletPasswordPrompt'),
-  withTranslation,
+  withTranslation(),
   connect(createStructuredSelector({
     isOpen: isPasswordPromptOpen,
     walletId: getPasswordPromptWalletId,

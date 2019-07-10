@@ -3,6 +3,9 @@
     "//view": {
       "loadingFaast": "Loading Faa.st"
     },
+    "//addressSearchForm": {
+      "placeholder": "Search by address..."
+    },
     "dashboard": {
       "holdingsTitle": "P. Holdings",
       "distribution": "Distribution",
@@ -54,7 +57,12 @@
     },
     "trending": {
       "tradeable": "Show only tradeable assets",
-      "trending": "Trending"
+      "trending": "Trending",
+      "//biggestGainers": "Biggest Gainers",
+      "//biggestLosers": "Biggest Losers"
+    },
+    "//watchlist": {
+      "tableHeading": "Watchlist"
     },
     "orders": {
       "orderHistory": "Order History",
@@ -67,7 +75,8 @@
       "noOpen": "No open orders right now",
       "noPrevious": "No previous orders to show",
       "openOrdersTitle": "Open Orders",
-      "previousOrdersTitle": "Previous Orders"
+      "previousOrdersTitle": "Previous Orders",
+      "//rate": "Rate"
     },
     "sidebar": {
       "watchlist": "<0>Watchlist</0>",
@@ -96,7 +105,8 @@
       "instructions5": " to add a new asset.<1/><2>(Note: To increase weight, you must have decreased weight of another asset)</2>",
       "instructions6": "Click",
       "instructions7": "when finished to review changes.",
-      "//addAssetSelector": "Add Asset"
+      "//addAssetSelector": "Add Asset",
+      "//readOnly": "This wallet is read-only. You need to <1><2>connect your wallet</2></1> in order to trade assets."
     },
     "widget": {
       "swapInstantly": "Swap Instantly",
@@ -117,7 +127,15 @@
       "//receiveAmountPlaceholder": "Receive amount",
       "//returnAddressOptionalPlaceholder": "return address (optional)",
       "//returnAddressPlaceholder": "return address",
-      "//receiveAddressPlaceholder": "receive address"
+      "//receiveAddressPlaceholder": "receive address",
+      "//pleaseNote": "Please note: The maximum you can swap is ",
+      "//dueToLocation": "<0> due to your location.</0>",
+      "//youReceive": "You receive",
+      "//fromWallet": "From wallet",
+      "//toWallet": "To wallet",
+      "//youSend": "You send",
+      "//notEnoughEth": "This wallet does not have enough ETH to cover the gas fees. Please deposit some ETH and try again.",
+      "invalidReceiveAddress": "Invalidddd <1></1> address"
     },
     "progressBar": {
       "createSwap": "Create Swap",
@@ -278,7 +296,11 @@
       "minimumAmount": "Minimum deposit:",
       "receiveAmount": "Receive amount:",
       "fixedPrice": "* Quoted rate is an estimate based on current market conditions. Actual rate may vary.",
-      "quotedRate": "* Quoted rate is guaranteed if deposit is sent within:"
+      "quotedRate": "* Quoted rate is guaranteed if deposit is sent within:",
+      "//orderDetails": "ORDER DETAILS",
+      "//send": "Send",
+      "//atLeast": "at least",
+      "//toAddress" : "to address:"
     },
     "hardwareWalletModal": {
       "accountSelect": {
@@ -327,7 +349,8 @@
       },
       "derivationPath": {
         "change": "Change derivation path",
-        "//derivationPathPlaceholder": "Derivation path"
+        "//derivationPathPlaceholder": "Derivation path",
+        "//invalidError": "Invalid derivation path"
       },
       "index": {
         "adding": "Adding"

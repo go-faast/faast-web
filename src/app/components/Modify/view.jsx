@@ -56,7 +56,9 @@ const ModifyView = (props) => {
             </CardHeader>
             {isReadOnly ? (
               <Alert color='info' className='m-0 text-center'>
+                <T tag='span' i18nKey='app.rebalance.readOnly'>
                 This wallet is read-only. You need to <Link to='/connect' className='alert-link'><u>connect your wallet</u></Link> in order to trade assets.
+                </T>
               </Alert>
             ) : (
               <ListGroup>

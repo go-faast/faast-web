@@ -84,7 +84,14 @@ const SwapStepOne = ({
     {maxGeoBuy && (
       <Alert color='info' className='mx-auto mt-3 w-75 text-center'>
         <small>
-      Please note: The maximum you can swap is <Button style={{ color: 'rgba(0, 255, 222, 1)' }} color='link-plain' onClick={handleSelectGeoMax}><Units precision={sendAsset.decimals} roundingType='dp' value={maxGeoBuy}/></Button> {sendSymbol} <a style={{ color: 'rgba(0, 255, 222, 1)' }} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>due to your location.</a>
+          <T tag='span' i18nKey='app.widget.pleaseNote'>Please note: The maximum you can swap is </T> 
+          <Button style={{ color: 'rgba(0, 255, 222, 1)' }} color='link-plain' onClick={handleSelectGeoMax}>
+            <Units precision={sendAsset.decimals} roundingType='dp' value={maxGeoBuy} />
+          </Button> {sendSymbol} <T tag='span' i18nKey='app.widget.dueToLocation'>
+            <a style={{ color: 'rgba(0, 255, 222, 1)' }} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>
+              due to your location.
+            </a>
+          </T>
         </small>
       </Alert>
     )}
@@ -105,7 +112,7 @@ const SwapStepOne = ({
                   step='any'
                   placeholder={`${t('app.widget.sendAmountPlaceholder', 'Send amount')}${sendWallet ? '' : t('app.widget.optionalPlaceholder', ' (optional)')}`}
                   validate={validateSendAmount}
-                  label={'You send'}
+                  label={t('app.widget.youSend','You send')}
                   onChange={onChangeSendAmount}
                   inputClass={classNames({ 'font-italic': estimatedField === 'send' })}
                   addonAppend={({ invalid }) => (
@@ -147,7 +154,7 @@ const SwapStepOne = ({
                   step='any'
                   placeholder={t('app.widget.receiveAmountPlaceholder', 'Receive amount')}
                   validate={validateReceiveAmount}
-                  label={'You receive'}
+                  label={t('app.widget.youReceive', 'You receive')}
                   onChange={onChangeReceiveAmount}
                   inputClass={classNames({ 'font-italic': estimatedField === 'receive' })}
                   addonAppend={({ invalid }) => (
@@ -174,7 +181,7 @@ const SwapStepOne = ({
                   addressFieldName='refundAddress'
                   walletIdFieldName='sendWalletId'
                   placeholder={sendSymbol !== 'XMR' ? `${sendSymbol} ${t('app.widget.returnAddressOptionalPlaceholder', 'return address (optional)')}` : `${sendSymbol} ${t('app.widget.returnAddressPlaceholder','return address')}`}
-                  label='From wallet'
+                  label={t('app.widget.fromWallet', 'From wallet')}
                   labelClass='mt-3 mt-sm-0 mt-lg-3'
                   validate={validateRefundAddress}
                   symbol={sendSymbol}
@@ -194,7 +201,7 @@ const SwapStepOne = ({
                   addressFieldName='receiveAddress'
                   walletIdFieldName='receiveWalletId'
                   placeholder={`${receiveSymbol} ${t('app.widget.receiveAddressPlaceholder', 'receive address')}`}
-                  label='To wallet'
+                  label={t('app.widget.toWallet', 'To wallet')}
                   labelClass='mt-3 mt-sm-0 mt-lg-3'
                   validate={validateReceiveAddress}
                   symbol={receiveSymbol}
@@ -264,7 +271,7 @@ const SwapStepOne = ({
 
 export default compose(
   setDisplayName('SwapStepOne'),
-  withTranslation,
+  withTranslation(),
   setPropTypes({
     sendSymbol: PropTypes.string, 
     receiveSymbol: PropTypes.string,
@@ -350,7 +357,7 @@ export default compose(
     onSubmit: ({
       sendSymbol, receiveAsset, sendAsset,
       createSwap, openViewOnly, push, estimatedField,
-      ethSendBalanceAmount,
+      ethSendBalanceAmount, t
     }) => async (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
       let { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId, receiveAmount } = values
@@ -362,7 +369,7 @@ export default compose(
       }
       if (sendAsset.ERC20 && parseFloat(ethSendBalanceAmount) === 0) {
         throw new SubmissionError({
-          refundAddress: 'This wallet does not have enough ETH to cover the gas fees. Please deposit some ETH and try again.',
+          refundAddress: t('app.widget.notEnoughEth', 'This wallet does not have enough ETH to cover the gas fees. Please deposit some ETH and try again.'),
         })
       }
       try {

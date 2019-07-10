@@ -71,7 +71,7 @@ const AssetSearch = ({
 
 export default compose(
   setDisplayName('AssetSearchBox'),
-  withTranslation,
+  withTranslation(),
   setPropTypes({
     displayResults: PropTypes.func,
     size: PropTypes.string,
