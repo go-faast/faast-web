@@ -1,6 +1,6 @@
 import config from 'Config'
 import log from 'Utilities/log'
-import Ledger from 'Services/Ledger'
+import Ledger from 'Src/services/Wallet/Ledger'
 import networks from 'Utilities/networks'
 
 import LitecoinWallet from './LitecoinWallet'

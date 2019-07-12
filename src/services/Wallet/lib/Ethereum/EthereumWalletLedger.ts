@@ -1,10 +1,10 @@
-import RLP from 'rlp'
+import * as RLP from 'rlp'
 import EthereumjsTx from 'ethereumjs-tx'
 
 import config from 'Config'
 import log from 'Utilities/log'
 import { addHexPrefix } from 'Utilities/helpers'
-import Ledger from 'Services/Ledger'
+import Ledger from 'Src/services/Wallet/Ledger'
 
 import EthereumWallet from './EthereumWallet'
 import { EthTransaction } from './types'
@@ -16,6 +16,12 @@ const createAccountGetter = (baseDerivationPath: string) => (index: number) => {
   return Ledger.eth.getAddress(fullDerivationPath)
     .then(({ address }) => new EthereumWalletLedger(address, fullDerivationPath))
 }
+
+const getVersion = () => Ledger.eth.getAppConfiguration()
+.then((data) => {
+  log.info(`Ledger ETH connected, version ${data.version}`, data)
+  return data
+})
 
 export default class EthereumWalletLedger extends EthereumWallet {
 
@@ -33,11 +39,8 @@ export default class EthereumWalletLedger extends EthereumWallet {
   getTypeLabel() { return typeLabel }
 
   static connect = (derivationPath: string) => {
-    return Ledger.eth.getAppConfiguration()
-      .then((data) => {
-        log.info(`Ledger connected, version ${data.version}`, data)
-        return createAccountGetter(derivationPath)
-      })
+    return getVersion()
+      .then(() => createAccountGetter(derivationPath))
       .then((getAccount) => getAccount(0)
         .then(() => ({
           derivationPath,
@@ -46,15 +49,18 @@ export default class EthereumWalletLedger extends EthereumWallet {
   }
 
   _signTx(tx: EthTransaction): Promise<Partial<EthTransaction>> {
-    return Promise.resolve().then(() => {
+    return getVersion().then((versionData) => {
+      if (versionData.arbitraryDataEnabled === 0) {
+        throw new Error('Please enable "Contract data" in your Ledger Ethereum app settings and try again')
+      }
       const { txData } = tx
-      let ethJsTx
-      ethJsTx = new EthereumjsTx(txData)
+      const ethJsTx = new EthereumjsTx(txData)
       ethJsTx.raw[6] = Buffer.from([txData.chainId])
       ethJsTx.raw[7] = 0
       ethJsTx.raw[8] = 0
 
-      return Ledger.eth.signTransaction(this.derivationPath, RLP.encode(ethJsTx.raw))
+      return Ledger.eth.setERC20ContractAddress(tx.txData.to)
+        .then(() => Ledger.eth.signTransaction(this.derivationPath, RLP.encode(ethJsTx.raw).toString('hex')))
         .then((result) => {
           log.debug('ledger wallet signed tx', result)
           return {

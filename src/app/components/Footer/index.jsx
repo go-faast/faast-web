@@ -4,19 +4,25 @@ import { Link } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap'
 import PropTypes from 'prop-types'
 import { name as appName, version as appVersion, homepage as githubLink } from 'Pkg'
+import { connect } from 'react-redux'
+
+import { doToggleFeedbackForm } from 'Actions/app'
 
 import T from 'Components/i18n/T'
 import LangLink from 'Components/LangLink'
 
 export default compose(
   setDisplayName('Footer'),
+  connect(null, {
+    toggleFeedbackForm: doToggleFeedbackForm
+  }),
   setPropTypes({
     footerClass: PropTypes.string
   }),
   defaultProps({
     footerClass: ''
   }),
-)(({ footerClass }) => (
+)(({ footerClass, toggleFeedbackForm }) => (
   <div style={{ opacity: .6 }} className='pb-2'>
     <footer>
       <Container className={footerClass}>
@@ -32,7 +38,7 @@ export default compose(
               </li>
               <li className='list-inline-item'>
                 <small>
-                  <Link className='text-muted' to='/feedback'>
+                  <Link tag='span' className='text-muted' to='.' onClick={toggleFeedbackForm}>
                     <T tag='span' i18nKey='app.footer.feedback'>Provide Feedback</T>
                   </Link>
                 </small>

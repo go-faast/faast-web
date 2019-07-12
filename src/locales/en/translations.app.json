@@ -399,7 +399,7 @@
         }
       },
       "connectionStatus": {
-        "unable": "Unable to connect, trying again in <1><2></2></1> seconds",
+        "unable": "Unable to connect, trying again in <1><2>{{retrySeconds}}</2></1> seconds",
         "retryNow": "Retry Now",
         "retry": "Retry",
         "//connecting": "connecting",
@@ -449,7 +449,7 @@
     },
     "ledgerInstructions": {
       "pleaseConfirm": "Please confirm the transaction on your device. You should see the following information on screen.",
-      "tip": "<0>Tip: If you don't see the transaction on your device, ensure you've unlocked it using your PIN and have opened the <2></2> app.</0>",
+      "tip": "<0>Tip: If you don't see the transaction on your device, ensure you've unlocked it using your PIN and have opened the <2>{{appName}}</2> app.</0>",
       "confirmWithin": "Please confirm within:"
     },
     "metaMaskInstructions": {

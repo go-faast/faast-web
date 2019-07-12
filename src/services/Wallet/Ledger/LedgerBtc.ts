@@ -1,64 +1,24 @@
-/**
- * Exports an interface for interacting with Ledger hardware wallets. Example usage:
- * import Ledger from 'Services/Ledger'
- * Ledger.eth.getAddress("m/44'/0'/0'/0")
- */
-
-import Transport from '@ledgerhq/hw-transport-u2f'
-import AppEth from '@ledgerhq/hw-app-eth'
-import AppBtc from '@ledgerhq/hw-app-btc'
 import HDKey from 'hdkey'
+import AppBtc, { Transaction } from '@ledgerhq/hw-app-btc'
 import { NetworkConfig } from 'Utilities/networks'
 import { convertHdKeyPrefixForPath, getHdKeyPrefix, joinDerivationPath } from 'Utilities/bitcoin'
 import { HdAccount } from 'Types'
-import log from 'Log'
 import { getBitcore, PaymentTx, UtxoInfo } from 'Services/Bitcore'
+import log from 'Log'
+import { proxy } from './util'
 
-const EXCHANGE_TIMEOUT = 120000 // ms user has to approve/deny transaction
+type CreatePaymentTxParams = Parameters<AppBtc['createPaymentTransactionNew']>
 
-type AppType = AppEth | AppBtc
+export default class LedgerBtc {
 
-function createApp(appType: any): Promise<AppType> {
-  return Transport.create().then((transport: Transport) => {
-    transport.setExchangeTimeout(EXCHANGE_TIMEOUT)
-    transport.setDebugMode(false)
-    return new appType(transport)
-  })
-}
-
-function proxy(appType: any, methodName: string) {
-  return (...args: any[]) => createApp(appType).then((app) => {
-    const fn = app[methodName]
-    if (typeof fn !== 'function') {
-      throw new Error(`Function ${methodName} is not a method of ledger ${appType.constructor.name} app`)
-    }
-    return fn.call(app, ...args)
-  })
-}
-
-const proxiedBtcMethods = [
-  'getWalletPublicKey',
-  'signMessageNew',
-  'createPaymentTransactionNew',
-  'signP2SHTransaction',
-  'splitTransaction',
-  'serializeTransactionOutputs',
-  'serializeTransaction',
-  'displayTransactionDebug',
-]
-
-class LedgerBtc {
-
-  getWalletPublicKey: (derivationPath: string) => Promise<{
-    publicKey: string,
-    chainCode: string,
-  }>
-
-  [key: string]: (...args: any[]) => any
-
-  constructor() {
-    proxiedBtcMethods.forEach((methodName) => this[methodName] = proxy(AppBtc, methodName))
-  }
+  getWalletPublicKey = proxy(AppBtc, 'getWalletPublicKey')
+  signMessageNew = proxy(AppBtc, 'signMessageNew')
+  createPaymentTransactionNew = proxy(AppBtc, 'createPaymentTransactionNew')
+  signP2SHTransaction = proxy(AppBtc, 'signP2SHTransaction')
+  splitTransaction = proxy(AppBtc, 'splitTransaction')
+  serializeTransactionOutputs = proxy(AppBtc, 'serializeTransactionOutputs')
+  serializeTransaction = proxy(AppBtc, 'serializeTransaction')
+  displayTransactionDebug = proxy(AppBtc, 'displayTransactionDebug')
 
   getHdAccount(network: NetworkConfig, derivationPath: string): Promise<HdAccount> {
     return this.getWalletPublicKey(derivationPath)
@@ -93,14 +53,14 @@ class LedgerBtc {
             ...utxo,
             splitTx,
           }))))
-        .then((inputUtxos: Array<UtxoInfo & { splitTx: object }>) => {
+        .then((inputUtxos: Array<UtxoInfo & { splitTx: Transaction }>) => {
           log.debug('inputUtxos', inputUtxos)
 
           const { changePath, outputScript, isSegwit } = txData
-          const inputs: Array<[object, number]> = []
+          const inputs: CreatePaymentTxParams[0] = []
           const paths: string[] = []
           inputUtxos.forEach((utxo) => {
-            inputs.push([utxo.splitTx, utxo.index])
+            inputs.push([utxo.splitTx, utxo.index, undefined, undefined])
             paths.push(joinDerivationPath(derivationPath, utxo.addressPath))
           })
 
@@ -114,7 +74,7 @@ class LedgerBtc {
           } else if (network.symbol === 'BTG') {
             additionals.push('gold')
           }
-          return this.createPaymentTransactionNew(...log.debugInline('createPaymentTransactionNew', [
+          const args: CreatePaymentTxParams = [
             inputs,
             paths,
             changePathString,
@@ -125,21 +85,13 @@ class LedgerBtc {
             undefined, // initialTimestamp
             additionals,
             undefined, // expiryHeight
-          ]))
+          ]
+          log.debug('createPaymentTransactionNew', args)
+          return this.createPaymentTransactionNew(...args)
         })
         .then((signedTxHex) => ({
           signedTxData: signedTxHex,
         }))
     })
   }
-}
-
-export default {
-  eth: {
-    getAddress: proxy(AppEth, 'getAddress'),
-    signTransaction: proxy(AppEth, 'signTransaction'),
-    getAppConfiguration: proxy(AppEth, 'getAppConfiguration'),
-    signPersonalMessage: proxy(AppEth, 'signPersonalMessage'),
-  },
-  btc: new LedgerBtc(),
 }

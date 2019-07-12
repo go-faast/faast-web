@@ -19,12 +19,16 @@ const getAffiliateSettings = () => {
   }
 }
 
-export const postFeedback = (type: string, answer: string, email: string) => {
+export const postFeedback = (type: string, answer: string, email: string,
+                             asset: string, assetInfo: string, hash: string ) => {
   // tslint:disable-next-line:max-line-length
   return fetchGet('https://docs.google.com/forms/d/e/1FAIpQLSc5j0rBhIfuPvsbzeEQiwUM2G1J2NvfA_ApcrVy5UqcQDlThA/formResponse', {
     'entry.101588574': email,
     'entry.1830217432': type,
     'entry.324271904': answer,
+    'entry.63341380': asset,
+    'entry.2126867763': assetInfo,
+    'entry.343219407': hash,
   }, {
     headers: {
       accept: 'application/json',
