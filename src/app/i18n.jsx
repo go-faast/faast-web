@@ -10,11 +10,7 @@ import * as ja from 'Src/locales/ja/translations.app.json'
 import * as ru from 'Src/locales/ru/translations.app.json'
 import * as zh from 'Src/locales/zh/translations.app.json'
 
-import config from '../config'
-
 const options = {
-  ...config.i18next,
-
   ns: ['translations'],
   defaultNS: 'translations',
 
@@ -26,7 +22,7 @@ const options = {
     zh: { translations: zh }
   },
 
-  saveMissing: true,
+  saveMissing: false,
 
   detection: {
     order: ['querystring', 'localStorage', 'navigator', 'htmlTag', 'path', 'subdomain'],
@@ -64,13 +60,6 @@ const options = {
     // expirationTime, so a cached translation will still expire even though the version
     // did not change. You can still set expirationTime far into the future to avoid this.
     versions: {}
-  },
-  
-  parseMissingKeyHandler: function (key) {
-    if (config.isDev) {
-      console.error('Key missing: ', key); // eslint-disable-line
-    }
-    return ''
   },
 }
 

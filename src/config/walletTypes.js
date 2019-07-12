@@ -18,11 +18,15 @@ import coinbaseGraphic from '../../res/img/wallet/coinbaseGraphic.png'
 import trustGraphic from '../../res/img/wallet/trustGraphic.png'
 import statusGraphic from '../../res/img/wallet/statusGraphic.png'
 
+import i18n from 'App/i18n'
+
+const t = i18n.t.bind(i18n)
+
 const switchPathSegwit = {
   primaryPrefix: 'm/49',
   primaryLabel: 'segwit account',
   secondaryPrefix: 'm/44',
-  secondaryLabel: 'legacy (non-segwit) account',
+  secondaryLabel: t('app.walletTypes.nonSegwit', 'legacy (non-segwit) account'),
 }
 
 const commonSupportedAssets = {
@@ -36,7 +40,7 @@ const commonSupportedAssets = {
       primaryPrefix: 'm/44\'/145\'',
       primaryLabel: 'post-fork account',
       secondaryPrefix: 'm/44\'/0\'',
-      secondaryLabel: 'legacy (pre-fork) account',
+      secondaryLabel: t('app.walletTypes.preFork', 'legacy (pre-fork) account'),
     }
   },
   LTC: {
@@ -47,7 +51,7 @@ const commonSupportedAssets = {
 
 export default {
   ledger: {
-    name: 'Ledger Wallet',
+    name: t('app.walletTypes.ledger', 'Ledger Wallet'),
     icon: ledgerLogo,
     website: 'https://www.ledger.com/',
     hardware: true,
@@ -97,7 +101,7 @@ export default {
     howTo: 'https://medium.com/faast/metamask-faast-the-easiest-way-to-diversify-your-cryptocurrency-portfolio-4551ea649439'
   },
   mist: {
-    name: 'Mist Browser',
+    name: t('app.walletTypes.mist', 'Mist Browser'),
     website: 'https://github.com/ethereum/mist',
     icon: mistLogo,
     web3: true,
@@ -115,7 +119,7 @@ export default {
     description: 'Parity Technologies builds core blockchain infrastructure. From Parity Ethereum, the most advanced Ethereum client, to Polkadot, the next-generation interoperable blockchain network.'
   },
   coinbase: {
-    name: 'Coinbase Wallet',
+    name: t('app.walletTypes.coinbase', 'Coinbase Wallet'),
     website: 'https://wallet.coinbase.com/',
     icon: coinbaseLogo,
     web3: true,
@@ -125,7 +129,7 @@ export default {
     howTo: 'https://medium.com/faast/how-to-use-coinbase-wallet-with-faast-and-swap-cryptocurrency-on-your-smartphone-846e8a5f93d1'
   },
   trust: {
-    name: 'Trust Wallet',
+    name: t('app.walletTypes.trust', 'Trust Wallet'),
     website: 'https://trustwalletapp.com/',
     icon: trustLogo,
     web3: true,

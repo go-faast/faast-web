@@ -18,7 +18,7 @@ const DerivationPathForm = reduxForm({
   <Form onSubmit={handleSubmit}>
     <ReduxFormField
       name='derivationPath'
-      label='Derivation path'
+      label={t('app.derivationPath.derivationLabel', 'Derivation path')}
       placeholder={t('app.derivationPath.derivationPathPlaceholder', 'Derivation path')}
       type='text'
       bsSize='md'

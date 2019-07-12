@@ -22,6 +22,10 @@ export const setCurrentWallet = createAction('SET_CURRENT_PORTFOLIO_WALLET', (wa
 export const setCurrentPortfolioAndWallet = createAction('SET_CURRENT_WALLET', (portfolioId, walletId) => ({ portfolioId, walletId }))
 export const portfolioAdded = createAction('PORTFOLIO_ADDED')
 
+import i18n from 'App/i18n'
+
+const t = i18n.t.bind(i18n)
+
 export const removePortfolio = (id) => (dispatch) => Promise.resolve()
   .then(() => {
     if (id === defaultPortfolioId) {
@@ -48,7 +52,7 @@ const createDefaultPortfolio = () => (dispatch, getState) => Promise.resolve()
     const defaultPortfolio = getDefaultPortfolio(getState())
     if (!defaultPortfolio) {
       const wallet = new MultiWallet(defaultPortfolioId)
-      wallet.setLabel('My Portfolio')
+      wallet.setLabel(t('app.portfolio.label', 'My Portfolio'))
       return dispatch(addPortfolio(wallet, false))
     }
   })

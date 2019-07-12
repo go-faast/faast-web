@@ -6,6 +6,60 @@
     "//addressSearchForm": {
       "placeholder": "Search by address..."
     },
+    "//priceChart": {
+      "yAxisLabel": "Price (USD)"
+    },
+    "//pieChart": {
+      "weight": "Weight"
+    },
+    "//feedbackForm": {
+      "faastFeedback": "Faa.st Feedback",
+      "typeOfFeedback": "Type of Feedback",
+      "selectType": "Select type of feedback",
+      "design": "Feedback on design", 
+      "asset": "Request a new asset",
+      "feature": "Feature request",
+      "help": "I need help with a swap",
+      "description": "Feedback Description",
+      "email": "Email For Reply",
+      "contactSupport": "Please contact <1>support@faa.st</1> so we can fix any issues regarding your swap!",
+      "submitFeedback": "Submit Feedback",
+      "pleaseProvide": "Please provide your",
+      "feedbackHere": "feedback here...",
+      "emailPlaceholder": "Email Address (optional)",
+    },
+    "//walletTypes": {
+      "nonSegwit": "legacy (non-segwit) account",
+      "preFork": "legacy (pre-fork) account",
+      "ledger": "Ledger Wallet",
+      "mist": "Mist Browser",
+      "coinbase": "Coinbase Wallet",
+      "trust": "Trust Wallet"
+    },
+    "//portfolio": {
+      "label": "My Portfolio"
+    },
+    "//statuses": {
+      "insufficientFunds": "Insufficient funds",
+      "unsuccessful": "Order was unsuccessful, please contact support@faa.st",
+      "successful": "Order completed successfully",
+      "refunded": "Order Refunded successfully",
+      "fetchingRate": "Fetching market info",
+      "awaitingDeposit": "Waiting for deposit",
+      "generateTx": "Generating deposit transaction",
+      "sendTxError": "Failed to send deposit transaction, please try again",
+      "sending": "Sending deposit transaction",
+      "sent": "Waiting for transaction confirmation",
+      "signingError": "Failed to sign deposit transaction, please try again",
+      "signing": "Awaiting signature",
+      "readyToSend": "Ready to send",
+      "readyToSign": "Ready to sign",
+      "contactSupport": "There may be an issue. Contact support@faa.st for more info.",
+      "processingSwap": "Processing swap",
+      "failedToCheckDepositTx": "Failed to check deposit transaction status",
+      "errorSendingDeposit": "Error sending deposit transaction",
+      "unknownError": "Unknown error"
+    },
     "dashboard": {
       "holdingsTitle": "P. Holdings",
       "distribution": "Distribution",
@@ -145,7 +199,8 @@
     "footer": {
       "website": "Faa.st Website",
       "termsConditions": "Terms & Conditions",
-      "privacy": "Privacy Policy"
+      "privacy": "Privacy Policy",
+      "//feedback": "Provide Feedback"
     },
     "coinDetail": {
       "buy": "Buy",
@@ -307,7 +362,8 @@
         "heading": "Please select the account you'd like to add.",
         "showAccounts": "showing accounts",
         "next": "next",
-        "back": "Back"
+        "back": "Back",
+        "previous:": " previous"
       },
       "assetSelect": {
         "express": "For an express setup click '<1></1>'",
@@ -345,12 +401,17 @@
       "connectionStatus": {
         "unable": "Unable to connect, trying again in <1><2></2></1> seconds",
         "retryNow": "Retry Now",
-        "retry": "Retry"
+        "retry": "Retry",
+        "//connecting": "connecting",
+        "//connected": "connected",
+        "//cancelled": "cancelled",
+        "//error": "error"
       },
       "derivationPath": {
         "change": "Change derivation path",
         "//derivationPathPlaceholder": "Derivation path",
-        "//invalidError": "Invalid derivation path"
+        "//invalidError": "Invalid derivation path",
+        "//derivationLabel": "Derivation path"
       },
       "index": {
         "adding": "Adding"

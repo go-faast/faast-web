@@ -11,6 +11,9 @@ import { retryConnect } from 'Actions/connectHardwareWallet'
 import CoinIcon from 'Components/CoinIcon'
 import T from 'Components/i18n/T'
 
+import i18n from 'App/i18n'
+const t = i18n.t.bind(i18n)
+
 const StatusPending = ({ status, icon }) => (
   <h5>
     <i className={classNames('mb-2 fa fa fa-lg', icon)}/> <span className='blink'>{status.toUpperCase()}</span>
@@ -46,11 +49,13 @@ const statusRenderData = {
     color: 'primary',
     icon: 'fa-cog fa-spin',
     component: StatusPending,
+    label: t('app.hardwareWalletModal.connectionStatus.connecting', 'connecting'),
   },
   connected: {
     color: 'success',
     icon: 'fa-check-circle-o',
     component: StatusSuccess,
+    label: t('app.hardwareWalletModal.connectionStatus.connected', 'connected')
   },
   waiting: {
     color: 'warning',
@@ -61,11 +66,13 @@ const statusRenderData = {
     color: 'warning',
     icon: 'fa-exclamation-circle',
     component: StatusFailed,
+    label: t('app.hardwareWalletModal.connectionStatus.cancelled', 'cancelled')
   },
   error: {
     color: 'danger',
     icon: 'fa-exclamation-triangle',
     component: StatusFailed,
+    label: t('app.hardwareWalletModal.connectionStatus.error', 'error')
   },
 }
 
@@ -83,7 +90,7 @@ export default compose(
   if (!renderData) {
     return null
   }
-  const { color, icon, component: StatusComponent } = renderData
+  const { color, icon, label, component: StatusComponent } = renderData
   return (
     <div className={classNames(className, 'mb-4 text-center')}>
       {asset && (
@@ -93,7 +100,7 @@ export default compose(
         </div>
       )}
       <div className={`my-3 text-${color}`}>
-        {StatusComponent && <StatusComponent status={status} icon={icon} {...props}/>}
+        {StatusComponent && <StatusComponent status={label} icon={icon} {...props}/>}
       </div>
     </div>
   )

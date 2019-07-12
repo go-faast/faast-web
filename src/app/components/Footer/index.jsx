@@ -33,7 +33,7 @@ export default compose(
               <li className='list-inline-item'>
                 <small>
                   <Link className='text-muted' to='/feedback'>
-                  Provide Feedback
+                    <T tag='span' i18nKey='app.footer.feedback'>Provide Feedback</T>
                   </Link>
                 </small>
               </li>

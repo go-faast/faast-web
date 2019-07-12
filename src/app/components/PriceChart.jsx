@@ -8,6 +8,8 @@ import { fetchPriceChartData } from 'Common/actions/priceChart'
 import ReactHighstock from 'react-highcharts/ReactHighstock.src'
 import { themeColor } from 'Utilities/style'
 
+import { withTranslation } from 'react-i18next'
+
 const priceSeriesName = 'Price (USD)'
 
 const PriceChart = ({ config, isPriceChartLoading }) => {
@@ -147,6 +149,7 @@ const initialConfig = {
 
 export default compose(
   setDisplayName('PriceChart'),
+  withTranslation(),
   connect(createStructuredSelector({
     data: (state, { cmcIDno }) => getPriceChartData(state, cmcIDno),
     isPriceChartLoading: (state, { cmcIDno }) => isPriceChartLoading(state, cmcIDno)
@@ -162,7 +165,9 @@ export default compose(
     chartOpen: false,
     toggle: false
   }),
-  withProps(({ data }) => {
+  withProps(({ data, t }) => {
+    const translatedName = t('app.priceChart.yAxisLabel', 'Price (USD)')
+    initialConfig.yAxis.title.text = translatedName
     const config = (data 
       ? {
         ...initialConfig,
