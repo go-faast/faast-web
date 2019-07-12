@@ -375,7 +375,7 @@ export default compose(
       try {
         const receiveValidation = await Faast.validateAddress(receiveAddress, receiveSymbol)
         if (!receiveValidation.valid) {
-          throw `Invalid ${receiveSymbol} address`
+          throw `${t('app.widget.invalid', 'Invalid')} ${receiveSymbol} ${t('app.widget.address', 'address')}`
         } 
         // else if (receiveValidation.valid && receiveAddress !== receiveValidation.standardized) {
         //   throw `Invalid ${receiveSymbol} address format. Here is your address converted to the correct format: ${receiveValidation.standardized}`
@@ -389,7 +389,7 @@ export default compose(
         if (refundAddress) {
           const sendValidation = await Faast.validateAddress(refundAddress, sendSymbol) || {}
           if (!sendValidation.valid) {
-            throw `Invalid ${sendSymbol} address`
+            throw `${t('app.widget.invalid', 'Invalid')} ${sendSymbol} ${t('app.widget.address', 'address')}`
           } 
           // else if (sendValidation.valid && refundAddress !== sendValidation.standardized) {
           //   throw `Invalid ${sendSymbol} address format. Here is your address converted to the correct format: ${sendValidation.standardized}`
@@ -526,20 +526,20 @@ export default compose(
     },
     validateSendAmount: ({ minimumSend, maximumSend, sendAsset,
       sendSymbol, sendWallet, fullBalanceAmount, maxGeoBuy, handleSelectGeoMax, handleSelectMinimum,
-      handleSelectMaximum }) => {
+      handleSelectMaximum, t }) => {
       return (
         validator.all(
           ...(sendWallet ? [validator.required()] : []),
           validator.number(),
-          ...(minimumSend ? [validator.gte(minimumSend, <span key={'minimumSend'}>Send amount must be at least <Button key={'minimumSend1'} color='link-plain' onClick={handleSelectMinimum}>
+          ...(minimumSend ? [validator.gte(minimumSend, <span key={'minimumSend'}>{t('app.widget.sendAmountAtLeast', 'Send amount must be at least')} <Button key={'minimumSend1'} color='link-plain' onClick={handleSelectMinimum}>
             <Units key={'minimumSend2'} precision={sendAsset.decimals} roundingType='dp' value={minimumSend}/>
           </Button> {sendSymbol} </span>)] : []),
-          ...(maxGeoBuy ? [validator.lte(maxGeoBuy, <span key={Math.random()}>Send amount cannot be greater than <Button color='link-plain' onClick={handleSelectGeoMax}>
+          ...(maxGeoBuy ? [validator.lte(maxGeoBuy, <span key={Math.random()}>{t('app.widget.sendAmountGreaterThan', 'Send amount cannot be greater than')} <Button color='link-plain' onClick={handleSelectGeoMax}>
             <Units precision={sendAsset.decimals} roundingType='dp' value={maxGeoBuy}/>
-          </Button> {sendSymbol} <a key={Math.random()} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noopener noreferrer'>due to your location.</a></span>)] : []),
+          </Button> {sendSymbol} <a key={Math.random()} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noopener noreferrer'>{t('app.widget.dueToYourLocation', 'due to your location.')}</a></span>)] : []),
           ...(sendWallet ? [validator.lte(fullBalanceAmount, 'Cannot send more than you have.')] : []),
-          ...(maximumSend ? [validator.lte(maximumSend, <span key={'maxSend'}>Send amount cannot be greater than <Button key={'maxSend1'} color='link-plain' onClick={handleSelectMaximum}>
-            <Units key={'maxSend2'} precision={sendAsset.decimals} roundingType='dp' value={maximumSend}/></Button> to ensure efficient pricing.</span>)] : []),
+          ...(maximumSend ? [validator.lte(maximumSend, <span key={'maxSend'}>{t('app.widget.sendAmountGreaterThan', 'Send amount cannot be greater than')} <Button key={'maxSend1'} color='link-plain' onClick={handleSelectMaximum}>
+            <Units key={'maxSend2'} precision={sendAsset.decimals} roundingType='dp' value={maximumSend}/></Button> {t('app.widget.ensurePricing', 'to ensure efficient pricing.')}</span>)] : []),
         )
       )
     },

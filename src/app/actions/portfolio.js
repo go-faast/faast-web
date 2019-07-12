@@ -11,6 +11,8 @@ import {
 import { retrieveAssets } from 'Common/actions/asset'
 import { getDefaultPortfolio } from 'Selectors'
 
+import { i18nTranslate as t } from 'Utilities/translate'
+
 const createAction = newScopedCreateAction(__filename)
 
 const { defaultPortfolioId } = config
@@ -21,10 +23,6 @@ export const setCurrentPortfolio = createAction('SET_CURRENT_PORTFOLIO', (portfo
 export const setCurrentWallet = createAction('SET_CURRENT_PORTFOLIO_WALLET', (walletId) => ({ walletId }))
 export const setCurrentPortfolioAndWallet = createAction('SET_CURRENT_WALLET', (portfolioId, walletId) => ({ portfolioId, walletId }))
 export const portfolioAdded = createAction('PORTFOLIO_ADDED')
-
-import i18n from 'App/i18n'
-
-const t = i18n.t.bind(i18n)
 
 export const removePortfolio = (id) => (dispatch) => Promise.resolve()
   .then(() => {

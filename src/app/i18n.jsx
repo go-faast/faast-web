@@ -4,11 +4,11 @@ import Cache from 'i18next-localstorage-cache'
 import XHR from 'i18next-xhr-backend'
 import { initReactI18next } from 'react-i18next'
 
-import * as en from 'Src/locales/en/translations.app.json'
-import * as es from 'Src/locales/es/translations.app.json'
-import * as ja from 'Src/locales/ja/translations.app.json'
-import * as ru from 'Src/locales/ru/translations.app.json'
-import * as zh from 'Src/locales/zh/translations.app.json'
+import * as en from '../locales/en/translations.app.json'
+import * as es from '../locales/es/translations.app.json'
+import * as ja from '../locales/ja/translations.app.json'
+import * as ru from '../locales/ru/translations.app.json'
+import * as zh from '../locales/zh/translations.app.json'
 
 const options = {
   ns: ['translations'],

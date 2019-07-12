@@ -5,13 +5,10 @@
       "notification": "Read about the Faa.st Market Maker Beta",
       "button": "Connect Your Wallet",
       "headline": {
-        "instantly": "Instantly",
-        "trade": "trade directly from your Ledger, Trezor, or MetaMask."
+        "//goxxed": "Don’t Get Goxxed. Own Your Crypto."
       },
       "subtitle": {
-        "the": "The",
-        "safest": "safest",
-        "way": "way to to build a diversified cryptocurrency portfolio"
+        "//notYourKeys": "If it’s not your keys, it’s not your crypto. Trade safely from your own wallet with Faa.st"
       }
     },
     "header": {
@@ -30,6 +27,8 @@
       "chooseReceive": "Choose asset to receive"
     },
     "features": {
+      "//comprehensiveTable": "For a comprensive table of supported coins",
+      "//clickHere": "click here.",
       "instantlyBuild": "Instantly build a cryptocurrency portfolio",
       "safeSecure": "Safe & Secure",
       "tradeDirectly": "Trade directly from your wallet— we never control your funds or see your private key.",

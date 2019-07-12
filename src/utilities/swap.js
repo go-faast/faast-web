@@ -1,7 +1,5 @@
 import { isString } from 'lodash'
-import i18n from 'App/i18n'
-
-const t = i18n.t.bind(i18n)
+import { i18nTranslate as t } from 'Utilities/translate'
 
 const createStatus = (code, label, labelClass) => (detailsCode, details) => ({ code, label, labelClass, detailsCode, details })
 

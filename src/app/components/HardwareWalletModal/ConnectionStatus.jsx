@@ -10,9 +10,7 @@ import { retryConnect } from 'Actions/connectHardwareWallet'
 
 import CoinIcon from 'Components/CoinIcon'
 import T from 'Components/i18n/T'
-
-import i18n from 'App/i18n'
-const t = i18n.t.bind(i18n)
+import { i18nTranslate as t } from 'Utilities/translate'
 
 const StatusPending = ({ status, icon }) => (
   <h5>

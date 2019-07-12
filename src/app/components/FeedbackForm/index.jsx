@@ -8,19 +8,20 @@ import { reduxForm, formValueSelector } from 'redux-form'
 import ReduxFormField from 'Components/ReduxFormField'
 import { postFeedbackForm, doToggleFeedbackForm } from 'Actions/app'
 import { shouldShowFeedbackForm } from 'Selectors/app'
+import T from 'Components/i18n/T'
+import { withTranslation } from 'react-i18next'
 
 const FORM_NAME = 'feedback_form'
 const getFormValue = formValueSelector(FORM_NAME)
 
-const placeholder = {
-  feature: 'Please describe the feature you would like added to Faa.st...',
-  design: 'Please describe what you like or dislike about the Faa.st design...',
-  bug: 'Please describe any bugs you encountered using Faa.st...',
-  other: 'Please provide your feedback here...',
-}
-
 const FeedbackForm = ({ validateRequired, selectedType, handleSubmit, 
-  shouldShowFeedbackForm, doToggleFeedbackForm }) => {
+  shouldShowFeedbackForm, doToggleFeedbackForm, t }) => {
+  const placeholder = {
+    feature: t('app.feedbackForm.featurePlaceholder', 'Please describe the feature you would like added to Faa.st...'),
+    design: t('app.feedbackForm.designPlaceholder', 'Please describe what you like or dislike about the Faa.st design...'),
+    bug: t('app.feedbackForm.bugPlaceholder', 'Please describe any bugs you encountered using Faa.st...'),
+    other: t('app.feedbackForm.otherPlaceholder', 'Please provide your feedback here...'),
+  }
   return (
     <Modal
       isOpen={shouldShowFeedbackForm}
@@ -30,7 +31,7 @@ const FeedbackForm = ({ validateRequired, selectedType, handleSubmit,
       contentClassName='p-0'
     >
       <ModalHeader tag='h4' toggle={doToggleFeedbackForm} className='text-primary'>
-      Faa.st Feedback
+        <T tag='span' i18nKey='app.feedbackForm.faastFeedback'>Faa.st Feedback</T>
       </ModalHeader>
       <ModalBody className='p-0 p-sm-3'>
         <Form onSubmit={handleSubmit}>
@@ -39,15 +40,15 @@ const FeedbackForm = ({ validateRequired, selectedType, handleSubmit,
             type='select'
             requiredLabel
             validate={validateRequired}
-            label={<span className='text-muted'>Type of Feedback</span>}
+            label={<T tag='span' i18nKey='app.feedbackForm.typeOfFeedback' className='text-muted'>Type of Feedback</T>}
           >
-            <option value='' defaultValue disabled>Select type of feedback</option>
-            <option value='asset'>Request a new asset</option>
-            <option value='feature'>Feature request</option>
-            <option value='design'>Feedback on design</option>
-            <option value='support'>Help with a swap</option>
-            <option value='bug'>Report a bug</option>
-            <option value='other'>Other</option>
+            <option value='' defaultValue disabled>{t('app.feedbackForm.selectType', 'Select type of feedback')}</option>
+            <option value='asset'>{t('app.feedbackForm.asset','Request a new asset')}</option>
+            <option value='feature'>{t('app.feedbackForm.feature','Feature request')}</option>
+            <option value='design'>{t('app.feedbackForm.design','Feedback on design')}</option>
+            <option value='support'>{t('app.feedbackForm.help','Help with a swap')}</option>
+            <option value='bug'>{t('app.feedbackForm.bug','Report a bug')}</option>
+            <option value='other'>{t('app.feedbackForm.other', 'Other')}</option>
           </ReduxFormField>
           {selectedType && selectedType !== 'support' && selectedType !== 'asset' && (
             <Fragment>
@@ -55,42 +56,44 @@ const FeedbackForm = ({ validateRequired, selectedType, handleSubmit,
                 name='description'
                 requiredLabel
                 validate={validateRequired}
-                label={<span className='text-muted'>Feedback Description</span>}
+                label={<T tag='span' i18nKey='app.feedbackForm.description' className='text-muted'>Feedback Description</T>}
                 type='textarea'
                 placeholder={placeholder[selectedType]}
               />
               <ReduxFormField
-                label={<span className='text-muted'>Email For Reply</span>}
+                label={<T tag='span' i18nKey='app.feedbackForm.email' className='text-muted'>Email For Reply</T>}
                 name='email'
                 type='text'
-                placeholder='Email Address (optional)'
+                placeholder={t('app.feedbackForm.emailPlaceholder', 'Email Address (optional)')}
               />
             </Fragment>
           )}
           {selectedType && selectedType == 'asset' && (
             <Fragment>
               <ReduxFormField
-                label={<span className='text-muted'>Asset Name & Ticker</span>}
+                label={<T tag='span' i18nKey='app.feedbackForm.assetName' className='text-muted'>Asset Name & Ticker</T>}
                 name='assetName'
                 requiredLabel
                 validate={validateRequired}
                 type='text'
-                placeholder='Asset Name & Ticker'
+                placeholder={t('app.feedbackForm.assetNamePlaceholder', 'Asset Name & Ticker')}
               />
               <ReduxFormField
-                label={<span className='text-muted'>Asset Info URL</span>}
+                label={<T tag='span' i18nKey='app.feedbackForm.assetInfo' className='text-muted'>Asset Info URL</T>}
                 name='assetUrl'
                 type='text'
-                placeholder='Please provide a URL to info about asset...'
+                placeholder={t('app.feedbackForm.assetInfoPlaceholder', 'Please provide a URL to info about asset...')}
               />
             </Fragment>
           )}
           {selectedType && selectedType == 'support' && (
-            <p className='pb-3'>
+            <T tag='span' i18nKey='app.feedbackForm.contactSupport' className='pb-3'>
               Please contact <span className='text-primary'>support@faa.st</span> with your swap ID so we can fix any issues regarding your swap!
-            </p>
+            </T>
           )}
-          <Button className='w-100 flat mt-3' color='primary' type='submit' disabled={selectedType == 'support'}>Submit Feedback</Button>
+          <Button className='w-100 flat mt-3' color='primary' type='submit' disabled={selectedType == 'support'}>
+            <T tag='span' i18nKey='app.feedbackForm.submitFeedback'>Submit Feedback</T>
+          </Button>
         </Form>
       </ModalBody>
     </Modal>
@@ -99,6 +102,7 @@ const FeedbackForm = ({ validateRequired, selectedType, handleSubmit,
 
 export default compose(
   setDisplayName('FeedbackForm'),
+  withTranslation(),
   connect(createStructuredSelector({
     selectedType: (state) => getFormValue(state, 'type'),
     shouldShowFeedbackForm
