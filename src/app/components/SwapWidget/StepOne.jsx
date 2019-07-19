@@ -7,7 +7,7 @@ import { reduxForm, formValueSelector, SubmissionError } from 'redux-form'
 import { push as pushAction } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
 import {
-  Form, Button, Modal, ModalHeader, ModalBody, Card, CardHeader, CardBody, InputGroupAddon, Row, Col,
+  Form, Button, Card, CardHeader, CardBody, InputGroupAddon, Row, Col,
   FormText, Alert
 } from 'reactstrap'
 
@@ -31,7 +31,7 @@ import GAEventButton from 'Components/GAEventButton'
 import ReduxFormField from 'Components/ReduxFormField'
 import Checkbox from 'Components/Checkbox'
 import CoinIcon from 'Components/CoinIcon'
-import AssetSelector from 'Components/AssetSelector'
+import AssetSelector from 'Src/app/components/AssetSelectorList'
 import ProgressBar from 'Components/ProgressBar'
 import WalletSelectField from 'Components/WalletSelectField'
 import T from 'Components/i18n/T'
@@ -68,9 +68,9 @@ const SwapStepOne = ({
   validateReceiveAddress, validateRefundAddress, validateSendAmount, validateReceiveAmount,
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
   onChangeSendAmount, handleSelectFullBalance, fullBalanceAmount, fullBalanceAmountLoaded,
-  sendWallet, maxGeoBuy, handleSelectGeoMax, receiveAsset, ethReceiveBalanceAmount,
+  sendWallet, receiveWallet, maxGeoBuy, handleSelectGeoMax, receiveAsset, ethReceiveBalanceAmount,
   onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs = {},
-  onChangeRefundAddress, onChangeReceiveAddress, rateError, sendAsset
+  onChangeRefundAddress, onChangeReceiveAddress, rateError, sendAsset, onCloseAssetSelector
 }) => (
   <Fragment>
     <ProgressBar steps={[
@@ -87,6 +87,13 @@ const SwapStepOne = ({
         </small>
       </Alert>
     )}
+    {assetSelect && (
+      <div 
+        onClick={onCloseAssetSelector} 
+        className='position-fixed' 
+        style={{ width: '100%', height: '100%', top: 0, left: 0, zIndex: 99 }}
+      ></div>
+    )}
     {!balancesLoaded ? (
       <LoadingFullscreen label='Loading balances...'/>
     ) : (
@@ -97,7 +104,18 @@ const SwapStepOne = ({
           </CardHeader>
           <CardBody className='pt-3'>
             <Row className='gutter-0'>
-              <Col xs={{ size: 12, order: 1 }} lg>
+              <Col className='position-relative' xs={{ size: 12, order: 1 }} lg>
+                {assetSelect === 'send' && (
+                  <div style={{ position: 'absolute', zIndex: 999, top: 32, width: '100%' }}>
+                    <AssetSelector 
+                      walletId={sendWallet && sendWallet.id}
+                      selectAsset={handleSelectedAsset} 
+                      supportedAssetSymbols={assetSymbols}
+                      isAssetDisabled={isAssetDisabled}
+                      onClose={onCloseAssetSelector}
+                    />
+                  </div>
+                )}
                 <StepOneField
                   name='sendAmount'
                   type='number'
@@ -140,6 +158,17 @@ const SwapStepOne = ({
                 </Button>
               </Col>
               <Col xs={{ size: 12, order: 4 }} lg={{ size: true, order: 3 }}>
+                {assetSelect === 'receive' && (
+                  <div style={{ position: 'absolute', zIndex: 999, top: 32, width: '100%' }}>
+                    <AssetSelector 
+                      walletId={receiveWallet && receiveWallet.id}
+                      selectAsset={handleSelectedAsset} 
+                      supportedAssetSymbols={assetSymbols}
+                      isAssetDisabled={isAssetDisabled}
+                      onClose={onCloseAssetSelector}
+                    />
+                  </div>
+                )}
                 <StepOneField
                   name='receiveAmount'
                   type='number'
@@ -240,24 +269,6 @@ const SwapStepOne = ({
         </Card>
       </Form>
     )}
-    <Modal size='lg' isOpen={Boolean(assetSelect)} toggle={() => setAssetSelect(null)} className='m-0 mx-md-auto' contentClassName='p-0'>
-      <ModalHeader toggle={() => setAssetSelect(null)} tag='h4' className='text-primary'>
-        {assetSelect === 'send' ? (
-          <T tag='span' i18nKey='app.widget.chooseSend'>Choose Asset to Send</T>
-        ) : (
-          <T tag='span' i18nKey='app.widget.chooseReceive'>Choose Asset to Receive</T>
-        )}
-      </ModalHeader>
-      <ModalBody>
-        {assetSelect && (
-          <AssetSelector 
-            selectAsset={handleSelectedAsset} 
-            supportedAssetSymbols={assetSymbols}
-            isAssetDisabled={isAssetDisabled}
-          />
-        )}
-      </ModalBody>
-    </Modal>
   </Fragment>
 )
 
@@ -334,6 +345,10 @@ export default compose(
   withState('assetSelect', 'setAssetSelect', null), // send, receive, or null
   withState('estimatedField', 'setEstimatedField', 'receive'), // send or receive
   withHandlers({
+    onCloseAssetSelector: ({ setAssetSelect }) => () => {
+      console.log('yoooo')
+      setAssetSelect(null)
+    },
     isAssetDisabled: ({ assetSelect }) => ({ deposit, receive }) =>
       !((assetSelect === 'send' && deposit) || 
       (assetSelect === 'receive' && receive)),
