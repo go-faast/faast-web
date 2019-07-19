@@ -1,0 +1,33 @@
+.assetButtonList {
+  display: flex;
+  background-color: #1F1F1F;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  white-space: normal;
+  opacity: 1 !important;
+  border-radius: 0px !important;
+  &:hover:not(:disabled) {
+    .assetButtonIcon {
+      opacity: 1.0;
+    }
+  }
+}
+
+.assetButtonIcon {
+  opacity: 1;
+  margin-bottom: 16px;
+}
+
+.assetDisabledLink {
+  opacity: .5;
+  text-decoration: none !important;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.assetListDisabledMessage {
+  color: #605D5D !important;
+}

@@ -11,7 +11,7 @@ import Units from 'Components/Units'
 import { toastr } from 'react-redux-toastr'
 import Fuse from 'fuse.js'
 import classNames from 'class-names'
-import style from '../AssetSelector/style.scss'
+import style from './style.scss'
 
 import { getAllAssetsArray } from 'Selectors/asset'
 import { isAppRestricted } from 'Selectors/app'
@@ -23,7 +23,7 @@ import T from 'Components/i18n/T'
 const DEBOUNCE_WAIT = 400
 const MAX_RESULTS = 50
 
-const renderResult = (asset, walletHoldings, handleSelect, i) => {
+const renderResult = (asset, walletHoldings, handleSelect) => {
   const { symbol, name, disabled, disabledMessage, restricted } = asset
   const balance = walletHoldings && walletHoldings.balances[symbol]
   const hasBalance = balance && balance.gt(0)
@@ -31,7 +31,7 @@ const renderResult = (asset, walletHoldings, handleSelect, i) => {
     <Row key={symbol} className={classNames('p-0 m-0 position-relative', !disabled && 'cursor-pointer')} style={{ maxWidth: '100%', cursor: disabled && restricted && 'default' }}>
       <Col className='p-0 m-0'>
         <Button tag={Row} color='ultra-dark' size='sm' onClick={() => handleSelect(asset)} disabled={disabled}
-          className={classNames(style.assetButtonList, 'flat text-left m-0')} style={{ borderTopWidth: i > 0 && 0, height: 49 }}>
+          className={classNames(style.assetButtonList, 'flat text-left m-0')} style={{ borderTopWidth: 0, height: 49 }}>
           <Col className='pl-2 d-flex align-items-center' xs='8'>
             <CoinIcon symbol={symbol} style={{ width: 26, height: 26 }} className={classNames('mb-0', style.assetButtonIcon)} />
             <span className='ml-2'>{name} <small className='text-muted'>[{symbol}]</small></span>
@@ -74,7 +74,7 @@ const AssetSelector = ({ handleSearchChange, results, handleSelect, walletHoldin
         )}
         <Input
           name='searchAsset'
-          inputClassName='flat'
+          className='flat'
           placeholder='Search by name or symbol...'
           type='text'
           autoFocus
@@ -82,8 +82,8 @@ const AssetSelector = ({ handleSearchChange, results, handleSelect, walletHoldin
           onChange={handleSearchChange}
         />
       </Col>
-      <Col className='m-0 p-0 shadow mt-0' sm='12' style={{ maxHeight: (rowsToShow * 49), overflowY: 'scroll', zIndex: 99999 }}>
-        {results.map((r, i) => renderResult(r, walletHoldings, handleSelect, i))}
+      <Col className='p-0 shadow' sm='12' style={{ maxHeight: (rowsToShow * 49), overflowY: 'scroll', zIndex: 99999, marginTop: 1 }}>
+        {results.map(r => renderResult(r, walletHoldings, handleSelect))}
       </Col>
     </Row>
   )
