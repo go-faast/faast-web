@@ -39,7 +39,7 @@ const renderResult = (asset, walletHoldings, handleSelect, i) => {
           <Col className={classNames('text-right p-0 align-items-center justify-content-end', !disabled && !hasBalance ? 'd-none' : 'd-flex')} xs='4'>
             {disabled ? (
               <small style={{ zIndex: 9999999 }} className='p-0 m-0'>
-                <div className={style.assetDisabledMessage}>{disabledMessage}</div>
+                <div className={style.assetListDisabledMessage}>{disabledMessage}</div>
               </small>
             ) : hasBalance ? (
               <small style={{ zIndex: 9999999 }} className='p-0 m-0 text-primary'>
@@ -139,7 +139,7 @@ export default compose(
             <a 
               href='https://medium.com/faast/faast-location-restrictions-9b14e100d828' 
               target='_blank noopener noreferrer'
-              className={classNames(style.assetDisabledMessage)}
+              className={classNames(style.assetListDisabledMessage)}
             >
               <T tag='span' i18nKey='app.assetSelector.geoRestricted'>geo restricted</T>
             </a> : 
