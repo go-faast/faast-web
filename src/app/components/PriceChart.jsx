@@ -7,10 +7,34 @@ import { getPriceChartData, isPriceChartLoading } from 'Common/selectors/priceCh
 import { fetchPriceChartData } from 'Common/actions/priceChart'
 import ReactHighstock from 'react-highcharts/ReactHighstock.src'
 import { themeColor } from 'Utilities/style'
+import { i18nTranslate as t } from 'Utilities/translate'
 
 import { withTranslation } from 'react-i18next'
 
 const priceSeriesName = 'Price (USD)'
+
+ReactHighstock.Highcharts.setOptions({
+  lang: {
+    loading: t('app.priceChart.loading', 'Loading...'),
+    months: t('app.priceChart.months', 'January February March April May June July August September October November December').split(' '),
+    weekdays: t('app.priceChart.weekdays', 'Sunday Monday Tuesday Wednesday Thursday Friday Saturday').split(' '),
+    shortMonths: t('app.priceChart.shortMonths', 'Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec').split(' '),
+    exportButtonTitle: t('app.priceChart.exportButtonTitle', 'Export'),
+    printButtonTitle: t('app.priceChart.printButtonTitle', 'Import'),
+    rangeSelectorFrom: t('app.priceChart.rangeSelectorFrom', 'From'),
+    rangeSelectorTo: t('app.priceChart.rangeSelectorTo', 'To'),
+    rangeSelectorZoom: t('app.priceChart.rangeSelectorZoom', 'Zoom'),
+    downloadPNG: t('app.priceChart.downloadPNG', 'Download PNG Image'),
+    downloadJPEG: t('app.priceChart.downloadJPEG', 'Download JPEG Image'),
+    downloadPDF: t('app.priceChart.downloadPDF', 'Download PDF Image'),
+    downloadSVG: t('app.priceChart.downloadSVG', 'Download SVG Image'),
+    printChart: t('app.priceChart.printChart', 'Print'),
+    resetZoom: t('app.priceChart.resetZoom', 'Reset zoom'),
+    resetZoomTitle: t('app.priceChart.resetZoomTitle', 'Reset zoom'),
+    thousandsSep: t('app.priceChart.thousandsSep', ','),
+    decimalPoint: t('app.priceChart.decimalPoint', '.')
+  },
+})
 
 const PriceChart = ({ config, isPriceChartLoading }) => {
   return isPriceChartLoading ? 
