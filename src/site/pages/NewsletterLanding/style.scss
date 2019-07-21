@@ -1,0 +1,65 @@
+.hero {
+  position: relative;
+  top: 0;
+  left: 0;
+  background-image: linear-gradient(-179deg, #302E5A 0%, #303554 100%);
+  height: 100vh;
+  width: 100%;
+}
+
+.line {
+  border-top: 49px solid;
+  transform: rotate(-122deg);
+}
+
+.eth {
+  border-color: #5573E5;
+  width: 499px;
+  position: absolute;
+  top: 0px;
+  left: -150px;
+  img {
+    transform: rotate(120deg);
+    position: relative;
+    bottom: 67px;
+    right: 20px;
+  }
+}
+
+.ltc {
+  border-color: #8E98BB;
+  width: 305px;
+  position: absolute;
+  top: -40px;
+  left: -22px;
+  img {
+    transform: rotate(120deg);
+    position: relative;
+    bottom: 63px;
+    right: 20px;
+  }
+}
+
+.btc {
+  border-color: #DEAD4F;
+  width: 355px;
+  position: absolute;
+  top: -20px;
+  left: 70px;
+  img {
+    transform: rotate(125deg);
+    position: relative;
+    bottom: 57px;
+    right: 25px;
+  }
+}
+
+.dashedLine {
+  border: 1px dashed rgba(255,255,255, .8) ;
+  box-shadow: 0 17px 4px 1px rgba(110,132,252,0.40);
+  transform: rotate(-45deg);
+  width: 433px;
+  position: absolute;
+  left: 130px;
+  top: 340px;
+}
