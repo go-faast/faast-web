@@ -5,6 +5,8 @@
   background-image: linear-gradient(-179deg, #302E5A 0%, #303554 100%);
   height: 100vh;
   width: 100%;
+  min-height: 600px;
+  overflow: hidden;
 }
 
 .line {
@@ -54,12 +56,45 @@
   }
 }
 
+.coinContainer {
+  position: absolute;
+  top: 68px;
+  right: 40%;
+}
+
 .dashedLine {
-  border: 1px dashed rgba(255,255,255, .8) ;
-  box-shadow: 0 17px 4px 1px rgba(110,132,252,0.40);
+  border: 1px dashed rgba(255,255,255, .8);
   transform: rotate(-45deg);
   width: 433px;
   position: absolute;
   left: 130px;
   top: 340px;
+}
+
+.dashedLineBlue {
+  border: 1px dashed #3E467D;
+  transform: rotate(-45deg);
+  width: 433px;
+  position: absolute;
+  left: 140px;
+  top: 350px;
+  filter: blur(1px)
+}
+
+.circle {
+  background-color: #2B2D4E;
+  border-radius: 50%;
+  width: 70px;
+  height: 70px;
+  text-align: center;
+  display: inline-flex;
+  cursor: default;
+}
+
+.swapIcon {
+  filter: contrast(0) brightness(2)
+}
+
+.icon {
+  color: #fff;
 }
