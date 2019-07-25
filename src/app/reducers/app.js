@@ -13,7 +13,7 @@ export default createReducer({
   [updateConnectForwardUrl]: (state, connectForwardUrl) => ({ ...state, connectForwardUrl }),
   [appError]: (state, error) => ({ ...state, error: error.message || error }),
   [updateAssetsFilterByTradeable]: (state, filterTradeableAssets) => ({ ...state, filterTradeableAssets }),
-  [toggleFeedbackForm]: (state, showFeedbackForm) => ({ ...state, showFeedbackForm }),
+  [toggleFeedbackForm]: (state, { showFeedbackForm, requestedAsset }) => ({ ...state, showFeedbackForm, requestedAsset }),
   [updateSwapWidgetInputs]: (state, { to, from, toAddress, fromAddress, toAmount, fromAmount, sendWalletId, receiveWalletId }) => 
     ({ ...state, savedSwapWidgetInputs: { to, from, toAddress, fromAddress, toAmount, fromAmount, sendWalletId, receiveWalletId } }),
 }, {
@@ -21,6 +21,7 @@ export default createReducer({
   connectForwardUrl: '/dashboard',
   ready: false,
   showFeedbackForm: false,
+  requestedAsset: undefined,
   error: '',
   filterTradeableAssets: undefined,
   savedSwapWidgetInputs: undefined

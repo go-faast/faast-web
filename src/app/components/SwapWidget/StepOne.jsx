@@ -346,7 +346,6 @@ export default compose(
   withState('estimatedField', 'setEstimatedField', 'receive'), // send or receive
   withHandlers({
     onCloseAssetSelector: ({ setAssetSelect }) => () => {
-      console.log('yoooo')
       setAssetSelect(null)
     },
     isAssetDisabled: ({ assetSelect }) => ({ deposit, receive }) =>

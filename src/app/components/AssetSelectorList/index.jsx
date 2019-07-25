@@ -130,7 +130,7 @@ export default compose(
         const disabledMessage = swapDisabled
           ? <T tag='span' i18nKey='app.assetSelector.comingSoo'>
             <span 
-              onClick={doToggleFeedbackForm}
+              onClick={() => doToggleFeedbackForm(a.name)}
               target='_blank noopener noreferrer'
               className={classNames('btn-link cursor-pointer', style.assetDisabledLink)}
             >request asset</span>

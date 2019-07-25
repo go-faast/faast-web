@@ -28,7 +28,7 @@ export const updateConnectForwardUrl = createAction('UPDATE_CONNECT_FORWARD_URL'
 export const resetAll = createAction('RESET_ALL')
 export const updateAssetsFilterByTradeable = createAction('UPDATE_ASSETS_TRADEABLE_FILTER')
 export const updateSwapWidgetInputs = createAction('UPDATE_SWAP_WIDGET_INPUTS', (inputs) => (inputs))
-export const toggleFeedbackForm = createAction('TOGGLE_FEEDBACK', (value) => value)
+export const toggleFeedbackForm = createAction('TOGGLE_FEEDBACK', (showFeedbackForm, requestedAsset) => ({ showFeedbackForm, requestedAsset }))
 
 export const restoreState = (dispatch) => Promise.resolve()
   .then(() => {
@@ -65,9 +65,9 @@ export const restoreState = (dispatch) => Promise.resolve()
   })
 
 
-export const doToggleFeedbackForm = () => (dispatch, getState) => {
+export const doToggleFeedbackForm = (initialValues) => (dispatch, getState) => {
   const currentState = shouldShowFeedbackForm(getState())
-  return dispatch(toggleFeedbackForm(!currentState))
+  return dispatch(toggleFeedbackForm(!currentState, initialValues))
 }
 
 export const setupBlockstack = (dispatch) => Promise.resolve()
