@@ -132,7 +132,7 @@ export default compose(
             <span 
               onClick={() => doToggleFeedbackForm(a.name)}
               target='_blank noopener noreferrer'
-              className={classNames('btn-link cursor-pointer', style.assetDisabledLink)}
+              className={classNames('btn-link cursor-pointer', style.assetListDisabledMessage)}
             >request asset</span>
           </T>
           : (restricted ? 

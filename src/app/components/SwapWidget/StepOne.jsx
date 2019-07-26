@@ -106,7 +106,7 @@ const SwapStepOne = ({
             <Row className='gutter-0'>
               <Col className='position-relative' xs={{ size: 12, order: 1 }} lg>
                 {assetSelect === 'send' && (
-                  <div style={{ position: 'absolute', zIndex: 999, top: 32, width: '100%' }}>
+                  <div className={style.assetListContainer}>
                     <AssetSelector 
                       walletId={sendWallet && sendWallet.id}
                       selectAsset={handleSelectedAsset} 

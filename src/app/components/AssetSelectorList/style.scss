@@ -8,6 +8,7 @@
   white-space: normal;
   opacity: 1 !important;
   border-radius: 0px !important;
+
   &:hover:not(:disabled) {
     .assetButtonIcon {
       opacity: 1.0;
@@ -23,6 +24,7 @@
 .assetDisabledLink {
   opacity: .5;
   text-decoration: none !important;
+
   &:hover {
     opacity: 1;
   }
@@ -30,4 +32,8 @@
 
 .assetListDisabledMessage {
   color: #605D5D !important;
+
+  &:hover {
+    text-decoration: underline !important;
+  }
 }
