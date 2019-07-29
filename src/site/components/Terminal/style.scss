@@ -1,0 +1,68 @@
+.terminalSection {
+  max-width: 800px;
+}
+
+.terminal {
+  position: relative;
+  background-color: #02071B;
+  height: 343px;
+  width: 585px;
+  border-radius: 4px;
+  box-shadow: 0 5px 11px 1px rgba(99, 114, 134, 0.50);
+  font-family: Monaco !important;
+}
+
+.terminalHeaderbar {
+  background-color: #131A31;
+  height: 26px;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  border-radius: 4px 4px 0px 0px;
+}
+
+.terminalActions {
+  position: absolute;
+  z-index: 3;
+  left: 12px;
+
+  & div {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+  }
+}
+
+.close {
+  background-color: #F83131;
+}
+
+.minimize {
+  background-color: #F8DD31;
+}
+
+.expand {
+  background-color: #23C13C;
+}
+
+.terminalSidebar {
+  background-color: #0D112A;
+  position: absolute;
+  top: 26px;
+  left: 0px;
+  height: calc(100% - 26px);
+  //width: 36px;
+  z-index: 2;
+}
+
+.comment {
+  color: #5C6383;
+}
+
+.success {
+  color: #52F0AB;
+}

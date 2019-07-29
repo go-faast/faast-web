@@ -1,0 +1,24 @@
+.text {
+  color: #2D303A;
+}
+
+.heading {
+  @extend .text;
+  font-size: 34px;
+  font-weight: 600;
+}
+
+.textSize {
+  font-size: 20px;
+  line-height: 24px;
+}
+
+.description {
+  @extend .text;
+  @extend .textSize;
+  opacity: 0.8;
+}
+
+.link {
+  @extend .textSize;
+}

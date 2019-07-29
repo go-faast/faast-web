@@ -1,0 +1,15 @@
+.featuresContainer {
+  flex-direction: row;
+  justify-content: center;
+}
+
+.feature {
+  max-width: 312px !important;
+  height: 126px;
+  background: #FFFFFF;
+  box-shadow: 0 5px 11px 1px rgba(200, 216, 236, 0.50);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
