@@ -35,11 +35,13 @@ export default compose(
     }
   }),
   hot(module)
-)(({ ready, error }) => (
+)(({ ready, error, showFeedbackForm }) => (
   ready ? (
     <Fragment>
       <AppView/>
-      <FeedbackForm />
+      {showFeedbackForm && (
+        <FeedbackForm />
+      )}
     </Fragment>
   ) : (
     <LoadingFullscreen label='Loading Faa.st...' error={error}/>

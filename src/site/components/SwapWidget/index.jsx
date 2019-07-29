@@ -89,6 +89,7 @@ const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwit
               selectAsset={handleSelectedAsset} 
               supportedAssetSymbols={supportedAssets}
               isAssetDisabled={isAssetDisabled}
+              rowsToShow={7}
             />
           )}
         </ModalBody>

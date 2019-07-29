@@ -104,7 +104,7 @@ ReduxFormField.propTypes = {
   addonAppend: addonPropType,
   row: PropTypes.bool, // Whether this FormGroup is a row
   className: PropTypes.string, // Props for FormGroup
-  inputClassName: PropTypes.string, // Additional classes for rendered Input
+  inputClass: PropTypes.string, // Additional classes for rendered Input
   inputCol: PropTypes.object, // Props to pass to Col surrounding Input
   labelProps: PropTypes.object,
   labelPosition: PropTypes.oneOf(['prepend', 'append']),
