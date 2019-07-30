@@ -1,356 +1,534 @@
 {
-  "app": {
-    "dashboard": {
-      "holdingsTitle": "Pホールディングス",
-      "distribution": "流通",
-      "address": "アドレス",
-      "removeWallet": "ウォレットを削除",
-      "addWallet": "ウォレットを追加",
-      "walletHoldings": "<0></0> ホールディングス",
-      "portfolioHoldings": "ポートフォリオホールディングス"
-    },
-    "connect": {
-      "select": "あなたのウォレットを選択",
-      "hardware": "ハードウェアウォレット",
-      "recommended": "推奨される",
-      "ledger": "Ledgerウォレット",
-      "desktopWallets": "<0></0> Ethereumデスクトップウォレット",
-      "mobileWallets": "<0></0> Ethereumモバイルウォレット",
-      "mist": "Mistブラウザー",
-      "trust": "Trustウォレット",
-      "coinbase": "コインベースウォレット",
-      "manual": "マニュアル",
-      "createWallet": "ウォレットを作成",
-      "generate": "新しいキーストアファイルを生成",
-      "importWallet": "importWallet",
-      "dragAndDrop": "キーストアファイルをドラッグアンドドロップ",
-      "openSource": "オープンソースで安全な"
-    },
-    "nav": {
-      "dashboard": "ダッシュボード",
-      "assets": "資産",
-      "allAssets": "すべての資産",
-      "trending": "トレンディング",
-      "watchlist": "ウォッチリスト",
-      "rebalance": "リバランス",
-      "swap": "スワップ",
-      "orders": "注文",
-      "addWallet": "ウォレットを追加"
-    },
-    "assetIndex": {
-      "titlePage": "すべての資産 - ページ - Page <1></1>",
-      "title": "すべての資産"
-    },
-    "assetIndexTable": {
-      "coin": "コイン",
-      "price": "価格",
-      "marketCap": "時価総額",
-      "volume": "出来高",
-      "supply": "供給量",
-      "change": "変動"
-    },
-    "trending": {
-      "tradeable": "取引可能な資産のみを表示",
-      "trending": "トレンディング"
-    },
-    "orders": {
-      "orderHistory": "注文履歴",
-      "showMore": "さらに多くの注文を表示…",
-      "date": "日付",
-      "pair": "ペア",
-      "cost": "コスト",
-      "received": "受取済み",
-      "receiving": "受け取り中",
-      "noOpen": "現時点ではオープン注文はありません",
-      "noPrevious": "表示すべき以前の注文はありません",
-      "openOrdersTitle": "オープン注文",
-      "previousOrdersTitle": "以前の注文"
-    },
-    "sidebar": {
-      "watchlist": "<0>ウォッチリスト</0>",
-      "trending": "トレンディング"
-    },
-    "rebalance": {
-      "saveChanges": "<0></0>変更を保存",
-      "addAsset": "<0></0> 資産を追加",
-      "remove": "<0></0> 削除する",
-      "availableBalance": "利用可能な残高",
-      "how": "<0><0></0> これをどのように使用しますか？ </0>",
-      "24hChange": "24時間の変動",
-      "currentPrice": "現在の価格",
-      "after": "後",
-      "before": "前",
-      "value": "値",
-      "weight": "重み",
-      "units": "単位",
-      "addAssetBottom": "資産を追加",
-      "empty": "このポートフォリオは空です。スワップを始めるには、まず<1>ウォレットを追加</1>する必要があります。",
-      "instructions": "指示",
-      "instructions1": "あなたのポートフォリオをリバランス – 3つの簡単なステップ：",
-      "instructions2": " 資産の重みを減らすにはスライダーを左にドラッグします。使用 ",
-      "instructions3": "資産全体を削除するには",
-      "instructions4": "資産の重みを増やすにはスライダーを右にドラッグします。使用 ",
-      "instructions5": " 新しい資産を追加するには。<1/><2>（注記：重みを増やすために、あなたは他の資産の重みを減らしたに違いありません）</2>",
-      "instructions6": "クリックする",
-      "instructions7": "変更を再確認し終えた場合。"
-    },
-    "widget": {
-      "swapInstantly": "即座にスワップ",
-      "omitted": "<0>省略されると、変動相場が使用されます。</0>",
-      "approxSend": "<0>あなたが送金する必要があるおおよその金額。保証付き見積もりを受け取るには、[作成する]をクリックします。</0>",
-      "expectSend": "<0>私たちがあなたに送っていただきたい金額。</0>",
-      "approxReceive": "<0>あなたが受け取る予定のおおよその金額。保証付き見積もりを受け取るには、[作成する]をクリックします。</0>",
-      "guaranteeReceive": "<0>あなたが必ず受け取る金額。</0>",
-      "youHave": "あなたは持っています",
-      "acceptTerms": "私は<1> Faa.st 約款</1>に同意します",
-      "createSwap": "スワップを作成",
-      "generatingSwap": "スワップを生成中…",
-      "chooseSend": "送る資産を選択",
-      "chooseReceive": "受け取る資産を選択",
-      "noRate": "レートを読み出すことができません"
-    },
-    "progressBar": {
-      "createSwap": "スワップを作成",
-      "sendSymbol": "送信する <1></1>",
-      "receiveSymbol": "受信する <1></1>"
-    },
-    "footer": {
-      "website": "Faa.st ウェブサイト",
-      "termsConditions": "約款",
-      "privacy": "プライバシーポリシー"
-    },
-    "coinDetail": {
-      "buy": "購入する",
-      "sell": "売却する",
-      "marketCap": "時価総額",
-      "volume": "24時間の出来高",
-      "supply": "供給量"
-    },
-    "assetTable": {
-      "noAssets": "表示する資産がありません",
-      "th1": "資産",
-      "th2": "単位",
-      "th3": "ホールディングス",
-      "th4": "重み",
-      "th5": "価格",
-      "th6": "24時間の変動"
-    },
-    "swapSubmit": {
-      "geoLimit": "<2>お住まいの地域のため</2>、送金額は$<1></1> を超えることはできません。",
-      "multipleSwaps": "あなたのポートフォリオに加えた変更を保存するために、以下のスワップが行われます。それらを再確認し、[<1></1>]をクリックして続行してください。",
-      "networkFee": "合計ネットワーク料金： ",
-      "timer": "* 以下の期間内に提出された場合、見積もりレートは保証されます：",
-      "terms": "私は<1>Faast約款</1>に同意します",
-      "cancel": "キャンセル",
-      "submit": "提出する",
-      "submitAll": "すべてを提出",
-      "beginSigning": "署名を開始",
-      "confirmSubmit": "確認して提出",
-      "reviewSign": "再確認して書名"
-    },
-    "ethInstructions": {
-      "to": "送信先：",
-      "value": "値：",
-      "gas": "ガス：",
-      "gasPrice": "ガス価格：",
-      "data": "データ：",
-      "confirm": "ウォレットによって促された場合、次の取引の詳細を確認してください。",
-      "sending": "<1></1>を<3><4></4></3>へ送信中。"
-    },
-    "swapStatusCard": {
-      "signed": "署名済み",
-      "ready": "準備完了",
-      "awaiting": "署名待ち",
-      "failed": "失敗しました",
-      "sending": "送信中",
-      "status": "状況：",
-      "rate": "レート：",
-      "network": "ネットワーク料金：",
-      "swapFee": "スワップ料金：",
-      "usingWallet": "ウォレットの使用",
-      "atAddress": "アドレスで",
-      "date": "日付：",
-      "orderId": "注文ID：",
-      "sentTx": "txnを送信しました："
-    },
-    "searchResults": {
-      "view": "ポートフォリオで表示",
-      "add": "ポートフォリオに追加"
-    },
-    "blocked": {
-      "restricted": "制限区域",
-      "sorry": "申し訳ありません、あなたはブロックされた場所からfaa.stにアクセスしています。このメッセージを誤って受け取っている場合は、<1>こちら</1>で詳しく知ることができます。"
-    },
-    "selectPortfolioDropdown": {
-      "add": "ポートフォリオを追加"
-    },
-    "shareModal": {
-      "share": "ポートフォリオを共有",
-      "permalink": "パーマリンク："
-    },
-    "walletSelector": {
-      "wallets": "ウォレット",
-      "addWallet": "ウォレットを追加",
-      "noWallets": "このポートフォリオにはウォレットがありません"
-    },
-    "tradeDetailModal": {
-      "orderDetails": "注文の詳細"
-    },
-    "walletInfoModal": {
-      "metamask1": "<0></0>は、Ethereumウォレットを提供するデスクトップブラウザーの拡張機能です。<2>こちらで</2>それを入手できます。",
-      "metamask2": "<1></1>をすでにお持ちの場合は、このブラウザー上で拡張機能が有効になっていることを確認してください。",
-      "mist1": "<0></0>は、Ethereumウォレットを内蔵したデスクトップウェブブラウザーです。 <2>こちらで</2>それを入手できます。",
-      "mist2": "<1></1>をすでにお持ちの場合は, 内蔵のウェブブラウザーを使用して<3>faa.st</3>を開いてください。",
-      "status1": "<0></0>は、iOSおよびAndroid用のモバイルEthereum OSです。<2>こちらで</2>詳しく知ることができます。",
-      "status2": "<1></1>をすでにお持ちの場合は、内蔵のウェブブラウザーを使用して<3>faa.st</3>を開いてください。",
-      "coinbase1": "<0></0>は、iOSおよびAndroid用のモバイルEthereum OSです。<2>こちらで</2>それを入手するか、または以下のいずれかのリンクを使用してください。",
-      "coinbase2": "<1></1>をすでにお持ちの場合は、内蔵のウェブブラウザーを使用して<3>faa.st</3>を開いてください。"
-    },
-    "createWalletModal": {
-      "ack1": " <1></1>ファイルは、ファイルに含まれているあらゆる資金を送金するのに使用することができます。",
-      "ack2": "<1></1>ファイルには、暗号化された機密の秘密鍵が含まれており、私が入力したパスワードを使用してのみアクセスすることができます。",
-      "ack3": "Faastには、ファイルまたはパスワードのバックアップがありません。この<1></1>は、私のウェブブラウザーで生成されたもので、インターネット経由で一度も送信されませんでした。",
-      "ack4": "私がファイルへのアクセスを失った場合、またはパスワードを忘れた場合、私はそれに含まれているすべての資金を失います。",
-      "ack5": "私はこのファイルを私のコンピューターの安全な場所にダウンロードし保存しました。",
-      "ack6": "<1></1>ファイルは、私のパスワードと組み合わせて、 Faast以外のアプリケーションを使用して資金を送金するのに使用することができます。"
-    },
-    "assetSelector": {
-      "comingSoon": "間もなく公開予定",
-      "alreadyAdded": "すでに追加されています",
-      "unavailable": "お住まいの地域ではご利用いただけません",
-      "unsupported": "サポートされていないウォレット"
-    },
-    "addressModal": {
-      "address": "アドレス",
-      "viewOnExplorer": "Explorerで表示",
-      "close": "閉じる"
-    },
-    "stepTwoConnected": {
-      "title": "スワップ取引を確認"
-    },
-    "stepTwoManual": {
-      "geoLimit": "ご注意ください：<5>お住まいの地域のため</5>、スワップできる最大量は、<1></1> <3></3>です。",
-      "status": "状況：",
-      "updatesAuto": "注文状況は、自動的に更新されます。リフレッシュする必要はありません。",
-      "orderID": "注文ID：",
-      "receiveAddress": "受信アドレス：",
-      "refundAddress": "払い戻しアドレス：",
-      "rate": "レート：",
-      "depositAmount": "入金金額：",
-      "minimumAmount": "最低入金金額：",
-      "receiveAmount": "受け取り金額：",
-      "fixedPrice": "* 見積もりレートは、現在の市場状況に基づく目算です。実際のレートは変わることがあります。",
-      "quotedRate": "* 入金が以下の期間内に送金された場合、見積もりレートは保証されます："
-    },
-    "hardwareWalletModal": {
-      "accountSelect": {
-        "heading": "追加したいアカウントを選択してください。",
-        "showAccounts": "アカウントの表示",
-        "next": "次へ",
-        "back": "戻る"
-      },
-      "assetSelect": {
-        "express": "エクスプレス設定の場合、[<1></1>]をクリックします。",
-        "addAll": "すべての通貨を追加",
-        "addSpecific": "または、サポートされている次の通貨のいずれかを選択して特定のアカウントを追加してください。",
-        "learnMore": "[…]についてさらに知る",
-        "cancel": "キャンセル",
-        "done": "完了"
-      },
-      "confirmAccount": {
-        "changeAccount": "アカウントを変更",
-        "back": "戻る",
-        "confirm": "確認する"
-      },
-      "connectAsset": {
-        "back": "戻る",
-        "continue": "続行する"
-      },
-      "connectionInstructions": {
-        "trezor": {
-          "connect": "開始するにはTREZORを接続します",
-          "version": "TREZORウォレットウェブサイトを使用して、TREZORファームウェアが最新のものであることを確保してください",
-          "pin": "必要に応じて、あなたのPINまたはパスワードを入力してTREZORのロックを解除してください",
-          "export": "あなたの<1></1>アカウントの公開鍵をエクスポートしたいかどうか尋ねられた場合、<3>[エクスポート]</3>を選択してください",
-          "popup": "「ポップアップが閉じました」というエラーが表示された場合は、ブラウザー設定でポップアップを有効にしてから再試行してください"
+    "app": {
+        "view": {
+            "loadingFaast": "Faa.stを読み込み中..."
         },
-        "ledger": {
-          "connect": "開始するにはLedgerデバイスを接続します",
-          "pin": "Ledgerのロックを解除するには、あなたのPINを入力してください",
-          "version": "Ledgerライブデスクトップアプリを使用して、Ledgerファームウェアおよび<1></1>アプリが最新のものであることを確保してください",
-          "open": "Ledgerで<1></1>アプリを開きます"
+        "addressSearchForm": {
+            "placeholder": "アドレスで検索..."
+        },
+        "priceChart": {
+            "yAxisLabel": "価格（米ドル）",
+            "loading": "読み込み中...",
+            "months": "1月 2月 3月 4月 5月 6月 7月 8月 9月 10月 11月 12月",
+            "weekdays": "日曜日 月曜日 火曜日 水曜日 木曜日 金曜日 土曜日",
+            "shortMonths": "1月 2月 3月 4月 5月 6月 7月 8月 9月 10月 11月 12月",
+            "exportButtonTitle": "エクスポート",
+            "printButtonTitle": "インポート",
+            "rangeSelectorFrom": "送信元",
+            "rangeSelectorTo": "送信先",
+            "rangeSelectorZoom": "拡大・縮小",
+            "downloadPNG": "PNG画像をダウンロード",
+            "downloadJPEG": "JPEG画像をダウンロード",
+            "downloadPDF": "PDF画像をダウンロード",
+            "downloadSVG": "SVG画像をダウンロード",
+            "printChart": "印刷",
+            "resetZoom": "拡大・縮小をリセット",
+            "resetZoomTitle": "拡大・縮小をリセット",
+            "thousandsSep": ",",
+            "decimalPoint": "."
+        },
+        "pieChart": {
+            "weight": "ウェイト"
+        },
+        "feedbackForm": {
+            "faastFeedback": "Faa.st フィードバック",
+            "typeOfFeedback": "フィードバックの種類",
+            "selectType": "フィードバックの種類を選択",
+            "design": "デザインについてのフィードバック",
+            "asset": "新しい資産についてのフィードバック",
+            "feature": "機能のリクエスト",
+            "help": "スワップのサポート",
+            "bug": "バグの報告",
+            "other": "その他",
+            "description": "フィードバックの説明",
+            "email": "返信用メールアドレス",
+            "assetName": "資産名とティッカー",
+            "assetInfo": "資産情報のURL",
+            "contactSupport": "スワップに関する問題を修正いたしますので、<1>support@faa.st</1>までご連絡ください。",
+            "submitFeedback": "フィードバックを送信",
+            "pleaseProvide": "こちらにお客様の",
+            "feedbackHere": "フィードバックを入力してください...",
+            "emailPlaceholder": "メールアドレス（任意）",
+            "assetNamePlaceholder": "資産名とティッカー",
+            "assetInfoPlaceholder": "資産についての情報が記載されたページへのURLを入力してください...",
+            "featurePlaceholder": "Faa.stへの追加を希望する機能について説明してください...",
+            "designPlaceholder": "Faa.stのデザインについて好きな点、気に入らない点を説明してください...",
+            "bugPlaceholder": "Faa.st使用中に発生したバグについて説明してください...",
+            "otherPlaceholder": "こちらにフィードバックを入力してください..."
+        },
+        "walletTypes": {
+            "nonSegwit": "レガシー（non-segwit）アカウント",
+            "preFork": "レガシー（pre-fork）アカウント",
+            "ledger": "Ledger ウォレット",
+            "mist": "Mist ブラウザ",
+            "coinbase": "Coinbase ウォレット",
+            "trust": "Trust ウォレット",
+            "ledgerSlogan": "あなたの暗号資産をどこからでも安全に保管できます。",
+            "ledgerDescription": "Ledgerはスマートカードベースの暗号資産ハードウェアウォレットを提供しており、使い勝手や操作性を損なうことなく、ご所有のビットコイン、イーサリアム、リップルなどを最適なレベルで保護することができます。",
+            "trezorSlogan": "あなたのコインのための安全な場所です。",
+            "trezorDescription": "Trezorはお手持ちのデジタル資産用の安全な金庫を提供しています。ビットコイン、ライトコイン、パスワード、ログイン情報、キーを安心して保管することができます。",
+            "blockstackSlogan": "分散型ブロックチェーンアプリ構築を始める最も簡単な方法です。",
+            "blockstackDescription": "Blockstackはユーザーによる基本的なデジタル権のコントロールが可能なエコシステムを構築しています。",
+            "metmaskSlogan": "イーサリアムをお使いのブラウザに。",
+            "metamaskDescription": "MetaMaskは未来の分散型ウェブサイトを今お使いのブラウザで訪問できるようにする懸け橋となります。イーサリアム分散型アプリをお使いのブラウザで実行できるようにします。",
+            "mistSlogan": "Mist。分散型アプリネットワークで分散型アプリの閲覧と使用ができます。",
+            "mistDescription": "分散型アプリの閲覧と使用ならMistブラウザが最適です。",
+            "paritySlogan": "分散型ウェブのためのブロックチェーンインフラ。",
+            "parityDescription": "最先端のイーサリアムクライアントであるParityイーサリアムから次世代の相互運用可能なブロックチェーンネットワークまで、Parity Technologiesは中核となるブロックチェーンインフラを構築します。",
+            "coinbaseSlogan": "最も簡単で安全な暗号ウォレットです。",
+            "coinbaseDescription": "Coinbase: シンプルで安全な方法であなたの暗号通貨の管理や販売ができます。",
+            "trustSlogan": "イーサリアム、ERC20、ERC223、ERC721トークン用の安全なウォレットです。",
+            "trustDescription": "Trust ウォレットはお好きなERC721とERC20トークンを保管することができる最高のイーサリアムおよび暗号通貨マルチウォレットです。",
+            "statusSlogan": "どこからでも、より良いウェブへアクセスできます。",
+            "statusDescription": "Statusを使うと、イーサリアムの活用に特化したオープンソースコミュニティで安全にチャット、閲覧、取引を行うことができ、より分散化されたインターネットを携帯することができます。"
+        },
+        "portfolio": {
+            "label": "マイポートフォリオ"
+        },
+        "statuses": {
+            "insufficientFunds": "資金不足",
+            "unsuccessful": "ご注文を完了できませんでした。support@faa.stにお問い合わせください",
+            "successful": "注文が完了しました",
+            "refunded": "注文の払い戻しが完了しました",
+            "fetchingRate": "市場情報を読み出し中",
+            "awaitingDeposit": "入金待ち",
+            "generateTx": "入金取引を作成中",
+            "sendTxError": "入金取引に失敗しました。再度お試しください",
+            "sending": "入金取引を送信中",
+            "sent": "取引の確認待ち",
+            "signingError": "入金取引への署名に失敗しました。再度お試しください",
+            "signing": "署名待ち",
+            "readyToSend": "送信準備完了",
+            "readyToSign": "署名準備完了",
+            "contactSupport": "問題が発生している可能性があります。詳細はsupport@faa.stにお問い合わせください。",
+            "processingSwap": "スワップを処理中",
+            "failedToCheckDepositTx": "入金取引のステータスの確認に失敗しました",
+            "errorSendingDeposit": "入金取引の送信エラー",
+            "unknownError": "不明なエラー"
+        },
+        "dashboard": {
+            "holdingsTitle": "Pホールディングス",
+            "distribution": "流通",
+            "address": "アドレス",
+            "removeWallet": "ウォレットを削除",
+            "addWallet": "ウォレットを追加",
+            "walletHoldings": "<0></0> ホールディングス",
+            "portfolioHoldings": "ポートフォリオホールディングス"
+        },
+        "connect": {
+            "select": "あなたのウォレットを選択",
+            "hardware": "ハードウェアウォレット",
+            "recommended": "推奨される",
+            "ledger": "Ledgerウォレット",
+            "desktopWallets": "<0></0> Ethereumデスクトップウォレット",
+            "mobileWallets": "<0></0> Ethereumモバイルウォレット",
+            "mist": "Mistブラウザー",
+            "trust": "Trustウォレット",
+            "coinbase": "コインベースウォレット",
+            "manual": "マニュアル",
+            "createWallet": "ウォレットを作成",
+            "generate": "新しいキーストアファイルを生成",
+            "importWallet": "importWallet",
+            "dragAndDrop": "キーストアファイルをドラッグアンドドロップ",
+            "openSource": "オープンソースで安全な"
+        },
+        "nav": {
+            "dashboard": "ダッシュボード",
+            "assets": "資産",
+            "allAssets": "すべての資産",
+            "trending": "トレンディング",
+            "watchlist": "ウォッチリスト",
+            "rebalance": "リバランス",
+            "swap": "スワップ",
+            "orders": "注文",
+            "addWallet": "ウォレットを追加"
+        },
+        "assetIndex": {
+            "titlePage": "すべての資産 - ページ - Page <1></1>",
+            "title": "すべての資産"
+        },
+        "assetIndexTable": {
+            "coin": "コイン",
+            "price": "価格",
+            "marketCap": "時価総額",
+            "volume": "出来高",
+            "supply": "供給量",
+            "change": "変動"
+        },
+        "trending": {
+            "tradeable": "取引可能な資産のみを表示",
+            "trending": "トレンディング",
+            "biggestGainers": "最大価格上昇銘柄",
+            "biggestLosers": "最大価格低下銘柄"
+        },
+        "watchlist": {
+            "tableHeading": "ウォッチリスト"
+        },
+        "orders": {
+            "orderHistory": "注文履歴",
+            "showMore": "さらに多くの注文を表示…",
+            "date": "日付",
+            "pair": "ペア",
+            "cost": "コスト",
+            "received": "受取済み",
+            "receiving": "受け取り中",
+            "noOpen": "現時点ではオープン注文はありません",
+            "noPrevious": "表示すべき以前の注文はありません",
+            "openOrdersTitle": "オープン注文",
+            "previousOrdersTitle": "以前の注文",
+            "rate": "レート"
+        },
+        "sidebar": {
+            "watchlist": "<0>ウォッチリスト</0>",
+            "trending": "トレンディング"
+        },
+        "rebalance": {
+            "saveChanges": "<0></0>変更を保存",
+            "addAsset": "<0></0> 資産を追加",
+            "remove": "<0></0> 削除する",
+            "availableBalance": "利用可能な残高",
+            "how": "<0><0></0> これをどのように使用しますか？ </0>",
+            "24hChange": "24時間の変動",
+            "currentPrice": "現在の価格",
+            "after": "後",
+            "before": "前",
+            "value": "値",
+            "weight": "重み",
+            "units": "単位",
+            "addAssetBottom": "資産を追加",
+            "empty": "このポートフォリオは空です。スワップを始めるには、まず<1>ウォレットを追加</1>する必要があります。",
+            "instructions": "指示",
+            "instructions1": "あなたのポートフォリオをリバランス – 3つの簡単なステップ：",
+            "instructions2": " 資産の重みを減らすにはスライダーを左にドラッグします。使用 ",
+            "instructions3": "資産全体を削除するには",
+            "instructions4": "資産の重みを増やすにはスライダーを右にドラッグします。使用 ",
+            "instructions5": " 新しい資産を追加するには。<1/><2>（注記：重みを増やすために、あなたは他の資産の重みを減らしたに違いありません）</2>",
+            "instructions6": "クリックする",
+            "instructions7": "変更を再確認し終えた場合。",
+            "addAssetSelector": "資産を追加",
+            "readOnly": "このウォレットは読み取り専用です。資産の取引きを行うには<1><2>お使いのウォレットを接続</2></1>する必要があります。"
+        },
+        "widget": {
+            "swapInstantly": "即座にスワップ",
+            "omitted": "<0>省略されると、変動相場が使用されます。</0>",
+            "approxSend": "<0>あなたが送金する必要があるおおよその金額。保証付き見積もりを受け取るには、[作成する]をクリックします。</0>",
+            "expectSend": "<0>私たちがあなたに送っていただきたい金額。</0>",
+            "approxReceive": "<0>あなたが受け取る予定のおおよその金額。保証付き見積もりを受け取るには、[作成する]をクリックします。</0>",
+            "guaranteeReceive": "<0>あなたが必ず受け取る金額。</0>",
+            "youHave": "あなたは持っています",
+            "acceptTerms": "私は<1> Faa.st 約款</1>に同意します",
+            "createSwap": "スワップを作成",
+            "generatingSwap": "スワップを生成中…",
+            "chooseSend": "送る資産を選択",
+            "chooseReceive": "受け取る資産を選択",
+            "noRate": "レートを読み出すことができません",
+            "sendAmountPlaceholder": "送金額",
+            "optionalPlaceholder": " （任意）",
+            "receiveAmountPlaceholder": "受取額",
+            "returnAddressOptionalPlaceholder": "払戻先アドレス（任意）",
+            "returnAddressPlaceholder": "払戻先アドレス",
+            "receiveAddressPlaceholder": "受取先アドレス",
+            "pleaseNote": "ご注意ください: ",
+            "dueToLocation": "<0>お住まいの地域により</0>、スワップ上限は となります。",
+            "youReceive": "受取額",
+            "fromWallet": "送信元ウォレット",
+            "toWallet": "送信先ウォレット",
+            "youSend": "送金額",
+            "notEnoughEth": "このウォレットにはガス料金を支払うための資金が不足しています。ETHを入金してから再度お試しください。",
+            "sendAmountAtLeast": "送金額は次の金額以上で指定してください:",
+            "sendAmountGreaterThan": "有効な価格設定を確実に行うため、送金額の上限は",
+            "dueToYourLocation": "となります。",
+            "ensurePricing": "を超えることはできません。",
+            "invalid": "無効",
+            "address": "アドレス"
+        },
+        "progressBar": {
+            "createSwap": "スワップを作成",
+            "sendSymbol": "送信する <1></1>",
+            "receiveSymbol": "受信する <1></1>"
+        },
+        "footer": {
+            "website": "Faa.st ウェブサイト",
+            "termsConditions": "約款",
+            "privacy": "プライバシーポリシー",
+            "feedback": "フィードバックを送信"
+        },
+        "coinDetail": {
+            "buy": "購入する",
+            "sell": "売却する",
+            "marketCap": "時価総額",
+            "volume": "24時間の出来高",
+            "supply": "供給量"
+        },
+        "assetTable": {
+            "noAssets": "表示する資産がありません",
+            "th1": "資産",
+            "th2": "単位",
+            "th3": "ホールディングス",
+            "th4": "重み",
+            "th5": "価格",
+            "th6": "24時間の変動"
+        },
+        "swapSubmit": {
+            "geoLimit": "<2>お住まいの地域のため</2>、送金額は$<1></1> を超えることはできません。",
+            "multipleSwaps": "あなたのポートフォリオに加えた変更を保存するために、以下のスワップが行われます。それらを再確認し、[<1></1>]をクリックして続行してください。",
+            "networkFee": "合計ネットワーク料金： ",
+            "timer": "* 以下の期間内に提出された場合、見積もりレートは保証されます：",
+            "terms": "私は<1>Faast約款</1>に同意します",
+            "cancel": "キャンセル",
+            "submit": "提出する",
+            "submitAll": "すべてを提出",
+            "beginSigning": "署名を開始",
+            "confirmSubmit": "確認して提出",
+            "reviewSign": "再確認して書名",
+            "additionalFees": "** 送金する資産と使用するウォレットによっては追加手数料が適用される場合があります。"
+        },
+        "ethInstructions": {
+            "to": "送信先：",
+            "value": "値：",
+            "gas": "ガス：",
+            "gasPrice": "ガス価格：",
+            "data": "データ：",
+            "confirm": "ウォレットによって促された場合、次の取引の詳細を確認してください。",
+            "sending": "<1></1>を<3><4></4></3>へ送信中。"
+        },
+        "swapStatusCard": {
+            "signed": "署名済み",
+            "ready": "準備完了",
+            "awaiting": "署名待ち",
+            "failed": "失敗しました",
+            "sending": "送信中",
+            "status": "状況：",
+            "rate": "レート：",
+            "network": "ネットワーク料金：",
+            "swapFee": "スワップ料金：",
+            "usingWallet": "ウォレットの使用",
+            "atAddress": "アドレスで",
+            "date": "日付：",
+            "orderId": "注文ID：",
+            "sentTx": "txnを送信しました：",
+            "last": "直近の"
+        },
+        "searchResults": {
+            "view": "ポートフォリオで表示",
+            "add": "ポートフォリオに追加"
+        },
+        "blocked": {
+            "restricted": "制限区域",
+            "sorry": "申し訳ありません、あなたはブロックされた場所からfaa.stにアクセスしています。このメッセージを誤って受け取っている場合は、<1>こちら</1>で詳しく知ることができます。"
+        },
+        "selectPortfolioDropdown": {
+            "add": "ポートフォリオを追加"
+        },
+        "shareModal": {
+            "share": "ポートフォリオを共有",
+            "permalink": "パーマリンク："
+        },
+        "walletSelector": {
+            "wallets": "ウォレット",
+            "addWallet": "ウォレットを追加",
+            "noWallets": "このポートフォリオにはウォレットがありません"
+        },
+        "tradeDetailModal": {
+            "orderDetails": "注文の詳細"
+        },
+        "walletInfoModal": {
+            "metamask1": "<0></0>は、Ethereumウォレットを提供するデスクトップブラウザーの拡張機能です。<2>こちらで</2>それを入手できます。",
+            "metamask2": "<1></1>をすでにお持ちの場合は、このブラウザー上で拡張機能が有効になっていることを確認してください。",
+            "mist1": "<0></0>は、Ethereumウォレットを内蔵したデスクトップウェブブラウザーです。 <2>こちらで</2>それを入手できます。",
+            "mist2": "<1></1>をすでにお持ちの場合は, 内蔵のウェブブラウザーを使用して<3>faa.st</3>を開いてください。",
+            "status1": "<0></0>は、iOSおよびAndroid用のモバイルEthereum OSです。<2>こちらで</2>詳しく知ることができます。",
+            "status2": "<1></1>をすでにお持ちの場合は、内蔵のウェブブラウザーを使用して<3>faa.st</3>を開いてください。",
+            "coinbase1": "<0></0>は、iOSおよびAndroid用のモバイルEthereum OSです。<2>こちらで</2>それを入手するか、または以下のいずれかのリンクを使用してください。",
+            "coinbase2": "<1></1>をすでにお持ちの場合は、内蔵のウェブブラウザーを使用して<3>faa.st</3>を開いてください。"
+        },
+        "createWalletModal": {
+            "pleaseAck": "次の免責事項をご確認ください:",
+            "ack1": " <1></1>ファイルは、ファイルに含まれているあらゆる資金を送金するのに使用することができます。",
+            "ack2": "<1></1>ファイルには、暗号化された機密の秘密鍵が含まれており、私が入力したパスワードを使用してのみアクセスすることができます。",
+            "ack3": "Faastには、ファイルまたはパスワードのバックアップがありません。この<1></1>は、私のウェブブラウザーで生成されたもので、インターネット経由で一度も送信されませんでした。",
+            "ack4": "私がファイルへのアクセスを失った場合、またはパスワードを忘れた場合、私はそれに含まれているすべての資金を失います。",
+            "ack5": "私はこのファイルを私のコンピューターの安全な場所にダウンロードし保存しました。",
+            "ack6": "<1></1>ファイルは、私のパスワードと組み合わせて、 Faast以外のアプリケーションを使用して資金を送金するのに使用することができます。",
+            "agree": "私は上記のすべての内容を理解した上で同意します",
+            "createWallet": "ウォレットを作成",
+            "downloadKeystore": "キーストアファイルをダウンロード",
+            "download": "ファイルを<0></0> ダウンロード <2></2>",
+            "cancel": "キャンセル",
+            "continue": "続行する",
+            "importPrivateKey": "秘密鍵をインポート",
+            "enterPrivateKey": "既存のイーサリアムウォレットの秘密鍵を入力してください。",
+            "enterPassword": "<1>{{walletName}}</1>のパスワードを入力してください。パスワードはメモに書き留めておいてください。パスワードがないと<3>{{walletName}}</3>にアクセスできなくなります。",
+            "passwordLabel": "パスワード",
+            "confirmPasswordLabel": "パスワードを確認",
+            "passwordRequired": "パスワードは必須です",
+            "passwordLength": "8文字以上で入力してください。ウォレットを強力なパスワードで保護することが重要です。",
+            "passwordsDontMatch": "パスワードが一致しません",
+            "enterPasswordPlaceholder": "パスワードを入力...",
+            "confirmPasswordPlaceholder": "パスワードを再入力...",
+            "enterPrivateKeyPlaceholder": "秘密鍵を入力..."
+        },
+        "walletPasswordPrompt": {
+            "walletPassword": "ウォレットのパスワード",
+            "enterYourPassword": "続行するには、次のウォレットのパスワードを入力してください",
+            "cancel": "キャンセル",
+            "continue": "続行する",
+            "enterPasswordPlaceholder": "パスワードを入力..."
+        },
+        "assetSelector": {
+            "comingSoon": "間もなく公開予定",
+            "alreadyAdded": "すでに追加されています",
+            "unavailable": "お住まいの地域ではご利用いただけません",
+            "unsupported": "サポートされていないウォレット",
+            "searchByName": "名前またはシンボルで検索..."
+        },
+        "addressModal": {
+            "address": "アドレス",
+            "viewOnExplorer": "Explorerで表示",
+            "close": "閉じる"
+        },
+        "stepTwoConnected": {
+            "title": "スワップ取引を確認"
+        },
+        "stepTwoManual": {
+            "geoLimit": "ご注意ください：<5>お住まいの地域のため</5>、スワップできる最大量は、<1></1> <3></3>です。",
+            "status": "状況：",
+            "updatesAuto": "注文状況は、自動的に更新されます。リフレッシュする必要はありません。",
+            "orderID": "注文ID：",
+            "receiveAddress": "受信アドレス：",
+            "refundAddress": "払い戻しアドレス：",
+            "rate": "レート：",
+            "depositAmount": "入金金額：",
+            "minimumAmount": "最低入金金額：",
+            "receiveAmount": "受け取り金額：",
+            "fixedPrice": "* 見積もりレートは、現在の市場状況に基づく目算です。実際のレートは変わることがあります。",
+            "quotedRate": "* 入金が以下の期間内に送金された場合、見積もりレートは保証されます：",
+            "orderDetails": "注文の詳細",
+            "send": "送金する",
+            "atLeast": "少なくとも",
+            "toAddress": "宛先アドレス:"
+        },
+        "hardwareWalletModal": {
+            "accountSelect": {
+                "heading": "追加したいアカウントを選択してください。",
+                "showAccounts": "アカウントの表示",
+                "next": "次へ",
+                "back": "戻る",
+                "previous:": " 前へ"
+            },
+            "assetSelect": {
+                "express": "エクスプレス設定の場合、[<1></1>]をクリックします。",
+                "addAll": "すべての通貨を追加",
+                "addSpecific": "または、サポートされている次の通貨のいずれかを選択して特定のアカウントを追加してください。",
+                "learnMore": "[…]についてさらに知る",
+                "cancel": "キャンセル",
+                "done": "完了"
+            },
+            "confirmAccount": {
+                "pleaseConfirm": "次のアカウントの追加を確定してください。",
+                "changeAccount": "アカウントを変更",
+                "back": "戻る",
+                "confirm": "確認する"
+            },
+            "connectAsset": {
+                "back": "戻る",
+                "continue": "続行する"
+            },
+            "connectionInstructions": {
+                "trezor": {
+                    "connect": "開始するにはTREZORを接続します",
+                    "version": "TREZORウォレットウェブサイトを使用して、TREZORファームウェアが最新のものであることを確保してください",
+                    "pin": "必要に応じて、あなたのPINまたはパスワードを入力してTREZORのロックを解除してください",
+                    "export": "あなたの<1></1>アカウントの公開鍵をエクスポートしたいかどうか尋ねられた場合、<3>[エクスポート]</3>を選択してください",
+                    "popup": "「ポップアップが閉じました」というエラーが表示された場合は、ブラウザー設定でポップアップを有効にしてから再試行してください"
+                },
+                "ledger": {
+                    "connect": "開始するにはLedgerデバイスを接続します",
+                    "pin": "Ledgerのロックを解除するには、あなたのPINを入力してください",
+                    "version": "Ledgerライブデスクトップアプリを使用して、Ledgerファームウェアおよび<1></1>アプリが最新のものであることを確保してください",
+                    "open": "Ledgerで<1></1>アプリを開きます"
+                }
+            },
+            "connectionStatus": {
+                "unable": "接続できません、<1><2>{{retrySeconds}}</2></1>秒後に再試行します",
+                "retryNow": "今すぐ再試行",
+                "retry": "再試行する",
+                "connecting": "接続中",
+                "connected": "接続済み",
+                "cancelled": "キャンセル済み",
+                "error": "エラー"
+            },
+            "derivationPath": {
+                "change": "派生パスを変更",
+                "derivationPathPlaceholder": "派生パス",
+                "invalidError": "無効な派生パス",
+                "derivationLabel": "派生パス"
+            },
+            "index": {
+                "adding": "追加"
+            },
+            "switchPathButton": {
+                "switch": "[…]へ切り替え"
+            }
+        },
+        "access": {
+            "createWallet": {
+                "create": "<0></0>ウォレットを作成",
+                "generate": "新しいキーストアファイルを生成"
+            },
+            "importKeystore": {
+                "import": "<0></0>ウォレットをインポート",
+                "drag": "キーストアファイルをドラッグアンドドロップ"
+            }
+        },
+        "confirmTransactionModal": {
+            "title": "取引を確認",
+            "cancel": "キャンセル"
+        },
+        "ledgerBTCInstructions": {
+            "confirm": "確認する",
+            "output": "出力#<1></1>",
+            "amount": "金額",
+            "address": "アドレス",
+            "transaction": "取引",
+            "fees": "料金"
+        },
+        "ledgerETHInstructions": {
+            "amount": "金額",
+            "address": "アドレス",
+            "maxFees": "最大手数料"
+        },
+        "ledgerInstructions": {
+            "pleaseConfirm": "あなたのデバイス上で取引を確認してください。画面に次の情報が表示されるはずです。",
+            "tip": "<0>ヒント: デバイス上に取引が表示されない場合は、あなたのPINを使用して取引のロックを解除していること、および<2>{{appName}}</2>アプリを開いていることを確保してください。</0>",
+            "confirmWithin": "以下の期間内に確認してください："
+        },
+        "metaMaskInstructions": {
+            "pleaseConfirm": "取引を確認してください。MetaMaskに以下の情報が表示されるはずです。",
+            "tip": "<0>ヒント: 注文の詳細がポップアップ表示されていない場合は、<2>ここに</2>示されているようにブラウザーの拡張メニューにあるMetaMaskアイコンをクリックしてください。</0>",
+            "myWallet": "マイウォレット",
+            "gasFee": "ガス料金",
+            "total": "合計"
+        },
+        "trezorBTCInstructions": {
+            "confirmSending": "送信を確認",
+            "to": "送信先",
+            "reallySend": "本当に送信する",
+            "fromWallet": "あなたのウォレットから？",
+            "feeIncluded": "手数料込み："
+        },
+        "trezorETHInstructions": {
+            "send": "送信する",
+            "to": "送信先",
+            "reallySend": "本当に送信する",
+            "paying": "までの支払い",
+            "forGas": "ガスのための？"
+        },
+        "trezorInstructions": {
+            "pleaseConfirm": "あなたのデバイス上で取引を確認してください。画面に次の情報が表示されるはずです。"
+        },
+        "loading": {
+            "balances": "残高を読み込み中..."
         }
-      },
-    "connectionStatus": {
-      "unable": "接続できません、<1><2>{{retrySeconds}}</2></1>秒後に再試行します",
-      "retryNow": "今すぐ再試行",
-      "retry": "再試行する"
-    },
-    "derivationPath": {
-      "change": "派生パスを変更"
-    },
-    "index": {
-      "adding": "追加"
-    },
-    "switchPathButton": {
-      "switch": "[…]へ切り替え"
     }
-  },
-  "access": {
-    "createWallet": {
-      "create": "<0></0>ウォレットを作成",
-      "generate": "新しいキーストアファイルを生成"
-    },
-    "importKeystore": {
-      "import": "<0></0>ウォレットをインポート",
-      "drag": "キーストアファイルをドラッグアンドドロップ"
-    }
-  },
-  "confirmTransactionModal": {
-    "title": "取引を確認",
-    "cancel": "キャンセル"
-  },
-  "ledgerBTCInstructions": {
-    "confirm": "確認する",
-    "output": "出力#<1></1>",
-    "amount": "金額",
-    "address": "アドレス",
-    "transaction": "取引",
-    "fees": "料金"
-  },
-  "ledgerETHInstructions": {
-    "amount": "金額",
-    "address": "アドレス",
-    "maxFees": "最大手数料"
-  },
-  "ledgerInstructions": {
-    "pleaseConfirm": "あなたのデバイス上で取引を確認してください。画面に次の情報が表示されるはずです。",
-    "tip": "<0>ヒント: デバイス上に取引が表示されない場合は、あなたのPINを使用して取引のロックを解除していること、および<2>{{appName}}</2>アプリを開いていることを確保してください。</0>",
-    "confirmWithin": "以下の期間内に確認してください："
-  },
-  "metaMaskInstructions": {
-    "pleaseConfirm": "取引を確認してください。MetaMaskに以下の情報が表示されるはずです。",
-    "tip": "<0>ヒント: 注文の詳細がポップアップ表示されていない場合は、<2>ここに</2>示されているようにブラウザーの拡張メニューにあるMetaMaskアイコンをクリックしてください。</0>",
-    "myWallet": "マイウォレット",
-    "gasFee": "ガス料金",
-    "total": "合計"
-  },
-  "trezorBTCInstructions": {
-    "confirmSending": "送信を確認",
-    "to": "送信先",
-    "reallySend": "本当に送信する",
-    "fromWallet": "あなたのウォレットから？",
-    "feeIncluded": "手数料込み："
-  },
-  "trezorETHInstructions": {
-    "send": "送信する",
-    "to": "送信先",
-    "reallySend": "本当に送信する",
-    "paying": "までの支払い",
-    "forGas": "ガスのための？"
-  },
-  "trezorInstructions": {
-    "pleaseConfirm": "あなたのデバイス上で取引を確認してください。画面に次の情報が表示されるはずです。"
-  }
-  }
 }

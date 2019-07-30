@@ -53,8 +53,8 @@ const CreateWalletModalView = (props) => {
     <Modal backdrop='static' isOpen={props.showModal} className='text-center' toggle={props.handleCancel}>
       <ModalHeader tag='h3' className='text-primary' cssModule={{ 'modal-title': 'modal-title mx-auto' }} toggle={props.handleCancel}>
         {(props.isNewWallet &&
-          <span>Create wallet</span>) ||
-          <span>Download keystore file</span>
+          <T tag='span' i18nKey='app.createWalletModal.createWallet'>Create wallet</T>) ||
+          <T tag='span' i18nKey='app.createWalletModal.downloadKeystore'>Download keystore file</T>
         }
       </ModalHeader>
       {renderView()}
@@ -75,12 +75,14 @@ CreateWalletModalView.propTypes = {
 
 let CreatePasswordForm = ({
   walletName, walletAddress, handleSubmit, handleCancel, submitting,
-  invalid, validatePassword, validatePasswordConfirm
+  invalid, validatePassword, validatePasswordConfirm, t
 }) => (
   <Form onSubmit={handleSubmit}>
     <ModalBody className='text-left'>
       <div className='mb-3'>
-        Enter a password for your {walletName}. Please make a note of your password. You will not be able to access the funds in your {walletName} without your password.
+        <T tag='span' i18nKey='app.createWalletModal.enterPassword'>
+          Enter a password for your {{ walletName }}. Please make a note of your password. You will not be able to access the funds in your {{ walletName }} without your password.
+        </T>
       </div>
 
       <HiddenUsernameField value={walletAddress || ''}/>
@@ -91,8 +93,8 @@ let CreatePasswordForm = ({
         id='create-password'
         name='password'
         type='password'
-        label='Password'
-        placeholder='Enter a password...'
+        label={<T tag='span' i18nKey='app.createWalletModal.passwordLabel'>Password</T>}
+        placeholder={t('app.createWalletModal.enterPasswordPlaceholder', 'Enter a password...')}
         autoFocus
         autoComplete='new-password'
         validate={validatePassword}
@@ -105,8 +107,8 @@ let CreatePasswordForm = ({
         id='create-password-confirm'
         name='passwordConfirm'
         type='password'
-        label='Confirm Password'
-        placeholder='Enter the password again...'
+        label={<T tag='span' i18nKey='app.createWalletModal.confirmPasswordLabel'>Confirm Password</T>}
+        placeholder={t('app.createWalletModal.confirmPasswordPlaceholder', 'Enter the password again...')}
         autoComplete='new-password'
         validate={validatePasswordConfirm}
         labelProps={{ xs: '12', md: '4' }}
@@ -114,8 +116,12 @@ let CreatePasswordForm = ({
       />
     </ModalBody>
     <ModalFooter className='justify-content-between'>
-      <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
-      <Button type='submit' color='success' disabled={submitting || invalid}>Continue</Button>
+      <Button type='button' color='primary' outline onClick={handleCancel}>
+        <T tag='span' i18nKey='app.createWalletModal.cancel'>Cancel</T>
+      </Button>
+      <Button type='submit' color='success' disabled={submitting || invalid}>
+        <T tag='span' i18nKey='app.createWalletModal.continue'>Continue</T>
+      </Button>
     </ModalFooter>
   </Form>
 )
@@ -130,27 +136,31 @@ CreatePasswordForm = reduxForm({
 })(CreatePasswordForm)
 
 let ImportWalletForm = ({
-  invalid, handleSubmit, handleCancel
+  invalid, handleSubmit, handleCancel, t
 }) => (
   <Form onSubmit={handleSubmit}>
     <ModalBody>
-      <h4 className='modal-title'>Import private key</h4>
+      <T tag='h4' i18nKey='app.createWalletModal.importPrivateKey' className='modal-title'>Import private key</T>
       <div className='modal-text'>
-        Enter the private key of your existing Ethereum wallet.
+        <T tag='span' i18nKey='app.createWalletModal.enterPrivateKey'>Enter the private key of your existing Ethereum wallet.</T>
         <FormGroup>
           <Input
             tag={Field}
             name='privateKey'
             component='textarea'
-            placeholder='Enter your private key...'
+            placeholder={t('app.createWalletModal.enterPrivateKeyPlaceholder', 'Enter your private key...')}
             autoComplete='off'
           />
         </FormGroup>
       </div>
     </ModalBody>
     <ModalFooter className='justify-content-between'>
-      <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
-      <Button type='submit' color='success' disabled={invalid}>Continue</Button>
+      <Button type='button' color='primary' outline onClick={handleCancel}>
+        <T tag='span' i18nKey='app.createWalletModal.cancel'>Cancel</T>
+      </Button>
+      <Button type='submit' color='success' disabled={invalid}>
+        <T tag='span' i18nKey='app.createWalletModal.continue'>Continue</T>
+      </Button>
     </ModalFooter>
   </Form>
 )
@@ -173,11 +183,11 @@ let DownloadKeystoreForm = ({
       <div className='modal-text'>
         <FormGroup>
           <Button color='primary' size='lg' onClick={handleDownload} className='text-medium'>
-            <i className='fa fa-download mr-2'/>Download {walletName} file
+            <T tag='span' i18nKey='app.createWalletModal.download'><i className='fa fa-download mr-2'/>Download {walletName} file</T>
           </Button>
         </FormGroup>
         <div className='text-left'>
-          <h5 className='text-primary'>Please acknowledge the following disclaimer:</h5>
+          <T tag='h5' i18nKey='app.createWalletModal.pleaseAck' className='text-primary'>Please acknowledge the following disclaimer:</T>
           <ol className='mb-2'>
             {getAcks({ isNewWallet, walletName }).map((ack) => (
               <li key={ack} className='mb-2'>
@@ -190,14 +200,18 @@ let DownloadKeystoreForm = ({
             name='disclaimerAgreed'
             onChange={handleDisclaimerAgreedChange}
             disabled={!hasDownloadedFile}
-            label='I understand and agree with all of the above'
+            label={<T tag='span' i18nKey='app.createWalletModal.agree'>I understand and agree with all of the above</T>}
           />
         </div>
       </div>
     </ModalBody>
     <ModalFooter className='justify-content-between'>
-      <Button type='button' color='primary' outline onClick={handleCancel}>Cancel</Button>
-      <Button type='submit' color='success' disabled={!(hasDownloadedFile && agreedToDisclaimer)}>Continue</Button>
+      <Button type='button' color='primary' outline onClick={handleCancel}>
+        <T tag='span' i18nKey='app.createWalletModal.cancel'>Cancel</T>
+      </Button>
+      <Button type='submit' color='success' disabled={!(hasDownloadedFile && agreedToDisclaimer)}>
+        <T tag='span' i18nKey='app.createWalletModal.continue'>Continue</T>
+      </Button>
     </ModalFooter>
   </Form>
 )

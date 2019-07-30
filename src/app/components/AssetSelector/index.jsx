@@ -10,6 +10,8 @@ import { sortByProperty } from 'Utilities/helpers'
 import { getAllAssetsArray } from 'Selectors/asset'
 import { isAppRestricted } from 'Selectors/app'
 
+import { withTranslation } from 'react-i18next'
+
 import T from 'Components/i18n/T'
 
 const DEBOUNCE_WAIT = 400
@@ -122,6 +124,7 @@ class AssetSelector extends Component {
         handleSelect={handleSelect}
         handleSearchSubmit={handleSearchSubmit}
         handleSearchChange={handleSearchChange}
+        t={this.props.t}
       />
     )
   }
@@ -141,7 +144,7 @@ AssetSelector.defaultProps = {
   isAssetDisabled: (asset) => !asset.swapEnabled
 }
 
-export default connect(createStructuredSelector({
+export default withTranslation()(connect(createStructuredSelector({
   assets: getAllAssetsArray,
   isAppRestricted: isAppRestricted,
-}))(AssetSelector)
+}))(AssetSelector))

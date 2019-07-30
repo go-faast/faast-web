@@ -28,10 +28,10 @@ const priceChange = (date, asset) => {
   // falsey date => hasn't loaded yet so default to 1h change
   date = new Date(date)
   const hoursSinceTrade = !date ? 0 : (Date.now() - date.getTime()) / 3600000
-  const timespan = hoursSinceTrade <= 1 ? 'Last 1hr: ' : hoursSinceTrade >= 24 ? 'Last 7d: ' : 'Last 24hrs: '
+  const timespan = hoursSinceTrade <= 1 ? '1hr: ' : hoursSinceTrade >= 24 ? '7d: ' : '24hrs: '
   var priceChange = hoursSinceTrade <= 1 ? change1 : hoursSinceTrade >= 24 ? change7d : change24
   return (
-    <span>{timespan}
+    <span><T tag='span' i18nKey='app.swapStatusCard.last'>Last</T> {timespan}
       <ChangePercent>{priceChange}</ChangePercent>
       <PriceArrowIcon 
         className={classNames('swapChangeArrow', priceChange.isZero() ? 'd-none' : null)} 

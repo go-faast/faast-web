@@ -18,11 +18,13 @@ import coinbaseGraphic from '../../res/img/wallet/coinbaseGraphic.png'
 import trustGraphic from '../../res/img/wallet/trustGraphic.png'
 import statusGraphic from '../../res/img/wallet/statusGraphic.png'
 
+import { i18nTranslate as t } from '../utilities/translate'
+
 const switchPathSegwit = {
   primaryPrefix: 'm/49',
   primaryLabel: 'segwit account',
   secondaryPrefix: 'm/44',
-  secondaryLabel: 'legacy (non-segwit) account',
+  secondaryLabel: t('app.walletTypes.nonSegwit', 'legacy (non-segwit) account'),
 }
 
 const commonSupportedAssets = {
@@ -36,7 +38,7 @@ const commonSupportedAssets = {
       primaryPrefix: 'm/44\'/145\'',
       primaryLabel: 'post-fork account',
       secondaryPrefix: 'm/44\'/0\'',
-      secondaryLabel: 'legacy (pre-fork) account',
+      secondaryLabel: t('app.walletTypes.preFork', 'legacy (pre-fork) account'),
     }
   },
   LTC: {
@@ -47,12 +49,12 @@ const commonSupportedAssets = {
 
 export default {
   ledger: {
-    name: 'Ledger Wallet',
+    name: t('app.walletTypes.ledger', 'Ledger Wallet'),
     icon: ledgerLogo,
     website: 'https://www.ledger.com/',
     hardware: true,
-    slogan: 'Keep your crypto secure, everywhere.', 
-    description: 'Ledger offers smartcard-based crypto asset hardware wallets bringing optimal protection level to your bitcoins, ethereums, ripple and more - without sacrificing usability or control.',
+    slogan: t('app.walletTypes.ledgerSlogan', 'Keep your crypto secure, everywhere.'), 
+    description: t('app.walletTypes.ledgerDescription', 'Ledger offers smartcard-based crypto asset hardware wallets bringing optimal protection level to your bitcoins, ethereums, ripple and more - without sacrificing usability or control.'),
     graphic: ledgerGraphic,
     howTo: 'https://medium.com/faast/how-to-make-effortless-cross-chain-trades-with-a-ledger-wallet-d71f5d16a43d',
     supportedAssets: {
@@ -66,8 +68,8 @@ export default {
     name: 'TREZOR',
     icon: trezorLogo,
     graphic: trezorGraphic,
-    slogan: 'The safe place for your coins.',
-    description: 'Trezor offers you a secure vault for your digital assets. Store bitcoins, litecoins, passwords, logins, and keys without worries.',
+    slogan: t('app.walletTypes.trezorSlogan', 'The safe place for your coins.'),
+    description: t('app.walletTypes.trezorDescription', 'Trezor offers you a secure vault for your digital assets. Store bitcoins, litecoins, passwords, logins, and keys without worries.'),
     howTo: 'https://medium.com/faast/how-to-make-effortless-cross-chain-trades-with-a-trezor-wallet-50f6e85fe923',
     website: 'https://trezor.io/',
     hardware: true,
@@ -83,8 +85,8 @@ export default {
     icon: blockstackLogo,
     website: 'https://blockstack.org',
     graphic: blockstackGraphic,
-    slogan: 'The easiest way to start building decentralized blockchain apps.',
-    description: 'Blockstack is building an ecosystem that gives your users control over their fundamental digital rights.'
+    slogan: t('app.walletTypes.blockstackSlogan', 'The easiest way to start building decentralized blockchain apps.'),
+    description: t('app.walletTypes.blockstackDescription', 'Blockstack is building an ecosystem that gives your users control over their fundamental digital rights.')
   },
   metamask: {
     name: 'MetaMask',
@@ -92,18 +94,18 @@ export default {
     icon: metamaskLogo,
     web3: true,
     graphic: metamaskGraphic,
-    slogan: 'Bring Ethereum to your browser.',
-    description: 'MetaMask is a bridge that allows you to visit the distributed web of tomorrow in your browser today. It allows you to run Ethereum dApps right in your browser.', 
+    slogan: t('app.walletTypes.metmaskSlogan','Bring Ethereum to your browser.'),
+    description: t('app.walletTypes.metamaskDescription', 'MetaMask is a bridge that allows you to visit the distributed web of tomorrow in your browser today. It allows you to run Ethereum dApps right in your browser.'), 
     howTo: 'https://medium.com/faast/metamask-faast-the-easiest-way-to-diversify-your-cryptocurrency-portfolio-4551ea649439'
   },
   mist: {
-    name: 'Mist Browser',
+    name: t('app.walletTypes.mist', 'Mist Browser'),
     website: 'https://github.com/ethereum/mist',
     icon: mistLogo,
     web3: true,
     graphic: mistGraphic,
-    slogan: 'Mist. Browse and use Ðapps on the Ethereum network.',
-    description: 'The Mist browser is the tool of choice to browse and use Ðapps.'
+    slogan: t('app.walletTypes.mistSlogan', 'Mist. Browse and use Ðapps on the Ethereum network.'),
+    description: t('app.walletTypes.mistDescription', 'The Mist browser is the tool of choice to browse and use Ðapps.')
   },
   parity: {
     name: 'Parity',
@@ -111,27 +113,27 @@ export default {
     website: 'https://www.parity.io/',
     web3: true,
     graphic: parityGraphic,
-    slogan: 'Blockchain Infrastructure for the Decentralised Web.',
-    description: 'Parity Technologies builds core blockchain infrastructure. From Parity Ethereum, the most advanced Ethereum client, to Polkadot, the next-generation interoperable blockchain network.'
+    slogan: t('app.walletTypes.paritySlogan', 'Blockchain Infrastructure for the Decentralised Web.'),
+    description: t('app.walletTypes.parityDescription', 'Parity Technologies builds core blockchain infrastructure. From Parity Ethereum, the most advanced Ethereum client, to Polkadot, the next-generation interoperable blockchain network.')
   },
   coinbase: {
-    name: 'Coinbase Wallet',
+    name: t('app.walletTypes.coinbase', 'Coinbase Wallet'),
     website: 'https://wallet.coinbase.com/',
     icon: coinbaseLogo,
     web3: true,
     graphic: coinbaseGraphic,
-    slogan: 'The easiest and most secure crypto wallet.',
-    description: 'Coinbase: the simple, safe way to buy, manage and sell your cryptocurrency.',
+    slogan: t('app.walletTypes.coinbaseSlogan', 'The easiest and most secure crypto wallet.'),
+    description: t('app.walletTypes.coinbaseDescription', 'Coinbase: the simple, safe way to buy, manage and sell your cryptocurrency.'),
     howTo: 'https://medium.com/faast/how-to-use-coinbase-wallet-with-faast-and-swap-cryptocurrency-on-your-smartphone-846e8a5f93d1'
   },
   trust: {
-    name: 'Trust Wallet',
+    name: t('app.walletTypes.trust', 'Trust Wallet'),
     website: 'https://trustwalletapp.com/',
     icon: trustLogo,
     web3: true,
     graphic: trustGraphic,
-    slogan: 'Secure wallet for Ethereum, ERC20, ERC223 & ERC721 tokens.',
-    description: 'Trust Wallet is the best ethereum wallet and multi cryptocurrency wallet to store your favourite ERC721 &  ERC20 tokens.',
+    slogan: t('app.walletTypes.trustSlogan', 'Secure wallet for Ethereum, ERC20, ERC223 & ERC721 tokens.'),
+    description: t('app.walletTypes.trustDescription', 'Trust Wallet is the best ethereum wallet and multi cryptocurrency wallet to store your favourite ERC721 & ERC20 tokens.'),
   },
   status: {
     name: 'Status',
@@ -139,8 +141,8 @@ export default {
     icon: statusLogo,
     web3: true,
     graphic: statusGraphic,
-    slogan: 'Access a Better Web, Anywhere.',
-    description: 'With Status you can chat, browse and transact securely in an open source community committed to bringing the power of Ethereum and a more distributed internet to your pocket.',
+    slogan: t('app.walletTypes.statusSlogan', 'Access a Better Web, Anywhere.'),
+    description: t('app.walletTypes.statusDescription', 'With Status you can chat, browse and transact securely in an open source community committed to bringing the power of Ethereum and a more distributed internet to your pocket.'),
     howTo: 'https://medium.com/faast/how-to-use-status-mobile-ethereum-wallet-with-faast-4936620e96fd'
   }
 }

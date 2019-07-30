@@ -87,7 +87,9 @@ export default compose(
       </ListGroup>
       <Row className='gutter-2 justify-content-between align-items-center'>
         <Col xs='3' className='text-left'>
-          <Button color='link' onClick={() => changePage(page - 1)} disabled={page <= 0}><i className='fa fa-long-arrow-left'/> previous</Button>
+          <Button color='link' onClick={() => changePage(page - 1)} disabled={page <= 0}><i className='fa fa-long-arrow-left'/> 
+            <T tag='span' i18nKey='app.hardwareWalletModal.accountSelect.previous'> previous</T>
+          </Button>
         </Col>
         <Col className='text-muted'>
           <T tag='span' i18nKey='app.hardwareWalletModal.accountSelect.showAccounts'>showing accounts</T> {startIndex + 1} - {endIndex + 1}

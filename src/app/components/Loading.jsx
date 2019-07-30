@@ -22,7 +22,7 @@ const Loading = ({ tag: Tag, label, error, center, className, ...props }) => (
 
 Loading.propTypes = {
   tag: tagPropType,
-  label: PropTypes.string,
+  label: PropTypes.node,
   error: PropTypes.string,
   center: PropTypes.bool,
 }

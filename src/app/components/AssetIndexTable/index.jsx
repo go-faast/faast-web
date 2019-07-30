@@ -295,7 +295,7 @@ const AssetIndexTable = ({ assetList, push, isMobileDropdownOpen, toggleMobileDr
                       1h
                         </DropdownItem>
                       </DropdownMenu>
-                    </Dropdown>) : `${defaultPriceChange} Change`}
+                    </Dropdown>) : <span>{defaultPriceChange} <T tag='span' i18nKey='app.assetIndexTable.change'>Change</T></span>}
                 </th>
               </tr>
             </thead>

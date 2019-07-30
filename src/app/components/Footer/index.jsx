@@ -40,12 +40,8 @@ export default compose(
               </li>
               <li className='list-inline-item'>
                 <small>
-                  <span 
-                    onClick={() => toggleFeedbackForm()}
-                    target='_blank noopener noreferrer'
-                    className={classNames('btn-link cursor-pointer text-muted', hoverUnderline)}
-                  >
-                    Provide Feedback
+                  <span className={classNames('btn-link cursor-pointer text-muted', hoverUnderline)} onClick={() => toggleFeedbackForm()}>
+                    <T tag='span' i18nKey='app.footer.feedback'>Provide Feedback</T>
                   </span>
                 </small>
               </li>
