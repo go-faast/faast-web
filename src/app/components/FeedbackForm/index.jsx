@@ -2,12 +2,12 @@ import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import * as validator from 'Utilities/validator'
 import { createStructuredSelector } from 'reselect'
-import { compose, setDisplayName, withHandlers } from 'recompose'
+import { compose, setDisplayName, withHandlers, lifecycle } from 'recompose'
 import { Modal, ModalHeader, ModalBody, Form, Button } from 'reactstrap'
 import { reduxForm, formValueSelector } from 'redux-form'
 import ReduxFormField from 'Components/ReduxFormField'
 import { postFeedbackForm, doToggleFeedbackForm } from 'Actions/app'
-import { shouldShowFeedbackForm } from 'Selectors/app'
+import { shouldShowFeedbackForm, feedbackFormRequestedAsset } from 'Selectors/app'
 import T from 'Components/i18n/T'
 import { withTranslation } from 'react-i18next'
 
@@ -26,11 +26,11 @@ const FeedbackForm = ({ validateRequired, selectedType, handleSubmit,
     <Modal
       isOpen={shouldShowFeedbackForm}
       size='md' 
-      toggle={doToggleFeedbackForm} 
+      toggle={() => doToggleFeedbackForm()} 
       className='mt-6 mx-md-auto' 
       contentClassName='p-0'
     >
-      <ModalHeader tag='h4' toggle={doToggleFeedbackForm} className='text-primary'>
+      <ModalHeader tag='h4' toggle={() => doToggleFeedbackForm()} className='text-primary'>
         <T tag='span' i18nKey='app.feedbackForm.faastFeedback'>Faa.st Feedback</T>
       </ModalHeader>
       <ModalBody className='p-0 p-sm-3'>
@@ -105,23 +105,46 @@ export default compose(
   withTranslation(),
   connect(createStructuredSelector({
     selectedType: (state) => getFormValue(state, 'type'),
-    shouldShowFeedbackForm
+    shouldShowFeedbackForm,
+    assetInitialValue: feedbackFormRequestedAsset
   }), {
     postFeedbackForm,
     doToggleFeedbackForm
   }),
   withHandlers({
-    validateRequired: () => validator.all(
-      validator.required('This field is required.'),
-    ),
     onSubmit: ({ postFeedbackForm }) => ({ type, description, email, assetName, assetUrl }) => {
       postFeedbackForm(type, description, email, assetName, assetUrl)
-    }
+    },
   }),
   reduxForm({
     form: FORM_NAME,
+    enableReinitialize: true,
     initalValues: {
-      type: ''
+      type: '',
+      asset: undefined
+    },
+  }),
+  withHandlers({
+    handleResetForm: ({ reset }) => () => {
+      reset()
+    },
+    validateRequired: () => validator.all(
+      validator.required('This field is required.'),
+    ),
+    updateInitialValues: ({ change, assetInitialValue }) => () => {
+      if (assetInitialValue) {
+        console.log('updateInitialValues')
+        change('type', 'asset')
+        change('assetName', assetInitialValue)
+      }
+    }
+  }),
+  lifecycle({
+    componentDidMount() {
+      const { updateInitialValues, handleResetForm } = this.props
+      console.log('didMount')
+      handleResetForm()
+      updateInitialValues()
     }
   }),
 )((FeedbackForm))

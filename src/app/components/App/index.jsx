@@ -37,11 +37,13 @@ export default compose(
     }
   }),
   hot(module)
-)(({ ready, error }) => (
+)(({ ready, error, showFeedbackForm }) => (
   ready ? (
     <Fragment>
       <AppView/>
-      <FeedbackForm />
+      {showFeedbackForm && (
+        <FeedbackForm />
+      )}
     </Fragment>
   ) : (
     <LoadingFullscreen label={<T tag='span' i18nKey='app.view.loadingFaast'>Loading Faa.st...</T>} error={error}/>

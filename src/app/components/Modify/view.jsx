@@ -15,7 +15,7 @@ import display from 'Utilities/display'
 
 import Layout from 'Components/Layout'
 import Slider from 'Components/Slider'
-import AssetSelector from 'Components/AssetSelector'
+import AssetSelector from 'Src/app/components/AssetSelectorList'
 import SwundleSubmitModal from 'Components/SwundleSubmitModal'
 import Units from 'Components/Units'
 import Overlay from 'Components/Overlay'
@@ -320,7 +320,7 @@ const ModifyView = (props) => {
         </ModalHeader>
         <ModalBody>
           {props.isAssetListOpen && /* Reactstrap + redux-forms workaround https://github.com/reactstrap/reactstrap/issues/820 */ (
-            <AssetSelector {...props.assetListProps} />
+            <AssetSelector rowsToShow={7} {...props.assetListProps} />
           )}
         </ModalBody>
       </Modal>

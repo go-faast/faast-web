@@ -14,4 +14,5 @@ export const getTradeableAssetFilter = createSelector(getAppState, ({ filterTrad
 export const getSavedSwapWidgetInputs = createSelector(getAppState, ({ savedSwapWidgetInputs }) => savedSwapWidgetInputs)
 export const getConnectForwardUrl = createSelector(getAppState, ({ connectForwardUrl }) => connectForwardUrl)
 export const shouldShowFeedbackForm = createSelector(getAppState, ({ showFeedbackForm }) => showFeedbackForm)
+export const feedbackFormRequestedAsset = createSelector(getAppState, ({ requestedAsset }) => requestedAsset)
 export const getUserIpAddress = createSelector(getAppState, ({ ip }) => ip)
