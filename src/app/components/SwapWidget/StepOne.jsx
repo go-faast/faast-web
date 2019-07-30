@@ -159,7 +159,7 @@ const SwapStepOne = ({
               </Col>
               <Col xs={{ size: 12, order: 4 }} lg={{ size: true, order: 3 }}>
                 {assetSelect === 'receive' && (
-                  <div style={{ position: 'absolute', zIndex: 999, top: 32, width: '100%' }}>
+                  <div className={style.assetListContainer}>
                     <AssetSelector 
                       walletId={receiveWallet && receiveWallet.id}
                       selectAsset={handleSelectedAsset} 
