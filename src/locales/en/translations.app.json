@@ -1,7 +1,7 @@
 {
   "app": {
     "view": {
-      "loadingFaast": "Loading Faa.st"
+      "loadingFaast": "Loading Faa.st..."
     },
     "addressSearchForm": {
       "placeholder": "Search by address..."

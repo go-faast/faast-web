@@ -80,13 +80,13 @@ function getAddressValidator(asset) {
   return getDefaultFormat(networkSymbol).validate
 }
 
-export function walletAddress(asset) {
+export function walletAddress(asset, providedError) {
   const validateAddress = getAddressValidator(asset)
   return (value) => {
     if (isProvided(value)) {
       const error = validateAddress(value)
       if (error) {
-        return error
+        return providedError || error
       }
     }
   }

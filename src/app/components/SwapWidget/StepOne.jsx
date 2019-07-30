@@ -346,13 +346,13 @@ export default compose(
     isAssetDisabled: ({ assetSelect }) => ({ deposit, receive }) =>
       !((assetSelect === 'send' && deposit) || 
       (assetSelect === 'receive' && receive)),
-    validateReceiveAddress: ({ receiveAsset }) => validator.all(
+    validateReceiveAddress: ({ receiveAsset, receiveSymbol, t }) => validator.all(
       validator.required(),
-      validator.walletAddress(receiveAsset)
+      validator.walletAddress(receiveAsset, `${t('app.widget.invalid', 'Invalid')} ${receiveSymbol} ${t('app.widget.address', 'address')}`)
     ),
-    validateRefundAddress: ({ sendAsset }) => validator.all(
+    validateRefundAddress: ({ sendAsset, sendSymbol, t }) => validator.all(
       ...(sendAsset.symbol === 'XMR' ? [validator.required()] : []),
-      validator.walletAddress(sendAsset)
+      validator.walletAddress(sendAsset, `${t('app.widget.invalid', 'Invalid')} ${sendSymbol} ${t('app.widget.address', 'address')}`)
     ),
     onSubmit: ({
       sendSymbol, receiveAsset, sendAsset,
