@@ -5,10 +5,10 @@
       "notification": "Read about the Faa.st Market Maker Beta",
       "button": "Connect Your Wallet",
       "headline": {
-        "//goxxed": "Don’t Get Goxxed. Own Your Crypto."
+        "goxxed": "Don’t Get Goxxed. Own Your Crypto."
       },
       "subtitle": {
-        "//notYourKeys": "If it’s not your keys, it’s not your crypto. Trade safely from your own wallet with Faa.st"
+        "notYourKeys": "If it’s not your keys, it’s not your crypto. Trade safely from your own wallet with Faa.st"
       }
     },
     "header": {
@@ -27,8 +27,8 @@
       "chooseReceive": "Choose asset to receive"
     },
     "features": {
-      "//comprehensiveTable": "For a comprensive table of supported coins",
-      "//clickHere": "click here.",
+      "comprehensiveTable": "For a comprensive table of supported coins",
+      "clickHere": "click here.",
       "instantlyBuild": "Instantly build a cryptocurrency portfolio",
       "safeSecure": "Safe & Secure",
       "tradeDirectly": "Trade directly from your wallet— we never control your funds or see your private key.",
