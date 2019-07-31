@@ -1,24 +1,24 @@
-import ledgerLogo from '../../res/img/wallet/ledger.png'
-import trezorLogo from '../../res/img/wallet/trezor.png'
-import blockstackLogo from '../../res/img/wallet/blockstack.png'
-import metamaskLogo from '../../res/img/wallet/metamask.png'
-import mistLogo from '../../res/img/wallet/mist.png'
-import parityLogo from '../../res/img/wallet/parity.svg'
-import coinbaseLogo from '../../res/img/wallet/coinbase.png'
-import trustLogo from '../../res/img/wallet/trust.png'
-import statusLogo from '../../res/img/wallet/status.png'
+import ledgerLogo from 'Res/img/wallet/ledger.png'
+import trezorLogo from 'Res/img/wallet/trezor.png'
+import blockstackLogo from 'Res/img/wallet/blockstack.png'
+import metamaskLogo from 'Res/img/wallet/metamask.png'
+import mistLogo from 'Res/img/wallet/mist.png'
+import parityLogo from 'Res/img/wallet/parity.svg'
+import coinbaseLogo from 'Res/img/wallet/coinbase.png'
+import trustLogo from 'Res/img/wallet/trust.png'
+import statusLogo from 'Res/img/wallet/status.png'
 
-import ledgerGraphic from '../../res/img/wallet/ledgerGraphic.png'
-import trezorGraphic from '../../res/img/wallet/trezorGraphic.png'
-import blockstackGraphic from '../../res/img/wallet/blockstackGraphic.jpg'
-import metamaskGraphic from '../../res/img/wallet/metamaskGraphic.png'
-import mistGraphic from '../../res/img/wallet/mistGraphic.png'
-import parityGraphic from '../../res/img/wallet/parityGraphic.jpg'
-import coinbaseGraphic from '../../res/img/wallet/coinbaseGraphic.png'
-import trustGraphic from '../../res/img/wallet/trustGraphic.png'
-import statusGraphic from '../../res/img/wallet/statusGraphic.png'
+import ledgerGraphic from 'Res/img/wallet/ledgerGraphic.png'
+import trezorGraphic from 'Res/img/wallet/trezorGraphic.png'
+import blockstackGraphic from 'Res/img/wallet/blockstackGraphic.jpg'
+import metamaskGraphic from 'Res/img/wallet/metamaskGraphic.png'
+import mistGraphic from 'Res/img/wallet/mistGraphic.png'
+import parityGraphic from 'Res/img/wallet/parityGraphic.jpg'
+import coinbaseGraphic from 'Res/img/wallet/coinbaseGraphic.png'
+import trustGraphic from 'Res/img/wallet/trustGraphic.png'
+import statusGraphic from 'Res/img/wallet/statusGraphic.png'
 
-import { i18nTranslate as t } from '../utilities/translate'
+import { i18nTranslate as t } from 'Utilities/translate'
 
 const switchPathSegwit = {
   primaryPrefix: 'm/49',
@@ -62,7 +62,7 @@ export default {
         derivationPath: 'm/44\'/60\'/0\''
       },
       ...commonSupportedAssets,
-    }
+    },
   },
   trezor: {
     name: 'TREZOR',
