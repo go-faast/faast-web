@@ -25,6 +25,10 @@ export default compose(
   withRouteData,
 )(({ translations }) => (
   <Fragment>
+    <div 
+      className='position-fixed d-md-none d-block' 
+      style={{ top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0,0,0,.3)', zIndex: 1 }}>
+    </div>
     <div className={hero}>
       <div className='position-relative' style={{ zIndex: 9999 }}>
         <Header translations={translations} headerColor={'transparent'} />
@@ -42,12 +46,17 @@ export default compose(
         <div className={dashedLine}></div>
         <div className={dashedLineBlue}></div>
       </div>
-      <Row className='p-0 m-0 position-relative' style={{ zIndex: 999 }}>
-        <Col className='pl-md-5 pl-0 mt-4' sm='7'>
+      <Row className='p-0 m-0 mx-auto position-relative' style={{ zIndex: 999, maxWidth: 1400 }}>
+        <Col className='pl-md-5 pl-0' xs='12' md='10' lg='7'>
           <div className='pl-3'>
-            <h1 style={{ fontWeight: 600, fontSize: 37 }} className='mt-5 pt-5'>Keep up with the Faa.st Newsletter</h1>
+            <h1 style={{ fontWeight: 600, fontSize: 37 }} className='mt-md-5 mt-2 pt-5'>Keep up with the Faa.st Newsletter</h1>
             <h5 className='mt-4' style={{ color: '#B6AFDC', fontSize: 16 }}>
-            Stay up-to-date on all that is happening with Faa.st including adding new assets, new features, cryptocurrency news, and more!
+            Subscribe now to receive: 
+            <ol className='pl-3 mt-3'>
+              <li>A free report that will guide you on best practices for securely storing your crypto</li>
+              <li>Updates on new asset listings</li>
+              <li>Exclusive offers and contests for Faa.st customers that aren’t shared anywhere else</li>
+            </ol>
             </h5>
             <div style={{ maxWidth: 505, overflow: 'hidden' }} className='mt-4 pt-1'>
               <EmailForm />
