@@ -23,7 +23,7 @@ export default compose(
   setDisplayName('NewsletterLanding'),
   withTracker,
   withRouteData,
-)(({ translations }) => (
+)(({ translations, translations: { static: { newsletter: t } } }) => (
   <Fragment>
     <div 
       className='position-fixed d-md-none d-block' 
@@ -49,14 +49,16 @@ export default compose(
       <Row className='p-0 m-0 mx-auto position-relative' style={{ zIndex: 999, maxWidth: 1400 }}>
         <Col className='pl-md-5 pl-0' xs='12' md='10' lg='7'>
           <div className='pl-3'>
-            <h1 style={{ fontWeight: 600, fontSize: 37 }} className='mt-md-5 mt-2 pt-5'>Keep up with the Faa.st Newsletter</h1>
+            <h1 style={{ fontWeight: 600, fontSize: 37 }} className='mt-md-5 mt-2 pt-5'>
+              {t.keepUp}
+            </h1>
             <h5 className='mt-4' style={{ color: '#B6AFDC', fontSize: 16 }}>
-            Subscribe now to receive: 
-            <ol className='pl-3 mt-3'>
-              <li>A free report that will guide you on best practices for securely storing your crypto</li>
-              <li>Updates on new asset listings</li>
-              <li>Exclusive offers and contests for Faa.st customers that aren’t shared anywhere else</li>
-            </ol>
+              {t.subscribeNow}
+              <ul style={{ listStyleType: 'circle' }} className='pl-3 mt-3'>
+                <li>{t.assetListings}</li>
+                <li>{t.exclusiveOffers}</li>
+                <li>{t.report}</li>
+              </ul>
             </h5>
             <div style={{ maxWidth: 505, overflow: 'hidden' }} className='mt-4 pt-1'>
               <EmailForm />
@@ -68,7 +70,7 @@ export default compose(
                     <i className={classNames(icon, 'fa fa-lock')}></i>
                   </Col>
                   <Col xs='12'>
-                    <small>secure</small>
+                    <small>{t.secure}</small>
                   </Col>
                 </Row>
               </div>
@@ -78,7 +80,7 @@ export default compose(
                     <i className={classNames(icon, 'fa fa-rocket')}></i>
                   </Col>
                   <Col xs='12'>
-                    <small>fast</small>
+                    <small>{t.fast}</small>
                   </Col>
                 </Row>
               </div>
@@ -88,7 +90,7 @@ export default compose(
                     <Icon src={SwapIcon} className={classNames(icon, swapIcon)} height={20} width={20} color='#fff' />
                   </Col>
                   <Col xs='12'>
-                    <small>swap</small>
+                    <small>{t.swap}</small>
                   </Col>
                 </Row>
               </div>

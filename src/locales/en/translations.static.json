@@ -1,5 +1,15 @@
 { 
   "static": {
+    "newsletter": {
+      "keepUp": "Keep up with the Faa.st Newsletter",
+      "subscribeNow": "Subscribe now to receive: ",
+      "assetListings": "Updates on new asset listings",
+      "exclusiveOffers": "Exclusive offers and contests for Faa.st customers that aren’t shared anywhere else",
+      "report": "A free copy of our Best Practices for Safe Cryptocurrency Storage report",
+      "secure": "secure",
+      "fast": "fast",
+      "swap": "swap"
+    },
     "hero": {
       "new": "new",
       "notification": "Read about the Faa.st Market Maker Beta",
