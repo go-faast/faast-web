@@ -4,25 +4,30 @@ import { Row, Col } from 'reactstrap'
 import classNames from 'class-names'
 import PropTypes from 'prop-types'
 
+import PrivacyFeature from 'Img/privacy-feature.svg'
+import SecureFeature from 'Img/secure-feature.svg'
+import FastFeature from 'Img/fast-feature.svg'
+import FeesFeature from 'Img/fees-feature.svg'
+
 import style from './style.scss'
 import homeStyle from 'Site/pages/Home1/style.scss'
 
 const features = [{
   heading: 'Private',
   description: 'No need to register or share any personal info.',
-  icon: ''
+  icon: PrivacyFeature
 }, {
   heading: 'Safe & Secure',
   description: 'Trade directly from your wallet— we never control your funds or see your private key.',
-  icon: ''
+  icon: SecureFeature
 }, {
   heading: 'Simple & Fast',
   description: 'Intuitive and mobile friendly UI makes crypto trading simple and easy and instant access to over 100+ coins.',
-  icon: ''
+  icon: FastFeature
 }, {
   heading: 'Low Fees',
   description: 'No deposit fees. No subscription fees. No exit fees. Faast is a simple, low cost on-chain trading engine.',
-  icon: ''
+  icon: FeesFeature
 }]
 
 const Features = () => {

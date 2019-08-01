@@ -8,15 +8,17 @@ import PropTypes from 'prop-types'
 
 import Icon from 'Components/Icon'
 
+import GithubBg from 'Img/github-bg.svg'
+
 import style from './style.scss'
 import homeStyle from 'Site/pages/Home1/style.scss'
 
 
 const Terminal = ({ translations }) => {
   return (
-    <div className={classNames(style.terminalSection, 'text-center mt-5 pt-5 mx-auto')}>
+    <div style={{ backgroundImage: `url(${GithubBg})` }} className={classNames(style.terminalSection, 'text-center mt-5 pt-5 mx-auto position-relative')}>
       <h1 className={classNames(homeStyle.heading, 'mt-5 pt-5 mb-4')}>Open Source and Public API</h1>
-      <h3 className={homeStyle.description}>
+      <h3 className={classNames(homeStyle.description, 'pb-3')}>
         Want to run your own instance of the Faa.st trading portfolio? No problem.  The open source Faa.st Portfolio project on GitHub and public API put you in full control of how you want to use Faa.st.
       </h3>
       <div className={classNames(style.terminal, 'mx-auto mt-5')}>
