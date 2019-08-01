@@ -11,6 +11,8 @@ import {
 import { retrieveAssets } from 'Common/actions/asset'
 import { getDefaultPortfolio } from 'Selectors'
 
+import { i18nTranslate as t } from 'Utilities/translate'
+
 const createAction = newScopedCreateAction(__filename)
 
 const { defaultPortfolioId } = config
@@ -48,7 +50,7 @@ const createDefaultPortfolio = () => (dispatch, getState) => Promise.resolve()
     const defaultPortfolio = getDefaultPortfolio(getState())
     if (!defaultPortfolio) {
       const wallet = new MultiWallet(defaultPortfolioId)
-      wallet.setLabel('My Portfolio')
+      wallet.setLabel(t('app.portfolio.label', 'My Portfolio'))
       return dispatch(addPortfolio(wallet, false))
     }
   })

@@ -9,6 +9,8 @@ import AssetIndexTable from 'Components/AssetIndexTable'
 import Layout from 'Components/Layout'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 
+import T from 'Components/i18n/T'
+
 import { getWatchlist, areAssetPricesLoaded, getAssetPricesError } from 'Selectors'
 
 const AssetWatchlist = ({ watchlist, pricesLoaded, pricesError }) => (
@@ -19,7 +21,7 @@ const AssetWatchlist = ({ watchlist, pricesLoaded, pricesError }) => (
         <meta name='description' content='Save your favorite cryptocurrencies on a personalized watchlist and keep track of price, market, volume and supply data.' /> 
       </Helmet>
       <Layout className='pt-3'>
-        <AssetIndexTable tableHeader={'Watchlist'} assets={watchlist}/>
+        <AssetIndexTable tableHeader={<T tag='span' i18nKey='app.watchlist.tableHeading'>Watchlist</T>} assets={watchlist}/>
       </Layout>
     </Fragment>) : (
     <LoadingFullscreen center label='Loading market data...' error={pricesError}/>

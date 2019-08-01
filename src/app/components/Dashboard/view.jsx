@@ -30,7 +30,7 @@ const DashboardView = (props) => {
           <Row 
             tag={Link}
             to='/dashboard'
-            onClick={doToggleFeedbackForm}
+            onClick={() => doToggleFeedbackForm()}
             className='px-3 py-2 mb-3 mx-0 custom-hover' 
             style={{ background: 'linear-gradient(45deg, #00c19e 0%, #008472 100%)', borderRadius: 2, }}>
             <div className='text-center'>

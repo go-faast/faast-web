@@ -10,22 +10,16 @@ import { getDerivationPath } from 'Selectors/connectHardwareWallet'
 
 import ReduxFormField from 'Components/ReduxFormField'
 import T from 'Components/i18n/T'
-
-const validateDerivationPath = (path) => {
-  if (!(typeof path === 'string'
-        && /^[a-z](\/[0-9]+'?)+$/.test(path.trim()))) {
-    return 'Invalid derivation path'
-  }
-}
+import { withTranslation } from 'react-i18next'
 
 const DerivationPathForm = reduxForm({
   form: 'derivationPathChanger'
-})(({ handleSubmit }) => (
+})(({ handleSubmit, t, validateDerivationPath }) => (
   <Form onSubmit={handleSubmit}>
     <ReduxFormField
       name='derivationPath'
-      label='Derivation path'
-      placeholder='Derivation path'
+      label={t('app.derivationPath.derivationLabel', 'Derivation path')}
+      placeholder={t('app.derivationPath.derivationPathPlaceholder', 'Derivation path')}
       type='text'
       bsSize='md'
       autoCorrect='false'
@@ -43,6 +37,7 @@ const DerivationPathForm = reduxForm({
 
 export default compose(
   setDisplayName('DerivationPathChanger'),
+  withTranslation(),
   connect(createStructuredSelector({
     derivationPath: getDerivationPath
   }), {
@@ -59,11 +54,19 @@ export default compose(
       if (newPath !== derivationPath) {
         changeDerivationPath(newPath)
       }
+    },
+    validateDerivationPath: ({ t }) => (path) => {
+      if (!(typeof path === 'string'
+            && /^[a-z](\/[0-9]+'?)+$/.test(path.trim()))) {
+        return t('app.derivationPath.invalidError' ,'Invalid derivation path')
+      }
     }
   })
-)(({ derivationPath, showForm, toggleShowForm, handleSubmit }) => showForm
+)(({ derivationPath, showForm, toggleShowForm, handleSubmit, t, validateDerivationPath }) => showForm
   ? (<DerivationPathForm
+    t={t}
     onSubmit={handleSubmit}
+    validateDerivationPath={validateDerivationPath}
     initialValues={{ derivationPath }}/>)
   : (<Button color='dark' className='mx-auto' onClick={toggleShowForm}>
     <T tag='span' i18nKey='app.hardwareWalletModal.derivationPath.change'>Change derivation path</T>

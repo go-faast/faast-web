@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React from 'react'
 import PropTypes from 'prop-types'
 import { compose, setDisplayName, setPropTypes, withProps } from 'recompose'
@@ -47,7 +48,9 @@ export default compose(
   <div>
     <ModalBody className='py-4'>
       <ConnectionStatus />
-      <h5 className='mb-3'>{'Please confirm that you\'d like to add the following account.'}</h5>
+      <T tag='h5' i18nKey='app.hardwareWalletModal.confirmAccount.pleaseConfirm' className='mb-3'>
+        Please confirm that you'd like to add the following account.
+      </T>
       <Row className='gutter-3 justify-content-center'>
         <Col xs='auto'>
           <Card color='ultra-dark' className='text-left flat mb-4'>

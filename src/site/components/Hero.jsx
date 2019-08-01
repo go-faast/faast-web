@@ -52,11 +52,11 @@ export default compose(
             </LangLink>
             {headline || (
               <h1 className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
-                <span className='special-word'>{headlineT.instantly}</span> {headlineT.trade}
+                {headlineT.goxxed}
               </h1>
             )}
             <p className='hero-subtitle mb-4' style={{ fontWeight: 'normal' }}>
-              {subtitle.the} <span className='special-word'>{subtitle.safest} </span> {subtitle.way} 
+              {subtitle.notYourKeys}
             </p>
             <p>
               <GAEventButton 

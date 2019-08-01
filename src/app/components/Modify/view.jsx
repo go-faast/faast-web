@@ -15,7 +15,7 @@ import display from 'Utilities/display'
 
 import Layout from 'Components/Layout'
 import Slider from 'Components/Slider'
-import AssetSelector from 'Components/AssetSelector'
+import AssetSelector from 'Src/app/components/AssetSelectorList'
 import SwundleSubmitModal from 'Components/SwundleSubmitModal'
 import Units from 'Components/Units'
 import Overlay from 'Components/Overlay'
@@ -56,12 +56,14 @@ const ModifyView = (props) => {
             </CardHeader>
             {isReadOnly ? (
               <Alert color='info' className='m-0 text-center'>
+                <T tag='span' i18nKey='app.rebalance.readOnly'>
                 This wallet is read-only. You need to <Link to='/connect' className='alert-link'><u>connect your wallet</u></Link> in order to trade assets.
+                </T>
               </Alert>
             ) : (
               <ListGroup>
                 {!holdingsLoaded && (
-                  <LoadingFullscreen label='Loading balances...' />
+                  <LoadingFullscreen label={<T tag='span' i18nKey='app.loading.balances'>Loading balances...</T>} />
                 )}
                 {assetHoldings.filter(({ shown }) => shown).sort((b,c) => (b.swapEnabled === c.swapEnabled) ? 0 : b.swapEnabled ? -1 : 1).map((a) => {
                   const { walletId, symbol, name, change24, price, units, fiat, weight, swapEnabled, priceDecrease } = a
@@ -314,11 +316,11 @@ const ModifyView = (props) => {
       )}
       <Modal size='lg' isOpen={props.isAssetListOpen} toggle={props.toggleAssetList} className='m-0 mx-md-auto' contentClassName='p-0' autoFocus={false}>
         <ModalHeader toggle={props.toggleAssetList} tag='h4' className='text-primary'>
-          Add Asset
+          <T tag='span' i18nKey='app.rebalance.addAssetSelector'>Add Asset</T>
         </ModalHeader>
         <ModalBody>
           {props.isAssetListOpen && /* Reactstrap + redux-forms workaround https://github.com/reactstrap/reactstrap/issues/820 */ (
-            <AssetSelector {...props.assetListProps} />
+            <AssetSelector rowsToShow={7} {...props.assetListProps} />
           )}
         </ModalBody>
       </Modal>

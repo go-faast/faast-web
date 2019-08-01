@@ -18,11 +18,13 @@ import coinbaseGraphic from '../../res/img/wallet/coinbaseGraphic.png'
 import trustGraphic from '../../res/img/wallet/trustGraphic.png'
 import statusGraphic from '../../res/img/wallet/statusGraphic.png'
 
+import { i18nTranslate as t } from '../utilities/translate'
+
 const switchPathSegwit = {
   primaryPrefix: 'm/49',
   primaryLabel: 'segwit account',
   secondaryPrefix: 'm/44',
-  secondaryLabel: 'legacy (non-segwit) account',
+  secondaryLabel: t('app.walletTypes.nonSegwit', 'legacy (non-segwit) account'),
 }
 
 const commonSupportedAssets = {
@@ -36,7 +38,7 @@ const commonSupportedAssets = {
       primaryPrefix: 'm/44\'/145\'',
       primaryLabel: 'post-fork account',
       secondaryPrefix: 'm/44\'/0\'',
-      secondaryLabel: 'legacy (pre-fork) account',
+      secondaryLabel: t('app.walletTypes.preFork', 'legacy (pre-fork) account'),
     }
   },
   LTC: {
@@ -55,12 +57,13 @@ export default {
     description: 'Ledger offers smartcard-based crypto asset hardware wallets bringing optimal protection level to your bitcoins, ethereums, ripple and more - without sacrificing usability or control.',
     graphic: ledgerGraphic,
     howTo: 'https://medium.com/faast/how-to-make-effortless-cross-chain-trades-with-a-ledger-wallet-d71f5d16a43d',
+    translationKey: 'app.walletTypes.ledger',
     supportedAssets: {
       ETH: {
         derivationPath: 'm/44\'/60\'/0\''
       },
       ...commonSupportedAssets,
-    }
+    },
   },
   trezor: {
     name: 'TREZOR',
@@ -71,6 +74,7 @@ export default {
     howTo: 'https://medium.com/faast/how-to-make-effortless-cross-chain-trades-with-a-trezor-wallet-50f6e85fe923',
     website: 'https://trezor.io/',
     hardware: true,
+    translationKey: 'app.walletTypes.trezor',
     supportedAssets: {
       ETH: {
         derivationPath: 'm/44\'/60\'/0\'/0'
@@ -84,7 +88,8 @@ export default {
     website: 'https://blockstack.org',
     graphic: blockstackGraphic,
     slogan: 'The easiest way to start building decentralized blockchain apps.',
-    description: 'Blockstack is building an ecosystem that gives your users control over their fundamental digital rights.'
+    description: 'Blockstack is building an ecosystem that gives your users control over their fundamental digital rights.',
+    translationKey: 'app.walletTypes.blockstack',
   },
   metamask: {
     name: 'MetaMask',
@@ -94,7 +99,8 @@ export default {
     graphic: metamaskGraphic,
     slogan: 'Bring Ethereum to your browser.',
     description: 'MetaMask is a bridge that allows you to visit the distributed web of tomorrow in your browser today. It allows you to run Ethereum dApps right in your browser.', 
-    howTo: 'https://medium.com/faast/metamask-faast-the-easiest-way-to-diversify-your-cryptocurrency-portfolio-4551ea649439'
+    howTo: 'https://medium.com/faast/metamask-faast-the-easiest-way-to-diversify-your-cryptocurrency-portfolio-4551ea649439',
+    translationKey: 'app.walletTypes.metamask',
   },
   mist: {
     name: 'Mist Browser',
@@ -103,7 +109,8 @@ export default {
     web3: true,
     graphic: mistGraphic,
     slogan: 'Mist. Browse and use Ðapps on the Ethereum network.',
-    description: 'The Mist browser is the tool of choice to browse and use Ðapps.'
+    description: 'The Mist browser is the tool of choice to browse and use Ðapps.',
+    translationKey: 'app.walletTypes.mist',
   },
   parity: {
     name: 'Parity',
@@ -112,7 +119,8 @@ export default {
     web3: true,
     graphic: parityGraphic,
     slogan: 'Blockchain Infrastructure for the Decentralised Web.',
-    description: 'Parity Technologies builds core blockchain infrastructure. From Parity Ethereum, the most advanced Ethereum client, to Polkadot, the next-generation interoperable blockchain network.'
+    description: 'Parity Technologies builds core blockchain infrastructure. From Parity Ethereum, the most advanced Ethereum client, to Polkadot, the next-generation interoperable blockchain network.',
+    translationKey: 'app.walletTypes.parity',
   },
   coinbase: {
     name: 'Coinbase Wallet',
@@ -122,7 +130,8 @@ export default {
     graphic: coinbaseGraphic,
     slogan: 'The easiest and most secure crypto wallet.',
     description: 'Coinbase: the simple, safe way to buy, manage and sell your cryptocurrency.',
-    howTo: 'https://medium.com/faast/how-to-use-coinbase-wallet-with-faast-and-swap-cryptocurrency-on-your-smartphone-846e8a5f93d1'
+    howTo: 'https://medium.com/faast/how-to-use-coinbase-wallet-with-faast-and-swap-cryptocurrency-on-your-smartphone-846e8a5f93d1',
+    translationKey: 'app.walletTypes.coinbase',
   },
   trust: {
     name: 'Trust Wallet',
@@ -131,7 +140,8 @@ export default {
     web3: true,
     graphic: trustGraphic,
     slogan: 'Secure wallet for Ethereum, ERC20, ERC223 & ERC721 tokens.',
-    description: 'Trust Wallet is the best ethereum wallet and multi cryptocurrency wallet to store your favourite ERC721 &  ERC20 tokens.',
+    description: 'Trust Wallet is the best ethereum wallet and multi cryptocurrency wallet to store your favourite ERC721 & ERC20 tokens.',
+    translationKey: 'app.walletTypes.trust',
   },
   status: {
     name: 'Status',
@@ -141,6 +151,7 @@ export default {
     graphic: statusGraphic,
     slogan: 'Access a Better Web, Anywhere.',
     description: 'With Status you can chat, browse and transact securely in an open source community committed to bringing the power of Ethereum and a more distributed internet to your pocket.',
-    howTo: 'https://medium.com/faast/how-to-use-status-mobile-ethereum-wallet-with-faast-4936620e96fd'
+    howTo: 'https://medium.com/faast/how-to-use-status-mobile-ethereum-wallet-with-faast-4936620e96fd',
+    translationKey: 'app.walletTypes.status',
   }
 }

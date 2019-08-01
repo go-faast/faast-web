@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
-import { Link } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap'
 import PropTypes from 'prop-types'
 import { name as appName, version as appVersion, homepage as githubLink } from 'Pkg'
@@ -10,7 +9,10 @@ import { doToggleFeedbackForm } from 'Actions/app'
 
 import T from 'Components/i18n/T'
 import LangLink from 'Components/LangLink'
+import classNames from 'class-names'
 
+import { hoverUnderline } from './style.scss'
+ 
 export default compose(
   setDisplayName('Footer'),
   connect(null, {
@@ -38,9 +40,9 @@ export default compose(
               </li>
               <li className='list-inline-item'>
                 <small>
-                  <Link tag='span' className='text-muted' to='.' onClick={toggleFeedbackForm}>
-                  Provide Feedback
-                  </Link>
+                  <span className={classNames('btn-link cursor-pointer text-muted', hoverUnderline)} onClick={() => toggleFeedbackForm()}>
+                    <T tag='span' i18nKey='app.footer.feedback'>Provide Feedback</T>
+                  </span>
                 </small>
               </li>
               <li className='list-inline-item mr-3'>
