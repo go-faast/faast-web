@@ -83,7 +83,7 @@ const AssetSelector = ({ handleSearchChange, results, handleSelect, walletHoldin
         />
       </Col>
       <Col className='p-0 shadow' sm='12' style={{ maxHeight: (rowsToShow * 49), overflowY: 'scroll', zIndex: 99999, marginTop: 1 }}>
-        {results.map(r => renderResult(r, walletHoldings, handleSelect))}
+        {results.slice(0, 20).map(r => renderResult(r, walletHoldings, handleSelect))}
       </Col>
     </Row>
   )
