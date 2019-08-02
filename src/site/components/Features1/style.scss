@@ -14,9 +14,20 @@
   justify-content: center;
   position: relative;
 
+  &::before {
+    content: '';
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    background-color: #D0F9F2;
+    top: 13px;
+    right: 12px;
+  }
+
   img {
     position: absolute;
-    top: 15px;
-    right: 15px;
+    top: 10px;
+    right: 10px;
   }
 }

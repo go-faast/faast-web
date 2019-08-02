@@ -9,6 +9,7 @@ import withTracker from 'Site/components/withTracker'
 // import logoImg from 'Img/faast-logo.png'
 
 import Features from 'Site/components/Features1'
+import CoinSection from 'Site/components/Coins'
 import Footer from 'Site/components/Footer1'
 import Hero from 'Site/components/Hero1'
 import Wallets from 'Site/components/Wallets'
@@ -48,6 +49,7 @@ export default compose(
     <div style={{ backgroundColor: '#fff' }}>
       <Hero supportedAssets={supportedAssets} translations={translations} className='mb-md-5 mb-0'/>
       <Features translations={translations} supportedAssets={supportedAssets} />
+      <CoinSection translations={translations} />
       <Wallets translations={translations} />
       <Terminal translations={translations} />
       <Footer translations={translations} />

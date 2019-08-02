@@ -4,10 +4,10 @@ import { Row, Col } from 'reactstrap'
 import classNames from 'class-names'
 import PropTypes from 'prop-types'
 
-import PrivacyFeature from 'Img/privacy-feature.svg'
-import SecureFeature from 'Img/secure-feature.svg'
-import FastFeature from 'Img/fast-feature.svg'
-import FeesFeature from 'Img/fees-feature.svg'
+import PrivacyFeature from 'Img/finger-scanner.png'
+import SecureFeature from 'Img/lock-key.png'
+import FastFeature from 'Img/lightning.png'
+import FeesFeature from 'Img/coins-fees.png'
 
 import style from './style.scss'
 import homeStyle from 'Site/pages/Home1/style.scss'
@@ -39,7 +39,7 @@ const Features = () => {
             <Col xs='12' key={heading} className={classNames(style.feature, 'mr-3 mb-3')}>
               <h2 style={{ color: '#23D6B8', fontSize: 20, fontWeight: 600 }} className='mt-2'>{heading}</h2>
               <p style={{ fontSize: 14 }} className={homeStyle.text}>{description}</p>
-              <img src={icon} />
+              <img src={icon} style={{ width: 25, height: 25 }} />
             </Col>
           ))}
         </Row>
