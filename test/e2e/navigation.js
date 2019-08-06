@@ -5,7 +5,7 @@ export default (config) => {
     .page(config.baseUrl)
 
   test('Home page', async t => {
-    const header = Selector('.hero-title mb-4')
+    const header = Selector('h1.hero-title mb-4')
     await t
       .expect(header.innerText)
       .eql('Don’t Get Goxxed. Own Your Crypto.')
