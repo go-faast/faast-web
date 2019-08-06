@@ -9,11 +9,13 @@ import withTracker from 'Site/components/withTracker'
 // import logoImg from 'Img/faast-logo.png'
 
 import Features from 'Site/components/Features1'
-import CoinSection from 'Site/components/Coins'
+// import CoinSection from 'Src/site/components/CoinsSection'
+import DashboardSection from 'Site/components/DashboardSection'
 import Footer from 'Site/components/Footer1'
 import Hero from 'Site/components/Hero1'
 import Wallets from 'Site/components/Wallets'
 import Terminal from 'Site/components/Terminal'
+import Reviews from 'Site/components/Reviews'
 
 import { fetchGeoRestrictions } from 'Common/actions/app'
 import { retrieveAssets } from 'Common/actions/asset'
@@ -46,11 +48,13 @@ export default compose(
 )(({ supportedAssets, areAssetsLoaded, assetList, translations = {} }) => {
   supportedAssets = areAssetsLoaded ? assetList : supportedAssets
   return (
-    <div style={{ backgroundColor: '#fff' }}>
+    <div style={{ backgroundColor: '#26282D' }}>
       <Hero supportedAssets={supportedAssets} translations={translations} className='mb-md-5 mb-0'/>
-      <Features translations={translations} supportedAssets={supportedAssets} />
-      <CoinSection translations={translations} />
+      {/* <CoinSection translations={translations} /> */}
+      <DashboardSection translation={translations} />
       <Wallets translations={translations} />
+      <Features translations={translations} supportedAssets={supportedAssets} />
+      <Reviews translations={translations} />
       <Terminal translations={translations} />
       <Footer translations={translations} />
     </div>

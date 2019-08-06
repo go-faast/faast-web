@@ -3,22 +3,35 @@
 }
 
 .heading {
-  @extend .text;
-  font-size: 34px;
+  color: #EFEFEF;
+  font-size: 28px;
   font-weight: 600;
 }
 
 .textSize {
-  font-size: 20px;
+  font-size: 17px;
   line-height: 24px;
 }
 
 .description {
-  @extend .text;
+  color: #9C9FA8;
   @extend .textSize;
-  opacity: 0.8;
 }
 
 .link {
-  @extend .textSize;
+  text-decoration: none !important;
+  transition: all .2s ease-in-out;
+  font-weight: 600;
+  font-size: 19px;
+
+  & i {
+    transition: all .2s ease-in-out;
+    position: relative;
+    left: 10px;
+    top: 1px;
+  }
+
+  &:hover i {
+    left: 13px;
+  }
 }

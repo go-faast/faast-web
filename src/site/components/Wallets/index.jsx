@@ -1,9 +1,6 @@
-import React, { Fragment } from 'react'
-import Header from 'Site/components/Header'
-import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
-import { Row, Col } from 'reactstrap'
+import React from 'react'
+import { compose, setDisplayName } from 'recompose'
 import classNames from 'class-names'
-import PropTypes from 'prop-types'
 
 import Icon from 'Components/Icon'
 
@@ -12,16 +9,16 @@ import homeStyle from 'Site/pages/Home1/style.scss'
 
 import WalletConfig from 'Config/walletTypes'
 
-const Wallets = ({ translations }) => {
+const Wallets = () => {
   const supportedWallets = Object.values(WalletConfig)
   return (
-    <div className='text-center mt-5'>
+    <div style={{ marginBottom: 300 }} className='text-center'>
       <h1 className={homeStyle.heading}>Supported Wallets</h1>
-      <div className={classNames(style.walletsContainer, 'mx-auto mt-5 pt-4')}>
-        {supportedWallets.map(wallet => {
+      <div className={classNames(style.walletsContainer, 'mx-auto')}>
+        {supportedWallets.filter(w => w.active).map(wallet => {
           return ( 
             <div key={wallet.name} className={style.walletBubble}>
-              <Icon src={wallet.icon} />
+              <Icon src={wallet.inverseIcon || wallet.icon} />
               <p className={homeStyle.text}>
                 <small>{wallet.name}</small>
               </p>

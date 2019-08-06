@@ -7,16 +7,16 @@
 
 .terminal {
   position: relative;
-  background-color: #02071B;
+  background-color: #1B1C20;
   height: 343px;
   width: 585px;
   border-radius: 4px;
-  box-shadow: 0 5px 11px 1px rgba(99, 114, 134, 0.50);
+  box-shadow: 0 4px 8px 0px rgba(0, 0, 0, 0.29);
   font-family: Monaco !important;
 }
 
 .terminalHeaderbar {
-  background-color: #131A31;
+  background-color: #191A1D;
   height: 26px;
   width: 100%;
   position: absolute;
@@ -63,9 +63,17 @@
 }
 
 .comment {
-  color: #5C6383;
+  color: #414347;
 }
 
 .success {
   color: #52F0AB;
+}
+
+.key {
+  color: #827DE0;
+}
+
+.value {
+  color: #FBF796;
 }

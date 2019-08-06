@@ -1,70 +1,71 @@
 .walletsContainer {
   max-width: 900px;
+  position: relative;
+  top: -30px;
 }
 
 .walletBubble {
-  background: #FFFFFF;
-  box-shadow: 0 5px 11px 1px rgba(200, 216, 236, 0.50);
+  background: #EFEFEF;
+  box-shadow: 0 5px 11px 1px rgba(0, 0, 0, 0.26);
   width: 101px;
   height: 101px;
   border-radius: 50%;
   text-align: center;
   display: inline-block;
   line-height: 101px;
+  position: relative;
 }
 
 .walletBubble:nth-child(1) {
   animation: floatDown 10s ease-in-out infinite;
   animation-play-state: running;
-  margin-right: 50px;
+  margin-right: 30px;
+  top: 150px;
 }
 
 .walletBubble:nth-child(2) {
-  margin-right: 50px;
-  position: relative;
-  top: 90px;
+  margin-right: 30px;
   animation: floatUp 7s ease-in-out infinite;
   animation-play-state: running;
 }
 
 .walletBubble:nth-child(3) {
-  margin-right: 50px;
+  margin-right: 30px;
   animation: floatDown 8s ease-in-out infinite;
   animation-play-state: running;
+  top: 200px;
 }
 
 .walletBubble:nth-child(4) {
-  margin-right: 50px;
-  position: relative;
-  top: 90px;
+  margin-right: 30px;
+  top: 50px;
   animation: floatDown 6s ease-in-out infinite;
   animation-play-state: running;
 }
 
 .walletBubble:nth-child(5) {
-  margin-right: 50px;
+  margin-right: 30px;
+  top: 170px;
   animation: floatDown 9s ease-in-out infinite;
   animation-play-state: running;
 }
 
 .walletBubble:nth-child(6) {
-  margin-right: 50px;
   margin-top: 100px;
-  position: relative;
-  top: 90px;
+  top: -20px;
   animation: floatDown 7s ease-in-out infinite;
   animation-play-state: running;
 }
 
 .walletBubble:nth-child(7) {
-  margin-right: 50px;
+  margin-right: 30px;
+  top: -50px;
   animation: floatDown 9s ease-in-out infinite;
   animation-play-state: running;
 }
 
 .walletBubble:nth-child(8) {
-  margin-right: 50px;
-  position: relative;
+  margin-right: 30px;
   top: 90px;
   animation: floatUp 6s ease-in-out infinite;
   animation-play-state: running;
@@ -77,16 +78,16 @@
 
 .walletBubble p {
   position: relative;
-  top: 10px;
+  top: 0px;
   left: -23px;
-  background: #fff;
-  box-shadow: 0 5px 11px 1px rgba(200, 216, 236, 0.50);
+  background: #EFEFEF;
+  box-shadow: 0 5px 11px 1px rgba(0, 0, 0, 0.26);
   border-radius: 20px;
   padding: 4px 8px;
   opacity: 0;
   transition: all .3s ease-in-out;
   font-weight: 600;
-  color: #777;
+  color: #2D303A;
   transform: translate3d(0, 0, 0);
   width: 150px;
   line-height: 20px;
@@ -104,12 +105,12 @@
 
 @keyframes nameShow {
   0% {
-    top: 10px;
+    top: 0px;
     opacity: 0;
   }
 
   100% {
-    top: 20px;
+    top: 10px;
     opacity: 1;
   }
 }

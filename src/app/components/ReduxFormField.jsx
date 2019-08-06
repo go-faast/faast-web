@@ -14,7 +14,8 @@ const RenderInput = (props) => {
     label, type, step, placeholder, id, disabled, autoComplete, size, checked,
     addonPrepend, addonAppend, row, className, inputClass,
     labelProps, labelClass, labelCol, inputCol, autoFocus,
-    renderInput, helpText, style, requiredLabel, children
+    renderInput, helpText, style, requiredLabel, children, inputGroupClass,
+    inputGroupStyle
   } = props
   let { inputProps, input: reduxFormInput } = props
   const check = ['checkbox', 'radio'].includes(type)
@@ -52,7 +53,7 @@ const RenderInput = (props) => {
   const inputGroupElement = (
     <Fragment>
       {addonPrepend || addonAppend ? (
-        <InputGroup size={size}>
+        <InputGroup style={inputGroupStyle} className={inputGroupClass} size={size}>
           {renderAddon(addonPrepend)}
           {inputElement}
           {renderAddon(addonAppend)}

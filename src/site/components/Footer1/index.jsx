@@ -6,10 +6,10 @@ import classNames from 'class-names'
 import PropTypes from 'prop-types'
 
 import { betaTag } from '../Header/style.scss'
-import LazyLoad from 'react-lazyload'
 
 import FooterChart from 'Img/footer-chart.svg'
 import LangLink from 'Components/LangLink'
+import EmailSub from 'Site/components/EmailSubscription1'
 
 import style from './style.scss'
 
@@ -23,10 +23,13 @@ export default compose(
   }),
 )(({ footerClass, translations: { static: { footer: t = {} } = {} } }) => (
   <Fragment>
-    <div className='footer-clean position-relative' style={{ backgroundColor: '#080E27', paddingTop: '0px', marginTop: 320 }}>
+    <div className='footer-clean position-relative' style={{ backgroundColor: '#191A1D', paddingTop: '0px', marginTop: 320 }}>
       <div style={{ top: -150 }} className='position-absolute'>
         <img style={{ width: '100vw', height: 260 }} src={FooterChart} />
       </div>
+      <Row className='p-0 m-0'>
+        <Col><EmailSub /></Col>
+      </Row>
       <Row className='m-0 p-0 pt-5'>
         <Col className={classNames(style.ctaContainer, 'mx-auto d-flex justify-content-between align-items-center px-5 mb-5')}>
           <div>

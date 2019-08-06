@@ -1,0 +1,23 @@
+.input {
+  max-width: 495px;
+  background-color: #EFEFEF !important;
+  border: none !important;
+  color: #6C717B !important;
+
+  &:focus {
+    background-color: #EFEFEF !important;
+  }
+
+  &::placeholder {
+    color: #6C717B !important;
+  }
+}
+
+.button {
+  width: 141px;
+  height: 41px;
+  background-color: #D5ECE8;
+  border: 1px dotted #45B693;
+  color: #16AD94;
+  font-size: 16px;
+}
