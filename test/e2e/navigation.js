@@ -5,10 +5,10 @@ export default (config) => {
     .page(config.baseUrl)
 
   test('Home page', async t => {
-    const header = Selector('.hero-title')
+    const header = Selector('.hero-title mb-4')
     await t
       .expect(header.innerText)
-      .eql('Instantly trade directly from your Ledger, Trezor, or MetaMask.')
+      .eql('Don’t Get Goxxed. Own Your Crypto.')
   })
 
   test('Navigate to Market Maker', async t => {
