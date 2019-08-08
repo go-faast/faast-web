@@ -78,12 +78,13 @@ export default (config) => {
       .click(supported)
       .expect(LINK('/app/swap?to=BTC')).ok()
   })
+
   
 
   test('Goes to wallets info', async t => {
     await t
-      .click(HREF('/wallets/trezor'))
-      .expect(LINK('https://trezor.io/')).ok()
+      // .click(HREF('/wallets/trezor'))
+      // .expect(LINK('https://trezor.io/')).ok()
 
       .click(HREF('/wallets/ledger-wallet'))
       .expect(LINK('https://www.ledger.com/')).ok()
