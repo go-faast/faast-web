@@ -35,12 +35,12 @@ const StepTwoManual = ({
   <Fragment>
     <CardHeader className='text-center'>
       <h4>
-        Send {(sendAmount && sendAmount > 0)
+        <T tag='span' i18nKey='app.stepTwoManual.send'>Send</T> {(sendAmount && sendAmount > 0)
           ? (<Units value={sendAmount} symbol={sendSymbol} precision={8} showIcon/>)
           : (minimumDeposit ? (
-            <Fragment>at least <Units value={minimumDeposit} symbol={sendSymbol} precision={8} showIcon/>
+            <Fragment><T tag='span' i18nKey='app.stepTwoManual.atLeast'>at least</T> <Units value={minimumDeposit} symbol={sendSymbol} precision={8} showIcon/>
             </Fragment>
-          ) : null)} to address:
+          ) : null)} <T tag='span' i18nKey='app.stepTwoManual.toAddress'>to address:</T>
       </h4>
     </CardHeader>
     <CardBody className='pt-1 text-center'>
@@ -54,7 +54,7 @@ const StepTwoManual = ({
     </CardBody>
     <CardFooter style={{ border: 'none', position: 'relative', wordBreak: 'break-word' }}>
       <div className={style.receipt}></div>
-      <p className='mt-2 text-center' style={{ letterSpacing: 5 }}>ORDER DETAILS</p>
+      <T tag='p' i18nKey='app.stepTwoManual.orderDetails' className='mt-2 text-center' style={{ letterSpacing: 5 }}>ORDER DETAILS</T>
       <DataLayout rows={[
         [<T tag='span' i18nKey='app.stepTwoManual.status'>Status:</T>, <span className='text-capitalize'>
           {orderStatus} {orderStatus !== 'complete' && (

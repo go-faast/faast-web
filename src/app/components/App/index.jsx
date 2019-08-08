@@ -15,6 +15,8 @@ import 'react-redux-toastr/src/styles/index.scss?nsm'
 import 'Styles/global?nsm'
 import 'faast-ui'
 
+import T from 'Components/i18n/T'
+
 import AppView from './view'
 
 export default compose(
@@ -35,13 +37,15 @@ export default compose(
     }
   }),
   hot(module)
-)(({ ready, error }) => (
+)(({ ready, error, showFeedbackForm }) => (
   ready ? (
     <Fragment>
       <AppView/>
-      <FeedbackForm />
+      {showFeedbackForm && (
+        <FeedbackForm />
+      )}
     </Fragment>
   ) : (
-    <LoadingFullscreen label='Loading Faa.st...' error={error}/>
+    <LoadingFullscreen label={<T tag='span' i18nKey='app.view.loadingFaast'>Loading Faa.st...</T>} error={error}/>
   )
 ))

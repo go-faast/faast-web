@@ -1,356 +1,534 @@
 {
-  "app":{
-     "dashboard":{
-        "holdingsTitle":"P. 持有量",
-        "distribution":"分布",
-        "address":"地址",
-        "removeWallet":"移除钱包",
-        "addWallet":"添加钱包",
-        "walletHoldings":"<0></0> 持有量",
-        "portfolioHoldings":"投资组合持有量"
-     },
-     "connect":{
-        "select":"选择您的钱包",
-        "hardware":"硬件钱包",
-        "recommended":"推荐",
-        "ledger":"Ledger 钱包",
-        "desktopWallets":"<0></0> 以太坊桌面钱包",
-        "mobileWallets":"<0></0> 以太坊移动钱包",
-        "mist":"Mist 浏览器",
-        "trust":"Trust 钱包",
-        "coinbase":"Coinbase 钱包",
-        "manual":"手册",
-        "createWallet":"创建钱包",
-        "generate":"生成新的密钥存储文件",
-        "importWallet":"导入钱包",
-        "dragAndDrop":"拖放您的密钥存储文件",
-        "openSource":"开源且安全"
-     },
-     "nav":{
-        "dashboard":"主页面",
-        "assets":"资产",
-        "allAssets":"所有资产",
-        "trending":"趋势分析",
-        "watchlist":"监控列表",
-        "rebalance":"再调整",
-        "swap":"交换",
-        "orders":"订单",
-        "addWallet":"添加钱包"
-     },
-     "assetIndex":{
-        "titlePage":"所有资产 —— 第 <1></1>页",
-        "title":"所有资产"
-     },
-     "assetIndexTable":{
-        "coin":"钱币",
-        "price":"价格",
-        "marketCap":"市值",
-        "volume":"额度",
-        "supply":"供应",
-        "change":"更改"
-     },
-     "trending":{
-        "tradeable":"仅显示可交易资产",
-        "trending":"趋势分析"
-     },
-     "orders":{
-        "orderHistory":"订单历史",
-        "showMore":"显示更多订单......",
-        "date":"日期",
-        "pair":"对",
-        "cost":"费用",
-        "received":"已接收",
-        "receiving":"接收中",
-        "noOpen":"当前没有未结订单",
-        "noPrevious":"没有要显示的历史订单",
-        "openOrdersTitle":"未结订单",
-        "previousOrdersTitle":"历史订单"
-     },
-     "sidebar":{
-        "watchlist":"<0>监控列表</0>",
-        "trending":"趋势分析"
-     },
-     "rebalance":{
-        "saveChanges":"<0></0>保存更改",
-        "addAsset":"<0></0> 添加资产",
-        "remove":"<0></0> 删除",
-        "availableBalance":"可用余额",
-        "how":"<0><0></0> 我该怎么使用这个？ </0>",
-        "24hChange":"24 小时变化",
-        "currentPrice":"当前价格",
-        "after":"之后",
-        "before":"之前",
-        "value":"价值",
-        "weight":"权重",
-        "units":"单位",
-        "addAssetBottom":"添加资产",
-        "empty":"这个投资组合是空的。要开始交换，您必须先 <1>添加一个钱包</1>。",
-        "instructions":"操作指南",
-        "instructions1":"重新调整投资组合 —— 3 个简单步骤：",
-        "instructions2":" 向左拖动滑块以减少资产使用的权重",
-        "instructions3":"删除整个资产",
-        "instructions4":"向右拖动滑块以增加资产使用的权重",
-        "instructions5":" 添加新资产。<1/><2>（注意：为了增加权重，您必须减少另一项资产的权重）</2>",
-        "instructions6":"单击",
-        "instructions7":"完成更改审核后。"
-     },
-     "widget":{
-        "swapInstantly":"立即交换",
-        "omitted":"<0>如果留空，则使用可变市场费率。</0>",
-        "approxSend":"<0>您大约需要发送多少。单击“创建”接收担保的报价。</0>",
-        "expectSend":"<0>我们希望您发送的金额</0>",
-        "approxReceive":"<0>您将大约收到多少。单击“创建”以接收担保的报价。</0>",
-        "guaranteeReceive":"<0>保证您收到的金额。</0>",
-        "youHave":"您有",
-        "acceptTerms":"我同意 <1> Faa.st 条款和条件</1>",
-        "createSwap":"创建交换",
-        "generatingSwap":"正在生成交换......",
-        "chooseSend":"选择要发送的资产",
-        "chooseReceive":"选择要接收的资产",
-        "noRate":"无法更新费率"
-     },
-     "progressBar":{
-        "createSwap":"创建交换",
-        "sendSymbol":"发送 <1></1>",
-        "receiveSymbol":"接收 <1></1>"
-     },
-     "footer":{
-        "website":"Faa.st 网站",
-        "termsConditions":"条款和条件",
-        "privacy":"隐私政策"
-     },
-     "coinDetail":{
-        "buy":"买",
-        "sell":"卖",
-        "marketCap":"市值",
-        "volume":"24 小时交易量",
-        "supply":"供应"
-     },
-     "assetTable":{
-        "noAssets":"没有要显示的资产",
-        "th1":"资产",
-        "th2":"单位",
-        "th3":"持有量",
-        "th4":"权重",
-        "th5":"价格",
-        "th6":"24 小时变化"
-     },
-     "swapSubmit":{
-        "geoLimit":"<2>根据您的位置</2>发送金额不能超过 $<1></1> 。",
-        "multipleSwaps":"将进行以下交换以保存您对投资组合所做的更改。请查看它们，然后单击'<1><1>'以继续。",
-        "networkFee":"总网络费用：",
-        "timer":"* 如果在以下时间内提交，则担保报价费率：",
-        "terms":"我同意<1>Faast 条款和条件</1>",
-        "cancel":"取消",
-        "submit":"提交",
-        "submitAll":"全部提交",
-        "beginSigning":"开始签字",
-        "confirmSubmit":"确认并提交",
-        "reviewSign":"复核并签字"
-     },
-     "ethInstructions":{
-        "to":"至：",
-        "value":"价值：",
-        "gas":"燃料：",
-        "gasPrice":"燃料价格：",
-        "data":"数据：",
-        "confirm":"当您的钱包提示时，请确认以下交易详情。",
-        "sending":"发送 <1></1> 到 <3><4></4></3>."
-     },
-     "swapStatusCard":{
-        "signed":"已签字",
-        "ready":"准备完毕",
-        "awaiting":"等待签字",
-        "failed":"已失败",
-        "sending":"发送中",
-        "status":"状态：",
-        "rate":"费率：",
-        "network":"网络费：",
-        "swapFee":"交换费：",
-        "usingWallet":"使用钱包",
-        "atAddress":"在地址中",
-        "date":"日期：",
-        "orderId":"订单号：",
-        "sentTx":"发送 txn 文件："
-     },
-     "searchResults":{
-        "view":"在投资组合中查看",
-        "add":"添加到投资组合"
-     },
-     "blocked":{
-        "restricted":"限制区",
-        "sorry":"抱歉，您正在从被阻止的位置访问 faa.st。如果您错误地收到此消息，可以在<1>此处</1>了解更多信息。" 
-     },
-     "selectPortfolioDropdown":{
-        "add":"添加投资组合"
-     },
-     "shareModal":{
-        "share":"分享投资组合",
-        "permalink":"永久链接："
-     },
-     "walletSelector":{
-        "wallets":"钱包",
-        "addWallet":"添加钱包",
-        "noWallets":"该投资组合里没有钱包 "
-     },
-     "tradeDetailModal":{
-        "orderDetails":"订单详情"
-     },
-     "walletInfoModal":{
-        "metamask1":"<0></0>是提供以太坊钱包的桌面浏览器扩展应用。您可以从<2>此处</2>获取它。",
-        "metamask2":"如果您已经有<1></1>, 请确保在此浏览器上启用了该扩展。",
-        "mist1":"<0></0> 是带有内置以太坊钱包的桌面网页浏览器。您可以从<2>此处</2>获取它。",
-        "mist2":"如果您已经有<1></1>, 打开<3>faa.st</3> 使用其内置的网页浏览器。",
-        "status1":"<0></0>是用于 iOS 和 Android 系统的移动以太坊操作系统。您可以从 <2此处</2>获取更多相关信息。",
-        "status2":"如果您已经有<1></1>, 打开 <3>faa.st</3> 使用其内置的网页浏览器。",
-        "coinbase1":"<0></0> 是用于 iOS 和 Android 系统的移动以太坊操作系统。您可以从<2>此处</2>获取它或者使用下面的链接。",
-        "coinbase2":"如果您已经有<1></1>, 打开 <3>faa.st</3> 使用其内置的网页浏览器。"
-     },
-        "createWalletModal":{
-        "ack1":"文件 <1></1>可用于发送其包含的任何资金。",
-        "ack2":"文件 <1></1> 包含加密的敏感私钥，只能使用密码访问。",
-        "ack3":"Faast 没有文件或密码的备份。这个 <1></1> 是在我的网络浏览器中生成的，从未通过互联网发送过。",
-        "ack4":"如果我无法访问该文件或忘记密码，我将没收其中包含的所有资金。",
-        "ack5":"我已下载此文件并存储在计算机上的安全位置。",
-        "ack6":"文件 <1></1> 加上我的密码，可用于使用 Faast 以外的应用程序发送资金。"
-     },
-     "assetSelector":{
-        "comingSoon":"即将上线",
-        "alreadyAdded":"已添加",
-        "unavailable":"在您的位置不可用",
-        "unsupported":"不支持的钱包"
-     },
-     "addressModal":{
-        "address":"地址",
-        "viewOnExplorer":"在资源管理器上查看",
-        "close":"关闭"
-     },
-     "stepTwoConnected":{
-        "title":"确认掉期交易"
-     },
-     "stepTwoManual":{
-        "geoLimit":"请注意： <5>根据您的位置</5> 您可以交换的最大值是<1></1> <3></3>", 
-        "status":"状态：",
-        "updatesAuto":"订单状态自动更新。您不需要刷新。",
-        "orderID":"订单号：",
-        "receiveAddress":"接收地址：",
-        "refundAddress":"退款地址：",
-        "rate":"费率：",
-        "depositAmount":"存款金额：",
-        "minimumAmount":"最低存款额：",
-        "receiveAmount":"接收金额：",
-        "fixedPrice":"* 报价是基于当前市场条件的估计。实际费率可能有所不同。",
-        "quotedRate":"* 如果在以下时间内发送存款则担保报价："
-     },
-     "hardwareWalletModal":{
-        "accountSelect":{
-           "heading":"请选择要添加的帐户。",
-           "showAccounts":"显示帐户",
-           "next":"下一个",
-           "back":"后退"
+    "app": {
+        "view": {
+            "loadingFaast": "正在加载Faa.st..."
         },
-        "assetSelect":{
-           "express":"要快速设置，请单击 '<1></1>'",
-           "addAll":"添加所有货币",
-           "addSpecific":"或者，通过在下列支持的货币中选择一个来添加特定帐户。",
-           "learnMore":"了解更多",
-           "cancel":"取消",
-           "done":"已完成"
+        "addressSearchForm": {
+            "placeholder": "按地址搜索…"
         },
-        "confirmAccount":{
-           "changeAccount":"更改账户",
-           "back":"后退",
-           "confirm":"确认"
+        "priceChart": {
+            "yAxisLabel": "价格（美元）",
+            "loading": "正在加载…",
+            "months": "1月 2月 3月 4月 5月 6月 7月 8月 9月 10月 11月 12月",
+            "weekdays": "星期日 星期一 星期二 星期三 星期四 星期五 星期六",
+            "shortMonths": "1月 2月 3月 4月 5月 6月 7月 8月 9月 10月 11月 12月",
+            "exportButtonTitle": "导出",
+            "printButtonTitle": "导入",
+            "rangeSelectorFrom": "从",
+            "rangeSelectorTo": "至",
+            "rangeSelectorZoom": "缩放",
+            "downloadPNG": "下载PNG图像",
+            "downloadJPEG": "下载JPEG图像",
+            "downloadPDF": "下载PDF图像",
+            "downloadSVG": "下载SVG图像",
+            "printChart": "打印",
+            "resetZoom": "重置缩放",
+            "resetZoomTitle": "重置缩放",
+            "thousandsSep": "，",
+            "decimalPoint": "。"
         },
-        "connectAsset":{
-           "back":"后退",
-           "continue":"继续"
+        "pieChart": {
+            "weight": "权重"
         },
-        "connectionInstructions":{
-           "trezor":{
-              "connect":"连接您的 TREZOR 以开始",
-              "version":"使用 TREZOR 钱包网站时请确保 TREZOR 固件是最新的",
-              "pin":"如果需要，请输入您的个人识别码或密码以解锁 TREZOR",
-              "export":"当被问及是否要导出您 <1></1> 帐户的公钥时，选择<3>导出</3>",
-              "popup":"如果看到“弹出窗口关闭”错误，请在浏览器设置中启用弹出窗口，然后重试。"
-           },
-           "ledger":{
-              "connect":"连接您的 Ledger 设备以开始",
-              "pin":"输入您的个人识别码以解锁 Ledger",
-              "version":"当使用 Ledger Live 桌面应用时，请确保您的 Ledger 固件和 <1></1>应用是最新的",
-              "open":"在您的 Ledger 上打开<1></1> 应用"
-           }
+        "feedbackForm": {
+            "faastFeedback": "Faa.st反馈",
+            "typeOfFeedback": "反馈类型",
+            "selectType": "选择反馈类型",
+            "design": "设计反馈",
+            "asset": "请求新资产",
+            "feature": "功能请求",
+            "help": "交换帮助",
+            "bug": "报告错误",
+            "other": "其他",
+            "description": "反馈说明",
+            "email": "答复电子邮件地址",
+            "assetName": "资产名称和聚合行情",
+            "assetInfo": "资产信息URL",
+            "contactSupport": "请联系<1>support@faa.st</1>，以便我们解决有关您的交换的问题！",
+            "submitFeedback": "提交反馈",
+            "pleaseProvide": "请在这里提供",
+            "feedbackHere": "您的反馈…",
+            "emailPlaceholder": "电子邮件地址（可选）",
+            "assetNamePlaceholder": "资产名称和聚合行情",
+            "assetInfoPlaceholder": "请提供资产信息的URL…",
+            "featurePlaceholder": "请描述您想要添加到Faa.st的功能…",
+            "designPlaceholder": "请描述您认为Faa.st设计有哪些优缺点…",
+            "bugPlaceholder": "请描述使用Faa.st时遇到的错误…",
+            "otherPlaceholder": "请在这里提供您的反馈……"
         },
-        "connectionStatus":{
-           "unable":"无法连接，<1><2>{{retrySeconds}}</2></1> 秒内将重新尝试",
-           "retryNow":"立即重试",
-           "retry":"重试"
+        "walletTypes": {
+            "nonSegwit": "遗留（非SegWit）帐户",
+            "preFork": "遗留（预分叉）帐户",
+            "ledger": "Ledger钱包",
+            "mist": "Mist浏览器",
+            "coinbase": "Coinbase钱包",
+            "trust": "Trust钱包",
+            "ledgerSlogan": "无论时地，为您确保加密货币的安全。",
+            "ledgerDescription": "Ledger提供基于智能卡的加密资产硬件钱包，为您的比特币、以太坊、Ripple等提供最高级别的保护——而不会牺牲可用性或掌控性。",
+            "trezorSlogan": "加密货币的安全存放点。",
+            "trezorDescription": "Trezor为您的数字资产提供安全的保险库。存储比特币、莱特币、密码、登录信息和密钥，消除后顾之忧。",
+            "blockstackSlogan": "开始构建分散式区块链应用程序的最轻松捷径。",
+            "blockstackDescription": "Blockstack正在建立一个生态系统，让您的用户牢牢掌握他们的基本数字权力。",
+            "metmaskSlogan": "将以太坊带到您的浏览器。",
+            "metamaskDescription": "通过MetaMask搭建的桥梁，您可以在今天的浏览器中访问明天的分布式网络。利用MetaMask，您可以直接在浏览器中运行以太坊ÐApp。",
+            "mistSlogan": "Mist。浏览并使用以太坊网络上的ÐApp。",
+            "mistDescription": "Mist浏览器是浏览和使用ÐApp的首选工具。",
+            "paritySlogan": "分散式网络的区块链基础设施。",
+            "parityDescription": "Parity Technologies构建核心区块链基础设施。从最先进的以太坊客户端Parity Ethereum到下一代互操作区块链网络Polkadot。",
+            "coinbaseSlogan": "最简单、最安全的加密货币钱包。",
+            "coinbaseDescription": "Coinbase：购买、管理和出售加密货币的简单、安全的方式。",
+            "trustSlogan": "以太坊、ERC20、ERC223和ERC721令牌的安全钱包。",
+            "trustDescription": "Trust钱包是存储您最喜爱的ERC721和ERC20代币的最佳以太坊钱包兼多加密货币钱包。",
+            "statusSlogan": "随时随地访问更好的网络。",
+            "statusDescription": "借助Status，您可以加入致力于让您运用以太坊强大功能和分布性更广的互联网的开源社区，安全地聊天、浏览和交易。"
         },
-        "derivationPath":{
-           "change":"更改派生路径"
+        "portfolio": {
+            "label": "我的投资组合"
         },
-        "index":{
-           "adding":"添加中"
+        "statuses": {
+            "insufficientFunds": "资金不足",
+            "unsuccessful": "订单不成功，请联系support@faa.st",
+            "successful": "订单已成功完成",
+            "refunded": "订单已成功退款",
+            "fetchingRate": "正在获取市场信息",
+            "awaitingDeposit": "正在等待存款",
+            "generateTx": "正在生成存款交易",
+            "sendTxError": "无法发送存款交易，请重试",
+            "sending": "发送存款交易",
+            "sent": "等待交易确认",
+            "signingError": "无法签署存款交易，请重试",
+            "signing": "正在等待签署",
+            "readyToSend": "准备发送",
+            "readyToSign": "准备签署",
+            "contactSupport": "可能存在问题。有关详细信息，请联系support@faa.st。",
+            "processingSwap": "正在处理交换",
+            "failedToCheckDepositTx": "未能检查存款交易状态",
+            "errorSendingDeposit": "发送存款交易时出错",
+            "unknownError": "未知错误"
         },
-        "switchPathButton":{
-           "switch":"切换至"
+        "dashboard": {
+            "holdingsTitle": "P. 持有量",
+            "distribution": "分布",
+            "address": "地址",
+            "removeWallet": "移除钱包",
+            "addWallet": "添加钱包",
+            "walletHoldings": "<0></0> 持有量",
+            "portfolioHoldings": "投资组合持有量"
+        },
+        "connect": {
+            "select": "选择您的钱包",
+            "hardware": "硬件钱包",
+            "recommended": "推荐",
+            "ledger": "Ledger 钱包",
+            "desktopWallets": "<0></0> 以太坊桌面钱包",
+            "mobileWallets": "<0></0> 以太坊移动钱包",
+            "mist": "Mist 浏览器",
+            "trust": "Trust 钱包",
+            "coinbase": "Coinbase 钱包",
+            "manual": "手册",
+            "createWallet": "创建钱包",
+            "generate": "生成新的密钥存储文件",
+            "importWallet": "导入钱包",
+            "dragAndDrop": "拖放您的密钥存储文件",
+            "openSource": "开源且安全"
+        },
+        "nav": {
+            "dashboard": "主页面",
+            "assets": "资产",
+            "allAssets": "所有资产",
+            "trending": "趋势分析",
+            "watchlist": "监控列表",
+            "rebalance": "再调整",
+            "swap": "交换",
+            "orders": "订单",
+            "addWallet": "添加钱包"
+        },
+        "assetIndex": {
+            "titlePage": "所有资产 —— 第 <1></1>页",
+            "title": "所有资产"
+        },
+        "assetIndexTable": {
+            "coin": "钱币",
+            "price": "价格",
+            "marketCap": "市值",
+            "volume": "额度",
+            "supply": "供应",
+            "change": "更改"
+        },
+        "trending": {
+            "tradeable": "仅显示可交易资产",
+            "trending": "趋势分析",
+            "biggestGainers": "最大赢家",
+            "biggestLosers": "最大输家"
+        },
+        "watchlist": {
+            "tableHeading": "监控列表"
+        },
+        "orders": {
+            "orderHistory": "订单历史",
+            "showMore": "显示更多订单......",
+            "date": "日期",
+            "pair": "对",
+            "cost": "费用",
+            "received": "已接收",
+            "receiving": "接收中",
+            "noOpen": "当前没有未结订单",
+            "noPrevious": "没有要显示的历史订单",
+            "openOrdersTitle": "未结订单",
+            "previousOrdersTitle": "历史订单",
+            "rate": "费率"
+        },
+        "sidebar": {
+            "watchlist": "<0>监控列表</0>",
+            "trending": "趋势分析"
+        },
+        "rebalance": {
+            "saveChanges": "<0></0>保存更改",
+            "addAsset": "<0></0> 添加资产",
+            "remove": "<0></0> 删除",
+            "availableBalance": "可用余额",
+            "how": "<0><0></0> 我该怎么使用这个？ </0>",
+            "24hChange": "24 小时变化",
+            "currentPrice": "当前价格",
+            "after": "之后",
+            "before": "之前",
+            "value": "价值",
+            "weight": "权重",
+            "units": "单位",
+            "addAssetBottom": "添加资产",
+            "empty": "这个投资组合是空的。要开始交换，您必须先 <1>添加一个钱包</1>。",
+            "instructions": "操作指南",
+            "instructions1": "重新调整投资组合 —— 3 个简单步骤：",
+            "instructions2": " 向左拖动滑块以减少资产使用的权重",
+            "instructions3": "删除整个资产",
+            "instructions4": "向右拖动滑块以增加资产使用的权重",
+            "instructions5": " 添加新资产。<1/><2>（注意：为了增加权重，您必须减少另一项资产的权重）</2>",
+            "instructions6": "单击",
+            "instructions7": "完成更改审核后。",
+            "addAssetSelector": "添加资产",
+            "readOnly": "这个钱包为只读。您需要<1><2>连接您的钱包</2></1>才能交易资产。"
+        },
+        "widget": {
+            "swapInstantly": "立即交换",
+            "omitted": "<0>如果留空，则使用可变市场费率。</0>",
+            "approxSend": "<0>您大约需要发送多少。单击“创建”接收担保的报价。</0>",
+            "expectSend": "<0>我们希望您发送的金额</0>",
+            "approxReceive": "<0>您将大约收到多少。单击“创建”以接收担保的报价。</0>",
+            "guaranteeReceive": "<0>保证您收到的金额。</0>",
+            "youHave": "您有",
+            "acceptTerms": "我同意 <1> Faa.st 条款和条件</1>",
+            "createSwap": "创建交换",
+            "generatingSwap": "正在生成交换......",
+            "chooseSend": "选择要发送的资产",
+            "chooseReceive": "选择要接收的资产",
+            "noRate": "无法更新费率",
+            "sendAmountPlaceholder": "发送金额",
+            "optionalPlaceholder": " （可选）",
+            "receiveAmountPlaceholder": "接收金额",
+            "returnAddressOptionalPlaceholder": "退回地址（可选）",
+            "returnAddressPlaceholder": "退回地址",
+            "receiveAddressPlaceholder": "接收地址",
+            "pleaseNote": "请注意：由于您所在的位置，您可以交换的最大值是 ",
+            "dueToLocation": "<0>。</0>",
+            "youReceive": "您收到了",
+            "fromWallet": "来源钱包",
+            "toWallet": "目标钱包",
+            "youSend": "您发送了",
+            "notEnoughEth": "这个钱包没有足够的ETH，无法支付汽油费。请存入一些ETH，然后重试。",
+            "sendAmountAtLeast": "发送金额必须至少为",
+            "sendAmountGreaterThan": "发送金额不能大于",
+            "dueToYourLocation": "由于您所在的位置。",
+            "ensurePricing": "以确保有效的定价。",
+            "invalid": "无效",
+            "address": "地址"
+        },
+        "progressBar": {
+            "createSwap": "创建交换",
+            "sendSymbol": "发送 <1></1>",
+            "receiveSymbol": "接收 <1></1>"
+        },
+        "footer": {
+            "website": "Faa.st 网站",
+            "termsConditions": "条款和条件",
+            "privacy": "隐私政策",
+            "feedback": "提供反馈意见"
+        },
+        "coinDetail": {
+            "buy": "买",
+            "sell": "卖",
+            "marketCap": "市值",
+            "volume": "24 小时交易量",
+            "supply": "供应"
+        },
+        "assetTable": {
+            "noAssets": "没有要显示的资产",
+            "th1": "资产",
+            "th2": "单位",
+            "th3": "持有量",
+            "th4": "权重",
+            "th5": "价格",
+            "th6": "24 小时变化"
+        },
+        "swapSubmit": {
+            "geoLimit": "<2>根据您的位置</2>发送金额不能超过 $<1></1> 。",
+            "multipleSwaps": "将进行以下交换以保存您对投资组合所做的更改。请查看它们，然后单击'<1><1>'以继续。",
+            "networkFee": "总网络费用：",
+            "timer": "* 如果在以下时间内提交，则担保报价费率：",
+            "terms": "我同意<1>Faast 条款和条件</1>",
+            "cancel": "取消",
+            "submit": "提交",
+            "submitAll": "全部提交",
+            "beginSigning": "开始签字",
+            "confirmSubmit": "确认并提交",
+            "reviewSign": "复核并签字",
+            "additionalFees": "**根据发送的资产和您使用的钱包，可能会收取额外费用。"
+        },
+        "ethInstructions": {
+            "to": "至：",
+            "value": "价值：",
+            "gas": "燃料：",
+            "gasPrice": "燃料价格：",
+            "data": "数据：",
+            "confirm": "当您的钱包提示时，请确认以下交易详情。",
+            "sending": "发送 <1></1> 到 <3><4></4></3>."
+        },
+        "swapStatusCard": {
+            "signed": "已签字",
+            "ready": "准备完毕",
+            "awaiting": "等待签字",
+            "failed": "已失败",
+            "sending": "发送中",
+            "status": "状态：",
+            "rate": "费率：",
+            "network": "网络费：",
+            "swapFee": "交换费：",
+            "usingWallet": "使用钱包",
+            "atAddress": "在地址中",
+            "date": "日期：",
+            "orderId": "订单号：",
+            "sentTx": "发送 txn 文件：",
+            "last": "上次"
+        },
+        "searchResults": {
+            "view": "在投资组合中查看",
+            "add": "添加到投资组合"
+        },
+        "blocked": {
+            "restricted": "限制区",
+            "sorry": "抱歉，您正在从被阻止的位置访问 faa.st。如果您错误地收到此消息，可以在<1>此处</1>了解更多信息。"
+        },
+        "selectPortfolioDropdown": {
+            "add": "添加投资组合"
+        },
+        "shareModal": {
+            "share": "分享投资组合",
+            "permalink": "永久链接："
+        },
+        "walletSelector": {
+            "wallets": "钱包",
+            "addWallet": "添加钱包",
+            "noWallets": "该投资组合里没有钱包 "
+        },
+        "tradeDetailModal": {
+            "orderDetails": "订单详情"
+        },
+        "walletInfoModal": {
+            "metamask1": "<0></0>是提供以太坊钱包的桌面浏览器扩展应用。您可以从<2>此处</2>获取它。",
+            "metamask2": "如果您已经有<1></1>, 请确保在此浏览器上启用了该扩展。",
+            "mist1": "<0></0> 是带有内置以太坊钱包的桌面网页浏览器。您可以从<2>此处</2>获取它。",
+            "mist2": "如果您已经有<1></1>, 打开<3>faa.st</3> 使用其内置的网页浏览器。",
+            "status1": "<0></0>是用于 iOS 和 Android 系统的移动以太坊操作系统。您可以从 <2此处</2>获取更多相关信息。",
+            "status2": "如果您已经有<1></1>, 打开 <3>faa.st</3> 使用其内置的网页浏览器。",
+            "coinbase1": "<0></0> 是用于 iOS 和 Android 系统的移动以太坊操作系统。您可以从<2>此处</2>获取它或者使用下面的链接。",
+            "coinbase2": "如果您已经有<1></1>, 打开 <3>faa.st</3> 使用其内置的网页浏览器。"
+        },
+        "createWalletModal": {
+            "pleaseAck": "请确认以下免责声明：",
+            "ack1": "文件 <1></1>可用于发送其包含的任何资金。",
+            "ack2": "文件 <1></1> 包含加密的敏感私钥，只能使用密码访问。",
+            "ack3": "Faast 没有文件或密码的备份。这个 <1></1> 是在我的网络浏览器中生成的，从未通过互联网发送过。",
+            "ack4": "如果我无法访问该文件或忘记密码，我将没收其中包含的所有资金。",
+            "ack5": "我已下载此文件并存储在计算机上的安全位置。",
+            "ack6": "文件 <1></1> 加上我的密码，可用于使用 Faast 以外的应用程序发送资金。",
+            "agree": "我理解并同意上述所有内容",
+            "createWallet": "创建钱包",
+            "downloadKeystore": "下载密钥库文件",
+            "download": "<0></0>下载<2></2>文件",
+            "cancel": "取消",
+            "continue": "继续",
+            "importPrivateKey": "导入私钥",
+            "enterPrivateKey": "输入现有以太坊钱包的私钥。",
+            "enterPassword": "输入<1>{{walletName}}</1>的密码。请记下您的密码。如不提供密码，您将无法访问<3>{{walletName}}</3>中的资金。",
+            "passwordLabel": "密码",
+            "confirmPasswordLabel": "确认密码",
+            "passwordRequired": "密码为必填",
+            "passwordLength": "请至少输入8个字符。请务必使用强密码保护您的钱包。",
+            "passwordsDontMatch": "密码不一致",
+            "enterPasswordPlaceholder": "输入密码…",
+            "confirmPasswordPlaceholder": "再次输入密码…",
+            "enterPrivateKeyPlaceholder": "输入您的私钥…"
+        },
+        "walletPasswordPrompt": {
+            "walletPassword": "钱包密码",
+            "enterYourPassword": "如要继续，请输入以下钱包的密码",
+            "cancel": "取消",
+            "continue": "继续",
+            "enterPasswordPlaceholder": "输入密码…"
+        },
+        "assetSelector": {
+            "comingSoon": "即将上线",
+            "alreadyAdded": "已添加",
+            "unavailable": "在您的位置不可用",
+            "unsupported": "不支持的钱包",
+            "searchByName": "按名称或符号搜索…"
+        },
+        "addressModal": {
+            "address": "地址",
+            "viewOnExplorer": "在资源管理器上查看",
+            "close": "关闭"
+        },
+        "stepTwoConnected": {
+            "title": "确认掉期交易"
+        },
+        "stepTwoManual": {
+            "geoLimit": "请注意： <5>根据您的位置</5> 您可以交换的最大值是<1></1> <3></3>",
+            "status": "状态：",
+            "updatesAuto": "订单状态自动更新。您不需要刷新。",
+            "orderID": "订单号：",
+            "receiveAddress": "接收地址：",
+            "refundAddress": "退款地址：",
+            "rate": "费率：",
+            "depositAmount": "存款金额：",
+            "minimumAmount": "最低存款额：",
+            "receiveAmount": "接收金额：",
+            "fixedPrice": "* 报价是基于当前市场条件的估计。实际费率可能有所不同。",
+            "quotedRate": "* 如果在以下时间内发送存款则担保报价：",
+            "orderDetails": "订单详细信息",
+            "send": "发送",
+            "atLeast": "至少",
+            "toAddress": "至地址："
+        },
+        "hardwareWalletModal": {
+            "accountSelect": {
+                "heading": "请选择要添加的帐户。",
+                "showAccounts": "显示帐户",
+                "next": "下一个",
+                "back": "后退",
+                "previous:": " 上一个"
+            },
+            "assetSelect": {
+                "express": "要快速设置，请单击 '<1></1>'",
+                "addAll": "添加所有货币",
+                "addSpecific": "或者，通过在下列支持的货币中选择一个来添加特定帐户。",
+                "learnMore": "了解更多",
+                "cancel": "取消",
+                "done": "已完成"
+            },
+            "confirmAccount": {
+                "pleaseConfirm": "请确认您要添加以下帐户。",
+                "changeAccount": "更改账户",
+                "back": "后退",
+                "confirm": "确认"
+            },
+            "connectAsset": {
+                "back": "后退",
+                "continue": "继续"
+            },
+            "connectionInstructions": {
+                "trezor": {
+                    "connect": "连接您的 TREZOR 以开始",
+                    "version": "使用 TREZOR 钱包网站时请确保 TREZOR 固件是最新的",
+                    "pin": "如果需要，请输入您的个人识别码或密码以解锁 TREZOR",
+                    "export": "当被问及是否要导出您 <1></1> 帐户的公钥时，选择<3>导出</3>",
+                    "popup": "如果看到“弹出窗口关闭”错误，请在浏览器设置中启用弹出窗口，然后重试。"
+                },
+                "ledger": {
+                    "connect": "连接您的 Ledger 设备以开始",
+                    "pin": "输入您的个人识别码以解锁 Ledger",
+                    "version": "当使用 Ledger Live 桌面应用时，请确保您的 Ledger 固件和 <1></1>应用是最新的",
+                    "open": "在您的 Ledger 上打开<1></1> 应用"
+                }
+            },
+            "connectionStatus": {
+                "unable": "无法连接，<1><2>{{retrySeconds}}</2></1> 秒内将重新尝试",
+                "retryNow": "立即重试",
+                "retry": "重试",
+                "connecting": "正在连接",
+                "connected": "已连接",
+                "cancelled": "已取消",
+                "error": "错误"
+            },
+            "derivationPath": {
+                "change": "更改派生路径",
+                "derivationPathPlaceholder": "派生路径",
+                "invalidError": "无效的派生路径",
+                "derivationLabel": "派生路径"
+            },
+            "index": {
+                "adding": "添加中"
+            },
+            "switchPathButton": {
+                "switch": "切换至"
+            }
+        },
+        "access": {
+            "createWallet": {
+                "create": "<0></0>创建钱包",
+                "generate": "生成新的密钥库文件"
+            },
+            "importKeystore": {
+                "import": "<0></0>导入钱包",
+                "drag": "拖放密钥库文件"
+            }
+        },
+        "confirmTransactionModal": {
+            "title": "确认交易",
+            "cancel": "取消"
+        },
+        "ledgerBTCInstructions": {
+            "confirm": "确认",
+            "output": "输出 #<1></1>",
+            "amount": "数量",
+            "address": "地址",
+            "transaction": "交易",
+            "fees": "费用"
+        },
+        "ledgerETHInstructions": {
+            "amount": "数量",
+            "address": "地址",
+            "maxFees": "最高费用"
+        },
+        "ledgerInstructions": {
+            "pleaseConfirm": "请确认您设备上的交易。您应该能在屏幕上看到以下信息。",
+            "tip": "<0>提示：如果您在设备上看不到交易，请确保您已使用个人识别码进行了解锁并已打开应用程序 <2>{{appName}}</2>。</0>",
+            "confirmWithin": "请在规定时间内完成确认："
+        },
+        "metaMaskInstructions": {
+            "pleaseConfirm": "请确认交易。您应该在元掩码中看到以下信息。",
+            "tip": "<0>提示：如果没有看到包含订单详细信息的弹出窗口，请单击浏览器扩展菜单中的元掩码图标，如<2>此处</2>图中所示。</0>",
+            "myWallet": "我的钱包",
+            "gasFee": "燃料费",
+            "total": "一共"
+        },
+        "trezorBTCInstructions": {
+            "confirmSending": "确认发送",
+            "to": "至",
+            "reallySend": "真的发送",
+            "fromWallet": "从您的钱包？",
+            "feeIncluded": "费用包括："
+        },
+        "trezorETHInstructions": {
+            "send": "发送",
+            "to": "至",
+            "reallySend": "真的发送",
+            "paying": "支付高达",
+            "forGas": "燃料？"
+        },
+        "trezorInstructions": {
+            "pleaseConfirm": "请确认您设备上的交易。您应该在屏幕上看到以下信息。"
+        },
+        "loading": {
+            "balances": "正在加载余额…"
         }
-     },
-     "access":{
-        "createWallet":{
-           "create":"<0></0>创建钱包",
-           "generate":"生成新的密钥库文件"
-        },
-        "importKeystore":{
-           "import":"<0></0>导入钱包",
-           "drag":"拖放密钥库文件"
-        }
-     },
-     "confirmTransactionModal":{
-        "title":"确认交易",
-        "cancel":"取消"
-     },
-     "ledgerBTCInstructions":{
-        "confirm":"确认",
-        "output":"输出 #<1></1>",
-        "amount":"数量",
-        "address":"地址",
-        "transaction":"交易",
-        "fees":"费用"
-     },
-     "ledgerETHInstructions":{
-        "amount":"数量",
-        "address":"地址",
-        "maxFees":"最高费用"
-     },
-     "ledgerInstructions":{
-        "pleaseConfirm":"请确认您设备上的交易。您应该能在屏幕上看到以下信息。",
-        "tip":"<0>提示：如果您在设备上看不到交易，请确保您已使用个人识别码进行了解锁并已打开应用程序 <2>{{appName}}</2>。</0>",
-        "confirmWithin":"请在规定时间内完成确认："
-     },
-     "metaMaskInstructions":{
-        "pleaseConfirm":"请确认交易。您应该在元掩码中看到以下信息。",
-        "tip":"<0>提示：如果没有看到包含订单详细信息的弹出窗口，请单击浏览器扩展菜单中的元掩码图标，如<2>此处</2>图中所示。</0>",
-        "myWallet":"我的钱包",
-        "gasFee":"燃料费",
-        "total":"一共"
-     },
-     "trezorBTCInstructions":{
-        "confirmSending":"确认发送",
-        "to":"至",
-        "reallySend":"真的发送",
-        "fromWallet":"从您的钱包？",
-        "feeIncluded":"费用包括："
-     },
-     "trezorETHInstructions":{
-        "send":"发送",
-        "to":"至",
-        "reallySend":"真的发送",
-        "paying":"支付高达",
-        "forGas":"燃料？"
-     },
-     "trezorInstructions":{
-        "pleaseConfirm":"请确认您设备上的交易。您应该在屏幕上看到以下信息。"
-     }
-  }
+    }
 }

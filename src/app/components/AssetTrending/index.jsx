@@ -34,7 +34,7 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
       <Layout className='pt-3'>
         <AssetIndexTable 
           defaultPriceChange={timeFrame} 
-          tableHeader={'Biggest Gainers'} 
+          tableHeader={<T tag='span' i18nKey='app.trending.biggestGainers'>Biggest Gainers</T>} 
           assets={trendingPositive}
           allowSorting={false}
           heading={(
@@ -89,7 +89,7 @@ const AssetTrending = ({ trendingPositive, trendingNegative,
           )}
         />
         <AssetIndexTable 
-          tableHeader={'Biggest Losers'} 
+          tableHeader={<T tag='span' i18nKey='app.trending.biggestLosers'>Biggest Losers</T>} 
           assets={trendingNegative}
           defaultPriceChange={timeFrame}
           allowSorting={false}

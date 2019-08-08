@@ -7,11 +7,12 @@
 
 .assetButton {
   padding: 1rem 0.5rem !important;
+  display: flex;
   width: 100%;
   height: 100%;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
+  align-items: center;
   white-space: normal;
   &:hover:not(:disabled) {
     .assetButtonIcon {

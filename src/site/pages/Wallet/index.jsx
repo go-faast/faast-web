@@ -11,6 +11,7 @@ import SecureIcon from 'Img/secure.svg'
 import SimpleIcon from 'Img/simple.svg'
 import PrivacyIcon from 'Img/privacy.svg'
 import WalletTypes from 'Config/walletTypes'
+import { i18nTranslate as trans } from 'Utilities/translate'
 
 import classNames from 'class-names'
 
@@ -20,10 +21,15 @@ export default compose(
   setDisplayName('Wallet'),
   withTracker,
   withRouteData
-)(({ translations, translations: { static: { wallet: t } }, wallet: { name, slogan, website, description, supportedAssets, howTo, } }) => {
+)(({ translations, translations: { static: { wallet: t } }, wallet: { name, slogan, website, description, supportedAssets, howTo, translationKey } }) => {
   const graphic = Object.values(WalletTypes).find(obj => obj.name === name).graphic
   const supportedTickers = supportedAssets ? Object.keys(supportedAssets) : []
-  name = name.replace(' Wallet', '')
+  name = trans(translationKey, name)
+  slogan = trans(`${translationKey}Slogan`, slogan)
+  description = trans(`${translationKey}Description`, description)
+  if (name.indexOf(' Wallet') >= 0) {
+    name = name.replace(' Wallet', '')
+  }
   return (
     <div style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
       <Header 

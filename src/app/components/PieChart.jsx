@@ -3,6 +3,8 @@ import PropTypes from 'prop-types'
 import ReactHighcharts from 'react-highcharts'
 import config from 'Config'
 
+import { withTranslation } from 'react-i18next'
+
 let prevAssetIx
 
 class PieChart extends Component {
@@ -29,7 +31,7 @@ class PieChart extends Component {
     }
   }
 
-  _setPieChartSeries () {
+  _setPieChartSeries (t) {
     const { portfolio, handleChartSelect } = this.props
     const list = portfolio.assetHoldings.filter(a => a.shown)
     const noBalance = portfolio.totalFiat.toNumber() === 0
@@ -66,14 +68,15 @@ class PieChart extends Component {
         })
       }),
       series: [{
-        name: 'Weight',
+        name: t('app.pieChart.weight', 'Weight'),
         data: seriesData
       }]
     })
   }
 
   render () {
-    return <ReactHighcharts config={this._setPieChartSeries()} ref={this.chartRef} />
+    const { t } = this.props
+    return <ReactHighcharts config={this._setPieChartSeries(t)} ref={this.chartRef} />
   }
 }
 
@@ -83,4 +86,4 @@ PieChart.propTypes = {
   handleChartSelect: PropTypes.func
 }
 
-export default PieChart
+export default withTranslation()(PieChart)
