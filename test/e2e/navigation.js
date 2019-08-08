@@ -80,10 +80,9 @@ export default (config) => {
   })
 
   test('Goes to trending', async t => {
-    const tradeable = Selector('#form-tradeableForm-requiredCheckbox').exists
     await t
       .click(HREF('/app/assets/trending'))
-      .expect(tradeable).ok()
+      await t.expect(Selector('#form-tradeableForm-requiredCheckbox', { visibilityCheck: true, timeout: 120000 }).exists).ok()
   })
 
   test('Goes to wallets info', async t => {
@@ -143,8 +142,48 @@ export default (config) => {
       .eql('Privacy Policy')
   })
 
+  test('Check languages', async t => {
+    const H4 = Selector('h4').innerText
+    const lang = Selector('a').withAttribute('to', '/assets')
+    const sp = Selector('img').withAttribute('src', '/static/img/spain.a62a83f3.svg')
+    const jp = Selector('img').withAttribute('src', '/static/img/japan.f8dc0f04.svg')
+    const ru = Selector('img').withAttribute('src', '/static/img/russia.562474ef.svg')
+    const chi = Selector('img').withAttribute('src', '/static/img/china.87d6c351.svg')
+    await t
+      .click(lang)
+      .click(sp)
 
+      .click(HREF('/what-is-an-ico'))
+      .expect(H4)
+      .eql("An introduction to ICO's")
 
+      .click(lang)
+      .click(jp)
+      .click(HREF('/ja'))
+      .expect(LINK('/ja/wallets/mist-browser')).ok()
+      .expect(LINK('https://github.com/go-faast')).ok()
+      .click(HREF('/what-is-an-ico'))
+      .expect(H4)
+      .eql("An introduction to ICO's")
+
+      .click(lang)
+      .click(ru)
+      .click(HREF('/ru'))
+      .expect(LINK('https://github.com/go-faast')).ok()
+      .expect(LINK('/app/assets/watchlist')).ok()
+      .click(HREF('/what-is-an-ico'))
+      .expect(H4)
+      .eql("An introduction to ICO's")
+
+      .click(lang)
+      .click(chi)
+      .click(HREF('/zh'))      
+      .expect(LINK('/affiliates')).ok()
+      .expect(LINK('/app/connect')).ok()
+      .click(HREF('/what-is-an-ico'))
+      .expect(H4)
+      .eql("An introduction to ICO's")
+  })
 
 
 }
