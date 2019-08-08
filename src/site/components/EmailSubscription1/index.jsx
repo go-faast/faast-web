@@ -27,10 +27,10 @@ const EmailSub = ({ handleSubmit, }) => {
         inputGroupStyle={{ maxWidth: 495 }}
         addonAppend={() => (
           <Button 
-            className={classNames('flat position-absolute p-0')} 
-            style={{ top: 3, right: 3, width: 120,
-              height: 36, backgroundColor: '#D5ECE8',
-              border: '1px dotted #45B693', color: '#16AD94',
+            className={classNames('flat position-absolute text-center p-0')} 
+            style={{ top: 0, right: 0, width: 120,
+              height: '100%', backgroundColor: '#D5ECE8',
+              border: 'none', color: '#16AD94',
               fontSize: 14, fontWeight: 600, zIndex: 99999 }}
             color='primary' 
             type='submit' 

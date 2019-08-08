@@ -14,6 +14,7 @@
   display: inline-block;
   line-height: 101px;
   position: relative;
+  text-decoration: none !important;
 }
 
 .walletBubble:nth-child(1) {
@@ -91,6 +92,7 @@
   transform: translate3d(0, 0, 0);
   width: 150px;
   line-height: 20px;
+  text-decoration: none !important;
 }
 
 .walletBubble:hover {
