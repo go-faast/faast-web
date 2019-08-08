@@ -79,11 +79,11 @@ export default (config) => {
       .expect(LINK('/app/swap?to=BTC')).ok()
   })
 
-  test('Goes to trending', async t => {
-    await t
-      .click(HREF('/app/assets/trending'))
-      await t.expect(Selector('#form-tradeableForm-requiredCheckbox', { visibilityCheck: true, timeout: 120000 }).exists).ok()
-  })
+  // test('Goes to trending', async t => {
+  //   await t
+  //     .click(HREF('/app/assets/trending'))
+  //     await t.expect(Selector('#form-tradeableForm-requiredCheckbox', { visibilityCheck: true, timeout: 120000 }).exists).ok()
+  // })
 
   test('Goes to wallets info', async t => {
     await t
