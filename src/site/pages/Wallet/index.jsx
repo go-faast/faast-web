@@ -31,7 +31,7 @@ export default compose(
     name = name.replace(' Wallet', '')
   }
   return (
-    <div style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
+    <div style={{ maxWidth: '100vw' }}>
       <Header 
         theme='light' 
         headerColor='#fff' 
@@ -53,7 +53,7 @@ export default compose(
           </Col>
         </Row>
       </div>
-      <Row className='mx-auto pb-xs-0 pb-4' style={{ background: 'rgb(243, 245, 248)', minHeight: 320, maxWidth: 1280 }}>
+      <Row className='mx-auto pb-xs-0 pb-4' style={{ background: 'rgb(243, 245, 248)', minHeight: 320, maxWidth: 1280, overflow: 'hidden' }}>
         <Col sm='12' lg='8' className={classNames(text, 'text-left pl-md-5 pl-0 mt-2 pt-5 ml-5')}>
           <h1>{name} {t.andFaast}</h1>
           <p className='w-75 mt-3'>
@@ -75,7 +75,7 @@ export default compose(
           <img className='mt-4 pt-5' src={MacbookScreenshot1} style={{ maxWidth: 300 }} />
         </Col>
       </Row>
-      <Row className={classNames(text,'text-center py-5 px-4')} style={{ background: '#fff' }}>
+      <Row className={classNames(text,'text-center py-5 px-4 mx-0')} style={{ background: '#fff' }}>
         <span className='mx-auto row' style={{ maxWidth: 1280 }}>
           <Col sm='12'>
             <h1 className={text}>{t.whyTrade} {name} {t.walletQ}</h1>
