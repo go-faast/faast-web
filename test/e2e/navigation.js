@@ -73,11 +73,45 @@ export default (config) => {
     const supported = HREF('/assets')
 
     await t
+      // .click(affil)
+      // .expect(affiliateid).ok()
       .click(supported)
       .expect(LINK('/app/swap?to=BTC')).ok()
   })
 
   
+
+  test('Goes to wallets info', async t => {
+    await t
+      .click(HREF('/wallets/trezor'))
+      .expect(LINK('https://trezor.io/')).ok()
+
+      .click(HREF('/wallets/ledger-wallet'))
+      .expect(LINK('https://www.ledger.com/')).ok()
+
+      .click(HREF('/wallets/metamask'))
+      .expect(LINK('https://metamask.io/')).ok()
+
+      .click(HREF('/wallets/mist-browser'))
+      .expect(HREF('https://github.com/ethereum/mist')).ok()
+
+      .click(HREF('/wallets/trust-wallet'))
+      .expect(LINK('https://trustwalletapp.com/')).ok()
+
+      .click(HREF('/wallets/coinbase-wallet'))
+      .expect(LINK('https://wallet.coinbase.com/')).ok()
+
+      .click(HREF('/wallets/status'))
+      .expect(LINK('https://status.im/')).ok()
+  })
+
+
+  test('Goes to trending', async t => {
+    await t
+      .click(HREF('/app/assets/trending'))
+      await t.expect(Selector('#form-tradeableForm-requiredCheckbox', { visibilityCheck: true, timeout: 120000 }).exists).ok()
+  })
+
   test('Tests texts in pages', async t => {
     const H4 = Selector('h4').innerText
     await t
