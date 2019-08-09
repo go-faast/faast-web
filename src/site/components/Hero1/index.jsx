@@ -17,10 +17,12 @@ const Hero = ({ supportedAssets, translations }) => {
       <div style={{ backgroundColor: '#191A1D', minHeight: 700 }} className='jumbotron jumbotron-fluid hero-technology position-relative'>
         <h1 className='mt-0' style={{ fontWeight: 600, color: '#EFEFEF' }}>Don’t Get Goxxed. Own Your Crypto.</h1>
         <h5 style={{ color: '#9C9FA8' }}>If it’s not your keys, it’s not your crypto. Trade safely from your own wallet with Faa.st.</h5>
-        <Fade duration={1200} distance='80px' bottom>
-          <SwapWidget translations={translations} assets={supportedAssets} />
-        </Fade>
-        <div style={{ bottom: 0 }} className='position-absolute'>
+        <div className='position-relative' style={{ zIndex: 999 }}>
+          <Fade duration={1200} distance='80px' bottom>
+            <SwapWidget translations={translations} assets={supportedAssets} />
+          </Fade>
+        </div>
+        <div style={{ bottom: 0, zIndex: 1 }} className='position-absolute'>
           <img style={{ width: '100vw', height: 260 }} src={HeroChart} />
         </div>
       </div>

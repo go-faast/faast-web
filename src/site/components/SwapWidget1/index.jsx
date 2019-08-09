@@ -12,6 +12,7 @@ import { areAssetsLoaded, getAllAssetSymbols } from 'Common/selectors/asset'
 import SwapIcon from 'Img/swap-icon.svg?inline'
 import GAEventButton from 'Components/GAEventButton'
 import CoinIcon from 'Components/CoinIcon'
+import AssetSelector from 'Components/AssetSelectorList'
 import ReduxFormField from 'Components/ReduxFormField'
 
 import { submitButton, swap, input, inputButton, assetListContainer } from './style.scss'
@@ -27,21 +28,21 @@ const StepOneField = withProps(({ labelClass, inputClass, className, labelCol, i
   inputCol: { xs: '12', sm: true, md: true, lg: '12', ...inputCol },
 }))(ReduxFormField)
 
-const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwitchAssets, 
+const SwapWidget = ({ onSubmit, assetSymbols, handleSelectedAsset, isAssetDisabled, handleSwitchAssets, 
   supportedAssets, assetSelect, estimatedField, onChangeReceiveAmount, setAssetSelect, 
   depositSymbol, receiveSymbol, receiveAmount, depositAmount, handleSubmit, onCloseAssetSelector,
   areAssetsLoaded, translations: { static: { swapWidget = {} } = {} } }) => {
   return (
     <Fragment>
-      <Row className='mx-auto align-items-center mt-5 px-2' style={{ background: '#FAFAFA', width: 995, height: 136, borderRadius: 4, boxShadow: '0px 2px 5px 4px rgba(0,0,0,.49)', flexWrap: 'nowrap' }}>
-        <Col style={{ maxWidth: 384 }} sm='12' md='5' className='pr-0'>
-          <Form onSubmit={handleSubmit}>
-            <div className='position-relative'>
+      <Form onSubmit={handleSubmit}>
+        <Row className='mx-auto align-items-center mt-5 px-2' style={{ background: '#FAFAFA', width: 995, height: 136, borderRadius: 4, boxShadow: '0px 2px 5px 4px rgba(0,0,0,.49)', flexWrap: 'nowrap' }}>
+          <Col style={{ maxWidth: 384 }} sm='12' md='5' className='pr-0'>
+            <div className='position-relative d-flex'>
               {assetSelect === 'deposit' && (
-                <div className={assetListContainer}>
+                <div className={classNames(assetListContainer, 'd-flex')}>
                   <AssetSelector 
                     selectAsset={handleSelectedAsset} 
-                    // supportedAssetSymbols={assetSymbols}
+                    supportedAssetSymbols={assetSymbols}
                     isAssetDisabled={isAssetDisabled}
                     onClose={onCloseAssetSelector}
                   />
@@ -72,53 +73,65 @@ const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwit
                 )}
               />
             </div>
-          </Form>
-        </Col>
-        <Col sm='12' md='1'>
-          <Button className={classNames('flat p-0', swap)} onClick={handleSwitchAssets}>
-            <SwapIcon className='position-relative' style={{ fill: '#575D75', width: 20, top: 10 }}/>
-          </Button>
-        </Col>
-        <Col style={{ maxWidth: 384 }} sm='12' md='5' className='pl-0'>
-          <StepOneField
-            name='receiveAmount'
-            type='number'
-            step='any'
-            placeholder='Receive amount'
-            inputGroupClass='flat'
-            label={<span style={{ fontWeight: 600, color: '#3C4050' }}>{`Receive ${receiveSymbol}`}</span>}
-            onChange={onChangeReceiveAmount}
-            inputClass={classNames({ 'font-italic': estimatedField === 'receive' }, input)}
-            addonAppend={({ invalid }) => (
-              <InputGroupAddon addonType="append">
-                <Button className={inputButton} color={invalid ? 'danger' : 'light'} size='sm' onClick={() => setAssetSelect('receive')}>
-                  {areAssetsLoaded ? (
-                    <Fragment>
-                      <CoinIcon key={receiveSymbol} symbol={receiveSymbol} size={1.25} className='mr-2'/>
-                      <span>{receiveSymbol}</span> <i className='ml-1 fa fa-caret-down'/>
-                    </Fragment>
-                  ) : (
-                    <i className='fa fa-spinner fa-pulse'/>
-                  )}
-                </Button>
-              </InputGroupAddon>
-            )}
-          />
-        </Col>
-        <Col style={{ maxWidth: 115 }} className='p-0 m-0' md='2'>
-          <GAEventButton 
-            tag={Button}
-            event={{ category: 'Static', action: 'Go to Swap' }}
-            color='primary'
-            href={`/app/swap?from=${depositSymbol}&to=${receiveSymbol}`}
-            className={classNames('mt-1 mb-2 mx-auto flat position-relative', submitButton)} 
-            style={{ color: '#fff', width: 115 }}
-            onClick={onSubmit}
-          >
+          </Col>
+          <Col sm='12' md='1'>
+            <Button className={classNames('flat p-0', swap)} onClick={handleSwitchAssets}>
+              <SwapIcon className='position-relative' style={{ fill: '#575D75', width: 20, top: 10 }}/>
+            </Button>
+          </Col>
+          <Col style={{ maxWidth: 384 }} sm='12' md='5' className='pl-0'>
+            <div className='position-relative d-flex'>
+              {assetSelect === 'receive' && (
+                <div className={classNames(assetListContainer, 'd-flex')}>
+                  <AssetSelector 
+                    selectAsset={handleSelectedAsset} 
+                    supportedAssetSymbols={assetSymbols}
+                    isAssetDisabled={isAssetDisabled}
+                    onClose={onCloseAssetSelector}
+                  />
+                </div>
+              )}
+            </div>
+            <StepOneField
+              name='receiveAmount'
+              type='number'
+              step='any'
+              placeholder='Receive amount'
+              inputGroupClass='flat'
+              label={<span style={{ fontWeight: 600, color: '#3C4050' }}>{`Receive ${receiveSymbol}`}</span>}
+              onChange={onChangeReceiveAmount}
+              inputClass={classNames({ 'font-italic': estimatedField === 'receive' }, input)}
+              addonAppend={({ invalid }) => (
+                <InputGroupAddon addonType="append">
+                  <Button className={inputButton} color={invalid ? 'danger' : 'light'} size='sm' onClick={() => setAssetSelect('receive')}>
+                    {areAssetsLoaded ? (
+                      <Fragment>
+                        <CoinIcon key={receiveSymbol} symbol={receiveSymbol} size={1.25} className='mr-2'/>
+                        <span>{receiveSymbol}</span> <i className='ml-1 fa fa-caret-down'/>
+                      </Fragment>
+                    ) : (
+                      <i className='fa fa-spinner fa-pulse'/>
+                    )}
+                  </Button>
+                </InputGroupAddon>
+              )}
+            />
+          </Col>
+          <Col style={{ maxWidth: 115 }} className='p-0 m-0' md='2'>
+            <GAEventButton 
+              tag={Button}
+              event={{ category: 'Static', action: 'Go to Swap' }}
+              color='primary'
+              href={`/app/swap?from=${depositSymbol}&to=${receiveSymbol}`}
+              className={classNames('mt-1 mb-2 mx-auto flat position-relative', submitButton)} 
+              style={{ color: '#fff', width: 115 }}
+              onClick={onSubmit}
+            >
             Swap
-          </GAEventButton>
-        </Col>
-      </Row>
+            </GAEventButton>
+          </Col>
+        </Row>
+      </Form>
     </Fragment>
   )
 }
