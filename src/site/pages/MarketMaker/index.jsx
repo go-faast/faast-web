@@ -66,7 +66,7 @@ export default compose(
     },
   ]
   return (
-    <div style={{ maxWidth: '100vw', overflowX: 'hidden' }}>
+    <div style={{ maxWidth: '100vw' }}>
       <Header 
         theme='dark' 
         style={{ zIndex: 9 }} 
@@ -115,7 +115,7 @@ export default compose(
           <img style={{ width: '100%', maxHeight: 551, pointerEvents: 'none' }} src='https://i.imgur.com/CKbwoEu.png' />
         </div>
       </div>
-      <Row style={{ background: '#F6FAFE' }} className='text-center pb-5'>
+      <Row style={{ background: '#F6FAFE' }} className='text-center pb-5 mx-0'>
         <Col>
           <h1 className='font-weight-bold mt-5 pt-3' style={{ color: blueColor }}>{t.whyMarketMaker}</h1>
           <h5 className={classNames(why, 'mx-auto mt-3 font-weight-bold')} style={{ color: '#85889B' }}>{t.runNodeAllows}</h5>
@@ -164,7 +164,7 @@ export default compose(
           </Row>
         </Col>
       </Row>
-      <Row style={{ background: '#fff' }} className='text-center pb-5'>
+      <Row style={{ background: '#fff' }} className='text-center pb-5 mx-0'>
         <Col>
           <h1 className='font-weight-bold mt-5 pt-3' style={{ color: blueColor }}>Frequently Asked Questions</h1>
           <Container>
@@ -187,7 +187,7 @@ export default compose(
           </Container>
         </Col>
       </Row>
-      <Row className='text-center pt-5' style={{ backgroundColor: '#374B5D' }}>
+      <Row className='text-center pt-5 mx-0' style={{ backgroundColor: '#374B5D' }}>
         <Col>
           <h1 className={classNames(numbers, 'font-weight-bold')}>1</h1>
           <p>{t.signUpBeta}</p>
@@ -201,7 +201,7 @@ export default compose(
           <p>{t.earnInterest}</p>
         </Col>
       </Row>
-      <Row className='text-center pb-5' style={{ backgroundColor: '#374B5D' }}>
+      <Row className='text-center pb-5 mx-0' style={{ backgroundColor: '#374B5D' }}>
         <Col sm='12'>
           <Button 
             className='mt-4 d-inline-block font-weight-bold' 
