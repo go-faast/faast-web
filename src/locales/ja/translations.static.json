@@ -1,5 +1,15 @@
 {
     "static": {
+        "newsletter": {
+            "keepUp": "Faa.st ニュースレターで最新情報を素早く入手",
+            "subscribeNow": "今すぐ登録して次を受け取りましょう: ",
+            "assetListings": "新しい資産リスティングの更新",
+            "exclusiveOffers": "ここでしか入手できないFaa.st のお客様専用のお得情報やコンテンツ",
+            "report": "無料の”「Best Practices for Safe Cryptocurrency Storage（暗号通貨を保管するための最善の方法）」 レポート",
+            "secure": "安全",
+            "fast": "高速",
+            "swap": "スワップ"
+        },
         "hero": {
             "new": "New",
             "notification": "Faa.st MarketMakerベータ版についてもっと読む",

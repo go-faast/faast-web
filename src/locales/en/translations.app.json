@@ -128,7 +128,7 @@
       "manual": "Manual",
       "createWallet": "Create Wallet",
       "generate": "Generate a new keystore file",
-      "importWallet": "importWallet",
+      "importWallet": "Import Wallet",
       "dragAndDrop": "Drag and drop your keystore file",
       "openSource": "Open source and secure"
     },

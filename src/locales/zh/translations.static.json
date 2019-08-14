@@ -1,5 +1,15 @@
 {
     "static": {
+        "newsletter": {
+            "keepUp": "随时翻阅 Faa.st 简讯",
+            "subscribeNow": "立即订阅以获得：",
+            "assetListings": "新上架资产的更新",
+            "exclusiveOffers": "Faa.st 客户所独享的、任何其他地方都不共享的独家优惠和竞赛",
+            "report": "《安全加密货币存储的最佳实践》报告的免费副本",
+            "secure": "安全",
+            "fast": "快速",
+            "swap": "交换"
+        },
         "hero": {
             "new": "新的",
             "notification": "了解 Faa.st 造市商试用版",

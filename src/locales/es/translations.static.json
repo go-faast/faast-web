@@ -1,5 +1,15 @@
 {
     "static": {
+        "newsletter": {
+            "keepUp": "Sigue al tanto con la newsletter Faa.st",
+            "subscribeNow": "Suscríbete ahora para recibir: ",
+            "assetListings": "Actualizaciones de listas de nuevos activos",
+            "exclusiveOffers": "Ofertas exclusivas y concursos para clientes Faa.st que no se comparten en ningún otro sitio",
+            "report": "Una copia gratuita de nuestras Mejores prácticas para un informe de almacenamiento seguro de criptomonedas",
+            "secure": "seguro",
+            "fast": "rápido",
+            "swap": "cambio"
+        },
         "hero": {
             "new": "nuevo",
             "notification": "Lee acerca de Faa.st Creador de Mercado Beta",
