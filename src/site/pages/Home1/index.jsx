@@ -53,7 +53,7 @@ export default compose(
       <Hero supportedAssets={supportedAssets} translations={translations} className='mb-md-5 mb-0'/>
       {/* <CoinSection translations={translations} /> */}
       <DashboardSection translations={translations} />
-      <Wallets translations={translations} />
+      <Wallets translations={translations} /> 
       <Features translations={translations} supportedAssets={supportedAssets} />
       <Reviews translations={translations} />
       <LazyLoad offset={1} height={500}>
