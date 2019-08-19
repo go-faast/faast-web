@@ -52,7 +52,7 @@ export default compose(
     <div style={{ backgroundColor: '#26282D' }}>
       <Hero supportedAssets={supportedAssets} translations={translations} className='mb-md-5 mb-0'/>
       {/* <CoinSection translations={translations} /> */}
-      <DashboardSection translation={translations} />
+      <DashboardSection translations={translations} />
       <Wallets translations={translations} />
       <Features translations={translations} supportedAssets={supportedAssets} />
       <Reviews translations={translations} />

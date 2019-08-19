@@ -10,13 +10,13 @@ import SwapWidget from '../SwapWidget1'
 
 import HeroChart from 'Img/hero-chart.svg'
 
-const Hero = ({ supportedAssets, translations }) => {
+const Hero = ({ supportedAssets, translations, translations: { static: { hero = {}, hero: { headline: headlineT = {}, subtitle = {} } = {} } = {} } }) => {
   return (
     <Fragment>
       <Header theme='dark' headerColor='#191A1D' translations={translations} />
       <div style={{ backgroundColor: '#191A1D', minHeight: 700 }} className='jumbotron jumbotron-fluid hero-technology position-relative'>
-        <h1 className='mt-0' style={{ fontWeight: 600, color: '#EFEFEF' }}>Don’t Get Goxxed. Own Your Crypto.</h1>
-        <h5 style={{ color: '#9C9FA8' }}>If it’s not your keys, it’s not your crypto. Trade safely from your own wallet with Faa.st.</h5>
+        <h1 className='mt-0' style={{ fontWeight: 600, color: '#EFEFEF' }}>{headlineT.goxxed}</h1>
+        <h5 style={{ color: '#9C9FA8' }}>{subtitle.notYourKeys}</h5>
         <div className='position-relative' style={{ zIndex: 999 }}>
           <Fade duration={1200} distance='80px' bottom>
             <SwapWidget translations={translations} assets={supportedAssets} />

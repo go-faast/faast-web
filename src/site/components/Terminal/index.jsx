@@ -36,12 +36,12 @@ const json = [{
   value: "'BAT'"
 }]
 
-const Terminal = ({ response }) => {
+const Terminal = ({ response, translations: { static: { terminal: t } } }) => {
   return (
-    <div style={{ backgroundImage: `url(${GithubBg})` }} className={classNames(style.terminalSection, 'text-center mt-5 pt-5 mx-auto position-relative')}>
+    <div style={{ backgroundImage: `url(${GithubBg})` }} className={classNames(style.terminalSection, 'text-center mt-5 pt-5 mx-auto position-relative px-sm-0 px-2')}>
       <h1 className={classNames(homeStyle.heading, 'mt-5 pt-5 mb-4')}>Open Source and Public API</h1>
-      <h3 className={classNames(homeStyle.description, 'pb-4')}>
-        Want to run your own instance of the Faa.st trading portfolio? No problem. The open source <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://github.com/go-faast/faast-web'>Faa.st Portfolio</a> project on GitHub and <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://api.faa.st'>public API</a> put you in full control of how you want to use Faa.st.
+      <h3 className={classNames(homeStyle.description, 'pb-4 px-md-0 px-3')}>
+        {t.wantToRun} <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://github.com/go-faast/faast-web'>{t.faastPortfolio}</a> {t.project} <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://api.faa.st'>{t.publicAPI}</a> {t.fullControl}
       </h3>
       <div className={classNames(style.terminal, 'mx-auto mt-5')}>
         <div className={style.terminalActions}>
@@ -51,33 +51,27 @@ const Terminal = ({ response }) => {
         </div>
         <div className={style.terminalHeaderbar}></div>
         <div className={style.terminalSidebar}></div>
-        <div className='pt-5 pl-5 text-left'>
-          <Typing>
-            <Typing.Speed ms={10} />
-            <p className={classNames(style.comment, 'mb-0')}>
-              <small>// create swap</small>
-            </p>
-            <p>
-              <small><span className={style.await}>await</span> http.<span className={style.func}>post</span>('https://api.faast/api/v2/public/swap')</small>
-            </p>
-            <Typing.Delay ms={1000} />
-            <Typing.Speed ms={0.0000000000001} />
-            <p className='m-0'>
-              <small>{'{'}</small>
-            </p>
-            {response.map(({ key, value }) => {
-              return (
-                <p style={{ lineHeight: '18px' }} className='p-0 m-0' key={key}>
-                  <small className={classNames(style.key, 'ml-4 mr-2')}>{key}:</small>
-                  <small className={style.value}>{value}</small>
-                </p>
-              )
-            })}
-            <p className='m-0'>
-              <small>{'}'}</small>
-            </p>
-            <Typing.Delay ms={3000} />
-          </Typing>
+        <div className='pt-5 pl-sm-5 pl-3 text-left'>
+          <p className={classNames(style.comment, 'mb-0')}>
+            <small>// {t.createSwap}</small>
+          </p>
+          <p className={style.ellipsis}>
+            <small><span className={style.await}>await</span> http.<span className={style.func}>post</span>('https://api.faast/api/v2/public/swap')</small>
+          </p>
+          <p className='m-0'>
+            <small>{'{'}</small>
+          </p>
+          {response.map(({ key, value }) => {
+            return (
+              <p style={{ lineHeight: '18px' }} className={classNames(style.ellipsis, 'p-0 m-0')} key={key}>
+                <small className={classNames(style.key, 'ml-4 mr-2')}>{key}:</small>
+                <small className={style.value}>{value}</small>
+              </p>
+            )
+          })}
+          <p className='m-0'>
+            <small>{'}'}</small>
+          </p>
         </div>
       </div>
     </div>

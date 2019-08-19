@@ -13,8 +13,7 @@ import WalletConfig from 'Config/walletTypes'
 const Wallets = () => {
   const supportedWallets = Object.values(WalletConfig)
   return (
-    
-    <div style={{ marginBottom: 300 }} className='text-center'>
+    <div className={classNames(style.sectionContainer, 'text-center')}>
       <h1 className={homeStyle.heading}>Supported Wallets</h1>
       <div className={classNames(style.walletsContainer, 'mx-auto')}>
         {supportedWallets.filter(w => w.active).map(wallet => {

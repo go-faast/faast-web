@@ -31,14 +31,16 @@ export default compose(
         <Col><EmailSub /></Col>
       </Row>
       <Row className='m-0 p-0 pt-5'>
-        <Col className={classNames(style.ctaContainer, 'mx-auto d-flex justify-content-between align-items-center px-5 mb-5')}>
-          <div>
-            <h4 style={{ fontSize: 30 }} className='text-white my-0'>Ready to Trade on Faa.st?</h4>
-          </div>
-          <div>
-            <Button className='text-white mr-3' color='primary'>Connect Your Wallet</Button>
-            <Button color='white'>API Docs</Button>
-          </div>
+        <Col className={classNames(style.ctaContainer, 'mx-auto d-flex mb-5 px-md-5 px-0 pl-xs-4 pl-md-5 pl-3 py-xs-3 py-md-0 py-0')}>
+          <Row style={{ flex: 1 }} className='mx-0 px-0 justify-content-between align-items-center'>
+            <Col className='p-0 m-0 d-flex' xs='12' md='6'>
+              <h2 className='text-white my-0'>Ready to Trade on Faa.st?</h2>
+            </Col>
+            <Col className='p-0 m-0 mt-xs-3 mt-md-0 mt-0 d-flex justify-content-xs-start justify-content-md-end' xs='12' md='6'>
+              <Button className='text-white mr-3' color='primary'>Connect Your Wallet</Button>
+              <Button color='white'>API Docs</Button>
+            </Col>
+          </Row>
         </Col>
       </Row>
       <footer>

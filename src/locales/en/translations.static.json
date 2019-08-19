@@ -11,6 +11,23 @@
         "notYourKeys": "If it’s not your keys, it’s not your crypto. Trade safely from your own wallet with Faa.st"
       }
     },
+    "reviews": {
+      "twitterFam": "#💞 from the Twitter Fam",
+      "viewOriginal": "View Original Tweet"
+    },
+    "terminal": {
+      "wantToRun": "Want to run your own instance of the Faa.st trading portfolio? No problem. The open source",
+      "faastPortfolio": "Faa.st Portfolio",
+      "project": "project on GitHub and",
+      "publicAPI": "public API",
+      "fullControl": "put you in full control of how you want to use Faa.st.",
+      "createSwap": "create swap"
+    },
+    "dashboard": {
+      "swap": "Swap 40+ coins instantly from your MetaMask, Trezor, or Ledger",
+      "connect": "Connect your wallet and you will be taken to the Faa.st Portfolio Dashboard where you will find your portfolio performance, distribution charts, market cap rankings, trending assets, and your watchlist.",
+      "connectYourWallet": "Connect Your Wallet"
+    },
     "header": {
       "swap": "Swap",
       "marketMaker": "Market Maker",

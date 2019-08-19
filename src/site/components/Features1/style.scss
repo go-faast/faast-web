@@ -1,5 +1,5 @@
 .featuresContainer {
-  max-width: 1025px;
+  max-width: 1000px;
   margin: 0 auto;
   background: #1D1E22;
   border-radius: 4px;
@@ -8,7 +8,6 @@
   white-space: nowrap;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .39);
   position: relative;
-  // margin-top: 300px;
   margin-bottom: 180px;
 }
 
@@ -21,36 +20,38 @@
   font-size: 24px;
 }
 
+.featureContainer {
+  margin-right: 22px !important;
+}
+
 .feature {
-  display: inline-block;
-  width: 270px;
+  min-width: 270px !important;
   height: 200px;
   padding: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .25);
   border-radius: 8px;
   position: relative;
   background: #2B2D33;
-  position: relative;
   z-index: 99999;
   white-space: normal;
   vertical-align: middle;
-  margin-right: 22px;
 }
 
-.feature:nth-child(2) {
-  margin-left: -58px;
+.featureContainer:nth-child(1) {
+  margin-left: -72px;
 }
 
-.feature:nth-child(3) {
+.featureContainer:nth-child(2) {
   top: 142px;
 }
 
-.feature:nth-child(4) {
+.featureContainer:nth-child(3) {
   top: 0px;
 }
 
-.feature:nth-child(5) {
+.featureContainer:nth-child(4) {
   top: 142px;
+  margin-right: 0 !important;
 }
 
 .feature i {
@@ -79,4 +80,38 @@
   font-size: 14px;
   color: #7F8596;
   line-height: 20px;
+}
+
+.button {
+  bottom: 50px;
+  position: absolute;
+}
+
+@media screen and (max-width: 983px) {
+  .featureContainer {
+    top: 0px !important;
+    left: 0px !important;
+    margin-right: auto !important;
+    margin-left: auto !important;
+    margin-bottom: 10px;
+    padding-right: 20px !important;
+    padding-left: 20px !important;
+  }
+
+  .feature {
+    width: 95%;
+    max-width: 400px;
+    height: auto;
+  }
+
+  .button {
+    position: relative;
+    bottom: 0px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .feature {
+    width: 100%;
+  }
 }

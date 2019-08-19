@@ -1,12 +1,14 @@
 import React from 'react'
 import { compose, setDisplayName } from 'recompose'
-import { Button } from 'reactstrap'
+import { Button, Row, Col } from 'reactstrap'
 import Fade from 'react-reveal/Fade'
 
 import PrivacyFeature from 'Img/finger-scanner.png'
 import SecureFeature from 'Img/lock-key.png'
 import FastFeature from 'Img/lightning.png'
 import FeesFeature from 'Img/coins-fees.png'
+
+import classNames from 'class-names'
 
 import style from './style.scss'
 
@@ -42,23 +44,31 @@ const features = [{
 
 const Features = () => {
   return (
-    <div className={style.featuresContainer}>
-      <h1>Faa.st Features</h1>
-      {features.map(feature => {
-        return (
-          <Fade {...feature.fade} duration={1200} distance='80px' key={feature.heading}>
-            <div  className={style.feature}>
-              <i className='fa fa-check' aria-hidden='true'></i>
-              <h4 className={style.featureTitle}>{feature.heading}</h4>
-              <p className={style.featureDescription}>{feature.description}</p>
-            </div>
-          </Fade>
-        )
-      })}
-      <div style={{ bottom: 50 }} className='position-absolute text-center w-100'>
+    <Row className={classNames(style.featuresContainer, 'mx-auto align-content-start')}>
+      <Col xs='12'>
+        <h1>Faa.st Features</h1>
+      </Col>
+      <Col className='d-flex px-0' xs='12'>
+        <Row className='flex-lg-nowrap mx-0 px-lg-0 px-3'>
+          {features.map(feature => {
+            return (
+              <Col className={classNames(style.featureContainer, 'd-flex justify-content-center px-0')} xs='12' md='6' lg='3' key={feature.heading}>
+                <Fade {...feature.fade} duration={1200} distance='80px' >
+                  <div className={style.feature}>
+                    <i className='fa fa-check' aria-hidden='true'></i>
+                    <h4 className={style.featureTitle}>{feature.heading}</h4>
+                    <p className={style.featureDescription}>{feature.description}</p>
+                  </div>
+                </Fade>
+              </Col>
+            )
+          })}
+        </Row>
+      </Col>
+      <div className={classNames(style.button, 'my-lg-0 my-4 text-center w-100')}>
         <Button className='text-white' color='primary'>Connect Your Wallet</Button>
       </div>
-    </div>
+    </Row>
   )}
 
 export default compose(

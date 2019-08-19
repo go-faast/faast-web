@@ -9,7 +9,7 @@
   position: relative;
   background-color: #1B1C20;
   height: 343px;
-  width: 585px;
+  max-width: 585px;
   border-radius: 4px;
   box-shadow: 0 4px 8px 0px rgba(0, 0, 0, 0.29);
   font-family: Monaco !important;
@@ -24,6 +24,12 @@
   left: 0;
   z-index: 2;
   border-radius: 4px 4px 0px 0px;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .terminalActions {

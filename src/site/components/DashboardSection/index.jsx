@@ -8,25 +8,26 @@ import Fade from 'react-reveal/Fade'
 import FaastMockup from 'Img/faast-mockup.svg'
 
 import homeStyle from 'Site/pages/Home1/style.scss'
+import style from './style.scss'
 
-const DashboardSection = () => {
+const DashboardSection = ({ translations: { static: { dashboard: t } } }) => {
   return (
     <Row style={{ marginTop: 0, marginBottom: 150 }} className='p-0 mx-0'>
-      <Col className='p-0 pl-3 text-center' xs='12' lg='7'>
+      <Col className='p-0 pl-md-3 pl-0 text-xs-center text-left' xs='12' lg='7'>
         <Fade duration={1200} distance='80px' bottom>
-          <img src={FaastMockup} style={{ width: 480, height: 366 }} />
+          <img src={FaastMockup} className={style.mockup} />
         </Fade>
       </Col>
-      <Col xs='12' lg='5' className='p-0 pr-3 pl-3 align-self-center'>
+      <Col xs='12' lg='5' className='p-0 mt-md-0 mt-4 pr-3 pl-3 align-self-center'>
         <Fade duration={1200} distance='80px' right>
           <h2 className={classNames(homeStyle.heading, 'mb-3')}>
-            Portfolio Analytics and Crypto Research Hub
+            {t.swap}
           </h2>
           <p className={homeStyle.description}>
-            Connect your wallet and you will be taken to the Faa.st Portfolio Dashboard where you will find your portfolio performance, distribution charts, market cap rankings, trending assets, and your watchlist.
+            {t.connect}
           </p>
           <a className={classNames(homeStyle.link, 'mb-3 d-inline-block')} href='/app/connect'>
-            Connect Your Wallet <i className='fa fa-arrow-right' />
+            {t.connectYourWallet} <i className='fa fa-arrow-right' />
           </a>
         </Fade>
       </Col>

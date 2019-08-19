@@ -23,12 +23,12 @@ import T from 'Components/i18n/T'
 const DEBOUNCE_WAIT = 400
 const MAX_RESULTS = 50
 
-const renderResult = (asset, walletHoldings, handleSelect) => {
+const renderResult = (asset, { walletHoldings, handleSelect, dark }) => {
   const { symbol, name, disabled, disabledMessage, restricted } = asset
   const balance = walletHoldings && walletHoldings.balances[symbol]
   const hasBalance = balance && balance.gt(0)
   return (
-    <Row key={symbol} className={classNames('p-0 m-0 position-relative', !disabled && 'cursor-pointer')} style={{ maxWidth: '100%', cursor: disabled && restricted && 'default' }}>
+    <Row key={symbol} className={classNames('p-0 m-0 position-relative', !disabled && 'cursor-pointer', !dark && style.light)} style={{ maxWidth: '100%', cursor: disabled && restricted && 'default' }}>
       <Col className='p-0 m-0'>
         <Button tag={Row} color='ultra-dark' size='sm' onClick={() => handleSelect(asset)} disabled={disabled}
           className={classNames(style.assetButtonList, 'flat text-left m-0')} style={{ borderTopWidth: 0, height: 49 }}>
@@ -39,7 +39,7 @@ const renderResult = (asset, walletHoldings, handleSelect) => {
           <Col className={classNames('text-right p-0 align-items-center justify-content-end', !disabled && !hasBalance ? 'd-none' : 'd-flex')} xs='4'>
             {disabled ? (
               <small style={{ zIndex: 9999999 }} className='p-0 m-0'>
-                <div className={style.assetListDisabledMessage}>{disabledMessage}</div>
+                {disabledMessage}
               </small>
             ) : hasBalance ? (
               <small style={{ zIndex: 9999999 }} className='p-0 m-0 text-primary'>
@@ -50,17 +50,15 @@ const renderResult = (asset, walletHoldings, handleSelect) => {
       </Col>
       {disabled && (
         <div 
-          className='position-absolute' 
-          style={{ top: 0, left: 0, width: '100%', height: '100%', 
-            backgroundColor: 'rgba(0,0,0,.2)', zIndex: 9999 }}
+          className={classNames('position-absolute', style.disabledCover)}
         ></div>
       )}
     </Row>
   )}
 
-const AssetSelector = ({ handleSearchChange, results, handleSelect, walletHoldings, onClose, rowsToShow }) => {
+const AssetSelector = ({ handleSearchChange, results, onClose, rowsToShow, dark, ...props }) => {
   return (
-    <Row style={{ maxWidth: '100%' }} className='p-0 m-0'>
+    <Row style={{ maxWidth: '100%' }} className={classNames('p-0 m-0', !dark && style.light)}>
       <Col className='p-0 m-0 position-relative' style={{ maxHeight: 41 }} sm='12'>
         {onClose && (
           <Button
@@ -83,7 +81,7 @@ const AssetSelector = ({ handleSearchChange, results, handleSelect, walletHoldin
         />
       </Col>
       <Col className='p-0 shadow' sm='12' style={{ maxHeight: (rowsToShow * 49), overflowY: 'scroll', zIndex: 99999, marginTop: 1 }}>
-        {results.slice(0, 20).map(r => renderResult(r, walletHoldings, handleSelect))}
+        {results.slice(0, 20).map(r => renderResult(r, { dark, ...props }))}
       </Col>
     </Row>
   )
@@ -99,13 +97,15 @@ export default compose(
     isAssetDisabled: PropTypes.func,
     onClose: PropTypes.func,
     walletId: PropTypes.string,
-    rowsToShow: PropTypes.number
+    rowsToShow: PropTypes.number,
+    dark: PropTypes.bool
   }),
   defaultProps({
     supportedAssetSymbols: [],
     portfolioSymbols: [],
     isAssetDisabled: (asset) => !asset.swapEnabled,
-    rowsToShow: 5
+    rowsToShow: 5,
+    dark: true
   }),
   connect(createStructuredSelector({
     assets: getAllAssetsArray,

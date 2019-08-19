@@ -1,3 +1,7 @@
+.sectionContainer {
+  margin-bottom: 300px;
+}
+
 .walletsContainer {
   max-width: 900px;
   position: relative;
@@ -148,5 +152,23 @@
   100% {
     -webkit-transform: translate(0px, 0px) scale(1);
     transform: translate(0px, 0px) scale(1);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .walletBubble {
+    top: 0px !important;
+    margin-right: 40px !important;
+    margin-top: 0px !important;
+  }
+
+  .walletsContainer {
+    max-width: 500px;
+    width: 100%;
+    top: 60px;
+  }
+
+  .sectionContainer {
+    margin-bottom: 200px;
   }
 }
