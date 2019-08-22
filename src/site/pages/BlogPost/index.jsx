@@ -7,7 +7,7 @@ import withTracker from 'Site/components/withTracker'
 import Header from 'Site/components/Header'
 import Footer from 'Site/components/Footer'
 
-import { replaceStringWithJSX } from 'Utilities/display'
+import { replaceStringWithJSX, formatDateToWords } from 'Utilities/display'
 import classNames from 'class-names'
 
 import { darkText } from 'Site/components/PostPreview/style.scss'
@@ -78,18 +78,21 @@ export default compose(
   setDisplayName('BlogPost'),
   withTracker,
   withRouteData
-)(({ translations, mediumPost: { payload: { value: { title, mediumUrl, content: { bodyModel: { paragraphs } } } } } }) => (
-  <Fragment>
-    <Header translations={translations} theme='light' bgColor={'#FFFFFF'} />
-    <Container>
-      <div className={classNames(darkText, 'mx-auto mb-5 pb-5')} style={{ maxWidth: 1000 }}>
-        <h1 className='mb-4 mt-5 font-weight-bold'>{title}</h1>
-        {paragraphs.map(p => parseParagraph(p, title))}
-        <div className='text-center'>
-          <Button tag='a' href={mediumUrl} target='_blank noreferrer noopener' color='primary'>Read on Medium</Button>
-        </div>
-      </div>      
-    </Container>
-    <Footer translations={translations} />
-  </Fragment>
-))
+)(({ translations, mediumPost: { payload: { value: { title, mediumUrl, firstPublishedAt, content: { bodyModel: { paragraphs } } } } } }) => {
+  return (
+    <Fragment>
+      <Header translations={translations} theme='light' bgColor={'#FFFFFF'} />
+      <Container>
+        <div className={classNames(darkText, 'mx-auto mb-5 pb-5')} style={{ maxWidth: 1000 }}>
+          <h1 className='mt-5 font-weight-bold'>{title}</h1>
+          <h5 className='mb-4'>{formatDateToWords(firstPublishedAt)}</h5>
+          {paragraphs.map(p => parseParagraph(p, title))}
+          <div className='text-center'>
+            <Button tag='a' href={mediumUrl} target='_blank noreferrer noopener' color='primary'>Read on Medium</Button>
+          </div>
+        </div>      
+      </Container>
+      <Footer translations={translations} />
+    </Fragment>
+  )
+})
