@@ -21,24 +21,24 @@ export default compose(
   defaultProps({
     footerClass: '',
   }),
-)(({ footerClass, translations: { static: { footer: t = {} } = {} } }) => (
+)(({ footerClass, translations, translations: { static: { footer: t = {} } = {} } }) => (
   <Fragment>
     <div className='footer-clean position-relative' style={{ backgroundColor: '#191A1D', paddingTop: '0px', marginTop: 320 }}>
       <div style={{ top: -150 }} className='position-absolute'>
         <img style={{ width: '100vw', height: 260 }} src={FooterChart} />
       </div>
       <Row className='p-0 m-0'>
-        <Col><EmailSub /></Col>
+        <Col><EmailSub translations={translations} /></Col>
       </Row>
       <Row className='m-0 p-0 pt-5'>
         <Col className={classNames(style.ctaContainer, 'mx-auto d-flex mb-5 px-md-5 px-0 pl-xs-4 pl-md-5 pl-3 py-xs-3 py-md-0 py-0')}>
           <Row style={{ flex: 1 }} className='mx-0 px-0 justify-content-between align-items-center'>
             <Col className='p-0 m-0 d-flex' xs='12' md='6'>
-              <h2 className='text-white my-0'>Ready to Trade on Faa.st?</h2>
+              <h2 className='text-white my-0'>{t.readyToTrade}</h2>
             </Col>
             <Col className='p-0 m-0 mt-xs-3 mt-md-0 mt-0 d-flex justify-content-xs-start justify-content-md-end' xs='12' md='6'>
-              <Button className='text-white mr-3' color='primary'>Connect Your Wallet</Button>
-              <Button color='white'>API Docs</Button>
+              <Button className='text-white mr-3' color='primary'>{t.connectYourWallet}</Button>
+              <Button color='white'>{t.apiDocs}</Button>
             </Col>
           </Row>
         </Col>
@@ -60,7 +60,7 @@ export default compose(
             <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-3'>
               <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>{t.assets}</h3>
               <ul>
-                <li><a className='text-white' href='/assets'>Supported Assets</a></li>
+                <li><a className='text-white' href='/assets'>{t.supportedAssets}</a></li>
                 <li><a className='text-white' href='/app/assets'>{t.marketCap}</a></li>
                 <li><a className='text-white' href='/app/assets/trending'>{t.trending}</a></li>
                 <li><a className='text-white' href='/app/assets/watchlist'>{t.watchlist}</a></li>

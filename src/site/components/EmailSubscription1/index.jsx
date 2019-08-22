@@ -12,12 +12,12 @@ import classNames from 'class-names'
 const FORM_NAME = 'email_form'
 //const getFormValue = formValueSelector(FORM_NAME)
 
-const EmailSub = ({ handleSubmit, }) => {
+const EmailSub = ({ handleSubmit, translations: { static: { email: t } } }) => {
   return (
     <Form onSubmit={handleSubmit}>
       <ReduxFormField
         className='text-center'
-        label={<p style={{ color: '#EFEFEF', fontSize: 18 }}>Sign up to learn more about Faa.st</p>}
+        label={<p style={{ color: '#EFEFEF', fontSize: 18 }}>{t.cta}</p>}
         labelClass='w-100 text-center'
         name='email'
         inputClass={classNames('flat mx-auto', style.input)}
@@ -35,7 +35,7 @@ const EmailSub = ({ handleSubmit, }) => {
             color='primary' 
             type='submit' 
           >
-            Subscribe
+            {t.subscribe}
           </Button>
         )
         }

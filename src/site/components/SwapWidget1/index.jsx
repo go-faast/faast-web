@@ -139,7 +139,7 @@ const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwit
               style={{ color: '#fff' }}
               onClick={onSubmit}
             >
-            Swap
+              {swapWidget.swap}
             </GAEventButton>
           </Col>
         </Row>

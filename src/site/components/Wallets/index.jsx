@@ -10,11 +10,11 @@ import homeStyle from 'Site/pages/Home1/style.scss'
 
 import WalletConfig from 'Config/walletTypes'
 
-const Wallets = () => {
+const Wallets = ({ translations: { static: { wallets: t } } }) => {
   const supportedWallets = Object.values(WalletConfig)
   return (
     <div className={classNames(style.sectionContainer, 'text-center')}>
-      <h1 className={homeStyle.heading}>Supported Wallets</h1>
+      <h1 className={homeStyle.heading}>{t.supportedWallets}</h1>
       <div className={classNames(style.walletsContainer, 'mx-auto')}>
         {supportedWallets.filter(w => w.active).map(wallet => {
           const url = wallet.name.replace(' ', '-').toLowerCase()
