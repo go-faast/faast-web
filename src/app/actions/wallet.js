@@ -2,7 +2,7 @@ import { newScopedCreateAction } from 'Utilities/action'
 import blockstack from 'Utilities/blockstack'
 import log from 'Utilities/log'
 import walletService, { Wallet, MultiWallet, EthereumWalletBlockstack } from 'Services/Wallet'
-import { getAllAssets, getWalletParents, areWalletBalancesUpdating, getWalletBalances } from 'Selectors'
+import { getAllAssets, getWalletParents, areWalletBalancesUpdating, getWalletBalances, areWalletBalancesLoaded } from 'Selectors'
 import { getWalletIconProps } from 'Utilities/walletIcon'
 import { retry } from 'Utilities/helpers'
 
@@ -41,6 +41,10 @@ export const walletBalancesUpdating = createAction('BALANCES_UPDATING', (walletI
 export const walletBalancesUpdated = createAction('BALANCES_UPDATED', (walletId, balancesByAsset) => ({
   id: walletId,
   balances: balancesByAsset
+}))
+export const walletBalancesLoaded = createAction('BALANCES_LOADED', (walletId, balances) => ({
+  id: walletId,
+  balances
 }))
 export const walletBalancesError = createAction('BALANCES_ERROR', (walletId, error) => ({
   id: walletId,
@@ -123,6 +127,27 @@ export const restoreAllWallets = () => (dispatch, getState) => Promise.resolve()
   .then(() => walletService.restoreAll())
   .then((walletInstances) => walletInstances.map((w) => dispatch(walletAdded(w)).payload))
 
+const getManyBalances = (walletInstance, walletId) => {
+  const top10SupportedAssets = walletInstance.getTop10SupportedAssets()
+  return retry(() => walletInstance.getManyBalances(top10SupportedAssets), {
+    retries: 5,
+    before: (attempts, delay, e) => log.debug(
+      `Failed balance request for wallet ${walletId}. ` +
+          `Waiting ${delay}ms then retrying ${attempts} more times. ` +
+          `Caused by error: ${e.message}`)
+  })
+}
+  
+const getAllBalances = (walletInstance, walletId) => {
+  return retry(() => walletInstance.getAllBalances(), {
+    retries: 5,
+    before: (attempts, delay, e) => log.debug(
+      `Failed balance request for wallet ${walletId}. ` +
+          `Waiting ${delay}ms then retrying ${attempts} more times. ` +
+          `Caused by error: ${e.message}`)
+  })
+}
+
 export const updateWalletBalances = (walletId) => (dispatch, getState) => Promise.resolve()
   .then(() => {
     const walletInstance = walletService.get(walletId)
@@ -139,16 +164,19 @@ export const updateWalletBalances = (walletId) => (dispatch, getState) => Promis
       return getWalletBalances(getState(), walletId)
     }
     dispatch(walletBalancesUpdating(walletId))
-    return retry(() => walletInstance.getAllBalances(), {
-      retries: 5,
-      before: (attempts, delay, e) => log.debug(
-        `Failed balance request for wallet ${walletId}. ` +
-        `Waiting ${delay}ms then retrying ${attempts} more times. ` +
-        `Caused by error: ${e.message}`)
-    })
-      .then((symbolToBalance) => {
-        dispatch(walletBalancesUpdated(walletId, symbolToBalance))
 
+    const walletLoaded = areWalletBalancesLoaded(getState(), walletId)
+    const balanceFunction = walletLoaded ? getAllBalances : getManyBalances
+
+    return balanceFunction(walletInstance, walletId)
+      .then((symbolToBalance) => {
+        dispatch(walletBalancesLoaded(walletId, symbolToBalance))
+        !walletLoaded && (
+          getAllBalances(walletInstance, walletId)
+            .then((symbolToBalance) =>  {
+              return dispatch(walletBalancesUpdated(walletId, symbolToBalance))
+            })
+        )
         // Retrieve used addresses in background
         walletInstance.getUsedAddresses()
           .then((usedAddresses) => dispatch(walletUsedAddressesUpdated(walletId, usedAddresses)))
