@@ -43,6 +43,23 @@ export const formatDate = (date, format) => {
   })
 }
 
+export const formatDateToWords = (date) => {
+  if (!date) {
+    return
+  }
+  date = new Date(date)
+  const months = [
+    'January', 'February', 'March', 'April', 'May', 'June', 'July',
+    'August', 'September', 'October', 'November', 'December'
+  ]
+
+  const day = date.getDate()
+  const monthIndex = date.getMonth()
+  const year = date.getFullYear()
+
+  return `${months[monthIndex]} ${day}, ${year}`
+}
+
 const replaceString = (str, match, fn) => {
   var curCharStart = 0
   var curCharLen = 0
@@ -118,5 +135,6 @@ export default {
   percentage,
   ellipsize,
   formatDate,
+  formatDateToWords,
   replaceStringWithJSX
 }
