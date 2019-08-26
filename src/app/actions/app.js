@@ -75,7 +75,7 @@ export const setupBlockstack = (dispatch) => Promise.resolve()
     if (blockstack.isSignInPending()) {
       log.info('blockstack signin pending')
       return blockstack.handlePendingSignIn()
-        .then(() => window.location.replace(filterUrl()))
+        .then(() => typeof window !== 'undefined' && window.location.replace(filterUrl()))
     }
   })
   .then(() => {
@@ -108,7 +108,10 @@ export const updateConnectForward = (url) => (dispatch) => Promise.resolve()
 
 export const setupAffiliateReferral = () => Promise.resolve()
   .then(() => {
-    const query = qs.parse(window.location.search, { ignoreQueryPrefix: true })
+    let query
+    if (typeof window !== 'undefined') {
+      query = qs.parse(window.location.search, { ignoreQueryPrefix: true })
+    }
     if (typeof query.aid === 'string') {
       sessionStorageSet('affiliateId', query.aid)
     } else if (typeof query.ref === 'string' && query.ref !== 'producthunt') {
