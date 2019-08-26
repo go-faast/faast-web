@@ -8,7 +8,7 @@ import { reduxForm, formValueSelector } from 'redux-form'
 import classNames from 'class-names'
 import PropTypes from 'prop-types'
 
-import { retrievePairData } from 'Actions/rate'
+import { retrievePairData } from 'Common/actions/rate'
 import { areAssetsLoaded, getAllAssetSymbols } from 'Common/selectors/asset'
 import { getRatePrice, isRateLoaded } from 'Common/selectors/rate'
 import { toBigNumber } from 'Utilities/convert'
