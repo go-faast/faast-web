@@ -1,10 +1,14 @@
 import React, { Fragment } from 'react'
 import { compose, setDisplayName, withHandlers, withState } from 'recompose'
 import classNames from 'class-names'
-import { Row, Col, Carousel, CarouselItem, CarouselControl, } from 'reactstrap'
+import { Row, Col } from 'reactstrap'
+let Carousel, CarouselItem, CarouselControl
 let Fade
 if (typeof window !== 'undefined') {
   Fade = require('react-reveal/Fade')
+  Carousel = require('reactstrap').Carousel
+  CarouselItem = require('reactstrap').CarouselItem
+  CarouselControl = require('reactstrap').CarouselControl
 } else {
   Fade = Fragment
 }
