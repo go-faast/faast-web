@@ -4,7 +4,7 @@ import { compose, setDisplayName } from 'recompose'
 import { Row, Col } from 'reactstrap'
 import classNames from 'class-names'
 let Fade
-if (window) {
+if (typeof window !== 'undefined') {
   Fade = require('react-reveal/Fade')
 } else {
   Fade = Fragment

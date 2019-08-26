@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { Button, Row, Col } from 'reactstrap'
 let Fade
-if (window) {
+if (typeof window !== 'undefined') {
   Fade = require('react-reveal/Fade')
 } else {
   Fade = Fragment

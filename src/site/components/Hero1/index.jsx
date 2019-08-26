@@ -2,7 +2,7 @@ import React, { Fragment } from 'react'
 import Header from 'Site/components/Header'
 import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
 let Fade
-if (window) {
+if (typeof window !== 'undefined') {
   Fade = require('react-reveal/Fade')
 } else {
   Fade = Fragment
