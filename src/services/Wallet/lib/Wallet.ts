@@ -144,6 +144,12 @@ export default abstract class Wallet {
     return this.getAllAssets().filter((a) => this._isAssetSupported(a))
   }
 
+  getTop10SupportedAssets(): Asset[] {
+    return this.getAllAssets().filter((a) => this._isAssetSupported(a))
+      .sort((a, b) => b.marketCap.comparedTo(a.marketCap))
+      .slice(0, 10)
+  }
+
   getSupportedAssetSymbols(): string[] {
     return this.getSupportedAssets().map(({ symbol }) => symbol)
   }
@@ -318,9 +324,13 @@ export default abstract class Wallet {
 
   getAllBalances(options: object = {}): Promise<Balances> {
     return Promise.resolve(this.getSupportedAssets())
-      .then((assets) => Promise.all(assets
+      .then((assets) => this.getManyBalances(assets, options))
+  }
+
+  getManyBalances(assets: Asset[], options: object = {}): Promise<Balances> {
+    return Promise.all(assets
         .map((asset) => this._getBalance(asset, options)
-          .then((balance) => ({ symbol: asset.symbol, balance })))))
+          .then((balance) => ({ symbol: asset.symbol, balance }))))
       .then((balances) => balances.reduce((result, { symbol, balance }) => ({
         ...result,
         [symbol]: balance,
