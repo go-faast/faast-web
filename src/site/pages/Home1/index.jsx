@@ -7,10 +7,7 @@ import LazyLoad from 'react-lazyload'
 import { compose, setDisplayName, lifecycle, withProps } from 'recompose'
 import withTracker from 'Site/components/withTracker'
 
-// import logoImg from 'Img/faast-logo.png'
-
 import Features from 'Site/components/Features1'
-// import CoinSection from 'Src/site/components/CoinsSection'
 import DashboardSection from 'Site/components/DashboardSection'
 import Footer from 'Site/components/Footer1'
 import Hero from 'Site/components/Hero1'
@@ -21,8 +18,6 @@ import Reviews from 'Site/components/Reviews'
 import { fetchGeoRestrictions } from 'Common/actions/app'
 import { retrieveAssets } from 'Common/actions/asset'
 import { getAllAssetsArray, areAssetsLoaded } from 'Common/selectors/asset'
-
-
 
 export default compose(
   setDisplayName('Home'),
@@ -51,7 +46,6 @@ export default compose(
   return (
     <div style={{ backgroundColor: '#26282D' }}>
       <Hero supportedAssets={supportedAssets} translations={translations} className='mb-md-5 mb-0'/>
-      {/* <CoinSection translations={translations} /> */}
       <DashboardSection translations={translations} />
       <Wallets translations={translations} /> 
       <Features translations={translations} supportedAssets={supportedAssets} />

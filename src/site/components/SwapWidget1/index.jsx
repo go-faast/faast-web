@@ -215,8 +215,8 @@ export default compose(
       setReceiveSymbol(depositSymbol)
       setDepositSymbol(receiveSymbol)
     },
-    onSubmit: () => (values) => {
-      console.log(values)
+    onSubmit: () => () => {
+      
     },
     onCloseAssetSelector: ({ setAssetSelect }) => () => {
       setAssetSelect(null)

@@ -1,10 +1,14 @@
 /* eslint-disable react/no-unescaped-entities */
-import React from 'react'
+import React, { Fragment } from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { Row, Col } from 'reactstrap'
 import classNames from 'class-names'
-import Fade from 'react-reveal/Fade'
-
+let Fade
+if (window) {
+  Fade = require('react-reveal/Fade')
+} else {
+  Fade = Fragment
+}
 import FaastMockup from 'Img/faast-mockup.svg'
 
 import homeStyle from 'Site/pages/Home1/style.scss'

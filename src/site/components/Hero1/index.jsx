@@ -1,16 +1,18 @@
 import React, { Fragment } from 'react'
 import Header from 'Site/components/Header'
 import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
-import Fade from 'react-reveal/Fade'
-import { Row, Col } from 'reactstrap'
-import classNames from 'class-names'
+let Fade
+if (window) {
+  Fade = require('react-reveal/Fade')
+} else {
+  Fade = Fragment
+}
+
 import PropTypes from 'prop-types'
-
 import SwapWidget from '../SwapWidget1'
-
 import HeroChart from 'Img/hero-chart.svg'
 
-const Hero = ({ supportedAssets, translations, translations: { static: { hero = {}, hero: { headline: headlineT = {}, subtitle = {} } = {} } = {} } }) => {
+const Hero = ({ supportedAssets, translations, translations: { static: { hero: { headline: headlineT = {}, subtitle = {} } = {} } = {} } }) => {
   return (
     <Fragment>
       <Header theme='dark' headerColor='#191A1D' translations={translations} />

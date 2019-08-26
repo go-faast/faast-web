@@ -1,8 +1,13 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { compose, setDisplayName, withHandlers, withState } from 'recompose'
 import classNames from 'class-names'
 import { Row, Col, Carousel, CarouselItem, CarouselControl, } from 'reactstrap'
-import Fade from 'react-reveal/Fade'
+let Fade
+if (window) {
+  Fade = require('react-reveal/Fade')
+} else {
+  Fade = Fragment
+}
 
 import TwitterStripes from 'Img/twitter-stripes.svg'
 
