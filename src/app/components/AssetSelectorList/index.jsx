@@ -13,7 +13,7 @@ import Fuse from 'fuse.js'
 import classNames from 'class-names'
 import style from './style.scss'
 
-import { getAllAssetsArray } from 'Selectors/asset'
+import { getAllAssetsArray } from 'Common/selectors/asset'
 import { isAppRestricted } from 'Selectors/app'
 import { getWalletWithHoldings } from 'Selectors/wallet'
 
