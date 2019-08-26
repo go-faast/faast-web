@@ -87,7 +87,9 @@ export const openWeb3Wallet = (selectedProvider, forwardUrl) => (dispatch) => {
           dispatch(push(routes.walletInfoModal(selectedProvider)))
           return
         } else {
-          window.location.href = 'https://links.trustwalletapp.com/SBr41u7nVR?&event=openURL&url=https://faa.st/app/connect'
+          if (typeof window !== 'undefined') {
+            window.location.href = 'https://links.trustwalletapp.com/SBr41u7nVR?&event=openURL&url=https://faa.st/app/connect'
+          }
         }
       }
       if (message === 'No web3 provider detected') {
@@ -103,18 +105,20 @@ export const openWeb3Wallet = (selectedProvider, forwardUrl) => (dispatch) => {
 
 export const openKeystoreFileWallet = (filesPromise, forwardUrl) => (dispatch) => Promise.resolve(filesPromise)
   .then((files) => {
-    const file = files[0]
-    const reader = new window.FileReader()
+    if (typeof window !== 'undefined') {
+      const file = files[0]
+      const reader = new window.FileReader()
 
-    reader.onload = (event) => {
-      const encryptedWalletString = event.target.result
-      if (!encryptedWalletString) return toastr.error('Unable to read keystore file')
+      reader.onload = (event) => {
+        const encryptedWalletString = event.target.result
+        if (!encryptedWalletString) return toastr.error('Unable to read keystore file')
 
-      const wallet = new EthereumWalletKeystore(encryptedWalletString)
-      dispatch(openWalletAndRedirect(wallet, forwardUrl))
+        const wallet = new EthereumWalletKeystore(encryptedWalletString)
+        dispatch(openWalletAndRedirect(wallet, forwardUrl))
+      }
+
+      reader.readAsText(file)
     }
-
-    reader.readAsText(file)
   })
 
 export const openBlockstackWallet = (forwardUrl) => (dispatch) => Promise.resolve().then(() => {
