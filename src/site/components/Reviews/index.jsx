@@ -5,12 +5,16 @@ import { Row, Col } from 'reactstrap'
 let Carousel, CarouselItem, CarouselControl
 let Fade
 if (typeof window !== 'undefined') {
+  let { Carousel: carousel, CarouselItem: carouselItem, CarouselControl: carouselControl } = require('reactstrap')
+  Carousel = carousel
+  CarouselItem = carouselItem
+  CarouselControl = carouselControl
   Fade = require('react-reveal/Fade')
-  Carousel = require('reactstrap').Carousel
-  CarouselItem = require('reactstrap').CarouselItem
-  CarouselControl = require('reactstrap').CarouselControl
 } else {
   Fade = Fragment
+  Carousel = Fragment
+  CarouselItem = Fragment
+  CarouselControl = Fragment
 }
 
 import TwitterStripes from 'Img/twitter-stripes.svg'
