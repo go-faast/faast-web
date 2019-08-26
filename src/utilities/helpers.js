@@ -173,18 +173,19 @@ export const downloadJson = (obj, fileName, noExtension) => {
       return reject(e)
     }
 
-    if (typeof window == 'undefined') return
-    const blob = new window.Blob([jsonString], { type: 'application/json' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    if (noExtension) {
-      a.download = fileName
-    } else {
-      a.download = `${fileName}.json`
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      const blob = new window.Blob([jsonString], { type: 'application/json' })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      if (noExtension) {
+        a.download = fileName
+      } else {
+        a.download = `${fileName}.json`
+      }
+      a.href = url
+      a.click()
+      resolve(jsonString)
     }
-    a.href = url
-    a.click()
-    resolve(jsonString)
   })
 }
 
@@ -258,7 +259,6 @@ export const filterUrl = () => {
     if (newSearch) newSearch = '?' + newSearch
     return window.location.origin + window.location.pathname + newSearch
   }
-  
 }
 
 export const promisifySync = (syncFn) => (...args) => new Promise((resolve, reject) => {
