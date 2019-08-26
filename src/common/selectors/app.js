@@ -12,3 +12,7 @@ export const getAppLanguage = createSelector(getAppState, ({ language }) => {
   }
   return language
 })
+
+export const shouldShowFeedbackForm = createSelector(getAppState, ({ showFeedbackForm }) => showFeedbackForm)
+export const feedbackFormRequestedAsset = createSelector(getAppState, ({ requestedAsset }) => requestedAsset)
+export const getUserIpAddress = createSelector(getAppState, ({ ip }) => ip)

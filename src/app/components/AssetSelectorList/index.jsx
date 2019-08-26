@@ -17,7 +17,7 @@ import { getAllAssetsArray } from 'Selectors/asset'
 import { isAppRestricted } from 'Selectors/app'
 import { getWalletWithHoldings } from 'Selectors/wallet'
 
-import { doToggleFeedbackForm } from 'Actions/app'
+import { doToggleFeedbackForm } from 'Common/actions/app'
 import T from 'Components/i18n/T'
 
 const DEBOUNCE_WAIT = 400
