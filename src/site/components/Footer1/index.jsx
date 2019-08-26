@@ -31,7 +31,7 @@ export default compose(
         <Col><EmailSub translations={translations} /></Col>
       </Row>
       <Row className='m-0 p-0 pt-5'>
-        <Col className={classNames(style.ctaContainer, 'mx-auto d-flex mb-5 px-md-5 px-0 pl-xs-4 pl-md-5 pl-3 py-xs-3 py-md-0 py-0')}>
+        <Col className={classNames(style.ctaContainer, 'mx-auto d-flex mb-5 px-md-5 px-0 pl-xs-4 pl-md-5 pl-3 py-md-0 py-4')}>
           <Row style={{ flex: 1 }} className='mx-0 px-0 justify-content-between align-items-center'>
             <Col className='p-0 m-0 d-flex' xs='12' md='6'>
               <h2 className='text-white my-0'>{t.readyToTrade}</h2>

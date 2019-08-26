@@ -15,8 +15,10 @@ const Hero = ({ supportedAssets, translations, translations: { static: { hero = 
     <Fragment>
       <Header theme='dark' headerColor='#191A1D' translations={translations} />
       <div style={{ backgroundColor: '#191A1D', minHeight: 700 }} className='jumbotron jumbotron-fluid hero-technology position-relative'>
-        <h1 className='mt-0' style={{ fontWeight: 600, color: '#EFEFEF' }}>{headlineT.goxxed}</h1>
-        <h5 style={{ color: '#9C9FA8' }}>{subtitle.notYourKeys}</h5>
+        <div className='px-md-0 px-2'>
+          <h1 className='mt-0' style={{ fontWeight: 600, color: '#EFEFEF' }}>{headlineT.goxxed}</h1>
+          <h5 style={{ color: '#9C9FA8' }}>{subtitle.notYourKeys}</h5>
+        </div>
         <div className='position-relative' style={{ zIndex: 999 }}>
           <Fade duration={1200} distance='80px' bottom>
             <SwapWidget translations={translations} assets={supportedAssets} />

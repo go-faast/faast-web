@@ -11,6 +11,7 @@ import FeesFeature from 'Img/coins-fees.png'
 import classNames from 'class-names'
 
 import style from './style.scss'
+import homeStyle from 'Site/pages/Home1/style.scss'
 
 const Features = ({ translations: { static: { features: t } } }) => {
   const features = [{
@@ -43,12 +44,12 @@ const Features = ({ translations: { static: { features: t } } }) => {
     }
   }]
   return (
-    <Row className={classNames(style.featuresContainer, 'mx-auto align-content-start')}>
+    <Row className={classNames(homeStyle.sectionContainer, style.featuresContainer, 'mx-auto align-content-start')}>
       <Col xs='12'>
-        <h1>{t.title}</h1>
+        <h1 style={{ fontWeight: 600 }}>{t.title}</h1>
       </Col>
       <Col className='d-flex px-0' xs='12'>
-        <Row className='flex-lg-nowrap mx-0 px-lg-0 px-3'>
+        <Row className={classNames(style.cardContainer ,'mx-0 px-lg-0 px-3')}>
           {features.map(feature => {
             return (
               <Col className={classNames(style.featureContainer, 'd-flex justify-content-center px-0')} xs='12' md='6' lg='3' key={feature.heading}>

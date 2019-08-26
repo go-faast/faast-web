@@ -8,7 +8,6 @@
   white-space: nowrap;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .39);
   position: relative;
-  margin-bottom: 180px;
 }
 
 .featuresContainer h1 {
@@ -87,21 +86,41 @@
   position: absolute;
 }
 
-@media screen and (max-width: 983px) {
-  .featureContainer {
-    top: 0px !important;
-    left: 0px !important;
-    margin-right: auto !important;
-    margin-left: auto !important;
-    margin-bottom: 10px;
-    padding-right: 20px !important;
-    padding-left: 20px !important;
-  }
+.cardContainer {
+  flex-wrap: nowrap !important;
+}
 
+@media screen and (max-width: 1140px) {
   .feature {
     width: 95%;
     max-width: 400px;
     height: auto;
+  }
+
+  .featureContainer {
+    top: 0px !important;
+    left: 0px !important;
+    margin-left: 0px !important;
+    margin-right: 30px !important;
+    margin-bottom: 10px;
+  }
+
+  .featureContainer:nth-child(4) {
+    margin-right: 0px !important;
+  }
+
+  .cardContainer {
+    flex-wrap: wrap !important;
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 983px) {
+  .featureContainer {
+    margin-right: auto !important;
+    margin-left: auto !important;
+    padding-right: 20px !important;
+    padding-left: 20px !important;
   }
 
   .button {

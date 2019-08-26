@@ -1,6 +1,12 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 811 438">
-      <g fill="none" fillRule="evenodd" stroke="#202124" strokeWidth="2">
-        <g transform="translate(-217 -3566) translate(217 3369) translate(0 197) translate(14)">
+      <g
+        fill="none"
+        fillRule="evenodd"
+        stroke="#202124"
+        strokeWidth="2"
+        opacity="0.903"
+      >
+        <g transform="translate(-246 -4286) translate(246 4089) translate(0 197) translate(14)">
           <path fill="#1B1C20" d="M99 45H113V59H99z" />
           <path fill="#1B1C20" d="M113 45H127V59H113z" />
           <path fill="#1B1C20" d="M99 59H113V73H99z" />
@@ -258,7 +264,7 @@
           <path fill="#1B1C20" d="M127 395H141V409H127z" />
           <path fill="#1B1C20" d="M141 395H155V409H141z" />
         </g>
-        <g transform="translate(-217 -3566) translate(217 3369) translate(0 197) translate(229 44)">
+        <g transform="translate(-246 -4286) translate(246 4089) translate(0 197) translate(229 44)">
           <path fill="#1B1C20" d="M58 1H72V15H58z" />
           <path fill="#1B1C20" d="M72 1H86V15H72z" />
           <path fill="#1B1C20" d="M58 15H72V29H58z" />
@@ -390,7 +396,7 @@
           <path fill="#1B1C20" d="M100 379H114V393H100z" />
           <path fill="#041B06" d="M86 365H100V379H86z" />
         </g>
-        <g transform="translate(-217 -3566) translate(217 3369) translate(0 197) translate(539 41)">
+        <g transform="translate(-246 -4286) translate(246 4089) translate(0 197) translate(539 41)">
           <path fill="#1B1C20" d="M58 15H72V29H58z" />
           <path fill="#1B1C20" d="M72 15H86V29H72z" />
           <path fill="#1B1C20" d="M100 1H114V15H100z" />
@@ -511,7 +517,7 @@
           <path fill="#1B1C20" d="M100 365H114V379H100z" />
           <path fill="#3E473C" d="M86 365H100V379H86z" />
         </g>
-        <g transform="translate(-217 -3566) translate(217 3369) translate(0 197) translate(0 16)">
+        <g transform="translate(-246 -4286) translate(246 4089) translate(0 197) translate(0 16)">
           <path fill="#1B1C20" d="M670 29H684V43H670z" />
           <path fill="#1B1C20" d="M684 29H698V43H684z" />
           <path fill="#1B1C20" d="M670 43H684V57H670z" />

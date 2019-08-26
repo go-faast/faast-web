@@ -1,3 +1,7 @@
+.sectionContainer {
+  margin-bottom: 150px;
+}
+
 .text {
   color: #2D303A;
 }
@@ -33,5 +37,11 @@
 
   &:hover i {
     left: 13px;
+  }
+}
+
+@media screen and (max-width: 983px) {
+  .sectionContainer {
+    margin-bottom: 120px;
   }
 }

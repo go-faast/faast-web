@@ -1,7 +1,10 @@
+.container {
+  padding-bottom: 130px;
+}
+
 .tweet {
   background: #EFEFEF;
   max-width: 650px;
-  min-height: 301px;
   height: auto;
   width: 100%;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.39);
@@ -48,4 +51,10 @@
   line-height: 63px;
   color: #1D1E22;
   cursor: pointer;
+}
+
+@media screen and (max-width: 983px) {
+  .container {
+    padding-bottom: 0px;
+  }
 }

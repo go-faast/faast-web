@@ -3,7 +3,6 @@
 import React from 'react'
 import { compose, setDisplayName, withState } from 'recompose'
 import classNames from 'class-names'
-import Typing from 'react-typing-animation'
 
 import GithubBg from 'Img/github-bg.svg'
 
@@ -38,8 +37,8 @@ const json = [{
 
 const Terminal = ({ response, translations: { static: { terminal: t } } }) => {
   return (
-    <div style={{ backgroundImage: `url(${GithubBg})` }} className={classNames(style.terminalSection, 'text-center mt-5 pt-5 mx-auto position-relative px-sm-0 px-2')}>
-      <h1 className={classNames(homeStyle.heading, 'mt-5 pt-5 mb-4')}>Open Source and Public API</h1>
+    <div style={{ backgroundImage: `url(${GithubBg})` }} className={classNames(homeStyle.sectionContainer, style.terminalSection, 'text-center mx-auto position-relative px-sm-0 px-2')}>
+      <h1 className={classNames(homeStyle.heading, 'mb-4')}>Open Source and Public API</h1>
       <h3 className={classNames(homeStyle.description, 'pb-4 px-md-0 px-3')}>
         {t.wantToRun} <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://github.com/go-faast/faast-web'>{t.faastPortfolio}</a> {t.project} <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://api.faa.st'>{t.publicAPI}</a> {t.fullControl}
       </h3>
