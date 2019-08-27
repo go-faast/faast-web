@@ -1,12 +1,7 @@
 import React, { Fragment } from 'react'
 import Header from 'Site/components/Header'
 import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
-let Fade = Fragment
-// if (typeof window !== 'undefined') {
-//   Fade = require('react-reveal/Fade')
-// } else {
-//   Fade = Fragment
-// }
+import Fade from 'react-reveal/Fade'
 
 import PropTypes from 'prop-types'
 import SwapWidget from '../SwapWidget'

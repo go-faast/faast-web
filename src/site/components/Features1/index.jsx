@@ -1,12 +1,7 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { Button, Row, Col } from 'reactstrap'
-let Fade = Fragment
-// if (typeof window !== 'undefined') {
-//   Fade = require('react-reveal/Fade')
-// } else {
-//   Fade = Fragment
-// }
+import Fade from 'react-reveal/Fade'
 
 import PrivacyFeature from 'Img/finger-scanner.png'
 import SecureFeature from 'Img/lock-key.png'

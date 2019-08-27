@@ -1,20 +1,20 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { compose, setDisplayName, withHandlers, withState } from 'recompose'
 import classNames from 'class-names'
 import { Row, Col } from 'reactstrap'
-let Carousel, CarouselItem, CarouselControl
-let Fade = Fragment
+import Fade from 'react-reveal/Fade'
+
+let CarouselControl
+let Carousel
+let CarouselItem
+
 if (typeof window !== 'undefined') {
-  let { Carousel: carousel, CarouselItem: carouselItem, CarouselControl: carouselControl } = require('reactstrap')
-  Carousel = carousel
-  CarouselItem = carouselItem
-  CarouselControl = carouselControl
-  // Fade = require('react-reveal/Fade')
-} else {
-  Fade = Fragment
-  Carousel = Fragment
-  CarouselItem = Fragment
-  CarouselControl = Fragment
+  import('react-strap')
+    .then(({ CarouselControl: carouselControl, Carousel: carousel, CarouselItem: carouselItem }) => {
+      CarouselControl = carouselControl
+      Carousel = carousel
+      CarouselItem = carouselItem
+    })
 }
 
 import TwitterStripes from 'Img/twitter-stripes.svg'

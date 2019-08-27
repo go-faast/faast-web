@@ -3,7 +3,7 @@ import * as React from 'react'
 import { connect } from 'react-redux'
 import { withRouteData } from 'react-static'
 import { createStructuredSelector } from 'reselect'
-import LazyLoad from 'react-lazyload'
+// import LazyLoad from 'react-lazyload'
 import { compose, setDisplayName, lifecycle, withProps } from 'recompose'
 import withTracker from 'Site/components/withTracker'
 
@@ -50,9 +50,7 @@ export default compose(
       <Wallets translations={translations} /> 
       <Features translations={translations} supportedAssets={supportedAssets} />
       <Reviews translations={translations} />
-      <LazyLoad offset={1} height={500}>
-        <Terminal translations={translations} />
-      </LazyLoad>
+      <Terminal translations={translations} />
       <Footer translations={translations} />
     </div>
   )
