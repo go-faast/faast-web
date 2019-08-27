@@ -6,7 +6,7 @@ before_install:
 - npm install -g "npm@$(jq -r '.engines.npm' package.json)"
 install:
 - npm install --no-save
-- NODE_OPTIONS="--max-old-space-size=8192" npm run build
+- NODE_OPTIONS="--max-old-space-size=4096" npm run build
 before_script:
 - "export DISPLAY=:99.0"
 - "sh -e /etc/init.d/xvfb start"

@@ -6,12 +6,13 @@
 # “publish” is the directory to publish (relative to the root of your repo).
 
 [build]
-  command = "--max-old-space-size=8192 npm run build"
+  command = "npm run build"
   publish = "dist/"
   functions = "build/lambda"
   [build.environment]
     NETLIFY = "true"
     NODE_ENV = "production"
+    NODE_OPTIONS = "--max_old_space_size=4096"
 
 [context.production]
   [context.production.environment]
