@@ -3,12 +3,12 @@ import React, { Fragment } from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { Row, Col } from 'reactstrap'
 import classNames from 'class-names'
-let Fade
-if (typeof window !== 'undefined') {
-  Fade = require('react-reveal/Fade')
-} else {
-  Fade = Fragment
-}
+let Fade = Fragment
+// if (typeof window !== 'undefined') {
+//   Fade = require('react-reveal/Fade')
+// } else {
+//   Fade = Fragment
+// }
 import FaastMockup from 'Img/faast-mockup.svg'
 
 import homeStyle from 'Site/pages/Home1/style.scss'

@@ -1,15 +1,15 @@
 import React, { Fragment } from 'react'
 import Header from 'Site/components/Header'
 import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
-let Fade
-if (typeof window !== 'undefined') {
-  Fade = require('react-reveal/Fade')
-} else {
-  Fade = Fragment
-}
+let Fade = Fragment
+// if (typeof window !== 'undefined') {
+//   Fade = require('react-reveal/Fade')
+// } else {
+//   Fade = Fragment
+// }
 
 import PropTypes from 'prop-types'
-import SwapWidget from '../SwapWidget1'
+import SwapWidget from '../SwapWidget'
 import HeroChart from 'Img/hero-chart.svg'
 
 const Hero = ({ supportedAssets, translations, translations: { static: { hero: { headline: headlineT = {}, subtitle = {} } = {} } = {} } }) => {
