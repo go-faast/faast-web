@@ -1,13 +1,22 @@
 /* eslint-disable react/no-unescaped-entities */
-import React from 'react'
+import React, { Fragment } from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { Row, Col } from 'reactstrap'
 import classNames from 'class-names'
-import Fade from 'react-reveal/Fade'
 import FaastMockup from 'Img/faast-mockup.svg'
 
 import homeStyle from 'Site/pages/Home1/style.scss'
 import style from './style.scss'
+
+let Fade 
+if (typeof window !== 'undefined') {
+  import('react-reveal/Fade')
+    .then((fade) => {
+      Fade = fade
+    }).catch(() => {
+      Fade = Fragment
+    })
+}
 
 const DashboardSection = ({ translations: { static: { dashboard: t } } }) => {
   return (

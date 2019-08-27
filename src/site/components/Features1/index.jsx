@@ -1,7 +1,6 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { Button, Row, Col } from 'reactstrap'
-import Fade from 'react-reveal/Fade'
 
 import PrivacyFeature from 'Img/finger-scanner.png'
 import SecureFeature from 'Img/lock-key.png'
@@ -12,6 +11,16 @@ import classNames from 'class-names'
 
 import style from './style.scss'
 import homeStyle from 'Site/pages/Home1/style.scss'
+
+let Fade 
+if (typeof window !== 'undefined') {
+  import('react-reveal/Fade')
+    .then((fade) => {
+      Fade = fade
+    }).catch(() => {
+      Fade = Fragment
+    })
+}
 
 const Features = ({ translations: { static: { features: t } } }) => {
   const features = [{

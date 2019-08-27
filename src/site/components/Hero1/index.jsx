@@ -1,11 +1,20 @@
 import React, { Fragment } from 'react'
 import Header from 'Site/components/Header'
 import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
-import Fade from 'react-reveal/Fade'
 
 import PropTypes from 'prop-types'
 import SwapWidget from '../SwapWidget1'
 import HeroChart from 'Img/hero-chart.svg'
+
+let Fade 
+if (typeof window !== 'undefined') {
+  import('react-reveal/Fade')
+    .then((fade) => {
+      Fade = fade
+    }).catch(() => {
+      Fade = Fragment
+    })
+}
 
 const Hero = ({ supportedAssets, translations, translations: { static: { hero: { headline: headlineT = {}, subtitle = {} } = {} } = {} } }) => {
   return (
