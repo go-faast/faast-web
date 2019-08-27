@@ -7,13 +7,13 @@ import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, lifecycle, withProps } from 'recompose'
 import withTracker from 'Site/components/withTracker'
 
-// import Features from 'Site/components/Features1'
-// import DashboardSection from 'Site/components/DashboardSection'
-// import Footer from 'Site/components/Footer1'
-// import Hero from 'Site/components/Hero1'
-// import Wallets from 'Site/components/Wallets'
-// import Terminal from 'Site/components/Terminal'
-// import Reviews from 'Site/components/Reviews'
+import Features from 'Site/components/Features1'
+import DashboardSection from 'Site/components/DashboardSection'
+import Footer from 'Site/components/Footer1'
+import Hero from 'Site/components/Hero1'
+import Wallets from 'Site/components/Wallets'
+import Terminal from 'Site/components/Terminal'
+import Reviews from 'Site/components/Reviews'
 
 import { fetchGeoRestrictions } from 'Common/actions/app'
 import { retrieveAssets } from 'Common/actions/asset'
@@ -41,16 +41,17 @@ export default compose(
     }
   }),
   withRouteData,
-)(() => {
+)(({ supportedAssets, areAssetsLoaded, assetList, translations = {} }) => {
+  supportedAssets = areAssetsLoaded ? assetList : supportedAssets
   return (
     <div style={{ backgroundColor: '#26282D' }}>
-      {/* <Hero supportedAssets={supportedAssets} translations={translations} className='mb-md-5 mb-0'/>
+      <Hero supportedAssets={supportedAssets} translations={translations} className='mb-md-5 mb-0'/>
       <DashboardSection translations={translations} />
       <Wallets translations={translations} /> 
       <Features translations={translations} supportedAssets={supportedAssets} />
       <Reviews translations={translations} />
       <Terminal translations={translations} />
-      <Footer translations={translations} /> */}
+      <Footer translations={translations} />
     </div>
   )
 })
