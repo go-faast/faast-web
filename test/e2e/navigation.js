@@ -4,8 +4,8 @@ export default (config) => {
   fixture `Navigation`
     .page(config.baseUrl)
   
-    const LINK =  (x) =>  Selector('a').withAttribute('href', x).exists
-    const HREF =  (x) =>  Selector('a').withAttribute('href', x)  
+  const LINK =  (x) =>  Selector('a').withAttribute('href', x).exists
+  const HREF =  (x) =>  Selector('a').withAttribute('href', x)  
 
   
   test('Navigate to Market Maker', async t => {
@@ -24,15 +24,15 @@ export default (config) => {
 
   test('See the home page urls', async t => {
     await t
-    .expect(LINK('/app/swap?from=BTC&to=ETH')).ok()
-    .expect(LINK('/app/connect')).ok()
-    .expect(LINK('/wallets/trezor')).ok()
-    .expect(LINK('/wallets/ledger-wallet')).ok()
-    .expect(LINK('/wallets/metamask')).ok()
-    .expect(LINK('/wallets/mist-browser')).ok()
-    .expect(LINK('/wallets/trust-wallet')).ok()
-    .expect(LINK('/wallets/coinbase-wallet')).ok()
-    .expect(LINK('/wallets/status')).ok()    
+      .expect(LINK('/app/swap?from=BTC&to=ETH')).ok()
+      .expect(LINK('/app/connect')).ok()
+      .expect(LINK('/wallets/trezor')).ok()
+      .expect(LINK('/wallets/ledger-wallet')).ok()
+      .expect(LINK('/wallets/metamask')).ok()
+      .expect(LINK('/wallets/mist-browser')).ok()
+      .expect(LINK('/wallets/trust-wallet')).ok()
+      .expect(LINK('/wallets/coinbase-wallet')).ok()
+      .expect(LINK('/wallets/status')).ok()    
   })
 
   test('Bottom menu links', async t => {
