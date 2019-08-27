@@ -36,7 +36,7 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, handleSelectLa
   <Navbar {...pick(props, Object.keys(Navbar.propTypes))}>
     <Container>
       <NavbarBrand tag={Link} to='/' className='mr-auto'>
-        <Icon src={FaastLogo} height='1.5rem' width='1.5rem' inline className='mx-3'/>Faa.st <sup className='beta-tag'>beta</sup>
+        <Icon src={FaastLogo} height='1.5rem' width='1.5rem' inline className='mx-3'/>Faa.st
       </NavbarBrand>
       <NavbarToggler onClick={toggleExpanded} />
       <Collapse isOpen={isExpanded} navbar>
