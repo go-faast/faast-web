@@ -6,14 +6,14 @@ import PropTypes from 'prop-types'
 import SwapWidget from '../SwapWidget1'
 import HeroChart from 'Img/hero-chart.svg'
 
-let Fade 
+let Fade = Fragment
 if (typeof window !== 'undefined') {
-  import('react-reveal/Fade')
-    .then((fade) => {
-      Fade = fade
-    }).catch(() => {
-      Fade = Fragment
-    })
+  // import('react-reveal/Fade')
+  //   .then((fade) => {
+  //     Fade = fade
+  //   }).catch(() => {
+  //     Fade = Fragment
+  //   })
 }
 
 const Hero = ({ supportedAssets, translations, translations: { static: { hero: { headline: headlineT = {}, subtitle = {} } = {} } = {} } }) => {

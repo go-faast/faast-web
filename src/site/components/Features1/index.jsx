@@ -12,15 +12,15 @@ import classNames from 'class-names'
 import style from './style.scss'
 import homeStyle from 'Site/pages/Home1/style.scss'
 
-let Fade 
-if (typeof window !== 'undefined') {
-  import('react-reveal/Fade')
-    .then((fade) => {
-      Fade = fade
-    }).catch(() => {
-      Fade = Fragment
-    })
-}
+let Fade = Fragment
+// if (typeof window !== 'undefined') {
+//   import('react-reveal/Fade')
+//     .then((fade) => {
+//       Fade = fade
+//     }).catch(() => {
+//       Fade = Fragment
+//     })
+// }
 
 const Features = ({ translations: { static: { features: t } } }) => {
   const features = [{

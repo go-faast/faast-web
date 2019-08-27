@@ -157,7 +157,6 @@
     "react-popper": "^0.8.2",
     "react-redux": "^5.0.7",
     "react-redux-toastr": "^7.4.0",
-    "react-reveal": "^1.2.2",
     "react-router-dom": "^4.2.2",
     "react-router-redux": "^5.0.0-alpha.6",
     "react-static": "^5.9.12",

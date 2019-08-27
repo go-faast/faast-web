@@ -6,7 +6,7 @@ import { Row, Col } from 'reactstrap'
 let CarouselControl
 let Carousel
 let CarouselItem
-let Fade
+let Fade = Fragment
 
 if (typeof window !== 'undefined') {
   import('reactstrap')
@@ -19,12 +19,12 @@ if (typeof window !== 'undefined') {
       Carousel = Fragment
       CarouselItem = Fragment
     })
-    import('react-reveal/Fade')
-      .then((fade) => {
-        Fade = fade
-      }).catch(() => {
-        Fade = Fragment
-      })
+    // import('react-reveal/Fade')
+    //   .then((fade) => {
+    //     Fade = fade
+    //   }).catch(() => {
+    //     Fade = Fragment
+    //   })
 }
 
 import TwitterStripes from 'Img/twitter-stripes.svg'
