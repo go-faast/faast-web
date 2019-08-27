@@ -9,7 +9,7 @@ let Carousel
 let CarouselItem
 
 if (typeof window !== 'undefined') {
-  import('react-strap')
+  import('reactstrap')
     .then(({ CarouselControl: carouselControl, Carousel: carousel, CarouselItem: carouselItem }) => {
       CarouselControl = carouselControl
       Carousel = carousel
