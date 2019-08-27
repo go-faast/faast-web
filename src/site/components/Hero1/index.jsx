@@ -4,7 +4,7 @@ import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
 import Fade from 'react-reveal/Fade'
 
 import PropTypes from 'prop-types'
-import SwapWidget from '../SwapWidget'
+import SwapWidget from '../SwapWidget1'
 import HeroChart from 'Img/hero-chart.svg'
 
 const Hero = ({ supportedAssets, translations, translations: { static: { hero: { headline: headlineT = {}, subtitle = {} } = {} } = {} } }) => {

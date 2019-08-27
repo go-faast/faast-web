@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import { compose, setDisplayName, withHandlers, withState } from 'recompose'
 import classNames from 'class-names'
 import { Row, Col } from 'reactstrap'
@@ -14,6 +14,10 @@ if (typeof window !== 'undefined') {
       CarouselControl = carouselControl
       Carousel = carousel
       CarouselItem = carouselItem
+    }).catch(() => {
+      CarouselControl = Fragment
+      Carousel = Fragment
+      CarouselItem = Fragment
     })
 }
 
