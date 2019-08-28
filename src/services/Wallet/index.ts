@@ -1,3 +1,7 @@
+if (typeof window === 'undefined') {
+  throw new Error(`You really shouldnt be importing ${__filename} outsite of the app`)
+}
+
 export * from './lib'
 
 import queryString from 'query-string'

@@ -3,6 +3,9 @@
  * import Ledger from 'Services/Ledger'
  * Ledger.eth.getAddress("m/44'/0'/0'/0")
  */
+if (typeof window === 'undefined') {
+  throw new Error(`You really shouldnt be importing ${__filename} outsite of the app`)
+}
 
 import * as ledgerLogger from '@ledgerhq/logs'
 import log from 'Log'
