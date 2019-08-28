@@ -56,7 +56,7 @@ export const getAllWalletIds = createSelector(getAllWallets, Object.keys)
 export const getLeafWallets = createSelector(
   getAllWalletsArray,
   (wallets) => wallets
-    .filter(({ type }) => !type.includes(MultiWallet.type))
+    .filter(({ type }) => !type.includes('MultiWallet'))
 )
 export const getLeafWalletIds = createSelector(
   getLeafWallets,
@@ -70,7 +70,7 @@ export const getWalletParents = createItemSelector(
   getAllWallets,
   selectItemId,
   (allWallets, id) => Object.values(allWallets).reduce(
-    (result, parent) => (parent && parent.type.includes(MultiWallet.type) && parent.nestedWalletIds.includes(id)) ? [...result, parent] : result,
+    (result, parent) => (parent && parent.type.includes('MultiWallet') && parent.nestedWalletIds.includes(id)) ? [...result, parent] : result,
     [])
 )
 
