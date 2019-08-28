@@ -74,7 +74,7 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
       try {
         const routeConfig = [{
           path: `${t.url}`,
-          component: 'src/site/pages/Home',
+          component: 'src/site/pages/Home1',
           getData: async () => ({
             supportedAssets,
             translations: t.translations,

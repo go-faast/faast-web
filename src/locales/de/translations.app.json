@@ -1,0 +1,534 @@
+{
+    "app": {
+        "view": {
+            "loadingFaast": "Faa.st wird geladen..."
+        },
+        "addressSearchForm": {
+            "placeholder": "Nach Adresse suchen..."
+        },
+        "priceChart": {
+            "yAxisLabel": "Preis (USD)",
+            "loading": "L\u00e4dt...",
+            "months": "Januar Februar M\u00e4rz April Mai Juni Juli August September Oktober November Dezember",
+            "weekdays": "Sonntag Montag Dienstag Mittwoch Donnerstag Freitag Samstag",
+            "shortMonths": "Jan Feb M\u00e4r Apr Mai Jun Jul Aug Sep Okt Nov Dez",
+            "exportButtonTitle": "Exportieren",
+            "printButtonTitle": "Importieren",
+            "rangeSelectorFrom": "Von",
+            "rangeSelectorTo": "Bis",
+            "rangeSelectorZoom": "Zoom",
+            "downloadPNG": "PNG-Bild herunterladen",
+            "downloadJPEG": "JPEG-Bild herunterladen",
+            "downloadPDF": "PDF-Bild herunterladen",
+            "downloadSVG": "SVG-Bild herunterladen",
+            "printChart": "Drucken",
+            "resetZoom": "Zoom zur\u00fccksetzen",
+            "resetZoomTitle": "Zoom zur\u00fccksetzen",
+            "thousandsSep": ",",
+            "decimalPoint": "."
+        },
+        "pieChart": {
+            "weight": "Gewichtung"
+        },
+        "feedbackForm": {
+            "faastFeedback": "Feedback zu Faa.st",
+            "typeOfFeedback": "Feedback-Typ",
+            "selectType": "Feedback-Typ ausw\u00e4hlen",
+            "design": "Feedback zum Design",
+            "asset": "Neues Asset anfordern",
+            "feature": "Funktionsanfrage",
+            "help": "Hilfe bei Swaps",
+            "bug": "Fehler melden",
+            "other": "Sonstiges",
+            "description": "Feedback-Beschreibung",
+            "email": "E-Mail-Adresse zum Antworten",
+            "assetName": "Asset-Name & Ticker",
+            "assetInfo": "URL f\u00fcr Asset-Info",
+            "contactSupport": "Bitte schreiben Sie an <1>support@faa.st<\/ 1>, damit wir Probleme bei Swaps beheben k\u00f6nnen!",
+            "submitFeedback": "Feedback senden",
+            "pleaseProvide": "Bitte geben Sie hier",
+            "feedbackHere": "Ihr Feedback an...",
+            "emailPlaceholder": "E-Mail-Adresse (optional)",
+            "assetNamePlaceholder": "Asset-Name & Ticker",
+            "assetInfoPlaceholder": "Bitte geben Sie eine URL an, um Informationen zu Assets zu erhalten...",
+            "featurePlaceholder": "Bitte beschreiben Sie die Funktion, die Sie bei Faa.st n\u00fctzlich finden w\u00fcrden...",
+            "designPlaceholder": "Bitte beschreiben Sie, was Ihnen am Faa.st-Design gef\u00e4llt oder nicht gef\u00e4llt...",
+            "bugPlaceholder": "Bitte beschreiben Sie die Fehler, auf die Sie bei der Verwendung von Faa.st gesto\u00dfen sind...",
+            "otherPlaceholder": "Bitte geben Sie hier Ihr Feedback ab..."
+        },
+        "walletTypes": {
+            "nonSegwit": "altes Konto (nicht von Segwit)",
+            "preFork": "altes Konto (vor Fork)",
+            "ledger": "Ledger-Wallet",
+            "mist": "Mist Browser",
+            "coinbase": "Coinbase Wallet",
+            "trust": "Trust Wallet",
+            "ledgerSlogan": "Bewahren Sie Ihr Kryptogeld \u00fcberall sicher auf.",
+            "ledgerDescription": "Ledger bietet Smartcard-basierte Crypto-Asset-Wallets in Hardwareform an, mit denen Sie Bitcoins, Ethereums, Ripple und mehr optimal sch\u00fctzen k\u00f6nnen \u2013 ohne Abstriche bei der Benutzerfreundlichkeit oder Kontrolle machen zu m\u00fcssen.",
+            "trezorSlogan": "Der sichere Ort f\u00fcr Ihre M\u00fcnzen.",
+            "trezorDescription": "Trezor bietet Ihnen einen sicheren Tresor f\u00fcr Ihre digitalen Assets. Speichern Sie Bitcoins, Litecoins, Passw\u00f6rter, Zugangsdaten und Schl\u00fcssel ohne Sorgen.",
+            "blockstackSlogan": "Die einfachste L\u00f6sung, um dezentrale Blockchain-Apps zu erstellen.",
+            "blockstackDescription": "Blockstack baut ein System auf, mit dem Ihre Nutzer Kontrolle \u00fcber ihre grundlegenden digitalen Rechte erhalten.",
+            "metmaskSlogan": "Bringen Sie Ethereum in Ihren Browser.",
+            "metamaskDescription": "MetaMask ist eine Br\u00fccke, mit der Sie das verteilte Web von morgen bereits heute in Ihrem Browser aufrufen k\u00f6nnen. D.h. Sie k\u00f6nnen Ethereum-Apps direkt in Ihrem Browser ausf\u00fchren.",
+            "mistSlogan": "Mist \u2013 Durchsuchen und verwenden Sie \u00d0apps im Ethereum-Netzwerk.",
+            "mistDescription": "Der Mist-Browser ist die beste Wahl, um \u00d0apps zu durchsuchen und zu verwenden.",
+            "paritySlogan": "Blockchain-Infrastruktur f\u00fcr das dezentralisierte Web.",
+            "parityDescription": "Parity Technologies baut eine zentrale Blockchain-Infrastruktur auf \u2013 von Parity Ethereum, dem fortschrittlichsten Ethereum-Client, bis hin zu Polkadot, dem interoperablen Blockchain-Netzwerk der n\u00e4chsten Generation.",
+            "coinbaseSlogan": "Die einfachste und sicherste Krypto-Wallet.",
+            "coinbaseDescription": "Coinbase: Die einfache und sichere L\u00f6sung, um Ihre Kryptow\u00e4hrung zu kaufen, zu verwalten und zu verkaufen.",
+            "trustSlogan": "Sichere Wallet f\u00fcr Token von Ethereum, ERC20, ERC223 und ERC721.",
+            "trustDescription": "Trust Wallet ist die beste Ethereum-Wallet und Wallet mit mehreren Kryptow\u00e4hrungen, in der Sie Ihre bevorzugten ERC721- und ERC20-Token aufbewahren k\u00f6nnen.",
+            "statusSlogan": "Greifen Sie \u00fcberall auf ein besseres Web zu.",
+            "statusDescription": "Mit Status k\u00f6nnen Sie in einer Open-Source-Community chatten, surfen und sichere Transaktionen durchf\u00fchren, um Ethereum und ein verteilteres Internet immer griffbereit zu haben."
+        },
+        "portfolio": {
+            "label": "Mein Portfolio"
+        },
+        "statuses": {
+            "insufficientFunds": "Nicht genug Zahlungsmittel",
+            "unsuccessful": "Auftrag fehlgeschlagen. Bitte schreiben Sie an support@faa.st",
+            "successful": "Auftrag erfolgreich abgeschlossen",
+            "refunded": "Auftrag erfolgreich erstattet",
+            "fetchingRate": "Marktdaten werden abgerufen",
+            "awaitingDeposit": "Warten auf Einzahlung",
+            "generateTx": "Einzahlungsvorgang wird initiiert",
+            "sendTxError": "Einzahlungsauftrag nicht gesendet. Bitte erneut versuchen.",
+            "sending": "Einzahlung wird gesendet",
+            "sent": "Warten auf Transaktionsbest\u00e4tigung",
+            "signingError": "Die Einzahlung konnte nicht signiert werden. Bitte sp\u00e4ter erneut versuchen.",
+            "signing": "Signatur erforderlich",
+            "readyToSend": "Bereit zum Senden",
+            "readyToSign": "Bereit zum Signieren",
+            "contactSupport": "Wom\u00f6glich ist ein Problem aufgetreten. F\u00fcr weitere Informationen schreiben Sie bitte an support@faa.st",
+            "processingSwap": "Swap wird bearbeitet",
+            "failedToCheckDepositTx": "Einzahlungsstatus nicht \u00fcberpr\u00fcft",
+            "errorSendingDeposit": "Fehler beim Senden der Einzahlung",
+            "unknownError": "Unbekannter Fehler"
+        },
+        "dashboard": {
+            "holdingsTitle": "Portfolio-Best\u00e4nde",
+            "distribution": "Verteilung",
+            "address": "Adresse",
+            "removeWallet": "Wallet entfernen",
+            "addWallet": "Wallet hinzuf\u00fcgen",
+            "walletHoldings": "<0><\/0> Best\u00e4nde",
+            "portfolioHoldings": "Portfolio-Best\u00e4nde"
+        },
+        "connect": {
+            "select": "Wallets ausw\u00e4hlen",
+            "hardware": "Hardware-Wallets",
+            "recommended": "Empfohlen",
+            "ledger": "Ledger-Wallet",
+            "desktopWallets": "<0><\/0> Ethereum-Wallets f\u00fcr Desktopger\u00e4te",
+            "mobileWallets": "<0><\/0> Ethereum-Wallets f\u00fcr Mobilger\u00e4te",
+            "mist": "Mist Browser",
+            "trust": "Trust Wallet",
+            "coinbase": "Coinbase Wallet",
+            "manual": "Manuell",
+            "createWallet": "Wallet erstellen",
+            "generate": "Neue Keystore-Datei generieren",
+            "importWallet": "Wallet importieren",
+            "dragAndDrop": "Keystore-Datei ablegen",
+            "openSource": "Code anzeigen"
+        },
+        "nav": {
+            "dashboard": "\u00dcbersicht",
+            "assets": "Assets",
+            "allAssets": "Alle Assets",
+            "trending": "Angesagt",
+            "watchlist": "Beobachtungsliste",
+            "rebalance": "Rebalancieren",
+            "swap": "Swap",
+            "orders": "Auftr\u00e4ge",
+            "addWallet": "Wallet hinzuf\u00fcgen"
+        },
+        "assetIndex": {
+            "titlePage": "Alle Assets - Seite <1><\/1>",
+            "title": "Alle Assets"
+        },
+        "assetIndexTable": {
+            "coin": "M\u00fcnze",
+            "price": "Preis",
+            "marketCap": "Marktkapitalisierung",
+            "volume": "Menge",
+            "supply": "Vorrat",
+            "change": "\u00c4nderung"
+        },
+        "trending": {
+            "tradeable": "Nur handelbare Assets anzeigen",
+            "trending": "Angesagt",
+            "biggestGainers": "Gr\u00f6\u00dfte Gewinner",
+            "biggestLosers": "Gr\u00f6\u00dfte Verlierer"
+        },
+        "watchlist": {
+            "tableHeading": "Beobachtungsliste"
+        },
+        "orders": {
+            "orderHistory": "\u00c4ltere Auftr\u00e4ge",
+            "showMore": "Mehr Auftr\u00e4ge anzeigen...",
+            "date": "Datum",
+            "pair": "Paar",
+            "cost": "Kosten",
+            "received": "Erhalten",
+            "receiving": "Wird empfangen",
+            "noOpen": "Derzeit keine offenen Auftr\u00e4ge",
+            "noPrevious": "Keine \u00e4lteren Auftr\u00e4ge",
+            "openOrdersTitle": "Offene Auftr\u00e4ge",
+            "previousOrdersTitle": "\u00c4ltere Auftr\u00e4ge",
+            "rate": "Kurs"
+        },
+        "sidebar": {
+            "watchlist": "<0>Beobachtungsliste<\/0>",
+            "trending": "Angesagt"
+        },
+        "rebalance": {
+            "saveChanges": "<0><\/0>\u00c4nderungen speichern",
+            "addAsset": "<0><\/0> Asset hinzuf\u00fcgen",
+            "remove": "<0><\/0> entfernen",
+            "availableBalance": "Verf\u00fcgbares Guthaben",
+            "how": "<0><0><\/0> Wie kann ich dies verwenden? <\/0>",
+            "24hChange": "24h-\u00c4nderung",
+            "currentPrice": "Aktueller Preis",
+            "after": "Danach",
+            "before": "Vorher",
+            "value": "Wert",
+            "weight": "Gewichtung",
+            "units": "Einheiten",
+            "addAssetBottom": "Asset hinzuf\u00fcgen",
+            "empty": "Dieses Portfolio ist leer. Um den Swap zu starten, m\u00fcssen Sie zuerst ein <1>Wallet hinzuf\u00fcgen<\/1>.",
+            "instructions": "Anleitung",
+            "instructions1": "Portfolio rebalancieren \u2013 3 einfache Schritte:",
+            "instructions2": "Ziehen Sie einen Schieberegler nach links, um die Gewichtung eines Assets zu verringern. Nutzen Sie",
+            "instructions3": "zum Entfernen des gesamten Assets.",
+            "instructions4": "Ziehen Sie einen Schieberegler nach rechts, um die Gewichtung eines Assets zu vergr\u00f6\u00dfern. Nutzen Sie",
+            "instructions5": " zum Hinzuf\u00fcgen eines neuen Assets. <1\/> <2>(Hinweis: Um die Gewichtung zu erh\u00f6hen, m\u00fcssen Sie die Gewichtung eines anderen Objekts verringert haben.) <\/2>",
+            "instructions6": "Klicken Sie,",
+            "instructions7": "wenn Sie fertig sind. Sie k\u00f6nnen die \u00c4nderungen dann pr\u00fcfen.",
+            "addAssetSelector": "Asset hinzuf\u00fcgen",
+            "readOnly": "Diese Wallet ist schreibgesch\u00fctzt. Sie m\u00fcssen <1><2>Ihre Wallet<\/2><\/1> verbinden, um mit Assets handeln zu k\u00f6nnen."
+        },
+        "widget": {
+            "swapInstantly": "Sofort umtauschen",
+            "omitted": "<0>Wenn die Angabe leer bleibt, wird ein variabler Marktkurs verwendet.<\/0>",
+            "approxSend": "<0>Der ungef\u00e4hre Betrag, den Sie senden werden. Klicken Sie auf \u201eErstellen\u201c, um ein garantiertes Angebot zu erhalten.<\/0>",
+            "expectSend": "<0>Der Betrag, den Sie laut unserer Vorstellungen senden sollten.<\/0>",
+            "approxReceive": "<0>Der ungef\u00e4hre Betrag, den Sie erhalten werden. Klicken Sie auf \u201eErstellen\u201c, um ein garantiertes Angebot zu erhalten.<\/0>",
+            "guaranteeReceive": "<0>Der Betrag, den Sie garantiert erhalten.<\/0>",
+            "youHave": "Sie haben",
+            "acceptTerms": "Ich akzeptiere die <1>Nutzungsbedingungen von Faa.st<\/1>",
+            "createSwap": "Swap erstellen",
+            "generatingSwap": "Swap wird erstellt...",
+            "chooseSend": "Asset zum Senden ausw\u00e4hlen",
+            "chooseReceive": "Asset zum Empfangen ausw\u00e4hlen",
+            "noRate": "Kurs nicht abrufbar",
+            "sendAmountPlaceholder": "Sendebetrag",
+            "optionalPlaceholder": " (optional)",
+            "receiveAmountPlaceholder": "Empfangsbetrag",
+            "returnAddressOptionalPlaceholder": "R\u00fccksendeadresse (optional)",
+            "returnAddressPlaceholder": "R\u00fccksendeadresse",
+            "receiveAddressPlaceholder": "Empfangsadresse",
+            "pleaseNote": "Hinweis: Aufgrund Ihrer Region k\u00f6nnen Sie max. ",
+            "dueToLocation": "<0> Swaps vornehmen.<\/0>",
+            "youReceive": "Erhalten",
+            "fromWallet": "Ausgangs-Wallet",
+            "toWallet": "Ziel-Wallet",
+            "youSend": "Senden",
+            "notEnoughEth": "Diese Wallet hat nicht genug ETH, um die Gaskosten zu decken. Bitte hinterlegen Sie etwas ETH und versuchen Sie es erneut.",
+            "sendAmountAtLeast": "Der Mindestwert f\u00fcr den Sendebetrag betr\u00e4gt",
+            "sendAmountGreaterThan": "Der H\u00f6chstwert f\u00fcr den Sendebetrag betr\u00e4gt",
+            "dueToYourLocation": "aufgrund Ihrer Region.",
+            "ensurePricing": "zur Gew\u00e4hrleistung von effizienten Preisen.",
+            "invalid": "Ung\u00fcltig",
+            "address": "Adresse"
+        },
+        "progressBar": {
+            "createSwap": "Swap erstellen",
+            "sendSymbol": "Senden Sie <1><\/1>!",
+            "receiveSymbol": "Empfangen Sie <1><\/1>!"
+        },
+        "footer": {
+            "website": "Faa.st-Website",
+            "termsConditions": "Nutzungsbedingungen",
+            "privacy": "Datenschutz",
+            "feedback": "Feedback senden"
+        },
+        "coinDetail": {
+            "buy": "Kaufen",
+            "sell": "Verkaufen",
+            "marketCap": "Marktkapitalisierung",
+            "volume": "24h Menge",
+            "supply": "Vorrat"
+        },
+        "assetTable": {
+            "noAssets": "Keine Assets",
+            "th1": "Asset",
+            "th2": "Einheiten",
+            "th3": "Best\u00e4nde",
+            "th4": "Gewichtung",
+            "th5": "Preis",
+            "th6": "24h-\u00c4nderung"
+        },
+        "swapSubmit": {
+            "geoLimit": "Der Sendebetrag kann aufgrund Ihrer Region nicht gr\u00f6\u00dfer als <1><\/1><2> USD sein.<\/2>",
+            "multipleSwaps": "Die folgenden Swaps werden durchgef\u00fchrt, um die \u00c4nderungen zu speichern, die Sie an Ihrem Portfolio vorgenommen haben. Bitte \u00fcberpr\u00fcfen Sie sie und klicken Sie zum Fortfahren auf \u201e<1><\/1>\u201c.",
+            "networkFee": "Gesamte Netzwerkgeb\u00fchren: ",
+            "timer": "* Die angegebenen Kurse sind garantiert, wenn sie eingereicht werden binnen:",
+            "terms": "Ich akzeptiere die <1>Nutzungsbedingungen von Faa.st<\/1>",
+            "cancel": "Abbrechen",
+            "submit": "Senden",
+            "submitAll": "Alle senden",
+            "beginSigning": "Signierung starten",
+            "confirmSubmit": "Best\u00e4tigen und senden",
+            "reviewSign": "Pr\u00fcfen und signieren",
+            "additionalFees": "** Je nach gesendetem Asset und verwendetem Wallet k\u00f6nnen zus\u00e4tzliche Geb\u00fchren anfallen."
+        },
+        "ethInstructions": {
+            "to": "An:",
+            "value": "Wert:",
+            "gas": "Gas:",
+            "gasPrice": "Gaspreis:",
+            "data": "Daten:",
+            "confirm": "Bitte best\u00e4tigen Sie die folgenden Transaktionsdetails, wenn Sie von Ihrer Wallet dazu aufgefordert werden.",
+            "sending": "<1><\/1> wird an <3><4><\/4><\/3> gesendet."
+        },
+        "swapStatusCard": {
+            "signed": "Signiert",
+            "ready": "Bereit",
+            "awaiting": "Signatur erforderlich",
+            "failed": "Fehlgeschlagen",
+            "sending": "Wird gesendet",
+            "status": "Status:",
+            "rate": "Kurs:",
+            "network": "Netzwerkgeb\u00fchr:",
+            "swapFee": "Swap-Geb\u00fchr:",
+            "usingWallet": "Verwendete Wallet",
+            "atAddress": "an der Adresse",
+            "date": "Datum:",
+            "orderId": "Auftragsnr.:",
+            "sentTx": "Gesendete Transaktion:",
+            "last": "Letzte"
+        },
+        "searchResults": {
+            "view": "Im Portfolio anzeigen",
+            "add": "Zum Portfolio hinzuf\u00fcgen"
+        },
+        "blocked": {
+            "restricted": "Unzul\u00e4ssiger Standort",
+            "sorry": "Leider rufen Sie faa.st von einem unzul\u00e4ssigen Standort ab. Sollten Sie diese Meldung f\u00e4lschlicherweise erhalten, k\u00f6nnen Sie <1>hier<\/1> mehr dar\u00fcber erfahren."
+        },
+        "selectPortfolioDropdown": {
+            "add": "Portfolio hinzuf\u00fcgen"
+        },
+        "shareModal": {
+            "share": "Portfolio teilen",
+            "permalink": "Permalink:"
+        },
+        "walletSelector": {
+            "wallets": "Wallets",
+            "addWallet": "Wallet hinzuf\u00fcgen",
+            "noWallets": "Keine Wallets in diesem Portfolio"
+        },
+        "tradeDetailModal": {
+            "orderDetails": "Auftragsdaten"
+        },
+        "walletInfoModal": {
+            "metamask1": "<0><\/0> ist eine Desktop-Browser-Erweiterung f\u00fcr eine Ethereum-Wallet. Sie k\u00f6nnen sie <2>hier<\/2> herunterladen.",
+            "metamask2": "Wenn Sie <1><\/1> bereits haben, \u00fcberpr\u00fcfen Sie bitte, ob die Erweiterung in diesem Browser aktiviert ist.",
+            "mist1": "<0><\/0> ist ein Desktop-Webbrowser mit einer integrierten Ethereum-Wallet. Sie k\u00f6nnen ihn <2>hier<\/2> herunterladen.",
+            "mist2": "Wenn Sie <1><\/1> bereits haben, \u00f6ffnen Sie <3>faa.st<\/3> \u00fcber den integrierten Webbrowser.",
+            "status1": "<0><\/0> ist ein mobiles Ethereum-Betriebssystem f\u00fcr iOS und Android. Mehr Infos erhalten Sie <2>hier<\/2>.",
+            "status2": "Wenn Sie <1><\/1> bereits haben, \u00f6ffnen Sie <3>faa.st<\/3> \u00fcber den integrierten Webbrowser.",
+            "coinbase1": "<0><\/0> ist ein mobiles Ethereum-Betriebssystem f\u00fcr iOS und Android. Sie k\u00f6nnen es <2>hier<\/2> herunterladen oder auf einen der nachstehenden Links klicken.",
+            "coinbase2": "Wenn Sie <1><\/1> bereits haben, \u00f6ffnen Sie <3>faa.st<\/3> \u00fcber den integrierten Webbrowser."
+        },
+        "createWalletModal": {
+            "pleaseAck": "Bitte beachten Sie den folgenden Haftungsausschluss:",
+            "ack1": "Die Datei <1><\/1> kann zum Senden aller darin enthaltenen Zahlungsmittel verwendet werden.",
+            "ack2": "Die Datei <1><\/1> enth\u00e4lt einen vertraulichen privaten Schl\u00fcssel, der verschl\u00fcsselt ist und auf den nur mit dem von mir eingegebenen Passwort zugegriffen werden kann.",
+            "ack3": "Faast hat keine Sicherung der Datei oder kein Passwort. Diese <1><\/1> wurde in meinem Webbrowser generiert und wurde nie \u00fcber das Internet gesendet.",
+            "ack4": "Wenn ich den Zugriff auf die Datei verliere oder das Passwort vergesse, verfallen alle darin enthaltenen Zahlungsmittel.",
+            "ack5": "Ich habe diese Datei heruntergeladen und an einem sicheren Ort auf meinem Computer gespeichert.",
+            "ack6": "Die Datei <1><\/1> kann in Kombination mit meinem Passwort zum Senden von Zahlungsmitteln mit anderen Anwendungen als Faast verwendet werden.",
+            "agree": "Ich verstehe alle oben genannten Hinweise und erkl\u00e4re mich einverstanden.",
+            "createWallet": "Wallet erstellen",
+            "downloadKeystore": "Keystore-Datei herunterladen",
+            "download": "<0><\/0> Datei <2><\/2> herunterladen",
+            "cancel": "Abbrechen",
+            "continue": "Weiter",
+            "importPrivateKey": "Privaten Schl\u00fcssel importieren",
+            "enterPrivateKey": "Geben Sie den privaten Schl\u00fcssel Ihrer vorhandenen Ethereum-Wallet ein.",
+            "enterPassword": "Geben Sie ein Passwort f\u00fcr Ihre <1>{{walletName}}<\/1> ein. Bitte notieren Sie sich Ihr Passwort. Ohne Ihr Passwort k\u00f6nnen Sie nicht auf das Guthaben in Ihrer <3>{{walletName}}<\/3> zugreifen.",
+            "passwordLabel": "Passwort",
+            "confirmPasswordLabel": "Passwort best\u00e4tigen",
+            "passwordRequired": "Passwort erforderlich",
+            "passwordLength": "Bitte geben Sie mind. 8 Zeichen ein. Es ist wichtig, dass Sie Ihre Wallet mit einem sicheren Passwort sch\u00fctzen.",
+            "passwordsDontMatch": "Die Passw\u00f6rter stimmen nicht \u00fcberein.",
+            "enterPasswordPlaceholder": "Passwort eingeben...",
+            "confirmPasswordPlaceholder": "Passwort wiederholen...",
+            "enterPrivateKeyPlaceholder": "Privaten Schl\u00fcssel eingeben..."
+        },
+        "walletPasswordPrompt": {
+            "walletPassword": "Wallet-Passwort",
+            "enterYourPassword": "Um fortzufahren, geben Sie bitte Ihr Passwort f\u00fcr die folgende Wallet ein.",
+            "cancel": "Abbrechen",
+            "continue": "Weiter",
+            "enterPasswordPlaceholder": "Passwort eingeben..."
+        },
+        "assetSelector": {
+            "comingSoon": "Demn\u00e4chst",
+            "alreadyAdded": "Bereits hinzugef\u00fcgt",
+            "unavailable": "In Ihrer Region nicht verf\u00fcgbar",
+            "unsupported": "Wallet inkompatibel",
+            "searchByName": "Nach Name oder Symbol suchen..."
+        },
+        "addressModal": {
+            "address": "Adresse",
+            "viewOnExplorer": "Im Explorer anzeigen",
+            "close": "Schlie\u00dfen"
+        },
+        "stepTwoConnected": {
+            "title": "Swap best\u00e4tigen"
+        },
+        "stepTwoManual": {
+            "geoLimit": "Hinweis: Aufgrund Ihres Standorts k\u00f6nnen Sie maximal <1><\/1> <3><\/3> <5>Swaps durchf\u00fchren.<\/5>",
+            "status": "Status:",
+            "updatesAuto": "Der Auftragsstatus wird automatisch aktualisiert. Sie m\u00fcssen ihn nicht aktualisieren.",
+            "orderID": "Auftragsnr.:",
+            "receiveAddress": "Empfangsadresse:",
+            "refundAddress": "Erstattungsadresse:",
+            "rate": "Kurs:",
+            "depositAmount": "Einzahlungsbetrag:",
+            "minimumAmount": "Mindesteinzahlung:",
+            "receiveAmount": "Empfangsbetrag:",
+            "fixedPrice": "* Der angegebene Kurs ist ein Sch\u00e4tzwert, der auf den aktuellen Marktbedingungen basiert. Der tats\u00e4chliche Kurs kann variieren.",
+            "quotedRate": "* Der angegebene Kurs ist garantiert, wenn die Einzahlung erfolgt innerhalb von:",
+            "orderDetails": "AUFTRAGSDATEN",
+            "send": "Senden",
+            "atLeast": "mind.",
+            "toAddress": "an Adresse:"
+        },
+        "hardwareWalletModal": {
+            "accountSelect": {
+                "heading": "Bitte w\u00e4hlen Sie das Konto aus, das Sie hinzuf\u00fcgen m\u00f6chten.",
+                "showAccounts": "Konten werden angezeigt",
+                "next": "Weiter",
+                "back": "Zur\u00fcck",
+                "previous:": " Vorherige"
+            },
+            "assetSelect": {
+                "express": "Zur Schnelleinrichtung klicken Sie auf \u201e<1><\/1>\u201c.",
+                "addAll": "Alle W\u00e4hrungen hinzuf\u00fcgen",
+                "addSpecific": "Oder f\u00fcgen Sie ein bestimmtes Konto hinzu, indem Sie eine der folgenden unterst\u00fctzten W\u00e4hrungen ausw\u00e4hlen.",
+                "learnMore": "Mehr Infos zu",
+                "cancel": "Abbrechen",
+                "done": "Fertig"
+            },
+            "confirmAccount": {
+                "pleaseConfirm": "Bitte best\u00e4tigen Sie, dass Sie folgendes Konto hinzuf\u00fcgen m\u00f6chten.",
+                "changeAccount": "Konto \u00e4ndern",
+                "back": "Zur\u00fcck",
+                "confirm": "Best\u00e4tigen"
+            },
+            "connectAsset": {
+                "back": "Zur\u00fcck",
+                "continue": "Weiter"
+            },
+            "connectionInstructions": {
+                "trezor": {
+                    "connect": "Verbinden Sie Ihr TREZOR-Konto, um loszulegen.",
+                    "version": "\u00dcberpr\u00fcfen Sie \u00fcber Ihre TREZOR-Wallet-Website, ob Ihre TREZOR-Firmware auf dem neuesten Stand ist.",
+                    "pin": "Geben Sie bei Bedarf Ihre PIN oder Ihr Passwort ein, um TREZOR zu entsperren.",
+                    "export": "Wenn Sie gefragt werden, ob Sie den \u00f6ffentlichen Schl\u00fcssel Ihres <1><\/1> Kontos exportieren m\u00f6chten, w\u00e4hlen Sie <3>Exportieren<\/3>.",
+                    "popup": "Wenn der Fehler \u201ePopup geschlossen\u201c angezeigt wird, aktivieren Sie Popups in Ihren Browsereinstellungen und versuchen Sie es erneut."
+                },
+                "ledger": {
+                    "connect": "Verbinden Sie Ihr Ledger-Ger\u00e4t, um loszulegen.",
+                    "pin": "Geben Sie Ihre PIN ein, um Ledger zu entsperren.",
+                    "version": "\u00dcberpr\u00fcfen Sie mithilfe der Ledger-Live-Desktop-Anwendung, ob Ihre Ledger-Firmware und die <1><\/1>-App auf dem neuesten Stand sind.",
+                    "open": "\u00d6ffnen Sie die App <1><\/1> in Ihrem Ledger."
+                }
+            },
+            "connectionStatus": {
+                "unable": "Verbindungsaufbau nicht m\u00f6glich. Erneuter Versuch in <1><2>{{retrySeconds}}<\/2><\/1> Sekunden.",
+                "retryNow": "Jetzt wiederholen",
+                "retry": "Wiederholen",
+                "connecting": "Verbindungsaufbau",
+                "connected": "verbunden",
+                "cancelled": "abgebrochen",
+                "error": "Fehler"
+            },
+            "derivationPath": {
+                "change": "Ableitungspfad \u00e4ndern",
+                "derivationPathPlaceholder": "Ableitungspfad",
+                "invalidError": "Ung\u00fcltiger Ableitungspfad",
+                "derivationLabel": "Ableitungspfad"
+            },
+            "index": {
+                "adding": "Wird hinzugef\u00fcgt"
+            },
+            "switchPathButton": {
+                "switch": "Wechseln zu"
+            }
+        },
+        "access": {
+            "createWallet": {
+                "create": "<0><\/0>Wallet erstellen",
+                "generate": "Neue Keystore-Datei generieren"
+            },
+            "importKeystore": {
+                "import": "<0><\/0>Wallet importieren",
+                "drag": "Keystore-Datei ablegen"
+            }
+        },
+        "confirmTransactionModal": {
+            "title": "Transaktion best\u00e4tigen",
+            "cancel": "Abbrechen"
+        },
+        "ledgerBTCInstructions": {
+            "confirm": "Best\u00e4tigen",
+            "output": "Ausgabenr.<1><\/1>",
+            "amount": "Betrag",
+            "address": "Adresse",
+            "transaction": "Transaktion",
+            "fees": "Geb\u00fchren"
+        },
+        "ledgerETHInstructions": {
+            "amount": "Betrag",
+            "address": "Adresse",
+            "maxFees": "Maximale Geb\u00fchren"
+        },
+        "ledgerInstructions": {
+            "pleaseConfirm": "Bitte best\u00e4tigen Sie die Transaktion auf Ihrem Ger\u00e4t. Sie sollten folgende Informationen auf Ihrem Bildschirm sehen.",
+            "tip": "<0>Tipp: Wenn die Transaktion auf Ihrem Ger\u00e4t nicht angezeigt wird, \u00fcberpr\u00fcfen Sie, ob Sie sie mit Ihrer PIN entsperrt und die App <2>{{appName}}<\/2> ge\u00f6ffnet haben.<\/0>",
+            "confirmWithin": "Bitte best\u00e4tigen binnen:"
+        },
+        "metaMaskInstructions": {
+            "pleaseConfirm": "Bitte best\u00e4tigen Sie die Transaktion. Sie sollten folgende Informationen in Ihrer MetaMask sehen.",
+            "tip": "<0>Tipp: Wenn Sie kein Popup mit Ihren Auftragsdaten sehen, klicken Sie in Ihrem Browser-Erweiterungsmen\u00fc auf das MetaMask-Symbol. (Siehe <2>hier<\/2><\/0>.)",
+            "myWallet": "Meine Wallet",
+            "gasFee": "GASGEB\u00dcHR",
+            "total": "GESAMT"
+        },
+        "trezorBTCInstructions": {
+            "confirmSending": "Sendevorgang best\u00e4tigen",
+            "to": "an",
+            "reallySend": "Wirklich senden",
+            "fromWallet": "von Ihrer Wallet?",
+            "feeIncluded": "Geb\u00fchr enthalten:"
+        },
+        "trezorETHInstructions": {
+            "send": "Senden",
+            "to": "an",
+            "reallySend": "Wirklich senden",
+            "paying": "bezahlen bis zu",
+            "forGas": "f\u00fcr Gas?"
+        },
+        "trezorInstructions": {
+            "pleaseConfirm": "Bitte best\u00e4tigen Sie die Transaktion auf Ihrem Ger\u00e4t. Sie sollten folgende Informationen auf dem Bildschirm sehen."
+        },
+        "loading": {
+            "balances": "Guthaben wird geladen..."
+        }
+    }
+}

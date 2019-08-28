@@ -13,7 +13,9 @@ declare global {
 }
 
 const faastWeb3 = new Web3(new Web3.providers.HttpProvider(config.web3Provider))
-window.faastWeb3 = faastWeb3
+if (typeof window !== 'undefined') {
+  window.faastWeb3 = faastWeb3
+}
 export default faastWeb3
 
 export { Web3 }

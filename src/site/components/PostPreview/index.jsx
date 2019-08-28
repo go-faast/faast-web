@@ -10,7 +10,7 @@ import classNames from 'class-names'
 export default compose(
   setDisplayName('PostPreview')
 )(({ post: { title, uniqueSlug, createdAt, virtuals: { subtitle, previewImage: { imageId } } } }) => (
-  <Col className='mt-3' sm='4'>
+  <Col className='mt-3' xs='12' md='6' lg='4'>
     <Card tag='a' href={`/blog/${uniqueSlug}`} className={classNames(card, 'h-100')}>
       <CardImg top src={`https://cdn-images-1.medium.com/max/1600/${imageId}`} />
       <CardBody>

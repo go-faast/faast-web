@@ -7,7 +7,7 @@ import withTracker from 'Site/components/withTracker'
 import Header from 'Site/components/Header'
 import Footer from 'Site/components/Footer'
 
-import { replaceStringWithJSX } from 'Utilities/display'
+import { replaceStringWithJSX, formatDateToWords } from 'Utilities/display'
 import classNames from 'class-names'
 
 import { darkText } from 'Site/components/PostPreview/style.scss'
@@ -33,9 +33,8 @@ const parseParagraph = (p, title) => {
     return (<p key={p.name} className={darkText}>{p.text}</p>)
   } else if (p.metadata) {
     return (
-      <div className='text-center my-4'>
+      <div key={p.name} className='text-center my-4'>
         <img 
-          key={p.name} 
           style={{ maxWidth: '100%' }} 
           src={`https://cdn-images-1.medium.com/max/1600/${p.metadata.id}`} 
         />
@@ -50,24 +49,24 @@ const parseParagraph = (p, title) => {
         p.text, 
         p.text.substring(p.markups[0].start, p.markups[0].end), 
         (match) => (
-          <a href={p.markups[0].href}>{match}</a>
+          <a key={p.name} href={p.markups[0].href}>{match}</a>
         )
       )
       if (p.type === 8) {
         return formatCode(p, text)
       }
       return (
-        <p>{text}</p>
+        <p key={p.name}>{text}</p>
       )
     } else if (p.markups[0].type === 1) {
       const text = replaceStringWithJSX(
         p.text, 
         p.text.substring(p.markups[0].start, p.markups[0].end), 
         (match) => (
-          <b>{match}</b>
+          <b key={p.name}>{match}</b>
         )
       )
-      return (<p>{text}</p>)
+      return (<p key={p.name}>{text}</p>)
     }
   } else {
     console.log(p)
@@ -78,18 +77,21 @@ export default compose(
   setDisplayName('BlogPost'),
   withTracker,
   withRouteData
-)(({ translations, mediumPost: { payload: { value: { title, mediumUrl, content: { bodyModel: { paragraphs } } } } } }) => (
-  <Fragment>
-    <Header translations={translations} theme='light' bgColor={'#FFFFFF'} />
-    <Container>
-      <div className={classNames(darkText, 'mx-auto mb-5 pb-5')} style={{ maxWidth: 1000 }}>
-        <h1 className='mb-4 mt-5 font-weight-bold'>{title}</h1>
-        {paragraphs.map(p => parseParagraph(p, title))}
-        <div className='text-center'>
-          <Button tag='a' href={mediumUrl} target='_blank noreferrer noopener' color='primary'>Read on Medium</Button>
-        </div>
-      </div>      
-    </Container>
-    <Footer translations={translations} />
-  </Fragment>
-))
+)(({ translations, mediumPost: { payload: { value: { title, mediumUrl, firstPublishedAt, content: { bodyModel: { paragraphs } } } } } }) => {
+  return (
+    <Fragment>
+      <Header translations={translations} theme='light' bgColor={'#FFFFFF'} />
+      <Container>
+        <div className={classNames(darkText, 'mx-auto mb-5 pb-5')} style={{ maxWidth: 1000 }}>
+          <h1 className='mt-5 font-weight-bold'>{title}</h1>
+          <h5 className='mb-4'>{formatDateToWords(firstPublishedAt)}</h5>
+          {paragraphs.map(p => parseParagraph(p, title))}
+          <div className='text-center'>
+            <Button tag='a' href={mediumUrl} target='_blank noreferrer noopener' color='primary'>Read on Medium</Button>
+          </div>
+        </div>      
+      </Container>
+      <Footer translations={translations} />
+    </Fragment>
+  )
+})

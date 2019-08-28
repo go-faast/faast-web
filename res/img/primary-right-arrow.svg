@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 27 12">
+  <path
+    fill="#00D9B8"
+    fillRule="nonzero"
+    stroke="none"
+    strokeWidth="1"
+    d="M20.855.127a.941.941 0 00-.656 1.615l3.098 3.098H1.106a.941.941 0 100 1.882h22.19L20.2 9.82a.941.941 0 101.33 1.33l4.622-4.621a.941.941 0 00-.002-1.498l-4.62-4.62a.941.941 0 00-.674-.284z"
+    transform="translate(-1033 -1087) translate(1032 1075) translate(1.163 11.86)"
+  />
+</svg>

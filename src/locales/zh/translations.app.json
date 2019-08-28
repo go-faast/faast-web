@@ -1,534 +1,534 @@
 {
     "app": {
         "view": {
-            "loadingFaast": "正在加载Faa.st..."
+            "loadingFaast": "\u6b63\u5728\u52a0\u8f7dFaa.st..."
         },
         "addressSearchForm": {
-            "placeholder": "按地址搜索…"
+            "placeholder": "\u6309\u5730\u5740\u641c\u7d22\u2026"
         },
         "priceChart": {
-            "yAxisLabel": "价格（美元）",
-            "loading": "正在加载…",
-            "months": "1月 2月 3月 4月 5月 6月 7月 8月 9月 10月 11月 12月",
-            "weekdays": "星期日 星期一 星期二 星期三 星期四 星期五 星期六",
-            "shortMonths": "1月 2月 3月 4月 5月 6月 7月 8月 9月 10月 11月 12月",
-            "exportButtonTitle": "导出",
-            "printButtonTitle": "导入",
-            "rangeSelectorFrom": "从",
-            "rangeSelectorTo": "至",
-            "rangeSelectorZoom": "缩放",
-            "downloadPNG": "下载PNG图像",
-            "downloadJPEG": "下载JPEG图像",
-            "downloadPDF": "下载PDF图像",
-            "downloadSVG": "下载SVG图像",
-            "printChart": "打印",
-            "resetZoom": "重置缩放",
-            "resetZoomTitle": "重置缩放",
-            "thousandsSep": "，",
-            "decimalPoint": "。"
+            "yAxisLabel": "\u4ef7\u683c\uff08\u7f8e\u5143\uff09",
+            "loading": "\u6b63\u5728\u52a0\u8f7d\u2026",
+            "months": "1\u6708 2\u6708 3\u6708 4\u6708 5\u6708 6\u6708 7\u6708 8\u6708 9\u6708 10\u6708 11\u6708 12\u6708",
+            "weekdays": "\u661f\u671f\u65e5 \u661f\u671f\u4e00 \u661f\u671f\u4e8c \u661f\u671f\u4e09 \u661f\u671f\u56db \u661f\u671f\u4e94 \u661f\u671f\u516d",
+            "shortMonths": "1\u6708 2\u6708 3\u6708 4\u6708 5\u6708 6\u6708 7\u6708 8\u6708 9\u6708 10\u6708 11\u6708 12\u6708",
+            "exportButtonTitle": "\u5bfc\u51fa",
+            "printButtonTitle": "\u5bfc\u5165",
+            "rangeSelectorFrom": "\u4ece",
+            "rangeSelectorTo": "\u81f3",
+            "rangeSelectorZoom": "\u7f29\u653e",
+            "downloadPNG": "\u4e0b\u8f7dPNG\u56fe\u50cf",
+            "downloadJPEG": "\u4e0b\u8f7dJPEG\u56fe\u50cf",
+            "downloadPDF": "\u4e0b\u8f7dPDF\u56fe\u50cf",
+            "downloadSVG": "\u4e0b\u8f7dSVG\u56fe\u50cf",
+            "printChart": "\u6253\u5370",
+            "resetZoom": "\u91cd\u7f6e\u7f29\u653e",
+            "resetZoomTitle": "\u91cd\u7f6e\u7f29\u653e",
+            "thousandsSep": "\uff0c",
+            "decimalPoint": "\u3002"
         },
         "pieChart": {
-            "weight": "权重"
+            "weight": "\u6743\u91cd"
         },
         "feedbackForm": {
-            "faastFeedback": "Faa.st反馈",
-            "typeOfFeedback": "反馈类型",
-            "selectType": "选择反馈类型",
-            "design": "设计反馈",
-            "asset": "请求新资产",
-            "feature": "功能请求",
-            "help": "交换帮助",
-            "bug": "报告错误",
-            "other": "其他",
-            "description": "反馈说明",
-            "email": "答复电子邮件地址",
-            "assetName": "资产名称和聚合行情",
-            "assetInfo": "资产信息URL",
-            "contactSupport": "请联系<1>support@faa.st</1>，以便我们解决有关您的交换的问题！",
-            "submitFeedback": "提交反馈",
-            "pleaseProvide": "请在这里提供",
-            "feedbackHere": "您的反馈…",
-            "emailPlaceholder": "电子邮件地址（可选）",
-            "assetNamePlaceholder": "资产名称和聚合行情",
-            "assetInfoPlaceholder": "请提供资产信息的URL…",
-            "featurePlaceholder": "请描述您想要添加到Faa.st的功能…",
-            "designPlaceholder": "请描述您认为Faa.st设计有哪些优缺点…",
-            "bugPlaceholder": "请描述使用Faa.st时遇到的错误…",
-            "otherPlaceholder": "请在这里提供您的反馈……"
+            "faastFeedback": "Faa.st\u53cd\u9988",
+            "typeOfFeedback": "\u53cd\u9988\u7c7b\u578b",
+            "selectType": "\u9009\u62e9\u53cd\u9988\u7c7b\u578b",
+            "design": "\u8bbe\u8ba1\u53cd\u9988",
+            "asset": "\u8bf7\u6c42\u65b0\u8d44\u4ea7",
+            "feature": "\u529f\u80fd\u8bf7\u6c42",
+            "help": "\u4ea4\u6362\u5e2e\u52a9",
+            "bug": "\u62a5\u544a\u9519\u8bef",
+            "other": "\u5176\u4ed6",
+            "description": "\u53cd\u9988\u8bf4\u660e",
+            "email": "\u7b54\u590d\u7535\u5b50\u90ae\u4ef6\u5730\u5740",
+            "assetName": "\u8d44\u4ea7\u540d\u79f0\u548c\u805a\u5408\u884c\u60c5",
+            "assetInfo": "\u8d44\u4ea7\u4fe1\u606fURL",
+            "contactSupport": "\u8bf7\u8054\u7cfb<1>support@faa.st<\/1>\uff0c\u4ee5\u4fbf\u6211\u4eec\u89e3\u51b3\u6709\u5173\u60a8\u7684\u4ea4\u6362\u7684\u95ee\u9898\uff01",
+            "submitFeedback": "\u63d0\u4ea4\u53cd\u9988",
+            "pleaseProvide": "\u8bf7\u5728\u8fd9\u91cc\u63d0\u4f9b",
+            "feedbackHere": "\u60a8\u7684\u53cd\u9988\u2026",
+            "emailPlaceholder": "\u7535\u5b50\u90ae\u4ef6\u5730\u5740\uff08\u53ef\u9009\uff09",
+            "assetNamePlaceholder": "\u8d44\u4ea7\u540d\u79f0\u548c\u805a\u5408\u884c\u60c5",
+            "assetInfoPlaceholder": "\u8bf7\u63d0\u4f9b\u8d44\u4ea7\u4fe1\u606f\u7684URL\u2026",
+            "featurePlaceholder": "\u8bf7\u63cf\u8ff0\u60a8\u60f3\u8981\u6dfb\u52a0\u5230Faa.st\u7684\u529f\u80fd\u2026",
+            "designPlaceholder": "\u8bf7\u63cf\u8ff0\u60a8\u8ba4\u4e3aFaa.st\u8bbe\u8ba1\u6709\u54ea\u4e9b\u4f18\u7f3a\u70b9\u2026",
+            "bugPlaceholder": "\u8bf7\u63cf\u8ff0\u4f7f\u7528Faa.st\u65f6\u9047\u5230\u7684\u9519\u8bef\u2026",
+            "otherPlaceholder": "\u8bf7\u5728\u8fd9\u91cc\u63d0\u4f9b\u60a8\u7684\u53cd\u9988\u2026\u2026"
         },
         "walletTypes": {
-            "nonSegwit": "遗留（非SegWit）帐户",
-            "preFork": "遗留（预分叉）帐户",
-            "ledger": "Ledger钱包",
-            "mist": "Mist浏览器",
-            "coinbase": "Coinbase钱包",
-            "trust": "Trust钱包",
-            "ledgerSlogan": "无论时地，为您确保加密货币的安全。",
-            "ledgerDescription": "Ledger提供基于智能卡的加密资产硬件钱包，为您的比特币、以太坊、Ripple等提供最高级别的保护——而不会牺牲可用性或掌控性。",
-            "trezorSlogan": "加密货币的安全存放点。",
-            "trezorDescription": "Trezor为您的数字资产提供安全的保险库。存储比特币、莱特币、密码、登录信息和密钥，消除后顾之忧。",
-            "blockstackSlogan": "开始构建分散式区块链应用程序的最轻松捷径。",
-            "blockstackDescription": "Blockstack正在建立一个生态系统，让您的用户牢牢掌握他们的基本数字权力。",
-            "metmaskSlogan": "将以太坊带到您的浏览器。",
-            "metamaskDescription": "通过MetaMask搭建的桥梁，您可以在今天的浏览器中访问明天的分布式网络。利用MetaMask，您可以直接在浏览器中运行以太坊ÐApp。",
-            "mistSlogan": "Mist。浏览并使用以太坊网络上的ÐApp。",
-            "mistDescription": "Mist浏览器是浏览和使用ÐApp的首选工具。",
-            "paritySlogan": "分散式网络的区块链基础设施。",
-            "parityDescription": "Parity Technologies构建核心区块链基础设施。从最先进的以太坊客户端Parity Ethereum到下一代互操作区块链网络Polkadot。",
-            "coinbaseSlogan": "最简单、最安全的加密货币钱包。",
-            "coinbaseDescription": "Coinbase：购买、管理和出售加密货币的简单、安全的方式。",
-            "trustSlogan": "以太坊、ERC20、ERC223和ERC721令牌的安全钱包。",
-            "trustDescription": "Trust钱包是存储您最喜爱的ERC721和ERC20代币的最佳以太坊钱包兼多加密货币钱包。",
-            "statusSlogan": "随时随地访问更好的网络。",
-            "statusDescription": "借助Status，您可以加入致力于让您运用以太坊强大功能和分布性更广的互联网的开源社区，安全地聊天、浏览和交易。"
+            "nonSegwit": "\u9057\u7559\uff08\u975eSegWit\uff09\u5e10\u6237",
+            "preFork": "\u9057\u7559\uff08\u9884\u5206\u53c9\uff09\u5e10\u6237",
+            "ledger": "Ledger\u94b1\u5305",
+            "mist": "Mist\u6d4f\u89c8\u5668",
+            "coinbase": "Coinbase\u94b1\u5305",
+            "trust": "Trust\u94b1\u5305",
+            "ledgerSlogan": "\u65e0\u8bba\u65f6\u5730\uff0c\u4e3a\u60a8\u786e\u4fdd\u52a0\u5bc6\u8d27\u5e01\u7684\u5b89\u5168\u3002",
+            "ledgerDescription": "Ledger\u63d0\u4f9b\u57fa\u4e8e\u667a\u80fd\u5361\u7684\u52a0\u5bc6\u8d44\u4ea7\u786c\u4ef6\u94b1\u5305\uff0c\u4e3a\u60a8\u7684\u6bd4\u7279\u5e01\u3001\u4ee5\u592a\u574a\u3001Ripple\u7b49\u63d0\u4f9b\u6700\u9ad8\u7ea7\u522b\u7684\u4fdd\u62a4\u2014\u2014\u800c\u4e0d\u4f1a\u727a\u7272\u53ef\u7528\u6027\u6216\u638c\u63a7\u6027\u3002",
+            "trezorSlogan": "\u52a0\u5bc6\u8d27\u5e01\u7684\u5b89\u5168\u5b58\u653e\u70b9\u3002",
+            "trezorDescription": "Trezor\u4e3a\u60a8\u7684\u6570\u5b57\u8d44\u4ea7\u63d0\u4f9b\u5b89\u5168\u7684\u4fdd\u9669\u5e93\u3002\u5b58\u50a8\u6bd4\u7279\u5e01\u3001\u83b1\u7279\u5e01\u3001\u5bc6\u7801\u3001\u767b\u5f55\u4fe1\u606f\u548c\u5bc6\u94a5\uff0c\u6d88\u9664\u540e\u987e\u4e4b\u5fe7\u3002",
+            "blockstackSlogan": "\u5f00\u59cb\u6784\u5efa\u5206\u6563\u5f0f\u533a\u5757\u94fe\u5e94\u7528\u7a0b\u5e8f\u7684\u6700\u8f7b\u677e\u6377\u5f84\u3002",
+            "blockstackDescription": "Blockstack\u6b63\u5728\u5efa\u7acb\u4e00\u4e2a\u751f\u6001\u7cfb\u7edf\uff0c\u8ba9\u60a8\u7684\u7528\u6237\u7262\u7262\u638c\u63e1\u4ed6\u4eec\u7684\u57fa\u672c\u6570\u5b57\u6743\u529b\u3002",
+            "metmaskSlogan": "\u5c06\u4ee5\u592a\u574a\u5e26\u5230\u60a8\u7684\u6d4f\u89c8\u5668\u3002",
+            "metamaskDescription": "\u901a\u8fc7MetaMask\u642d\u5efa\u7684\u6865\u6881\uff0c\u60a8\u53ef\u4ee5\u5728\u4eca\u5929\u7684\u6d4f\u89c8\u5668\u4e2d\u8bbf\u95ee\u660e\u5929\u7684\u5206\u5e03\u5f0f\u7f51\u7edc\u3002\u5229\u7528MetaMask\uff0c\u60a8\u53ef\u4ee5\u76f4\u63a5\u5728\u6d4f\u89c8\u5668\u4e2d\u8fd0\u884c\u4ee5\u592a\u574a\u00d0App\u3002",
+            "mistSlogan": "Mist\u3002\u6d4f\u89c8\u5e76\u4f7f\u7528\u4ee5\u592a\u574a\u7f51\u7edc\u4e0a\u7684\u00d0App\u3002",
+            "mistDescription": "Mist\u6d4f\u89c8\u5668\u662f\u6d4f\u89c8\u548c\u4f7f\u7528\u00d0App\u7684\u9996\u9009\u5de5\u5177\u3002",
+            "paritySlogan": "\u5206\u6563\u5f0f\u7f51\u7edc\u7684\u533a\u5757\u94fe\u57fa\u7840\u8bbe\u65bd\u3002",
+            "parityDescription": "Parity Technologies\u6784\u5efa\u6838\u5fc3\u533a\u5757\u94fe\u57fa\u7840\u8bbe\u65bd\u3002\u4ece\u6700\u5148\u8fdb\u7684\u4ee5\u592a\u574a\u5ba2\u6237\u7aefParity Ethereum\u5230\u4e0b\u4e00\u4ee3\u4e92\u64cd\u4f5c\u533a\u5757\u94fe\u7f51\u7edcPolkadot\u3002",
+            "coinbaseSlogan": "\u6700\u7b80\u5355\u3001\u6700\u5b89\u5168\u7684\u52a0\u5bc6\u8d27\u5e01\u94b1\u5305\u3002",
+            "coinbaseDescription": "Coinbase\uff1a\u8d2d\u4e70\u3001\u7ba1\u7406\u548c\u51fa\u552e\u52a0\u5bc6\u8d27\u5e01\u7684\u7b80\u5355\u3001\u5b89\u5168\u7684\u65b9\u5f0f\u3002",
+            "trustSlogan": "\u4ee5\u592a\u574a\u3001ERC20\u3001ERC223\u548cERC721\u4ee4\u724c\u7684\u5b89\u5168\u94b1\u5305\u3002",
+            "trustDescription": "Trust\u94b1\u5305\u662f\u5b58\u50a8\u60a8\u6700\u559c\u7231\u7684ERC721\u548cERC20\u4ee3\u5e01\u7684\u6700\u4f73\u4ee5\u592a\u574a\u94b1\u5305\u517c\u591a\u52a0\u5bc6\u8d27\u5e01\u94b1\u5305\u3002",
+            "statusSlogan": "\u968f\u65f6\u968f\u5730\u8bbf\u95ee\u66f4\u597d\u7684\u7f51\u7edc\u3002",
+            "statusDescription": "\u501f\u52a9Status\uff0c\u60a8\u53ef\u4ee5\u52a0\u5165\u81f4\u529b\u4e8e\u8ba9\u60a8\u8fd0\u7528\u4ee5\u592a\u574a\u5f3a\u5927\u529f\u80fd\u548c\u5206\u5e03\u6027\u66f4\u5e7f\u7684\u4e92\u8054\u7f51\u7684\u5f00\u6e90\u793e\u533a\uff0c\u5b89\u5168\u5730\u804a\u5929\u3001\u6d4f\u89c8\u548c\u4ea4\u6613\u3002"
         },
         "portfolio": {
-            "label": "我的投资组合"
+            "label": "\u6211\u7684\u6295\u8d44\u7ec4\u5408"
         },
         "statuses": {
-            "insufficientFunds": "资金不足",
-            "unsuccessful": "订单不成功，请联系support@faa.st",
-            "successful": "订单已成功完成",
-            "refunded": "订单已成功退款",
-            "fetchingRate": "正在获取市场信息",
-            "awaitingDeposit": "正在等待存款",
-            "generateTx": "正在生成存款交易",
-            "sendTxError": "无法发送存款交易，请重试",
-            "sending": "发送存款交易",
-            "sent": "等待交易确认",
-            "signingError": "无法签署存款交易，请重试",
-            "signing": "正在等待签署",
-            "readyToSend": "准备发送",
-            "readyToSign": "准备签署",
-            "contactSupport": "可能存在问题。有关详细信息，请联系support@faa.st。",
-            "processingSwap": "正在处理交换",
-            "failedToCheckDepositTx": "未能检查存款交易状态",
-            "errorSendingDeposit": "发送存款交易时出错",
-            "unknownError": "未知错误"
+            "insufficientFunds": "\u8d44\u91d1\u4e0d\u8db3",
+            "unsuccessful": "\u8ba2\u5355\u4e0d\u6210\u529f\uff0c\u8bf7\u8054\u7cfbsupport@faa.st",
+            "successful": "\u8ba2\u5355\u5df2\u6210\u529f\u5b8c\u6210",
+            "refunded": "\u8ba2\u5355\u5df2\u6210\u529f\u9000\u6b3e",
+            "fetchingRate": "\u6b63\u5728\u83b7\u53d6\u5e02\u573a\u4fe1\u606f",
+            "awaitingDeposit": "\u6b63\u5728\u7b49\u5f85\u5b58\u6b3e",
+            "generateTx": "\u6b63\u5728\u751f\u6210\u5b58\u6b3e\u4ea4\u6613",
+            "sendTxError": "\u65e0\u6cd5\u53d1\u9001\u5b58\u6b3e\u4ea4\u6613\uff0c\u8bf7\u91cd\u8bd5",
+            "sending": "\u53d1\u9001\u5b58\u6b3e\u4ea4\u6613",
+            "sent": "\u7b49\u5f85\u4ea4\u6613\u786e\u8ba4",
+            "signingError": "\u65e0\u6cd5\u7b7e\u7f72\u5b58\u6b3e\u4ea4\u6613\uff0c\u8bf7\u91cd\u8bd5",
+            "signing": "\u6b63\u5728\u7b49\u5f85\u7b7e\u7f72",
+            "readyToSend": "\u51c6\u5907\u53d1\u9001",
+            "readyToSign": "\u51c6\u5907\u7b7e\u7f72",
+            "contactSupport": "\u53ef\u80fd\u5b58\u5728\u95ee\u9898\u3002\u6709\u5173\u8be6\u7ec6\u4fe1\u606f\uff0c\u8bf7\u8054\u7cfbsupport@faa.st\u3002",
+            "processingSwap": "\u6b63\u5728\u5904\u7406\u4ea4\u6362",
+            "failedToCheckDepositTx": "\u672a\u80fd\u68c0\u67e5\u5b58\u6b3e\u4ea4\u6613\u72b6\u6001",
+            "errorSendingDeposit": "\u53d1\u9001\u5b58\u6b3e\u4ea4\u6613\u65f6\u51fa\u9519",
+            "unknownError": "\u672a\u77e5\u9519\u8bef"
         },
         "dashboard": {
-            "holdingsTitle": "P. 持有量",
-            "distribution": "分布",
-            "address": "地址",
-            "removeWallet": "移除钱包",
-            "addWallet": "添加钱包",
-            "walletHoldings": "<0></0> 持有量",
-            "portfolioHoldings": "投资组合持有量"
+            "holdingsTitle": "P. \u6301\u6709\u91cf",
+            "distribution": "\u5206\u5e03",
+            "address": "\u5730\u5740",
+            "removeWallet": "\u79fb\u9664\u94b1\u5305",
+            "addWallet": "\u6dfb\u52a0\u94b1\u5305",
+            "walletHoldings": "<0><\/0> \u6301\u6709\u91cf",
+            "portfolioHoldings": "\u6295\u8d44\u7ec4\u5408\u6301\u6709\u91cf"
         },
         "connect": {
-            "select": "选择您的钱包",
-            "hardware": "硬件钱包",
-            "recommended": "推荐",
-            "ledger": "Ledger 钱包",
-            "desktopWallets": "<0></0> 以太坊桌面钱包",
-            "mobileWallets": "<0></0> 以太坊移动钱包",
-            "mist": "Mist 浏览器",
-            "trust": "Trust 钱包",
-            "coinbase": "Coinbase 钱包",
-            "manual": "手册",
-            "createWallet": "创建钱包",
-            "generate": "生成新的密钥存储文件",
-            "importWallet": "导入钱包",
-            "dragAndDrop": "拖放您的密钥存储文件",
-            "openSource": "开源且安全"
+            "select": "\u9009\u62e9\u60a8\u7684\u94b1\u5305",
+            "hardware": "\u786c\u4ef6\u94b1\u5305",
+            "recommended": "\u63a8\u8350",
+            "ledger": "Ledger \u94b1\u5305",
+            "desktopWallets": "<0><\/0> \u4ee5\u592a\u574a\u684c\u9762\u94b1\u5305",
+            "mobileWallets": "<0><\/0> \u4ee5\u592a\u574a\u79fb\u52a8\u94b1\u5305",
+            "mist": "Mist \u6d4f\u89c8\u5668",
+            "trust": "Trust \u94b1\u5305",
+            "coinbase": "Coinbase \u94b1\u5305",
+            "manual": "\u624b\u518c",
+            "createWallet": "\u521b\u5efa\u94b1\u5305",
+            "generate": "\u751f\u6210\u65b0\u7684\u5bc6\u94a5\u5b58\u50a8\u6587\u4ef6",
+            "importWallet": "\u5bfc\u5165\u94b1\u5305",
+            "dragAndDrop": "\u62d6\u653e\u60a8\u7684\u5bc6\u94a5\u5b58\u50a8\u6587\u4ef6",
+            "openSource": "\u5f00\u6e90\u4e14\u5b89\u5168"
         },
         "nav": {
-            "dashboard": "主页面",
-            "assets": "资产",
-            "allAssets": "所有资产",
-            "trending": "趋势分析",
-            "watchlist": "监控列表",
-            "rebalance": "再调整",
-            "swap": "交换",
-            "orders": "订单",
-            "addWallet": "添加钱包"
+            "dashboard": "\u4e3b\u9875\u9762",
+            "assets": "\u8d44\u4ea7",
+            "allAssets": "\u6240\u6709\u8d44\u4ea7",
+            "trending": "\u8d8b\u52bf\u5206\u6790",
+            "watchlist": "\u76d1\u63a7\u5217\u8868",
+            "rebalance": "\u518d\u8c03\u6574",
+            "swap": "\u4ea4\u6362",
+            "orders": "\u8ba2\u5355",
+            "addWallet": "\u6dfb\u52a0\u94b1\u5305"
         },
         "assetIndex": {
-            "titlePage": "所有资产 —— 第 <1></1>页",
-            "title": "所有资产"
+            "titlePage": "\u6240\u6709\u8d44\u4ea7 \u2014\u2014 \u7b2c <1><\/1>\u9875",
+            "title": "\u6240\u6709\u8d44\u4ea7"
         },
         "assetIndexTable": {
-            "coin": "钱币",
-            "price": "价格",
-            "marketCap": "市值",
-            "volume": "额度",
-            "supply": "供应",
-            "change": "更改"
+            "coin": "\u94b1\u5e01",
+            "price": "\u4ef7\u683c",
+            "marketCap": "\u5e02\u503c",
+            "volume": "\u989d\u5ea6",
+            "supply": "\u4f9b\u5e94",
+            "change": "\u66f4\u6539"
         },
         "trending": {
-            "tradeable": "仅显示可交易资产",
-            "trending": "趋势分析",
-            "biggestGainers": "最大赢家",
-            "biggestLosers": "最大输家"
+            "tradeable": "\u4ec5\u663e\u793a\u53ef\u4ea4\u6613\u8d44\u4ea7",
+            "trending": "\u8d8b\u52bf\u5206\u6790",
+            "biggestGainers": "\u6700\u5927\u8d62\u5bb6",
+            "biggestLosers": "\u6700\u5927\u8f93\u5bb6"
         },
         "watchlist": {
-            "tableHeading": "监控列表"
+            "tableHeading": "\u76d1\u63a7\u5217\u8868"
         },
         "orders": {
-            "orderHistory": "订单历史",
-            "showMore": "显示更多订单......",
-            "date": "日期",
-            "pair": "对",
-            "cost": "费用",
-            "received": "已接收",
-            "receiving": "接收中",
-            "noOpen": "当前没有未结订单",
-            "noPrevious": "没有要显示的历史订单",
-            "openOrdersTitle": "未结订单",
-            "previousOrdersTitle": "历史订单",
-            "rate": "费率"
+            "orderHistory": "\u8ba2\u5355\u5386\u53f2",
+            "showMore": "\u663e\u793a\u66f4\u591a\u8ba2\u5355......",
+            "date": "\u65e5\u671f",
+            "pair": "\u5bf9",
+            "cost": "\u8d39\u7528",
+            "received": "\u5df2\u63a5\u6536",
+            "receiving": "\u63a5\u6536\u4e2d",
+            "noOpen": "\u5f53\u524d\u6ca1\u6709\u672a\u7ed3\u8ba2\u5355",
+            "noPrevious": "\u6ca1\u6709\u8981\u663e\u793a\u7684\u5386\u53f2\u8ba2\u5355",
+            "openOrdersTitle": "\u672a\u7ed3\u8ba2\u5355",
+            "previousOrdersTitle": "\u5386\u53f2\u8ba2\u5355",
+            "rate": "\u8d39\u7387"
         },
         "sidebar": {
-            "watchlist": "<0>监控列表</0>",
-            "trending": "趋势分析"
+            "watchlist": "<0>\u76d1\u63a7\u5217\u8868<\/0>",
+            "trending": "\u8d8b\u52bf\u5206\u6790"
         },
         "rebalance": {
-            "saveChanges": "<0></0>保存更改",
-            "addAsset": "<0></0> 添加资产",
-            "remove": "<0></0> 删除",
-            "availableBalance": "可用余额",
-            "how": "<0><0></0> 我该怎么使用这个？ </0>",
-            "24hChange": "24 小时变化",
-            "currentPrice": "当前价格",
-            "after": "之后",
-            "before": "之前",
-            "value": "价值",
-            "weight": "权重",
-            "units": "单位",
-            "addAssetBottom": "添加资产",
-            "empty": "这个投资组合是空的。要开始交换，您必须先 <1>添加一个钱包</1>。",
-            "instructions": "操作指南",
-            "instructions1": "重新调整投资组合 —— 3 个简单步骤：",
-            "instructions2": " 向左拖动滑块以减少资产使用的权重",
-            "instructions3": "删除整个资产",
-            "instructions4": "向右拖动滑块以增加资产使用的权重",
-            "instructions5": " 添加新资产。<1/><2>（注意：为了增加权重，您必须减少另一项资产的权重）</2>",
-            "instructions6": "单击",
-            "instructions7": "完成更改审核后。",
-            "addAssetSelector": "添加资产",
-            "readOnly": "这个钱包为只读。您需要<1><2>连接您的钱包</2></1>才能交易资产。"
+            "saveChanges": "<0><\/0>\u4fdd\u5b58\u66f4\u6539",
+            "addAsset": "<0><\/0> \u6dfb\u52a0\u8d44\u4ea7",
+            "remove": "<0><\/0> \u5220\u9664",
+            "availableBalance": "\u53ef\u7528\u4f59\u989d",
+            "how": "<0><0><\/0> \u6211\u8be5\u600e\u4e48\u4f7f\u7528\u8fd9\u4e2a\uff1f <\/0>",
+            "24hChange": "24 \u5c0f\u65f6\u53d8\u5316",
+            "currentPrice": "\u5f53\u524d\u4ef7\u683c",
+            "after": "\u4e4b\u540e",
+            "before": "\u4e4b\u524d",
+            "value": "\u4ef7\u503c",
+            "weight": "\u6743\u91cd",
+            "units": "\u5355\u4f4d",
+            "addAssetBottom": "\u6dfb\u52a0\u8d44\u4ea7",
+            "empty": "\u8fd9\u4e2a\u6295\u8d44\u7ec4\u5408\u662f\u7a7a\u7684\u3002\u8981\u5f00\u59cb\u4ea4\u6362\uff0c\u60a8\u5fc5\u987b\u5148 <1>\u6dfb\u52a0\u4e00\u4e2a\u94b1\u5305<\/1>\u3002",
+            "instructions": "\u64cd\u4f5c\u6307\u5357",
+            "instructions1": "\u91cd\u65b0\u8c03\u6574\u6295\u8d44\u7ec4\u5408 \u2014\u2014 3 \u4e2a\u7b80\u5355\u6b65\u9aa4\uff1a",
+            "instructions2": " \u5411\u5de6\u62d6\u52a8\u6ed1\u5757\u4ee5\u51cf\u5c11\u8d44\u4ea7\u4f7f\u7528\u7684\u6743\u91cd",
+            "instructions3": "\u5220\u9664\u6574\u4e2a\u8d44\u4ea7",
+            "instructions4": "\u5411\u53f3\u62d6\u52a8\u6ed1\u5757\u4ee5\u589e\u52a0\u8d44\u4ea7\u4f7f\u7528\u7684\u6743\u91cd",
+            "instructions5": " \u6dfb\u52a0\u65b0\u8d44\u4ea7\u3002<1\/><2>\uff08\u6ce8\u610f\uff1a\u4e3a\u4e86\u589e\u52a0\u6743\u91cd\uff0c\u60a8\u5fc5\u987b\u51cf\u5c11\u53e6\u4e00\u9879\u8d44\u4ea7\u7684\u6743\u91cd\uff09<\/2>",
+            "instructions6": "\u5355\u51fb",
+            "instructions7": "\u5b8c\u6210\u66f4\u6539\u5ba1\u6838\u540e\u3002",
+            "addAssetSelector": "\u6dfb\u52a0\u8d44\u4ea7",
+            "readOnly": "\u8fd9\u4e2a\u94b1\u5305\u4e3a\u53ea\u8bfb\u3002\u60a8\u9700\u8981<1><2>\u8fde\u63a5\u60a8\u7684\u94b1\u5305<\/2><\/1>\u624d\u80fd\u4ea4\u6613\u8d44\u4ea7\u3002"
         },
         "widget": {
-            "swapInstantly": "立即交换",
-            "omitted": "<0>如果留空，则使用可变市场费率。</0>",
-            "approxSend": "<0>您大约需要发送多少。单击“创建”接收担保的报价。</0>",
-            "expectSend": "<0>我们希望您发送的金额</0>",
-            "approxReceive": "<0>您将大约收到多少。单击“创建”以接收担保的报价。</0>",
-            "guaranteeReceive": "<0>保证您收到的金额。</0>",
-            "youHave": "您有",
-            "acceptTerms": "我同意 <1> Faa.st 条款和条件</1>",
-            "createSwap": "创建交换",
-            "generatingSwap": "正在生成交换......",
-            "chooseSend": "选择要发送的资产",
-            "chooseReceive": "选择要接收的资产",
-            "noRate": "无法更新费率",
-            "sendAmountPlaceholder": "发送金额",
-            "optionalPlaceholder": " （可选）",
-            "receiveAmountPlaceholder": "接收金额",
-            "returnAddressOptionalPlaceholder": "退回地址（可选）",
-            "returnAddressPlaceholder": "退回地址",
-            "receiveAddressPlaceholder": "接收地址",
-            "pleaseNote": "请注意：由于您所在的位置，您可以交换的最大值是 ",
-            "dueToLocation": "<0>。</0>",
-            "youReceive": "您收到了",
-            "fromWallet": "来源钱包",
-            "toWallet": "目标钱包",
-            "youSend": "您发送了",
-            "notEnoughEth": "这个钱包没有足够的ETH，无法支付汽油费。请存入一些ETH，然后重试。",
-            "sendAmountAtLeast": "发送金额必须至少为",
-            "sendAmountGreaterThan": "发送金额不能大于",
-            "dueToYourLocation": "由于您所在的位置。",
-            "ensurePricing": "以确保有效的定价。",
-            "invalid": "无效",
-            "address": "地址"
+            "swapInstantly": "\u7acb\u5373\u4ea4\u6362",
+            "omitted": "<0>\u5982\u679c\u7559\u7a7a\uff0c\u5219\u4f7f\u7528\u53ef\u53d8\u5e02\u573a\u8d39\u7387\u3002<\/0>",
+            "approxSend": "<0>\u60a8\u5927\u7ea6\u9700\u8981\u53d1\u9001\u591a\u5c11\u3002\u5355\u51fb\u201c\u521b\u5efa\u201d\u63a5\u6536\u62c5\u4fdd\u7684\u62a5\u4ef7\u3002<\/0>",
+            "expectSend": "<0>\u6211\u4eec\u5e0c\u671b\u60a8\u53d1\u9001\u7684\u91d1\u989d<\/0>",
+            "approxReceive": "<0>\u60a8\u5c06\u5927\u7ea6\u6536\u5230\u591a\u5c11\u3002\u5355\u51fb\u201c\u521b\u5efa\u201d\u4ee5\u63a5\u6536\u62c5\u4fdd\u7684\u62a5\u4ef7\u3002<\/0>",
+            "guaranteeReceive": "<0>\u4fdd\u8bc1\u60a8\u6536\u5230\u7684\u91d1\u989d\u3002<\/0>",
+            "youHave": "\u60a8\u6709",
+            "acceptTerms": "\u6211\u540c\u610f <1> Faa.st \u6761\u6b3e\u548c\u6761\u4ef6<\/1>",
+            "createSwap": "\u521b\u5efa\u4ea4\u6362",
+            "generatingSwap": "\u6b63\u5728\u751f\u6210\u4ea4\u6362......",
+            "chooseSend": "\u9009\u62e9\u8981\u53d1\u9001\u7684\u8d44\u4ea7",
+            "chooseReceive": "\u9009\u62e9\u8981\u63a5\u6536\u7684\u8d44\u4ea7",
+            "noRate": "\u65e0\u6cd5\u66f4\u65b0\u8d39\u7387",
+            "sendAmountPlaceholder": "\u53d1\u9001\u91d1\u989d",
+            "optionalPlaceholder": " \uff08\u53ef\u9009\uff09",
+            "receiveAmountPlaceholder": "\u63a5\u6536\u91d1\u989d",
+            "returnAddressOptionalPlaceholder": "\u9000\u56de\u5730\u5740\uff08\u53ef\u9009\uff09",
+            "returnAddressPlaceholder": "\u9000\u56de\u5730\u5740",
+            "receiveAddressPlaceholder": "\u63a5\u6536\u5730\u5740",
+            "pleaseNote": "\u8bf7\u6ce8\u610f\uff1a\u7531\u4e8e\u60a8\u6240\u5728\u7684\u4f4d\u7f6e\uff0c\u60a8\u53ef\u4ee5\u4ea4\u6362\u7684\u6700\u5927\u503c\u662f ",
+            "dueToLocation": "<0>\u3002<\/0>",
+            "youReceive": "\u60a8\u6536\u5230\u4e86",
+            "fromWallet": "\u6765\u6e90\u94b1\u5305",
+            "toWallet": "\u76ee\u6807\u94b1\u5305",
+            "youSend": "\u60a8\u53d1\u9001\u4e86",
+            "notEnoughEth": "\u8fd9\u4e2a\u94b1\u5305\u6ca1\u6709\u8db3\u591f\u7684ETH\uff0c\u65e0\u6cd5\u652f\u4ed8\u6c7d\u6cb9\u8d39\u3002\u8bf7\u5b58\u5165\u4e00\u4e9bETH\uff0c\u7136\u540e\u91cd\u8bd5\u3002",
+            "sendAmountAtLeast": "\u53d1\u9001\u91d1\u989d\u5fc5\u987b\u81f3\u5c11\u4e3a",
+            "sendAmountGreaterThan": "\u53d1\u9001\u91d1\u989d\u4e0d\u80fd\u5927\u4e8e",
+            "dueToYourLocation": "\u7531\u4e8e\u60a8\u6240\u5728\u7684\u4f4d\u7f6e\u3002",
+            "ensurePricing": "\u4ee5\u786e\u4fdd\u6709\u6548\u7684\u5b9a\u4ef7\u3002",
+            "invalid": "\u65e0\u6548",
+            "address": "\u5730\u5740"
         },
         "progressBar": {
-            "createSwap": "创建交换",
-            "sendSymbol": "发送 <1></1>",
-            "receiveSymbol": "接收 <1></1>"
+            "createSwap": "\u521b\u5efa\u4ea4\u6362",
+            "sendSymbol": "\u53d1\u9001 <1><\/1>",
+            "receiveSymbol": "\u63a5\u6536 <1><\/1>"
         },
         "footer": {
-            "website": "Faa.st 网站",
-            "termsConditions": "条款和条件",
-            "privacy": "隐私政策",
-            "feedback": "提供反馈意见"
+            "website": "Faa.st \u7f51\u7ad9",
+            "termsConditions": "\u6761\u6b3e\u548c\u6761\u4ef6",
+            "privacy": "\u9690\u79c1\u653f\u7b56",
+            "feedback": "\u63d0\u4f9b\u53cd\u9988\u610f\u89c1"
         },
         "coinDetail": {
-            "buy": "买",
-            "sell": "卖",
-            "marketCap": "市值",
-            "volume": "24 小时交易量",
-            "supply": "供应"
+            "buy": "\u4e70",
+            "sell": "\u5356",
+            "marketCap": "\u5e02\u503c",
+            "volume": "24 \u5c0f\u65f6\u4ea4\u6613\u91cf",
+            "supply": "\u4f9b\u5e94"
         },
         "assetTable": {
-            "noAssets": "没有要显示的资产",
-            "th1": "资产",
-            "th2": "单位",
-            "th3": "持有量",
-            "th4": "权重",
-            "th5": "价格",
-            "th6": "24 小时变化"
+            "noAssets": "\u6ca1\u6709\u8981\u663e\u793a\u7684\u8d44\u4ea7",
+            "th1": "\u8d44\u4ea7",
+            "th2": "\u5355\u4f4d",
+            "th3": "\u6301\u6709\u91cf",
+            "th4": "\u6743\u91cd",
+            "th5": "\u4ef7\u683c",
+            "th6": "24 \u5c0f\u65f6\u53d8\u5316"
         },
         "swapSubmit": {
-            "geoLimit": "<2>根据您的位置</2>发送金额不能超过 $<1></1> 。",
-            "multipleSwaps": "将进行以下交换以保存您对投资组合所做的更改。请查看它们，然后单击'<1><1>'以继续。",
-            "networkFee": "总网络费用：",
-            "timer": "* 如果在以下时间内提交，则担保报价费率：",
-            "terms": "我同意<1>Faast 条款和条件</1>",
-            "cancel": "取消",
-            "submit": "提交",
-            "submitAll": "全部提交",
-            "beginSigning": "开始签字",
-            "confirmSubmit": "确认并提交",
-            "reviewSign": "复核并签字",
-            "additionalFees": "**根据发送的资产和您使用的钱包，可能会收取额外费用。"
+            "geoLimit": "<2>\u6839\u636e\u60a8\u7684\u4f4d\u7f6e<\/2>\u53d1\u9001\u91d1\u989d\u4e0d\u80fd\u8d85\u8fc7 $<1><\/1> \u3002",
+            "multipleSwaps": "\u5c06\u8fdb\u884c\u4ee5\u4e0b\u4ea4\u6362\u4ee5\u4fdd\u5b58\u60a8\u5bf9\u6295\u8d44\u7ec4\u5408\u6240\u505a\u7684\u66f4\u6539\u3002\u8bf7\u67e5\u770b\u5b83\u4eec\uff0c\u7136\u540e\u5355\u51fb'<1><1>'\u4ee5\u7ee7\u7eed\u3002",
+            "networkFee": "\u603b\u7f51\u7edc\u8d39\u7528\uff1a",
+            "timer": "* \u5982\u679c\u5728\u4ee5\u4e0b\u65f6\u95f4\u5185\u63d0\u4ea4\uff0c\u5219\u62c5\u4fdd\u62a5\u4ef7\u8d39\u7387\uff1a",
+            "terms": "\u6211\u540c\u610f<1>Faast \u6761\u6b3e\u548c\u6761\u4ef6<\/1>",
+            "cancel": "\u53d6\u6d88",
+            "submit": "\u63d0\u4ea4",
+            "submitAll": "\u5168\u90e8\u63d0\u4ea4",
+            "beginSigning": "\u5f00\u59cb\u7b7e\u5b57",
+            "confirmSubmit": "\u786e\u8ba4\u5e76\u63d0\u4ea4",
+            "reviewSign": "\u590d\u6838\u5e76\u7b7e\u5b57",
+            "additionalFees": "**\u6839\u636e\u53d1\u9001\u7684\u8d44\u4ea7\u548c\u60a8\u4f7f\u7528\u7684\u94b1\u5305\uff0c\u53ef\u80fd\u4f1a\u6536\u53d6\u989d\u5916\u8d39\u7528\u3002"
         },
         "ethInstructions": {
-            "to": "至：",
-            "value": "价值：",
-            "gas": "燃料：",
-            "gasPrice": "燃料价格：",
-            "data": "数据：",
-            "confirm": "当您的钱包提示时，请确认以下交易详情。",
-            "sending": "发送 <1></1> 到 <3><4></4></3>."
+            "to": "\u81f3\uff1a",
+            "value": "\u4ef7\u503c\uff1a",
+            "gas": "\u71c3\u6599\uff1a",
+            "gasPrice": "\u71c3\u6599\u4ef7\u683c\uff1a",
+            "data": "\u6570\u636e\uff1a",
+            "confirm": "\u5f53\u60a8\u7684\u94b1\u5305\u63d0\u793a\u65f6\uff0c\u8bf7\u786e\u8ba4\u4ee5\u4e0b\u4ea4\u6613\u8be6\u60c5\u3002",
+            "sending": "\u53d1\u9001 <1><\/1> \u5230 <3><4><\/4><\/3>."
         },
         "swapStatusCard": {
-            "signed": "已签字",
-            "ready": "准备完毕",
-            "awaiting": "等待签字",
-            "failed": "已失败",
-            "sending": "发送中",
-            "status": "状态：",
-            "rate": "费率：",
-            "network": "网络费：",
-            "swapFee": "交换费：",
-            "usingWallet": "使用钱包",
-            "atAddress": "在地址中",
-            "date": "日期：",
-            "orderId": "订单号：",
-            "sentTx": "发送 txn 文件：",
-            "last": "上次"
+            "signed": "\u5df2\u7b7e\u5b57",
+            "ready": "\u51c6\u5907\u5b8c\u6bd5",
+            "awaiting": "\u7b49\u5f85\u7b7e\u5b57",
+            "failed": "\u5df2\u5931\u8d25",
+            "sending": "\u53d1\u9001\u4e2d",
+            "status": "\u72b6\u6001\uff1a",
+            "rate": "\u8d39\u7387\uff1a",
+            "network": "\u7f51\u7edc\u8d39\uff1a",
+            "swapFee": "\u4ea4\u6362\u8d39\uff1a",
+            "usingWallet": "\u4f7f\u7528\u94b1\u5305",
+            "atAddress": "\u5728\u5730\u5740\u4e2d",
+            "date": "\u65e5\u671f\uff1a",
+            "orderId": "\u8ba2\u5355\u53f7\uff1a",
+            "sentTx": "\u53d1\u9001 txn \u6587\u4ef6\uff1a",
+            "last": "\u4e0a\u6b21"
         },
         "searchResults": {
-            "view": "在投资组合中查看",
-            "add": "添加到投资组合"
+            "view": "\u5728\u6295\u8d44\u7ec4\u5408\u4e2d\u67e5\u770b",
+            "add": "\u6dfb\u52a0\u5230\u6295\u8d44\u7ec4\u5408"
         },
         "blocked": {
-            "restricted": "限制区",
-            "sorry": "抱歉，您正在从被阻止的位置访问 faa.st。如果您错误地收到此消息，可以在<1>此处</1>了解更多信息。"
+            "restricted": "\u9650\u5236\u533a",
+            "sorry": "\u62b1\u6b49\uff0c\u60a8\u6b63\u5728\u4ece\u88ab\u963b\u6b62\u7684\u4f4d\u7f6e\u8bbf\u95ee faa.st\u3002\u5982\u679c\u60a8\u9519\u8bef\u5730\u6536\u5230\u6b64\u6d88\u606f\uff0c\u53ef\u4ee5\u5728<1>\u6b64\u5904<\/1>\u4e86\u89e3\u66f4\u591a\u4fe1\u606f\u3002"
         },
         "selectPortfolioDropdown": {
-            "add": "添加投资组合"
+            "add": "\u6dfb\u52a0\u6295\u8d44\u7ec4\u5408"
         },
         "shareModal": {
-            "share": "分享投资组合",
-            "permalink": "永久链接："
+            "share": "\u5206\u4eab\u6295\u8d44\u7ec4\u5408",
+            "permalink": "\u6c38\u4e45\u94fe\u63a5\uff1a"
         },
         "walletSelector": {
-            "wallets": "钱包",
-            "addWallet": "添加钱包",
-            "noWallets": "该投资组合里没有钱包 "
+            "wallets": "\u94b1\u5305",
+            "addWallet": "\u6dfb\u52a0\u94b1\u5305",
+            "noWallets": "\u8be5\u6295\u8d44\u7ec4\u5408\u91cc\u6ca1\u6709\u94b1\u5305 "
         },
         "tradeDetailModal": {
-            "orderDetails": "订单详情"
+            "orderDetails": "\u8ba2\u5355\u8be6\u60c5"
         },
         "walletInfoModal": {
-            "metamask1": "<0></0>是提供以太坊钱包的桌面浏览器扩展应用。您可以从<2>此处</2>获取它。",
-            "metamask2": "如果您已经有<1></1>, 请确保在此浏览器上启用了该扩展。",
-            "mist1": "<0></0> 是带有内置以太坊钱包的桌面网页浏览器。您可以从<2>此处</2>获取它。",
-            "mist2": "如果您已经有<1></1>, 打开<3>faa.st</3> 使用其内置的网页浏览器。",
-            "status1": "<0></0>是用于 iOS 和 Android 系统的移动以太坊操作系统。您可以从 <2此处</2>获取更多相关信息。",
-            "status2": "如果您已经有<1></1>, 打开 <3>faa.st</3> 使用其内置的网页浏览器。",
-            "coinbase1": "<0></0> 是用于 iOS 和 Android 系统的移动以太坊操作系统。您可以从<2>此处</2>获取它或者使用下面的链接。",
-            "coinbase2": "如果您已经有<1></1>, 打开 <3>faa.st</3> 使用其内置的网页浏览器。"
+            "metamask1": "<0><\/0>\u662f\u63d0\u4f9b\u4ee5\u592a\u574a\u94b1\u5305\u7684\u684c\u9762\u6d4f\u89c8\u5668\u6269\u5c55\u5e94\u7528\u3002\u60a8\u53ef\u4ee5\u4ece<2>\u6b64\u5904<\/2>\u83b7\u53d6\u5b83\u3002",
+            "metamask2": "\u5982\u679c\u60a8\u5df2\u7ecf\u6709<1><\/1>, \u8bf7\u786e\u4fdd\u5728\u6b64\u6d4f\u89c8\u5668\u4e0a\u542f\u7528\u4e86\u8be5\u6269\u5c55\u3002",
+            "mist1": "<0><\/0> \u662f\u5e26\u6709\u5185\u7f6e\u4ee5\u592a\u574a\u94b1\u5305\u7684\u684c\u9762\u7f51\u9875\u6d4f\u89c8\u5668\u3002\u60a8\u53ef\u4ee5\u4ece<2>\u6b64\u5904<\/2>\u83b7\u53d6\u5b83\u3002",
+            "mist2": "\u5982\u679c\u60a8\u5df2\u7ecf\u6709<1><\/1>, \u6253\u5f00<3>faa.st<\/3> \u4f7f\u7528\u5176\u5185\u7f6e\u7684\u7f51\u9875\u6d4f\u89c8\u5668\u3002",
+            "status1": "<0><\/0>\u662f\u7528\u4e8e iOS \u548c Android \u7cfb\u7edf\u7684\u79fb\u52a8\u4ee5\u592a\u574a\u64cd\u4f5c\u7cfb\u7edf\u3002\u60a8\u53ef\u4ee5\u4ece <2\u6b64\u5904<\/2>\u83b7\u53d6\u66f4\u591a\u76f8\u5173\u4fe1\u606f\u3002",
+            "status2": "\u5982\u679c\u60a8\u5df2\u7ecf\u6709<1><\/1>, \u6253\u5f00 <3>faa.st<\/3> \u4f7f\u7528\u5176\u5185\u7f6e\u7684\u7f51\u9875\u6d4f\u89c8\u5668\u3002",
+            "coinbase1": "<0><\/0> \u662f\u7528\u4e8e iOS \u548c Android \u7cfb\u7edf\u7684\u79fb\u52a8\u4ee5\u592a\u574a\u64cd\u4f5c\u7cfb\u7edf\u3002\u60a8\u53ef\u4ee5\u4ece<2>\u6b64\u5904<\/2>\u83b7\u53d6\u5b83\u6216\u8005\u4f7f\u7528\u4e0b\u9762\u7684\u94fe\u63a5\u3002",
+            "coinbase2": "\u5982\u679c\u60a8\u5df2\u7ecf\u6709<1><\/1>, \u6253\u5f00 <3>faa.st<\/3> \u4f7f\u7528\u5176\u5185\u7f6e\u7684\u7f51\u9875\u6d4f\u89c8\u5668\u3002"
         },
         "createWalletModal": {
-            "pleaseAck": "请确认以下免责声明：",
-            "ack1": "文件 <1></1>可用于发送其包含的任何资金。",
-            "ack2": "文件 <1></1> 包含加密的敏感私钥，只能使用密码访问。",
-            "ack3": "Faast 没有文件或密码的备份。这个 <1></1> 是在我的网络浏览器中生成的，从未通过互联网发送过。",
-            "ack4": "如果我无法访问该文件或忘记密码，我将没收其中包含的所有资金。",
-            "ack5": "我已下载此文件并存储在计算机上的安全位置。",
-            "ack6": "文件 <1></1> 加上我的密码，可用于使用 Faast 以外的应用程序发送资金。",
-            "agree": "我理解并同意上述所有内容",
-            "createWallet": "创建钱包",
-            "downloadKeystore": "下载密钥库文件",
-            "download": "<0></0>下载<2></2>文件",
-            "cancel": "取消",
-            "continue": "继续",
-            "importPrivateKey": "导入私钥",
-            "enterPrivateKey": "输入现有以太坊钱包的私钥。",
-            "enterPassword": "输入<1>{{walletName}}</1>的密码。请记下您的密码。如不提供密码，您将无法访问<3>{{walletName}}</3>中的资金。",
-            "passwordLabel": "密码",
-            "confirmPasswordLabel": "确认密码",
-            "passwordRequired": "密码为必填",
-            "passwordLength": "请至少输入8个字符。请务必使用强密码保护您的钱包。",
-            "passwordsDontMatch": "密码不一致",
-            "enterPasswordPlaceholder": "输入密码…",
-            "confirmPasswordPlaceholder": "再次输入密码…",
-            "enterPrivateKeyPlaceholder": "输入您的私钥…"
+            "pleaseAck": "\u8bf7\u786e\u8ba4\u4ee5\u4e0b\u514d\u8d23\u58f0\u660e\uff1a",
+            "ack1": "\u6587\u4ef6 <1><\/1>\u53ef\u7528\u4e8e\u53d1\u9001\u5176\u5305\u542b\u7684\u4efb\u4f55\u8d44\u91d1\u3002",
+            "ack2": "\u6587\u4ef6 <1><\/1> \u5305\u542b\u52a0\u5bc6\u7684\u654f\u611f\u79c1\u94a5\uff0c\u53ea\u80fd\u4f7f\u7528\u5bc6\u7801\u8bbf\u95ee\u3002",
+            "ack3": "Faast \u6ca1\u6709\u6587\u4ef6\u6216\u5bc6\u7801\u7684\u5907\u4efd\u3002\u8fd9\u4e2a <1><\/1> \u662f\u5728\u6211\u7684\u7f51\u7edc\u6d4f\u89c8\u5668\u4e2d\u751f\u6210\u7684\uff0c\u4ece\u672a\u901a\u8fc7\u4e92\u8054\u7f51\u53d1\u9001\u8fc7\u3002",
+            "ack4": "\u5982\u679c\u6211\u65e0\u6cd5\u8bbf\u95ee\u8be5\u6587\u4ef6\u6216\u5fd8\u8bb0\u5bc6\u7801\uff0c\u6211\u5c06\u6ca1\u6536\u5176\u4e2d\u5305\u542b\u7684\u6240\u6709\u8d44\u91d1\u3002",
+            "ack5": "\u6211\u5df2\u4e0b\u8f7d\u6b64\u6587\u4ef6\u5e76\u5b58\u50a8\u5728\u8ba1\u7b97\u673a\u4e0a\u7684\u5b89\u5168\u4f4d\u7f6e\u3002",
+            "ack6": "\u6587\u4ef6 <1><\/1> \u52a0\u4e0a\u6211\u7684\u5bc6\u7801\uff0c\u53ef\u7528\u4e8e\u4f7f\u7528 Faast \u4ee5\u5916\u7684\u5e94\u7528\u7a0b\u5e8f\u53d1\u9001\u8d44\u91d1\u3002",
+            "agree": "\u6211\u7406\u89e3\u5e76\u540c\u610f\u4e0a\u8ff0\u6240\u6709\u5185\u5bb9",
+            "createWallet": "\u521b\u5efa\u94b1\u5305",
+            "downloadKeystore": "\u4e0b\u8f7d\u5bc6\u94a5\u5e93\u6587\u4ef6",
+            "download": "<0><\/0>\u4e0b\u8f7d<2><\/2>\u6587\u4ef6",
+            "cancel": "\u53d6\u6d88",
+            "continue": "\u7ee7\u7eed",
+            "importPrivateKey": "\u5bfc\u5165\u79c1\u94a5",
+            "enterPrivateKey": "\u8f93\u5165\u73b0\u6709\u4ee5\u592a\u574a\u94b1\u5305\u7684\u79c1\u94a5\u3002",
+            "enterPassword": "\u8f93\u5165<1>{{walletName}}<\/1>\u7684\u5bc6\u7801\u3002\u8bf7\u8bb0\u4e0b\u60a8\u7684\u5bc6\u7801\u3002\u5982\u4e0d\u63d0\u4f9b\u5bc6\u7801\uff0c\u60a8\u5c06\u65e0\u6cd5\u8bbf\u95ee<3>{{walletName}}<\/3>\u4e2d\u7684\u8d44\u91d1\u3002",
+            "passwordLabel": "\u5bc6\u7801",
+            "confirmPasswordLabel": "\u786e\u8ba4\u5bc6\u7801",
+            "passwordRequired": "\u5bc6\u7801\u4e3a\u5fc5\u586b",
+            "passwordLength": "\u8bf7\u81f3\u5c11\u8f93\u51658\u4e2a\u5b57\u7b26\u3002\u8bf7\u52a1\u5fc5\u4f7f\u7528\u5f3a\u5bc6\u7801\u4fdd\u62a4\u60a8\u7684\u94b1\u5305\u3002",
+            "passwordsDontMatch": "\u5bc6\u7801\u4e0d\u4e00\u81f4",
+            "enterPasswordPlaceholder": "\u8f93\u5165\u5bc6\u7801\u2026",
+            "confirmPasswordPlaceholder": "\u518d\u6b21\u8f93\u5165\u5bc6\u7801\u2026",
+            "enterPrivateKeyPlaceholder": "\u8f93\u5165\u60a8\u7684\u79c1\u94a5\u2026"
         },
         "walletPasswordPrompt": {
-            "walletPassword": "钱包密码",
-            "enterYourPassword": "如要继续，请输入以下钱包的密码",
-            "cancel": "取消",
-            "continue": "继续",
-            "enterPasswordPlaceholder": "输入密码…"
+            "walletPassword": "\u94b1\u5305\u5bc6\u7801",
+            "enterYourPassword": "\u5982\u8981\u7ee7\u7eed\uff0c\u8bf7\u8f93\u5165\u4ee5\u4e0b\u94b1\u5305\u7684\u5bc6\u7801",
+            "cancel": "\u53d6\u6d88",
+            "continue": "\u7ee7\u7eed",
+            "enterPasswordPlaceholder": "\u8f93\u5165\u5bc6\u7801\u2026"
         },
         "assetSelector": {
-            "comingSoon": "即将上线",
-            "alreadyAdded": "已添加",
-            "unavailable": "在您的位置不可用",
-            "unsupported": "不支持的钱包",
-            "searchByName": "按名称或符号搜索…"
+            "comingSoon": "\u5373\u5c06\u4e0a\u7ebf",
+            "alreadyAdded": "\u5df2\u6dfb\u52a0",
+            "unavailable": "\u5728\u60a8\u7684\u4f4d\u7f6e\u4e0d\u53ef\u7528",
+            "unsupported": "\u4e0d\u652f\u6301\u7684\u94b1\u5305",
+            "searchByName": "\u6309\u540d\u79f0\u6216\u7b26\u53f7\u641c\u7d22\u2026"
         },
         "addressModal": {
-            "address": "地址",
-            "viewOnExplorer": "在资源管理器上查看",
-            "close": "关闭"
+            "address": "\u5730\u5740",
+            "viewOnExplorer": "\u5728\u8d44\u6e90\u7ba1\u7406\u5668\u4e0a\u67e5\u770b",
+            "close": "\u5173\u95ed"
         },
         "stepTwoConnected": {
-            "title": "确认掉期交易"
+            "title": "\u786e\u8ba4\u6389\u671f\u4ea4\u6613"
         },
         "stepTwoManual": {
-            "geoLimit": "请注意： <5>根据您的位置</5> 您可以交换的最大值是<1></1> <3></3>",
-            "status": "状态：",
-            "updatesAuto": "订单状态自动更新。您不需要刷新。",
-            "orderID": "订单号：",
-            "receiveAddress": "接收地址：",
-            "refundAddress": "退款地址：",
-            "rate": "费率：",
-            "depositAmount": "存款金额：",
-            "minimumAmount": "最低存款额：",
-            "receiveAmount": "接收金额：",
-            "fixedPrice": "* 报价是基于当前市场条件的估计。实际费率可能有所不同。",
-            "quotedRate": "* 如果在以下时间内发送存款则担保报价：",
-            "orderDetails": "订单详细信息",
-            "send": "发送",
-            "atLeast": "至少",
-            "toAddress": "至地址："
+            "geoLimit": "\u8bf7\u6ce8\u610f\uff1a <5>\u6839\u636e\u60a8\u7684\u4f4d\u7f6e<\/5> \u60a8\u53ef\u4ee5\u4ea4\u6362\u7684\u6700\u5927\u503c\u662f<1><\/1> <3><\/3>",
+            "status": "\u72b6\u6001\uff1a",
+            "updatesAuto": "\u8ba2\u5355\u72b6\u6001\u81ea\u52a8\u66f4\u65b0\u3002\u60a8\u4e0d\u9700\u8981\u5237\u65b0\u3002",
+            "orderID": "\u8ba2\u5355\u53f7\uff1a",
+            "receiveAddress": "\u63a5\u6536\u5730\u5740\uff1a",
+            "refundAddress": "\u9000\u6b3e\u5730\u5740\uff1a",
+            "rate": "\u8d39\u7387\uff1a",
+            "depositAmount": "\u5b58\u6b3e\u91d1\u989d\uff1a",
+            "minimumAmount": "\u6700\u4f4e\u5b58\u6b3e\u989d\uff1a",
+            "receiveAmount": "\u63a5\u6536\u91d1\u989d\uff1a",
+            "fixedPrice": "* \u62a5\u4ef7\u662f\u57fa\u4e8e\u5f53\u524d\u5e02\u573a\u6761\u4ef6\u7684\u4f30\u8ba1\u3002\u5b9e\u9645\u8d39\u7387\u53ef\u80fd\u6709\u6240\u4e0d\u540c\u3002",
+            "quotedRate": "* \u5982\u679c\u5728\u4ee5\u4e0b\u65f6\u95f4\u5185\u53d1\u9001\u5b58\u6b3e\u5219\u62c5\u4fdd\u62a5\u4ef7\uff1a",
+            "orderDetails": "\u8ba2\u5355\u8be6\u7ec6\u4fe1\u606f",
+            "send": "\u53d1\u9001",
+            "atLeast": "\u81f3\u5c11",
+            "toAddress": "\u81f3\u5730\u5740\uff1a"
         },
         "hardwareWalletModal": {
             "accountSelect": {
-                "heading": "请选择要添加的帐户。",
-                "showAccounts": "显示帐户",
-                "next": "下一个",
-                "back": "后退",
-                "previous:": " 上一个"
+                "heading": "\u8bf7\u9009\u62e9\u8981\u6dfb\u52a0\u7684\u5e10\u6237\u3002",
+                "showAccounts": "\u663e\u793a\u5e10\u6237",
+                "next": "\u4e0b\u4e00\u4e2a",
+                "back": "\u540e\u9000",
+                "previous:": " \u4e0a\u4e00\u4e2a"
             },
             "assetSelect": {
-                "express": "要快速设置，请单击 '<1></1>'",
-                "addAll": "添加所有货币",
-                "addSpecific": "或者，通过在下列支持的货币中选择一个来添加特定帐户。",
-                "learnMore": "了解更多",
-                "cancel": "取消",
-                "done": "已完成"
+                "express": "\u8981\u5feb\u901f\u8bbe\u7f6e\uff0c\u8bf7\u5355\u51fb '<1><\/1>'",
+                "addAll": "\u6dfb\u52a0\u6240\u6709\u8d27\u5e01",
+                "addSpecific": "\u6216\u8005\uff0c\u901a\u8fc7\u5728\u4e0b\u5217\u652f\u6301\u7684\u8d27\u5e01\u4e2d\u9009\u62e9\u4e00\u4e2a\u6765\u6dfb\u52a0\u7279\u5b9a\u5e10\u6237\u3002",
+                "learnMore": "\u4e86\u89e3\u66f4\u591a",
+                "cancel": "\u53d6\u6d88",
+                "done": "\u5df2\u5b8c\u6210"
             },
             "confirmAccount": {
-                "pleaseConfirm": "请确认您要添加以下帐户。",
-                "changeAccount": "更改账户",
-                "back": "后退",
-                "confirm": "确认"
+                "pleaseConfirm": "\u8bf7\u786e\u8ba4\u60a8\u8981\u6dfb\u52a0\u4ee5\u4e0b\u5e10\u6237\u3002",
+                "changeAccount": "\u66f4\u6539\u8d26\u6237",
+                "back": "\u540e\u9000",
+                "confirm": "\u786e\u8ba4"
             },
             "connectAsset": {
-                "back": "后退",
-                "continue": "继续"
+                "back": "\u540e\u9000",
+                "continue": "\u7ee7\u7eed"
             },
             "connectionInstructions": {
                 "trezor": {
-                    "connect": "连接您的 TREZOR 以开始",
-                    "version": "使用 TREZOR 钱包网站时请确保 TREZOR 固件是最新的",
-                    "pin": "如果需要，请输入您的个人识别码或密码以解锁 TREZOR",
-                    "export": "当被问及是否要导出您 <1></1> 帐户的公钥时，选择<3>导出</3>",
-                    "popup": "如果看到“弹出窗口关闭”错误，请在浏览器设置中启用弹出窗口，然后重试。"
+                    "connect": "\u8fde\u63a5\u60a8\u7684 TREZOR \u4ee5\u5f00\u59cb",
+                    "version": "\u4f7f\u7528 TREZOR \u94b1\u5305\u7f51\u7ad9\u65f6\u8bf7\u786e\u4fdd TREZOR \u56fa\u4ef6\u662f\u6700\u65b0\u7684",
+                    "pin": "\u5982\u679c\u9700\u8981\uff0c\u8bf7\u8f93\u5165\u60a8\u7684\u4e2a\u4eba\u8bc6\u522b\u7801\u6216\u5bc6\u7801\u4ee5\u89e3\u9501 TREZOR",
+                    "export": "\u5f53\u88ab\u95ee\u53ca\u662f\u5426\u8981\u5bfc\u51fa\u60a8 <1><\/1> \u5e10\u6237\u7684\u516c\u94a5\u65f6\uff0c\u9009\u62e9<3>\u5bfc\u51fa<\/3>",
+                    "popup": "\u5982\u679c\u770b\u5230\u201c\u5f39\u51fa\u7a97\u53e3\u5173\u95ed\u201d\u9519\u8bef\uff0c\u8bf7\u5728\u6d4f\u89c8\u5668\u8bbe\u7f6e\u4e2d\u542f\u7528\u5f39\u51fa\u7a97\u53e3\uff0c\u7136\u540e\u91cd\u8bd5\u3002"
                 },
                 "ledger": {
-                    "connect": "连接您的 Ledger 设备以开始",
-                    "pin": "输入您的个人识别码以解锁 Ledger",
-                    "version": "当使用 Ledger Live 桌面应用时，请确保您的 Ledger 固件和 <1></1>应用是最新的",
-                    "open": "在您的 Ledger 上打开<1></1> 应用"
+                    "connect": "\u8fde\u63a5\u60a8\u7684 Ledger \u8bbe\u5907\u4ee5\u5f00\u59cb",
+                    "pin": "\u8f93\u5165\u60a8\u7684\u4e2a\u4eba\u8bc6\u522b\u7801\u4ee5\u89e3\u9501 Ledger",
+                    "version": "\u5f53\u4f7f\u7528 Ledger Live \u684c\u9762\u5e94\u7528\u65f6\uff0c\u8bf7\u786e\u4fdd\u60a8\u7684 Ledger \u56fa\u4ef6\u548c <1><\/1>\u5e94\u7528\u662f\u6700\u65b0\u7684",
+                    "open": "\u5728\u60a8\u7684 Ledger \u4e0a\u6253\u5f00<1><\/1> \u5e94\u7528"
                 }
             },
             "connectionStatus": {
-                "unable": "无法连接，<1><2>{{retrySeconds}}</2></1> 秒内将重新尝试",
-                "retryNow": "立即重试",
-                "retry": "重试",
-                "connecting": "正在连接",
-                "connected": "已连接",
-                "cancelled": "已取消",
-                "error": "错误"
+                "unable": "\u65e0\u6cd5\u8fde\u63a5\uff0c<1><2>{{retrySeconds}}<\/2><\/1> \u79d2\u5185\u5c06\u91cd\u65b0\u5c1d\u8bd5",
+                "retryNow": "\u7acb\u5373\u91cd\u8bd5",
+                "retry": "\u91cd\u8bd5",
+                "connecting": "\u6b63\u5728\u8fde\u63a5",
+                "connected": "\u5df2\u8fde\u63a5",
+                "cancelled": "\u5df2\u53d6\u6d88",
+                "error": "\u9519\u8bef"
             },
             "derivationPath": {
-                "change": "更改派生路径",
-                "derivationPathPlaceholder": "派生路径",
-                "invalidError": "无效的派生路径",
-                "derivationLabel": "派生路径"
+                "change": "\u66f4\u6539\u6d3e\u751f\u8def\u5f84",
+                "derivationPathPlaceholder": "\u6d3e\u751f\u8def\u5f84",
+                "invalidError": "\u65e0\u6548\u7684\u6d3e\u751f\u8def\u5f84",
+                "derivationLabel": "\u6d3e\u751f\u8def\u5f84"
             },
             "index": {
-                "adding": "添加中"
+                "adding": "\u6dfb\u52a0\u4e2d"
             },
             "switchPathButton": {
-                "switch": "切换至"
+                "switch": "\u5207\u6362\u81f3"
             }
         },
         "access": {
             "createWallet": {
-                "create": "<0></0>创建钱包",
-                "generate": "生成新的密钥库文件"
+                "create": "<0><\/0>\u521b\u5efa\u94b1\u5305",
+                "generate": "\u751f\u6210\u65b0\u7684\u5bc6\u94a5\u5e93\u6587\u4ef6"
             },
             "importKeystore": {
-                "import": "<0></0>导入钱包",
-                "drag": "拖放密钥库文件"
+                "import": "<0><\/0>\u5bfc\u5165\u94b1\u5305",
+                "drag": "\u62d6\u653e\u5bc6\u94a5\u5e93\u6587\u4ef6"
             }
         },
         "confirmTransactionModal": {
-            "title": "确认交易",
-            "cancel": "取消"
+            "title": "\u786e\u8ba4\u4ea4\u6613",
+            "cancel": "\u53d6\u6d88"
         },
         "ledgerBTCInstructions": {
-            "confirm": "确认",
-            "output": "输出 #<1></1>",
-            "amount": "数量",
-            "address": "地址",
-            "transaction": "交易",
-            "fees": "费用"
+            "confirm": "\u786e\u8ba4",
+            "output": "\u8f93\u51fa #<1><\/1>",
+            "amount": "\u6570\u91cf",
+            "address": "\u5730\u5740",
+            "transaction": "\u4ea4\u6613",
+            "fees": "\u8d39\u7528"
         },
         "ledgerETHInstructions": {
-            "amount": "数量",
-            "address": "地址",
-            "maxFees": "最高费用"
+            "amount": "\u6570\u91cf",
+            "address": "\u5730\u5740",
+            "maxFees": "\u6700\u9ad8\u8d39\u7528"
         },
         "ledgerInstructions": {
-            "pleaseConfirm": "请确认您设备上的交易。您应该能在屏幕上看到以下信息。",
-            "tip": "<0>提示：如果您在设备上看不到交易，请确保您已使用个人识别码进行了解锁并已打开应用程序 <2>{{appName}}</2>。</0>",
-            "confirmWithin": "请在规定时间内完成确认："
+            "pleaseConfirm": "\u8bf7\u786e\u8ba4\u60a8\u8bbe\u5907\u4e0a\u7684\u4ea4\u6613\u3002\u60a8\u5e94\u8be5\u80fd\u5728\u5c4f\u5e55\u4e0a\u770b\u5230\u4ee5\u4e0b\u4fe1\u606f\u3002",
+            "tip": "<0>\u63d0\u793a\uff1a\u5982\u679c\u60a8\u5728\u8bbe\u5907\u4e0a\u770b\u4e0d\u5230\u4ea4\u6613\uff0c\u8bf7\u786e\u4fdd\u60a8\u5df2\u4f7f\u7528\u4e2a\u4eba\u8bc6\u522b\u7801\u8fdb\u884c\u4e86\u89e3\u9501\u5e76\u5df2\u6253\u5f00\u5e94\u7528\u7a0b\u5e8f <2>{{appName}}<\/2>\u3002<\/0>",
+            "confirmWithin": "\u8bf7\u5728\u89c4\u5b9a\u65f6\u95f4\u5185\u5b8c\u6210\u786e\u8ba4\uff1a"
         },
         "metaMaskInstructions": {
-            "pleaseConfirm": "请确认交易。您应该在元掩码中看到以下信息。",
-            "tip": "<0>提示：如果没有看到包含订单详细信息的弹出窗口，请单击浏览器扩展菜单中的元掩码图标，如<2>此处</2>图中所示。</0>",
-            "myWallet": "我的钱包",
-            "gasFee": "燃料费",
-            "total": "一共"
+            "pleaseConfirm": "\u8bf7\u786e\u8ba4\u4ea4\u6613\u3002\u60a8\u5e94\u8be5\u5728\u5143\u63a9\u7801\u4e2d\u770b\u5230\u4ee5\u4e0b\u4fe1\u606f\u3002",
+            "tip": "<0>\u63d0\u793a\uff1a\u5982\u679c\u6ca1\u6709\u770b\u5230\u5305\u542b\u8ba2\u5355\u8be6\u7ec6\u4fe1\u606f\u7684\u5f39\u51fa\u7a97\u53e3\uff0c\u8bf7\u5355\u51fb\u6d4f\u89c8\u5668\u6269\u5c55\u83dc\u5355\u4e2d\u7684\u5143\u63a9\u7801\u56fe\u6807\uff0c\u5982<2>\u6b64\u5904<\/2>\u56fe\u4e2d\u6240\u793a\u3002<\/0>",
+            "myWallet": "\u6211\u7684\u94b1\u5305",
+            "gasFee": "\u71c3\u6599\u8d39",
+            "total": "\u4e00\u5171"
         },
         "trezorBTCInstructions": {
-            "confirmSending": "确认发送",
-            "to": "至",
-            "reallySend": "真的发送",
-            "fromWallet": "从您的钱包？",
-            "feeIncluded": "费用包括："
+            "confirmSending": "\u786e\u8ba4\u53d1\u9001",
+            "to": "\u81f3",
+            "reallySend": "\u771f\u7684\u53d1\u9001",
+            "fromWallet": "\u4ece\u60a8\u7684\u94b1\u5305\uff1f",
+            "feeIncluded": "\u8d39\u7528\u5305\u62ec\uff1a"
         },
         "trezorETHInstructions": {
-            "send": "发送",
-            "to": "至",
-            "reallySend": "真的发送",
-            "paying": "支付高达",
-            "forGas": "燃料？"
+            "send": "\u53d1\u9001",
+            "to": "\u81f3",
+            "reallySend": "\u771f\u7684\u53d1\u9001",
+            "paying": "\u652f\u4ed8\u9ad8\u8fbe",
+            "forGas": "\u71c3\u6599\uff1f"
         },
         "trezorInstructions": {
-            "pleaseConfirm": "请确认您设备上的交易。您应该在屏幕上看到以下信息。"
+            "pleaseConfirm": "\u8bf7\u786e\u8ba4\u60a8\u8bbe\u5907\u4e0a\u7684\u4ea4\u6613\u3002\u60a8\u5e94\u8be5\u5728\u5c4f\u5e55\u4e0a\u770b\u5230\u4ee5\u4e0b\u4fe1\u606f\u3002"
         },
         "loading": {
-            "balances": "正在加载余额…"
+            "balances": "\u6b63\u5728\u52a0\u8f7d\u4f59\u989d\u2026"
         }
     }
 }

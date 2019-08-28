@@ -5,7 +5,7 @@ import { resetAll } from 'Actions/app'
 import {
   walletAdded, walletUpdated, walletRemoved, allWalletsRemoved, 
   walletBalancesUpdating, walletBalancesUpdated, walletBalancesError,
-  walletUsedAddressesUpdated,
+  walletUsedAddressesUpdated, walletBalancesLoaded,
   walletOrdersLoading, walletOrdersLoaded, walletOrdersAllLoaded,
 } from 'Actions/wallet'
 import { createUpserter, createUpdater } from 'Utilities/helpers'
@@ -28,7 +28,6 @@ const walletInitialState = {
   balancesUpdating: false,
   balancesLoaded: false,
   balancesError: '',
-
   ordersAllLoaded: false,
   ordersLoading: false,
 }
@@ -53,6 +52,10 @@ export default createReducer({
     id,
     balances,
     balancesUpdating: false,
+  }),
+  [walletBalancesLoaded]: (state, { id, balances }) => updateWallet(state, {
+    id,
+    balances,
     balancesLoaded: true
   }),
   [walletBalancesError]: (state, { id, error }) => updateWallet(state, {
