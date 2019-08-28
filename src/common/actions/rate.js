@@ -1,7 +1,7 @@
 import { newScopedCreateAction } from 'Utilities/action'
 import log from 'Log'
 import Faast from 'Services/Faast'
-import { getRate, isRateStale, isRateLoading } from 'Selectors'
+import { getRate, isRateStale, isRateLoading } from 'Common/selectors/rate'
 
 const createAction = newScopedCreateAction(__filename)
 
