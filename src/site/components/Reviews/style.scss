@@ -5,7 +5,7 @@
 .tweet {
   background: #EFEFEF;
   max-width: 650px;
-  height: auto;
+  min-height: 300px;
   width: 100%;
   box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.39);
   border-radius: 8px;
@@ -55,6 +55,6 @@
 
 @media screen and (max-width: 983px) {
   .container {
-    padding-bottom: 0px;
+    padding-bottom: 80px;
   }
 }

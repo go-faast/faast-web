@@ -33,9 +33,8 @@ const parseParagraph = (p, title) => {
     return (<p key={p.name} className={darkText}>{p.text}</p>)
   } else if (p.metadata) {
     return (
-      <div className='text-center my-4'>
+      <div key={p.name} className='text-center my-4'>
         <img 
-          key={p.name} 
           style={{ maxWidth: '100%' }} 
           src={`https://cdn-images-1.medium.com/max/1600/${p.metadata.id}`} 
         />
@@ -50,24 +49,24 @@ const parseParagraph = (p, title) => {
         p.text, 
         p.text.substring(p.markups[0].start, p.markups[0].end), 
         (match) => (
-          <a href={p.markups[0].href}>{match}</a>
+          <a key={p.name} href={p.markups[0].href}>{match}</a>
         )
       )
       if (p.type === 8) {
         return formatCode(p, text)
       }
       return (
-        <p>{text}</p>
+        <p key={p.name}>{text}</p>
       )
     } else if (p.markups[0].type === 1) {
       const text = replaceStringWithJSX(
         p.text, 
         p.text.substring(p.markups[0].start, p.markups[0].end), 
         (match) => (
-          <b>{match}</b>
+          <b key={p.name}>{match}</b>
         )
       )
-      return (<p>{text}</p>)
+      return (<p key={p.name}>{text}</p>)
     }
   } else {
     console.log(p)
