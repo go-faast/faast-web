@@ -10,6 +10,8 @@ import * as ja from '../locales/ja/translations.app.json'
 import * as ru from '../locales/ru/translations.app.json'
 import * as zh from '../locales/zh/translations.app.json'
 import * as pt from '../locales/pt/translations.app.json'
+import * as de from '../locales/de/translations.app.json'
+import * as fr from '../locales/fr/translations.app.json'
 
 const options = {
   ns: ['translations'],
@@ -21,7 +23,9 @@ const options = {
     ja: { translations: ja },
     ru: { translations: ru },
     zh: { translations: zh },
-    pt: { translations: pt }
+    pt: { translations: pt },
+    de: { translations: de },
+    fr: { translations: fr }
   },
 
   saveMissing: false,

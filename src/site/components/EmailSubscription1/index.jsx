@@ -3,7 +3,7 @@ import { compose, setDisplayName, } from 'recompose'
 
 const EmailSub = ({ translations: { static: { email: t } } }) => {
   return (
-    <div className='text-center'>
+    <div className='text-center mt-4'>
       <p style={{ color: '#EFEFEF', fontSize: 18 }}>{t.cta}</p>
       <section className='container-fluid signup-wrapper'>
         <iframe 
