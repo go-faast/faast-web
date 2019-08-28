@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 import { mapValues } from 'Utilities/helpers'
 import { localStorageGetJson } from 'Utilities/storage'
 import { createItemSelector, fieldSelector, selectItemId } from 'Utilities/selector'
-import { getAllAssetsArray, getAllAssets, } from 'Common/selectors/asset'
+import { getAllAssetsArray, getAllAssets } from 'Common/selectors/asset'
 
 export * from 'Common/selectors/asset'
 

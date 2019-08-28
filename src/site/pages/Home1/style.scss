@@ -1,0 +1,47 @@
+.sectionContainer {
+  margin-bottom: 150px;
+}
+
+.text {
+  color: #2D303A;
+}
+
+.heading {
+  color: #EFEFEF;
+  font-size: 28px;
+  font-weight: 600;
+}
+
+.textSize {
+  font-size: 17px;
+  line-height: 24px;
+}
+
+.description {
+  color: #9C9FA8;
+  @extend .textSize;
+}
+
+.link {
+  text-decoration: none !important;
+  transition: all .2s ease-in-out;
+  font-weight: 600;
+  font-size: 19px;
+
+  & i {
+    transition: all .2s ease-in-out;
+    position: relative;
+    left: 10px;
+    top: 1px;
+  }
+
+  &:hover i {
+    left: 13px;
+  }
+}
+
+@media screen and (max-width: 983px) {
+  .sectionContainer {
+    margin-bottom: 120px;
+  }
+}

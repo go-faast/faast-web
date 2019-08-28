@@ -1,0 +1,92 @@
+.terminalSection {
+  max-width: 800px;
+  background-repeat: no-repeat;
+  background-position: 50% 100%;
+}
+
+.terminal {
+  position: relative;
+  background-color: #1B1C20;
+  height: 343px;
+  max-width: 585px;
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 0px rgba(0, 0, 0, 0.29);
+  font-family: Monaco !important;
+}
+
+.terminalHeaderbar {
+  background-color: #191A1D;
+  height: 26px;
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  border-radius: 4px 4px 0px 0px;
+}
+
+.ellipsis {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.terminalActions {
+  position: absolute;
+  z-index: 3;
+  left: 12px;
+
+  & div {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
+  }
+}
+
+.close {
+  background-color: #F83131;
+}
+
+.minimize {
+  background-color: #F8DD31;
+}
+
+.expand {
+  background-color: #23C13C;
+}
+
+.terminalSidebar {
+  background-color: #0D112A;
+  position: absolute;
+  top: 26px;
+  left: 0px;
+  height: calc(100% - 26px);
+  //width: 36px;
+  z-index: 2;
+}
+
+.comment {
+  color: #414347;
+}
+
+.success {
+  color: #52F0AB;
+}
+
+.key {
+  color: #827DE0;
+}
+
+.value {
+  color: #FBF796;
+}
+
+.func {
+  color: #5edfb4;
+}
+
+.await {
+  color: #BE70D8;
+}

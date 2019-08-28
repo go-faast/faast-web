@@ -8,7 +8,7 @@ import { timer, mapValues } from 'Utilities/helpers'
 import log from 'Utilities/log'
 
 import Trezor from 'Services/Trezor'
-import Ledger from 'Src/services/Wallet/Ledger'
+import Ledger from 'Services/Ledger'
 import walletService, {
   Wallet, MultiWallet, MultiWalletLedger, MultiWalletTrezor,
   EthereumWalletLedger, EthereumWalletTrezor,
@@ -70,7 +70,9 @@ export const accountLoadSuccess = createAction('ACCOUNT_LOAD_SUCCESS', (index, b
 export const accountLoadError = createAction('ACCOUNT_LOAD_ERROR', (index, error) => ({ index, error }))
 
 const clearConnectTimeout = () => (dispatch, getState) => {
-  window.clearTimeout(getConnectTimeoutId(getState()))
+  if (typeof window !== 'undefined') {
+    window.clearTimeout(getConnectTimeoutId(getState()))
+  }
   dispatch(connectTimeoutCleared())
 }
 
@@ -198,8 +200,10 @@ export const createConnectLedger = (startConnecting) => (walletType, assetSymbol
   const handleLedgerError = (e) => {
     log.error(e)
     dispatch(clearConnectTimeout())
-    const connectTimeoutId = window.setTimeout(retryConnect, 1000)
-    dispatch(connectTimeoutStarted(connectTimeoutId))
+    if (typeof window !== 'undefined') {
+      const connectTimeoutId = window.setTimeout(retryConnect, 1000)
+      dispatch(connectTimeoutStarted(connectTimeoutId))
+    }
   }
 
   const tryConnect = () => dispatch(startConnecting(walletType, assetSymbol, handleLedgerError))

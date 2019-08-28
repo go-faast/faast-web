@@ -56,7 +56,11 @@ export const bs62 = baseX('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQ
 
 export const toHashId = (s) => bs62.encode(Buffer.from(sha256().update(s).digest().slice(0, 16)))
 
-export const routerPathToUri = (routerPath) => urlJoin(window.location.origin, process.env.ROUTER_BASE_NAME, routerPath)
+export const routerPathToUri = (routerPath) => { 
+  if (typeof window !== 'undefined') {
+    return urlJoin(window.location.origin, process.env.ROUTER_BASE_NAME, routerPath)
+  } 
+}
 
 export const splice = (arr, ...args) => {
   const spliced = [...arr]
@@ -103,15 +107,17 @@ export const shortener = (str, chars = 1, ellipsis = true) => {
 
 export const timer = (seconds = 1, cb, done) => {
   let thisTimer
-  thisTimer = window.setInterval(() => {
-    seconds -= 1
-    if (seconds <= 0) {
-      window.clearInterval(thisTimer)
-      done()
-    } else {
-      cb(seconds)
-    }
-  }, 1000)
+  if (typeof window !== 'undefined') {
+    thisTimer = window.setInterval(() => {
+      seconds -= 1
+      if (seconds <= 0) {
+        window.clearInterval(thisTimer)
+        done()
+      } else {
+        cb(seconds)
+      }
+    }, 1000)
+  }
   return thisTimer
 }
 
@@ -167,17 +173,19 @@ export const downloadJson = (obj, fileName, noExtension) => {
       return reject(e)
     }
 
-    const blob = new window.Blob([jsonString], { type: 'application/json' })
-    const url = window.URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    if (noExtension) {
-      a.download = fileName
-    } else {
-      a.download = `${fileName}.json`
+    if (typeof window !== 'undefined' && typeof document !== 'undefined') {
+      const blob = new window.Blob([jsonString], { type: 'application/json' })
+      const url = window.URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      if (noExtension) {
+        a.download = fileName
+      } else {
+        a.download = `${fileName}.json`
+      }
+      a.href = url
+      a.click()
+      resolve(jsonString)
     }
-    a.href = url
-    a.click()
-    resolve(jsonString)
   })
 }
 
@@ -244,11 +252,13 @@ export const fixPercentageRounding = (list, total) => {
 }
 
 export const filterUrl = () => {
-  const query = queryString.parse(window.location.search)
-  delete query.authResponse
-  let newSearch = queryString.stringify(query)
-  if (newSearch) newSearch = '?' + newSearch
-  return window.location.origin + window.location.pathname + newSearch
+  if (typeof window !== 'undefined') {
+    const query = queryString.parse(window.location.search)
+    delete query.authResponse
+    let newSearch = queryString.stringify(query)
+    if (newSearch) newSearch = '?' + newSearch
+    return window.location.origin + window.location.pathname + newSearch
+  }
 }
 
 export const promisifySync = (syncFn) => (...args) => new Promise((resolve, reject) => {

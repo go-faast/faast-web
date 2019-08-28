@@ -1,0 +1,60 @@
+.container {
+  padding-bottom: 130px;
+}
+
+.tweet {
+  background: #EFEFEF;
+  max-width: 650px;
+  height: auto;
+  width: 100%;
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.39);
+  border-radius: 8px;
+  margin-top: 55px;
+  position: relative;
+  z-index: 999;
+}
+
+.zIndex {
+  z-index: 99;
+}
+
+.tweetMeta {
+  color: #555966;
+  font-weight: 600;
+  font-size: 18px;
+
+  span {
+    font-weight: 400;
+    font-size: 14px;
+  }
+}
+
+.tweetLink {
+  color: #1DA1F2;
+  transition: all .2s ease-in-out;
+
+  &:hover {
+    color: #188ED7;
+  }
+}
+
+.tweetText {
+  color: #7F8596;
+}
+
+.button {
+  background-color: #EFEFEF;
+  border-radius: 50%;
+  width: 63px;
+  height: 63px;
+  text-align: center;
+  line-height: 63px;
+  color: #1D1E22;
+  cursor: pointer;
+}
+
+@media screen and (max-width: 983px) {
+  .container {
+    padding-bottom: 0px;
+  }
+}

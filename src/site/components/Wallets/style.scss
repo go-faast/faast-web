@@ -1,0 +1,174 @@
+.sectionContainer {
+  margin-bottom: 300px;
+}
+
+.walletsContainer {
+  max-width: 900px;
+  position: relative;
+  top: -30px;
+}
+
+.walletBubble {
+  background: #EFEFEF;
+  box-shadow: 0 5px 11px 1px rgba(0, 0, 0, 0.26);
+  width: 101px;
+  height: 101px;
+  border-radius: 50%;
+  text-align: center;
+  display: inline-block;
+  line-height: 101px;
+  position: relative;
+  text-decoration: none !important;
+}
+
+.walletBubble:nth-child(1) {
+  animation: floatDown 10s ease-in-out infinite;
+  animation-play-state: running;
+  margin-right: 30px;
+  top: 150px;
+}
+
+.walletBubble:nth-child(2) {
+  margin-right: 30px;
+  animation: floatUp 7s ease-in-out infinite;
+  animation-play-state: running;
+}
+
+.walletBubble:nth-child(3) {
+  margin-right: 30px;
+  animation: floatDown 8s ease-in-out infinite;
+  animation-play-state: running;
+  top: 200px;
+}
+
+.walletBubble:nth-child(4) {
+  margin-right: 30px;
+  top: 50px;
+  animation: floatDown 6s ease-in-out infinite;
+  animation-play-state: running;
+}
+
+.walletBubble:nth-child(5) {
+  margin-right: 30px;
+  top: 170px;
+  animation: floatDown 9s ease-in-out infinite;
+  animation-play-state: running;
+}
+
+.walletBubble:nth-child(6) {
+  margin-top: 100px;
+  top: -20px;
+  animation: floatDown 7s ease-in-out infinite;
+  animation-play-state: running;
+}
+
+.walletBubble:nth-child(7) {
+  margin-right: 30px;
+  top: -50px;
+  animation: floatDown 9s ease-in-out infinite;
+  animation-play-state: running;
+}
+
+.walletBubble:nth-child(8) {
+  margin-right: 30px;
+  top: 90px;
+  animation: floatUp 6s ease-in-out infinite;
+  animation-play-state: running;
+}
+
+.walletBubble img {
+  width: 45px;
+  pointer-events: none;
+}
+
+.walletBubble p {
+  position: relative;
+  top: 0px;
+  left: -23px;
+  background: #EFEFEF;
+  box-shadow: 0 5px 11px 1px rgba(0, 0, 0, 0.26);
+  border-radius: 20px;
+  padding: 4px 8px;
+  opacity: 0;
+  transition: all .3s ease-in-out;
+  font-weight: 600;
+  color: #2D303A;
+  transform: translate3d(0, 0, 0);
+  width: 150px;
+  line-height: 20px;
+  text-decoration: none !important;
+}
+
+.walletBubble:hover {
+  -webkit-animation-play-state: paused !important;
+  animation-play-state: paused !important;
+
+  & p {
+    animation: nameShow .4s forwards;
+    transition: all .3s ease-in-out;
+  }
+}
+
+@keyframes nameShow {
+  0% {
+    top: 0px;
+    opacity: 0;
+  }
+
+  100% {
+    top: 10px;
+    opacity: 1;
+  }
+}
+
+@keyframes floatUp {
+  0% {
+    -webkit-transform: translate(0px, 0px) scale(1);
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  50% {
+    -webkit-transform: translate(5px, -10px) scale(1);
+    transform: translate(5px, -10px) scale(1);
+  }
+
+  100% {
+    -webkit-transform: translate(0px, 0px) scale(1);
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+@keyframes floatDown {
+  0% {
+    -webkit-transform: translate(0px, 0px) scale(1);
+    transform: translate(0px, 0px) scale(1);
+  }
+
+  50% {
+    -webkit-transform: translate(-5px, -10px) scale(1);
+    transform: translate(-5px, -10px) scale(1);
+  }
+
+  100% {
+    -webkit-transform: translate(0px, 0px) scale(1);
+    transform: translate(0px, 0px) scale(1);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .walletBubble {
+    top: 0px !important;
+    margin-right: 40px !important;
+    margin-top: 0px !important;
+  }
+
+  .walletsContainer {
+    max-width: 500px;
+    width: 100%;
+    top: 60px;
+  }
+
+  .sectionContainer {
+    margin-bottom: 170px;
+  }
+}
