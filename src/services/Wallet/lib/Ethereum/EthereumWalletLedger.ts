@@ -4,7 +4,7 @@ import EthereumjsTx from 'ethereumjs-tx'
 import config from 'Config'
 import log from 'Utilities/log'
 import { addHexPrefix } from 'Utilities/helpers'
-import Ledger from 'Src/services/Wallet/Ledger'
+import Ledger from 'Services/Ledger'
 
 import EthereumWallet from './EthereumWallet'
 import { EthTransaction } from './types'
