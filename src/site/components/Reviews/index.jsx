@@ -87,7 +87,9 @@ const Reviews = ({ handleNext, handlePrevious, currentSlide, translations: { sta
                   <Col className='text-left px-0' xs='12' md='10' lg='10'>
                     <h3 className={style.tweetMeta}>{slide.name} <span>{slide.username} · {slide.date}</span></h3>
                     {slide.text.map(t => (<p key={t} className={style.tweetText}>{t}</p>))}
-                    <a className={classNames(style.tweetLink)} href={slide.url}>{trans.viewOriginal}</a>
+                    <a className={classNames(style.tweetLink)} href={slide.url} target='_blank noreferrer'>
+                      {trans.viewOriginal}
+                    </a>
                   </Col>
                   <i style={{ top: 30, right: 30, color: '#1DA1F2', fontSize: 18 }} className='fab fa-twitter position-absolute'></i>
                 </Row>

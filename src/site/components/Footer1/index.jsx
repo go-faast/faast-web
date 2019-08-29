@@ -4,6 +4,7 @@ import { Row, Col, Button } from 'reactstrap'
 import siteConfig from 'Site/config'
 import classNames from 'class-names'
 import PropTypes from 'prop-types'
+import Link from 'Components/Link'
 
 import { betaTag } from '../Header/style.scss'
 
@@ -28,7 +29,9 @@ export default compose(
         <img style={{ width: '100vw', height: 260 }} src={FooterChart} />
       </div>
       <Row className='p-0 m-0'>
-        <Col><EmailSub translations={translations} /></Col>
+        <Col className='px-0'>
+          <EmailSub translations={translations} />
+        </Col>
       </Row>
       <Row className='m-0 p-0'>
         <Col className={classNames(style.ctaContainer, 'mx-auto d-flex mb-5 px-md-5 px-0 pl-xs-4 pl-md-5 pl-3 py-md-0 py-4')}>
@@ -37,8 +40,8 @@ export default compose(
               <h2 className='text-white my-0'>{t.readyToTrade}</h2>
             </Col>
             <Col className='p-0 m-0 mt-xs-3 mt-md-0 mt-0 d-flex justify-content-xs-start justify-content-md-end' xs='12' md='6'>
-              <Button className='text-white mr-3' color='primary'>{t.connectYourWallet}</Button>
-              <Button color='white'>{t.apiDocs}</Button>
+              <Button tag={Link} to='/app/connect' className='text-white mr-3' color='primary'>{t.connectYourWallet}</Button>
+              <Button tag='a' href='https://api.faa.st' target='_blank' color='white'>{t.apiDocs}</Button>
             </Col>
           </Row>
         </Col>

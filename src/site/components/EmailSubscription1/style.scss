@@ -1,21 +1,5 @@
-.input {
-  max-width: 495px;
-  background-color: #EFEFEF !important;
-  border: none !important;
-  color: #6C717B !important;
-
-  &:focus {
-    background-color: #EFEFEF !important;
+@media screen and (max-width: 500px) {
+  .container {
+    max-width: 98vw;
   }
-
-  &::placeholder {
-    color: #6C717B !important;
-  }
-}
-
-.button {
-  width: 141px;
-  height: 41px;
-  color: #16AD94;
-  font-size: 16px;
 }
