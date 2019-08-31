@@ -4,7 +4,6 @@ import { Row, Col, Button } from 'reactstrap'
 import siteConfig from 'Site/config'
 import classNames from 'class-names'
 import PropTypes from 'prop-types'
-import Link from 'Components/Link'
 
 import { betaTag } from '../Header/style.scss'
 
@@ -40,7 +39,7 @@ export default compose(
               <h2 className='text-white my-0'>{t.readyToTrade}</h2>
             </Col>
             <Col className='p-0 m-0 mt-xs-3 mt-md-0 mt-0 d-flex justify-content-xs-start justify-content-md-end' xs='12' md='6'>
-              <Button tag={Link} to='/app/connect' className='text-white mr-3' color='primary'>{t.connectYourWallet}</Button>
+              <Button tag='a' href='/app/connect' className='text-white mr-3' color='primary'>{t.connectYourWallet}</Button>
               <Button tag='a' href='https://api.faa.st' target='_blank' color='white'>{t.apiDocs}</Button>
             </Col>
           </Row>
