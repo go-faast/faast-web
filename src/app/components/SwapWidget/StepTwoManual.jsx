@@ -29,7 +29,8 @@ const StepTwoManual = ({
   handleTimerEnd, secondsUntilPriceExpiry, minimumDeposit, maxiumumDeposit, quotedRate, maxGeoBuy,
   swap: {
     orderId = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
-    sendAmount, receiveAmount, orderStatus = '', refundAddress = '', isFixedPrice, sendAsset,
+    sendAmount, receiveAmount, orderStatus = '', refundAddress = '', isFixedPrice, sendAsset, 
+    depositAddressExtraId,
   },
 }) => (
   <Fragment>
@@ -40,12 +41,34 @@ const StepTwoManual = ({
           : (minimumDeposit ? (
             <Fragment><T tag='span' i18nKey='app.stepTwoManual.atLeast'>at least</T> <Units value={minimumDeposit} symbol={sendSymbol} precision={8} showIcon/>
             </Fragment>
-          ) : null)} <T tag='span' i18nKey='app.stepTwoManual.toAddress'>to address:</T>
+          ) : null)} <T tag='span' i18nKey='app.stepTwoManual.toAddres'>to address{depositAddressExtraId && <span> with deposit tag</span>}:</T>
       </h4>
     </CardHeader>
     <CardBody className='pt-1 text-center'>
-      <DepositQRCode className='mt-3' scan size={150} address={depositAddress} asset={sendAsset} amount={sendAmount}/>
+      <DepositQRCode 
+        className='mt-3' 
+        scan 
+        size={150} 
+        depositTag={depositAddressExtraId}
+        address={depositAddress} 
+        asset={sendAsset} 
+        amount={sendAmount}
+      />
+      {depositAddressExtraId && (
+        <div className='text-left mt-3'>
+          <span>Deposit address:</span>
+        </div>
+      )}
       <ClipboardCopyField value={depositAddress}/>
+      {depositAddressExtraId && (
+        <div className='text-left'>
+          <span>Deposit tag:</span>
+          <ClipboardCopyField value={depositAddressExtraId}/>
+          <Alert color='warning' className='mx-auto mt-3 text-center'>
+            The deposit tag above is required in order to complete your order. If it is not provided your funds will be lost.
+          </Alert>
+        </div>
+      )}
       {maxGeoBuy && (
         <Alert color='info' className='mx-auto mt-3 text-center'>
           <T tag='small' i18nKey='app.stepTwoManual.geoLimit'>Please note: The maximum you can swap is <Units precision={8} roundingType='dp' value={maxGeoBuy}/> {sendSymbol} <a style={{ color: 'rgba(0, 255, 222, 1)' }} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>due to your location.</a></T>

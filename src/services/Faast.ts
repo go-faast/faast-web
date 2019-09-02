@@ -128,6 +128,7 @@ export const formatOrderResult = (r: any): SwapOrder => ({
   backendOrderId: r.order_id,
   backendOrderState: r.order_state,
   receiveTxId: r.txId,
+  depositAddressExtraId: r.deposit_address_extra_id,
 })
 
 export const fetchSwap = (swapId: string): Promise<SwapOrder> => {
