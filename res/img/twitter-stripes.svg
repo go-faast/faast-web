@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 814 505">
+      <g
+        fill="none"
+        fillRule="evenodd"
+        stroke="none"
+        strokeWidth="1"
+        transform="translate(-282 -3540) translate(-18 3486) translate(300 54)"
+      >
+        <path
+          fill="#224963"
+          d="M70.903 247.545H868.903V287.54499999999996H70.903z"
+          transform="rotate(-33.55 469.903 267.545)"
+        />
+        <path
+          fill="#225A7F"
+          d="M11.414 235.945H819.414V275.945H11.414z"
+          transform="rotate(-33.55 415.414 255.945)"
+        />
+        <path
+          fill="#2072A7"
+          d="M-57.336 226.3H773.664V266.3H-57.336z"
+          transform="rotate(-33.55 358.164 246.3)"
+        />
+      </g>
+    </svg>

@@ -105,9 +105,16 @@ export default abstract class EthereumWallet extends Wallet {
   }
 
   getAllBalances(): Promise<Balances> {
-    const web3 = getWeb3()
     return Promise.resolve(this.getSupportedAssets())
       .then((assets) => {
+        return this.getManyBalances(assets)
+      })
+  }
+
+  getManyBalances(assets: Asset[]): Promise<Balances> {
+    const web3 = getWeb3()
+    return Promise.resolve()
+      .then(() => {
         const batches: any[] = []
         const balanceRequests = assets.map((asset, i) => {
           const batchNumber = Math.floor(i / GET_BALANCES_BATCH_SIZE)

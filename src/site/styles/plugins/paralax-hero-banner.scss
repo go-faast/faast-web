@@ -1,17 +1,20 @@
 div.jumbotron.hero-technology {
-  color:#fff;
-  text-align:center;
-  background-size:cover;
-  background-position:center top;
-  padding-top:100px;
-  padding-bottom:100px;
-  background-attachment:local;
+  color: #fff;
+  text-align: center;
+  background-size: cover;
+  background-position: center top;
+  padding-top: 80px;
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+  background-attachment: local;
 }
 
-h1.hero-title, h2.hero-title, h3.hero-title {
-  text-shadow:0 2px 2px rgba(0,0,0,0.3);
-  color:#fff;
-  font-weight:500;
+h1.hero-title,
+h2.hero-title,
+h3.hero-title {
+  text-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+  color: #fff;
+  font-weight: 500;
 }
 
 .hero-title {
@@ -33,6 +36,7 @@ h1.hero-title, h2.hero-title, h3.hero-title {
     margin-top: 350px;
   }
 }
+
 @media screen and (max-width: 370px) {
   .features-clean {
     margin-top: 380px;
@@ -40,7 +44,7 @@ h1.hero-title, h2.hero-title, h3.hero-title {
 }
 
 .notification {
-  background: rgba(255,255,255,.08);
+  background: rgba(255, 255, 255, .08);
   border-radius: 4px;
   padding: 3px 0;
   font-weight: 600;
@@ -48,8 +52,9 @@ h1.hero-title, h2.hero-title, h3.hero-title {
   cursor: pointer;
   color: #fff;
   transition: all .15s ease-in-out;
+
   &:hover {
-    background: rgba(255,255,255,.12);
+    background: rgba(255, 255, 255, .12);
   }
 }
 
@@ -62,4 +67,3 @@ h1.hero-title, h2.hero-title, h3.hero-title {
   vertical-align: middle;
   margin: 0 10px;
 }
-

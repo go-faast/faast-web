@@ -1,6 +1,6 @@
 import { createReducer } from 'redux-act'
 
-import { restrictionsUpdated, restrictionsError, updateLanguage } from 'Common/actions/app'
+import { restrictionsUpdated, restrictionsError, updateLanguage, toggleFeedbackForm } from 'Common/actions/app'
 
 export const initialState = {
   language: 'en',
@@ -12,7 +12,8 @@ export const initialState = {
 export const reducerFunctions = {
   [restrictionsUpdated]: (state, { res }) => ({ ...state, ...res }),
   [restrictionsError]: (state, error) => ({ ...state, error }),
-  [updateLanguage]: (state, { language }) => ({ ...state, language })
+  [updateLanguage]: (state, { language }) => ({ ...state, language }),
+  [toggleFeedbackForm]: (state, { showFeedbackForm, requestedAsset }) => ({ ...state, showFeedbackForm, requestedAsset }),
 }
 
 export default createReducer(reducerFunctions, initialState)

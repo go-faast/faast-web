@@ -14,7 +14,8 @@ export interface Asset {
   infoUrl?: string
   contractAddress?: string
   ERC20?: boolean
-  restricted?: boolean
+  restricted?: boolean,
+  marketCap?: BigNumber,
 }
 
 export interface SwapOrder {

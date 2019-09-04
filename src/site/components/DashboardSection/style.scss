@@ -1,0 +1,19 @@
+.mockup {
+  max-width: 480px;
+  max-height: 366px;
+  width: 100%;
+}
+
+@media screen and (max-width: 983px) {
+  .textContainer {
+    max-width: 70% !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .textContainer {
+    max-width: 100% !important;
+  }
+}

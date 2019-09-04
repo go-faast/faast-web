@@ -5,7 +5,6 @@ import { ZERO, toUnit, toPercentage } from 'Utilities/convert'
 import { fixPercentageRounding, reduceByKey, mapValues } from 'Utilities/helpers'
 import { createItemSelector, selectItemId, fieldSelector } from 'Utilities/selector'
 
-import { MultiWallet } from 'Services/Wallet'
 import { getAllAssets, areAssetPricesLoaded, getAssetPricesError } from './asset'
 
 const getWalletState = ({ wallet }) => wallet
@@ -17,7 +16,7 @@ const doGetWallet = (walletState, id) => {
   }
   const nestedWallets = wallet.nestedWalletIds.map((nestedWalletId) => doGetWallet(walletState, nestedWalletId)).filter(Boolean)
   let { balances, balancesLoaded, balancesUpdating, balancesError, supportedAssets, unsendableAssets } = wallet
-  if (wallet.type.includes(MultiWallet.type)) {
+  if (wallet.type.includes('MultiWallet')) {
     if (nestedWallets.length) {
       balances = reduceByKey(nestedWallets.map((w) => w.balances), (x, y) => x.plus(y), ZERO)
       balancesLoaded = nestedWallets.every((w) => w.balancesLoaded)
@@ -57,7 +56,7 @@ export const getAllWalletIds = createSelector(getAllWallets, Object.keys)
 export const getLeafWallets = createSelector(
   getAllWalletsArray,
   (wallets) => wallets
-    .filter(({ type }) => !type.includes(MultiWallet.type))
+    .filter(({ type }) => !type.includes('MultiWallet'))
 )
 export const getLeafWalletIds = createSelector(
   getLeafWallets,
@@ -71,7 +70,7 @@ export const getWalletParents = createItemSelector(
   getAllWallets,
   selectItemId,
   (allWallets, id) => Object.values(allWallets).reduce(
-    (result, parent) => (parent && parent.type.includes(MultiWallet.type) && parent.nestedWalletIds.includes(id)) ? [...result, parent] : result,
+    (result, parent) => (parent && parent.type.includes('MultiWallet') && parent.nestedWalletIds.includes(id)) ? [...result, parent] : result,
     [])
 )
 

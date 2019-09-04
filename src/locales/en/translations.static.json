@@ -1,15 +1,46 @@
 { 
   "static": {
+    "newsletter": {
+      "keepUp": "Keep up with the Faa.st Newsletter",
+      "subscribeNow": "Subscribe now to receive: ",
+      "assetListings": "Updates on new asset listings",
+      "exclusiveOffers": "Exclusive offers and contests for Faa.st customers that aren’t shared anywhere else",
+      "report": "A free copy of our Best Practices for Safe Cryptocurrency Storage report",
+      "secure": "secure",
+      "fast": "fast",
+      "swap": "swap"
+    },
+    "email": {
+      "cta": "Sign up to discover exclusive offers and crypto giveaways",
+      "subscribe": "Subscribe"
+    },
     "hero": {
       "new": "new",
       "notification": "Read about the Faa.st Market Maker Beta",
       "button": "Connect Your Wallet",
       "headline": {
-        "goxxed": "Don’t Get Goxxed. Own Your Crypto."
+        "goxxed": "Don't Get Goxxed. Own Your Crypto."
       },
       "subtitle": {
-        "notYourKeys": "If it’s not your keys, it’s not your crypto. Trade safely from your own wallet with Faa.st"
+        "notYourKeys": "Not your keys, not your crypto. Connect your wallet, select your coins, and swap."
       }
+    },
+    "reviews": {
+      "twitterFam": "#💞 from the Twitter Fam",
+      "viewOriginal": "View Original Tweet"
+    },
+    "terminal": {
+      "wantToRun": "Want to run your own instance of the Faa.st trading portfolio? No problem. The open source",
+      "faastPortfolio": "Faa.st Portfolio",
+      "project": "project on GitHub and",
+      "publicAPI": "our public API",
+      "fullControl": "put you in full control of how you want to use Faa.st.",
+      "createSwap": "create swap"
+    },
+    "dashboard": {
+      "swap": "Instantly begin trading your favorite assets, straight from your wallet",
+      "connect": "Connect your MetaMask, Trezor, or Ledger and access our all-in-one dashboard to track your portfolio across multiple wallets, place trades, and watch trending assets.",
+      "connectYourWallet": "Connect Your Wallet"
     },
     "header": {
       "swap": "Swap",
@@ -24,14 +55,14 @@
       "youReceive": "You receive",
       "continue": "Continue",
       "chooseSend": "Choose asset to send",
-      "chooseReceive": "Choose asset to receive"
+      "chooseReceive": "Choose asset to receive",
+      "swap": "Swap"
     },
     "features": {
       "comprehensiveTable": "For a comprensive table of supported coins",
       "clickHere": "click here.",
       "instantlyBuild": "Instantly build a cryptocurrency portfolio",
       "safeSecure": "Safe & Secure",
-      "tradeDirectly": "Trade directly from your wallet— we never control your funds or see your private key.",
       "noSignUp": "No Sign Up Required",
       "noRegister": "No need to register or share any personal info.",
       "lightningFast": "Lightning Fast",
@@ -58,12 +89,19 @@
       "trustWallet": "Trust Wallet",
       "coinbaseWallet": "Coinbase Wallet",
       "status": "Status",
-      "keystore": "Keystore",
+      "title": "Features",
       "secure": "Secure",
-      "safestTradingMethod": "The safest trading method in the world — we don’t have your money; if we got hacked, you’d lose nothing.",
       "simple": "Simple",
-      "intuitiveMobile": "Intuitive and mobile friendly UI makes crypto trading simple and easy.",
       "private": "Private",
+      "lowFees": "Low Fees",
+      "noRegistration": "No need to register an account— just safe and confidential trades.",
+      "tradeDirectly": "Trade directly from your wallet — we never control your funds or see your private key.",
+      "swapMultiple": "Swap multiple coins at once, and build a diversified portfolio in seconds with only a single transaction.",
+      "noFees": "No deposit or withdrawal fees. Just a low cost, on-chain trading platform.",
+      "connectYourWallet": "Connect Your Wallet",
+      "keystore": "Keystore",
+      "safestTradingMethod": "The safest trading method in the world — we don’t have your money; if we got hacked, you’d lose nothing.",
+      "intuitiveMobile": "Intuitive and mobile friendly UI makes crypto trading simple and easy.",
       "noPersonalData": "You don’t need to share personal data, photo ID, or anything else— just safe and confidential trades.",
       "getStartedSeconds": "Get started in seconds",
       "addWallet": "Add Wallet",
@@ -72,6 +110,17 @@
       "getStarted": "Get Started",
       "productHunt": "Vote for us on Product Hunt",
       "madeBy": "Made by the team at"
+    },
+    "wallets": {
+      "supportedWallets": "Supported Wallets",
+      "trezor": "TREZOR",
+      "ledgerWallet": "Ledger Wallet",
+      "metaMask": "MetaMask",
+      "mist": "Mist",
+      "trustWallet": "Trust Wallet",
+      "coinbaseWallet": "Coinbase Wallet",
+      "status": "Status",
+      "keystore": "Keystore"
     },
     "footer": {
       "aboutUs": "About Us",
@@ -104,7 +153,11 @@
       "api": "API",
       "pressKit": "Press Kit",
       "terms": "Terms of use",
-      "privacy": "Privacy Policy"
+      "privacy": "Privacy Policy",
+      "readyToTrade": "Ready to Trade on Faa.st?",
+      "connectYourWallet": "Connect Your Wallet",
+      "apiDocs": "API Docs",
+      "supportedAssets": "Supported Assets"
     },
     "marketMaker": {
       "bitcoinWork": "Put your Bitcoin to work",

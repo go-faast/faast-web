@@ -74,7 +74,7 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
       try {
         const routeConfig = [{
           path: `${t.url}`,
-          component: 'src/site/pages/Home',
+          component: 'src/site/pages/Home1',
           getData: async () => ({
             supportedAssets,
             translations: t.translations,
@@ -306,6 +306,20 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
               meta: {
                 title: 'Privacy Policy - Faa.st',
                 description: "Our stance on our user's privacy and how you can trade crypto without the risk of losing funds.",
+                language: t.code,
+              },
+              translations: t.translations,
+            }
+          },
+        },
+        {
+          path: `${t.url}/newsletter`,
+          component: 'src/site/pages/NewsletterLanding',
+          getData: async () => {
+            return {
+              meta: {
+                title: 'Keep up with Crypto and Sign Up for the Faa.st Newsletter',
+                description: 'Stay up-to-date with all things Faa.st crypto exchange with our newsletter',
                 language: t.code,
               },
               translations: t.translations,

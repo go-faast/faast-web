@@ -1,3 +1,7 @@
+if (typeof window === 'undefined') {
+  throw new Error(`You really shouldnt be importing ${__filename} outsite of the app`)
+}
+
 import {
   WorkerDiscovery, BitcoreBlockchain, AccountLoadStatus,
   UtxoInfo as BaseUtxoInfo, AccountInfo as BaseAccountInfo,

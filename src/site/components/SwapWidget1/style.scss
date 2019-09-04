@@ -1,0 +1,109 @@
+.container {
+  background-color: #FAFAFA;
+  max-width: 995px;
+  min-height: 136px;
+  border-radius: 4px;
+  box-shadow: 0px 2px 5px 4px rgba(0, 0, 0, .49);
+  flex-wrap: nowrap;
+}
+
+.swap {
+  border: none !important;
+  margin: 0;
+  background: transparent !important;
+}
+
+.inputCol {
+  width: auto;
+}
+
+.input {
+  background-color: #FAFAFA !important;
+  border: 1px solid #ECECEF !important;
+  border-radius: 4px;
+  color: #3C3C40 !important;
+
+  &::placeholder {
+    color: #9C9FA8 !important;
+  }
+}
+
+.assetListContainer {
+  position: absolute;
+  z-index: 9999;
+  top: 32px;
+  width: 100%;
+}
+
+.inputButton {
+  background-color: transparent !important;
+  border: 1px solid #ECECEF !important;
+  // transition: all .2s ease-in-out;
+
+  &:hover {
+    background-color: #EFEFEF !important;
+  }
+}
+
+.swap {
+  svg {
+    fill: #565656;
+  }
+
+  &:hover svg {
+    fill: #777;
+  }
+}
+
+.section {
+  margin: 10px auto 0 auto;
+  max-width: 550px;
+  padding: 20px 16px;
+  min-height: 156px;
+
+  .expnd {
+    position: absolute;
+    right: -38px;
+    top: 16px;
+  }
+
+  .icon {
+    color: #05B8AB;
+  }
+}
+
+.buttonContainer {
+  max-width: 130px !important;
+}
+
+.submitButton {
+  top: 14px;
+  border-radius: 4px !important;
+  color: #fff !important;
+  opacity: 1 !important;
+  width: 120px;
+}
+
+.fadedWhite {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+@media screen and (max-width: 983px) {
+  .container {
+    flex-wrap: wrap;
+    max-width: 600px;
+  }
+
+  .buttonContainer {
+    padding-bottom: 20px;
+    max-width: 100% !important;
+  }
+
+  .submitButton {
+    width: 100% !important;
+  }
+
+  .inputCol {
+    width: 100%;
+  }
+}

@@ -3,11 +3,11 @@ import { Selector } from 'testcafe'
 export default (config) => {
   fixture `Navigation`
     .page(config.baseUrl)
-  
-    const LINK =  (x) =>  Selector('a').withAttribute('href', x).exists
-    const HREF =  (x) =>  Selector('a').withAttribute('href', x)  
 
-  
+  const LINK =  (x) =>  Selector('a').withAttribute('href', x).exists
+  const HREF =  (x) =>  Selector('a').withAttribute('href', x)
+
+
   test('Navigate to Market Maker', async t => {
     await t
       .navigateTo('./market-maker')
@@ -24,15 +24,14 @@ export default (config) => {
 
   test('See the home page urls', async t => {
     await t
-    .expect(LINK('/app/swap?from=BTC&to=ETH')).ok()
-    .expect(LINK('/app/connect')).ok()
-    .expect(LINK('/wallets/trezor')).ok()
-    .expect(LINK('/wallets/ledger-wallet')).ok()
-    .expect(LINK('/wallets/metamask')).ok()
-    .expect(LINK('/wallets/mist-browser')).ok()
-    .expect(LINK('/wallets/trust-wallet')).ok()
-    .expect(LINK('/wallets/coinbase-wallet')).ok()
-    .expect(LINK('/wallets/status')).ok()    
+      .expect(LINK('/app/connect')).ok()
+      .expect(LINK('/wallets/trezor')).ok()
+      .expect(LINK('/wallets/ledger-wallet')).ok()
+      .expect(LINK('/wallets/metamask')).ok()
+      .expect(LINK('/wallets/mist-browser')).ok()
+      .expect(LINK('/wallets/trust-wallet')).ok()
+      .expect(LINK('/wallets/coinbase-wallet')).ok()
+      .expect(LINK('/wallets/status')).ok()
   })
 
   test('Bottom menu links', async t => {
@@ -46,11 +45,11 @@ export default (config) => {
       .expect(LINK('/app/assets/trending')).ok()
       .expect(LINK('/app/assets/watchlist')).ok()
       .expect(LINK('/what-is-an-ico')).ok()
-      .expect(LINK('/what-are-smart-contracts')).ok() 
-      .expect(LINK('/what-is-the-difference-between-ico-ipo-ito')).ok() 
-      .expect(LINK('/what-is-ethereum')).ok() 
-      .expect(LINK('/what-is-a-dao')).ok() 
-      .expect(LINK('/how-to-buy-ethereum')).ok() 
+      .expect(LINK('/what-are-smart-contracts')).ok()
+      .expect(LINK('/what-is-the-difference-between-ico-ipo-ito')).ok()
+      .expect(LINK('/what-is-ethereum')).ok()
+      .expect(LINK('/what-is-a-dao')).ok()
+      .expect(LINK('/how-to-buy-ethereum')).ok()
       .expect(LINK('https://api.faa.st/')).ok()
       .expect(LINK('/static/faast-press-kit.zip')).ok()
   })
@@ -73,13 +72,14 @@ export default (config) => {
     const supported = HREF('/assets')
 
     await t
-      // .click(affil)
-      // .expect(affiliateid).ok()
+
+      .click(affil)
+      .expect(affiliateid).ok()
+
       .click(supported)
       .expect(LINK('/app/swap?to=BTC')).ok()
   })
 
-  
 
   test('Goes to wallets info', async t => {
     await t
@@ -112,6 +112,7 @@ export default (config) => {
       await t.expect(Selector('#form-tradeableForm-requiredCheckbox', { visibilityCheck: true, timeout: 120000 }).exists).ok()
   })
 
+
   test('Tests texts in pages', async t => {
     const H4 = Selector('h4').innerText
     await t
@@ -138,7 +139,7 @@ export default (config) => {
       .click(HREF('/terms'))
       .expect(H4)
       .eql('Terms of Use')
-      
+
       .click(HREF('/privacy'))
       .expect(H4)
       .eql('Privacy Policy')
@@ -179,7 +180,7 @@ export default (config) => {
 
       .click(lang)
       .click(chi)
-      .click(HREF('/zh'))      
+      .click(HREF('/zh'))
       .expect(LINK('/affiliates')).ok()
       .expect(LINK('/app/connect')).ok()
       .click(HREF('/what-is-an-ico'))

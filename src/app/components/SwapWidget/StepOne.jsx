@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
+import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
 import { compose, setDisplayName, withProps, withState, withHandlers, setPropTypes, defaultProps, lifecycle } from 'recompose'
 import classNames from 'class-names'
@@ -324,9 +325,10 @@ export default compose(
     sendSymbol, receiveSymbol,
     defaultSendAmount, defaultReceiveAmount,
     defaultRefundAddress, defaultReceiveAddress,
-    sendWallet, sendAsset, limit, previousSwapInputs, receiveWallet
+    sendWallet, sendAsset, limit, previousSwapInputs, receiveWallet,
   }) => { 
-    const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : undefined
+    const maxGeoBuy = limit && toBigNumber(limit.per_transaction.amount)
+      .div(sendAsset.price).round(sendAsset.decimals, BigNumber.ROUND_DOWN)
     const { toAmount, fromAmount, toAddress, fromAddress, sendWalletId, receiveWalletId } = previousSwapInputs || {}
     return ({
       pair: `${sendSymbol}_${receiveSymbol}`,
@@ -342,7 +344,7 @@ export default compose(
       ethSendBalanceAmount: sendWallet && (sendWallet.balances['ETH'] || '0'),
       ethReceiveBalanceAmount: receiveWallet && (receiveWallet.balances['ETH'] || '0'),
       fullBalanceAmountLoaded: sendWallet && sendWallet.balancesLoaded,
-      maxGeoBuy,
+      maxGeoBuy
     })}),
   connect(createStructuredSelector({
     rateLoaded: (state, { pair }) => isRateLoaded(state, pair),
@@ -600,7 +602,7 @@ export default compose(
       const {
         rateLoaded, pair, retrievePairData, estimatedRate, calculateSendEstimate, 
         calculateReceiveEstimate, estimatedField, sendAmount, receiveAmount, checkQueryParams,
-        previousSwapInputs, updateURLParams,
+        previousSwapInputs, updateURLParams, fullBalanceAmount, fullBalanceAmountLoaded, maxGeoBuy, setSendAmount
       } = this.props
       const urlParams = checkQueryParams()
       if (Object.keys(urlParams).length === 0 && previousSwapInputs) {
@@ -615,6 +617,9 @@ export default compose(
         } else {
           calculateSendEstimate(receiveAmount)
         }
+      }
+      if (fullBalanceAmountLoaded !== prevProps.fullBalanceAmountLoaded && maxGeoBuy > fullBalanceAmount) {
+        setSendAmount(fullBalanceAmount)
       }
     },
     componentWillMount() {

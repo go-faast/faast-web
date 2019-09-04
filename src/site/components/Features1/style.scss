@@ -1,0 +1,136 @@
+.featuresContainer {
+  max-width: 1000px;
+  margin: 0 auto;
+  background: #1D1E22;
+  border-radius: 4px;
+  overflow: visible;
+  min-height: 620px;
+  white-space: nowrap;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .39);
+  position: relative;
+}
+
+.featuresContainer h1 {
+  text-align: center;
+  color: #EFEFEF;
+  position: relative;
+  top: 40px;
+  padding-bottom: 80px;
+  font-size: 24px;
+}
+
+.featureContainer {
+  margin-right: 22px !important;
+}
+
+.feature {
+  min-width: 270px !important;
+  height: 200px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, .25);
+  border-radius: 8px;
+  position: relative;
+  background: #2B2D33;
+  z-index: 99999;
+  white-space: normal;
+  vertical-align: middle;
+}
+
+.featureContainer:nth-child(1) {
+  margin-left: -72px;
+}
+
+.featureContainer:nth-child(2) {
+  top: 142px;
+}
+
+.featureContainer:nth-child(3) {
+  top: 0px;
+}
+
+.featureContainer:nth-child(4) {
+  top: 142px;
+  margin-right: 0 !important;
+}
+
+.feature i {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  line-height: 30px;
+  text-align: center;
+  color: #fff;
+  background-color: #23D6B8;
+}
+
+.featureTitle {
+  color: #EFEFEF;
+  font-size: 20px;
+  font-weight: 600;
+  margin-top: 20px;
+  margin-bottom: 15px;
+}
+
+.featureDescription {
+  margin-bottom: 60px;
+  font-size: 14px;
+  color: #7F8596;
+  line-height: 20px;
+}
+
+.button {
+  bottom: 50px;
+  position: absolute;
+}
+
+.cardContainer {
+  flex-wrap: nowrap !important;
+}
+
+@media screen and (max-width: 1140px) {
+  .feature {
+    width: 95%;
+    max-width: 400px;
+    height: auto;
+  }
+
+  .featureContainer {
+    top: 0px !important;
+    left: 0px !important;
+    margin-left: 0px !important;
+    margin-right: 30px !important;
+    margin-bottom: 10px;
+  }
+
+  .featureContainer:nth-child(4) {
+    margin-right: 0px !important;
+  }
+
+  .cardContainer {
+    flex-wrap: wrap !important;
+    justify-content: center;
+  }
+}
+
+@media screen and (max-width: 983px) {
+  .featureContainer {
+    margin-right: auto !important;
+    margin-left: auto !important;
+    padding-right: 20px !important;
+    padding-left: 20px !important;
+  }
+
+  .button {
+    position: relative;
+    bottom: 0px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .feature {
+    width: 100%;
+  }
+}
