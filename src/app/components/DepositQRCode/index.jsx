@@ -18,16 +18,17 @@ export default compose(
     asset: PropTypes.object,
     amount: numberish,
     scan: PropTypes.bool,
+    depositTag: PropTypes.string,
     qrClass: PropTypes.string,
     ...qrCodePropTypes,
   }),
   defaultProps({
     scan: false,
   }),
-  withProps(({ address, asset: { bip21Prefix } = {}, amount, qrClass, ...props }) => {
+  withProps(({ address, depositTag, asset: { bip21Prefix } = {}, amount, qrClass, ...props }) => {
     const withProtocol = bip21Prefix && address.indexOf(bip21Prefix) < 0 
       ? `${bip21Prefix}:${address}` : address
-    const fullUri = !amount || bip21Prefix === 'ethereum' ? withProtocol : `${withProtocol}?amount=${amount}`
+    const fullUri = !amount || bip21Prefix === 'ethereum' ? withProtocol : `${withProtocol}?amount=${amount}${depositTag && `&dt=${depositTag}`}`
     return {
       fullUri,
       qrProps: {

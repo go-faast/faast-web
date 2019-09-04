@@ -37,6 +37,13 @@ export const postFeedback = (type: string, answer: string, email: string,
   .catch((e) => e)
 }
 
+export const getFastGasPrice = (): Promise<number> => {
+// tslint:disable-next-line:max-line-length
+return fetchGet('https://ethgasstation.info/json/ethgasAPI.json')
+  .then((r) => r ? r.fast : undefined)
+  .catch((e) => e)
+}
+
 export function fetchAssets(): Promise<any[]> {
   return fetchGet(`${apiUrl}/api/v2/public/currencies`, { include: 'marketInfo' }, { retries: 2 })
     .then((assets: Array<Partial<Asset>>) => assets.filter((asset) => {
@@ -128,6 +135,7 @@ export const formatOrderResult = (r: any): SwapOrder => ({
   backendOrderId: r.order_id,
   backendOrderState: r.order_state,
   receiveTxId: r.txId,
+  depositAddressExtraId: r.deposit_address_extra_id,
 })
 
 export const fetchSwap = (swapId: string): Promise<SwapOrder> => {

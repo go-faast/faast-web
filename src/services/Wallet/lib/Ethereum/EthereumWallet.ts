@@ -3,6 +3,7 @@ import EthJsTx from 'ethereumjs-tx'
 
 import config from 'Config'
 import { getWeb3 } from 'Services/Web3'
+import { getFastGasPrice } from 'Services/Faast'
 import { addHexPrefix, toHashId } from 'Utilities/helpers'
 import {
   ZERO, BigNumber, Numerical, toBigNumber, toSmallestDenomination, toMainDenomination, toHex, toTxFee, toNumber,
@@ -28,20 +29,29 @@ const MIN_GAS_LIMIT_TOKEN = DEFAULT_GAS_LIMIT_TOKEN
  */
 const GET_BALANCES_BATCH_SIZE = 500
 
-function estimateGasLimit(txData: Partial<TxData>): Promise<BigNumber> {
+async function estimateGasLimit(txData: Partial<TxData>): Promise<BigNumber> {
   log.debug('estimateGasLimit', txData)
   const errorFallback = (e: any) => {
     log.warn('Error calling web3.eth.estimateGas, falling back to fixed limits', e)
     return Promise.resolve(txData.data ? DEFAULT_GAS_LIMIT_TOKEN : DEFAULT_GAS_LIMIT_ETH)
   }
   try {
-    return getWeb3().eth.estimateGas(txData)
+    const gasLimit = toBigNumber(await getFastGasPrice()).div(10)
+    console.log(toNumber(gasLimit))
+    if (gasLimit) {
+      console.log(gasLimit)
+      const minGasLimit = txData.data ? MIN_GAS_LIMIT_TOKEN : MIN_GAS_LIMIT_ETH
+      return gasLimit.lt(minGasLimit) ? minGasLimit : gasLimit
+    } else {
+      console.log('nope')
+      return getWeb3().eth.estimateGas(txData)
       .then(toBigNumber)
-      .then((gasLimit) => {
+      .then((web3GasLimit) => {
         const minGasLimit = txData.data ? MIN_GAS_LIMIT_TOKEN : MIN_GAS_LIMIT_ETH
-        return gasLimit.lt(minGasLimit) ? minGasLimit : gasLimit
+        return web3GasLimit.lt(minGasLimit) ? minGasLimit : web3GasLimit
       })
       .catch(errorFallback)
+    }
   } catch (e) {
     return errorFallback(e)
   }
@@ -78,6 +88,7 @@ export default abstract class EthereumWallet extends Wallet {
   }
 
   _getDefaultFeeRate() {
+
     return getWeb3().eth.getGasPrice()
       .catch((e) => {
         log.error(`Failed to get ethereum dynamic fee, using default of ${DEFAULT_GAS_PRICE} wei`, e)
@@ -177,7 +188,7 @@ export default abstract class EthereumWallet extends Wallet {
 
       const opts: Array<Numerical | Promise<Numerical>> = [
         customGasPrice || this._getDefaultFeeRate().then(({ rate }) => rate),
-        customGasLimit || estimateGasLimit(txData),
+        customGasLimit || await estimateGasLimit(txData),
         customNonce && customNonce >= networkTxCount ? customNonce : networkTxCount,
       ]
       return Promise.all(opts).then(([gasPrice, gasLimit, nonce]) => ({
