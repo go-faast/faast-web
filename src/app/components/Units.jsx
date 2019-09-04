@@ -34,7 +34,7 @@ class Units extends React.Component {
       if (maxDigits && digitCount > maxDigits) {
         shrunk = value.toExponential(precision)
       }
-      shrunk = parseFloat(shrunk).toString()
+      shrunk = shrunk.replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, '$1')
     }
     if (abbrevSuffix) {
       shrunk = `${shrunk}${abbrevSuffix}`
@@ -49,7 +49,10 @@ class Units extends React.Component {
     const expandable = expand ? (<Expandable shrunk={shrunk} expanded={expanded} {...props}/>) : <span {...props}>{shrunk}</span>
     return (<Fragment>
       {prefix}{showIcon && (
-        <Fragment><CoinIcon symbol={symbol} size='sm' inline style={{ verticalAlign: 'baseline' }} {...iconProps}/>{' '}</Fragment>
+        <Fragment>
+          <CoinIcon symbol={symbol} size='sm' inline style={{ verticalAlign: 'baseline' }} {...iconProps}/>
+          {' '}
+        </Fragment>
       )}{expandable}{suffix}
     </Fragment>)
   }
