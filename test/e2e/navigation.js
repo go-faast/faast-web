@@ -24,7 +24,6 @@ export default (config) => {
 
   test('See the home page urls', async t => {
     await t
-      .expect(LINK('/app/swap?from=BTC&to=ETH')).ok()
       .expect(LINK('/app/connect')).ok()
       .expect(LINK('/wallets/trezor')).ok()
       .expect(LINK('/wallets/ledger-wallet')).ok()
