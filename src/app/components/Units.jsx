@@ -13,7 +13,7 @@ class Units extends React.Component {
     const {
       value: propValue, symbol, showSymbol, prefixSymbol, showIcon, iconProps,
       precision, abbreviate, maxDigits, prefix, suffix, roundingMode, roundingType, 
-      expand, symbolSpaced, ...props
+      expand, symbolSpaced, includeTrailingZeros, ...props
     } = this.props
     let value = toBigNumber(propValue)
     let expanded = value.toFormat()
@@ -28,7 +28,9 @@ class Units extends React.Component {
     }
     if (precision) {
       shrunk = roundingType === 'dp'
-        ? value.toFormat(precision, roundingMode)
+        ? (!includeTrailingZeros && value.decimalPlaces() < precision
+          ? value.toFormat()
+          : value.toFormat(precision, roundingMode))
         : value.toDigits(precision, roundingMode).toFormat()
       const digitCount = shrunk.replace(/\D/g, '').length
       if (maxDigits && digitCount > maxDigits) {
@@ -99,6 +101,7 @@ Units.defaultProps = {
   iconProps: {},
   symbolSpaced: true,
   expand: true,
+  includeTrailingZeros: false,
 }
 
 export default Units
