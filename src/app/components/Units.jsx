@@ -34,7 +34,6 @@ class Units extends React.Component {
       if (maxDigits && digitCount > maxDigits) {
         shrunk = value.toExponential(precision)
       }
-      shrunk = shrunk.replace(/([0-9]+(\.[0-9]+[1-9])?)(\.?0+$)/, '$1')
     }
     if (abbrevSuffix) {
       shrunk = `${shrunk}${abbrevSuffix}`
