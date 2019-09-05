@@ -1,11 +1,10 @@
 import pad from 'pad-left'
-import { isBigNumber, toNumber } from 'Utilities/numbers'
+import { isBigNumber, toNumber, toBigNumber } from 'Utilities/numbers'
 import queryString from 'query-string'
 import { mergeWith, union, without, omit, identity } from 'lodash'
 import sha256 from 'hash.js/lib/hash/sha/256'
 import baseX from 'base-x'
 import urlJoin from 'url-join'
-import { toBigNumber } from './numbers'
 
 /** Used to remove bitcoincash: prefix from addresses */
 export function stripAddressNamespace(address) {
@@ -423,3 +422,14 @@ export const capitalizeFirstLetter = (string) => {
   if (!string) return
   return string.charAt(0).toUpperCase() + string.slice(1)
 }
+
+export const sortObjOfArrayByTwoProperties = (fields) => (a, b) => fields.map(o => {
+  let dir = 1
+  if (o[0] === '-') { 
+    dir = -1 
+    o = o.substring(1) 
+  }
+  const c1 = typeof a[o] === 'object' ? toNumber(a[o]) : a[o]
+  const d1 = typeof b[o] === 'object' ? toNumber(b[o]) : b[o]
+  return c1 > d1 ? dir : c1 < d1 ? -(dir) : 0
+}).reduce((p, n) => p ? p : n, 0)

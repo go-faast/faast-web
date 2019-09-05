@@ -5,7 +5,7 @@ import { createStructuredSelector } from 'reselect'
 import debounceHandler from 'Hoc/debounceHandler'
 import { Row, Col, Button, Input } from 'reactstrap'
 import PropTypes from 'prop-types'
-import { sortByProperty } from 'Utilities/helpers'
+import { sortObjOfArrayByTwoProperties } from 'Utilities/helpers'
 import CoinIcon from 'Components/CoinIcon'
 import Units from 'Components/Units'
 import { toastr } from 'react-redux-toastr'
@@ -117,7 +117,7 @@ export default compose(
   withState('searchQuery', 'updateSearchQuery', ''),
   withHandlers({
     applySortOrder: () => (list) => {
-      return sortByProperty(list, 'disabled')
+      return list.sort(sortObjOfArrayByTwoProperties(['disabled', '-marketCap']))
     },
     assetExtender: ({ supportedAssetSymbols, portfolioSymbols, 
       isAssetDisabled, isAppRestricted, doToggleFeedbackForm }) => (assets) => {
