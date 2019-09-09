@@ -28,7 +28,7 @@ const renderResult = (asset, { walletHoldings, handleSelect, dark }) => {
   const balance = walletHoldings && walletHoldings.balances[symbol]
   const hasBalance = balance && balance.gt(0)
   return (
-    <Row key={symbol} className={classNames('p-0 m-0 position-relative', !disabled && 'cursor-pointer', !dark && style.light)} style={{ maxWidth: '100%', cursor: disabled && restricted && 'default' }}>
+    <Row key={symbol} tabindex={0} className={classNames('p-0 m-0 position-relative', !disabled && 'cursor-pointer', !dark && style.light)} style={{ maxWidth: '100%', cursor: disabled && restricted && 'default' }}>
       <Col className='p-0 m-0'>
         <Button tag={Row} color='ultra-dark' size='sm' onClick={() => handleSelect(asset)} disabled={disabled}
           className={classNames(style.assetButtonList, 'flat text-left m-0')} style={{ borderTopWidth: 0, height: 49 }}>
@@ -56,7 +56,7 @@ const renderResult = (asset, { walletHoldings, handleSelect, dark }) => {
     </Row>
   )}
 
-const AssetSelector = ({ handleSearchChange, results, onClose, rowsToShow, dark, ...props }) => {
+const AssetSelector = ({ handleSearchChange, results, onClose, rowsToShow, dark, handleEnterButton, ...props }) => {
   return (
     <Row style={{ maxWidth: '100%' }} className={classNames('p-0 m-0', !dark && style.light)}>
       <Col className='p-0 m-0 position-relative' style={{ maxHeight: 41 }} sm='12'>
@@ -78,6 +78,7 @@ const AssetSelector = ({ handleSearchChange, results, onClose, rowsToShow, dark,
           autoFocus
           autoComplete='off'
           onChange={handleSearchChange}
+          onKeyPress={handleEnterButton}
         />
       </Col>
       <Col className='p-0 shadow' sm='12' style={{ maxHeight: (rowsToShow * 49), overflowY: 'scroll', zIndex: 99999, marginTop: 1 }}>
@@ -207,6 +208,11 @@ export default compose(
       const query = event.target.value
       updateSearchQuery(query)
       performSearch(query)
+    },
+    handleEnterButton: ({ handleSelect, results }) => (event) => {
+      if (event.key == 'Enter') {
+        handleSelect(results[0])
+      }
     },
   }),
   debounceHandler('performSearch', DEBOUNCE_WAIT),
