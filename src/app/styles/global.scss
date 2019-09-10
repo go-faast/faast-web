@@ -5,15 +5,21 @@
   color: #d0d7df;
   transition: all .2s ease-in-out;
   cursor: pointer;
+
   &:hover {
     color: #ffef94;
   }
+}
+
+svg {
+  font-family: 'Open Sans', 'Helvetica', 'Arial', sans-serif !important;
 }
 
 .custom-hover {
   transition: all .15s ease-in-out;
   opacity: 1;
   filter: brightness(1);
+
   &:hover {
     filter: brightness(1.1);
     text-decoration: none !important;
@@ -23,6 +29,7 @@
 .font-xs {
   font-size: 75%;
 }
+
 .font-xxs {
   font-size: 60%;
 }
@@ -31,13 +38,14 @@
   color: #ffef94;
   transition: all .2s ease-in-out;
   cursor: pointer;
+
   &:hover {
     color: #f9db2d
   }
 }
 
 .swapChangeArrow {
-  position:relative;
+  position: relative;
   vertical-align: middle;
   top: -2px;
 }
@@ -64,15 +72,21 @@
 }
 
 @-webkit-keyframes blinker {
-  from { opacity: 1.0; }
-  to { opacity: 0.0; }
+  from {
+    opacity: 1.0;
+  }
+
+  to {
+    opacity: 0.0;
+  }
 }
+
 .blink {
   text-decoration: blink;
   -webkit-animation-name: blinker;
   -webkit-animation-duration: 0.8s;
-  -webkit-animation-iteration-count:infinite;
-  -webkit-animation-timing-function:ease-in-out;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: ease-in-out;
   -webkit-animation-direction: alternate;
 }
 
@@ -94,33 +108,39 @@
   .toastr {
     border-radius: $border-radius;
     box-shadow: $component-shadow;
+
     &.rrt-error {
       background-color: $ultra-dark;
       border-bottom: 0.25rem solid $danger;
     }
   }
+
   .rrt-middle-container {
     .rrt-title {
       font-size: $font-size-sm !important;
       font-weight: $font-weight-base !important;
     }
   }
+
   .rrt-right-container {
     .close-toastr {
       font-size: $font-size-sm !important;
       color: $text-color;
     }
   }
+
   .rrt-confirm-holder {
     .shadow {
       background-color: rgba($modal-backdrop-bg, $modal-backdrop-opacity);
     }
+
     .rrt-confirm {
       background-color: $ultra-dark;
       border-radius: $border-radius;
       color: $text-color;
       box-shadow: $component-shadow;
       border: $component-border;
+
       .rrt-buttons-holder {
         .rrt-button {
           @extend .btn-ultra-dark;

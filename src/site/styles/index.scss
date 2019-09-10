@@ -1,4 +1,5 @@
 @import '~faast-ui/src/style/index.scss';
+@import '~faast-ui/src/style/variables.scss';
 @import './plugins/brands';
 @import './plugins/features-boxed';
 @import './plugins/features-clean';
@@ -13,12 +14,17 @@
 .slick-interface-section {
   padding-top: 2.5rem;
   padding-bottom: 2.5rem;
-  background: #074139; /* Old browsers */
-  background: -moz-linear-gradient(top, #074139 0%, #181818 100%); /* FF3.6-15 */
-  background: -webkit-linear-gradient(top, #074139 0%,#181818 100%); /* Chrome10-25,Safari5.1-6 */
-  background: linear-gradient(to bottom, #074139 0%,#181818 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+  background: #074139;
+  /* Old browsers */
+  background: -moz-linear-gradient(top, #074139 0%, #181818 100%);
+  /* FF3.6-15 */
+  background: -webkit-linear-gradient(top, #074139 0%, #181818 100%);
+  /* Chrome10-25,Safari5.1-6 */
+  background: linear-gradient(to bottom, #074139 0%, #181818 100%);
+  /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
   border-bottom: solid 1px #212121;
 }
+
 .wallet-logo {
   background-color: #212121;
   padding-bottom: 13px;
@@ -28,4 +34,8 @@
   padding-right: 48px;
   padding-left: 48px;
   height: 72px;
+}
+
+svg {
+  font-family: 'Open Sans', 'Helvetica', 'Arial', sans-serif !important;
 }

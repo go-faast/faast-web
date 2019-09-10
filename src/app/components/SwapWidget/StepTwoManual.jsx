@@ -97,8 +97,8 @@ const StepTwoManual = ({
           quotedRate && [<T tag='span' i18nKey='app.stepTwoManual.rate'>Rate:</T>, <Rate rate={quotedRate} from={sendSymbol} to={receiveSymbol}/>],
           sendAmount
             ? [<T tag='span' i18nKey='app.stepTwoManual.depositAmount'>Send amount:</T>, <Units value={sendAmount} symbol={sendSymbol} precision={8}/>]
-            : (minimumDeposit && [<T tag='span' i18nKey='app.stepTwoManual.minimumAmoun'>Send minimum:</T>, <Units value={minimumDeposit} symbol={sendSymbol} precision={8}/>]),
-          !sendAmount && (maxiumumDeposit && ['Send maximum:', <Units value={maxiumumDeposit} symbol={sendSymbol} precision={8}/>]),
+            : (minimumDeposit && [<T tag='span' i18nKey='app.stepTwoManual.minimumAmount'>Send minimum:</T>, <Units value={minimumDeposit} symbol={sendSymbol} precision={8}/>]),
+          !sendAmount && (maxiumumDeposit && [<T tag='span' i18nKey='app.stepTwoManual.maximumAmount'>Send maximum:</T>, <Units value={maxiumumDeposit} symbol={sendSymbol} precision={8}/>]),
           receiveAmount && [<T tag='span' i18nKey='app.stepTwoManual.receiveAmount'>Receive amount:</T>, <Units value={receiveAmount} symbol={receiveSymbol} precision={8}/>]
         ]}/>
         <div className='mt-2'>
@@ -107,7 +107,7 @@ const StepTwoManual = ({
               <T tag='span' i18nKey='app.stepTwoManual.fixedPrice'>* Quoted rate is an estimate based on current market conditions. Actual rate may vary.</T>
             ) : (secondsUntilPriceExpiry > 0 && (
               <Timer className='text-warning' seconds={secondsUntilPriceExpiry}
-                label={ <T tag='span' i18nKey='app.stepTwoManual.quotedRat'>* Quoted rate is guaranteed if funds are sent within:</T>}
+                label={ <T tag='span' i18nKey='app.stepTwoManual.quotedRate'>* Quoted rate is guaranteed if funds are sent within:</T>}
                 onTimerEnd={handleTimerEnd}/>
             ))}
           </small>

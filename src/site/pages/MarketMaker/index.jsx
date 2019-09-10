@@ -166,7 +166,7 @@ export default compose(
       </Row>
       <Row style={{ background: '#fff' }} className='text-center pb-5 mx-0'>
         <Col>
-          <h1 className='font-weight-bold mt-5 pt-3' style={{ color: blueColor }}>Frequently Asked Questions</h1>
+          <h1 className='font-weight-bold mt-5 pt-3' style={{ color: blueColor }}>{t.faq}</h1>
           <Container>
             {faqCopy.map((x, i) => {
               return (
