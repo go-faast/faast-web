@@ -23,6 +23,8 @@ export const statsRetrieved = createAction('STATS_RETRIEVED')
 export const updateSwapExportLink = createAction('UPDATE_SWAP_EXPORT_LINK')
 export const swapExportLinkLoading = createAction('SWAP_EXPORT_LINK_LOADING')
 export const withdrawalsRetrieved = createAction('WITHDRAWALS_RETRIEVED')
+export const withdrawalsTotalUpdated = createAction('WITHDRAWAL_HISTORY_TOTAL_UPDATED')
+export const withdrawalsLoading = createAction('WITHDRAWALS_LOADING')
 export const swapsRetrieved = createAction('SWAPS_RETRIEVED')
 export const swapsError = createAction('SWAPS_RETRIEVED')
 export const swapsLoading = createAction('SWAPS_LOADING')
@@ -92,9 +94,11 @@ export const getAccountDetails = (id, key) => (dispatch) => {
     })
 }
 
-export const getAffiliateWithdrawals = (id, key) => (dispatch) => {
-  return Faast.getAffiliateSwapPayouts(id, key)
+export const getAffiliateWithdrawals = (id, key, page, limit) => (dispatch) => {
+  dispatch(withdrawalsLoading())
+  return Faast.getAffiliateSwapPayouts(id, key, page, limit)
     .then((response) => {
+      dispatch(dispatch(withdrawalsTotalUpdated(response.total)))
       sessionStorageSetJson('state:affiliate_withdrawals', response.withdrawals)
       return dispatch(withdrawalsRetrieved(response.withdrawals))
     })

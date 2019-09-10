@@ -54,7 +54,7 @@ const TableRow = ({
 
 const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading, currentPage, title, 
   swapHistoryTotal, handlePageClick, handleExportSwaps, swapsExportLink, isSwapExportLinkLoading }) => {
-  swaps = swaps && size === 'small' ? swaps.slice(0,5) : swaps
+  swaps = swaps && size === 'small' ? swaps.slice(0,6) : swaps
   return (
     <Fragment>
       <Card className={classNames(card, size === 'small' && smallCard, size !== 'small' && 'mx-auto')}>
@@ -97,7 +97,7 @@ const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading, currentPage, title,
                   <CardFooter 
                     tag={Link} 
                     to='/affiliates/swaps'
-                    className={classNames(cardFooter, text, swaps.length < 5 && 'position-absolute', 'p-2 text-center cursor-pointer d-block w-100')}
+                    className={classNames(cardFooter, text, swaps.length <= 5 && 'position-absolute', 'p-2 text-center cursor-pointer d-block w-100')}
                     style={{ bottom: 0 }}
                   >
                     <span className='font-weight-bold'>View All Swaps</span>

@@ -176,7 +176,7 @@ export default compose(
               <UnitsLoading value={swapFee} symbol={receiveSymbol} error={error} precision={null}/>
             ],
             [
-              isComplete ? 'Sent:' : 'Sending:',
+              isComplete ? <T tag='span' i18nKey='app.swapStatusCard.sent'>Sent:</T> : <span><T tag='span' i18nKey='app.swapStatusCard.sending'>Sending</T>:</span>,
               <Fragment>
                 <UnitsLoading value={sendAmount} symbol={sendSymbol} error={error} precision={null}/>
                 {sendWalletId && (
@@ -187,7 +187,7 @@ export default compose(
               </Fragment>
             ],
             [
-              isComplete ? 'Received:' : 'Receiving:',
+              isComplete ? <T tag='span' i18nKey='app.swapStatusCard.received'>Received:</T> : <T tag='span' i18nKey='app.swapStatusCard.receiving'>Receiving:</T>,
               <Fragment>
                 <UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} precision={null}/>
                 <span className='d-none d-xs-inline ml-2'>

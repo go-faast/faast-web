@@ -8,6 +8,7 @@ import Layout from 'Components/Layout'
 import BlockstackWelcome from 'Components/BlockstackWelcome'
 import Balances from 'Components/Balances'
 import Sidebar from 'Components/Sidebar'
+import T from 'Components/i18n/T'
 
 const DashboardView = (props) => {
   const {
@@ -37,7 +38,7 @@ const DashboardView = (props) => {
               <i className='fa fa-star text-white' />
             </div>
             <Col>
-              <span className='text-white'>Help us improve Faa.st with your feedback!</span>
+              <T tag='span' i18nKey='app.feedbackForm.helpImprove' className='text-white'>Help us improve Faa.st with your feedback!</T>
             </Col>
           </Row>
           <Row className='gutter-3'>

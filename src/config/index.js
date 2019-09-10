@@ -1,6 +1,7 @@
 import highCharts from './highcharts'
 import tokenFunctionSignatures from './tokenFunctionSignatures'
 import walletTypes from './walletTypes'
+import extraAssetFields from './extraAssetFields'
 import envConfig from './environment'
 import BigNumber from 'bignumber.js'
 
@@ -47,5 +48,6 @@ export default {
     .filter(([, { web3 }]) => web3)
     .map(([type]) => type),
   highCharts,
-  tokenFunctionSignatures
+  tokenFunctionSignatures,
+  extraAssetFields,
 }

@@ -54,7 +54,8 @@
       "featurePlaceholder": "Please describe the feature you would like added to Faa.st...",
       "designPlaceholder": "Please describe what you like or dislike about the Faa.st design...",
       "bugPlaceholder": "Please describe any bugs you encountered using Faa.st...",
-      "otherPlaceholder": "Please provide your feedback here..."
+      "otherPlaceholder": "Please provide your feedback here...",
+      "helpImprove": "Help us improve Faa.st with your feedback!"
     },
     "walletTypes": {
       "nonSegwit": "legacy (non-segwit) account",
@@ -240,7 +241,8 @@
       "dueToYourLocation": "due to your location.",
       "ensurePricing": "to ensure efficient pricing.",
       "invalid": "Invalid",
-      "address": "address"
+      "address": "address",
+      "cannotSendMoreThanHave": "Cannot send more than you have."
     },
     "progressBar": {
       "createSwap": "Create Swap",
@@ -307,7 +309,10 @@
       "date": "Date:",
       "orderId": "Order ID:",
       "sentTx": "Sent txn:",
-      "last": "Last"
+      "last": "Last",
+      "received": "Received:",
+      "receiving": "Receiving:",
+      "sent": "Sent:"
     },
     "searchResults": {
       "view": "View in portfolio",
@@ -398,15 +403,16 @@
       "receiveAddress": "Receive address:",
       "refundAddress": "Refund address:",
       "rate": "Rate:",
-      "depositAmount": "Deposit amount:",
-      "minimumAmount": "Minimum deposit:",
+      "depositAmount": "Send amount:",
+      "minimumAmount": "Send minimum:",
       "receiveAmount": "Receive amount:",
       "fixedPrice": "* Quoted rate is an estimate based on current market conditions. Actual rate may vary.",
-      "quotedRate": "* Quoted rate is guaranteed if deposit is sent within:",
+      "quotedRate": "* Quoted rate is guaranteed if funds are sent within:",
       "orderDetails": "ORDER DETAILS",
       "send": "Send",
       "atLeast": "at least",
-      "toAddress" : "to address:"
+      "toAddress" : "to address:",
+      "maximumAmount": "Send maximum:"
     },
     "hardwareWalletModal": {
       "accountSelect": {
