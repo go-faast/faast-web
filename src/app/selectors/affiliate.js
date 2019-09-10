@@ -18,6 +18,8 @@ export const isAffiliateDataStale = createSelector(getAffiliateState, affiliate 
   const { lastUpdated } = affiliate
   return (Date.now() - lastUpdated) >= 300000
 })
+export const areWithdrawalsLoading = createSelector(getAffiliateState, ({ withdrawalsLoading }) => withdrawalsLoading)
+export const getTotalWithdrawals = createSelector(getAffiliateState, ({ totalWithdrawals }) => totalWithdrawals)
 export const areSwapsLoading = createSelector(getAffiliateState, ({ swapsLoading }) => swapsLoading)
 export const swapsExportLink = createSelector(getAffiliateState, ({ swapExportLink }) => swapExportLink)
 export const isSwapExportLinkLoading = createSelector(getAffiliateState, ({ swapExportLinkLoading }) => swapExportLinkLoading)

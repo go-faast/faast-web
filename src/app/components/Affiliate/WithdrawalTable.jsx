@@ -1,8 +1,10 @@
 import React, { Fragment } from 'react'
+import * as qs from 'query-string'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
-import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers } from 'recompose'
+import { withRouter } from 'react-router'
+import { compose, setDisplayName, setPropTypes, defaultProps, withHandlers, withProps, lifecycle } from 'recompose'
 import { Table, Card, CardHeader, CardBody, CardFooter } from 'reactstrap'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
@@ -10,15 +12,20 @@ import classNames from 'class-names'
 import { createStatusLabel } from 'Components/TradeTable'
 import Units from 'Components/Units'
 import Expandable from 'Components/Expandable'
+import Paginator from 'Components/Paginator'
+import Loading from 'Components/Loading'
+
+import { getAffiliateWithdrawals } from 'Actions/affiliate'
 
 import { ellipsize } from 'Utilities/display'
 
-import { getAffiliateWithdrawalsArray } from 'Selectors'
+import { getAffiliateWithdrawalsArray, affiliateId, secretKey, 
+  getTotalWithdrawals, areWithdrawalsLoading } from 'Selectors/affiliate'
 
 import { text, affilateTable, card, cardHeader, cardFooter, smallCard } from './style'
 
 const WithdrawalTableRow = ({
-  withdrawal,
+  withdrawal, 
   withdrawal: { created_at, withdrawal_address, withdrawal_amount = 0, 
     withdrawal_currency = 'BTC', status, transaction_id },
   size,
@@ -46,14 +53,14 @@ const WithdrawalTableRow = ({
   )
 }
 
-const AffiliateWithdrawalTable = ({ withdrawals, size }) => {
+const AffiliateWithdrawalTable = ({ withdrawals, size, currentPage, handlePageClick, withdrawalHistoryTotal, areWithdrawalsLoading }) => {
   withdrawals = size === 'small' ? withdrawals.slice(0,9) : withdrawals
   return (
     <Fragment>
       <Card className={classNames(card, size === 'small' && smallCard, size != 'small' && 'mx-auto')}>
         <CardHeader className={cardHeader}>Recent Withdrawals</CardHeader>
         <CardBody className={classNames(withdrawals.length > 0 && 'p-0', 'text-center')}>
-          {withdrawals.length > 0 ? (
+          {areWithdrawalsLoading ? (<Loading className='py-4' />) : withdrawals.length > 0 ? (
             <Table className={classNames('text-left', text, affilateTable)} striped responsive>
               <thead>
                 <tr>
@@ -88,6 +95,15 @@ const AffiliateWithdrawalTable = ({ withdrawals, size }) => {
             </CardFooter>)}
         </CardBody>
       </Card>
+      {size === 'large' && withdrawalHistoryTotal > 1 && (
+        <Paginator 
+          className='mt-3'
+          onPageClick={handlePageClick} 
+          page={currentPage} 
+          pages={Math.ceil(withdrawalHistoryTotal / 20)}
+          theme='light'
+        />
+      )}
     </Fragment>
   )
 }
@@ -96,7 +112,12 @@ export default compose(
   setDisplayName('AffiliateWithdrawalTable'),
   connect(createStructuredSelector({
     withdrawals: getAffiliateWithdrawalsArray,
+    areWithdrawalsLoading,
+    withdrawalHistoryTotal: getTotalWithdrawals,
+    affiliateId,
+    secretKey,
   }), {
+    getAffiliateWithdrawals
   }),
   setPropTypes({
     size: PropTypes.string
@@ -104,6 +125,26 @@ export default compose(
   defaultProps({
     size: 'large'
   }),
-  withHandlers({
+  withRouter,
+  withProps(({ location }) => {
+    const urlParams = qs.parse(location.search)
+    let { page: currentPage = 1 } = urlParams
+    currentPage = parseInt(currentPage)
+    let title = currentPage > 1 ? (<span>Recent Swaps - Page {currentPage}</span>) : 'Recent Swaps'
+    return ({
+      currentPage,
+      title
+    })
   }),
+  withHandlers({
+    handlePageClick: ({ getAffiliateWithdrawals, affiliateId, secretKey }) => (page) => {
+      getAffiliateWithdrawals(affiliateId, secretKey, page)
+    },
+  }),
+  lifecycle({
+    componentWillMount() {
+      const { getAffiliateWithdrawals, affiliateId, secretKey, currentPage } = this.props
+      getAffiliateWithdrawals(affiliateId, secretKey, currentPage)
+    }
+  })
 )(AffiliateWithdrawalTable)
