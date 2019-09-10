@@ -188,5 +188,19 @@ export default (config) => {
       .eql("An introduction to ICO's")
   })
 
+  test('Go to portfolio', async t => {
+    const upload = Selector('input').withAttribute('type', 'file')
+    const dropdown = Selector('span').withAttribute('class', 'mr-2 cursor-pointer font-size-xxs badge badge-light')
+
+    await t
+      .click(HREF('/app/connect'))
+      .expect(LINK('/app/connect/hw/trezor')).ok()
+      .expect(LINK('/app/connect/hw/ledger')).ok()
+      .setFilesToUpload(upload, [
+        './testwallet1',        
+    ])
+    .expect(dropdown).ok()
+  })
+
 
 }
