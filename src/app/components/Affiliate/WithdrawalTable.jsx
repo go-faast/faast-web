@@ -53,12 +53,12 @@ const WithdrawalTableRow = ({
   )
 }
 
-const AffiliateWithdrawalTable = ({ withdrawals, size, currentPage, handlePageClick, withdrawalHistoryTotal, areWithdrawalsLoading }) => {
+const AffiliateWithdrawalTable = ({ withdrawals, size, currentPage, handlePageClick, withdrawalHistoryTotal, areWithdrawalsLoading, title }) => {
   withdrawals = size === 'small' ? withdrawals.slice(0,9) : withdrawals
   return (
     <Fragment>
       <Card className={classNames(card, size === 'small' && smallCard, size != 'small' && 'mx-auto')}>
-        <CardHeader className={cardHeader}>Recent Withdrawals</CardHeader>
+        <CardHeader className={cardHeader}>{title}</CardHeader>
         <CardBody className={classNames(withdrawals.length > 0 && 'p-0', 'text-center')}>
           {areWithdrawalsLoading ? (<Loading className='py-4' />) : withdrawals.length > 0 ? (
             <Table className={classNames('text-left', text, affilateTable)} striped responsive>
@@ -130,7 +130,7 @@ export default compose(
     const urlParams = qs.parse(location.search)
     let { page: currentPage = 1 } = urlParams
     currentPage = parseInt(currentPage)
-    let title = currentPage > 1 ? (<span>Recent Swaps - Page {currentPage}</span>) : 'Recent Swaps'
+    let title = currentPage > 1 ? (<span>Recent Withdrawals - Page {currentPage}</span>) : 'Recent Withdrawals'
     return ({
       currentPage,
       title
