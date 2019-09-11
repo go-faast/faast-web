@@ -40,7 +40,8 @@ export default {
     BTC: 'bitcoin',
     BCH: 'bitcoincash',
     LTC: 'litecoin',
-    ETH: 'ethereum'
+    ETH: 'ethereum',
+    XMR: 'monero_wallet'
   },
   defaultWatchlist: ['BTC', 'ETH', 'BCH', 'EOS', 'LTC', 'USDT', 'XMR', 'TRX', 'DASH', 'MIOTA'],
   walletTypes,

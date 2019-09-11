@@ -25,10 +25,12 @@ export default compose(
   defaultProps({
     scan: false,
   }),
-  withProps(({ address, depositTag, asset: { bip21Prefix } = {}, amount, qrClass, ...props }) => {
+  withProps(({ address, depositTag, asset: { bip21Prefix, cmcID, symbol } = {}, amount, qrClass, ...props }) => {
+    bip21Prefix = bip21Prefix ? bip21Prefix : cmcID
+    const amountTerminology = symbol === 'XMR' ? 'tx_amount' : 'amount'
     const withProtocol = bip21Prefix && address.indexOf(bip21Prefix) < 0 
       ? `${bip21Prefix}:${address}` : address
-    const fullUri = !amount || bip21Prefix === 'ethereum' ? withProtocol : `${withProtocol}?amount=${amount}${depositTag && `&dt=${depositTag}`}`
+    const fullUri = !amount || bip21Prefix === 'ethereum' ? `${withProtocol}${depositTag ? `?dt=${depositTag}` : ''}` : `${withProtocol}?${amountTerminology}=${amount}${depositTag ? `&dt=${depositTag}` : ''}`
     return {
       fullUri,
       qrProps: {
