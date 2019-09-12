@@ -30,7 +30,7 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
   handleAdd, isAlreadyInPortfolio, showStats, pendingSwaps }) => {
   const {
     address, assetHoldings, holdingsLoaded, holdingsError, label, totalFiat, 
-    totalFiat24hAgo, totalChange
+    totalFiat24hAgo, totalChange, id
   } = wallet
 
   const assetRows = assetHoldings.filter(({ shown }) => shown)
@@ -60,9 +60,11 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
 
   const searchAndShare = (
     (<Fragment>
-      <Col style={{ top: '-1px' }} className='p-0 position-relative' xs='auto'>
-        <ShareButton wallet={wallet}/>
-      </Col>
+      {address && (
+        <Col style={{ top: '-1px' }} className='p-0 position-relative' xs='auto'>
+          <ShareButton wallet={wallet}/>
+        </Col>
+      )}
       <Col className='p-0 pr-2' xs='auto'>
         <Dropdown group isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
           <DropdownToggle 
@@ -98,12 +100,12 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
             <Col className='px-0' xs='12'>
               <Row className='gutter-3 align-items-center'>
                 <Col className='px-2'>
-                  <h5>{address ? (
+                  <h5>{id !== 'default' ? (
                     <T tag='span' i18nKey='app.dashboard.walletHoldings'>{label} Holdings</T>
                   ) : (<T tag='span' i18nKey='app.dashboard.portfolioHoldings'>Portfolio Holdings</T>)}
                   </h5>
                 </Col>
-                {address ?
+                {id !== 'default' ?
                   searchAndShare
                   : null}
               </Row>
