@@ -9,6 +9,7 @@ export default (config) => {
 
 
   test('Navigate to Market Maker', async t => {
+    console.log('market maker')
     await t
       .navigateTo('./market-maker')
       .expect(Selector('#root').child('div').nth(0).child('div').nth(0).find('h1').innerText)
