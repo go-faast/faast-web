@@ -8,9 +8,6 @@ install:
 - npm install --no-save
 - NODE_OPTIONS="--max-old-space-size=4096" npm run build
 before_script:
-- "export DISPLAY=:99.0"
-- "sh -e /etc/init.d/xvfb start"
-- sleep 3
 - fluxbox >/dev/null 2>&1 &
 after_success:
 - echo $TRAVIS_TEST_RESULT
@@ -24,6 +21,8 @@ env:
   - secure: klh87TvtcZcjZ5GSXRSOiB5USjYq30plJHokr3MzuSH5gyw48RX/+PEKxMavVP/VfJBBXf5rmeBGP1A7CxA8R0CxLTiLoPl5utQpw0uzrp6yNaaOUozz5Fjeghc4cw5T2ra49MtFO37S+MrHPfURNNGkdL6mVto8cJ0cP2izCuZ67XHfUG/gKZ7UOaWkgO0vodQmkVjtdg6cpmxB88yAsjoet2pXlCxp7zpPEQPKixbgu1/9Q6NSuCPY9UvLzT3HjJuQFowirxrEXwow6QvBfSz95NezrfNIrDKab0STRHuyFSvSz6clqFq4abf0YtxN2hrlWLe26o/aE9pNRx6OJwz8gBtK0dx4FgyhLUeTqK2hznFucYXc9n/Abmc2DPtDsLjFIDjMOAAZXUNKkFPhFT2lf8doQoLH8I9ujgMiiycPDRy+9DwgHAP1pl74Mom5bCaOy56mASIA0QKzH+pq5qJ5u5I/mkZhx062qP31mJvPvD7pVDaYxFlx/Sw7x4LfDhmIF1v83NutX5jSoGcLCyC38cBZX+er70/8bVi3Z67PPH1OI9ZiFXspH0QIT3bzOjwDYu5O7ce6jK4YBYN1fAT5AjgekxFcV8L6wYDyua95wO74cW8JKW8i5aN13NhlXWnXG3LrKg/p/aQ7vOjtRQwx7vSNwl++4/hzttpXDfQ=
 
 dist: xenial
+services:
+  - xvfb
 sudo: required
 
 addons:
