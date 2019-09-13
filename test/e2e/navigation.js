@@ -74,8 +74,8 @@ export default (config) => {
 
     await t
 
-      .click(affil)
-      .expect(affiliateid).ok()
+      // .click(affil)
+      // .expect(affiliateid).ok()
 
       .click(supported)
       .expect(LINK('/app/swap?to=BTC')).ok()
