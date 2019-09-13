@@ -31,7 +31,7 @@ gulp.task('test:e2e', () =>
     .pipe(testcafe({
       // https://github.com/DevExpress/gulp-testcafe/blob/master/index.js
       app: 'npm run start',
-      browsers: ['chrome', 'firefox'],
+      browsers: ['chrome'],
       reporter: [
         {
           name: 'spec'
