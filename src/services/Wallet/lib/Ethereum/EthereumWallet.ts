@@ -36,14 +36,12 @@ async function estimateGasLimit(txData: Partial<TxData>): Promise<BigNumber> {
     return Promise.resolve(txData.data ? DEFAULT_GAS_LIMIT_TOKEN : DEFAULT_GAS_LIMIT_ETH)
   }
   try {
-    const gasLimit = toBigNumber(await getFastGasPrice()).div(10)
-    console.log(toNumber(gasLimit))
+    let gasLimit = toBigNumber(await getFastGasPrice()).div(10)
     if (gasLimit) {
-      console.log(gasLimit)
+      gasLimit = gasLimit.times(1000)
       const minGasLimit = txData.data ? MIN_GAS_LIMIT_TOKEN : MIN_GAS_LIMIT_ETH
       return gasLimit.lt(minGasLimit) ? minGasLimit : gasLimit
     } else {
-      console.log('nope')
       return getWeb3().eth.estimateGas(txData)
       .then(toBigNumber)
       .then((web3GasLimit) => {
