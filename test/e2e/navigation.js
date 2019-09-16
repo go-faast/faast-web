@@ -3,12 +3,13 @@ import { Selector } from 'testcafe'
 export default (config) => {
   fixture `Navigation`
     .page(config.baseUrl)
-  
-  const LINK =  (x) =>  Selector('a').withAttribute('href', x).exists
-  const HREF =  (x) =>  Selector('a').withAttribute('href', x)  
 
-  
+  const LINK =  (x) =>  Selector('a').withAttribute('href', x).exists
+  const HREF =  (x) =>  Selector('a').withAttribute('href', x)
+
+
   test('Navigate to Market Maker', async t => {
+    console.log('market maker')
     await t
       .navigateTo('./market-maker')
       .expect(Selector('#root').child('div').nth(0).child('div').nth(0).find('h1').innerText)
@@ -31,7 +32,7 @@ export default (config) => {
       .expect(LINK('/wallets/mist-browser')).ok()
       .expect(LINK('/wallets/trust-wallet')).ok()
       .expect(LINK('/wallets/coinbase-wallet')).ok()
-      .expect(LINK('/wallets/status')).ok()    
+      .expect(LINK('/wallets/status')).ok()
   })
 
   test('Bottom menu links', async t => {
@@ -45,11 +46,11 @@ export default (config) => {
       .expect(LINK('/app/assets/trending')).ok()
       .expect(LINK('/app/assets/watchlist')).ok()
       .expect(LINK('/what-is-an-ico')).ok()
-      .expect(LINK('/what-are-smart-contracts')).ok() 
-      .expect(LINK('/what-is-the-difference-between-ico-ipo-ito')).ok() 
-      .expect(LINK('/what-is-ethereum')).ok() 
-      .expect(LINK('/what-is-a-dao')).ok() 
-      .expect(LINK('/how-to-buy-ethereum')).ok() 
+      .expect(LINK('/what-are-smart-contracts')).ok()
+      .expect(LINK('/what-is-the-difference-between-ico-ipo-ito')).ok()
+      .expect(LINK('/what-is-ethereum')).ok()
+      .expect(LINK('/what-is-a-dao')).ok()
+      .expect(LINK('/how-to-buy-ethereum')).ok()
       .expect(LINK('https://api.faa.st/')).ok()
       .expect(LINK('/static/faast-press-kit.zip')).ok()
   })
@@ -72,11 +73,47 @@ export default (config) => {
     const supported = HREF('/assets')
 
     await t
-      .click(supported)
-      .expect(LINK('/app/swap?to=BTC')).ok()
+
+      // .click(affil)
+      // .expect(affiliateid).ok()
+      .expect(LINK('/assets')).ok()
+      await supported()
+      // .expect(LINK('/app/swap?to=BTC')).ok()
   })
 
-  
+
+  test('Goes to wallets info', async t => {
+    await t
+      .click(HREF('/wallets/trezor'))
+      .expect(LINK('https://trezor.io/')).ok()
+
+      .click(HREF('/wallets/ledger-wallet'))
+      .expect(LINK('https://www.ledger.com/')).ok()
+
+      .click(HREF('/wallets/metamask'))
+      .expect(LINK('https://metamask.io/')).ok()
+
+      .click(HREF('/wallets/mist-browser'))
+      .expect(HREF('https://github.com/ethereum/mist')).ok()
+
+      .click(HREF('/wallets/trust-wallet'))
+      .expect(LINK('https://trustwalletapp.com/')).ok()
+
+      .click(HREF('/wallets/coinbase-wallet'))
+      .expect(LINK('https://wallet.coinbase.com/')).ok()
+
+      .click(HREF('/wallets/status'))
+      .expect(LINK('https://status.im/')).ok()
+  })
+
+
+  test('Goes to trending', async t => {
+    await t
+      .click(HREF('/app/assets/trending'))
+      // await t.expect(Selector('#form-tradeableForm-requiredCheckbox', { visibilityCheck: true, timeout: 120000 }).exists).ok()
+  })
+
+
   test('Tests texts in pages', async t => {
     const H4 = Selector('h4').innerText
     await t
@@ -103,7 +140,7 @@ export default (config) => {
       .click(HREF('/terms'))
       .expect(H4)
       .eql('Terms of Use')
-      
+
       .click(HREF('/privacy'))
       .expect(H4)
       .eql('Privacy Policy')
@@ -144,12 +181,26 @@ export default (config) => {
 
       .click(lang)
       .click(chi)
-      .click(HREF('/zh'))      
+      .click(HREF('/zh'))
       .expect(LINK('/affiliates')).ok()
       .expect(LINK('/app/connect')).ok()
       .click(HREF('/what-is-an-ico'))
       .expect(H4)
       .eql("An introduction to ICO's")
+  })
+
+  test('Go to portfolio', async t => {
+    const upload = Selector('input').withAttribute('type', 'file')
+    const dropdown = Selector('span').withAttribute('class', 'mr-2 cursor-pointer font-size-xxs badge badge-light')
+
+    await t
+      .click(HREF('/app/connect'))
+      .expect(LINK('/app/connect/hw/trezor')).ok()
+      .expect(LINK('/app/connect/hw/ledger')).ok()
+      .setFilesToUpload(upload, [
+        './testwallet1',        
+    ])
+    .expect(dropdown).ok()
   })
 
 
