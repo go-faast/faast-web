@@ -211,7 +211,7 @@ export const createNewOrder = ({
     path: typeof window !== 'undefined' ? window.location.pathname : undefined,
     ...meta,
   },
-}).then((swap) => { console.log(formatOrderResult(swap)); return formatOrderResult(swap) })
+}).then(formatOrderResult)
   .catch((e: any) => {
     log.error(e)
     const errMsg = filterErrors(e)

@@ -133,7 +133,6 @@ export default compose(
     ),
     updateInitialValues: ({ change, assetInitialValue }) => () => {
       if (assetInitialValue) {
-        console.log('updateInitialValues')
         change('type', 'asset')
         change('assetName', assetInitialValue)
       }
@@ -142,7 +141,6 @@ export default compose(
   lifecycle({
     componentDidMount() {
       const { updateInitialValues, handleResetForm } = this.props
-      console.log('didMount')
       handleResetForm()
       updateInitialValues()
     }
