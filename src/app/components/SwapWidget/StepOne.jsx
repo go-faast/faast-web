@@ -15,6 +15,7 @@ import {
 import log from 'Log'
 import { toBigNumber } from 'Utilities/convert'
 import * as validator from 'Utilities/validator'
+import { capitalizeFirstLetter } from 'Utilities/helpers'
 import * as qs from 'query-string'
 import { createSwap as createSwapAction } from 'Actions/swap'
 import { updateQueryStringReplace } from 'Actions/router'
@@ -27,6 +28,7 @@ import { getAllAssetSymbols, getAsset } from 'Selectors/asset'
 import { getWallet } from 'Selectors/wallet'
 import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
 import { getGeoLimit, getSavedSwapWidgetInputs } from 'Selectors/app'
+import extraAssetFields from 'Config/extraAssetFields'
 
 import GAEventButton from 'Components/GAEventButton'
 import ReduxFormField from 'Components/ReduxFormField'
@@ -57,7 +59,7 @@ const getFormValue = formValueSelector(FORM_NAME)
 
 const StepOneField = withProps(({ labelClass, inputClass, className, labelCol, inputCol }) => ({
   labelClass: classNames('mb-sm-0 mb-lg-2 py-sm-2 p-lg-0', labelClass),
-  inputClass: classNames('flat', inputClass),
+  inputClass: classNames(inputClass),
   className: classNames('mb-2 gutter-x-3', className),
   row: true,
   labelCol: { xs: '12', sm: '3', md: '2', lg: '12', className: 'text-left text-sm-right text-lg-left', ...labelCol },
@@ -72,7 +74,8 @@ const SwapStepOne = ({
   onChangeSendAmount, handleSelectFullBalance, fullBalanceAmount, fullBalanceAmountLoaded,
   sendWallet, receiveWallet, maxGeoBuy, handleSelectGeoMax, receiveAsset, ethReceiveBalanceAmount,
   onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs = {},
-  onChangeRefundAddress, onChangeReceiveAddress, rateError, sendAsset, t, onCloseAssetSelector
+  onChangeRefundAddress, onChangeReceiveAddress, rateError, sendAsset, t, onCloseAssetSelector,
+  validateDepositTag
 }) => (
   <Fragment>
     <ProgressBar steps={[
@@ -223,6 +226,16 @@ const SwapStepOne = ({
                   requiredLabel={sendSymbol === 'XMR'}
                   disableNoBalance
                 />
+                {Object.keys(extraAssetFields).indexOf(sendSymbol) >= 0 && (
+                  <StepOneField
+                    name='extraRefundDepositField'
+                    type='number'
+                    step='any'
+                    placeholder={`${sendSymbol} Refund ${capitalizeFirstLetter(extraAssetFields[sendSymbol].deposit)}`}
+                    validate={validateDepositTag}
+                    label={`${sendSymbol} Refund ${capitalizeFirstLetter(extraAssetFields[sendSymbol].deposit)}`}
+                  />
+                )}
               </Col>
               <Col lg={{ size: 1, order: 5 }}/>
               <Col xs={{ size: 12, order: 6 }} lg>
@@ -247,6 +260,16 @@ const SwapStepOne = ({
                     </FormText>
                   )}
                 />
+                {Object.keys(extraAssetFields).indexOf(receiveSymbol) >= 0 && (
+                  <StepOneField
+                    name='extraWithdrawalField'
+                    type='number'
+                    step='any'
+                    placeholder={`${receiveSymbol} ${capitalizeFirstLetter(extraAssetFields[receiveSymbol].deposit)}`}
+                    validate={validateDepositTag}
+                    label={`${receiveSymbol} ${capitalizeFirstLetter(extraAssetFields[receiveSymbol].deposit)}`}
+                  />
+                )}
               </Col>
             </Row>
             <div className='mt-2 mb-4'>
@@ -370,13 +393,17 @@ export default compose(
       ...(sendAsset.symbol === 'XMR' ? [validator.required()] : []),
       validator.walletAddress(sendAsset, `${t('app.widget.invalid', 'Invalid')} ${sendSymbol} ${t('app.widget.address', 'address')}`)
     ),
+    validateDepositTag: () => validator.all(
+      validator.number(),
+      validator.integer()
+    ),
     onSubmit: ({
       sendSymbol, receiveAsset, sendAsset,
       createSwap, openViewOnly, push, estimatedField,
       ethSendBalanceAmount, t
     }) => async (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
-      let { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId, receiveAmount } = values
+      let { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId, receiveAmount, extraWithdrawalField, extraRefundDepositField } = values
       if (receiveSymbol == 'ETH' || ERC20) {
         receiveAddress = toChecksumAddress(receiveAddress)
       }
@@ -425,7 +452,9 @@ export default compose(
         receiveWalletId,
         receiveAddress,
         refundAddress,
-        receiveAmount: sendAmount && estimatedField !== 'receive' ? toBigNumber(receiveAmount).round(receiveAsset.decimals) : undefined
+        receiveAmount: sendAmount && estimatedField !== 'receive' ? toBigNumber(receiveAmount).round(receiveAsset.decimals) : undefined,
+        extraWithdrawalField,
+        extraRefundDepositField
       })
         .then((swap) => {
           push(`/swap/send?id=${swap.orderId}`)

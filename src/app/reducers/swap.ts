@@ -55,6 +55,8 @@ const swapInitialState: SwapState = {
   receiveTxId: undefined,
   refundAddress: undefined,
   depositAddressExtraId: undefined,
+  withdrawalAddressExtraId: undefined,
+  refundAddressExtraId: undefined,
 }
 
 const upsert = createUpserter('id', swapInitialState)

@@ -106,7 +106,7 @@ export const createOrder = (swap) => (dispatch) => {
     log.error(`Cannot create swap order for ${swap}`)
     return
   }
-  const { id, sendAmount, sendSymbol, receiveSymbol, sendWalletId, receiveWalletId, receiveAmount: withdrawalAmount } = swap
+  const { id, sendAmount, sendSymbol, receiveSymbol, sendWalletId, receiveWalletId, receiveAmount: withdrawalAmount, extraWithdrawalField, refundAddressExtraId } = swap
   return Promise.resolve().then(() => {
     if (swap.error) return swap
     const finish = dispatch(createSwapFinish('createOrder', swap))
@@ -138,6 +138,8 @@ export const createOrder = (swap) => (dispatch) => {
           sendSymbol,
           receiveSymbol,
           receiveAddress,
+          extraWithdrawalField, // optional
+          refundAddressExtraId, // optional
           withdrawalAmount: withdrawalAmount ? toNumber(withdrawalAmount) : undefined, // optional
           refundAddress,  // optional
           sendAmount: sendAmount ? toNumber(sendAmount) : undefined, // optional

@@ -40,7 +40,9 @@ export interface SwapOrder {
   backendOrderState?: string
   receiveTxId?: string,
   refundAddress?: string,
-  depositAddressExtraId?: string
+  depositAddressExtraId?: string,
+  withdrawalAddressExtraId?: string,
+  refundAddressExtraId?: string
 }
 
 export type HdAccount = {

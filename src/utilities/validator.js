@@ -44,6 +44,14 @@ export function number() {
   }
 }
 
+export function integer() {
+  return (value) => {
+    if (isProvided(value) && !Number.isInteger(parseFloat(value))) {
+      return 'Must be an integer.'
+    }
+  }
+}
+
 function comparative(comparator, x, errorMessage) {
   x = toBigNumber(x)
   return (value) => {
