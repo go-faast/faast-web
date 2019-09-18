@@ -132,10 +132,12 @@ export default (config) => {
       .expect(H4)
       .eql('What is a DAO?')
 
+      .wait(2000)
       .click(HREF('/what-is-ethereum'))
       .expect(H4)
       .eql('What is Ethereum?')
 
+      .wait(2000)
       .click(HREF('/how-to-buy-ethereum'))
       .expect(H4)
       .eql('How to Buy Ethereum')
