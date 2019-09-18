@@ -75,6 +75,7 @@ export default (config) => {
     await t
 
       // .click(affil)
+      // .wait(2000)
       // .expect(affiliateid).ok()
       .expect(LINK('/assets')).ok()
       await supported()
@@ -110,7 +111,8 @@ export default (config) => {
   test('Goes to trending', async t => {
     await t
       .click(HREF('/app/assets/trending'))
-      // await t.expect(Selector('#form-tradeableForm-requiredCheckbox', { visibilityCheck: true, timeout: 120000 }).exists).ok()
+      .wait(2000)
+      await t.expect(Selector('#form-tradeableForm-requiredCheckbox', { visibilityCheck: true, timeout: 120000 }).exists).ok()
   })
 
 
@@ -125,6 +127,7 @@ export default (config) => {
       .expect(H4)
       .eql("An introduction to ICO's")
 
+      .wait(2000)
       .click(HREF('/what-is-a-dao'))
       .expect(H4)
       .eql('What is a DAO?')
@@ -192,16 +195,41 @@ export default (config) => {
   test('Go to portfolio', async t => {
     const upload = Selector('input').withAttribute('type', 'file')
     const dropdown = Selector('span').withAttribute('class', 'mr-2 cursor-pointer font-size-xxs badge badge-light')
+    const tradeable = Selector('input').withAttribute('id', 'form-tradeableForm-requiredCheckbox')
+    const add = Selector('i').withAttribute('class', 'fa fa-plus')
+    const asset = Selector('span').withText('Add Asset')
+    const swap = Selector('span').withText('Swap')
+    const create = Selector('span').withText('Create Swap')
+    const submit = Selector('button').withAttribute('type','submit')
+    const x = Selector('span').withText('x')
 
     await t
       .click(HREF('/app/connect'))
+      .wait(4000)
       .expect(LINK('/app/connect/hw/trezor')).ok()
       .expect(LINK('/app/connect/hw/ledger')).ok()
       .setFilesToUpload(upload, [
         './testwallet1',        
     ])
     .expect(dropdown).ok()
+    .navigateTo('/app/assets')
+    .wait(1000)
+    .navigateTo('/app/assets/trending')
+    .click(tradeable)
+    .wait(1000)
+    .click(tradeable)
+    .navigateTo('/app/assets/watchlist')
+    .wait(1000)
+    .navigateTo('/app/rebalance')
+    .wait(1000)
+    .click(add)
+    .expect(asset).ok()
+    .click(x)
+    .wait(500)
+    .click(swap)
+    .expect(create).ok()
+    .expect(submit).ok()
   })
 
-
+ 
 }
