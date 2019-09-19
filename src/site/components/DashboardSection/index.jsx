@@ -3,7 +3,7 @@ import React from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { Row, Col } from 'reactstrap'
 import classNames from 'class-names'
-import FaastMockup from 'Img/faast-mockup.svg'
+import FaastMockup from 'Img/faast-mockup.png'
 
 import homeStyle from 'Site/pages/Home1/style.scss'
 import style from './style.scss'

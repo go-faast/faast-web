@@ -134,6 +134,8 @@ export const formatOrderResult = (r: any): SwapOrder => ({
   amountWithdrawn: r.amount_withdrawn ? toBigNumber(r.amount_withdrawn) : null,
   backendOrderId: r.order_id,
   backendOrderState: r.order_state,
+  withdrawalAddressExtraId: r.withdrawal_address_extra_id,
+  refundAddressExtraId: r.refund_address_extra_id,
   receiveTxId: r.txId,
   depositAddressExtraId: r.deposit_address_extra_id,
 })
@@ -169,6 +171,8 @@ export type CreateNewOrderParams = {
   receiveAddress: string,
   refundAddress?: string,
   sendAmount?: number,
+  extraWithdrawalField?: string,
+  refundAddressExtraId?: string,
   userId?: string,
   withdrawalAmount?: number,
   meta?: {
@@ -183,18 +187,23 @@ export const createNewOrder = ({
   sendSymbol,
   receiveSymbol,
   receiveAddress,
+  extraWithdrawalField,
+  refundAddressExtraId,
   refundAddress,
   sendAmount,
   withdrawalAmount,
   userId,
   meta = {},
-}: CreateNewOrderParams): Promise<SwapOrder> => fetchPost(`${apiUrl}/api/v2/public/swap`, {
+}: CreateNewOrderParams): Promise<SwapOrder> => {
+  return fetchPost(`${apiUrl}/api/v2/public/swap`, {
   user_id: userId,
   deposit_amount: sendAmount,
   deposit_currency: sendSymbol,
   withdrawal_address: receiveAddress,
   withdrawal_currency: receiveSymbol,
   withdrawal_amount: withdrawalAmount,
+  withdrawal_address_extra_id: extraWithdrawalField,
+  refund_address_extra_id: refundAddressExtraId,
   refund_address: refundAddress,
   ...getAffiliateSettings(),
   meta: {
@@ -208,6 +217,7 @@ export const createNewOrder = ({
     const errMsg = filterErrors(e)
     throw new Error(errMsg)
   })
+}
 
 type OrdersResult = {
   page: number,
