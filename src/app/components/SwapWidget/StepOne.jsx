@@ -23,7 +23,7 @@ import { retrievePairData } from 'Actions/rate'
 import { openViewOnlyWallet } from 'Actions/access'
 import { saveSwapWidgetInputs } from 'Actions/app'
 
-import { getRateMinimumDeposit, getRatePrice, isRateLoaded, getRateMaximumDeposit, rateError } from 'Selectors/rate'
+import { getRateMinimumDeposit, getRatePrice, isRateLoaded, getRateMaximumDeposit, rateError, getRateWithdrawalFee } from 'Selectors/rate'
 import { getAllAssetSymbols, getAsset } from 'Selectors/asset'
 import { getWallet } from 'Selectors/wallet'
 import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
@@ -375,6 +375,7 @@ export default compose(
     maximumSend: (state, { pair }) => getRateMaximumDeposit(state, pair),
     estimatedRate: (state, { pair }) => getRatePrice(state, pair),
     rateError: (state, { pair }) => rateError(state, pair),
+    withdrawalFee: (state, { pair }) => getRateWithdrawalFee(state, pair),
   })),
   withState('assetSelect', 'setAssetSelect', null), // send, receive, or null
   withState('estimatedField', 'setEstimatedField', 'receive'), // send or receive
@@ -501,11 +502,11 @@ export default compose(
     }
     return {
       calculateReceiveEstimate: ({
-        receiveAsset, estimatedRate, setEstimatedField, updateURLParams, sendAsset
+        receiveAsset, estimatedRate, setEstimatedField, updateURLParams, sendAsset, withdrawalFee
       }) => (sendAmount) => {
         if (estimatedRate && sendAmount) {
           sendAmount = toBigNumber(sendAmount).round(sendAsset.decimals)
-          const estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals)
+          const estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals).minus(toBigNumber(withdrawalFee))
           updateURLParams({ 
             toAmount: estimatedReceiveAmount ? parseFloat(estimatedReceiveAmount) : undefined,
             fromAmount: sendAmount ? parseFloat(sendAmount) : undefined
@@ -638,7 +639,7 @@ export default compose(
         updateURLParams(previousSwapInputs)
       }
       if (pair && !rateLoaded) {
-        retrievePairData(pair)
+        retrievePairData(pair, null, estimatedField === 'receive' ? sendAmount : undefined, estimatedField === 'send' ? receiveAmount : undefined)
       }
       if (prevProps.estimatedRate !== estimatedRate) {
         if (estimatedField === 'receive') {
@@ -652,7 +653,7 @@ export default compose(
       }
     },
     componentWillMount() {
-      const { updateURLParams, sendSymbol, receiveSymbol, retrievePairData, pair } = this.props
+      const { updateURLParams, sendSymbol, receiveSymbol, estimatedField, retrievePairData, pair, sendAmount, receiveAmount } = this.props
       if (sendSymbol === receiveSymbol) {
         let from = DEFAULT_SEND_SYMBOL
         let to = DEFAULT_RECEIVE_SYMBOL
@@ -662,7 +663,7 @@ export default compose(
         }
         updateURLParams({ to, from })
       } else {
-        retrievePairData(pair)
+        retrievePairData(pair, null, estimatedField === 'receive' ? sendAmount : undefined, estimatedField === 'send' ? receiveAmount : undefined)
       }
     },
     componentDidMount() {

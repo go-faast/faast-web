@@ -9,7 +9,7 @@ export const rateLoading = createAction('RATE_LOADING', (pair) => ({ pair }))
 export const rateUpdated = createAction('RATE_UPDATED', (pair, data) => ({ pair, ...data }))
 export const rateError = createAction('RATE_ERROR', (pair, error) => ({ pair, error }))
 
-export const retrievePairData = (from, to) => (dispatch, getState) => Promise.resolve()
+export const retrievePairData = (from, to, depositAmount, withdrawalAmount) => (dispatch, getState) => Promise.resolve()
   .then(() => {
     if (typeof from !== 'string') {
       throw new Error(`Cannot retrieve pair data for ${from}`)
@@ -22,7 +22,7 @@ export const retrievePairData = (from, to) => (dispatch, getState) => Promise.re
       return getRate(getState(), pair)
     }
     dispatch(rateLoading(pair))
-    return Faast.fetchPairData(pair)
+    return Faast.fetchPairData(pair, depositAmount, withdrawalAmount)
       .then((data) => { 
         return dispatch(rateUpdated(pair, data)).payload
       })

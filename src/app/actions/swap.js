@@ -110,7 +110,7 @@ export const createOrder = (swap) => (dispatch) => {
   return Promise.resolve().then(() => {
     if (swap.error) return swap
     const finish = dispatch(createSwapFinish('createOrder', swap))
-    return dispatch(retrievePairData(sendSymbol, receiveSymbol))
+    return dispatch(retrievePairData(sendSymbol, receiveSymbol, sendAmount, withdrawalAmount))
       .then((pairData) => {
         if (sendAmount) {
           const minDeposit = toBigNumber(pairData.minimum_deposit)

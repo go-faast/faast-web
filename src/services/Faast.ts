@@ -109,7 +109,12 @@ export const fetchPriceChart = (cmcIDno: number) => {
   return fetchGet(`${apiUrl}/api/v1/data/cmc/price/${cmcID}`, { dataset: 'historical' })
 }
 
-export const fetchPairData = (pair: string) => fetchGet(`${apiUrl}/api/v2/public/price/${pair}`)
+export const fetchPairData = (pair: string, depositAmount?: string, withdrawalAmount?: string) =>
+  fetchGet(`${apiUrl}/api/v2/public/price/${pair}`, {
+    affiliate_fixed_fee: getAffiliateSettings().affiliate_fixed_fee,
+    deposit_amount: depositAmount,
+    withdrawal_amount: withdrawalAmount,
+})
 
 export const fetchRestrictionsByIp = () => fetchGet(`${apiUrl}/api/v2/public/geoinfo`)
 

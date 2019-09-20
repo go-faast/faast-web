@@ -29,6 +29,7 @@ export default {
   affiliateSettings: {
     affiliate_margin: 0.2, 
     affiliate_id: 'DLABdEEmJUcLfLs2Y7jkkZntvdENT3nL',
+    affiliate_fixed_fee: 0.02,
   },
   explorerUrls: {
     BTC: 'https://blockchain.info',
