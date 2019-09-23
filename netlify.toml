@@ -55,3 +55,9 @@
   from = "/blog/*"
   to = "https://medium.com/faast/:splat"
   status = 301
+
+### Path aliases for convencience
+[[redirects]]
+  from = "/knowledge/*"
+  to = "https://faast-kb-deploy-staging.herokuapp.com/knowledge/:splat"
+  status = 200
