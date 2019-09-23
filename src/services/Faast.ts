@@ -111,6 +111,7 @@ export const fetchPriceChart = (cmcIDno: number) => {
 
 export const fetchPairData = (pair: string, depositAmount?: string, withdrawalAmount?: string) =>
   fetchGet(`${apiUrl}/api/v2/public/price/${pair}`, {
+    affiliate_margin: getAffiliateSettings().affiliate_margin,
     affiliate_fixed_fee: getAffiliateSettings().affiliate_fixed_fee,
     deposit_amount: depositAmount,
     withdrawal_amount: withdrawalAmount,
