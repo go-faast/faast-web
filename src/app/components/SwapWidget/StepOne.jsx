@@ -23,7 +23,8 @@ import { retrievePairData } from 'Actions/rate'
 import { openViewOnlyWallet } from 'Actions/access'
 import { saveSwapWidgetInputs } from 'Actions/app'
 
-import { getRateMinimumDeposit, getRatePrice, isRateLoaded, getRateMaximumDeposit, rateError, getRateWithdrawalFee } from 'Selectors/rate'
+import { getRateMinimumDeposit, getRatePrice, isRateLoaded, 
+  getRateMaximumDeposit, rateError, getRateWithdrawalFee, isRateStale } from 'Selectors/rate'
 import { getAllAssetSymbols, getAsset } from 'Selectors/asset'
 import { getWallet } from 'Selectors/wallet'
 import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
@@ -371,6 +372,7 @@ export default compose(
     })}),
   connect(createStructuredSelector({
     rateLoaded: (state, { pair }) => isRateLoaded(state, pair),
+    rateStale: (state, { pair }) => isRateStale(state, pair),
     minimumSend: (state, { pair }) => getRateMinimumDeposit(state, pair),
     maximumSend: (state, { pair }) => getRateMaximumDeposit(state, pair),
     estimatedRate: (state, { pair }) => getRatePrice(state, pair),
@@ -506,7 +508,10 @@ export default compose(
       }) => (sendAmount) => {
         if (estimatedRate && sendAmount) {
           sendAmount = toBigNumber(sendAmount).round(sendAsset.decimals)
+          console.log('receive amount', sendAmount.div(estimatedRate).round(receiveAsset.decimals).toString())
+          console.log('withdrawal fee', withdrawalFee)
           const estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals).minus(toBigNumber(withdrawalFee))
+          console.log('minus', estimatedReceiveAmount.toString())
           updateURLParams({ 
             toAmount: estimatedReceiveAmount ? parseFloat(estimatedReceiveAmount) : undefined,
             fromAmount: sendAmount ? parseFloat(sendAmount) : undefined
@@ -632,13 +637,14 @@ export default compose(
       const {
         rateLoaded, pair, retrievePairData, estimatedRate, calculateSendEstimate, 
         calculateReceiveEstimate, estimatedField, sendAmount, receiveAmount, checkQueryParams,
-        previousSwapInputs, updateURLParams, fullBalanceAmount, fullBalanceAmountLoaded, maxGeoBuy, setSendAmount
+        previousSwapInputs, updateURLParams, fullBalanceAmount, fullBalanceAmountLoaded, maxGeoBuy, setSendAmount,
+        rateStale
       } = this.props
       const urlParams = checkQueryParams()
       if (Object.keys(urlParams).length === 0 && previousSwapInputs) {
         updateURLParams(previousSwapInputs)
       }
-      if (pair && !rateLoaded) {
+      if (pair && (!rateLoaded || rateStale)) {
         retrievePairData(pair, null, estimatedField === 'receive' ? sendAmount : undefined, estimatedField === 'send' ? receiveAmount : undefined)
       }
       if (prevProps.estimatedRate !== estimatedRate) {
