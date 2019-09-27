@@ -6,7 +6,7 @@ export default (config) => {
 
   const LINK =  (x) =>  Selector('a').withAttribute('href', x).exists
   const HREF =  (x) =>  Selector('a').withAttribute('href', x)
-
+  const SPAN = (x) => Selector('span').withText(x)
 
   test('Navigate to Market Maker', async t => {
     console.log('market maker')
@@ -158,6 +158,7 @@ export default (config) => {
     const jp = Selector('img').withAttribute('src', '/static/img/japan.f8dc0f04.svg')
     const ru = Selector('img').withAttribute('src', '/static/img/russia.562474ef.svg')
     const chi = Selector('img').withAttribute('src', '/static/img/china.87d6c351.svg')
+
     await t
       .click(lang)
       .click(sp)
@@ -201,6 +202,8 @@ export default (config) => {
     const add = Selector('i').withAttribute('class', 'fa fa-plus')
     const asset = Selector('span').withText('Add Asset')
     const swap = Selector('span').withText('Swap')
+    const firstBlood = SPAN('Firstblood')
+    const eth = SPAN('Ethereum')
     const create = Selector('span').withText('Create Swap')
     const submit = Selector('button').withAttribute('type','submit')
     const x = Selector('span').withText('x')
@@ -214,6 +217,19 @@ export default (config) => {
         './testwallet1',        
     ])
     .expect(dropdown).ok()
+    .expect(SPAN('Portfolio Holdings')).ok()
+    .expect(firstBlood).ok()
+    .expect(eth).ok()
+    .expect(SPAN('0.01')).ok()
+    .expect(SPAN('29.9')).ok()
+    .click(firstBlood)
+    .wait(1000)
+    .expect(Selector('h4').withText('Firstblood')).ok()
+    .navigateTo('/app/dashboard')
+    .wait(4000) 
+    .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_ETH.png'))
+    .wait(1000)
+    .expect(Selector('h4').withText('Ethereum')).ok()
     .navigateTo('/app/assets')
     .wait(1000)
     .navigateTo('/app/assets/trending')
