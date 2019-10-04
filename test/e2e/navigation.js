@@ -207,7 +207,11 @@ export default (config) => {
     const create = Selector('span').withText('Create Swap')
     const submit = Selector('button').withAttribute('type','submit')
     const x = Selector('span').withText('x')
-
+    const nameInput = Selector('input').withAttribute('name', 'searchAsset')
+    const amount = Selector('#form-swapWidget-sendAmount')
+    const wallet = Selector('button').withText('External')
+    const max = Selector('button').withAttribute('class', 'btn btn-link-plain')
+  
     await t
       .click(HREF('/app/connect'))
       .wait(4000)
@@ -247,7 +251,38 @@ export default (config) => {
     .click(swap)
     .expect(create).ok()
     .expect(submit).ok()
-  })
+    .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_ETH.png'))
+    .typeText(nameInput, 'tusd')
+    .wait(1000)
+    .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_TUSD.png'))
 
+
+    .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_BTC.png'))
+    .typeText(nameInput, 'eth')
+    .wait(1000)
+    .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_ETH.png'))
+    
+    .click(Selector('#form-swapWidget-requiredCheckbox'))
+    .click(wallet)
+    .click(max)    
+    .wait(4000)
+    // .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_BTC.png'))
+    // .typeText(nameInput, 'eth')
+    // .wait(1000)
+    // .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_ETH.png'))
+    // .typeText(amount, '0.03')
+    // .click(Selector('#form-swapWidget-requiredCheckbox'))
+    .click(submit)
+    .wait(5000)
+    .expect(Selector('h4').withText('Confirm Swap Transaction')).ok()
+    .click(SPAN('Begin signing'))
+    .wait(1000)
+    .click(SPAN('Cancel'))
+    .wait(1000)
+    .click(SPAN('Cancel'))
+
+      
+      
+  })
  
 }
