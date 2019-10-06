@@ -256,7 +256,7 @@ export default (config) => {
     .typeText(nameInput, 'tusd')
     .wait(1000)
     .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_TUSD.png'))
-
+    .wait(2000)
 
     .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_BTC.png'))
     .typeText(nameInput, 'eth')
