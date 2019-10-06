@@ -252,6 +252,7 @@ export default (config) => {
     .expect(create).ok()
     .expect(submit).ok()
     .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_ETH.png'))
+    .wait(3000)
     .typeText(nameInput, 'tusd')
     .wait(1000)
     .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_TUSD.png'))
