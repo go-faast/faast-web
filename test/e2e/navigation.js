@@ -111,8 +111,8 @@ export default (config) => {
   test('Goes to trending', async t => {
     await t
       .click(HREF('/app/assets/trending'))
-      .wait(2000)
-      await t.expect(Selector('#form-tradeableForm-requiredCheckbox', { visibilityCheck: true, timeout: 120000 }).exists).ok()
+      .wait(5000)
+      .expect(Selector('#form-tradeableForm-requiredCheckbox', { visibilityCheck: true, timeout: 120000 }).exists).ok()
   })
 
 
