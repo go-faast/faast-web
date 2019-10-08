@@ -237,6 +237,7 @@ export default (config) => {
     .navigateTo('/app/assets')
     .wait(1000)
     .navigateTo('/app/assets/trending')
+    .wait(2000)
     .click(tradeable)
     .wait(1000)
     .click(tradeable)
@@ -265,6 +266,9 @@ export default (config) => {
     
     .click(Selector('#form-swapWidget-requiredCheckbox'))
     .click(wallet)
+    .wait(500)
+    .click(SPAN('0.03 ETH'))
+    .wait(1000)
     .click(max)    
     .wait(4000)
     // .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_BTC.png'))
