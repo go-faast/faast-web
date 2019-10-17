@@ -13,7 +13,7 @@ export default (config) => {
     await t
       .navigateTo('./market-maker')
       .expect(Selector('#root').child('div').nth(0).child('div').nth(0).find('h1').innerText)
-      .eql('Put your Bitcoin to work')
+      .eql('Put your Bitcoin to work')      
   })
 
   test('Navigate to Blog', async t => {
@@ -254,7 +254,7 @@ export default (config) => {
     .expect(submit).ok()
     .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_ETH.png'))
     .wait(3000)
-    .typeText(nameInput, 'tusd')
+    .typeText(Selector('input').withAttribute('placeholder', 'Search by name or symbol...'), 'tusd')
     .wait(1000)
     .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_TUSD.png'))
     .wait(2000)
