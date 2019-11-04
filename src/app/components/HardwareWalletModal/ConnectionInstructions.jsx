@@ -79,8 +79,8 @@ function getInstructions(type, asset) {
 const ConnectionInstructions = ({ type, asset }) => (
   <table className='mx-0 mx-md-5'>
     <tbody>
-      {getInstructions(type, asset).map(({ icon, text }) => (
-        <tr key={text}>
+      {getInstructions(type, asset).map(({ icon, text }, i) => (
+        <tr key={i}>
           <td className='text-center'>
             <i className={classNames('fa fa-2x', icon)} />
           </td>

@@ -182,6 +182,10 @@ export const createSwapTx = (swap, options) => (dispatch) => Promise.resolve().t
 
 export const ensureSwapTxCreated = (swap, options) => (dispatch) => Promise.resolve().then(() => {
   if (swap && !swap.txId && swap.sendWalletId) {
+    options = {
+      ...options,
+      extraId: swap.depositAddressExtraId
+    }
     return dispatch(createSwapTx(swap, options))
   }
 })
@@ -196,6 +200,11 @@ export const createSwap = (swapParams, options) => (dispatch, getState) => {
         throw new Error(swap.error)
       }
       swap.id = swapId
+      console.log(swap.depositAddressExtraId)
+      options = {
+        ...options,
+        extraId: swap.depositAddressExtraId
+      }
       if (swap.sendWalletId) {
         return dispatch(createSwapTx(swap, options))
       }

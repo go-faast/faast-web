@@ -12,6 +12,7 @@ import log from 'Log'
 
 import LedgerBtc from './LedgerBtc'
 import LedgerEth from './LedgerEth'
+import LedgerXrp from './LedgerXrp'
 
 ledgerLogger.listen((logObject: ledgerLogger.Log) => {
   log.debug('ledger log', logObject)
@@ -20,4 +21,5 @@ ledgerLogger.listen((logObject: ledgerLogger.Log) => {
 export default {
   eth: new LedgerEth(),
   btc: new LedgerBtc(),
+  xrp: new LedgerXrp(),
 }

@@ -36,6 +36,7 @@ export default {
     ETH: 'https://etherscan.io',
     LTC: 'https://live.blockcypher.com/ltc',
     BCH: 'https://explorer.bitcoin.com/bch',
+    XRP: 'https://xrpscan.com'
   },
   bip21Prefixes: {
     BTC: 'bitcoin',

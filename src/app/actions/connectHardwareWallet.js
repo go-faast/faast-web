@@ -15,6 +15,7 @@ import walletService, {
   BitcoinWalletLedger, BitcoinWalletTrezor,
   BitcoinCashWalletLedger, BitcoinCashWalletTrezor,
   LitecoinWalletLedger, LitecoinWalletTrezor,
+  RippleWalletTrezor, RippleWalletLedger
 } from 'Services/Wallet'
 
 import { getAsset } from 'Selectors'
@@ -233,12 +234,14 @@ const connectActions = {
     BTC: BitcoinWalletLedger.fromPath,
     BCH: BitcoinCashWalletLedger.fromPath,
     LTC: LitecoinWalletLedger.fromPath,
+    XRP: RippleWalletLedger.connect
   }, (connectFn) => createConnectLedger(createStartConnecting(connectFn))),
   trezor: mapValues({
     ETH: EthereumWalletTrezor.connect,
     BTC: BitcoinWalletTrezor.fromPath,
     BCH: BitcoinCashWalletTrezor.fromPath,
     LTC: LitecoinWalletTrezor.fromPath,
+    XRP: RippleWalletTrezor.connect
   }, (connectFn) => createConnectTrezor(createStartConnecting(connectFn))),
 }
 

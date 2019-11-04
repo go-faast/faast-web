@@ -315,6 +315,36 @@ export interface EthereumSignTransactionParams extends CommonParams {
   transaction: EthereumUnsignedTransaction,
 }
 
+export type RippleSignedTx = {
+  serializedTx: string,
+  signature: string,
+}
+
+export interface FormattedSubmitResponse {
+  resultCode: String,
+  resultMessage: String,
+  engine_result: String,
+  engine_result_code: Number,
+  engine_result_message: String,
+  tx_blob: String,
+  tx_json: {
+    Account: String,
+    Amount: {
+      currency: String,
+      issuer: String,
+      value: Number
+    },
+    Destination: String,
+    Fee: Number,
+    Flags: Number,
+    Sequence: Number,
+    SigningPubKey: String,
+    TransactionType: String,
+    TxnSignature: String,
+    hash: String
+  }
+}
+
 export namespace TrezorConnect {
   /**
    * Initializes TrezorConnect.
@@ -413,6 +443,8 @@ export namespace TrezorConnect {
   function dispose(): void;
 
   function cancel(): void;
+
+  function submit(this: RippleAPI, signedTransaction: string): Promise<FormattedSubmitResponse>
 }
 
 export default TrezorConnect;

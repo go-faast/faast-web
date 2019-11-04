@@ -299,6 +299,7 @@ export const VTC = network({
   ],
 })
 
+
 const allConfigs: { [symbol: string]: NetworkConfig } = {
   BTC,
   BTC_TEST,

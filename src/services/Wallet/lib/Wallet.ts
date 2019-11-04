@@ -258,7 +258,9 @@ export default abstract class Wallet {
   }
 
   createTransaction(
-    address: string, amount: Amount, aos: Asset | string, options: object = {},
+    address: string, amount: Amount, aos: Asset | string, options: {
+      extraId?: string,
+    },
   ): Promise<Transaction> {
     return Promise.resolve().then(() => {
       const asset = this.assertAssetSupported(aos)
