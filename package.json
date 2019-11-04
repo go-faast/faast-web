@@ -58,7 +58,7 @@
     "@ledgerhq/hw-app-btc": "4.63.3",
     "@ledgerhq/hw-app-eth": "4.63.2",
     "@ledgerhq/hw-app-xrp": "^4.73.2",
-    "@ledgerhq/hw-transport-u2f": "4.63.2",
+    "@ledgerhq/hw-transport-u2f": "^4.73.4",
     "@ledgerhq/logs": "4.62.0",
     "@types/bitcore-lib": "^0.15.1",
     "@types/ethereumjs-util": "^5.2.0",

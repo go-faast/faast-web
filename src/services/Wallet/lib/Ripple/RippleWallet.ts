@@ -10,7 +10,7 @@ import { Amount, Transaction, Receipt } from '../types'
 import Wallet from '../Wallet'
 
 import { Asset } from 'Types'
-import { XRPTransaction, SignedTxData, TxData } from './types'
+import { XRPTransaction, SignedTxData, TxData, FormattedSubmitResponse } from './types'
 
 const DEFAULT_MAX_LEDGER_VERSION_OFFSET = 100
 

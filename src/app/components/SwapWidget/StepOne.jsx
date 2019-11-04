@@ -403,7 +403,7 @@ export default compose(
     onSubmit: ({
       sendSymbol, receiveAsset, sendAsset,
       createSwap, openViewOnly, push, estimatedField,
-      ethSendBalanceAmount, t
+      ethSendBalanceAmount, t, fullBalanceAmount
     }) => async (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
       let { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId, receiveAmount, extraWithdrawalField, extraRefundDepositField } = values
@@ -416,6 +416,11 @@ export default compose(
       if (sendAsset.ERC20 && parseFloat(ethSendBalanceAmount) === 0) {
         throw new SubmissionError({
           refundAddress: t('app.widget.notEnoughEth', 'This wallet does not have enough ETH to cover the gas fees. Please deposit some ETH and try again.'),
+        })
+      }
+      if (sendSymbol === 'XRP' && toBigNumber(fullBalanceAmount).minus(toBigNumber(sendAmount)).lt(20)) {
+        throw new SubmissionError({
+          refundAddress: t('app.widget.notEnoughXrp', 'Unable to send because XRP wallets must have a balance of 20 XRP.'),
         })
       }
       try {
