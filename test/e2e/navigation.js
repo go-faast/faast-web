@@ -6,14 +6,14 @@ export default (config) => {
 
   const LINK =  (x) =>  Selector('a').withAttribute('href', x).exists
   const HREF =  (x) =>  Selector('a').withAttribute('href', x)
-
+  const SPAN = (x) => Selector('span').withText(x)
 
   test('Navigate to Market Maker', async t => {
     console.log('market maker')
     await t
       .navigateTo('./market-maker')
       .expect(Selector('#root').child('div').nth(0).child('div').nth(0).find('h1').innerText)
-      .eql('Put your Bitcoin to work')
+      .eql('Put your Bitcoin to work')      
   })
 
   test('Navigate to Blog', async t => {
@@ -111,8 +111,8 @@ export default (config) => {
   test('Goes to trending', async t => {
     await t
       .click(HREF('/app/assets/trending'))
-      .wait(2000)
-      await t.expect(Selector('#form-tradeableForm-requiredCheckbox', { visibilityCheck: true, timeout: 120000 }).exists).ok()
+      .wait(5000)
+      .expect(Selector('#form-tradeableForm-requiredCheckbox', { visibilityCheck: true, timeout: 120000 }).exists).ok()
   })
 
 
@@ -158,6 +158,7 @@ export default (config) => {
     const jp = Selector('img').withAttribute('src', '/static/img/japan.f8dc0f04.svg')
     const ru = Selector('img').withAttribute('src', '/static/img/russia.562474ef.svg')
     const chi = Selector('img').withAttribute('src', '/static/img/china.87d6c351.svg')
+
     await t
       .click(lang)
       .click(sp)
@@ -201,10 +202,16 @@ export default (config) => {
     const add = Selector('i').withAttribute('class', 'fa fa-plus')
     const asset = Selector('span').withText('Add Asset')
     const swap = Selector('span').withText('Swap')
+    const firstBlood = SPAN('Firstblood')
+    const eth = SPAN('Ethereum')
     const create = Selector('span').withText('Create Swap')
     const submit = Selector('button').withAttribute('type','submit')
     const x = Selector('span').withText('x')
-
+    const nameInput = Selector('input').withAttribute('placeholder', 'Search by name or symbol...')
+    const amount = Selector('#form-swapWidget-sendAmount')
+    const wallet = Selector('button').withText('External')
+    const max = Selector('button').withAttribute('class', 'btn btn-link-plain')
+  
     await t
       .click(HREF('/app/connect'))
       .wait(4000)
@@ -214,9 +221,23 @@ export default (config) => {
         './testwallet1',        
     ])
     .expect(dropdown).ok()
+    .expect(SPAN('Portfolio Holdings')).ok()
+    .expect(firstBlood).ok()
+    .expect(eth).ok()
+    .expect(SPAN('0.01')).ok()
+    .expect(SPAN('29.9')).ok()
+    .click(firstBlood)
+    .wait(1000)
+    .expect(Selector('h4').withText('Firstblood')).ok()
+    .navigateTo('/app/dashboard')
+    .wait(4000) 
+    .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_ETH.png'))
+    .wait(1000)
+    .expect(Selector('h4').withText('Ethereum')).ok()
     .navigateTo('/app/assets')
     .wait(1000)
     .navigateTo('/app/assets/trending')
+    .wait(2000)
     .click(tradeable)
     .wait(1000)
     .click(tradeable)
@@ -231,7 +252,42 @@ export default (config) => {
     .click(swap)
     .expect(create).ok()
     .expect(submit).ok()
-  })
+    .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_ETH.png'))
+    .wait(3000)
+    .typeText(Selector('input').withAttribute('placeholder', 'Search by name or symbol...'), 'tusd')
+    .wait(1000)
+    .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_TUSD.png'))
+    .wait(2000)
 
+    .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_BTC.png'))
+    .typeText(nameInput, 'eth')
+    .wait(1000)
+    .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_ETH.png'))
+    
+    .click(Selector('#form-swapWidget-requiredCheckbox'))
+    .click(wallet)
+    .wait(500)
+    .click(SPAN('0.03 ETH'))
+    .wait(1000)
+    .click(max)    
+    .wait(4000)
+    // .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_BTC.png'))
+    // .typeText(nameInput, 'eth')
+    // .wait(1000)
+    // .click(Selector('img').withAttribute('src', 'https://api.faa.st/api/v1/public/static/img/coins/icon_ETH.png'))
+    // .typeText(amount, '0.03')
+    // .click(Selector('#form-swapWidget-requiredCheckbox'))
+    .click(submit)
+    .wait(5000)
+    .expect(Selector('h4').withText('Confirm Swap Transaction')).ok()
+    .click(SPAN('Begin signing'))
+    .wait(1000)
+    .click(SPAN('Cancel'))
+    .wait(1000)
+    .click(SPAN('Cancel'))
+
+      
+      
+  })
  
 }
