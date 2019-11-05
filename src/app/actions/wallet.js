@@ -164,19 +164,23 @@ export const updateWalletBalances = (walletId) => (dispatch, getState) => Promis
       return getWalletBalances(getState(), walletId)
     }
     dispatch(walletBalancesUpdating(walletId))
+    console.log('wallet balances updating', walletId)
 
     const walletLoaded = areWalletBalancesLoaded(getState(), walletId)
     const balanceFunction = walletLoaded ? getAllBalances : getManyBalances
 
     return balanceFunction(walletInstance, walletId)
       .then((symbolToBalance) => {
+        console.log('wallet balances loaded', walletId, symbolToBalance)
         dispatch(walletBalancesLoaded(walletId, symbolToBalance))
-        !walletLoaded && (
+        areWalletBalancesLoaded(getState(), walletId)
+        !walletLoaded ? (
           getAllBalances(walletInstance, walletId)
             .then((symbolToBalance) =>  {
+              console.log('wallet balances updated', walletId, symbolToBalance)
               return dispatch(walletBalancesUpdated(walletId, symbolToBalance))
             })
-        )
+        ) : dispatch(walletBalancesUpdated(walletId, symbolToBalance))
         // Retrieve used addresses in background
         walletInstance.getUsedAddresses()
           .then((usedAddresses) => dispatch(walletUsedAddressesUpdated(walletId, usedAddresses)))

@@ -41,7 +41,7 @@ export default createReducer({
   [walletAdded]: upsertWallet,
   [walletUpdated]: (state, wallet) => updateWallet(state, {
     ...wallet,
-    balancesLoaded: false,
+    // balancesLoaded: false,
   }),
   [walletRemoved]: (state, { id }) => omit(state, id),
   [walletBalancesUpdating]: (state, { id }) => updateWallet(state, {
@@ -52,12 +52,16 @@ export default createReducer({
     id,
     balances,
     balancesUpdating: false,
+    balancesLoaded: true,
   }),
-  [walletBalancesLoaded]: (state, { id, balances }) => updateWallet(state, {
-    id,
-    balances,
-    balancesLoaded: true
-  }),
+  [walletBalancesLoaded]: (state, { id, balances }) => { 
+    console.log('balances loaded', id)
+    return updateWallet(state, {
+      id,
+      balances,
+      balancesLoaded: true
+    })
+  },
   [walletBalancesError]: (state, { id, error }) => updateWallet(state, {
     id,
     balancesError: error,

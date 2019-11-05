@@ -120,7 +120,7 @@ export default compose(
         state: { forwardurl: routes.swapWidget() }
       })
     },
-    handleSelect: ({ setSelectedWallet, change, untouch, addressFieldName, walletIdFieldName, symbol }) => (wallet) => {
+    handleSelect: ({ setSelectedWallet, change, onChange, untouch, addressFieldName, walletIdFieldName, symbol }) => (wallet) => {
       if (!wallet) {
         setSelectedWallet(null)
         change(walletIdFieldName, 'null')
@@ -128,11 +128,15 @@ export default compose(
         untouch(addressFieldName)
         return
       }
+      console.log('selecting', wallet.id)
       setSelectedWallet(wallet)
       change(walletIdFieldName, wallet.id)
       const walletInstance = getWalletForAsset(wallet.id, symbol)
       return walletInstance.getFreshAddress(symbol)
-        .then((address) => change(addressFieldName, address))
+        .then((address) => { 
+          change(addressFieldName, address)
+          return onChange(undefined, address)
+        })
     },
     walletHasBalance: ({ symbol }) => ({ balances }) => Boolean(balances[symbol] && balances[symbol].gt(0))
   }),

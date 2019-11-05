@@ -575,6 +575,7 @@ export default compose(
       calculateReceiveEstimate(newSendAmount)
     },
     onChangeRefundAddress: ({ updateURLParams }) => (_, newRefundAddress) => {
+      console.log('on change send address')
       updateURLParams({ fromAddress: newRefundAddress })
     },
     onChangeReceiveAddress: ({ updateURLParams }) => (_, newReceiveAddress) => {
@@ -690,8 +691,8 @@ export default compose(
       saveSwapWidgetInputs({
         to: receiveAsset ? receiveAsset.symbol : undefined,
         from: sendAsset ? sendAsset.symbol : undefined,
-        fromAddress: refundAddress,
-        toAddress: receiveAddress,
+        fromAddress: refundAddress ? refundAddress : undefined,
+        toAddress: receiveAddress ? receiveAddress : undefined,
         sendWalletId: sendWallet ? sendWallet.id : undefined,
         receiveWalletId: receiveWallet ? receiveWallet.id : undefined,
         fromAmount: sendAmount ? parseFloat(sendAmount) : undefined,
