@@ -509,11 +509,7 @@ export default compose(
     }
     return {
       calculateReceiveEstimate: ({
-<<<<<<< HEAD
         receiveAsset, estimatedRate, setEstimatedField, updateURLParams, sendAsset, withdrawalFee
-=======
-        receiveAsset, estimatedRate, setEstimatedField, updateURLParams, sendAsset,
->>>>>>> swap-widget-fixes
       }) => (sendAmount) => {
         if (estimatedRate && sendAmount) {
           sendAmount = toBigNumber(sendAmount).round(sendAsset.decimals)
