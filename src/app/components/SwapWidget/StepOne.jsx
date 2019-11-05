@@ -509,7 +509,11 @@ export default compose(
     }
     return {
       calculateReceiveEstimate: ({
+<<<<<<< HEAD
         receiveAsset, estimatedRate, setEstimatedField, updateURLParams, sendAsset, withdrawalFee
+=======
+        receiveAsset, estimatedRate, setEstimatedField, updateURLParams, sendAsset,
+>>>>>>> swap-widget-fixes
       }) => (sendAmount) => {
         if (estimatedRate && sendAmount) {
           sendAmount = toBigNumber(sendAmount).round(sendAsset.decimals)
@@ -518,11 +522,17 @@ export default compose(
           const estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals).minus(toBigNumber(withdrawalFee))
           console.log('minus', estimatedReceiveAmount.toString())
           updateURLParams({ 
-            toAmount: estimatedReceiveAmount ? parseFloat(estimatedReceiveAmount) : undefined,
-            fromAmount: sendAmount ? parseFloat(sendAmount) : undefined
+            toAmount: estimatedReceiveAmount ? parseFloat(estimatedReceiveAmount) : null,
+            fromAmount: sendAmount ? parseFloat(sendAmount) : null,
+            to: receiveAsset.symbol,
+            from: sendAsset.symbol
           })
           setEstimatedReceiveAmount(estimatedReceiveAmount.toString())
         } else {
+          updateURLParams({ 
+            toAmount: '',
+            fromAmount: ''
+          })
           setEstimatedReceiveAmount(null)
         }
         setEstimatedField('receive')
@@ -534,11 +544,17 @@ export default compose(
           receiveAmount = toBigNumber(receiveAmount).round(receiveAsset.decimals)
           const estimatedSendAmount = receiveAmount.times(estimatedRate).round(sendAsset.decimals)
           updateURLParams({ 
-            fromAmount: estimatedSendAmount ? parseFloat(estimatedSendAmount) : undefined,
-            toAmount: receiveAmount ? parseFloat(receiveAmount) : undefined
+            fromAmount: estimatedSendAmount ? parseFloat(estimatedSendAmount) : null,
+            toAmount: receiveAmount ? parseFloat(receiveAmount) : null,
+            to: receiveAsset.symbol,
+            from: sendAsset.symbol
           })
           setEstimatedSendAmount(estimatedSendAmount.toString())
         } else {
+          updateURLParams({ 
+            fromAmount: '',
+            toAmount: ''
+          })
           setEstimatedSendAmount(null)
         }
         setEstimatedField('send')
@@ -660,7 +676,7 @@ export default compose(
           calculateSendEstimate(receiveAmount)
         }
       }
-      if (fullBalanceAmountLoaded !== prevProps.fullBalanceAmountLoaded && maxGeoBuy > fullBalanceAmount) {
+      if (fullBalanceAmountLoaded !== prevProps.fullBalanceAmountLoaded && maxGeoBuy > fullBalanceAmount && fullBalanceAmount > 0) {
         setSendAmount(fullBalanceAmount)
       }
     },
