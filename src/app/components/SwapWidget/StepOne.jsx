@@ -359,7 +359,7 @@ export default compose(
       initialValues: {
         sendAmount: fromAmount ? parseFloat(fromAmount) : defaultSendAmount,
         receiveAmount: toAmount ? parseFloat(toAmount) : defaultReceiveAmount,
-        refundWallet: sendWalletId ? 'hi' : fromAddress ? fromAddress : defaultRefundAddress,
+        refundWallet: sendWalletId ? undefined : fromAddress ? fromAddress : defaultRefundAddress,
         receiveWallet: receiveWalletId ? undefined : toAddress ? toAddress : defaultReceiveAddress,
         sendWalletId: sendWalletId ? sendWalletId : undefined,
         receiveWalletId: receiveWalletId ? receiveWalletId : undefined,
@@ -520,8 +520,8 @@ export default compose(
           updateURLParams({ 
             toAmount: estimatedReceiveAmount ? parseFloat(estimatedReceiveAmount) : null,
             fromAmount: sendAmount ? parseFloat(sendAmount) : null,
-            to: receiveAsset.symbol,
-            from: sendAsset.symbol
+            // to: receiveAsset.symbol,
+            // from: sendAsset.symbol
           })
           setEstimatedReceiveAmount(estimatedReceiveAmount.toString())
         } else {
@@ -542,8 +542,8 @@ export default compose(
           updateURLParams({ 
             fromAmount: estimatedSendAmount ? parseFloat(estimatedSendAmount) : null,
             toAmount: receiveAmount ? parseFloat(receiveAmount) : null,
-            to: receiveAsset.symbol,
-            from: sendAsset.symbol
+            // to: receiveAsset.symbol,
+            // from: sendAsset.symbol
           })
           setEstimatedSendAmount(estimatedSendAmount.toString())
         } else {
@@ -684,6 +684,9 @@ export default compose(
         if (to === sendSymbol || from === receiveSymbol) {
           from = to
           to = DEFAULT_SEND_SYMBOL
+        } else {
+          from = sendSymbol
+          to = receiveSymbol
         }
         updateURLParams({ to, from })
       } else {
