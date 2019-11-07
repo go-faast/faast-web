@@ -16,7 +16,7 @@ import { affiliateId, secretKey, getAsset, getAffiliateBalance, getMinimumWithdr
 import { initiateAffiliateWithdrawal } from 'Services/Faast'
 
 import AffiliateLayout from 'Components/Affiliate/Layout'
-import { card, cardHeader, input, text, smallCard } from '../style'
+import { card, cardHeader, input, text, smallCard, withdrawal } from '../style'
 
 const FORM_NAME = 'affiliate_withdrawal'
 
@@ -60,7 +60,7 @@ const AffiliateSettings = ({ minimumWithdrawal, isModalOpen, toggleModalOpen, af
                       validate={validateWithdrawalAddress}
                     />
                     <Button type='button' 
-                      className='flat' 
+                      className={classNames('flat', withdrawal)} 
                       color='primary' 
                       onClick={toggleModalOpen} 
                       disabled={invalid || balance < minimumWithdrawal}

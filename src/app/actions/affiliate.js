@@ -11,6 +11,7 @@ const createAction = newScopedCreateAction(__filename)
 
 export const affiliateDataUpdated = createAction('AFFILIATE_UPDATED')
 export const login = createAction('LOGIN')
+export const loadingLogin = createAction('LOADING_LOGIN')
 export const logout = createAction('LOGOUT')
 export const loginError = createAction('LOGIN_ERROR')
 export const updateAffiliateId = createAction('UPDATE_ID')
@@ -49,15 +50,19 @@ export const getStats = (id, key) => (dispatch) => {
 }
 
 export const affiliateLogin = (id, key) => (dispatch) => {
+  dispatch(loadingLogin())
   dispatch(getAccountDetails(id, key))
     .then(() => {
-      dispatch(affiliateDataUpdated())
-      dispatch(getAffiliateWithdrawals(id, key))
-      dispatch(getAffiliateSwaps(id, key, 1, 5))
-      dispatch(getBalance(id, key))
-      dispatch(getStats(id, key))
-      dispatch(dispatch(login()))
-      sessionStorageSet('state:affiliate_lastUpdated', Date.now())
+      Promise.all([
+        dispatch(getAffiliateWithdrawals(id, key)),
+        dispatch(getAffiliateSwaps(id, key, 1, 5)),
+        dispatch(getBalance(id, key)),
+        dispatch(getStats(id, key))
+      ]).then(() => {
+        dispatch(login())
+        dispatch(affiliateDataUpdated())
+        sessionStorageSet('state:affiliate_lastUpdated', Date.now())
+      }).catch(() => { throw new Error('Unable to Login') })
     })
 }
 
