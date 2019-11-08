@@ -65,7 +65,7 @@ export default class RippleWalletLedger extends RippleWallet {
         txData,
       }
     } catch (err) {
-      if (err.indexOf('0x6a82') >= 0) {
+      if (err.toString().indexOf('0x6804') >= 0) {
         throw new Error('Please make sure your ledger wallet is unlocked and try again.')
       } else {
         throw new Error(`Unable to sign XRP transaction: ${err}`)

@@ -200,7 +200,6 @@ export const createSwap = (swapParams, options) => (dispatch, getState) => {
         throw new Error(swap.error)
       }
       swap.id = swapId
-      console.log(swap.depositAddressExtraId)
       options = {
         ...options,
         extraId: swap.depositAddressExtraId

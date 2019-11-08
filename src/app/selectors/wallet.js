@@ -85,7 +85,9 @@ export const getWalletLabel = createItemSelector(getWallet, fieldSelector('label
 export const areWalletHoldingsLoaded = createItemSelector(
   areWalletBalancesLoaded,
   areAssetPricesLoaded,
-  (balancesLoaded, assetPricesLoaded) => balancesLoaded && assetPricesLoaded
+  (balancesLoaded, assetPricesLoaded) => { 
+    return balancesLoaded && assetPricesLoaded
+  }
 )
 
 export const getWalletHoldingsError = createItemSelector(

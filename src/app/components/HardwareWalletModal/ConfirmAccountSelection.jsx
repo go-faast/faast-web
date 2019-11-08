@@ -61,7 +61,6 @@ export default compose(
                   <UnitsLoading value={balance} symbol={assetSymbol} error={error} showFiat/>
                 </span>
               </h5>
-              {console.log(label)}
               {address && label.toLowerCase().indexOf('ethereum') >= 0 && (<AddressLink address={address} className='d-block mt-2 text-muted'/>)}
             </CardBody>
             {error && (

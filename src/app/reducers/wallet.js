@@ -41,7 +41,6 @@ export default createReducer({
   [walletAdded]: upsertWallet,
   [walletUpdated]: (state, wallet) => updateWallet(state, {
     ...wallet,
-    balancesLoaded: false,
   }),
   [walletRemoved]: (state, { id }) => omit(state, id),
   [walletBalancesUpdating]: (state, { id }) => updateWallet(state, {
