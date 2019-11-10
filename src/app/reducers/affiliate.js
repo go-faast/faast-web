@@ -3,12 +3,13 @@ import { statsRetrieved, statsError, login, swapsRetrieved, swapsError, loginErr
   updateAffiliateId, updateSecretKey, resetAffiliate, logout, updateBalance, updateBalanceSwaps,
   withdrawalsRetrieved, withdrawalsError, swapsLoading, affiliateDataUpdated, updateSwapsChart,
   swapChartLoading, swapHistoryTotalUpdated, updateSwapExportLink, swapExportLinkLoading,
-  updateMinimumWithdrawal, withdrawalsTotalUpdated, withdrawalsLoading
+  updateMinimumWithdrawal, withdrawalsTotalUpdated, withdrawalsLoading, loadingLogin
 } from 'Actions/affiliate'
 
 const initialState = {
   lastUpdated: undefined,
   loggedIn: false,
+  loadingLogin: false,
   balance: undefined,
   minimumWithdrawal: undefined,
   swapCount: undefined,
@@ -32,9 +33,10 @@ const initialState = {
 }
 
 export default createReducer({
-  [login]: (state) => ({ ...state, loggedIn: true, loginError: false }),
+  [login]: (state) => ({ ...state, loggedIn: true, loginError: false, loadingLogin: false }),
+  [loadingLogin]: (state) => ({ ...state, loadingLogin: true }),
   [logout]: (state) => ({ ...state, loggedIn: false, loginError: false }),
-  [loginError]: (state) => ({ ...state, loggedIn: false, loginError: true }),
+  [loginError]: (state) => ({ ...state, loggedIn: false, loginError: true, loadingLogin: false }),
   [updateAffiliateId]: (state, id) => ({ ...state, affiliate_id: id }),
   [updateBalance]: (state, balance) => ({ ...state, balance }),
   [updateMinimumWithdrawal]: (state, minimumWithdrawal) => ({ ...state, minimumWithdrawal }),

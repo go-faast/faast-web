@@ -26,7 +26,7 @@ import { affiliateLogout } from 'Actions/affiliate'
 import Icon from 'Components/Icon'
 import FaastLogo from 'Img/faast-logo.png'
 
-import { navbar, navbarBrand, navbarLink, active } from './style'
+import { navbar, navbarBrand, navbarLink, active, buttonText } from './style'
 
 const AffiliateNavBar = ({ logout, loggedIn, children, isExpanded, toggleExpanded, ...props }) => (
   <Navbar className={navbar} {...pick(props, Object.keys(Navbar.propTypes))} light>
@@ -73,7 +73,7 @@ const AffiliateNavBar = ({ logout, loggedIn, children, isExpanded, toggleExpande
               color='primary'
               href='https://faa.st/affiliates/terms' 
               target='_blank noreferrer noopener' 
-              className={classNames(navbarLink, active, 'd-none d-md-inline cursor-pointer flat mr-3')}>
+              className={classNames(buttonText, 'd-none d-md-inline cursor-pointer flat mr-3 p-0 pb-1')}>
               Agreement
             </Button>
           </div>
@@ -110,7 +110,7 @@ export default compose(
   withToggle('expanded'),
   lifecycle({
     componentWillMount() {
-      document.body.style.backgroundColor = '#F5F7F8'
+      document.body.style.backgroundColor = '#f5f6fa'
     }
   })
 )(AffiliateNavBar)

@@ -61,38 +61,41 @@ const AffiliateWithdrawalTable = ({ withdrawals, size, currentPage, handlePageCl
         <CardHeader className={cardHeader}>{title}</CardHeader>
         <CardBody className={classNames(withdrawals.length > 0 && 'p-0', 'text-center')}>
           {areWithdrawalsLoading ? (<Loading className='py-4' />) : withdrawals.length > 0 ? (
-            <Table className={classNames('text-left', text, affilateTable)} striped responsive>
-              <thead>
-                <tr>
-                  <th></th>
-                  {size === 'large' && (<th>Created</th>)}
-                  <th>Wallet</th>
-                  <th>Amount</th>
-                  <th>Tx</th>
-                </tr>
-              </thead>
-              <tbody>
-                {withdrawals.map((withdrawal, i) => {
-                  return (
-                    <WithdrawalTableRow key={i} size={size} withdrawal={withdrawal}/>
-                  )
-                })}
-              </tbody>
-            </Table>
+            <Fragment>
+              <Table className={classNames('text-left', text, affilateTable)} striped responsive>
+                <thead>
+                  <tr>
+                    <th></th>
+                    {size === 'large' && (<th>Created</th>)}
+                    <th>Wallet</th>
+                    <th>Amount</th>
+                    <th>Tx</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {withdrawals.map((withdrawal, i) => {
+                    return (
+                      <WithdrawalTableRow key={i} size={size} withdrawal={withdrawal}/>
+                    )
+                  })}
+                </tbody>
+              </Table>
+              {size === 'small' && withdrawals.length > 0 && (
+                <CardFooter 
+                  tag={Link} 
+                  to='/affiliates/withdrawals'
+                  className={classNames(cardFooter, text, withdrawals.length < 9 && 'position-absolute', 'p-2 text-center cursor-pointer d-block w-100')}
+                  style={{ bottom: 0 }}
+                >
+                  <span className='font-weight-bold'>View Withdrawal History</span>
+                </CardFooter>)}
+            </Fragment>
           ) :
             <div className='d-flex align-items-center justify-content-center'>
               <p className={text}>No Withdrawals yet.</p>
             </div>
           }
-          {size === 'small' && withdrawals.length > 0 && (
-            <CardFooter 
-              tag={Link} 
-              to='/affiliates/withdrawals'
-              className={classNames(cardFooter, text, withdrawals.length < 9 && 'position-absolute', 'p-2 text-center cursor-pointer d-block w-100')}
-              style={{ bottom: 0 }}
-            >
-              <span className='font-weight-bold'>View Withdrawal History</span>
-            </CardFooter>)}
+          
         </CardBody>
       </Card>
       {size === 'large' && withdrawalHistoryTotal > 1 && (

@@ -15,6 +15,16 @@
     opacity: .85;
   }
 }
+
+.buttonText {
+  font-size: 14px !important;
+  background: #fff !important;
+  color: #525252;
+  border: none !important;
+  border-bottom: 1px dotted #525252 !important;
+  border-radius: 0px !important;
+}
+
 .active {
   color: #525252 !important;
 }
