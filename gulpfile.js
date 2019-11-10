@@ -44,7 +44,7 @@ gulp.task('test:e2e', () =>
     })))
 
 gulp.task('compile:app', run('webpack --config etc/webpack.config.app.js'))
-gulp.task('compile:site', run('node --max_old_space_size=4096 ./node_modules/react-static/bin/react-static-build'))
+gulp.task('compile:site', run('node --max_old_space_size=8192 ./node_modules/react-static/bin/react-static-build'))
 
 gulp.task('combine:app', () => mergeDist(path.join(dirs.buildApp, '**/*')))
 gulp.task('combine:site', () => mergeDist(path.join(dirs.buildSite, '**/*')))
