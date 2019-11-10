@@ -1,7 +1,6 @@
 if (typeof window === 'undefined') {
   throw new Error(`You really shouldnt be importing ${__filename} outsite of the app`)
 }
-console.log(process.env)
 
 import {
   ResponseSuccess,
