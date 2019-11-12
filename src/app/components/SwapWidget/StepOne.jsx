@@ -273,7 +273,7 @@ const SwapStepOne = ({
                 )}
               </Col>
             </Row>
-            <div className='mt-2 mb-4'>
+            <div className='mt-0 mb-2'>
               <Checkbox
                 label={
                   <T tag='small' i18nKey='app.widget.acceptTerms' className='pl-1 text-white'>I accept the 
