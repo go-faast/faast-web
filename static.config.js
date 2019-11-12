@@ -179,7 +179,7 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
             bgColor: '#F5F7F8'
           }),
           children: await Promise.all(mediumPosts.map(async post => {
-            let mediumPost = await criticalGet(`https://medium.com/faast${post.uniqueSlug}?format=json`)
+            let mediumPost = await criticalGet(`https://medium.com/faast/${post.uniqueSlug}?format=json`)
             mediumPost = JSON.parse(mediumPost.data.replace('])}while(1);</x>', ''))
             return ({
               path: `/${post.uniqueSlug}`,
