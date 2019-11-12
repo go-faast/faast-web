@@ -1,4 +1,4 @@
-const siteName = '${siteName}'
+const siteName = 'Faa.st'
 const titleSuffix = `- ${siteName}`
 
 const genericTitle = `${siteName} is the safest and fastest way to trade crypto directly from your wallet.`
