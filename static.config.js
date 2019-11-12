@@ -6,6 +6,7 @@ import merge from 'webpack-merge'
 import ExtractTextPlugin from 'extract-text-webpack-plugin'
 import { pick, get } from 'lodash'
 import urlJoin from 'url-join'
+import retry from 'p-retry'
 
 import Wallets from './src/config/walletTypes'
 import { translations } from './src/config/translations'
@@ -43,6 +44,16 @@ const generateCombinationsFromArray = (array, property) => {
     if (i == array.length - 1) {
       return results
     }
+  }
+}
+
+/** Get critical data, fail process on error */
+async function criticalGet(url, config) {
+  try {
+    return await retry(() => axios.get(url, config), { retries: 5, randomize: true, minTimeout: 2000 })
+  } catch (e) {
+    console.error('Critical request failed, aborting build', e)
+    process.exit(1)
   }
 }
 
@@ -168,7 +179,7 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
             bgColor: '#F5F7F8'
           }),
           children: await Promise.all(mediumPosts.map(async post => {
-            let mediumPost = await axios.get(`https://medium.com/faast/${post.uniqueSlug}?format=json`)
+            let mediumPost = await criticalGet(`https://medium.com/faast${post.uniqueSlug}?format=json`)
             mediumPost = JSON.parse(mediumPost.data.replace('])}while(1);</x>', ''))
             return ({
               path: `/${post.uniqueSlug}`,
@@ -365,7 +376,7 @@ export default {
   }),
   Document,
   getRoutes: async () => {
-    const { data: assets } = await axios.get('https://api.faa.st/api/v2/public/currencies', {
+    const { data: assets } = await criticalGet('https://api.faa.st/api/v2/public/currencies', {
       params: {
         include: 'marketInfo'
       }
@@ -373,7 +384,7 @@ export default {
     const supportedAssets = assets.filter(({ deposit, receive }) => deposit || receive)
       .map((asset) => ({ ...pick(asset, ['symbol', 'name', 'iconUrl', 'deposit', 'receive', 'cmcIDno']), marketCap: asset.marketInfo.quote.USD.market_cap || 0 }))
     const supportedWallets = Object.values(Wallets)
-    let mediumProfile = await axios.get('https://medium.com/faast?format=json')
+    let mediumProfile = await criticalGet('https://medium.com/faast?format=json')
     mediumProfile = JSON.parse(mediumProfile.data.replace('])}while(1);</x>', ''))
     let mediumPosts = Object.values(mediumProfile.payload.references.Post)
     let dbPosts = []
