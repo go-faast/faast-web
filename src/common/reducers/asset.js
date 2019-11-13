@@ -78,6 +78,7 @@ export const reducerFunctions = {
   [assetsLoading]: (state) => ({
     ...state,
     loading: true,
+    loadingError: ''
   }),
   [assetsLoaded]: (state, assetArray) => ({
     ...state,
@@ -92,7 +93,7 @@ export const reducerFunctions = {
   [assetsLoadingError]: (state, loadingError) => ({ ...state, loading: false, loadingError }),
   [assetPriceLoading]: (state, { symbol }) => ({
     ...state,
-    data: updateAsset(state.data, { symbol, priceLoading: true })
+    data: updateAsset(state.data, { symbol, priceLoading: true, priceError: '' })
   }),
   [assetPriceUpdated]: (state, priceData) => ({
     ...state,
@@ -109,6 +110,7 @@ export const reducerFunctions = {
   [assetPricesLoading]: (state) => ({
     ...state,
     pricesLoading: true,
+    pricesError: '',
   }),
   [assetPricesUpdated]: (state, priceDataArray) => ({
     ...state,

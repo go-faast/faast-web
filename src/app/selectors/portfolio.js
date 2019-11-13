@@ -6,6 +6,7 @@ import { toPercentage } from 'Utilities/convert'
 import {
   getAllWallets, getWallet, getWalletWithHoldings, getWalletNestedIds, getWalletTransitiveNestedIds,
   getWalletHoldingsError, areWalletHoldingsLoaded, areWalletBalancesLoaded, getWalletLabel,
+  areWalletBalancesUpdating
 } from './wallet'
 
 const { defaultPortfolioId } = config
@@ -25,6 +26,7 @@ export const getAllPortfolioWalletIds = createSelector(
 export const getCurrentPortfolio = currySelector(getWallet, getCurrentPortfolioId)
 export const getCurrentPortfolioWithHoldings = currySelector(getWalletWithHoldings, getCurrentPortfolioId)
 export const areCurrentPortfolioBalancesLoaded = currySelector(areWalletBalancesLoaded, getCurrentPortfolioId)
+export const areCurrentPortfolioBalancesUpdating = currySelector(areWalletBalancesUpdating, getCurrentPortfolioId)
 export const areCurrentPortfolioHoldingsLoaded = currySelector(areWalletHoldingsLoaded, getCurrentPortfolioId)
 export const getCurrentPortfolioHoldingsError = currySelector(getWalletHoldingsError, getCurrentPortfolioId)
 export const getCurrentPortfolioWalletIds = currySelector(getWalletNestedIds, getCurrentPortfolioId)

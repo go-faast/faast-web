@@ -175,7 +175,7 @@ export const updateWalletBalances = (walletId) => (dispatch, getState) => Promis
           getAllBalances(walletInstance, walletId)
             .then((symbolToBalance) =>  {
               return dispatch(walletBalancesUpdated(walletId, symbolToBalance))
-            })
+            }).catch((e) => dispatch(handleBalanceErrors(walletId, e)))
         ) : dispatch(walletBalancesUpdated(walletId, symbolToBalance))
         // Retrieve used addresses in background
         walletInstance.getUsedAddresses()
@@ -184,19 +184,22 @@ export const updateWalletBalances = (walletId) => (dispatch, getState) => Promis
 
         return symbolToBalance
       })
-      .catch((e) => {
-        log.error(`Failed to update balances for wallet ${walletId}:`, e)
-        let message = e.message || e
-        if (typeof message !== 'string') { 
-          message = 'Unknown error occured while updating wallet balances'
-        }
-        if (message.includes('Failed to fetch')) {
-          message = 'Error loading wallet balances'
-        }
-        dispatch(walletBalancesError(walletId, message))
-        return getWalletBalances(getState(), walletId)
-      })
+      .catch((e) => dispatch(handleBalanceErrors(walletId, e)))
+      .catch((e) => dispatch(handleBalanceErrors(walletId, e)))
   })
+
+const handleBalanceErrors = (walletId, e) => (dispatch, getState) => {
+  log.error(`Failed to update balances for wallet ${walletId}:`, e)
+  let message = e.message || e
+  if (typeof message !== 'string') { 
+    message = 'Unknown error occured while updating wallet balances'
+  }
+  if (message.includes('Failed to fetch')) {
+    message = 'Error loading wallet balances'
+  }
+  dispatch(walletBalancesError(walletId, message))
+  return getWalletBalances(getState(), walletId)
+}
 
 const doForNestedWallets = (cb) => (multiWalletId, ...nestedWalletIds) => (dispatch) =>
   Promise.all([
