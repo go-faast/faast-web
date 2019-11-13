@@ -41,11 +41,14 @@ const RenderInput = (props) => {
   )
 
   const feedbackElement = (
-    <Fragment>
+    type !== 'hidden' && (
+      <div style={{ height: 30 }}>
       {touched && error && (<FormFeedback className='d-block'>{error}</FormFeedback>)}
       {touched && warning && (<FormFeedback className='d-block text-warning'>{warning}</FormFeedback>)}
-      {helpText}
-    </Fragment>
+      {(!error || !touched) && helpText}
+      {!helpText && (<FormFeedback className='d-block'></FormFeedback>)}
+    </div>
+    )
   )
 
   const renderAddon = (addon) => typeof addon === 'function' ? addon(inputProps) : addon
