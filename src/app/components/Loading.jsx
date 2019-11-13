@@ -6,15 +6,24 @@ import { tag as tagPropType } from 'Utilities/propTypes'
 import faastLogo from 'Img/faast-logo.png'
 import Spinner from 'Components/Spinner'
 
-const Loading = ({ tag: Tag, label, error, center, className, ...props }) => (
+const Loading = ({ tag: Tag, label, error, center, className, errorButton: ErrorButton, ...props }) => (
   <Tag className={classNames('d-flex flex-column align-items-center', { 'm-auto': center }, className)} {...props}>
     <img src={faastLogo} height='50' className='mb-3' />
     {error
-      ? (<div className='text-danger'>{error}</div>)
+      ? (
+        <div>
+          <div className='text-danger'>
+            {error}
+          </div>
+          {ErrorButton}
+        </div>
+      )
       : (
         <Fragment>
           <Spinner size='lg'/>
-          {label && (<div className='mt-3'>{label}</div>)}
+          {label && (
+            <div className='mt-3'>{label}</div>
+          )}
         </Fragment>
       )}
   </Tag>
@@ -25,6 +34,7 @@ Loading.propTypes = {
   label: PropTypes.node,
   error: PropTypes.string,
   center: PropTypes.bool,
+  errorButton: PropTypes.node
 }
 
 Loading.defaultProps = {

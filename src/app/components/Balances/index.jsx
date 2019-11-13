@@ -3,14 +3,16 @@ import { createStructuredSelector } from 'reselect'
 import { compose } from 'recompose'
 import PropTypes from 'prop-types'
 import { Card, CardHeader, CardBody, Col, Row, Dropdown, DropdownMenu, DropdownToggle,
-  DropdownItem
+  DropdownItem, Button
 } from 'reactstrap'
 import classNames from 'class-names'
 import { connect } from 'react-redux'
 
 import display from 'Utilities/display'
-import { getWalletWithHoldings } from 'Selectors'
+import { getWalletWithHoldings, } from 'Selectors'
 import { getConnectedWalletsPendingSwaps } from 'Selectors/swap'
+import { areCurrentPortfolioBalancesUpdating } from 'Selectors/portfolio'
+import { updateAllHoldings } from 'Actions/portfolio'
 
 import withToggle from 'Hoc/withToggle'
 
@@ -25,9 +27,10 @@ import ShareButton from 'Components/ShareButton'
 import T from 'Components/i18n/T'
 
 import { statLabel } from './style'
+import Expandable from '../Expandable'
 
 const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen, 
-  handleAdd, isAlreadyInPortfolio, showStats, pendingSwaps }) => {
+  handleAdd, isAlreadyInPortfolio, showStats, pendingSwaps, updateAllHoldings, areBalancesUpdating }) => {
   const {
     address, assetHoldings, holdingsLoaded, holdingsError, label, totalFiat, 
     totalFiat24hAgo, totalChange, id
@@ -92,7 +95,21 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
   return (
     <Fragment>
       {!holdingsLoaded && (
-        <LoadingFullscreen label={<T tag='span' i18nKey='app.loading.balances'>Loading balances...</T>}  error={holdingsError}/>
+        <LoadingFullscreen 
+          label={<T tag='span' i18nKey='app.loading.balances'>Loading balances...</T>}  
+          error={holdingsError}
+          errorButton={(
+          <Button 
+            onClick={updateAllHoldings} 
+            className='mt-2' 
+            size='sm' 
+            color='primary'
+            disabled={areBalancesUpdating}
+            >
+            {!areBalancesUpdating ? 'Retry Balances' : 'Retrying...'}
+          </Button>
+          )}
+        />
       )}
       <Card>
         <CardHeader className={showStats ? 'grid-group' : null}>
@@ -105,6 +122,14 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
                   ) : (<T tag='span' i18nKey='app.dashboard.portfolioHoldings'>Portfolio Holdings</T>)}
                   </h5>
                 </Col>
+                <Expandable 
+                  shrunk={(
+                  <Button className={`${id !== 'default' && 'pr-1'}`} onClick={updateAllHoldings} color='transparent'>
+                    <i className={`fa fa-refresh cursor-pointer ${areBalancesUpdating ? 'fa-spin' : ''}`} />
+                  </Button>
+                  )} 
+                  expanded='Refresh holdings'
+                />
                 {id !== 'default' ?
                   searchAndShare
                   : null}
@@ -178,7 +203,10 @@ Balances.Connected = ConnectedBalances
 
 const mapStateToProps = connect(createStructuredSelector({
   pendingSwaps: getConnectedWalletsPendingSwaps,
-}))
+  areBalancesUpdating: areCurrentPortfolioBalancesUpdating
+}), {
+  updateAllHoldings: updateAllHoldings
+})
 
 
 export { Balances, ConnectedBalances }

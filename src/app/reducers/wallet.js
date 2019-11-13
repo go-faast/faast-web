@@ -46,19 +46,23 @@ export default createReducer({
   [walletBalancesUpdating]: (state, { id }) => updateWallet(state, {
     id,
     balancesUpdating: true,
+    balancesError: '',
   }),
   [walletBalancesUpdated]: (state, { id, balances }) => updateWallet(state, {
     id,
     balances,
     balancesUpdating: false,
+    balancesError: '',
   }),
   [walletBalancesLoaded]: (state, { id, balances }) => updateWallet(state, {
     id,
     balances,
-    balancesLoaded: true
+    balancesLoaded: true,
+    balancesError: '',
   }),
   [walletBalancesError]: (state, { id, error }) => updateWallet(state, {
     id,
+    balancesUpdating: false,
     balancesError: error,
   }),
   [walletUsedAddressesUpdated]: (state, { id, usedAddresses }) => updateWallet(state, {
