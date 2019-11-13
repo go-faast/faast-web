@@ -128,7 +128,7 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
                     <i className={`fa fa-refresh cursor-pointer ${areBalancesUpdating ? 'fa-spin' : ''}`} />
                   </Button>
                   )} 
-                  expanded='Refresh holdings'
+                  expanded={areBalancesUpdating ? 'Refreshing holdings': 'Refresh holdings'}
                 />
                 {id !== 'default' ?
                   searchAndShare
