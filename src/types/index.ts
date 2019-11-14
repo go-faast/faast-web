@@ -51,6 +51,6 @@ export type HdAccount = {
 }
 
 export interface FeeRate {
-  rate: BigNumber | number
+  rate: BigNumber | number | string
   unit: string
 }

@@ -42,7 +42,10 @@ async function estimateGasLimit(txData: Partial<TxData>): Promise<BigNumber> {
       const minGasLimit = txData.data ? MIN_GAS_LIMIT_TOKEN : MIN_GAS_LIMIT_ETH
       return gasLimit.lt(minGasLimit) ? minGasLimit : gasLimit
     } else {
-      return getWeb3().eth.estimateGas(txData)
+      return getWeb3().eth.estimateGas({
+        ...txData,
+        nonce: toNumber(txData.nonce),
+      })
       .then(toBigNumber)
       .then((web3GasLimit) => {
         const minGasLimit = txData.data ? MIN_GAS_LIMIT_TOKEN : MIN_GAS_LIMIT_ETH
@@ -197,7 +200,7 @@ export default abstract class EthereumWallet extends Wallet {
           ...txData,
           gasPrice: toHex(gasPrice),
           gas: toHex(gasLimit),
-          nonce: toHex(nonce),
+          nonce: toNumber(nonce),
         },
       }))
     })
