@@ -99,15 +99,15 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
           label={<T tag='span' i18nKey='app.loading.balances'>Loading balances...</T>}  
           error={holdingsError}
           errorButton={(
-          <Button 
-            onClick={updateAllHoldings} 
-            className='mt-2' 
-            size='sm' 
-            color='primary'
-            disabled={areBalancesUpdating}
+            <Button 
+              onClick={updateAllHoldings} 
+              className='mt-2' 
+              size='sm' 
+              color='primary'
+              disabled={areBalancesUpdating}
             >
-            {!areBalancesUpdating ? 'Retry Balances' : 'Retrying...'}
-          </Button>
+              {!areBalancesUpdating ? 'Retry Balances' : 'Retrying...'}
+            </Button>
           )}
         />
       )}
@@ -124,11 +124,11 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
                 </Col>
                 <Expandable 
                   shrunk={(
-                  <Button className={`${id !== 'default' && 'pr-1'}`} onClick={updateAllHoldings} color='transparent'>
-                    <i className={`fa fa-refresh cursor-pointer ${areBalancesUpdating ? 'fa-spin' : ''}`} />
-                  </Button>
+                    <Button className={`${id !== 'default' && 'pr-1'}`} onClick={updateAllHoldings} color='transparent'>
+                      <i className={`fa fa-refresh cursor-pointer ${areBalancesUpdating ? 'fa-spin' : ''}`} />
+                    </Button>
                   )} 
-                  expanded={areBalancesUpdating ? 'Refreshing holdings': 'Refresh holdings'}
+                  expanded={areBalancesUpdating ? 'Refreshing holdings' : 'Refresh holdings'}
                 />
                 {id !== 'default' ?
                   searchAndShare

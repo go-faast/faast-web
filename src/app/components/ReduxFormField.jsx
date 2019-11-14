@@ -43,11 +43,11 @@ const RenderInput = (props) => {
   const feedbackElement = (
     type !== 'hidden' && (
       <div style={{ height: 30 }}>
-      {touched && error && (<FormFeedback className='d-block'>{error}</FormFeedback>)}
-      {touched && warning && (<FormFeedback className='d-block text-warning'>{warning}</FormFeedback>)}
-      {(!error || !touched) && helpText}
-      {!helpText && (<FormFeedback className='d-block'></FormFeedback>)}
-    </div>
+        {touched && error && (<FormFeedback className='d-block'>{error}</FormFeedback>)}
+        {touched && warning && (<FormFeedback className='d-block text-warning'>{warning}</FormFeedback>)}
+        {(!error || !touched) && helpText}
+        {!helpText && (<FormFeedback className='d-block'></FormFeedback>)}
+      </div>
     )
   )
 
