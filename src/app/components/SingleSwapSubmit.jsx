@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import {
   isSwapReadyToSign, isSwapReadyToSend,
   isSwapSigning, isSwapSending,
-  doesSwapRequireSigning,
+  doesSwapRequireSigning, isSwapSent,
 } from 'Selectors'
 import { signSwap, sendSwap } from 'Actions/swap'
 
@@ -24,6 +24,7 @@ export default compose(
     readyToSend: isSwapReadyToSend(state, swap.id),
     startedSigning: isSwapSigning(state, swap.id),
     startedSending: isSwapSending(state, swap.id),
+    finishedSending: isSwapSent(state, swap.id),
   }), {
     signSwap,
     sendSwap,
