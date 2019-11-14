@@ -43,7 +43,7 @@
     "postversion": "bin/postversion.sh",
     "release-staging": "bin/release.sh staging",
     "release-prod": "bin/release.sh master",
-    "postinstall": "rm -f node_modules/web3/index.d.ts && npm rebuild node-sass"
+    "postinstall": "npm rebuild node-sass"
   },
   "standard": {
     "ignore": [
@@ -72,7 +72,6 @@
     "@types/react-router": "^4.0.32",
     "@types/recompose": "^0.27.0",
     "@types/uuid": "3.4.4",
-    "@types/web3": "1.0.18",
     "@types/webpack-env": "1.13.9",
     "accounting": "^0.4.1",
     "ajv": "^5.5.2",
@@ -110,7 +109,7 @@
     "debounce": "^1.2.0",
     "ethereumjs-tx": "^1.3.3",
     "ethereumjs-util": "^5.1.2",
-    "ethereumjs-wallet": "^0.6.0",
+    "ethereumjs-wallet": "github:go-faast/ethereumjs-wallet",
     "extract-text-webpack-plugin": "^3.0.2",
     "faast-ui": "github:go-faast/faast-ui#v1.0.7",
     "favicons-webpack-plugin": "0.0.7",
@@ -190,7 +189,7 @@
     "uglifyjs-webpack-plugin": "^1.1.1",
     "url-join": "4.0.0",
     "uuid": "^3.2.1",
-    "web3": "1.0.0-beta.34",
+    "web3": "^1.2.3",
     "webpack": "^3.5.5",
     "webpack-merge": "^4.1.2",
     "worker-loader": "^1.1.0",
