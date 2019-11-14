@@ -2,7 +2,7 @@ import pad from 'pad-left'
 
 import config from 'Config'
 import { Web3 } from 'Services/Web3'
-import { BatchRequest, Tx as Web3Tx } from 'web3/eth/types'
+import { BatchRequest, TransactionConfig as Web3TxConfig } from 'web3-core'
 import { toBigNumber, TEN } from 'Utilities/convert'
 import { isValidAddress } from 'Utilities/addressFormat'
 import { Web3Receipt, Receipt, Amount } from '../types'
@@ -54,7 +54,7 @@ export function toUniversalReceipt(receipt: Web3Receipt): Receipt {
 /** Send the transaction and return a promise that resolves to the txHash after the
  * transaction is broadcast to the network.
  */
-export function web3SendTx(userWeb3: Web3, txData: Web3Tx | string, options: SendOptions = {}): Promise<string> {
+export function web3SendTx(userWeb3: Web3, txData: Web3TxConfig | string, options: SendOptions = {}): Promise<string> {
   return new Promise((resolve, reject) => {
     const { onTxHash, onReceipt, onConfirmation, onError } = options
     // sendSignedTransaction resolves when the tx receipt is available, which occurs after

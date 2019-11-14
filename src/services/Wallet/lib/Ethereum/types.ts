@@ -1,6 +1,6 @@
-import { Tx as Web3Tx, TransactionReceipt as Web3TxReceipt } from 'web3/types'
-import { BatchRequest } from 'web3/eth/types'
-import { EncodedTransaction } from 'web3/types'
+import {
+  RLPEncodedTransaction, BatchRequest, Transaction as Web3Tx, TransactionReceipt as Web3TxReceipt,
+} from 'web3-core'
 import EthereumjsTx from 'ethereumjs-tx'
 import { Transaction, Receipt } from '../types'
 import { BigNumber } from 'Src/types'
@@ -9,7 +9,7 @@ export { Web3Tx, Web3TxReceipt }
 
 export type BatchableFn<T> = {
   (...args: any[]): Promise<T>,
-  request?: (...args: any[]) => object,
+  request?: (...args: any[]) => any,
 }
 
 export type SendOptions = {
@@ -25,12 +25,12 @@ export type TxData = {
   value: string | number,
   gas: string | number,
   gasPrice: string | number,
-  nonce: string | number,
+  nonce: number,
   data?: string,
   chainId?: number,
 }
 
-export type SignedTxData = EncodedTransaction | {
+export type SignedTxData = RLPEncodedTransaction | {
   tx: EthereumjsTx,
   raw: string,
 }
