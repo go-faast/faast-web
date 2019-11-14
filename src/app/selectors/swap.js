@@ -138,4 +138,6 @@ export const isSwapReadyToSend = createSelector(getSwap, getSwapReadyToSend)
 
 export const isSwapSigning = createSelector(getSwap, (swap) => Boolean(swap && swap.txSigning))
 
+export const isSwapSent = createSelector(getSwap, (swap) => Boolean(swap && swap.sent))
+
 export const isSwapSending = createSelector(getSwap, (swap) => Boolean(swap && swap.txSending))

@@ -8,7 +8,7 @@ import {
   getCurrentSwundle, 
   isCurrentSwundleReadyToSign, isCurrentSwundleReadyToSend,
   isCurrentSwundleSigning, isCurrentSwundleSending,
-  doesCurrentSwundleRequireSigning,
+  doesCurrentSwundleRequireSigning, isCurrentSwundleSent
 } from 'Selectors'
 import { signSwundle, sendSwundle, removeSwundle } from 'Actions/swundle'
 
@@ -23,6 +23,7 @@ export default compose(
     readyToSend: isCurrentSwundleReadyToSend,
     startedSigning: isCurrentSwundleSigning,
     startedSending: isCurrentSwundleSending,
+    finishedSending: isCurrentSwundleSent,
   }), {
     removeSwundle,
     signSwundle,

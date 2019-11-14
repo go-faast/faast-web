@@ -9,7 +9,7 @@ import { reduxForm } from 'redux-form'
 import Checkbox from 'Components/Checkbox'
 import {
   compose, setDisplayName, setPropTypes, defaultProps,
-  withProps, branch, withHandlers, renderNothing,
+  withProps, branch, withHandlers, renderNothing, withState
 } from 'recompose'
 import Trezor from 'Services/Trezor'
 import { min } from 'lodash'
@@ -38,7 +38,7 @@ const SwapSubmit = ({
   isOpen, swaps, headerText, continueText, continueDisabled, continueLoading,
   errorMessage, handleCancel, currentSwap, secondsUntilPriceExpiry, totalTxFee,
   handleTimerEnd, handleSubmit, invalid, submitting, modal, termsAccepted, singleSwap,
-  geoLimit, forwardTo
+  geoLimit, forwardTo, requiresSigning
 }) => {
   const Wrapper = modal ? Modal : RenderChildren
   const Header = modal ? ModalHeader : RenderNothing
@@ -87,11 +87,18 @@ const SwapSubmit = ({
             {(secondsUntilPriceExpiry > 0)
               ? (<span><small><Timer className='text-warning' seconds={secondsUntilPriceExpiry} label={<T tag='span' i18nKey='app.swapSubmit.timer'>* Quoted rates are guaranteed if submitted within:</T>} onTimerEnd={handleTimerEnd}/></small></span>)
               : null}
-            <p>
+            <p className={requiresSigning && 'mb-1'}>
               <T tag='small' i18nKey='app.swapSubmit.additionalFees' className='text-muted'>
                 ** Additional fees may apply depending on the asset being sent and the wallet you're using.
               </T>
             </p>
+            {requiresSigning && (
+              <p style={{ color: '#09a99d' }}>
+                <small>
+                  IMPORTANT: Your swap will be automatically submitted to the network after signing is complete. Please review swap details now.
+                </small>
+              </p>
+            )}
             {!termsAccepted && (
               <div className='mb-3'>
                 <Checkbox
@@ -137,6 +144,7 @@ export default compose(
     readyToSend: PropTypes.bool.isRequired,
     startedSigning: PropTypes.bool.isRequired,
     startedSending: PropTypes.bool.isRequired,
+    finishedSending: PropTypes.bool.isRequired,
     onSign: PropTypes.func.isRequired,
     onSend: PropTypes.func.isRequired,
     onCancel: PropTypes.func,
@@ -154,6 +162,7 @@ export default compose(
     termsAccepted: false,
     forwardTo: undefined
   }),
+  withState('currentlySending', 'updateCurrentlySending', false),
   connect(createStructuredSelector({
     isOpen: ({ orderModal: { show } }) => show,
     geoLimit: getGeoLimit
@@ -162,7 +171,7 @@ export default compose(
     routerPush: push,
     refreshSwap,
   }),
-  withProps(({ swap, requiresSigning, readyToSign, readyToSend, startedSigning, startedSending }) => {
+  withProps(({ swap, requiresSigning, startedSigning, startedSending, finishedSending, currentlySending }) => {
     let singleSwap = false
     let swaps = swap
     if (!Array.isArray(swap)) {
@@ -174,16 +183,14 @@ export default compose(
     const secondsUntilPriceExpiry = (Date.parse(soonestPriceExpiry) - Date.now()) / 1000
     const currentSwap = swaps.find(({ txSigning, txSending, sendWallet }) =>
       txSigning || (txSending && sendWallet && !sendWallet.isSignTxSupported))
-    const showSubmit = !requiresSigning || startedSigning // True if continue button triggers tx sending, false for signing
-    const continueDisabled = showSubmit ? (!readyToSend || startedSending) : (!readyToSign || startedSigning)
-    const continueLoading = showSubmit ? startedSending : startedSigning
-    const continueText = showSubmit ? (singleSwap ? <T tag='span' i18nKey='app.swapSubmit.submit'>Submit</T> : <T tag='span' i18nKey='app.swapSubmit.submitAll'>Submit all</T>) : <T tag='span' i18nKey='app.swapSubmit.beginSigning'>Begin signing</T>
-    const headerText = showSubmit ? <T tag='span' i18nKey='app.swapSubmit.confirmSubmit'>Confirm and Submit</T> : <T tag='span' i18nKey='app.swapSubmit.reviewSign'>Review and Sign</T>
+    const continueDisabled = startedSending || startedSigning || finishedSending || currentlySending
+    const continueLoading = startedSending || startedSigning || finishedSending || currentlySending
+    const continueText = !requiresSigning ? (singleSwap ? <T tag='span' i18nKey='app.swapSubmit.submit'>Submit</T> : <T tag='span' i18nKey='app.swapSubmit.submitAll'>Submit all</T>) : <T tag='span' i18nKey='app.swapSubmit.signAndSubmit'>Sign and Submit</T>
+    const headerText = !requiresSigning ? <T tag='span' i18nKey='app.swapSubmit.confirmSubmit'>Confirm and Submit</T> : <T tag='span' i18nKey='app.swapSubmit.reviewSign'>Review and Sign</T>
     return {
       swaps,
       singleSwap,
       errorMessage,
-      showSubmit,
       soonestPriceExpiry,
       secondsUntilPriceExpiry,
       currentSwap,
@@ -199,15 +206,16 @@ export default compose(
       Trezor.cancel()
       toggle()
     },
-    handleSignTxs: ({ swap, onSign }) => () => {
-      Promise.resolve(onSign(swap))
+    handleSignTxs: ({ swap, onSign, updateCurrentlySending }) => () => {
+      return Promise.resolve(onSign(swap))
         .catch((e) => {
+          updateCurrentlySending(false)
           toastr.error(e.message || e)
           log.error(e)
           Trezor.cancel()
         })
     },
-    handleSendTxs: ({ swap, onSend, toggle, routerPush, forwardTo }) => () => {
+    handleSendTxs: ({ swap, onSend, toggle, routerPush, forwardTo, updateCurrentlySending }) => () => {
       Promise.resolve(onSend(swap))
         .then((updatedSwap) => {
           if (!updatedSwap) {
@@ -225,6 +233,7 @@ export default compose(
           }
         })
         .catch((e) => {
+          updateCurrentlySending(false)
           toastr.error(e.message || e)
           log.error(e)
         })
@@ -234,7 +243,15 @@ export default compose(
     },
   }),
   withHandlers({
-    onSubmit: ({ showSubmit, handleSendTxs, handleSignTxs }) => () => showSubmit ? handleSendTxs() : handleSignTxs(),
+    handleSignAndSendTxs: ({ handleSignTxs, requiresSigning, handleSendTxs, updateCurrentlySending }) => () => {
+      updateCurrentlySending(true)
+      !requiresSigning ? handleSendTxs() : handleSignTxs()
+        .then(() => handleSendTxs())
+        .catch(() => updateCurrentlySending(false))
+    },
+  }),
+  withHandlers({
+    onSubmit: ({ handleSignAndSendTxs }) => () => handleSignAndSendTxs(),
   }),
   reduxForm({
     form: 'termsForm'

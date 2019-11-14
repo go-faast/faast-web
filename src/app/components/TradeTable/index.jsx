@@ -129,14 +129,14 @@ const TradeTable = ({ handleClick, hideIfNone, tableTitle,
           <Table hover striped responsive className={tradeTable}>
             <thead>
               <tr>
-                {tableHeadings.map(({ text, mobile }) => (
-                  <th key={text} className={!mobile ? 'd-none d-sm-table-cell border-0' : 'border-0'}>{text}</th>)
+                {tableHeadings.map(({ text, mobile }, i) => (
+                  <th key={`${i}heading`} className={!mobile ? 'd-none d-sm-table-cell border-0' : 'border-0'}>{text}</th>)
                 )}
               </tr>
             </thead>
             <tbody>
-              {swaps.map((swap) => !swap.orderId ? null : (
-                <TableRow key={swap.orderId} swap={swap} onClick={() => handleClick(swap.orderId)}/>
+              {swaps.map((swap, i) => !swap.orderId ? null : (
+                <TableRow key={`${i}swap`} swap={swap} onClick={() => handleClick(swap.orderId)}/>
               ))}
             </tbody>
           </Table>

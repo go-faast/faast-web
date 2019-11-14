@@ -39,6 +39,7 @@ export const getCurrentSwundle = createSelector(
 export const getCurrentSwundleId = createSelector(getCurrentSwundle, (swundle) => swundle ? swundle.id : '')
 export const isCurrentSwundleSigning = createSelector(getCurrentSwundle, (swundle) => swundle ? swundle.signing : false)
 export const isCurrentSwundleSending = createSelector(getCurrentSwundle, (swundle) => swundle ? swundle.sending : false)
+export const isCurrentSwundleSent = createSelector(getCurrentSwundle, (swundle) => swundle ? swundle.sent : false)
 export const getCurrentSwundleCreatedDate = createSelector(getCurrentSwundle, (swundle) => swundle ? swundle.createdAt : new Date(0))
 export const getCurrentSwundleSwaps = createSelector(getCurrentSwundle, (swundle) => swundle ? swundle.swaps : [])
 export const getCurrentSwundleStatus = createSelector(getCurrentSwundle, (swundle) => swundle && swundle.status)

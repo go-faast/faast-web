@@ -1,4 +1,5 @@
 import React from 'react'
+import { uniqBy } from 'lodash'
 import { push as pushAction } from 'react-router-redux'
 import { compose, setDisplayName, lifecycle } from 'recompose'
 import { createStructuredSelector } from 'reselect' 
@@ -37,13 +38,13 @@ const TradeHistory = ({ pendingSwaps, completedSwaps }) => (
     </Helmet>
     <T tag='h4' i18nKey='app.orders.orderHistory' className='mt-2 text-primary'>Order History</T>
     <TradeTable 
-      swaps={pendingSwaps} 
+      swaps={uniqBy(pendingSwaps, 'orderId')} 
       tableTitle={<T tag='span' i18nKey='app.orders.openOrdersTitle'>Open Orders</T>} 
       tableHeadings={tableHeadingsOpen}
       zeroOrdersMessage={<T tag='span' i18nKey='app.orders.noOpen'>No open orders right now</T>}
     />
     <TradeTable 
-      swaps={completedSwaps} 
+      swaps={uniqBy(completedSwaps, 'orderId')} 
       tableTitle={<T tag='span' i18nKey='app.orders.previousOrdersTitle'>Previous Orders</T>} 
       tableHeadings={tableHeadingsCompleted} 
       zeroOrdersMessage={<T tag='span' i18nKey='app.orders.noPrevious'>No previous orders to show</T>}
