@@ -74,6 +74,18 @@ export const getWalletParents = createItemSelector(
     [])
 )
 
+export const getWalletParent = createItemSelector(
+  getWalletParents,
+  (parents) => Array.isArray(parents) ? parents[0] : undefined
+)
+
+/** Prefixes the wallet label with its parent label */
+export const getWalletExtendedLabel = createItemSelector(
+  getWallet,
+  getWalletParent,
+  (wallet, parent) => `${(parent && parent.label ? parent.label + ' ' : '')}${wallet && wallet.label ? wallet.label : ''}`
+)
+
 export const areWalletBalancesUpdating = createItemSelector(getWallet, fieldSelector('balancesUpdating'))
 export const areWalletBalancesLoaded = createItemSelector(getWallet, fieldSelector('balancesLoaded'))
 export const getWalletBalancesError = createItemSelector(getWallet, fieldSelector('balancesError'))

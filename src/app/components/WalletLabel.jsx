@@ -10,16 +10,15 @@ import classNames from 'class-names'
 import routes from 'Routes'
 import { defaultPortfolioId } from 'Actions/portfolio'
 import { tag as tagPropType } from 'Utilities/propTypes'
-import { ellipsize } from 'Utilities/display'
-import { getWallet, getWalletWithHoldings } from 'Selectors'
+import { getWallet, getWalletWithHoldings, getWalletExtendedLabel, getWalletLabel } from 'Selectors'
 
 import IconLabel from 'Components/IconLabel'
 import WalletBalance from 'Components/WalletBalance'
 
 export const WalletLabel = ({
-  hideIcon, wallet, iconProps, showBalance, showLink, stacked, id, ...props,
+  hideIcon, wallet, label, iconProps, showBalance, showLink, stacked, id, ...props,
 }) => {
-  const labelString = wallet ? wallet.label : ellipsize(id, 8, 6)
+  const labelString = label ? label : wallet.typeLabel
   const labelNode = id === defaultPortfolioId ? (<i>{labelString}</i>) : labelString
   const labelLink = showLink && wallet && wallet.address ? (
     <Link to={routes.viewOnlyAddress(wallet.address)}>
@@ -69,6 +68,7 @@ WalletLabel.propTypes = {
   ]),
   showLink: PropTypes.bool, // Wrap label in link to view only page if available
   stacked: PropTypes.bool, // Show label on first line with typeLabel and balance on second line
+  extended: PropTypes.bool, // Show the extended label (includes parent)
   tag: tagPropType,
 }
 
@@ -79,6 +79,7 @@ WalletLabel.defaultProps = {
   showBalance: false,
   showLink: false,
   stacked: false,
+  extended: false,
   tag: 'div',
 }
 
@@ -86,6 +87,9 @@ export const ConnectedWalletLabel = connect(createStructuredSelector({
   wallet: (state, { id, showBalance }) => showBalance === true
     ? getWalletWithHoldings(state, id)
     : getWallet(state, id),
+  label: (state, { id, extended }) => extended
+    ? getWalletExtendedLabel(state, id)
+    : getWalletLabel(state, id),
 }))(WalletLabel)
 
 WalletLabel.Connected = ConnectedWalletLabel

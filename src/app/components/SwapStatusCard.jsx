@@ -181,7 +181,7 @@ export default compose(
                 <UnitsLoading value={sendAmount} symbol={sendSymbol} error={error} precision={null}/>
                 {sendWalletId && (
                   <span className='d-none d-xs-inline ml-2'>
-                    <T tag='i' i18nKey='app.swapStatusCard.usingWallet'>using wallet</T> <WalletLabel.Connected id={sendWalletId} tag='span' hideIcon/>
+                    <T tag='i' i18nKey='app.swapStatusCard.usingWallet'>using wallet</T> <WalletLabel.Connected id={sendWalletId} tag='span' hideIcon extended/>
                   </span>
                 )}
               </Fragment>
@@ -192,7 +192,7 @@ export default compose(
                 <UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} precision={null}/>
                 <span className='d-none d-xs-inline ml-2'>
                   {receiveWalletId ? (
-                    <Fragment><T tag='i' i18nKey='app.swapStatusCard.usingWallet'>using wallet</T> <WalletLabel.Connected id={receiveWalletId} tag='span' hideIcon/></Fragment>
+                    <Fragment><T tag='i' i18nKey='app.swapStatusCard.usingWallet'>using wallet</T> <WalletLabel.Connected id={receiveWalletId} tag='span' hideIcon extended/></Fragment>
                   ) : (
                     <Fragment><T tag='i' i18nKey='app.swapStatusCard.atAddress'>at address</T> {receiveAddress}</Fragment>
                   )}
