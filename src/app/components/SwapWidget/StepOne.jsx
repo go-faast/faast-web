@@ -406,7 +406,7 @@ export default compose(
       ethSendBalanceAmount, t, fullBalanceAmount
     }) => async (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
-      let { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveWalletId, receiveAmount, extraWithdrawalField, extraRefundDepositField } = values
+      let { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveAmount, receiveWalletId, extraWithdrawalField, extraRefundDepositField } = values
       if (receiveSymbol == 'ETH' || ERC20) {
         receiveAddress = toChecksumAddress(receiveAddress)
       }
@@ -457,9 +457,9 @@ export default compose(
         sendAmount: sendAmount && estimatedField !== 'send' ? toBigNumber(sendAmount).round(sendAsset.decimals) : undefined,
         sendWalletId,
         receiveSymbol,
-        receiveWalletId,
         receiveAddress,
         refundAddress,
+        receiveWalletId,
         receiveAmount: sendAmount && estimatedField !== 'receive' ? toBigNumber(receiveAmount).round(receiveAsset.decimals) : undefined,
         extraWithdrawalField,
         extraRefundDepositField

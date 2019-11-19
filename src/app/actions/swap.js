@@ -150,7 +150,12 @@ export const createOrder = (swap) => (dispatch) => {
           },
         }))
           .then((order) => {
-            return finish(null, order)
+            const updatedFields = {
+              ...order,
+              sendWalletId: sendWalletInstance ? sendWalletInstance.getId() : swap.sendWalletId,
+              receiveWalletId: receiveWalletInstance ? receiveWalletInstance.getId() : swap.receiveWalletId
+            }
+            return finish(null, updatedFields)
           })
       })
       .catch((e) => {
