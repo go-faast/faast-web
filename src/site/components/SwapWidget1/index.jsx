@@ -31,6 +31,7 @@ const StepOneField = withProps(({ labelClass, inputClass, className, labelCol, i
   row: true,
   labelCol: { xs: '12', className: 'text-left', ...labelCol },
   inputCol: { xs: '12', sm: true, md: true, lg: '12', ...inputCol },
+  formGroupColDisplay: 'flex'
 }))(ReduxFormField)
 
 const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwitchAssets, 

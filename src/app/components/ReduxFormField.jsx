@@ -15,7 +15,7 @@ const RenderInput = (props) => {
     addonPrepend, addonAppend, row, className, inputClass,
     labelProps, labelClass, labelCol, inputCol, autoFocus,
     renderInput, helpText, style, requiredLabel, children, inputGroupClass,
-    inputGroupStyle
+    inputGroupStyle, formGroupColDisplay = 'block'
   } = props
   let { inputProps, input: reduxFormInput } = props
   const check = ['checkbox', 'radio'].includes(type)
@@ -87,7 +87,7 @@ const RenderInput = (props) => {
     <FormGroup className={className} row={row} check={check} style={style}>
       {labelPosition === 'prepend' && labelElement}
       {inputCol
-        ? (<Col {...inputCol}>{inputGroupElement}</Col>)
+        ? (<Col style={{ display: formGroupColDisplay }} {...inputCol}>{inputGroupElement}</Col>)
         : (inputGroupElement)}
       {labelPosition === 'append' && labelElement}
     </FormGroup>
