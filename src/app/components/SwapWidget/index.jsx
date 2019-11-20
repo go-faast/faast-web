@@ -46,10 +46,10 @@ export default compose(
       stepOne: {
         sendSymbol: from,
         receiveSymbol: to,
-        defaultSendAmount: fromAmount,
-        defaultReceiveAmount: toAmount,
-        defaultRefundAddress: fromAddress,
-        defaultReceiveAddress: toAddress,
+        overrideSendAmount: fromAmount,
+        overrideReceiveAmount: toAmount,
+        overrideRefundAddress: fromAddress,
+        overrideReceiveAddress: toAddress,
       },
     }
   })

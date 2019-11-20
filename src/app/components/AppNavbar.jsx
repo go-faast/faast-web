@@ -18,12 +18,11 @@ import { push as pushAction } from 'react-router-redux'
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { setDisplayName, compose, withProps, withHandlers } from 'recompose'
+import { setDisplayName, compose, withHandlers } from 'recompose'
 import { pick } from 'lodash'
 
 import config from 'Config'
 import { isDefaultPortfolioEmpty } from 'Selectors'
-import { getSavedSwapWidgetInputs } from 'Selectors/app'
 import withToggle from 'Hoc/withToggle'
 
 import Icon from 'Components/Icon'
@@ -32,7 +31,7 @@ import FaastLogo from 'Img/faast-logo.png'
 import LanguageSelector from 'Components/LanguageSelector'
 
 const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, handleSelectLanguage,
-  toggleExpanded, isDropdownOpen, toggleDropdownOpen, queryString, ...props }) => (
+  toggleExpanded, isDropdownOpen, toggleDropdownOpen, ...props }) => (
   <Navbar {...pick(props, Object.keys(Navbar.propTypes))}>
     <Container>
       <NavbarBrand tag={Link} to='/' className='mr-auto'>
@@ -85,7 +84,7 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, handleSelectLa
             </NavItem>
           ])}
           <NavItem key='swap'>
-            <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to={queryString ? queryString : '/swap'}>
+            <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to={'/swap'}>
               <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-exchange'/>
               <T tag='span' i18nKey='app.nav.swap' className='nav-link-label d-sm-inline'>Swap</T>
             </NavLink>
@@ -128,15 +127,9 @@ export default compose(
   withRouter,
   connect(createStructuredSelector({
     disablePortfolioLinks: isDefaultPortfolioEmpty,
-    previousSwapInputs: getSavedSwapWidgetInputs
   }), {
     push: pushAction
   }),
-  withProps(({ previousSwapInputs }) => { 
-    const { toAmount, fromAmount, toAddress, sendWalletId, receiveWalletId, fromAddress, to = 'ETH', from = 'BTC' } = previousSwapInputs || {}
-    return ({
-      queryString: `/swap?${to && `to=${to}`}${from && `&from=${from}`}${toAmount ? `&toAmount=${toAmount}` : ''}${fromAmount ? `&fromAmount=${fromAmount}` : ''}${toAddress ? `&toAddress=${toAddress}` : '' }${sendWalletId ? `&sendWalletId=${sendWalletId}` : '' }${receiveWalletId ? `&sendWalletId=${receiveWalletId}` : '' }${fromAddress ? `&fromAddress=${fromAddress}` : ''}`
-    })}),
   withToggle('expanded'),
   withToggle('dropdownOpen'),
   withHandlers({

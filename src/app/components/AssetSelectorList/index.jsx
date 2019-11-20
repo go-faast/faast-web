@@ -28,7 +28,7 @@ const renderResult = (asset, { walletHoldings, handleSelect, dark }) => {
   const balance = walletHoldings && walletHoldings.balances[symbol]
   const hasBalance = balance && balance.gt(0)
   return (
-    <Row key={symbol} tabindex={0} className={classNames('p-0 m-0 position-relative', !disabled && 'cursor-pointer', !dark && style.light)} style={{ maxWidth: '100%', cursor: disabled && restricted && 'default' }}>
+    <Row key={symbol} tabIndex={0} className={classNames('p-0 m-0 position-relative', !disabled && 'cursor-pointer', !dark && style.light)} style={{ maxWidth: '100%', cursor: disabled && restricted && 'default' }}>
       <Col className='p-0 m-0'>
         <Button tag={Row} color='ultra-dark' size='sm' onClick={() => handleSelect(asset)} disabled={disabled}
           className={classNames(style.assetButtonList, 'flat text-left m-0')} style={{ borderTopWidth: 0, height: 49 }}>

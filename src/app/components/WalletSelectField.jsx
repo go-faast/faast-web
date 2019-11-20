@@ -1,14 +1,13 @@
 import React, { Fragment } from 'react'
 import routes from 'Routes'
 import {
-  compose, setDisplayName, setPropTypes, defaultProps, withHandlers, withState, lifecycle, withProps,
+  compose, setDisplayName, setPropTypes, defaultProps, withHandlers, lifecycle, withProps,
 } from 'recompose'
 import { connect } from 'react-redux'
 import { formValueSelector } from 'redux-form'
 import {
   ButtonDropdown, DropdownToggle, DropdownMenu, DropdownItem,
 } from 'reactstrap'
-import { createStructuredSelector } from 'reselect'
 import PropTypes from 'prop-types'
 import { push as pushAction } from 'react-router-redux'
 import classNames from 'class-names'
@@ -17,6 +16,7 @@ import { sortByProperty } from 'Utilities/helpers'
 import { getWalletForAsset } from 'Utilities/wallet'
 import propTypes from 'Utilities/propTypes'
 import { getCurrentPortfolioWalletsForSymbol, areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
+import { getWallet } from 'Selectors/wallet'
 
 import withToggle from 'Hoc/withToggle'
 import ReduxFormField from 'Components/ReduxFormField'
@@ -52,8 +52,8 @@ const WalletSelectField = ({
             <DropdownMenu right>
               {connectedWallets.map((wallet) => (
                 <DropdownItem key={wallet.id}
-                  onClick={() => handleSelect(wallet)}
-                  active={selectedWallet && selectedWallet.id === wallet.id}
+                  onClick={() => handleSelect(wallet.id)}
+                  active={selectedWallet && (selectedWallet.id === wallet.id || wallet.nestedWalletIds.includes(selectedWallet.id))}
                   disabled={disableNoBalance && !walletHasBalance(wallet)}>
                   <WalletLabel wallet={wallet} showBalance={showBalances && symbol}/>
                 </DropdownItem>
@@ -103,15 +103,21 @@ export default compose(
     return ({
       getFormValue: formValueSelector(formName)
     })}),
-  connect(createStructuredSelector({
-    connectedWallets: (state, { symbol }) => getCurrentPortfolioWalletsForSymbol(state, symbol),
-    balancesLoaded: areCurrentPortfolioBalancesLoaded,
-    address: (state, { addressFieldName, getFormValue }) => getFormValue(state, addressFieldName),
-    walletId: (state, { walletIdFieldName, getFormValue }) => getFormValue(state, walletIdFieldName),
-  }), {
+  connect((state, props) => {
+    const { symbol, addressFieldName, walletIdFieldName, getFormValue } = props
+    const address = getFormValue(state, addressFieldName)
+    const walletId = getFormValue(state, walletIdFieldName)
+    const selectedWallet = walletId ? getWallet(state, walletId) : null
+    return {
+      connectedWallets: getCurrentPortfolioWalletsForSymbol(state, symbol),
+      balancesLoaded: areCurrentPortfolioBalancesLoaded(state, props),
+      address,
+      walletId,
+      selectedWallet,
+    }
+  }, {
     push: pushAction
   }),
-  withState('selectedWallet', 'setSelectedWallet', null),
   withToggle('dropdownOpen'),
   withHandlers({
     handleConnect: ({ push }) => () => {
@@ -120,25 +126,32 @@ export default compose(
         state: { forwardurl: routes.swapWidget() }
       })
     },
-    handleSelect: ({ setSelectedWallet, change, untouch, addressFieldName, walletIdFieldName, symbol }) => (wallet) => {
+    handleSelect: ({ change, untouch, addressFieldName, walletIdFieldName, symbol }) => (wallet) => {
       if (!wallet) {
-        setSelectedWallet(null)
-        change(walletIdFieldName, 'null')
+        change(walletIdFieldName, '')
         change(addressFieldName, '')
         untouch(addressFieldName)
         return
       }
-      setSelectedWallet(wallet)
-      change(walletIdFieldName, wallet.id)
-      const walletInstance = getWalletForAsset(wallet.id, symbol)
-      return walletInstance.getFreshAddress(symbol)
-        .then((address) => change(addressFieldName, address))
+      const walletId = typeof wallet === 'string' ? wallet : wallet.id
+      const walletInstance = getWalletForAsset(walletId, symbol)
+      if (walletInstance) {
+        change(walletIdFieldName, walletInstance.getId())
+        return walletInstance.getFreshAddress(symbol)
+          .then((address) => change(addressFieldName, address))
+      } else {
+        change(walletIdFieldName, walletId)
+      }
     },
     walletHasBalance: ({ symbol }) => ({ balances }) => Boolean(balances[symbol] && balances[symbol].gt(0))
   }),
-  withProps(({ connectedWallets, disableNoBalance, walletHasBalance }) => ({
-    selectableWallets: disableNoBalance ? connectedWallets.filter(walletHasBalance) : connectedWallets
-  })),
+  withProps(({ connectedWallets, disableNoBalance, walletHasBalance }) => {
+    const selectableWallets = disableNoBalance ? connectedWallets.filter(walletHasBalance) : connectedWallets
+    return {
+      selectableWallets,
+      selectableWalletIds: selectableWallets.map(({ id }) => id),
+    }
+  }),
   withHandlers({
     handleSelectManual: ({ handleSelect }) => () => handleSelect(null),
     selectDefault: ({ selectableWallets, handleSelect }) => () => {
@@ -148,37 +161,35 @@ export default compose(
   }),
   lifecycle({
     componentWillMount() {
-      const { defaultValue, selectDefault, handleSelect, selectableWallets, change, addressFieldName, } = this.props
-      if (!defaultValue) {
+      const { walletId, address, selectDefault, handleSelect, selectableWalletIds, change, addressFieldName, } = this.props
+      if (!walletId && !address) {
         selectDefault()
-      } else {
-        let wallet = selectableWallets.find(wallet => wallet.id.toLowerCase() === defaultValue.toLowerCase())
-        if (wallet) {
-          handleSelect(wallet)
-        } else {
-          change(addressFieldName, defaultValue)
-        }
+      } else if (walletId) {
+        handleSelect(walletId)
       }
     },
     componentDidUpdate(prevProps) {
       const {
-        symbol, selectedWallet, selectableWallets, selectDefault, handleSelect, balancesLoaded, defaultValue
+        symbol, selectedWallet, selectableWalletIds, selectDefault, handleSelect, balancesLoaded, defaultValue
       } = this.props
       const symbolChange = prevProps.symbol !== symbol
-      if (symbolChange && defaultValue) {
-        const wallet = selectableWallets.find(wallet => wallet.id.toLowerCase() === defaultValue.toLowerCase())
-        if (wallet) {
-          handleSelect(wallet)
-        }
-      }
-      if (selectedWallet && symbolChange) {
-        if (!selectableWallets.includes(selectedWallet)) {
-          selectDefault()
+      if (symbolChange) {
+        if (selectedWallet) {
+          if (!selectableWalletIds.includes(selectedWallet.id)) {
+            selectDefault()
+          } else {
+            // reselect current to get new address for symbol
+            handleSelect(selectedWallet)
+          }
+        } else if (defaultValue) {
+          const walletId = selectableWalletIds.find(walletId => walletId.toLowerCase() === defaultValue.toLowerCase())
+          if (walletId) {
+            handleSelect(walletId)
+          }
         } else {
-          // reselect current to get new address for symbol
-          handleSelect(selectedWallet)
+          selectDefault()
         }
-      } else if (!selectedWallet && !defaultValue && !prevProps.balancesLoaded && balancesLoaded) {
+      } else if (!prevProps.balancesLoaded && balancesLoaded) {
         selectDefault()
       }
     }

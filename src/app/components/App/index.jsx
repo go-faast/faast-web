@@ -6,7 +6,7 @@ import { hot } from 'react-hot-loader'
 import { withRouter } from 'react-router'
 
 import { init } from 'Actions/app'
-import { isAppReady, getAppError, isDefaultPortfolioEmpty, getSavedSwapWidgetInputs, shouldShowFeedbackForm } from 'Selectors'
+import { isAppReady, getAppError, isDefaultPortfolioEmpty, shouldShowFeedbackForm } from 'Selectors'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import FeedbackForm from 'Components/FeedbackForm'
 
@@ -26,7 +26,6 @@ export default compose(
     ready: isAppReady,
     error: getAppError,
     hasNoWallets: isDefaultPortfolioEmpty,
-    previousSwapInputs: getSavedSwapWidgetInputs,
     showFeedbackForm: shouldShowFeedbackForm
   }), {
     initApp: init

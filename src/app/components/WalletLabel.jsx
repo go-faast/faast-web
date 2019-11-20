@@ -33,7 +33,7 @@ export const WalletLabel = ({
     <IconLabel
       label={labelLink}
       iconProps={!hideIcon && !stacked && combinedIconProps}
-      {...omit(props, 'id', 'dispatch')}/>
+      {...omit(props, 'id', 'dispatch', 'extended')}/>
   )
   if (showBalance) {
     const symbol = typeof showBalance === 'string' ? showBalance : '$'

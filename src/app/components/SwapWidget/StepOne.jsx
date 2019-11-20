@@ -2,15 +2,15 @@ import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
-import { compose, setDisplayName, withProps, withState, withHandlers, setPropTypes, defaultProps, lifecycle } from 'recompose'
+import { compose, setDisplayName, withProps, withState, withHandlers, setPropTypes, lifecycle } from 'recompose'
 import classNames from 'class-names'
 import { reduxForm, formValueSelector, SubmissionError } from 'redux-form'
 import { push as pushAction } from 'react-router-redux'
-import { createStructuredSelector } from 'reselect'
 import {
   Form, Button, Card, CardHeader, CardBody, InputGroupAddon, Row, Col,
   FormText, Alert
 } from 'reactstrap'
+import { pick } from 'lodash'
 
 import log from 'Log'
 import { toBigNumber } from 'Utilities/convert'
@@ -74,7 +74,7 @@ const SwapStepOne = ({
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
   onChangeSendAmount, handleSelectFullBalance, fullBalanceAmount, fullBalanceAmountLoaded,
   sendWallet, receiveWallet, maxGeoBuy, handleSelectGeoMax, receiveAsset, ethReceiveBalanceAmount,
-  onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs = {},
+  onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount,
   onChangeRefundAddress, onChangeReceiveAddress, rateError, sendAsset, t, onCloseAssetSelector,
   validateDepositTag
 }) => (
@@ -221,7 +221,6 @@ const SwapStepOne = ({
                   symbol={sendSymbol}
                   change={change}
                   untouch={untouch}
-                  defaultValue={!previousSwapInputs.sendWalletId ? previousSwapInputs.fromAddress : undefined}
                   formName={FORM_NAME}
                   onChange={onChangeRefundAddress}
                   requiredLabel={sendSymbol === 'XMR'}
@@ -250,7 +249,6 @@ const SwapStepOne = ({
                   validate={validateReceiveAddress}
                   symbol={receiveSymbol}
                   change={change}
-                  defaultValue={!previousSwapInputs.receiveWalletId ? previousSwapInputs.toAddress : undefined}
                   untouch={untouch}
                   formName={FORM_NAME}
                   onChange={onChangeReceiveAddress}
@@ -311,33 +309,66 @@ export default compose(
   setPropTypes({
     sendSymbol: PropTypes.string, 
     receiveSymbol: PropTypes.string,
-    defaultSendAmount: PropTypes.number,
-    defaultReceiveAmount: PropTypes.number,
-    defaultRefundAddress: PropTypes.string,
-    defaultReceiveAddress: PropTypes.string,
+    overrideSendAmount: PropTypes.number,
+    overrideReceiveAmount: PropTypes.number,
+    overrideRefundAddress: PropTypes.string,
+    overrideReceiveAddress: PropTypes.string,
   }),
-  defaultProps({
-    sendSymbol: DEFAULT_SEND_SYMBOL,
-    receiveSymbol: DEFAULT_RECEIVE_SYMBOL,
-    defaultSendAmount: DEFAULT_SEND_AMOUNT,
-    defaultReceiveAmount: null,
-    defaultRefundAddress: undefined,
-    defaultReceiveAddress: undefined,
+  connect((state) => ({
+    previousSwapInputs: getSavedSwapWidgetInputs(state)
+  })),
+  withProps(({
+    sendSymbol, receiveSymbol,
+    overrideSendAmount, overrideReceiveAmount,
+    overrideRefundAddress, overrideReceiveAddress,
+    previousSwapInputs,
+  }) => { 
+    const { from, to, toAmount, fromAmount, toAddress, fromAddress, sendWalletId, receiveWalletId } = previousSwapInputs || {}
+    sendSymbol = (sendSymbol || from || DEFAULT_SEND_SYMBOL).toUpperCase()
+    receiveSymbol = (receiveSymbol || to || DEFAULT_RECEIVE_SYMBOL).toUpperCase()
+    const result = {
+      pair: `${sendSymbol}_${receiveSymbol}`,
+      sendSymbol, 
+      receiveSymbol,
+      initialValues: {
+        sendAmount: overrideSendAmount || (fromAmount ? parseFloat(fromAmount) : DEFAULT_SEND_AMOUNT),
+        receiveAmount: overrideReceiveAmount || (toAmount ? parseFloat(toAmount) : null),
+        refundAddress: overrideRefundAddress || (sendWalletId ? undefined : fromAddress ? fromAddress : undefined),
+        receiveAddress: overrideReceiveAddress || (receiveWalletId ? undefined : toAddress ? toAddress : undefined),
+        sendWalletId: sendWalletId ? sendWalletId : undefined,
+        receiveWalletId: receiveWalletId ? receiveWalletId : undefined,
+      },
+    }
+    console.log('withProps', result)
+    return result
   }),
-  connect(createStructuredSelector({
-    assetSymbols: getAllAssetSymbols,
-    sendAsset: (state, { sendSymbol }) => getAsset(state, sendSymbol),
-    receiveAsset: (state, { receiveSymbol }) => getAsset(state, receiveSymbol),
-    sendAmount: (state) => getFormValue(state, 'sendAmount'),
-    receiveAmount: (state) => getFormValue(state, 'receiveAmount'),
-    refundAddress: (state) => getFormValue(state, 'refundAddress'),
-    receiveAddress: (state) => getFormValue(state, 'receiveAddress'),
-    receiveWallet: (state) => getWallet(state, getFormValue(state, 'receiveWalletId')),
-    sendWallet: (state) => getWallet(state, getFormValue(state, 'sendWalletId')),
-    balancesLoaded: areCurrentPortfolioBalancesLoaded,
-    limit: getGeoLimit,
-    previousSwapInputs: getSavedSwapWidgetInputs
-  }), {
+  connect((state, props) => {
+    const { pair, sendSymbol, receiveSymbol } = props
+    const receiveWalletId = getFormValue(state, 'receiveWalletId')
+    const sendWalletId = getFormValue(state, 'sendWalletId')
+    return {
+      assetSymbols: getAllAssetSymbols(state),
+      sendAsset: getAsset(state, sendSymbol),
+      receiveAsset: getAsset(state, receiveSymbol),
+      sendAmount: getFormValue(state, 'sendAmount'),
+      receiveAmount: getFormValue(state, 'receiveAmount'),
+      refundAddress: getFormValue(state, 'refundAddress'),
+      receiveAddress: getFormValue(state, 'receiveAddress'),
+      receiveWallet: getWallet(state, receiveWalletId),
+      sendWallet: getWallet(state, sendWalletId),
+      receiveWalletId,
+      sendWalletId,
+      balancesLoaded: areCurrentPortfolioBalancesLoaded(state),
+      limit: getGeoLimit(state),
+      rateLoaded: isRateLoaded(state, pair),
+      rateStale: isRateStale(state, pair),
+      minimumSend: getRateMinimumDeposit(state, pair),
+      maximumSend: getRateMaximumDeposit(state, pair),
+      estimatedRate: getRatePrice(state, pair),
+      rateError: rateError(state, pair),
+      withdrawalFee: getRateWithdrawalFee(state, pair),
+    }
+  }, {
     createSwap: createSwapAction,
     push: pushAction,
     updateQueryString: updateQueryStringReplace,
@@ -346,39 +377,17 @@ export default compose(
     saveSwapWidgetInputs: saveSwapWidgetInputs,
   }),
   withProps(({
-    sendSymbol, receiveSymbol,
-    defaultSendAmount, defaultReceiveAmount,
-    defaultRefundAddress, defaultReceiveAddress,
-    sendWallet, sendAsset, limit, previousSwapInputs, receiveWallet,
+    sendSymbol, sendWallet, sendAsset, limit, receiveWallet,
   }) => { 
     const maxGeoBuy = limit && toBigNumber(limit.per_transaction.amount)
       .div(sendAsset.price).round(sendAsset.decimals, BigNumber.ROUND_DOWN)
-    const { toAmount, fromAmount, toAddress, fromAddress, sendWalletId, receiveWalletId } = previousSwapInputs || {}
     return ({
-      pair: `${sendSymbol}_${receiveSymbol}`,
-      initialValues: {
-        sendAmount: fromAmount ? parseFloat(fromAmount) : defaultSendAmount,
-        receiveAmount: toAmount ? parseFloat(toAmount) : defaultReceiveAmount,
-        refundWallet: sendWalletId ? 'hi' : fromAddress ? fromAddress : defaultRefundAddress,
-        receiveWallet: receiveWalletId ? undefined : toAddress ? toAddress : defaultReceiveAddress,
-        sendWalletId: sendWalletId ? sendWalletId : undefined,
-        receiveWalletId: receiveWalletId ? receiveWalletId : undefined,
-      },
       fullBalanceAmount: sendWallet && (sendWallet.balances[sendSymbol] || '0'),
       ethSendBalanceAmount: sendWallet && (sendWallet.balances['ETH'] || '0'),
       ethReceiveBalanceAmount: receiveWallet && (receiveWallet.balances['ETH'] || '0'),
       fullBalanceAmountLoaded: sendWallet && sendWallet.balancesLoaded,
       maxGeoBuy
     })}),
-  connect(createStructuredSelector({
-    rateLoaded: (state, { pair }) => isRateLoaded(state, pair),
-    rateStale: (state, { pair }) => isRateStale(state, pair),
-    minimumSend: (state, { pair }) => getRateMinimumDeposit(state, pair),
-    maximumSend: (state, { pair }) => getRateMaximumDeposit(state, pair),
-    estimatedRate: (state, { pair }) => getRatePrice(state, pair),
-    rateError: (state, { pair }) => rateError(state, pair),
-    withdrawalFee: (state, { pair }) => getRateWithdrawalFee(state, pair),
-  })),
   withState('assetSelect', 'setAssetSelect', null), // send, receive, or null
   withState('estimatedField', 'setEstimatedField', 'receive'), // send or receive
   withHandlers({
@@ -509,18 +518,11 @@ export default compose(
     }
     return {
       calculateReceiveEstimate: ({
-        receiveAsset, estimatedRate, setEstimatedField, updateURLParams, sendAsset, withdrawalFee
+        receiveAsset, estimatedRate, setEstimatedField, sendAsset, withdrawalFee
       }) => (sendAmount) => {
         if (estimatedRate && sendAmount) {
           sendAmount = toBigNumber(sendAmount).round(sendAsset.decimals)
-          console.log('receive amount', sendAmount.div(estimatedRate).round(receiveAsset.decimals).toString())
-          console.log('withdrawal fee', withdrawalFee)
           const estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals).minus(toBigNumber(withdrawalFee))
-          console.log('minus', estimatedReceiveAmount.toString())
-          updateURLParams({ 
-            toAmount: estimatedReceiveAmount ? parseFloat(estimatedReceiveAmount) : undefined,
-            fromAmount: sendAmount ? parseFloat(sendAmount) : undefined
-          })
           setEstimatedReceiveAmount(estimatedReceiveAmount.toString())
         } else {
           setEstimatedReceiveAmount(null)
@@ -528,15 +530,11 @@ export default compose(
         setEstimatedField('receive')
       },
       calculateSendEstimate: ({
-        sendAsset, estimatedRate, setEstimatedField, updateURLParams, receiveAsset
+        sendAsset, estimatedRate, setEstimatedField, receiveAsset
       }) => (receiveAmount) => {
         if (estimatedRate && receiveAmount) {
           receiveAmount = toBigNumber(receiveAmount).round(receiveAsset.decimals)
           const estimatedSendAmount = receiveAmount.times(estimatedRate).round(sendAsset.decimals)
-          updateURLParams({ 
-            fromAmount: estimatedSendAmount ? parseFloat(estimatedSendAmount) : undefined,
-            toAmount: receiveAmount ? parseFloat(receiveAmount) : undefined
-          })
           setEstimatedSendAmount(estimatedSendAmount.toString())
         } else {
           setEstimatedSendAmount(null)
@@ -574,11 +572,11 @@ export default compose(
     onChangeSendAmount: ({ calculateReceiveEstimate }) => (_, newSendAmount) => {
       calculateReceiveEstimate(newSendAmount)
     },
-    onChangeRefundAddress: ({ updateURLParams }) => (_, newRefundAddress) => {
-      updateURLParams({ fromAddress: newRefundAddress })
+    onChangeRefundAddress: () => () => {
+      // updateURLParams({ fromAddress: newRefundAddress })
     },
-    onChangeReceiveAddress: ({ updateURLParams }) => (_, newReceiveAddress) => {
-      updateURLParams({ toAddress: newReceiveAddress })
+    onChangeReceiveAddress: () => () => {
+      // updateURLParams({ toAddress: newReceiveAddress })
     },
     validateSendAmount: ({ minimumSend, maximumSend, sendAsset,
       sendSymbol, sendWallet, fullBalanceAmount, maxGeoBuy, handleSelectGeoMax, handleSelectMinimum,
@@ -622,15 +620,25 @@ export default compose(
     },
   }),
   withHandlers({
-    handleSwitchAssets: ({ updateURLParams, sendSymbol, receiveSymbol, sendAmount, 
-      calculateSendEstimate, estimatedField, calculateReceiveEstimate, receiveAmount }) => () => {
+    handleSwitchAssets: ({
+      updateURLParams, sendSymbol, receiveSymbol, sendAmount, change, setEstimatedField,
+      calculateSendEstimate, estimatedField, calculateReceiveEstimate, receiveAmount,
+      sendWalletId, receiveWalletId, refundAddress, receiveAddress,
+    }) => () => {
       updateURLParams({ from: receiveSymbol, to: sendSymbol })
+      change('sendWalletId', receiveWalletId)
+      change('receiveWalletId', sendWalletId)
+      change('refundAddress', receiveAddress)
+      change('receiveAddress', refundAddress)
       if (estimatedField === 'receive') {
-        calculateReceiveEstimate(sendAmount)
+        setEstimatedField('send')
+        change('receiveAmount', sendAmount)
+        calculateSendEstimate(sendAmount)
       } else {
-        calculateSendEstimate(receiveAmount)
+        setEstimatedField('receive')
+        change('sendAmount', receiveAmount)
+        calculateReceiveEstimate(receiveAmount)
       }
-      
     },
     checkQueryParams: () => () => {
       const urlParams = qs.parse(location.search)
@@ -641,14 +649,10 @@ export default compose(
     componentDidUpdate(prevProps) {
       const {
         rateLoaded, pair, retrievePairData, estimatedRate, calculateSendEstimate, 
-        calculateReceiveEstimate, estimatedField, sendAmount, receiveAmount, checkQueryParams,
-        previousSwapInputs, updateURLParams, fullBalanceAmount, fullBalanceAmountLoaded, maxGeoBuy, setSendAmount,
+        calculateReceiveEstimate, estimatedField, sendAmount, receiveAmount,
+        fullBalanceAmount, fullBalanceAmountLoaded, maxGeoBuy, setSendAmount,
         rateStale
       } = this.props
-      const urlParams = checkQueryParams()
-      if (Object.keys(urlParams).length === 0 && previousSwapInputs) {
-        updateURLParams(previousSwapInputs)
-      }
       if (pair && (!rateLoaded || rateStale)) {
         retrievePairData(pair, null, estimatedField === 'receive' ? sendAmount : undefined, estimatedField === 'send' ? receiveAmount : undefined)
       }
@@ -664,8 +668,14 @@ export default compose(
       }
     },
     componentWillMount() {
-      const { updateURLParams, sendSymbol, receiveSymbol, estimatedField, retrievePairData, pair, sendAmount, receiveAmount } = this.props
-      if (sendSymbol === receiveSymbol) {
+      const {
+        updateURLParams, sendSymbol, receiveSymbol, estimatedField, retrievePairData,
+        pair, sendAmount, receiveAmount, previousSwapInputs, checkQueryParams,
+      } = this.props
+      const urlParams = checkQueryParams()
+      if (Object.keys(urlParams).length === 0 && previousSwapInputs) {
+        updateURLParams(pick(previousSwapInputs, ['from', 'to']))
+      } else if (sendSymbol === receiveSymbol) {
         let from = DEFAULT_SEND_SYMBOL
         let to = DEFAULT_RECEIVE_SYMBOL
         if (to === sendSymbol || from === receiveSymbol) {
@@ -678,22 +688,22 @@ export default compose(
       }
     },
     componentDidMount() {
-      const { maxGeoBuy, handleSelectGeoMax, defaultSendAmount } = this.props
-      if (maxGeoBuy && maxGeoBuy < defaultSendAmount) {
+      const { maxGeoBuy, handleSelectGeoMax, sendAmount } = this.props
+      if (maxGeoBuy && maxGeoBuy < sendAmount) {
         handleSelectGeoMax()
       }
     },
     componentWillUnmount() {
       const { saveSwapWidgetInputs, sendAsset, receiveAsset, 
         refundAddress, receiveAddress, sendAmount, receiveAmount,
-        sendWallet, receiveWallet } = this.props
+        sendWalletId, receiveWalletId } = this.props
       saveSwapWidgetInputs({
         to: receiveAsset ? receiveAsset.symbol : undefined,
         from: sendAsset ? sendAsset.symbol : undefined,
         fromAddress: refundAddress,
         toAddress: receiveAddress,
-        sendWalletId: sendWallet ? sendWallet.id : undefined,
-        receiveWalletId: receiveWallet ? receiveWallet.id : undefined,
+        sendWalletId: sendWalletId ? sendWalletId : undefined,
+        receiveWalletId: receiveWalletId ? receiveWalletId : undefined,
         fromAmount: sendAmount ? parseFloat(sendAmount) : undefined,
         toAmount: receiveAmount ? parseFloat(receiveAmount) : undefined
       })
