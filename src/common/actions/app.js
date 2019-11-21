@@ -8,6 +8,7 @@ import Faast from 'Services/Faast'
 import { changeLanguage } from 'Common/actions/i18n'
 import { shouldShowFeedbackForm, getUserIpAddress } from 'Selectors/app'
 import { postFeedback } from 'Services/Faast'
+import { isUnrestricted } from 'Utilities/flags'
 
 import { translations } from 'Config/translations'
 
@@ -26,8 +27,16 @@ export const languageLoad = () => (dispatch) => {
 
 export const fetchGeoRestrictions = () => (dispatch) => Promise.resolve()
   .then(() => {
+    const overrides = isUnrestricted() ? {
+      restricted: false,
+      blocked: false,
+      limit: false,
+    } : {}
     return Faast.fetchRestrictionsByIp()
-      .then((res) => dispatch(restrictionsUpdated(res)))
+      .then((res) => dispatch(restrictionsUpdated({
+        ...res,
+        ...overrides,
+      })))
       .catch((e) => {
         log.error(e)
       })
