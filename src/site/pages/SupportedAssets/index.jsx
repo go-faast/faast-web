@@ -17,7 +17,7 @@ import CoinIcon from 'Components/CoinIcon'
 import { sortObjOfArray } from 'Utilities/helpers'
 import { retrieveAssets } from 'Common/actions/asset'
 
-import { whiteCard, table, thColor } from './style.scss'
+import { whiteCard, table, thColor, customHover } from './style.scss'
 import checkmark from 'Img/checkmark.svg?inline'
 import cross from 'Img/delete-x.svg?inline'
 
@@ -86,40 +86,54 @@ export default compose(
   return (
     <div style={{ backgroundColor: '#fcfdff' }}>
       <Header translations={translations} theme='dark' headerColor='#303030' />
-      <Card className={classNames(whiteCard, 'mx-auto mt-4 flat')} style={{ maxWidth: 1200, borderColor: '#F3F5F8' }}>
-        <CardHeader className={classNames(whiteCard, thColor)} style={{ borderColor: '#F3F5F8' }}>
-          <span>Supported Assets</span>
-        </CardHeader>
-        <CardBody className='border-0'>
-          <Table className={classNames(table)} hover striped responsive>
-            <thead>
-              <tr>
-                <th className={classNames(thColor, 'pl-3 pl-md-5 border-0')}>
-                  <span>Coin</span>
-                </th>
-                <th className={classNames(thColor, 'border-0')}>
-                  <span>Buy Enabled</span>
-                </th>
-                <th className={classNames(thColor, 'border-0')}>
-                  <span>Sell Enabled</span>
-                </th>
-                <th className={classNames(thColor, 'border-0')}>
-                  <span>Buy / Sell</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {supportedAssets.map((asset) => (
-                <TableRow 
-                  key={asset.symbol} 
-                  asset={asset} 
-                />
-              )
-              )}
-            </tbody>
-          </Table>
-        </CardBody>
-      </Card>
+      <div className='mx-auto mt-4 mb-5' style={{ maxWidth: 1200 }}>
+        <a 
+          href='/knowledge/article/supported-assets'
+          className={classNames(customHover, 'px-3 py-2 mb-3 mx-0 d-block')}
+          style={{ 
+            boxShadow: '0px 2px 4px rgba(0,0,0,.05)',
+            background: 'linear-gradient(45deg, #00c19e 0%, #008472 100%)', 
+            borderRadius: 2, 
+          }}
+        >
+          <i className='fa fa-info-circle mr-3 text-white'></i>
+          <span className='text-white'>Click here to discover in-depth overviews of all of our supported cryptocurrencies</span>
+        </a>
+        <Card className={classNames(whiteCard, 'flat')} style={{ borderColor: '#F3F5F8' }}>
+          <CardHeader className={classNames(whiteCard, thColor)} style={{ borderColor: '#F3F5F8' }}>
+            <span>Supported Assets</span>
+          </CardHeader>
+          <CardBody className='border-0'>
+            <Table className={classNames(table)} hover striped responsive>
+              <thead>
+                <tr>
+                  <th className={classNames(thColor, 'pl-3 pl-md-5 border-0')}>
+                    <span>Coin</span>
+                  </th>
+                  <th className={classNames(thColor, 'border-0')}>
+                    <span>Buy Enabled</span>
+                  </th>
+                  <th className={classNames(thColor, 'border-0')}>
+                    <span>Sell Enabled</span>
+                  </th>
+                  <th className={classNames(thColor, 'border-0')}>
+                    <span>Buy / Sell</span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {supportedAssets.map((asset) => (
+                  <TableRow 
+                    key={asset.symbol} 
+                    asset={asset} 
+                  />
+                )
+                )}
+              </tbody>
+            </Table>
+          </CardBody>
+        </Card>
+      </div>
       <Footer showEmail={false} translations={translations} />
     </div>
   )
