@@ -11,7 +11,6 @@ import { getConnectedAccountSymbols } from 'Selectors/connectHardwareWallet'
 import { removeConnectedAccount, startConnectBatch, saveConnectedAccounts } from 'Actions/connectHardwareWallet'
 
 import BackButton from './BackButton'
-import ConnectAssetButton from './ConnectAssetButton'
 import T from 'Components/i18n/T'
 import WalletSelectorList from 'Components/WalletSelectorList'
 
