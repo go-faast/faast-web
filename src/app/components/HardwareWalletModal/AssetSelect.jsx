@@ -13,6 +13,7 @@ import { removeConnectedAccount, startConnectBatch, saveConnectedAccounts } from
 import BackButton from './BackButton'
 import ConnectAssetButton from './ConnectAssetButton'
 import T from 'Components/i18n/T'
+import WalletSelectorList from 'Components/WalletSelectorList'
 
 import config from 'Config'
 
@@ -48,19 +49,22 @@ export default compose(
 )(({ walletType, assetSymbols, handleCancel, handleDone, handleConnectAll, isConnectAllDisabled, isDoneDisabled }) => (
   <div>
     <ModalBody className='py-4'>
-      <T tag='h5' i18nKey='app.hardwareWalletModal.assetSelect.express' className='mb-3'>For an express setup click '{ADD_ALL_TEXT}'</T>
-      <Button color='primary' size='lg' className='text-center' disabled={isConnectAllDisabled} onClick={handleConnectAll}>
-        {ADD_ALL_TEXT}
-      </Button>
-      <T tag='h5' i18nKey='app.hardwareWalletModal.assetSelect.addSpecific' className='mt-4 mb-3'>Or, add a specific account by choosing one of the following supported currencies.</T>
-      <Row className='gutter-3 justify-content-center'>
-        {assetSymbols.map((assetSymbol) => (
-          <Col key={assetSymbol} xs='6' md='4' lg='3'>
+      <Row className='gutter-3'>
+        {/* {assetSymbols.map((assetSymbol) => (
+          <Col key={assetSymbol} xs='12'>
             <ConnectAssetButton walletType={walletType} assetSymbol={assetSymbol}/>
           </Col>
-        ))}
+        ))} */}
+        <T tag='span' i18nKey='app.hardwareWalletModal.assetSelect.addSpecificAsset' className='my-1 mx-auto'>Add a specific account by choosing one of the following supported currencies:</T>
+        <Col>
+          <WalletSelectorList walletType={walletType} supportedAssetSymbols={assetSymbols} />
+        </Col>
       </Row>
-      <p style={{ fontSize: '14px' }} className='mt-5 mb-0 text-left'>
+      {/* <T tag='h5' i18nKey='app.hardwareWalletModal.assetSelect.express' className='mt-3 text-left'>For an express setup click '{ADD_ALL_TEXT}'</T> */}
+      <Button color='primary' size='md' className='text-center mt-4' disabled={isConnectAllDisabled} onClick={handleConnectAll}>
+        {ADD_ALL_TEXT}
+      </Button>
+      <p style={{ fontSize: '14px' }} className='mt-3 mb-0 text-left'>
         <a href={config.walletTypes[walletType].website}><i className='fa fa-info-circle'></i> <T tag='span' i18nKey='app.hardwareWalletModal.assetSelect.learnMore'></T> {walletType}</a>
       </p>
     </ModalBody>
