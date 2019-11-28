@@ -83,12 +83,12 @@ export default compose(
             <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-0'>
               <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>{t.knowledge}</h3>
               <ul>
-                <li><a className='text-white' href='/what-is-an-ico'>{t.whatIsIco}</a></li>
-                <li><a className='text-white' href='/what-are-smart-contracts'>{t.smartContracts}</a></li>
-                <li><a className='text-white' href='/what-is-a-dao'>{t.dao}</a></li>
-                <li><a className='text-white' href='/what-is-ethereum'>{t.whatIsEth}</a></li>
-                <li><a className='text-white' href='/what-is-the-difference-between-ico-ipo-ito'>{t.icoIpoIto}</a></li>
-                <li><a className='text-white' href='/how-to-buy-ethereum'>{t.buyEthereum}</a></li>
+                <li><a className='text-white' href='/knowledge/article/what-is-bitcoin'>What is Bitcoin?</a></li>
+                <li><a className='text-white' href='/knowledge/article/what-is-xrp'>What is XRP?</a></li>
+                <li><a className='text-white' href='/knowledge/article/what-is-ethereum'>{t.whatIsEth}</a></li>
+                <li><a className='text-white' href='/knowledge/article/what-is-bitcoin-cash'>What is Bitcoin Cash?</a></li>
+                <li><a className='text-white' href='/knowledge/article/what-are-smart-contracts'>{t.smartContracts}</a></li>
+                <li><a className='text-white' href='/knowledge/article/what-is-the-bitcoin-halving'>What is the Bitcoin halving?</a></li>
               </ul>
             </div>
             <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-3'>

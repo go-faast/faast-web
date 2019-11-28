@@ -306,6 +306,9 @@ const ModifyView = (props) => {
                     <T tag='span' i18nKey='app.rebalance.instructions6'>Click</T> <span className='text-primary'>{saveButtonContent}</span> <T tag='span' i18nKey='app.rebalance.instructions7'>when finished to review changes.</T>
                   </li>
                 </ol>
+                <a href='https://faa.st/knowledge/article/how-to-rebalance-your-portfolio' target='_blank noreferrer'>
+                  <small>* Want more info? Check out our in-depth rebalance guide. *</small>
+                </a>
               </ModalBody>
             </Modal>
           )}/>
