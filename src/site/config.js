@@ -34,6 +34,10 @@ module.exports = {
       title: `Market Maker Program (Beta) ${titleSuffix}`,
       description: `Earn interest on your Bitcoin by fulfilling trades placed on the ${siteName}. Sign up for the Beta now.`,
     }),
+    affiliate: () => ({
+      title: `Affiliate Partnerships ${titleSuffix}`,
+      description: `Integrate Faa.st into your crypto exchange, app, or website to earn fees off completed swaps.`,
+    }),
     terms: () => ({
       title: `Terms & Conditions ${titleSuffix}`,
       description: genericTitle,
