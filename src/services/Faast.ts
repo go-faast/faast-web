@@ -6,6 +6,7 @@ import log from 'Log'
 import config from 'Config'
 import crypto from 'crypto'
 import { version as appVersion } from 'Pkg'
+import getCfp from 'Utilities/cfp'
 
 import { Asset, SwapOrder } from 'Types'
 
@@ -186,10 +187,11 @@ export type CreateNewOrderParams = {
     receiveWalletType?: string, // receiving wallet type
     appVersion?: string, // defaults to package.json version
     path?: string, // defaults to window.location.pathname
+    cfp?: string,
   },
 }
 
-export const createNewOrder = ({
+export const createNewOrder = async ({
   sendSymbol,
   receiveSymbol,
   receiveAddress,
@@ -215,6 +217,7 @@ export const createNewOrder = ({
   meta: {
     appVersion,
     path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+    cfp: await getCfp(),
     ...meta,
   },
 }).then(formatOrderResult)

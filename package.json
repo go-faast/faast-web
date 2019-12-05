@@ -114,6 +114,7 @@
     "faast-ui": "github:go-faast/faast-ui#v1.0.7",
     "favicons-webpack-plugin": "0.0.7",
     "file-loader": "^1.1.6",
+    "fingerprintjs2": "^2.1.0",
     "fuse.js": "^3.1.0",
     "gulp": "^4.0.0",
     "gulp-clean": "^0.4.0",
