@@ -176,6 +176,7 @@
     "reselect": "^3.0.1",
     "riek": "github:go-faast/riek",
     "ripple-binary-codec": "^0.2.4",
+    "ripple-keypairs": "^0.11.0",
     "ripple-lib": "^1.4.1",
     "rlp": "^2.0.0",
     "sass-loader": "^6.0.6",

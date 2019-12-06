@@ -65,7 +65,7 @@ function handleResult<T>(result: ResponseMessage<T>): T {
 
 export class TrezorService {
 
-  getRippleAddress(derivationPath: string) {
+  getRippleAddress(derivationPath: string): Promise<any> {
     return TrezorConnect.rippleGetAddress(log.debugInline('TrezorConnect.rippleGetAddress', {
       path: derivationPath,
     })).then(handleResult)

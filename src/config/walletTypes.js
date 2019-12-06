@@ -87,6 +87,9 @@ export default {
       ETH: {
         derivationPath: 'm/44\'/60\'/0\'/0'
       },
+      XRP: {
+        derivationPath: 'm/44\'/144\'/0\'/0'
+      },
       ...commonSupportedAssets,
     },
     active: true

@@ -54,6 +54,9 @@ export default abstract class RippleWallet extends Wallet {
       const xrpBalance = balances[0].value
       return toBigNumber(xrpBalance)
     } catch (err) {
+      if (err.data.error && err.data.error === 'actNotFound') {
+        err = 'Please make sure your XRP account has the minimum 20 XRP balance in order to activate it.'
+      }
       throw new Error(`Error getting XRP Balance for address, ${address}: ${err}`)
     }
   }
