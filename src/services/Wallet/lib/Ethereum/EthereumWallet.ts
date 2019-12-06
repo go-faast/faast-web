@@ -29,30 +29,20 @@ const MIN_GAS_LIMIT_TOKEN = DEFAULT_GAS_LIMIT_TOKEN
  */
 const GET_BALANCES_BATCH_SIZE = 500
 
-async function estimateGasLimit(txData: Partial<TxData>): Promise<BigNumber> {
+function estimateGasLimit(txData: Partial<TxData>): Promise<BigNumber> {
   log.debug('estimateGasLimit', txData)
   const errorFallback = (e: any) => {
     log.warn('Error calling web3.eth.estimateGas, falling back to fixed limits', e)
     return Promise.resolve(txData.data ? DEFAULT_GAS_LIMIT_TOKEN : DEFAULT_GAS_LIMIT_ETH)
   }
   try {
-    let gasLimit = toBigNumber(await getFastGasPrice()).div(10)
-    if (gasLimit) {
-      gasLimit = gasLimit.times(1000)
-      const minGasLimit = txData.data ? MIN_GAS_LIMIT_TOKEN : MIN_GAS_LIMIT_ETH
-      return gasLimit.lt(minGasLimit) ? minGasLimit : gasLimit
-    } else {
-      return getWeb3().eth.estimateGas({
-        ...txData,
-        nonce: toNumber(txData.nonce),
-      })
+    return getWeb3().eth.estimateGas(txData)
       .then(toBigNumber)
-      .then((web3GasLimit) => {
+      .then((gasLimit) => {
         const minGasLimit = txData.data ? MIN_GAS_LIMIT_TOKEN : MIN_GAS_LIMIT_ETH
-        return web3GasLimit.lt(minGasLimit) ? minGasLimit : web3GasLimit
+        return gasLimit.lt(minGasLimit) ? minGasLimit : gasLimit
       })
       .catch(errorFallback)
-    }
   } catch (e) {
     return errorFallback(e)
   }
@@ -88,17 +78,17 @@ export default abstract class EthereumWallet extends Wallet {
     return asset && (asset.symbol === 'ETH' || asset.ERC20)
   }
 
-  _getDefaultFeeRate() {
-
-    return getWeb3().eth.getGasPrice()
-      .catch((e) => {
-        log.error(`Failed to get ethereum dynamic fee, using default of ${DEFAULT_GAS_PRICE} wei`, e)
-        return DEFAULT_GAS_PRICE
-      })
-      .then((gasPrice) => ({
-        rate: gasPrice,
-        unit: 'wei/gas',
-      }))
+  async _getDefaultFeeRate() {
+    let rate: number | BigNumber = DEFAULT_GAS_PRICE
+    try {
+      rate = toBigNumber(await getFastGasPrice()).times(100000000)
+    } catch (err) {
+      log.error(`Failed to get ethereum dynamic fee, using default of ${DEFAULT_GAS_PRICE} wei`, err)
+    }
+    return ({
+      rate,
+      unit: 'wei/gas',
+    })
   }
 
   _getBalance(asset: Asset, { web3Batch = null }: GetBalanceOptions): Promise<Amount> {
