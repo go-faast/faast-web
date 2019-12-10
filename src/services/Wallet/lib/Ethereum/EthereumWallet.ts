@@ -81,7 +81,7 @@ export default abstract class EthereumWallet extends Wallet {
   async _getDefaultFeeRate() {
     let rate: number | BigNumber = DEFAULT_GAS_PRICE
     try {
-      rate = toBigNumber(await getFastGasPrice()).times(100000000)
+      rate = await getFastGasPrice()
     } catch (err) {
       log.error(`Failed to get ethereum dynamic fee, using default of ${DEFAULT_GAS_PRICE} wei`, err)
     }
