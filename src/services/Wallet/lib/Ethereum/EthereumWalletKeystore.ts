@@ -5,6 +5,7 @@ import { isString, isObject, isUndefined } from 'lodash'
 import config from 'Config'
 import { stripHexPrefix, parseJson } from 'Utilities/helpers'
 import { toChecksumAddress } from 'Utilities/convert'
+import log from 'Utilities/log'
 
 import EthereumWallet from './EthereumWallet'
 import { Transaction } from '../types'
@@ -97,6 +98,7 @@ export default class EthereumWalletKeystore extends EthereumWallet {
       this.decrypt(password)
       return true
     } catch (e) {
+      log.error(`failed to decrypt keystore wallet ${this.getLabel()}`, e)
       return false
     }
   }
