@@ -22,6 +22,7 @@ interface SerializedWallet {
   providerName?: string,
   xpub?: string,
   keystore?: object,
+  publicKey?: string,
 }
 
 const parseWalletObject = (wallet: Wallet | SerializedWallet): Wallet | null => {
@@ -47,7 +48,9 @@ const parseWalletObject = (wallet: Wallet | SerializedWallet): Wallet | null => 
     case 'BitcoinCashWalletLedger': return new BitcoinCashWalletLedger(wallet.xpub, wallet.derivationPath, label)
     case 'LitecoinWalletTrezor': return new LitecoinWalletTrezor(wallet.xpub, wallet.derivationPath, label)
     case 'LitecoinWalletLedger': return new LitecoinWalletLedger(wallet.xpub, wallet.derivationPath, label)
-    case 'RippleWalletTrezor': return new RippleWalletTrezor(wallet.address, wallet.derivationPath, label)
+    case 'RippleWalletTrezor':return new RippleWalletTrezor(
+      wallet.address, wallet.publicKey, wallet.derivationPath, label,
+    )
     case 'RippleWalletLedger': return new RippleWalletLedger(wallet.address, wallet.derivationPath, label)
     default: log.error(`Cannot parse wallet: invalid type '${type}'`, wallet)
   }
