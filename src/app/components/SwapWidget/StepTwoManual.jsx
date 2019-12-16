@@ -24,6 +24,7 @@ import extraAssetFields from 'Src/config/extraAssetFields'
 import { capitalizeFirstLetter } from 'Utilities/helpers'
 
 import { getGeoLimit } from 'Selectors/app'
+import { getSwap } from 'Selectors/swap'
 
 import style from './style.scss'
 
@@ -88,7 +89,7 @@ const StepTwoManual = ({
             {orderStatus} {orderStatus !== 'complete' && (
               <Expandable
                 shrunk={<i className='fa fa-spinner fa-pulse'/>}
-                expanded={<T tag='span' i18nKey='app.stepTwoManual.updatesAuto'>Order status is updated automatically. You do not need to refresh.</T>}/>
+                expanded={<T tag='span' i18nKey='app.stepTwoManual.autoUpdates'>Order status is updated automatically. You do not need to refresh.</T>}/>
             )}
           </span>],
           [<T tag='span' i18nKey='app.stepTwoManual.orderID'>Order ID:</T>, <span className='text-monospace'>{orderId}</span>],
@@ -126,22 +127,24 @@ export default compose(
     routes.swapWidget(),
     ({ swap }) => !swap,
   ),
-  connect((state, { swap: { pair } }) => ({
+  connect((state, { swap: { pair, id } }) => ({
     minimumDeposit: getRateMinimumDeposit(state, pair),
     maxiumumDeposit: getRateMaximumDeposit(state,pair),
     estimatedRate: getRatePrice(state, pair),
     limit: getGeoLimit(state),
+    currentSwap: getSwap(state, id),
   }), {
     push: pushAction,
     refreshSwap,
     retrievePairData: retrievePairData,
   }),
-  withProps(({ swap: { rateLockedUntil, rate, sendAsset }, estimatedRate, limit }) => {
+  withProps(({ swap: { rateLockedUntil, rate, sendAsset }, estimatedRate, swap, limit, currentSwap }) => {
     const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : null
     return ({
       secondsUntilPriceExpiry: (Date.parse(rateLockedUntil) - Date.now()) / 1000,
       quotedRate: rate || estimatedRate,
-      maxGeoBuy
+      maxGeoBuy,
+      swap: currentSwap ? currentSwap : swap
     })
   }),
   withHandlers({
