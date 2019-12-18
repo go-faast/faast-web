@@ -99,7 +99,7 @@
     "bootstrap": "^4.0.0",
     "class-names": "^1.0.0",
     "clean-webpack-plugin": "^0.1.19",
-    "coininfo": "github:go-faast/coininfo",
+    "coininfo": "^5.1.0",
     "concurrently": "^3.5.0",
     "convert-tsconfig-paths-to-webpack-aliases": "^0.9.2",
     "copy-webpack-plugin": "^4.5.1",
