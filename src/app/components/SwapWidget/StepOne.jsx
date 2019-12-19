@@ -229,7 +229,7 @@ const SwapStepOne = ({
                 />
                 {Object.keys(extraAssetFields).indexOf(sendSymbol) >= 0 && (
                   <StepOneField
-                    name='extraRefundDepositField'
+                    name='refundAddressExtraId'
                     type='number'
                     step='any'
                     placeholder={`${sendSymbol} Refund ${capitalizeFirstLetter(extraAssetFields[sendSymbol].deposit)}`}
@@ -263,7 +263,7 @@ const SwapStepOne = ({
                 />
                 {Object.keys(extraAssetFields).indexOf(receiveSymbol) >= 0 && (
                   <StepOneField
-                    name='extraWithdrawalField'
+                    name='receiveAddressExtraId'
                     type='number'
                     step='any'
                     placeholder={`${receiveSymbol} ${capitalizeFirstLetter(extraAssetFields[receiveSymbol].deposit)}`}
@@ -406,7 +406,7 @@ export default compose(
       ethSendBalanceAmount, t, fullBalanceAmount
     }) => async (values) => {
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
-      let { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveAmount, receiveWalletId, extraWithdrawalField, extraRefundDepositField } = values
+      let { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveAmount, receiveWalletId, receiveAddressExtraId, refundAddressExtraId } = values
       if (receiveSymbol == 'ETH' || ERC20) {
         receiveAddress = toChecksumAddress(receiveAddress)
       }
@@ -418,38 +418,33 @@ export default compose(
           refundAddress: t('app.widget.notEnoughEth', 'This wallet does not have enough ETH to cover the gas fees. Please deposit some ETH and try again.'),
         })
       }
-      if (sendSymbol === 'XRP' && toBigNumber(fullBalanceAmount).minus(toBigNumber(sendAmount)).lt(20)) {
+      if (sendSymbol === 'XRP' && sendWalletId && toBigNumber(fullBalanceAmount).minus(toBigNumber(sendAmount)).lt(20)) {
         throw new SubmissionError({
-          refundAddress: t('app.widget.notEnoughXrp', 'Unable to send because XRP wallets must have a balance of 20 XRP.'),
+          refundAddress: t('app.widget.notEnoughXrp', 'XRP wallets must maintain a minimum balance of 20 XRP.'),
         })
       }
-      try {
-        const receiveValidation = await Faast.validateAddress(receiveAddress, receiveSymbol)
-        if (!receiveValidation.valid) {
-          throw `${t('app.widget.invalid', 'Invalid')} ${receiveSymbol} ${t('app.widget.address', 'address')}`
+      async function validatePayportField(addressFieldName, extraIdFieldName, asset, address, extraId) {
+        const validation = await Faast.validateAddress(address, asset.symbol, extraId)
+        if (!validation.valid) {
+          let message = `${t('app.widget.invalid', 'Invalid')} ${asset.symbol} ${t('app.widget.address', 'address')}`
+          if (validation.message) {
+            if (validation.message.includes('extraId is required')) {
+              const extraIdName = extraAssetFields[asset.symbol].deposit || 'extra ID'
+              throw new SubmissionError({
+                [extraIdFieldName]: `${asset.name} ${extraIdName} is required for this address`,
+              })
+            } else {
+              message += `: ${validation.message}`
+            }
+          }
+          throw new SubmissionError({
+            [addressFieldName]: message,
+          })
         } 
-        // else if (receiveValidation.valid && receiveAddress !== receiveValidation.standardized) {
-        //   throw `Invalid ${receiveSymbol} address format. Here is your address converted to the correct format: ${receiveValidation.standardized}`
-        // }
-      } catch (err) {
-        throw new SubmissionError({
-          receiveAddress: err,
-        })
       }
-      try { 
-        if (refundAddress) {
-          const sendValidation = await Faast.validateAddress(refundAddress, sendSymbol) || {}
-          if (!sendValidation.valid) {
-            throw `${t('app.widget.invalid', 'Invalid')} ${sendSymbol} ${t('app.widget.address', 'address')}`
-          } 
-          // else if (sendValidation.valid && refundAddress !== sendValidation.standardized) {
-          //   throw `Invalid ${sendSymbol} address format. Here is your address converted to the correct format: ${sendValidation.standardized}`
-          // }
-        }
-      } catch (err) {
-        throw new SubmissionError({
-          refundAddress: err,
-        })
+      await validatePayportField('receiveAddress', 'receiveAddressExtraId', receiveAsset, receiveAddress, receiveAddressExtraId)
+      if (refundAddress) {
+        await validatePayportField('refundAddress', 'refundAddressExtraId', sendAsset, refundAddress, refundAddressExtraId)
       }
 
       return createSwap({
@@ -461,8 +456,8 @@ export default compose(
         refundAddress,
         receiveWalletId,
         receiveAmount: sendAmount && estimatedField !== 'receive' ? toBigNumber(receiveAmount).round(receiveAsset.decimals) : undefined,
-        extraWithdrawalField,
-        extraRefundDepositField
+        receiveAddressExtraId,
+        refundAddressExtraId
       })
         .then((swap) => {
           push(`/swap/send?id=${swap.orderId}`)

@@ -160,12 +160,13 @@ export const refreshSwap = (id: string) =>
   fetchPost(`${apiUrl}/api/v2/public/swaps/${id}/refresh`)
     .then(formatOrderResult)
 
-export const validateAddress = (address: string, symbol: string) => {
+export const validateAddress = (address: string, symbol: string, extraId?: string) => {
   return fetchPost(`${apiUrl}/api/v2/public/address`, {
     address,
     currency: symbol,
+    extra_id: extraId,
   })
-    .then(({ valid, standardized }) => ({ valid, standardized }))
+    .then(({ valid, standardized, message }) => ({ valid, standardized, message }))
     .catch((e: any) => {
       log.error(e)
       throw(e)
@@ -178,7 +179,7 @@ export type CreateNewOrderParams = {
   receiveAddress: string,
   refundAddress?: string,
   sendAmount?: number,
-  extraWithdrawalField?: string,
+  receiveAddressExtraId?: string,
   refundAddressExtraId?: string,
   userId?: string,
   withdrawalAmount?: number,
@@ -195,7 +196,7 @@ export const createNewOrder = async ({
   sendSymbol,
   receiveSymbol,
   receiveAddress,
-  extraWithdrawalField,
+  receiveAddressExtraId,
   refundAddressExtraId,
   refundAddress,
   sendAmount,
@@ -210,7 +211,7 @@ export const createNewOrder = async ({
   withdrawal_address: receiveAddress,
   withdrawal_currency: receiveSymbol,
   withdrawal_amount: withdrawalAmount,
-  withdrawal_address_extra_id: extraWithdrawalField,
+  withdrawal_address_extra_id: receiveAddressExtraId,
   refund_address_extra_id: refundAddressExtraId,
   refund_address: refundAddress,
   ...getAffiliateSettings(),
