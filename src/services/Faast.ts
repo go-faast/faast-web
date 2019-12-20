@@ -45,6 +45,13 @@ return fetchGet('https://ethgasstation.info/json/ethgasAPI.json')
   .catch((e) => e)
 }
 
+export const getInternationalRate = (symbol: string): Promise<number> => {
+  // tslint:disable-next-line:max-line-length
+  return fetchGet(`https://api.bitaccess.co/v1/currency?from=USD&to=${symbol}&q=1`)
+    .then((r) => r ? r.rate : toBigNumber(1))
+    .catch((e) => e)
+  }
+
 export function fetchAssets(): Promise<any[]> {
   return fetchGet(`${apiUrl}/api/v2/public/currencies`, { include: 'marketInfo' }, { retries: 2 })
     .then((assets: Array<Partial<Asset>>) => assets.filter((asset) => {
@@ -463,4 +470,5 @@ export default {
   getAffiliateSwaps,
   formatOrderResult,
   validateAddress,
+  getInternationalRate,
 }

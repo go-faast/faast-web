@@ -12,6 +12,7 @@ import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
 import { restoreTxs } from './tx'
 import { retrieveAllSwaps, restoreSwapTxIds, restoreSwapPolling } from './swap'
 import { fetchGeoRestrictions, languageLoad } from 'Common/actions/app'
+import { setCurrencySymbol } from './currency'
 
 import { getTradeableAssetFilter } from 'Selectors/app'
 
@@ -31,6 +32,7 @@ export const restoreState = (dispatch) => Promise.resolve()
     dispatch(toggleAssetsByTradeable())
     dispatch(restoreCachedAffiliateInfo())
     dispatch(languageLoad())
+    dispatch(currencyLoad())
     const assetCache = localStorageGetJson('state:asset')
     if (assetCache) {
       dispatch(restoreAssets(assetCache))
@@ -59,6 +61,11 @@ export const restoreState = (dispatch) => Promise.resolve()
     log.error(e)
     throw new Error('Error loading app: ' + e.message)
   })
+
+export const currencyLoad = () => (dispatch) => {
+  let symbol = localStorageGet('currency_symbol') || 'USD'
+  dispatch(setCurrencySymbol(symbol))
+}
 
 export const setupBlockstack = (dispatch) => Promise.resolve()
   .then(() => {
