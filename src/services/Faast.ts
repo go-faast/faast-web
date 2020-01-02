@@ -39,9 +39,11 @@ export const postFeedback = (type: string, answer: string, email: string,
 }
 
 export const getFastGasPrice = (): Promise<number> => {
-// tslint:disable-next-line:max-line-length
 return fetchGet('https://ethgasstation.info/json/ethgasAPI.json')
-  .then((r) => r ? r.fast : undefined)
+  .then((r) => {
+    // gas station returns values as multiples of 100Mwei
+    return r ? toBigNumber(r.fast).times(1e8) : undefined
+  })
   .catch((e) => e)
 }
 
