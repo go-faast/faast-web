@@ -11,18 +11,18 @@ function btcValidate(address: string) {
   }
 }
 
-export const btcLegacyFormat: AddressFormat = {
-  type: 'legacy',
-  label: 'Legacy address format',
-  description: 'Legacy base58 address format.',
+export const bitcoinjsFormat: AddressFormat = {
+  type: 'bitcoin',
+  label: 'Bitcoin address format',
+  description: 'Address format as per bitcoinjs-lib spec, including both base58/bech32 encodings.',
   test: testFromValidate(btcValidate),
   validate: btcValidate,
   convert: identity,
 }
 
 const config: FormatConfig = {
-  default: btcLegacyFormat.type,
-  formats: [btcLegacyFormat],
+  default: bitcoinjsFormat.type,
+  formats: [bitcoinjsFormat],
 }
 
 export default config

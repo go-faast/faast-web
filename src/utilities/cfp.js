@@ -14,18 +14,20 @@ async function generate() {
   }
 }
 
-if (window.requestIdleCallback) {
-  requestIdleCallback(() => {
-    generate()
-  })
-} else {
-  setTimeout(() => {
-    generate()
-  }, 500)
+if (typeof window !== 'undefined') {
+  if (window.requestIdleCallback) {
+    requestIdleCallback(() => {
+      generate()
+    })
+  } else {
+    setTimeout(() => {
+      generate()
+    }, 500)
+  }
 }
 
 export default async function get() {
-  if (cfp === '') {
+  if (cfp === '' && typeof window !== 'undefined') {
     await generate()
   }
   return cfp

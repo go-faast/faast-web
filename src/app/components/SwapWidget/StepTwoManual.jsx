@@ -34,7 +34,7 @@ const StepTwoManual = ({
   swap: {
     orderId = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
     sendAmount, receiveAmount, orderStatus = '', refundAddress = '', isFixedPrice, sendAsset, 
-    depositAddressExtraId
+    depositAddressExtraId, withdrawalAddressExtraId, refundAddressExtraId,
   },
 }) => {
   const depositFieldName = extraAssetFields[sendSymbol] && extraAssetFields[sendSymbol].deposit
@@ -93,8 +93,22 @@ const StepTwoManual = ({
             )}
           </span>],
           [<T tag='span' i18nKey='app.stepTwoManual.orderID'>Order ID:</T>, <span className='text-monospace'>{orderId}</span>],
-          [<T tag='span' i18nKey='app.stepTwoManual.receiveAddress'>Receive address:</T>, <span className='text-monospace'>{receiveAddress}</span>],
-          refundAddress && [<T tag='span' i18nKey='app.stepTwoManual.refundAddress'>Refund address:</T>, <span className='text-monospace'>{refundAddress}</span>],
+          [
+            <T tag='span' i18nKey='app.stepTwoManual.receiveAddress'>Receive address:</T>,
+            <span className='text-monospace'>
+              {receiveAddress} {withdrawalAddressExtraId && (
+                `(${withdrawalAddressExtraId})`
+              )}
+            </span>
+          ],
+          refundAddress && [
+            <T tag='span' i18nKey='app.stepTwoManual.refundAddress'>Refund address:</T>,
+            <span className='text-monospace'>
+              {refundAddress} {refundAddressExtraId && (
+                `(${refundAddressExtraId})`
+              )}
+            </span>
+          ],
           quotedRate && [<T tag='span' i18nKey='app.stepTwoManual.rate'>Rate:</T>, <Rate rate={quotedRate} from={sendSymbol} to={receiveSymbol}/>],
           sendAmount
             ? [<T tag='span' i18nKey='app.stepTwoManual.depositAmount'>Send amount:</T>, <Units value={sendAmount} symbol={sendSymbol} precision={8}/>]
