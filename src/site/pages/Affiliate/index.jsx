@@ -1,7 +1,7 @@
 import { pick } from 'lodash'
 import * as React from 'react'
 import { connect } from 'react-redux'
-import { Button, Row, Col } from 'reactstrap'
+import { Row, Col } from 'reactstrap'
 import { withRouteData } from 'react-static'
 import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, lifecycle, withProps } from 'recompose'
@@ -71,21 +71,33 @@ export default compose(
             <h1 style={{ fontWeight: 600 }}>Why Integrate with Faa.st?</h1>
           </Col>
           <Col className='mt-4' xs='12'>
-            <Row>
+            <Row className='mt-3'>
               <Col xs='5'>img 1</Col>
-              <Col>This is reason 1 explanation</Col>
+              <Col md='5' className='text-left'>
+                <h4>Monetization</h4> 
+                Faa.st allows you to easily monetize your site or application by integrating our Faa.st API or Swap Widget into your product or service. This enables your users to instantly swap cryptos while you earn a percentage of every transaction.
+              </Col>
             </Row>
-            <Row>
+            <Row className='mt-4'>
               <Col xs='5'>img 2</Col>
-              <Col>This is reason 2 explanation</Col>
+              <Col md='5' className='text-left'>
+                <h4>Simplicity</h4>
+                The team at Faa.st worked hard on simplifying the technical areas to allow quick and easy installations. So no matter your project, the Faa.st API contains simple commands that allow you to easily process and detail transactions.
+              </Col>
             </Row>
-            <Row>
+            <Row className='mt-4'>
               <Col xs='5'>img 3</Col>
-              <Col>This is reason 3 explanation</Col>
+              <Col md='5' className='text-left'>
+                <h4>Customizable</h4>
+                Unlike other exchange services, Faa.st offers customizable fixed or marginal fees on transactions. This allows you to choose the right monetization model for your use case, and charge accordingly.
+              </Col>
             </Row>
-            <Row>
+            <Row className='mt-4'>
               <Col xs='5'>img 4</Col>
-              <Col>This is reason 4 explanation</Col>
+              <Col md='5' className='text-left'>
+                <h4>Monitoring</h4>
+                Faa.st affiliates gain access to a built-in affiliate dashboard that allows you to track your earnings per transaction, monitor the swaps through integration, and withdraw your BTC payouts.
+              </Col>
             </Row>
           </Col>
         </Row>
