@@ -32,6 +32,13 @@ if (window.siteRoot
 }
 `
 
+const gtagAnalytics = `
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'UA-100689193-1');
+`
+
 const generateCombinationsFromArray = (array, property) => {
   let results = []
   for (let i = 0; i <= array.length - 1; i++) {
@@ -72,6 +79,8 @@ const Document = ({ Html, Head, Body, children, siteData, routeInfo }) => {
         <link rel="icon" href="/favicon.png"/>
         <title>{get(routeInfo, 'allProps.meta.title', siteData.title)}</title>
         <script dangerouslySetInnerHTML={{ __html: runtimeRedirect }}/>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100689193-1"/>
+        <script dangerouslySetInnerHTML={{ __html: gtagAnalytics }}/>
       </Head>
       <Body style={{ backgroundColor: get(routeInfo, 'allProps.bgColor', '#181818') }}>{children}</Body>
     </Html>
