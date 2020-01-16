@@ -16,7 +16,7 @@ type Account = { publicKey: string, chainCode: string }
 
 const createAccountGetter = (baseDerivationPath: string, account: Account) => (index: number) => {
     const fullDerivationPath = `${baseDerivationPath}/${index}`
-    const publicKey = handleGetHDNodeXPub(account, 0)
+    const publicKey = handleGetHDNodeXPub(account, index)
     const address = getRippleAddress(publicKey)
     return Promise.resolve(new RippleWalletTrezor(address, account.publicKey, fullDerivationPath))
 }
@@ -25,7 +25,7 @@ const handleGetHDNodeXPub = (account: Account, index: number = 0) => {
   const hdKey = new HDKey()
   hdKey.publicKey = Buffer.from(account.publicKey, 'hex')
   hdKey.chainCode = Buffer.from(account.chainCode, 'hex')
-  const derivedKey = hdKey.derive(`m/${index}`)
+  const derivedKey = hdKey.derive(`${index}`)
   return derivedKey.publicKey.toString('hex')
 }
 
