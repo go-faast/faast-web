@@ -208,7 +208,7 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
           }),
         },
         { 
-          path: `${t.url}/affiliate-partners`,
+          path: `${t.url}/partners`,
           component: 'src/site/pages/Affiliate',
           getData: async () => ({
             translations: t.translations,

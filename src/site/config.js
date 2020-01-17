@@ -36,7 +36,7 @@ module.exports = {
     }),
     affiliate: () => ({
       title: `Affiliate Partnerships ${titleSuffix}`,
-      description: `Integrate Faa.st into your crypto exchange, app, or website to earn fees off completed swaps.`,
+      description: "Learn how to earn fees in Bitcoin by integrating Faa.st's API into your crypto exchange, mobile app, or website.",
     }),
     terms: () => ({
       title: `Terms & Conditions ${titleSuffix}`,

@@ -39,7 +39,7 @@ export default compose(
     backgroundImage: undefined
   }),
 )(({ supportedAssets, to, from, headline, subline, notification, 
-  notificationLink, translations = {}, cta, bgImage, bgColor,
+  notificationLink, translations = {}, cta, bgImage, bgColor, rightHero,
   translations: { static: { hero = {}, hero: { headline: headlineT = {}, subtitle = {} } = {} } = {} } }) => (
   <div>
     <Header translations={translations} />
@@ -86,7 +86,9 @@ export default compose(
             </p>
           </Col>
           <Col className={classNames('pr-3 d-block')}>
-            <SwapWidget assets={supportedAssets} defaultDeposit={from} defaultReceive={to} translations={translations} />
+            {rightHero ? rightHero : (
+              <SwapWidget assets={supportedAssets} defaultDeposit={from} defaultReceive={to} translations={translations} />
+            )}
           </Col>
         </Row>
       </Container>
