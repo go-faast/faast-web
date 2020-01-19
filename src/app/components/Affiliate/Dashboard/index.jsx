@@ -2,8 +2,9 @@ import React, { Fragment } from 'react'
 import { createStructuredSelector } from 'reselect'
 import { Row, Col, Card, CardHeader, CardBody, Button, CardDeck } from 'reactstrap'
 import { connect } from 'react-redux'
+import { push } from 'react-router-redux'
 import { Link } from 'react-router-dom'
-import { compose, setDisplayName } from 'recompose'
+import { compose, setDisplayName, lifecycle } from 'recompose'
 import PieChart from './pieChart'
 import AffiliateLayout from 'Components/Affiliate/Layout'
 import SwapsTable from 'Components/Affiliate/SwapsTable'
@@ -15,7 +16,8 @@ import LoadingFullScreen from 'Components/LoadingFullscreen'
 import { getStats } from 'Actions/affiliate'
 import classNames from 'class-names'
 
-import { affiliateStats, getAffiliateBalance, getMinimumWithdrawal, isLoadingLogin } from 'Selectors'
+import { affiliateStats, getAffiliateBalance, getMinimumWithdrawal, 
+  isLoadingLogin, isAffiliateLoggedIn } from 'Selectors'
 
 import { statContainer, row, statCol } from './style'
 import { card, cardHeader, text, smallCard, withdrawalOutline } from '../style'
@@ -99,8 +101,24 @@ export default compose(
     stats: affiliateStats,
     balance: getAffiliateBalance,
     minimumWithdrawal: getMinimumWithdrawal,
-    isLoadingLogin
+    isLoadingLogin,
+    loggedIn: isAffiliateLoggedIn,
   }), {
     getStats,
+    push: push,
+  }),
+  lifecycle({
+    componentDidMount() {
+      const { loggedIn, push, isLoadingLogin } = this.props
+      if (!loggedIn && !isLoadingLogin) {
+        push('/affiliates/login')
+      }
+    },
+    componentDidUpdate() {
+      const { loggedIn, push, isLoadingLogin } = this.props
+      if (!loggedIn && !isLoadingLogin) {
+        push('/affiliates/login')
+      }
+    }
   })
 )(AffiliateDashboard)
