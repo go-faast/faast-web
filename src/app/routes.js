@@ -37,6 +37,7 @@ const createPath = (...paths) => {
 
 export const root = createPath('/')
 export const dashboard = createPath('/dashboard')
+export const settings = createPath('/settings')
 export const rebalance = createPath('/rebalance')
 export const rebalanceInstructions = createPath(rebalance, '/instructions')
 export const viewOnlyAddress = createPath('/address/:addressQuery')
@@ -96,4 +97,5 @@ export default {
   affiliateTerms,
   watchlist,
   trending,
+  settings
 }

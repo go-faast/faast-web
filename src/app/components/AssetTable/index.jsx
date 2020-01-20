@@ -24,8 +24,8 @@ const renderAssetRows = ({ assetRows, push }) => {
     const displayUnits = (<Units value={balance} symbol={symbol} showSymbol={false}/>)
     const displayWeight = display.percentage(percentage)
     const displayChange = (<ChangePercent>{change24}</ChangePercent>)
-    const fiatValue = display.fiat(fiat)
-    const fiatPrice = display.fiat(price)
+    const fiatValue = fiat
+    const fiatPrice = price
     return (
       <tr 
         className='cursor-pointer'
@@ -46,14 +46,14 @@ const renderAssetRows = ({ assetRows, push }) => {
           <span className={collapsedRow}>&nbsp;{symbol}</span>
         </td>
         <td onClick={() => push(routes.assetDetail(symbol))} >
-          {fiatValue}
+          <Units value={fiatValue} precision={6} symbolSpaced={false} includeTrailingZeros prefixSymbol currency />
           <div className={classNames(collapsedOnly, collapsedRow)}>{displayWeight}</div>
         </td>
         <td onClick={() => push(routes.assetDetail(symbol))} className={expandedOnly}>
           {displayWeight}
         </td>
         <td onClick={() => push(routes.assetDetail(symbol))} >
-          {fiatPrice}
+          <Units value={fiatPrice} precision={5} symbolSpaced={false} includeTrailingZeros prefixSymbol currency />
           <div className={classNames(collapsedOnly, collapsedRow)}>{displayChange}</div>
         </td>
         <td onClick={() => push(routes.assetDetail(symbol))} className={expandedOnly}>

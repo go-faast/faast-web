@@ -13,6 +13,7 @@ import { restoreTxs } from './tx'
 import { retrieveAllSwaps, restoreSwapTxIds, restoreSwapPolling } from './swap'
 import { fetchGeoRestrictions, languageLoad } from 'Common/actions/app'
 import { setCurrencySymbol } from './currency'
+import { currencies } from 'Config/currencies'
 
 import { getTradeableAssetFilter } from 'Selectors/app'
 
@@ -63,8 +64,9 @@ export const restoreState = (dispatch) => Promise.resolve()
   })
 
 export const currencyLoad = () => (dispatch) => {
-  let symbol = localStorageGet('currency_symbol') || 'USD'
-  dispatch(setCurrencySymbol(symbol))
+  let currency = localStorageGetJson('currency_symbol') || currencies[0]
+  console.log('cahce', currency)
+  dispatch(setCurrencySymbol(currency))
 }
 
 export const setupBlockstack = (dispatch) => Promise.resolve()

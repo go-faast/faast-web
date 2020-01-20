@@ -14,11 +14,10 @@ import {
   DropdownToggle
 } from 'reactstrap'
 import { withRouter } from 'react-router-dom'
-import { push as pushAction } from 'react-router-redux'
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { setDisplayName, compose, withProps, withHandlers } from 'recompose'
+import { setDisplayName, compose, withProps } from 'recompose'
 import { pick } from 'lodash'
 
 import config from 'Config'
@@ -29,9 +28,8 @@ import withToggle from 'Hoc/withToggle'
 import Icon from 'Components/Icon'
 import T from 'Components/i18n/T'
 import FaastLogo from 'Img/faast-logo.png'
-import LanguageSelector from 'Components/LanguageSelector'
 
-const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, handleSelectLanguage,
+const AppNavbar = ({ disablePortfolioLinks, children, isExpanded,
   toggleExpanded, isDropdownOpen, toggleDropdownOpen, queryString, ...props }) => (
   <Navbar {...pick(props, Object.keys(Navbar.propTypes))}>
     <Container>
@@ -104,7 +102,12 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded, handleSelectLa
               <T tag='span' i18nKey='app.nav.addWallet' className='nav-link-label d-sm-inline'>Add wallet</T>
             </NavLink>
           </NavItem>
-          <LanguageSelector onSelect={handleSelectLanguage} showCode={false} />
+          <NavItem key='settings'>
+            <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/settings'>
+              <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-gear'/>
+              {/* <T tag='span' i18nKey='app.nav.addWallet' className='nav-link-label d-sm-inline'></T> */}
+            </NavLink>
+          </NavItem>
         </Nav>
       </Collapse>
     </Container>
@@ -130,7 +133,6 @@ export default compose(
     disablePortfolioLinks: isDefaultPortfolioEmpty,
     previousSwapInputs: getSavedSwapWidgetInputs
   }), {
-    push: pushAction
   }),
   withProps(({ previousSwapInputs }) => { 
     const { toAmount, fromAmount, toAddress, sendWalletId, receiveWalletId, fromAddress, to = 'ETH', from = 'BTC' } = previousSwapInputs || {}
@@ -139,9 +141,4 @@ export default compose(
     })}),
   withToggle('expanded'),
   withToggle('dropdownOpen'),
-  withHandlers({
-    handleSelectLanguage: ({ push, location }) => () => {
-      push(location.pathname)
-    }
-  }),
 )(AppNavbar)

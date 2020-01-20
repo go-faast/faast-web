@@ -138,6 +138,7 @@ const SwapStepOne = ({
                   label={t('app.widget.youSend','You send')}
                   onChange={onChangeSendAmount}
                   inputClass={classNames({ 'font-italic': estimatedField === 'send' })}
+                  fixedFeedback
                   addonAppend={({ invalid }) => (
                     <InputGroupAddon addonType="append">
                       <Button color={invalid ? 'danger' : 'dark'} size='sm' onClick={() => setAssetSelect('send')}>
@@ -190,6 +191,7 @@ const SwapStepOne = ({
                   validate={validateReceiveAmount}
                   label={t('app.widget.youReceive', 'You receive')}
                   onChange={onChangeReceiveAmount}
+                  fixedFeedback
                   inputClass={classNames({ 'font-italic': estimatedField === 'receive' })}
                   addonAppend={({ invalid }) => (
                     <InputGroupAddon addonType="append">
@@ -226,12 +228,14 @@ const SwapStepOne = ({
                   onChange={onChangeRefundAddress}
                   requiredLabel={sendSymbol === 'XMR'}
                   disableNoBalance
+                  fixedFeedback
                 />
                 {Object.keys(extraAssetFields).indexOf(sendSymbol) >= 0 && (
                   <StepOneField
                     name='extraRefundDepositField'
                     type='number'
                     step='any'
+                    fixedFeedback
                     placeholder={`${sendSymbol} Refund ${capitalizeFirstLetter(extraAssetFields[sendSymbol].deposit)}`}
                     validate={validateDepositTag}
                     label={`${sendSymbol} Refund ${capitalizeFirstLetter(extraAssetFields[sendSymbol].deposit)}`}
@@ -242,6 +246,7 @@ const SwapStepOne = ({
               <Col xs={{ size: 12, order: 6 }} lg>
                 <WalletSelectField 
                   tag={StepOneField}
+                  fixedFeedback
                   addressFieldName='receiveAddress'
                   walletIdFieldName='receiveWalletId'
                   placeholder={`${receiveSymbol} ${t('app.widget.receiveAddressPlaceholder', 'receive address')}`}
@@ -266,6 +271,7 @@ const SwapStepOne = ({
                     name='extraWithdrawalField'
                     type='number'
                     step='any'
+                    fixedFeedback
                     placeholder={`${receiveSymbol} ${capitalizeFirstLetter(extraAssetFields[receiveSymbol].deposit)}`}
                     validate={validateDepositTag}
                     label={`${receiveSymbol} ${capitalizeFirstLetter(extraAssetFields[receiveSymbol].deposit)}`}
@@ -273,7 +279,7 @@ const SwapStepOne = ({
                 )}
               </Col>
             </Row>
-            <div className='mt-0 mb-2'>
+            <div className='mt-0 mb-4'>
               <Checkbox
                 label={
                   <T tag='small' i18nKey='app.widget.acceptTerms' className='pl-1 text-white'>I accept the 

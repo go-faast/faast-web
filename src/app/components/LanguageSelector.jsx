@@ -51,7 +51,7 @@ export default compose(
   }),
   withToggle('dropdownOpen'),
 )(({ theme, showCode, handleSelect, currentLanguage = {}, isDropdownOpen, toggleDropdownOpen, }) => (
-  <Dropdown nav isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
+  <Dropdown style={{ listStyleType: 'none' }} nav isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
     <DropdownToggle 
       tag={NavLink} 
       to={'/assets'}

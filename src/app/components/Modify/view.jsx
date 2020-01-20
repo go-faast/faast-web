@@ -81,9 +81,9 @@ const ModifyView = (props) => {
 
                   const changeIconDirection = priceDecrease ? 'down' : 'up'
                   const changeColor = priceDecrease ? 'danger' : 'success'
-                  const fiatPrice = display.fiat(price)
+                  const fiatPrice = <Units value={display.fiat(price)} precision={6} currency prefixSymbol symbolSpaced={false} />
                   const percentChange24 = display.percentage(change24, true)
-                  const originalFiat = display.fiat(fiat.original)
+                  const originalFiat = <Units value={display.fiat(fiat.original)} precision={6} currency prefixSymbol symbolSpaced={false} />
                   const originalWeight = display.percentage(a.weight.original)
                   const originalUnits = (<Units value={units.original} symbol={symbol} precision={6} />)
                   const adjustedFiat = accounting.toFixed(fiat.adjusted, 2)
@@ -245,10 +245,13 @@ const ModifyView = (props) => {
         <Row className='px-3_4r gutter-2 gutter-md-3 align-items-center'>
           <Col xs='auto' className='expand-only'>
             <div className='m-0 h5 font-weight-normal'>{portfolio.label}</div>
-            <div className='text-muted'>{display.fiat(portfolio.totalFiat)}</div>
+            <div className='text-muted'>
+              <Units value={display.fiat(portfolio.totalFiat)} precision={6} currency prefixSymbol symbolSpaced={false} />
+            </div>
           </Col>
           <Col xs='auto' className='text-left text-md-right mr-auto mr-md-0 ml-md-auto'>
-            <h4 className='m-0 text-primary font-weight-bold'>{display.fiat(props.allowance.fiat)} <small className='text-muted'>{display.percentage(props.allowance.weight)}</small></h4>
+            <h4 className='m-0 text-primary font-weight-bold'>
+              <Units value={display.fiat(props.allowance.fiat)} precision={6} currency prefixSymbol symbolSpaced={false} /> <small className='text-muted'>{display.percentage(props.allowance.weight)}</small></h4>
             <T tag='small' i18nKey='app.rebalance.availableBalance' className='text-muted'>available balance</T>
           </Col>
           <Col xs='auto' className='text-right'>

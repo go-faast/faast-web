@@ -1,19 +1,20 @@
 import { newScopedCreateAction } from 'Utilities/action'
+import { localStorageSetJson } from 'Utilities/storage'
 import { getRate, isRateStale, isRateLoading } from 'Selectors/currency'
 import log from 'Log'
 import Faast from 'Services/Faast'
 
 const createAction = newScopedCreateAction(__filename)
 
-export const rateLoading = createAction('CURRENCY_LOADING', (symbol) => ({ symbol }))
-export const rateUpdated = createAction('CURRENCY_UPDATED', (symbol, data) => ({ symbol, ...data }))
-export const rateError = createAction('CURRENCY_ERROR', (symbol, error) => ({ symbol, error }))
+export const rateLoading = createAction('CURRENCY_LOADING', (label) => ({ label }))
+export const rateUpdated = createAction('CURRENCY_UPDATED', (label, data) => ({ label, ...data }))
+export const rateError = createAction('CURRENCY_ERROR', (label, error) => ({ label, error }))
 export const updateSymbol = createAction('UPDATE_CURRENCY_SYMBOL')
 
-export const setCurrencySymbol = (symbol) => (dispatch) => Promise.resolve()
+export const setCurrencySymbol = (currency) => (dispatch) => Promise.resolve()
   .then(() => {
-    dispatch(updateSymbol(symbol))
-    localStorage.setItem('currency_symbol', symbol)
+    dispatch(updateSymbol(currency))
+    localStorageSetJson('currency_symbol', currency)
   })
 
 export const retrieveCurrencyRate = (symbol) => (dispatch, getState) => Promise.resolve()

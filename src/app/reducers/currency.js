@@ -8,27 +8,32 @@ import {
 import { createUpserter, createUpdater } from 'Utilities/helpers'
 
 export const initialState = {
-  selectedSymbol: 'USD',
+  selectedLabel: 'USD',
+  selectedSymbol: '$',
   data: {}
 }
 
 export const rateInitialState = {
-  symbol: '',
+  label: '',
   rate: null,
   error: '',
   lastUpdated: undefined,
   loading: false
 }
 
-const upsert = createUpserter('symbol', rateInitialState)
-const update = createUpdater('symbol')
+const upsert = createUpserter('label', rateInitialState)
+const update = createUpdater('label')
 
 export const reducerFunctions = {
-  [updateSymbol]: (state, symbol) => ({ ...state, symbol }),
-  [rateLoading]: (state, { symbol }) => ({
+  [updateSymbol]: (state, { label, symbol }) => ({ 
+    ...state,
+    selectedLabel: label,
+    selectedSymbol: symbol,
+  }),
+  [rateLoading]: (state, { label }) => ({
     ...state,
     data: upsert(state.data, {
-      symbol,
+      label,
       loading: true,
       lastUpdated: Date.now(),
       error: ''
@@ -43,9 +48,9 @@ export const reducerFunctions = {
       error: ''
     })
   }),
-  [rateError]: (state, { symbol, error }) => ({
+  [rateError]: (state, { label, error }) => ({
     ...state,
-    data: update(state.data, { symbol, error })
+    data: update(state.data, { label, error })
   }),
 }
 
