@@ -2,16 +2,17 @@ import { createSelector } from 'reselect'
 import { toBigNumber } from 'Utilities/convert'
 import { mapValues } from 'Utilities/helpers'
 import { createItemSelector, selectItemId, fieldSelector } from 'Utilities/selector'
+import { getSelectedCurrency } from 'Selectors/currency'
 
 import Config from 'Config'
 
 export const getAssetState = ({ asset }) => asset
 
-export const getAllAssets = createSelector(getAssetState, ({ data }) => mapValues(data, (asset) => {
+export const getAllAssets = createSelector(getAssetState, getSelectedCurrency, ({ data }, currency) => mapValues(data, (asset) => {
   let { price, change1, change24, change7d, volume24h, marketCap, 
     availableSupply, lastUpdatedPrice, symbol, ERC20, validate } = asset
   const bip21Prefix = !ERC20 ? Config.bip21Prefixes[symbol] : Config.bip21Prefixes[validate]
-  price = toBigNumber(price)
+  price = toBigNumber(price).times(currency && currency.rate || 1)
   change24 = toBigNumber(change24)
   change1 = toBigNumber(change1)
   change7d = toBigNumber(change7d)

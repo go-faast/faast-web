@@ -2,6 +2,8 @@ import { newScopedCreateAction } from 'Utilities/action'
 import log from 'Utilities/log'
 import Faast from 'Services/Faast'
 import { isAssetPriceLoading, areAssetsLoading, areAssetPricesLoading } from 'Common/selectors/asset'
+import { retrieveCurrencyRate } from 'Actions/currency'
+import { getSelectedLabel } from 'Selectors/currency'
 
 const createAction = newScopedCreateAction(__filename)
 
@@ -24,6 +26,8 @@ export const restoreAssets = (assetState) => (dispatch) => {
 }
 
 export const retrieveAssets = () => (dispatch, getState) => {
+  const currencySymbol = getSelectedLabel(getState())
+  dispatch(retrieveCurrencyRate(currencySymbol))
   if (areAssetsLoading(getState())) {
     return
   }

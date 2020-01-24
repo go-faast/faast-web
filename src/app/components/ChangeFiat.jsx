@@ -13,6 +13,7 @@ const ChangeFiat = ({ className, children: change }) => (
     value={change}
     symbolSpaced={false}
     symbol='$'
+    currency
     prefixSymbol
     expand={false}
   >

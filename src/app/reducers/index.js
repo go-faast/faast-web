@@ -17,6 +17,7 @@ import walletPasswordPrompt from './walletPasswordPrompt'
 import connectHardwareWallet from './connectHardwareWallet'
 import tx from './tx'
 import rate from './rate'
+import currency from './currency'
 import i18n from './i18n'
 
 export default combineReducers({
@@ -34,6 +35,7 @@ export default combineReducers({
   orderModal,
   settings,
   priceChart,
+  currency,
   walletPasswordPrompt,
   connectHardwareWallet,
   form: formReducer,
