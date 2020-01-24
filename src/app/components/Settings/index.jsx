@@ -43,6 +43,10 @@ export default compose(
                     Currency
                     <CurrencySelector onSelect={handleSelectLanguage} />
                   </Col>
+                  <Col className='mb-3' sm='12'>
+                    Remember my connected wallets
+                    <div>True</div> 
+                  </Col>
                 </Row>
               </CardBody>
             </Card>

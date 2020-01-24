@@ -13,6 +13,7 @@ import { getWalletWithHoldings, } from 'Selectors'
 import { getConnectedWalletsPendingSwaps } from 'Selectors/swap'
 import { areCurrentPortfolioBalancesUpdating } from 'Selectors/portfolio'
 import { updateAllHoldings } from 'Actions/portfolio'
+import { removeAllWallets } from 'Actions/wallet'
 
 import withToggle from 'Hoc/withToggle'
 
@@ -29,7 +30,7 @@ import T from 'Components/i18n/T'
 import { statLabel } from './style'
 import Expandable from '../Expandable'
 
-const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen, 
+const Balances = ({ wallet, handleRemove, removeAllWallets, isDropdownOpen, toggleDropdownOpen, 
   handleAdd, isAlreadyInPortfolio, showStats, pendingSwaps, updateAllHoldings, areBalancesUpdating }) => {
   const {
     address, assetHoldings, holdingsLoaded, holdingsError, label, totalFiat, 
@@ -77,9 +78,13 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
             <i className="fa fa-ellipsis-v" aria-hidden="true"></i>
           </DropdownToggle>
           <DropdownMenu className='p-0' right>
-            {isAlreadyInPortfolio ? (
+            {isAlreadyInPortfolio && id !== 'default' ? (
               <DropdownItem className='py-2' onClick={handleRemove}>
                 <T tag='span' i18nKey='app.dashboard.removeWallet'>Remove Wallet</T>
+              </DropdownItem>
+            ) : id === 'default' ? (
+              <DropdownItem className='py-2' onClick={removeAllWallets}>
+                <span>Remove all wallets</span>
               </DropdownItem>
             ) : (
               <DropdownItem className='py-2' onClick={handleAdd}>
@@ -130,9 +135,7 @@ const Balances = ({ wallet, handleRemove, isDropdownOpen, toggleDropdownOpen,
                   )} 
                   expanded={areBalancesUpdating ? 'Refreshing holdings' : 'Refresh holdings'}
                 />
-                {id !== 'default' ?
-                  searchAndShare
-                  : null}
+                {searchAndShare}
               </Row>
             </Col>
           )}
@@ -205,7 +208,8 @@ const mapStateToProps = connect(createStructuredSelector({
   pendingSwaps: getConnectedWalletsPendingSwaps,
   areBalancesUpdating: areCurrentPortfolioBalancesUpdating
 }), {
-  updateAllHoldings: updateAllHoldings
+  updateAllHoldings: updateAllHoldings,
+  removeAllWallets,
 })
 
 

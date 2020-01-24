@@ -7,7 +7,7 @@ export * from './lib'
 import queryString from 'query-string'
 import log from 'Utilities/log'
 import blockstack from 'Utilities/blockstack'
-import { sessionStorageGet, sessionStorageSet, sessionStorageRemove, sessionStorageForEach } from 'Utilities/storage'
+import { sessionStorageGet, sessionStorageSet, sessionStorageRemove, sessionStorageForEach, localStorageSet } from 'Utilities/storage'
 import { Wallet, WalletSerializer, MultiWallet } from './lib'
 import { AssetProvider } from './lib/types'
 
@@ -124,7 +124,7 @@ export class WalletService {
     if (wallet && wallet.isPersistAllowed()) {
       const id = wallet.getId()
       const storageKey = getStorageKey(wallet)
-      sessionStorageSet(storageKey, WalletSerializer.stringify(wallet))
+      localStorageSet(storageKey, WalletSerializer.stringify(wallet))
       log.debug('wallet saved to session', id)
     }
     return wallet
