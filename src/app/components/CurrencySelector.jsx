@@ -51,8 +51,9 @@ export default compose(
     <DropdownToggle 
       tag={NavLink} 
       to={'/assets'}
+      style={{ border: '1px solid rgba(255,255,255,.05)', borderRadius: 2 }}
       onClick={((e) => e.preventDefault())}
-      className={'cursor-pointer mr-4'}
+      className={'cursor-pointer mr-4 px-3 py-2 mt-2 d-inline-block text-light'}
       caret
     >
       {showCode && <span>{`${currentCurrency.label} (${currentCurrency.symbol})`}</span>}

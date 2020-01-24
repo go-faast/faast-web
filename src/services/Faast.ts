@@ -39,14 +39,12 @@ export const postFeedback = (type: string, answer: string, email: string,
 }
 
 export const getFastGasPrice = (): Promise<number> => {
-// tslint:disable-next-line:max-line-length
 return fetchGet('https://ethgasstation.info/json/ethgasAPI.json')
   .then((r) => r ? r.fast : undefined)
   .catch((e) => e)
 }
 
 export const getInternationalRate = (symbol: string): Promise<number> => {
-  // tslint:disable-next-line:max-line-length
   return fetchGet(`https://api.bitaccess.co/v1/currency?from=USD&to=${symbol}&q=1`)
     .then((r) => r ? r.rate : toBigNumber(1))
     .catch((e) => e)

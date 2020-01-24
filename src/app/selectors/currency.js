@@ -4,9 +4,9 @@ import { mapValues } from 'Utilities/helpers'
 
 export const getRateState = ({ currency }) => currency
 
-export const getAllRates = createSelector(getRateState, ({ data }) => mapValues(data, (rate) => rate))
-export const getSelectedLabel = createSelector(getRateState, (rates) => rates.selectedLabel)
-export const getSelectedSymbol = createSelector(getRateState, (rates) => rates.selectedSymbol)
+export const getAllRates = createSelector(getRateState, (rates) => mapValues(rates ? rates.data : {}, (rate) => rate))
+export const getSelectedLabel = createSelector(getRateState, (rates) => rates && rates.selectedLabel)
+export const getSelectedSymbol = createSelector(getRateState, (rates) => rates && rates.selectedSymbol)
 export const getRate = createItemSelector(
   getAllRates,
   selectItemId,

@@ -37,11 +37,11 @@ export default compose(
                 <Row>
                   <Col className='mb-3' sm='12'>
                     Language
-                    <LanguageSelector onSelect={handleSelectLanguage} />
+                    <LanguageSelector onSelect={handleSelectLanguage} border />
                   </Col>
                   <Col className='mb-3' sm='12'>
                     Currency
-                    <CurrencySelector />
+                    <CurrencySelector onSelect={handleSelectLanguage} />
                   </Col>
                 </Row>
               </CardBody>

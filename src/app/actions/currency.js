@@ -13,13 +13,14 @@ export const updateSymbol = createAction('UPDATE_CURRENCY_SYMBOL')
 
 export const setCurrencySymbol = (currency) => (dispatch) => Promise.resolve()
   .then(() => {
+    const symbol = currency && currency.label || 'USD'
     dispatch(updateSymbol(currency))
+    dispatch(retrieveCurrencyRate(symbol))
     localStorageSetJson('currency_symbol', currency)
   })
 
 export const retrieveCurrencyRate = (symbol) => (dispatch, getState) => Promise.resolve()
   .then(() => {
-    console.log('symbol', symbol)
     if (!isRateStale(getState(), symbol) || isRateLoading(getState(), symbol)) {
       return getRate(getState(), symbol)
     }

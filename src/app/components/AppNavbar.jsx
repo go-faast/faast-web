@@ -102,12 +102,13 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded,
               <T tag='span' i18nKey='app.nav.addWallet' className='nav-link-label d-sm-inline'>Add wallet</T>
             </NavLink>
           </NavItem>
-          <NavItem key='settings'>
-            <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/settings'>
-              <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-gear'/>
-              {/* <T tag='span' i18nKey='app.nav.addWallet' className='nav-link-label d-sm-inline'></T> */}
-            </NavLink>
-          </NavItem>
+          {!disablePortfolioLinks && (
+            <NavItem key='settings'>
+              <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/settings'>
+                <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-gear'/>
+              </NavLink>
+            </NavItem>
+          )}
         </Nav>
       </Collapse>
     </Container>
