@@ -85,7 +85,7 @@ export default class RippleWalletTrezor extends RippleWallet {
       txOptions,
     )
     console.log('signedTx', signedTx)
-    // txOptions.SigningPubKey = this.publicKey.toUpperCase()
+    txOptions.SigningPubKey = this.publicKey.toUpperCase()
     txOptions.TxnSignature = signedTx.signature.toUpperCase()
     return {
       signedTxData: {
