@@ -24,7 +24,6 @@ import Units from 'Components/Units'
 import T from 'Components/i18n/T'
 
 import chart from 'Img/chart.svg?inline'
-import display from 'Utilities/display'
 import withToggle from 'Hoc/withToggle'
 
 import { sidebarLabel } from './style'
