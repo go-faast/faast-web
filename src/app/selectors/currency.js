@@ -7,6 +7,7 @@ export const getRateState = ({ currency }) => currency
 export const getAllRates = createSelector(getRateState, (rates) => mapValues(rates ? rates.data : {}, (rate) => rate))
 export const getSelectedLabel = createSelector(getRateState, (rates) => rates && rates.selectedLabel)
 export const getSelectedSymbol = createSelector(getRateState, (rates) => rates && rates.selectedSymbol)
+export const getPreviousCurrency = createSelector(getRateState, (rates) => rates && rates.previousCurrency)
 export const getRate = createItemSelector(
   getAllRates,
   selectItemId,
