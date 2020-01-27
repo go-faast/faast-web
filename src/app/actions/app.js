@@ -26,10 +26,12 @@ export const appError = createAction('ERROR')
 export const updateConnectForwardUrl = createAction('UPDATE_CONNECT_FORWARD_URL')
 export const resetAll = createAction('RESET_ALL')
 export const updateAssetsFilterByTradeable = createAction('UPDATE_ASSETS_TRADEABLE_FILTER')
+export const updateRememberWallets = createAction('UPDATE_REMEMBER_WALLES')
 export const updateSwapWidgetInputs = createAction('UPDATE_SWAP_WIDGET_INPUTS', (inputs) => (inputs))
 
 export const restoreState = (dispatch) => Promise.resolve()
   .then(() => {
+    dispatch(restoreRememberWallets())
     dispatch(toggleAssetsByTradeable())
     dispatch(restoreCachedAffiliateInfo())
     dispatch(languageLoad())
@@ -62,6 +64,17 @@ export const restoreState = (dispatch) => Promise.resolve()
     log.error(e)
     throw new Error('Error loading app: ' + e.message)
   })
+
+export const restoreRememberWallets = () => (dispatch) => {
+  let rememberWallets = localStorageGet('remember_wallets') || 'local'
+  localStorageSet('remember_wallets', rememberWallets)
+  dispatch(updateRememberWallets(rememberWallets))
+}
+
+export const handleRememberWallets = (type) => (dispatch) => {
+  localStorageSet('remember_wallets', type)
+  dispatch(updateRememberWallets(type))
+}
 
 export const currencyLoad = () => (dispatch) => {
   let currency = localStorageGetJson('currency_symbol') || currencies[0]

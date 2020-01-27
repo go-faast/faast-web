@@ -6,21 +6,36 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import Sidebar from 'Components/Sidebar'
 import Layout from 'Components/Layout'
+import { handleRememberWallets } from 'Actions/app'
 import LanguageSelector from 'Components/LanguageSelector'
 import CurrencySelector from 'Components/CurrencySelector'
+
+import { shouldRememberWallets } from 'Selectors/app'
+import style from './style.scss'
+import classNames from 'classNames'
 
 export default compose(
   setDisplayName('Settings'),
   connect(createStructuredSelector({
+    shouldRememberWallets
   }), {
-    push: pushAction
+    push: pushAction,
+    handleRememberWallets
   }),
   withHandlers({
     handleSelectLanguage: ({ push, location }) => () => {
       push(location.pathname)
+    },
+    handleRememberWalletSetting: ({ handleRememberWallets, shouldRememberWallets }) => () => {
+      if (shouldRememberWallets === 'local') {
+        shouldRememberWallets = 'session'
+      } else {
+        shouldRememberWallets = 'local'
+      }
+      handleRememberWallets(shouldRememberWallets)
     }
   }),
-)(({ handleSelectLanguage }) => (
+)(({ handleSelectLanguage, shouldRememberWallets, handleRememberWalletSetting }) => (
   <Layout className='pt-3'>
     <Row className='gutter-3'>
       <Col xs='12' md='5' lg='4' xl='3'>
@@ -45,7 +60,12 @@ export default compose(
                   </Col>
                   <Col className='mb-3' sm='12'>
                     Remember my connected wallets
-                    <div>True</div> 
+                    <div className='mt-2'>
+                      <label className={style.switcher}>
+                        <input type='checkbox' onClick={handleRememberWalletSetting} checked={shouldRememberWallets === 'local'} />
+                        <span className={classNames(style.slider, style.round)}></span>
+                      </label>
+                    </div>
                   </Col>
                 </Row>
               </CardBody>

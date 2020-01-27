@@ -7,7 +7,9 @@ export * from './lib'
 import queryString from 'query-string'
 import log from 'Utilities/log'
 import blockstack from 'Utilities/blockstack'
-import { sessionStorageGet, sessionStorageSet, sessionStorageRemove, sessionStorageForEach, localStorageSet } from 'Utilities/storage'
+import { sessionStorageGet, sessionStorageSet, sessionStorageRemove,
+  sessionStorageForEach, localStorageSet, localStorageGet, localStorageRemove,
+  localStorageForEach } from 'Utilities/storage'
 import { Wallet, WalletSerializer, MultiWallet } from './lib'
 import { AssetProvider } from './lib/types'
 
@@ -32,7 +34,12 @@ export class WalletService {
   getStoredWalletKeys = () => {
     const walletKeys: string[] = []
     const multiWalletKeys: string[] = []
-    sessionStorageForEach((key: string) => {
+    const type = localStorageGet('remember_wallets')
+    const storageForEach = type === 'session' ? sessionStorageForEach : localStorageForEach
+    const storageGet = type === 'session' ? sessionStorageGet : localStorageGet
+    const storageRemove = type === 'session' ? sessionStorageRemove : localStorageRemove
+    const storageSet = type === 'session' ? sessionStorageSet : localStorageSet
+    storageForEach((key: string) => {
       if (key.startsWith(walletStorageKeyPrefix)) {
         walletKeys.push(key)
       } else if (key.startsWith(multiWalletStorageKeyPrefix)) {
@@ -42,9 +49,9 @@ export class WalletService {
     // Migrate deprecated multiwallet keys
     multiWalletKeys.forEach((key) => {
       const newKey = key.replace(multiWalletStorageKeyPrefix, walletStorageKeyPrefix)
-      const data = sessionStorageGet(key)
-      sessionStorageRemove(key)
-      sessionStorageSet(newKey, data)
+      const data = storageGet(key)
+      storageRemove(key)
+      storageSet(newKey, data)
       walletKeys.push(newKey)
     })
     return walletKeys
@@ -101,13 +108,16 @@ export class WalletService {
 
   /** Removes all Wallets and clears any stored in the session */
   removeAll = () => {
+    const type = localStorageGet('remember_wallets')
+    const remove = type === 'session' ? sessionStorageRemove : localStorageRemove
     Object.keys(this.activeWallets).map((w) => this.remove(w))
-    this.getStoredWalletKeys().forEach(sessionStorageRemove)
+    this.getStoredWalletKeys().forEach(remove)
   }
 
   /** Load the wallet from session at the provided storage key */
   loadFromStorage = (storageKey: string) => {
-    const walletString = sessionStorageGet(storageKey)
+    const type = localStorageGet('remember_wallets')
+    const walletString = type === 'session' ? sessionStorageGet(storageKey) : localStorageGet(storageKey)
     if (walletString) {
       const wallet = WalletSerializer.parse(walletString)
       if (wallet) {
@@ -121,34 +131,52 @@ export class WalletService {
 
   /** Save the provided wallet to session storage */
   saveToStorage = (wallet: Wallet | null) => {
+    const type = localStorageGet('remember_wallets')
     if (wallet && wallet.isPersistAllowed()) {
       const id = wallet.getId()
       const storageKey = getStorageKey(wallet)
-      localStorageSet(storageKey, WalletSerializer.stringify(wallet))
+      if (type === 'session') {
+        sessionStorageSet(storageKey, WalletSerializer.stringify(wallet))
+      } else {
+        localStorageSet(storageKey, WalletSerializer.stringify(wallet))
+      }
       log.debug('wallet saved to session', id)
     }
     return wallet
   }
 
   deleteFromStorage = (wallet: Wallet | null) => {
+    const type = localStorageGet('remember_wallets')
     if (wallet) {
       const id = wallet.getId()
       const key = getStorageKey(wallet)
-      if (sessionStorageGet(key)) {
-        sessionStorageRemove(key)
-        log.debug('wallet deleted from session', id)
+      if (type === 'session') {
+        if (sessionStorageGet(key)) {
+          sessionStorageRemove(key)
+          log.debug('wallet deleted from session', id)
+        } else {
+          if (localStorageGet(key)) {
+            localStorageRemove(key)
+            log.debug('wallet deleted from localstorage', id)
+          }
+        }
       }
     }
     return wallet
   }
 
   /** Restore all wallets stored in session */
-  restoreSessionStorage = () => this.getStoredWalletKeys().map((key) => {
+  restoreStorage = () => this.getStoredWalletKeys().map((key) => {
+    const type = localStorageGet('remember_wallets')
     const wallet = this.loadFromStorage(key)
     if (wallet) {
       const newStorageKey = getStorageKey(wallet)
       if (key !== newStorageKey) {
-        sessionStorageRemove(key)
+        if (type === 'session') {
+          sessionStorageRemove(key)
+        } else {
+          localStorageRemove(key)
+        }
         this.saveToStorage(wallet)
         log.debug(`migrated wallet from session key ${key} to ${newStorageKey}`)
       }
@@ -214,7 +242,7 @@ export class WalletService {
   update = this.add
 
   restoreAll = () => {
-    this.restoreSessionStorage()
+    this.restoreStorage()
     this.restoreLegacy()
     this.restoreQueryString()
     this.restoreBlockstack()
