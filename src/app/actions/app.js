@@ -5,6 +5,7 @@ import blockstack from 'Utilities/blockstack'
 import { filterUrl } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import { restoreCachedAffiliateInfo } from 'Actions/affiliate'
+import walletService from 'Services/Wallet'
 
 import { retrieveAssets, restoreAssets } from './asset'
 import { setSettings } from './settings'
@@ -73,6 +74,7 @@ export const restoreRememberWallets = () => (dispatch) => {
 
 export const handleRememberWallets = (type) => (dispatch) => {
   localStorageSet('remember_wallets', type)
+  walletService.switchBetweenStorage(type)
   dispatch(updateRememberWallets(type))
 }
 

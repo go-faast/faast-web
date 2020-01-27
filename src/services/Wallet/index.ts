@@ -31,10 +31,10 @@ export class WalletService {
     Object.values(this.activeWallets).forEach((wallet) => wallet.setAssetProvider(assetProvider))
   }
 
-  getStoredWalletKeys = () => {
+  getStoredWalletKeys = (customType?: string) => {
     const walletKeys: string[] = []
     const multiWalletKeys: string[] = []
-    const type = localStorageGet('remember_wallets')
+    const type = customType || localStorageGet('remember_wallets')
     const storageForEach = type === 'session' ? sessionStorageForEach : localStorageForEach
     const storageGet = type === 'session' ? sessionStorageGet : localStorageGet
     const storageRemove = type === 'session' ? sessionStorageRemove : localStorageRemove
@@ -115,8 +115,8 @@ export class WalletService {
   }
 
   /** Load the wallet from session at the provided storage key */
-  loadFromStorage = (storageKey: string) => {
-    const type = localStorageGet('remember_wallets')
+  loadFromStorage = (storageKey: string, customType?: string) => {
+    const type = customType || localStorageGet('remember_wallets')
     const walletString = type === 'session' ? sessionStorageGet(storageKey) : localStorageGet(storageKey)
     if (walletString) {
       const wallet = WalletSerializer.parse(walletString)
@@ -126,6 +126,22 @@ export class WalletService {
         log.debug('failed to load wallet from session key', storageKey)
       }
       return wallet
+    }
+  }
+
+  switchBetweenStorage = (type: string) => {
+    if (type === 'session') {
+      this.getStoredWalletKeys('local').forEach((key) => {
+        const wallet = this.loadFromStorage(key, 'local')
+        this.saveToStorage(wallet)
+        this.deleteFromStorage(wallet, 'local')
+      })
+    } else {
+      this.getStoredWalletKeys('session').forEach((key) => {
+        const wallet = this.loadFromStorage(key, 'session')
+        this.saveToStorage(wallet)
+        this.deleteFromStorage(wallet, 'session')
+      })
     }
   }
 
@@ -145,8 +161,8 @@ export class WalletService {
     return wallet
   }
 
-  deleteFromStorage = (wallet: Wallet | null) => {
-    const type = localStorageGet('remember_wallets')
+  deleteFromStorage = (wallet: Wallet | null, customType?: string) => {
+    const type = customType || localStorageGet('remember_wallets')
     if (wallet) {
       const id = wallet.getId()
       const key = getStorageKey(wallet)
