@@ -15,7 +15,7 @@ const RenderInput = (props) => {
     addonPrepend, addonAppend, row, className, inputClass,
     labelProps, labelClass, labelCol, inputCol, autoFocus,
     renderInput, helpText, style, requiredLabel, children, inputGroupClass,
-    inputGroupStyle, formGroupColDisplay = 'block'
+    inputGroupStyle, formGroupColDisplay = 'block', fixedFeedback = false,
   } = props
   let { inputProps, input: reduxFormInput } = props
   const check = ['checkbox', 'radio'].includes(type)
@@ -42,7 +42,7 @@ const RenderInput = (props) => {
 
   const feedbackElement = (
     type !== 'hidden' && (
-      <div style={{ height: 30 }}>
+      <div style={{ height: fixedFeedback ? 30 : 'auto' }}>
         {touched && error && (<FormFeedback className='d-block'>{error}</FormFeedback>)}
         {touched && warning && (<FormFeedback className='d-block text-warning'>{warning}</FormFeedback>)}
         {(!error || !touched) && helpText}

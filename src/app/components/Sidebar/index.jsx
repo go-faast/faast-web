@@ -78,7 +78,9 @@ const Sidebar = ({
             </DropdownMenu>
           </Dropdown>
           <div style={{ zIndex: 99 }} className='position-relative'>
-            <h2 className='m-0 mt-2 font-weight-bold'>{display.fiat(totalFiat)}</h2>
+            <h2 className='m-0 mt-2 font-weight-bold'>
+              <Units value={totalFiat} precision={6} currency symbolSpaced={false} prefixSymbol />
+            </h2>
             <ChangeFiat>{totalFiat.minus(portfolioBasedOnTimeFrame)}</ChangeFiat>
             <small> <ChangePercent parentheses>{portfolioPercentChange}</ChangePercent></small>
             <div>
@@ -132,7 +134,7 @@ const Sidebar = ({
                       </Media>
                       <Media body>
                         <Media className='m-0' heading>
-                          <Units className='font-xxs' symbol={'$'} value={price} symbolSpaced={false} expand={false} prefixSymbol></Units>
+                          <Units className='font-xxs' value={price} symbolSpaced={false} expand={false} prefixSymbol currency></Units>
                         </Media>
                         <Media style={{ top: '-2px' }} className='position-relative'>
                           <span className='font-xs mr-1'><ChangeFiat>{price.minus(priceChangeBasedOnTime)}</ChangeFiat></span>
@@ -214,7 +216,7 @@ const Sidebar = ({
                     <Media body>
                       <Media style={{ top: '1px' }} className='m-0 position-relative' heading>
                         <small>
-                          <Units className='font-xs' symbol={'$'} value={price} expand={false} symbolSpaced={false} prefixSymbol></Units>
+                          <Units className='font-xs' value={price} expand={false} symbolSpaced={false} prefixSymbol currency></Units>
                         </small>
                       </Media>
                       <Media style={{ top: '-2px' }} className='position-relative'>
@@ -254,7 +256,7 @@ const Sidebar = ({
                       <Media body>
                         <Media style={{ top: '1px' }} className='m-0 position-relative' heading>
                           <small>
-                            <Units className='font-xs' symbol={'$'} value={price} expand={false} symbolSpaced={false} prefixSymbol></Units>
+                            <Units className='font-xs' value={price} expand={false} symbolSpaced={false} prefixSymbol currency></Units>
                           </small>
                         </Media>
                         <Media style={{ top: '-2px' }} className='position-relative'>

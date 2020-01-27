@@ -26,11 +26,13 @@ export default compose(
   setPropTypes({
     onSelect: PropTypes.func,
     showCode: PropTypes.bool,
-    theme: PropTypes.string
+    theme: PropTypes.string,
+    border: PropTypes.bool
   }),
   defaultProps({
     onSelect: () => {},
-    showCode: true
+    showCode: true,
+    border: false
   }),
   connect(createStructuredSelector({
     currentLanguage: getAppLanguage
@@ -50,13 +52,14 @@ export default compose(
     }
   }),
   withToggle('dropdownOpen'),
-)(({ theme, showCode, handleSelect, currentLanguage = {}, isDropdownOpen, toggleDropdownOpen, }) => (
-  <Dropdown nav isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
+)(({ theme, showCode, handleSelect, currentLanguage = {}, isDropdownOpen, toggleDropdownOpen, border }) => (
+  <Dropdown style={{ listStyleType: 'none' }} nav isOpen={isDropdownOpen} size="sm" toggle={toggleDropdownOpen}>
     <DropdownToggle 
       tag={NavLink} 
       to={'/assets'}
+      style={{ border: border && '1px solid rgba(255,255,255,.05)', borderRadius: 2 }}
       onClick={((e) => e.preventDefault())}
-      className={classNames((theme == 'light' ? darkestText : 'text-light'), 'cursor-pointer mr-4')}
+      className={classNames((theme == 'light' ? `${darkestText}` : 'text-light'), border && 'px-3 py-2 mt-2 d-inline-block', 'cursor-pointer mr-4')}
       caret
       nav
     >

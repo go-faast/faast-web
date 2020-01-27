@@ -1,5 +1,7 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { createStructuredSelector } from 'reselect'
 import BigNumber from 'bignumber.js'
 import { omit } from 'lodash'
 
@@ -7,15 +9,17 @@ import { toBigNumber, abbreviateNumber } from 'Utilities/convert'
 import { numberish } from 'Utilities/propTypes'
 import Expandable from 'Components/Expandable'
 import CoinIcon from 'Components/CoinIcon'
+import { getSelectedSymbol } from 'Selectors/currency'
 
 class Units extends React.Component {
   render() {
-    const {
+    let {
       value: propValue, symbol, showSymbol, prefixSymbol, showIcon, iconProps,
       precision, abbreviate, maxDigits, prefix, suffix, roundingMode, roundingType, 
-      expand, symbolSpaced, includeTrailingZeros, ...props
+      expand, symbolSpaced, includeTrailingZeros, selectedSymbol, currency, ...props
     } = this.props
     let value = toBigNumber(propValue)
+    symbol = currency ? selectedSymbol : symbol
     let expanded = value.toFormat()
     let shrunk = expanded
     let abbrevSuffix
@@ -82,7 +86,8 @@ Units.propTypes = {
   ]),
   iconProps: PropTypes.object,
   symbolSpaced: PropTypes.bool,
-  expand: PropTypes.bool
+  expand: PropTypes.bool,
+  currency: PropTypes.bool
 }
 
 Units.defaultProps = {
@@ -102,6 +107,11 @@ Units.defaultProps = {
   symbolSpaced: true,
   expand: true,
   includeTrailingZeros: false,
+  currency: false,
 }
 
-export default Units
+const mapStateToProps = createStructuredSelector({
+  selectedSymbol: getSelectedSymbol,
+})
+
+export default connect(mapStateToProps)(Units)

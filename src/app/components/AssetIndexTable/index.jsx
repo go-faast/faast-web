@@ -64,7 +64,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
                   <Units
                     className='text-nowrap'
                     value={marketCap} 
-                    symbol={'$'} 
+                    currency
                     precision={6}
                     symbolSpaced={false}
                     prefixSymbol
@@ -78,7 +78,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
                   <Units
                     className='text-nowrap'
                     value={volume24} 
-                    symbol={'$'} 
+                    currency
                     precision={6} 
                     symbolSpaced={false}
                     prefixSymbol
@@ -107,7 +107,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
           <Units 
             className='my-1 d-inline-block'
             value={price} 
-            symbol={'$'} 
+            currency
             precision={6} 
             prefixSymbol
             symbolSpaced={false}
@@ -129,7 +129,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
         <Units 
           className='mt-1 d-inline-block'
           value={price} 
-          symbol={'$'} 
+          currency
           precision={6} 
           prefixSymbol
           symbolSpaced={false}
@@ -139,7 +139,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
         <Units
           className='text-nowrap'
           value={marketCap} 
-          symbol={'$'} 
+          currency
           precision={6}
           symbolSpaced={false}
           prefixSymbol
@@ -150,7 +150,7 @@ const TableRow = ({ asset: { symbol, availableSupply, name,
         <Units
           className='text-nowrap'
           value={volume24} 
-          symbol={'$'} 
+          currency
           precision={6} 
           symbolSpaced={false}
           prefixSymbol

@@ -2,7 +2,7 @@ import accounting from 'accounting'
 import { isRegExp, escapeRegExp, isString, flatten } from 'lodash'
 
 export const fiat = (value) => {
-  return accounting.formatMoney(value)
+  return accounting.formatMoney(value, { symbol: '' })
 }
 
 export const percentage = (value, showPositive, decimalPlaces = 2) => {

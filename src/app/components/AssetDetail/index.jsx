@@ -101,10 +101,10 @@ const AssetDetail = ({ symbol, asset }) => {
                 <Units 
                   className='d-inline-block font-weight-bold'
                   value={price} 
-                  symbol={'$'} 
                   precision={6} 
                   symbolSpaced={false}
                   prefixSymbol
+                  currency
                 />
                 <div className='lh-0'>
                   <small><ChangePercent>{change24}</ChangePercent></small>
@@ -123,6 +123,7 @@ const AssetDetail = ({ symbol, asset }) => {
                     className='text-nowrap'
                     value={asset[jsonKey]} 
                     symbol={fiat ? '$' : asset.symbol} 
+                    currency={fiat}
                     precision={6} 
                     prefixSymbol={fiat}
                     symbolSpaced={!fiat}
