@@ -12,7 +12,7 @@ import CurrencySelector from 'Components/CurrencySelector'
 
 import { shouldRememberWallets } from 'Selectors/app'
 import style from './style.scss'
-import classNames from 'classNames'
+import classNames from 'class-names'
 
 export default compose(
   setDisplayName('Settings'),
