@@ -5,11 +5,12 @@ import {
   initialState as commonInitialState
 } from 'Common/reducers/app'
 import { appReady, appError, updateAssetsFilterByTradeable, 
-  updateSwapWidgetInputs, updateConnectForwardUrl } from 'Actions/app'
+  updateSwapWidgetInputs, updateConnectForwardUrl, updateRememberWallets } from 'Actions/app'
 
 export default createReducer({
   ...commonReducerFunctions,
   [appReady]: (state) => ({ ...state, ready: true }),
+  [updateRememberWallets]: (state, rememberWallets) => ({ ...state, rememberWallets }),
   [updateConnectForwardUrl]: (state, connectForwardUrl) => ({ ...state, connectForwardUrl }),
   [appError]: (state, error) => ({ ...state, error: error.message || error }),
   [updateAssetsFilterByTradeable]: (state, filterTradeableAssets) => ({ ...state, filterTradeableAssets }),
@@ -23,5 +24,6 @@ export default createReducer({
   requestedAsset: undefined,
   error: '',
   filterTradeableAssets: undefined,
-  savedSwapWidgetInputs: undefined
+  savedSwapWidgetInputs: undefined,
+  rememberWallets: 'local'
 })
