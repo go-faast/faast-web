@@ -30,7 +30,7 @@ const renderResult = (asset, { handleSelect, connectedAccountIds, handleRemove, 
           className={classNames(style.assetButtonList, 'flat text-left m-0')} style={{ borderTopWidth: index > 0 ? 0 : 1, height: 49 }}>
           <Col style={{ flex: '0 0 100%' }} className='pl-2 d-flex align-items-center' xs='8'>
             <CoinIcon symbol={symbol} style={{ width: 26, height: 26 }} className={classNames('mb-0', style.assetButtonIcon)} />
-            <span className='ml-2'>{name} <small className='text-muted'>[{symbol}]</small></span>
+            <span className='ml-2'>{name} {symbol === 'ETH' && '& ERC20 tokens '}<small className='text-muted'>[{symbol}]</small></span>
             {isConnected && (
               <span style={{ top: 1 }} className='font-xs text-success ml-1 position-relative'>
                 <Expandable shrunk={<span>(<i className='fa fa-check'></i>)</span>} expanded='Successfully connected!' />
