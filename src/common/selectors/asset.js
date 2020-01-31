@@ -2,17 +2,19 @@ import { createSelector } from 'reselect'
 import { toBigNumber } from 'Utilities/convert'
 import { mapValues } from 'Utilities/helpers'
 import { createItemSelector, selectItemId, fieldSelector } from 'Utilities/selector'
-import { getSelectedCurrency } from 'Selectors/currency'
+import { getSelectedCurrency, getPreviousCurrency } from 'Selectors/currency'
 
 import Config from 'Config'
 
 export const getAssetState = ({ asset }) => asset
 
-export const getAllAssets = createSelector(getAssetState, getSelectedCurrency, ({ data }, currency) => mapValues(data, (asset) => {
+export const getAllAssets = createSelector(getAssetState, getSelectedCurrency, getPreviousCurrency, ({ data }, currency, previousCurrency) => mapValues(data, (asset) => {
   let { price, change1, change24, change7d, volume24h, marketCap, 
     availableSupply, lastUpdatedPrice, symbol, ERC20, validate } = asset
   const bip21Prefix = !ERC20 ? Config.bip21Prefixes[symbol] : Config.bip21Prefixes[validate]
-  price = toBigNumber(price).times(currency && currency.rate || 1)
+  price = toBigNumber(price).times(currency && currency.rate || previousCurrency && previousCurrency.rate || 1)
+  const volume24 = toBigNumber(volume24h).times(currency && currency.rate || previousCurrency && previousCurrency.rate || 1)
+  marketCap = toBigNumber(marketCap).times(currency && currency.rate || previousCurrency && previousCurrency.rate || 1)
   change24 = toBigNumber(change24)
   change1 = toBigNumber(change1)
   change7d = toBigNumber(change7d)
@@ -26,8 +28,8 @@ export const getAllAssets = createSelector(getAssetState, getSelectedCurrency, (
     price1hAgo: price.div(change1.plus(100).div(100)),
     price24hAgo: price.div(change24.plus(100).div(100)),
     price7dAgo: price.div(change7d.plus(100).div(100)),
-    volume24: toBigNumber(volume24h),
-    marketCap: toBigNumber(marketCap),
+    volume24,
+    marketCap,
     availableSupply: toBigNumber(availableSupply),
     lastUpdatedPrice: new Date(Number.parseInt(lastUpdatedPrice) * 1000),
   }

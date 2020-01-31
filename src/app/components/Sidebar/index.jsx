@@ -24,7 +24,6 @@ import Units from 'Components/Units'
 import T from 'Components/i18n/T'
 
 import chart from 'Img/chart.svg?inline'
-import display from 'Utilities/display'
 import withToggle from 'Hoc/withToggle'
 
 import { sidebarLabel } from './style'
@@ -79,7 +78,7 @@ const Sidebar = ({
           </Dropdown>
           <div style={{ zIndex: 99 }} className='position-relative'>
             <h2 className='m-0 mt-2 font-weight-bold'>
-              <Units value={display.fiat(totalFiat)} precision={6} currency symbolSpaced={false} prefixSymbol />
+              <Units value={totalFiat} precision={6} currency symbolSpaced={false} prefixSymbol />
             </h2>
             <ChangeFiat>{totalFiat.minus(portfolioBasedOnTimeFrame)}</ChangeFiat>
             <small> <ChangePercent parentheses>{portfolioPercentChange}</ChangePercent></small>

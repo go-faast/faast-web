@@ -3,13 +3,15 @@ import {
   rateLoading,
   rateUpdated,
   rateError,
-  updateSymbol
+  updateSymbol,
+  updatePreviousCurrency
 } from 'Actions/currency'
 import { createUpserter, createUpdater } from 'Utilities/helpers'
 
 export const initialState = {
   selectedLabel: 'USD',
   selectedSymbol: '$',
+  previousCurrency: 'USD',
   data: {}
 }
 
@@ -30,6 +32,10 @@ export const reducerFunctions = {
     selectedLabel: label,
     selectedSymbol: symbol,
   }),
+  [updatePreviousCurrency]: (state, previousCurrency) => ({ 
+    ...state,
+    previousCurrency,
+  }),
   [rateLoading]: (state, { label }) => ({
     ...state,
     data: upsert(state.data, {
@@ -39,10 +45,11 @@ export const reducerFunctions = {
       error: ''
     })
   }),
-  [rateUpdated]: (state, data) => ({
+  [rateUpdated]: (state, { label, rate }) => ({
     ...state,
     data: update(state.data, {
-      ...data,
+      label,
+      rate,
       loading: false,
       lastUpdated: Date.now(),
       error: ''
