@@ -202,11 +202,11 @@ export default compose(
             </Col>
           </Row>
           <Row className='text-center py-5 px-4 mx-0'>
-            <Col className='pb-5 px-0' xs='12'>
+            <Col className='pb-4 px-0' xs='12'>
               <h2 style={{ fontWeight: 600 }}>Faa.st Press</h2>
             </Col>
             {press.map((p, i) => (
-              <Col key={i} tag={'a'} href={p.url} xs='12' className='d-flex justify-content-center px-0 text-dark' target='_blank noreferrer'>
+              <Col key={i} tag={'a'} href={p.url} xs='12' className='d-flex justify-content-center px-0 text-dark' target='_blank noreferrer' style={{ textDecoration: 'none' }}>
                 <Row style={{ border: '1px solid #ECEFF7', borderRadius: 4, maxWidth: 700, width: '100%' }} className='py-3 px-3 mb-3'>
                   <Col className='px-0' xs='3'>
                     <img width='100' src={p.image}></img>
@@ -226,7 +226,7 @@ export default compose(
             ))}
           </Row>
           <Row className='text-center py-5 mx-0 mt-5 text-white' style={{ backgroundColor: '#374B5D' }}>
-            <Col className='mb-3' xs='12'>
+            <Col className='mb-4' xs='12'>
               <h2 style={{ fontWeight: 600 }}>How to set up</h2>
             </Col>
             <Col xs='12'>
