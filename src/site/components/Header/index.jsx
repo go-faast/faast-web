@@ -92,6 +92,9 @@ export default compose(
           <NavItem className='mr-4' key='marketmaker'>
             <NavLink tag={LangLink} className={classNames((theme == 'light' ? darkestText : 'text-light'))} to='/market-maker'>{header.marketMaker} <sup className={classNames(betaTag, 'text-primary')}><i>{header.beta} </i></sup></NavLink>
           </NavItem>
+          <NavItem className='mr-4' key='marketmaker'>
+            <NavLink tag={LangLink} className={classNames((theme == 'light' ? darkestText : 'text-light'))} to='/partners'>Partners</NavLink>
+          </NavItem>
           <NavItem className='mr-4' key='blog'>
             <NavLink tag={'a'} className={classNames((theme == 'light' ? darkestText : 'text-light'))} href='/blog'>{header.blog}</NavLink>
           </NavItem>

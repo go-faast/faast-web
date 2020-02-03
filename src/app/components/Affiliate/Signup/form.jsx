@@ -36,6 +36,11 @@ const AffiliateSignupForm = ({ handleSubmit, areSwapsLoading }) => {
         inputClass={classNames('flat', input)}
         label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Contact Email Address</p></small>}
       />
+      <small>
+        <a href='/partners' target='_blank noreferrer' style={{ color: '#8aa2b5' }} className='pb-3 d-block'>
+          Want to learn more about the Affiliate Program? Click here.
+        </a>
+      </small>
       <Button className='w-100 flat' color='primary' type='submit' disabled={areSwapsLoading}>Signup</Button>
     </Form>
   )
