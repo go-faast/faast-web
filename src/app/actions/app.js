@@ -80,7 +80,6 @@ export const handleRememberWallets = (type) => (dispatch) => {
 
 export const currencyLoad = () => (dispatch) => {
   let currency = localStorageGetJson('currency_symbol') || currencies[0]
-  console.log('cahce', currency)
   dispatch(setCurrencySymbol(currency))
 }
 

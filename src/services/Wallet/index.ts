@@ -170,11 +170,11 @@ export class WalletService {
         if (sessionStorageGet(key)) {
           sessionStorageRemove(key)
           log.debug('wallet deleted from session', id)
-        } else {
-          if (localStorageGet(key)) {
-            localStorageRemove(key)
-            log.debug('wallet deleted from localstorage', id)
-          }
+        }
+      } else {
+        if (localStorageGet(key)) {
+          localStorageRemove(key)
+          log.debug('wallet deleted from localstorage', id)
         }
       }
     }
