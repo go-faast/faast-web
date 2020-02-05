@@ -100,7 +100,6 @@ export class WalletService {
     const removedWallet = this.activeWallets[id]
     if (removedWallet) {
       delete this.activeWallets[id]
-      log.debug('removed wallet', id)
       this.deleteFromStorage(removedWallet)
     }
     return removedWallet
@@ -111,7 +110,7 @@ export class WalletService {
     const type = localStorageGet('remember_wallets')
     const remove = type === 'session' ? sessionStorageRemove : localStorageRemove
     Object.keys(this.activeWallets).map((w) => this.remove(w))
-    this.getStoredWalletKeys().forEach(remove)
+    // this.getStoredWalletKeys().forEach(remove)
   }
 
   /** Load the wallet from session at the provided storage key */

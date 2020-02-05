@@ -1,12 +1,13 @@
 import React from 'react'
 import { compose, setDisplayName, withHandlers } from 'recompose'
-import { Row, Col, Card, CardBody, CardHeader } from 'reactstrap'
+import { Row, Col, Card, CardBody, CardHeader, Button } from 'reactstrap'
 import { push as pushAction } from 'react-router-redux'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import Sidebar from 'Components/Sidebar'
 import Layout from 'Components/Layout'
 import { handleRememberWallets } from 'Actions/app'
+import { removeAllWallets } from 'Actions/wallet'
 import LanguageSelector from 'Components/LanguageSelector'
 import CurrencySelector from 'Components/CurrencySelector'
 
@@ -20,7 +21,8 @@ export default compose(
     shouldRememberWallets
   }), {
     push: pushAction,
-    handleRememberWallets
+    handleRememberWallets,
+    removeAllWallets
   }),
   withHandlers({
     handleSelectLanguage: ({ push, location }) => () => {
@@ -35,7 +37,7 @@ export default compose(
       handleRememberWallets(shouldRememberWallets)
     }
   }),
-)(({ handleSelectLanguage, shouldRememberWallets, handleRememberWalletSetting }) => (
+)(({ handleSelectLanguage, shouldRememberWallets, handleRememberWalletSetting, removeAllWallets }) => (
   <Layout className='pt-3'>
     <Row className='gutter-3'>
       <Col xs='12' md='5' lg='4' xl='3'>
@@ -66,6 +68,10 @@ export default compose(
                         <span className={classNames(style.slider, style.round)}></span>
                       </label>
                     </div>
+                  </Col>
+                  <Col>
+                    <p>Disconnect all wallets</p>
+                    <Button size='sm' color='primary' onClick={removeAllWallets}>Logout</Button>
                   </Col>
                 </Row>
               </CardBody>

@@ -5,6 +5,7 @@ import walletService, { Wallet, MultiWallet, EthereumWalletBlockstack } from 'Se
 import { getAllAssets, getWalletParents, areWalletBalancesUpdating, getWalletBalances, areWalletBalancesLoaded } from 'Selectors'
 import { getWalletIconProps } from 'Utilities/walletIcon'
 import { retry } from 'Utilities/helpers'
+import { removePortfolio } from 'Actions/portfolio'
 
 const createAction = newScopedCreateAction(__filename)
 
@@ -119,8 +120,7 @@ export const removeWallet = (id) => (dispatch) => Promise.resolve()
   })
 
 export const removeAllWallets = () => (dispatch) => Promise.resolve()
-  .then(() => walletService.removeAll())
-  .then(() => dispatch(allWalletsRemoved()))
+  .then(() => Object.keys(walletService.getAllById()).forEach((w) => dispatch(removePortfolio(w))))
 
 export const restoreAllWallets = () => (dispatch, getState) => Promise.resolve()
   .then(() => walletService.setAssetProvider(() => getAllAssets(getState())))

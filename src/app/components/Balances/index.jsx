@@ -84,7 +84,7 @@ const Balances = ({ wallet, handleRemove, removeAllWallets, isDropdownOpen, togg
               </DropdownItem>
             ) : id === 'default' ? (
               <DropdownItem className='py-2' onClick={removeAllWallets}>
-                <span>Remove all wallets</span>
+                <span>Disconnect all wallets</span>
               </DropdownItem>
             ) : (
               <DropdownItem className='py-2' onClick={handleAdd}>
