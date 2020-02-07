@@ -16,9 +16,9 @@ import IconLabel from 'Components/IconLabel'
 import WalletBalance from 'Components/WalletBalance'
 
 export const WalletLabel = ({
-  hideIcon, wallet, label, iconProps, showBalance, showLink, stacked, id, ...props,
+  hideIcon, wallet, wallet: { label: walletLabel }, label, iconProps, showBalance, showLink, stacked, id, ...props,
 }) => {
-  const labelString = label ? label : wallet.typeLabel
+  const labelString = label ? label : walletLabel
   const labelNode = id === defaultPortfolioId ? (<i>{labelString}</i>) : labelString
   const labelLink = showLink && wallet && wallet.address ? (
     <Link to={routes.viewOnlyAddress(wallet.address)}>

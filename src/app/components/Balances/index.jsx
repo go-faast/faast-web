@@ -8,7 +8,6 @@ import { Card, CardHeader, CardBody, Col, Row, Dropdown, DropdownMenu, DropdownT
 import classNames from 'class-names'
 import { connect } from 'react-redux'
 
-import display from 'Utilities/display'
 import { getWalletWithHoldings, } from 'Selectors'
 import { getConnectedWalletsPendingSwaps } from 'Selectors/swap'
 import { areCurrentPortfolioBalancesUpdating } from 'Selectors/portfolio'
@@ -26,6 +25,7 @@ import PieChart from 'Components/PieChart'
 import AssetTable from 'Components/AssetTable'
 import ShareButton from 'Components/ShareButton'
 import T from 'Components/i18n/T'
+import Units from 'Components/Units'
 
 import { statLabel } from './style'
 import Expandable from '../Expandable'
@@ -47,12 +47,30 @@ const Balances = ({ wallet, handleRemove, removeAllWallets, isDropdownOpen, togg
     },
     {
       title: 'total balance',
-      value: display.fiat(totalFiat),
+      value: (
+        <Units 
+          value={totalFiat} 
+          precision={6} 
+          symbolSpaced={false}
+          prefixSymbol
+          currency
+          className='mb-0' 
+        />
+      ),
       colClass: 'order-1 order-lg-2'
     },
     {
       title: 'balance 24h ago',
-      value: display.fiat(totalFiat24hAgo),
+      value: (
+        <Units 
+          value={totalFiat24hAgo} 
+          precision={6} 
+          symbolSpaced={false}
+          prefixSymbol
+          currency
+          className='mb-0' 
+        />
+      ),
       colClass: 'order-3'
     },
     {
@@ -144,7 +162,9 @@ const Balances = ({ wallet, handleRemove, removeAllWallets, isDropdownOpen, togg
               {stats.map(({ title, value, colClass }, i) => (
                 <Col xs='6' lg='3' key={i} className={classNames('text-center', colClass)}>
                   <div className='grid-cell'>
-                    <div className='h3 mb-0'>{value}</div>
+                    <div className='h3'>
+                      {value}
+                    </div>
                     <small className={classNames('mb-0', statLabel)}>{title}</small>
                   </div>
                 </Col>
