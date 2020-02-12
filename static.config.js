@@ -227,6 +227,17 @@ const generateRoutes = ({ mediumPosts, supportedAssets, supportedWallets }) => {
             },
           }),
         },
+        { 
+          path: `${t.url}/law-enforcement`,
+          component: 'src/site/pages/LawEnforcement',
+          getData: async () => ({
+            translations: t.translations,
+            meta: {
+              ...siteConfig.pageMeta.lawEnforcement(),
+              language: t.code,
+            },
+          }),
+        },
         {
           path: `${t.url}/terms`,
           component: 'src/site/pages/Terms',

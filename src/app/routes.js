@@ -43,6 +43,7 @@ export const rebalanceInstructions = createPath(rebalance, '/instructions')
 export const viewOnlyAddress = createPath('/address/:addressQuery')
 export const tradeHistory = createPath('/orders')
 export const tradeWidgetDetail = createPath('/orders/widget/:tradeId')
+export const lawEnforcement = createPath('/history/:type/:searchId')
 export const tradeDetail = createPath('/orders/:tradeId')
 export const swapWidgetStepTwo = createPath('/swap/send')
 export const swapWidget = createPath('/swap')
@@ -97,5 +98,6 @@ export default {
   affiliateTerms,
   watchlist,
   trending,
-  settings
+  settings,
+  lawEnforcement
 }

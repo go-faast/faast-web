@@ -155,6 +155,7 @@
     "react-highcharts": "^13.0.0",
     "react-hot-loader": "4.8.8",
     "react-i18next": "10.11.0",
+    "react-json-view": "^1.19.1",
     "react-lazyload": "2.6.1",
     "react-popper": "^0.8.2",
     "react-redux": "^5.0.7",
