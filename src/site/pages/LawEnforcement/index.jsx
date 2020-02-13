@@ -61,7 +61,10 @@ export default compose(
     }}>
       <Container>
         <h1 style={{ fontWeight: 600 }} className='mb-3 mt-3'>Faa.st is a non-custodial peer-to-peer crypto trading platform</h1>
-        <h4 className='mb-2' style={{ color: '#bcd2ff' }}>All Faa.st swaps are public and available through the <a href='https://api.faa.st' target='_blank noreferrer'>Faa.st API</a></h4>
+        <h4 className='mb-2' style={{ color: '#bcd2ff' }}>
+        All transaction on the Faast platform is publicly searchable through the <a href='https://api.faa.st' target='_blank noreferrer'>Faa.st API</a>. Faast takes fraud very seriously, and actively collaborates with companies and agencies to prevent and track any and all forms of fraud.
+        Use the search box below to determine if a crypto address, or crypto transaction hash is related to a Faast transaction. If you have any questions related to a transaction which may be the result of fraud, please contact <a href='mailto:security@faa.st'>security@faa.st</a> for assistance.
+        </h4>
         <InputGroup className='mx-auto mt-5' style={{ maxWidth: 700 }}>
           <Input type='search' value={query} onChange={(e) => updateQuery(e.target.value)} style={{ height: 60 }} className={style.input} placeholder={searchType === 'address' ? 'Enter a wallet address...' : 'Enter an order ID...'} />
           {query ? (
