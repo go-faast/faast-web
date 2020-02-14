@@ -1,0 +1,30 @@
+.input {
+  background-color: #FAFAFA !important;
+  border: 1px solid #ECECEF !important;
+  border-radius: 4px;
+  color: #3C3C40 !important;
+
+  &::placeholder {
+    color: #9C9FA8 !important;
+  }
+}
+
+.inputButton {
+  background-color: #fff !important;
+  border: 1px solid #ECECEF !important;
+  // transition: all .2s ease-in-out;
+
+  &:hover {
+    background-color: #EFEFEF !important;
+  }
+}
+
+.inputMenu {
+  background-color: #fff !important;
+  color: #444 !important;
+  // transition: all .2s ease-in-out;
+
+  &:hover {
+    background-color: #EFEFEF !important;
+  }
+}

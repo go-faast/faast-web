@@ -583,7 +583,7 @@ export default compose(
     },
     validateSendAmount: ({ minimumSend, maximumSend, sendAsset,
       sendSymbol, sendWallet, fullBalanceAmount, maxGeoBuy, handleSelectGeoMax, handleSelectMinimum,
-      handleSelectMaximum, t }) => {
+      handleSelectMaximum, t, ethSendBalanceAmount }) => {
       return (
         validator.all(
           ...(sendWallet ? [validator.required()] : []),
@@ -595,6 +595,7 @@ export default compose(
             <Units precision={sendAsset.decimals} roundingType='dp' value={maxGeoBuy}/>
           </Button> {sendSymbol} <a key={Math.random()} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noopener noreferrer'>{t('app.widget.dueToYourLocation', 'due to your location.')}</a></span>)] : []),
           ...(sendWallet ? [validator.lte(fullBalanceAmount, t('app.widget.cannotSendMoreThanHave', 'Cannot send more than you have.'))] : []),
+          ...(sendSymbol === 'ETH' ? [validator.lt(ethSendBalanceAmount, <span key='cannotSendWhole'>You are unable to send your entire ETH balance, because some ETH is needed to pay network fees.</span>)] : []),
           ...(maximumSend ? [validator.lte(maximumSend, <span key={'maxSend'}>{t('app.widget.sendAmountGreaterThan', 'Send amount cannot be greater than')} <Button key={'maxSend1'} color='link-plain' onClick={handleSelectMaximum}>
             <Units key={'maxSend2'} precision={sendAsset.decimals} roundingType='dp' value={maximumSend}/></Button> {t('app.widget.ensurePricing', 'to ensure efficient pricing.')}</span>)] : []),
         )

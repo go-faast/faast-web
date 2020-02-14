@@ -46,6 +46,10 @@ module.exports = {
       title: `Privacy Policy ${titleSuffix}`,
       description: genericTitle,
     }),
+    lawEnforcement: () => ({
+      title: `Law Enforcement Support ${titleSuffix}`,
+      description: 'Search for the Faa.st swap history of a specific wallet address.',
+    }),
     newsletter: () => ({
       title: `Keep up with Crypto and Sign Up for the ${siteName} Newsletter`,
       description: `Stay up-to-date with all things ${siteName} with our newsletter`,

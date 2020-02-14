@@ -251,12 +251,13 @@ export const fetchOrders = (
 ): Promise<SwapOrder[]> =>
   Promise.all([
     fetchGet(`${apiUrl}/api/v2/public/swaps`, {
-      user_id: walletId,
+      refund_address: walletId,
+      withdrawal_address: walletId,
       page,
       limit,
     }),
     fetchGet(`${apiUrl}/api/v2/public/swaps`, {
-      withdrawal_address: walletId,
+      user_id: walletId,
       page,
       limit,
     }),

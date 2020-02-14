@@ -97,5 +97,5 @@ export default {
   affiliateTerms,
   watchlist,
   trending,
-  settings
+  settings,
 }

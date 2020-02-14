@@ -19,7 +19,8 @@ export default abstract class BitcoinWallet extends BitcoreWallet {
 
   getLabel() {
     const legacyInfix = this.isLegacyAccount() ? ' legacy' : ''
-    return this.label || `${this._network.name}${legacyInfix} account #${this.getAccountNumber()}`
+    console.log('getting label for btc')
+    return `${this._network.name}${legacyInfix} account #${this.getAccountNumber()}`
   }
 
   _getDefaultFeeRate(

@@ -31,6 +31,7 @@ const doGetWallet = (walletState, id) => {
   const transitiveNestedWalletIds = flatMap(nestedWallets, ({ id, transitiveNestedWalletIds }) => [id, ...transitiveNestedWalletIds])
   return {
     ...wallet,
+    label: nestedWallets.length > 0 && wallet.id !== 'default' ? nestedWallets[0].label : wallet.label,
     nestedWallets,
     transitiveNestedWalletIds,
     balances,
