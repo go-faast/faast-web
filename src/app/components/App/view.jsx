@@ -25,7 +25,6 @@ import AssetTrending from 'Components/AssetTrending'
 import Footer from 'Components/Footer'
 import MobileWalletModal from 'Components/MobileWalletModal'
 import Settings from 'Components/Settings'
-import LawEnforcement from 'Components/LawEnforcement'
 
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
@@ -33,7 +32,7 @@ import {
   affiliateLogin, affiliateSignup, affiliateDashboard, affiliateSettings,
   affiliatePayouts, affiliateSwaps, affiliateAccountModal,
   watchlist, trending, affiliateTerms, swapWidgetStepTwo, tradeWidgetDetail,
-  connectMobileWallet, settings, lawEnforcement
+  connectMobileWallet, settings
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -68,7 +67,6 @@ const AppView = ({ hasNoWallets }) => {
         <Route path={affiliateSwaps.path} component={AffiliateSwaps}/>
         <Route path={affiliateTerms.path} component={AffiliateTerms}/>
         <Route path={tradeHistory.path} component={TradeHistory}/>
-        <Route path={lawEnforcement.path} component={LawEnforcement}/>
       
         {/* Legacy routes */}
         <Redirect exact from='/affiliates' to={affiliateLogin.path}/>
