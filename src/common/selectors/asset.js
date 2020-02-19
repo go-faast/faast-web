@@ -1,3 +1,4 @@
+import { isEmpty } from 'lodash'
 import { createSelector } from 'reselect'
 import { toBigNumber } from 'Utilities/convert'
 import { mapValues } from 'Utilities/helpers'
@@ -12,9 +13,9 @@ export const getAllAssets = createSelector(getAssetState, getSelectedCurrency, g
   let { price, change1, change24, change7d, volume24h, marketCap, 
     availableSupply, lastUpdatedPrice, symbol, ERC20, validate } = asset
   const bip21Prefix = !ERC20 ? Config.bip21Prefixes[symbol] : Config.bip21Prefixes[validate]
-  price = toBigNumber(price).times(currency && currency.rate || previousCurrency && previousCurrency.rate || 1)
-  const volume24 = toBigNumber(volume24h).times(currency && currency.rate || previousCurrency && previousCurrency.rate || 1)
-  marketCap = toBigNumber(marketCap).times(currency && currency.rate || previousCurrency && previousCurrency.rate || 1)
+  price = toBigNumber(price).times(currency && (typeof currency.rate === 'number' || !isEmpty(currency.rate)) && currency.rate || previousCurrency && (typeof previousCurrency.rate === 'number' || !isEmpty(currency.rate)) && previousCurrency.rate || 1)
+  const volume24 = toBigNumber(volume24h).times(currency && (typeof currency.rate === 'number' || !isEmpty(currency.rate)) && currency.rate || previousCurrency && (typeof previousCurrency.rate === 'number' || !isEmpty(currency.rate)) && previousCurrency.rate || 1)
+  marketCap = toBigNumber(marketCap).times(currency && (typeof currency.rate === 'number' || !isEmpty(currency.rate)) && currency.rate || previousCurrency && (typeof previousCurrency.rate === 'number' || !isEmpty(currency.rate)) && previousCurrency.rate || 1)
   change24 = toBigNumber(change24)
   change1 = toBigNumber(change1)
   change7d = toBigNumber(change7d)

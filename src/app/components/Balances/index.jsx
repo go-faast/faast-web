@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import { uniqBy } from 'lodash'
 import { createStructuredSelector } from 'reselect'
 import { compose } from 'recompose'
 import PropTypes from 'prop-types'
@@ -177,7 +178,7 @@ const Balances = ({ wallet, handleRemove, removeAllWallets, isDropdownOpen, togg
       {pendingSwaps && (
         <TradeTable 
           tableTitle={<T tag='span' i18nKey='app.orders.openOrderTitle'>Open Orders</T>}
-          swaps={pendingSwaps}
+          swaps={uniqBy(pendingSwaps, 'orderId')}
           tableHeadings={tableHeadingsOpen}
           hideIfNone
           classProps='mt-3'

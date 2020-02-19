@@ -42,6 +42,7 @@ export default compose(
                 <li><a className='text-white font-xs' href='/app'>{t.portfolio}</a></li>
                 <li><a className='text-white' href='/app/swap'>{t.swap}</a></li>
                 <li><LangLink className='text-white' to='/market-maker'>{t.marketMaker} <sup className={classNames(betaTag, 'text-primary')}><i>{t.beta}</i></sup></LangLink></li>
+                <li><a className='text-white' href='/law-enforcement'>Law Enforcement</a></li>
                 <li><a className='text-white' href='/blog'>{t.blog}</a></li>
               </ul>
             </div>

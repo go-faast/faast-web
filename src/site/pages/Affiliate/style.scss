@@ -13,3 +13,9 @@
   line-height: 60px;
   border-radius: 50%;
 }
+
+@media screen and (max-width: 414px) {
+  .whyUseFast {
+    margin-top: 200px;
+  } 
+}

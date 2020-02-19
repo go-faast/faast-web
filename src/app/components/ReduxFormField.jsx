@@ -44,8 +44,8 @@ const RenderInput = (props) => {
     type !== 'hidden' && (
       <div style={{ height: fixedFeedback ? 30 : 'auto' }}>
         {touched && error && (<FormFeedback className='d-block'>{error}</FormFeedback>)}
-        {touched && warning && (<FormFeedback className='d-block text-warning'>{warning}</FormFeedback>)}
-        {(!error || !touched) && helpText}
+        {touched && warning && !error && (<FormFeedback className='d-block text-warning'>{warning}</FormFeedback>)}
+        {(!error && !warning || !touched) && helpText}
         {!helpText && (<FormFeedback className='d-block'></FormFeedback>)}
       </div>
     )
