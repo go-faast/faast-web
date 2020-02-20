@@ -155,9 +155,9 @@ export const formatOrderResult = (r: any): SwapOrder => ({
   depositAddressExtraId: r.deposit_address_extra_id,
 })
 
-export const fetchSwap = (swapId: string): Promise<SwapOrder> => {
+export const fetchSwap = (swapId: string, formatOrder = true): Promise<SwapOrder> => {
   return fetchGet(`${apiUrl}/api/v2/public/swaps/${swapId}`, null, { allowConcurrent: false })
-    .then(formatOrderResult)
+    .then((swap) => formatOrder ? formatOrderResult(swap) : swap)
     .catch((e: any) => {
       log.error(e)
       throw e
@@ -248,7 +248,8 @@ export const fetchOrders = (
   walletId: string,
   page: number = 1,
   limit: number = 20,
-): Promise<SwapOrder[]> =>
+  formatOrder = true,
+): Promise<SwapOrder[]> | Promise<any[]> =>
   Promise.all([
     fetchGet(`${apiUrl}/api/v2/public/swaps`, {
       refund_address: walletId,
@@ -261,7 +262,9 @@ export const fetchOrders = (
       page,
       limit,
     }),
-  ]).then(([r1, r2]: OrdersResult[]) => r1.orders.concat(r2.orders).map(formatOrderResult))
+  ]).then(([r1, r2]: OrdersResult[]) => r1.orders.concat(r2.orders).map((order) => (
+    formatOrder ? formatOrderResult(order) : order
+    )))
     .catch((e: any) => {
       log.error(e)
       throw e

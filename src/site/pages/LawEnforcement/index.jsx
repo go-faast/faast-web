@@ -62,8 +62,8 @@ export default compose(
       <Container>
         <h1 style={{ fontWeight: 600 }} className='mb-3 mt-3'>Faa.st is a non-custodial peer-to-peer crypto trading platform</h1>
         <h4 className='mb-2' style={{ color: '#bcd2ff' }}>
-        All transaction on the Faast platform is publicly searchable through the <a href='https://api.faa.st' target='_blank noreferrer'>Faa.st API</a>. Faast takes fraud very seriously, and actively collaborates with companies and agencies to prevent and track any and all forms of fraud.
-        Use the search box below to determine if a crypto address is related to a Faast transaction. If you have any questions related to a transaction which may be the result of fraud, please contact <a href='mailto:security@faa.st'>security@faa.st</a> for assistance.
+        All transaction on the Faa.st platform is publicly searchable through the <a href='https://api.faa.st' target='_blank noreferrer'>Faa.st API</a>. Faa.st takes fraud very seriously, and actively collaborates with companies and agencies to prevent and track any and all forms of fraud.
+        Use the search box below to determine if a crypto address is related to a Faa.st transaction.
         </h4>
         <InputGroup className='mx-auto mt-5' style={{ maxWidth: 700 }}>
           <Input type='search' value={query} onChange={(e) => updateQuery(e.target.value)} style={{ height: 60 }} className={style.input} placeholder={searchType === 'address' ? 'Enter a wallet address...' : 'Enter an order ID...'} />
@@ -90,6 +90,9 @@ export default compose(
             </InputGroupButtonDropdown>
           )}
         </InputGroup>
+        <p className='text-small mt-3' style={{ color: '#bcd2ff' }}>
+          <small>If you have any questions related to a transaction which may be the result of fraud, please contact <a href='mailto:security@faa.st'>security@faa.st</a> for assistance.</small>
+        </p>
         {json && (
           <div 
             style={{ 
