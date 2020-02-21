@@ -28,7 +28,7 @@ const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   supportedAssets: wallet.getSupportedAssetSymbols(),
   unsendableAssets: wallet.getUnsendableAssetSymbols(),
   nestedWalletIds: wallet instanceof MultiWallet ? wallet.getWalletIds() : [],
-  ordersAllLoaded: wallet instanceof MultiWallet // Orders can't be loaded for multiwallets
+  ordersAllLoaded: wallet instanceof MultiWallet, // Orders can't be loaded for multiwallets
 }) : wallet
 
 export const walletAdded = createAction('ADDED', convertWalletInstance)

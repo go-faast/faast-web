@@ -31,7 +31,7 @@ const doGetWallet = (walletState, id) => {
   const transitiveNestedWalletIds = flatMap(nestedWallets, ({ id, transitiveNestedWalletIds }) => [id, ...transitiveNestedWalletIds])
   return {
     ...wallet,
-    label: nestedWallets.length > 0 && wallet.id !== 'default' ? nestedWallets[0].label : wallet.label,
+    label: wallet.label,
     nestedWallets,
     transitiveNestedWalletIds,
     balances,
@@ -64,6 +64,24 @@ export const getLeafWalletIds = createSelector(
   (wallets) => wallets
     .map(({ id }) => id)
 )
+
+export const getDefaultWallet = createSelector(
+  getAllWalletsArray,
+  (wallets) => wallets
+    .filter(({ id }) => id === 'default')
+)
+
+export const getWalletIdsOfDefaultNestedWallets = createSelector(
+  getDefaultWallet,
+  (defaultWallet) => { 
+    return defaultWallet && defaultWallet[0] && defaultWallet[0].nestedWalletIds
+  }
+)
+
+export const getCurrentChildWalletsForSymbol = createItemSelector(
+  getAllWalletsArray,
+  (_, symbol) => symbol,
+  (wallets, symbol) => wallets.filter(({ supportedAssets, nestedWalletIds, id }) => supportedAssets.includes(symbol) && nestedWalletIds.length == 0 && id !== 'default'))
 
 export const isWalletAdded = createItemSelector(getAllWalletIds, selectItemId, (walletIds, walletId) => walletIds.includes(walletId))
 

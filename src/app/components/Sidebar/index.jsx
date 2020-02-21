@@ -9,8 +9,8 @@ import {
 } from 'reactstrap'
 import { compose, setDisplayName, withState, withProps } from 'recompose'
 import {
-  getWatchlist, getTrendingPositive, getTrendingNegative, getCurrentPortfolioWalletIds,
-  getCurrentPortfolioId, getCurrentWalletWithHoldings, getTradeableAssetFilter
+  getWatchlist, getTrendingPositive, getTrendingNegative, getWalletIdsOfDefaultNestedWallets,
+  getCurrentPortfolioId, getCurrentWalletWithHoldings, getTradeableAssetFilter,
 } from 'Selectors'
 import { setCurrentPortfolioAndWallet } from 'Actions/portfolio'
 
@@ -34,7 +34,7 @@ const Sidebar = ({
   timeFrame, updateTimeFrame, trendingTimeFrame, updateTrendingTimeFrame, className, push, setCurrentPortfolioAndWallet
 }) => {
   const { id: currentWalletId, totalFiat, totalChange, totalFiat24hAgo, 
-    totalFiat7dAgo, totalFiat1hAgo, totalChange1h, totalChange7d, label } = currentWallet
+    totalFiat7dAgo, totalFiat1hAgo, totalChange1h, totalChange7d, label, typeLabel } = currentWallet
 
   const portfolioPercentChange = timeFrame === '1d' ? totalChange : timeFrame === '7d' ? totalChange7d : totalChange1h
   const portfolioBasedOnTimeFrame = timeFrame === '1d' ? totalFiat24hAgo : timeFrame === '7d' ? totalFiat7dAgo : totalFiat1hAgo
@@ -55,7 +55,7 @@ const Sidebar = ({
                 color='light'
               >
                 {portfolioWalletIds.length}
-              </Badge>{label}</small>
+              </Badge>{currentWalletId === 'default' ? label : typeLabel}</small>
             </DropdownToggle>
             <DropdownMenu>
               <DropdownItem
@@ -71,7 +71,7 @@ const Sidebar = ({
                   onClick={() => setCurrentPortfolioAndWallet(currentPortfolioId, walletId)}
                   active={walletId === currentWalletId}
                 >
-                  <WalletLabel.Connected id={walletId} showBalance/>
+                  <WalletLabel.Connected id={walletId} showBalance grouped />
                 </DropdownItem>
               ))}
             </DropdownMenu>
@@ -298,7 +298,7 @@ export default compose(
     watchlist: getWatchlist,
     currentPortfolioId: getCurrentPortfolioId,
     currentWallet: getCurrentWalletWithHoldings,
-    portfolioWalletIds: getCurrentPortfolioWalletIds,
+    portfolioWalletIds: getWalletIdsOfDefaultNestedWallets,
   }), {
     setCurrentPortfolioAndWallet: setCurrentPortfolioAndWallet,
     push: push,
