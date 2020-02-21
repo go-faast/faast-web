@@ -16,9 +16,9 @@ import IconLabel from 'Components/IconLabel'
 import WalletBalance from 'Components/WalletBalance'
 
 export const WalletLabel = ({
-  hideIcon, wallet, wallet: { label: walletLabel }, label, iconProps, showBalance, showLink, stacked, id, ...props,
+  hideIcon, wallet, grouped, wallet: { label: walletLabel, typeLabel }, label, iconProps, showBalance, showLink, stacked, id, ...props,
 }) => {
-  const labelString = label ? label : walletLabel
+  const labelString = label && !grouped ? label : grouped ? typeLabel : walletLabel
   const labelNode = id === defaultPortfolioId ? (<i>{labelString}</i>) : labelString
   const labelLink = showLink && wallet && wallet.address ? (
     <Link to={routes.viewOnlyAddress(wallet.address)}>
@@ -70,6 +70,7 @@ WalletLabel.propTypes = {
   stacked: PropTypes.bool, // Show label on first line with typeLabel and balance on second line
   extended: PropTypes.bool, // Show the extended label (includes parent)
   tag: tagPropType,
+  grouped: PropTypes.bool
 }
 
 WalletLabel.defaultProps = {
@@ -81,6 +82,7 @@ WalletLabel.defaultProps = {
   stacked: false,
   extended: false,
   tag: 'div',
+  grouped: false,
 }
 
 export const ConnectedWalletLabel = connect(createStructuredSelector({

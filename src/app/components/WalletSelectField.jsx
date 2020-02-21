@@ -16,7 +16,8 @@ import classNames from 'class-names'
 import { sortByProperty } from 'Utilities/helpers'
 import { getWalletForAsset } from 'Utilities/wallet'
 import propTypes from 'Utilities/propTypes'
-import { getCurrentPortfolioWalletsForSymbol, areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
+import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
+import { getCurrentChildWalletsForSymbol } from 'Selectors/wallet'
 
 import withToggle from 'Hoc/withToggle'
 import ReduxFormField from 'Components/ReduxFormField'
@@ -104,7 +105,7 @@ export default compose(
       getFormValue: formValueSelector(formName)
     })}),
   connect(createStructuredSelector({
-    connectedWallets: (state, { symbol }) => getCurrentPortfolioWalletsForSymbol(state, symbol),
+    connectedWallets: (state, { symbol }) => getCurrentChildWalletsForSymbol(state, symbol),
     balancesLoaded: areCurrentPortfolioBalancesLoaded,
     address: (state, { addressFieldName, getFormValue }) => getFormValue(state, addressFieldName),
     walletId: (state, { walletIdFieldName, getFormValue }) => getFormValue(state, walletIdFieldName),
