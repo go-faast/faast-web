@@ -81,9 +81,9 @@ const ModifyView = (props) => {
 
                   const changeIconDirection = priceDecrease ? 'down' : 'up'
                   const changeColor = priceDecrease ? 'danger' : 'success'
-                  const fiatPrice = <Units value={display.fiat(price)} precision={6} currency prefixSymbol symbolSpaced={false} />
+                  const fiatPrice = <Units value={price} precision={6} currency prefixSymbol symbolSpaced={false} />
                   const percentChange24 = display.percentage(change24, true)
-                  const originalFiat = <Units value={display.fiat(fiat.original)} precision={6} currency prefixSymbol symbolSpaced={false} />
+                  const originalFiat = <Units value={fiat.original} precision={6} currency prefixSymbol symbolSpaced={false} />
                   const originalWeight = display.percentage(a.weight.original)
                   const originalUnits = (<Units value={units.original} symbol={symbol} precision={6} />)
                   const adjustedFiat = accounting.toFixed(fiat.adjusted, 2)
