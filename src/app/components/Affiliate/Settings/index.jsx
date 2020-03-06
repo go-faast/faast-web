@@ -3,8 +3,10 @@ import * as validator from 'Utilities/validator'
 import { Link } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
-import { compose, setDisplayName, withHandlers } from 'recompose'
-import { Row, Col, Card, Input, CardHeader, CardBody, Button, Form, Modal, ModalBody, ModalHeader } from 'reactstrap'
+import { push } from 'react-router-redux'
+import { compose, setDisplayName, withHandlers, lifecycle, withState } from 'recompose'
+import { Row, Col, Card, Input, CardHeader, CardBody, Button, Form, Modal, 
+  ModalBody, ModalHeader } from 'reactstrap'
 import withToggle from 'Hoc/withToggle'
 import classNames from 'class-names'
 import { reduxForm, formValueSelector, change, untouch } from 'redux-form'
@@ -12,7 +14,8 @@ import ReduxFormField from 'Components/ReduxFormField'
 import toastr from 'Utilities/toastrWrapper'
 import config from 'Config'
 
-import { affiliateId, secretKey, getAsset, getAffiliateBalance, getMinimumWithdrawal } from 'Selectors'
+import { affiliateId, secretKey, getAsset, getAffiliateBalance, getMinimumWithdrawal, 
+  isLoadingLogin, isAffiliateLoggedIn } from 'Selectors'
 import { initiateAffiliateWithdrawal } from 'Services/Faast'
 
 import AffiliateLayout from 'Components/Affiliate/Layout'
@@ -23,7 +26,7 @@ const FORM_NAME = 'affiliate_withdrawal'
 const getFormValue = formValueSelector(FORM_NAME)
 
 const AffiliateSettings = ({ minimumWithdrawal, isModalOpen, toggleModalOpen, affiliateId, secretKey, 
-  handleSubmit, validateWithdrawalAddress, invalid, balance, withdrawalAddress }) => {
+  handleSubmit, validateWithdrawalAddress, invalid, balance, withdrawalAddress, keyInputType, handleInputType }) => {
   return (
     <AffiliateLayout className='pt-3'>
       <Row className='mt-4'>
@@ -38,7 +41,16 @@ const AffiliateSettings = ({ minimumWithdrawal, isModalOpen, toggleModalOpen, af
                 </Col>
                 <Col sm='12'>
                   <small><p className={classNames('mb-1 font-weight-bold', text)}>Secret Key</p></small>
-                  <Input className={classNames('flat', input)} value={secretKey} type='text' autoFocus readOnly/>
+                  <div className='position-relative'>
+                    <Input className={classNames('flat', input)} value={secretKey} type={keyInputType} autoFocus readOnly/>
+                    <span 
+                      className='text-dark position-absolute cursor-pointer' 
+                      style={{ fontSize: 14, right: 16, top: 10 }}
+                      onClick={handleInputType}
+                    >
+                      <i className={`fa ${keyInputType === 'password' ? 'fa-eye' : 'fa-eye-slash'}`}></i>
+                    </span>
+                  </div>
                 </Col>
                 <hr className='w-100 border-light'/>
                 <Col sm='12'>
@@ -120,11 +132,15 @@ export default compose(
     balance: getAffiliateBalance,
     bitcoin: (state) => getAsset(state, 'BTC'),
     withdrawalAddress: (state) => getFormValue(state, 'withdrawal_address'),
-    minimumWithdrawal: getMinimumWithdrawal
+    minimumWithdrawal: getMinimumWithdrawal,
+    isLoadingLogin,
+    loggedIn: isAffiliateLoggedIn,
   }), {
     change: change,
     untouch: untouch,
+    push,
   }),
+  withState('keyInputType', 'updateKeyInputType', 'password'),
   withToggle('modalOpen'),
   withHandlers({
     onSubmit: ({ affiliateId, secretKey, toggleModalOpen, change, untouch }) => ({ withdrawal_address }) => {
@@ -143,10 +159,31 @@ export default compose(
           toastr.error('There was an issue initiating your withdrawal. Please try again.')
         })
     },
+    handleInputType: ({ keyInputType, updateKeyInputType }) => () => {
+      if (keyInputType === 'password') {
+        updateKeyInputType('text')
+      } else {
+        updateKeyInputType('password')
+      }
+    },
     validateWithdrawalAddress: ({ bitcoin }) => validator.all(
       validator.required(),
       validator.walletAddress(bitcoin)
     ),
+  }),
+  lifecycle({
+    componentDidMount() {
+      const { loggedIn, push, isLoadingLogin } = this.props
+      if (!loggedIn && !isLoadingLogin) {
+        push('/affiliates/login')
+      }
+    },
+    componentDidUpdate() {
+      const { loggedIn, push, isLoadingLogin } = this.props
+      if (!loggedIn && !isLoadingLogin) {
+        push('/affiliates/login')
+      }
+    }
   }),
   reduxForm({
     form: FORM_NAME,
