@@ -61,3 +61,28 @@
   from = "/knowledge/*"
   to = "https://faast-kb-prod.herokuapp.com/knowledge/:splat"
   status = 200
+
+[[redirects]]
+  from = "/*/what-is-an-ico"
+  to = "/knowledge/article/what-is-the-difference-between-an-ico-ito-and-ipo"
+  status = 200
+
+[[redirects]]
+  from = "/*/what-are-smart-contracts"
+  to = "/knowledge/article/what-are-smart-contracts"
+  status = 200
+
+[[redirects]]
+  from = "/*/what-is-a-dao"
+  to = "/knowledge/article/what-is-a-dao"
+  status = 200
+
+[[redirects]]
+  from = "/*/what-is-ethereum"
+  to = "/knowledge/article/what-is-ethereum"
+  status = 200
+
+[[redirects]]
+  from = "/*/what-is-an-ico"
+  to = "/knowledge/article/what-is-an-ico"
+  status = 200
