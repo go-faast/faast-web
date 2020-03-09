@@ -212,7 +212,7 @@ export default compose(
           <Row className='text-center py-5 mx-0 mt-5 text-white' style={{ backgroundColor: '#374B5D' }}>
             <Container>
               <Col className='mb-5' xs='12'>
-                <h2 style={{ fontWeight: 600 }}>How to set up</h2>
+                <h2 style={{ fontWeight: 600 }}>How to get started</h2>
               </Col>
               <Col xs='12'>
                 <Row>
