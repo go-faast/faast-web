@@ -15,6 +15,11 @@
   font-family: Monaco !important;
 }
 
+.terminalLight {
+  background-color: #fcfcfd;
+  box-shadow: 0 4px 8px 0px rgba(200, 216, 236, 0.5);
+}
+
 .terminalHeaderbar {
   background-color: #191A1D;
   height: 26px;
@@ -24,6 +29,10 @@
   left: 0;
   z-index: 2;
   border-radius: 4px 4px 0px 0px;
+}
+
+.terminalHeaderbarLight {
+  background-color: #e3eaf3;
 }
 
 .ellipsis {
@@ -80,12 +89,24 @@
   color: #827DE0;
 }
 
+.keyLight {
+  color: rgb(83, 77, 187);
+}
+
 .value {
   color: #FBF796;
 }
 
+.valueLight {
+  color: rgb(16, 156, 145);
+}
+
 .func {
   color: #5edfb4;
+}
+
+.funcLight {
+  color: #248ee6;
 }
 
 .await {

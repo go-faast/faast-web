@@ -8,6 +8,7 @@ import classNames from 'class-names'
 import { compose, setDisplayName, lifecycle, withProps } from 'recompose'
 import withTracker from 'Site/components/withTracker'
 import AffiliateContact from 'Site/components/AffiliateContact'
+import Terminal from 'Site/components/Terminal'
 
 import Footer from 'Site/components/Footer'
 import Hero from 'Site/components/Hero'
@@ -132,7 +133,7 @@ export default compose(
                 <h2 style={{ fontWeight: 600 }}>Dashboard Features</h2>
               </Col>
               <Col className='mb-5 pb-2 justify-content-center d-flex align-items-center' xs='6'>
-                <img style={{ boxShadow: '0px 5px 11px 1px rgba(200, 216, 236, 0.5)', borderRadius: 4 }} src={dashboard} width='500'/>
+                <img style={{ boxShadow: '0px 5px 11px 1px rgba(200, 216, 236, 0.5)', borderRadius: 4, maxWidth: 500, width: '100vw' }} src={dashboard} />
               </Col>
               <Col lg='4' md='6' className='text-left ml-xs-0 ml-lg-4'>
                 <Row>
@@ -180,16 +181,44 @@ export default compose(
               </Col>
             </Container>
           </Row>
+          <Row className='pt-5 pb-2 px-0 mx-0 mt-5 mb-5 pb-5'>
+            <Container>
+              <Col className='text-center'>
+                <h2 style={{ fontWeight: 600 }}>How you can monetize</h2>
+              </Col>
+              <Col className='text-center mt-5 mb-4'>
+                <h1 className={classNames(style.numbersGreen, 'font-weight-bold')}>1</h1>
+                <span className='ml-2' style={{ fontWeight: 600, fontSize: 40 }}>API</span>
+              </Col>
+              <Col className='text-center'>
+                <p style={{ fontSize: 18 }}>The most feature rich and customizable way to monetize your product. Provide swap support right in your website or app and choose the fee you’ll earn on each transaction. Sign up now to begin, or check out our getting started guide for more resources.</p>
+                <Terminal theme='light' translations={translations} includeCopy={false} includeBg={false} />
+              </Col>
+              <Col className='text-center mt-0 mb-4'>
+                <h1 className={classNames(style.numbersGreen, 'font-weight-bold')}>2</h1>
+                <span className='ml-2' style={{ fontWeight: 600, fontSize: 40 }}>Referral Links</span>
+              </Col>
+              <Col className='text-center'>
+                <p className='mb-5' style={{ fontSize: 18 }}>The easiest way to get started. Simply present your users with a special referral link to the Faa.st website and you’ll earn a percentage on each swap they place. Sign up now to get your link.</p>
+                <div className={style.input}>
+                  <p>https://faa.st/swap?aid=YOUR_AID_HERE <i className='fa fa-copy'></i></p>
+                </div>
+              </Col>
+              <Col className='text-center mt-5'>
+                <Button tag='a' href='/app/affiliates/signup' className='text-white mr-3' color='primary'>Get started</Button> 
+              </Col>
+            </Container>
+          </Row>
           <Row className='text-center py-5 mx-0 mt-5 text-white' style={{ backgroundColor: '#374B5D' }}>
             <Container>
-              <Col className='mb-4' xs='12'>
+              <Col className='mb-5' xs='12'>
                 <h2 style={{ fontWeight: 600 }}>How to set up</h2>
               </Col>
               <Col xs='12'>
                 <Row>
                   <Col>
                     <h1 className={classNames(style.numbers, 'font-weight-bold')}>1</h1>
-                    <p>Create account</p>
+                    <p>Sign up <a href='/app/affiliates/signup'>here</a></p>
                   </Col>
                   <Col className='align-items-center justify-content-center d-flex' xs='1'>
                     <svg viewBox="0 0 129 129" enableBackground="new 0 0 129 129" width="24px" height="24px">
@@ -200,7 +229,7 @@ export default compose(
                   </Col>
                   <Col>
                     <h1 className={classNames(style.numbers, 'font-weight-bold')}>2</h1>
-                    <p>Integrate API</p>
+                    <p>Integrate Faa.st</p>
                   </Col>
                   <Col className='align-items-center justify-content-center d-flex' xs='1'>
                     <svg viewBox="0 0 129 129" enableBackground="new 0 0 129 129" width="24px" height="24px">
@@ -211,17 +240,6 @@ export default compose(
                   </Col>
                   <Col>
                     <h1 className={classNames(style.numbers, 'font-weight-bold')}>3</h1>
-                    <p>Set Custom Fee Rate</p>
-                  </Col>
-                  <Col className='align-items-center justify-content-center d-flex' xs='1'>
-                    <svg viewBox="0 0 129 129" enableBackground="new 0 0 129 129" width="24px" height="24px">
-                      <g>
-                        <path className="steps-arrow-fill" d="m40.4,121.3c-0.8,0.8-1.8,1.2-2.9,1.2s-2.1-0.4-2.9-1.2c-1.6-1.6-1.6-4.2 0-5.8l51-51-51-51c-1.6-1.6-1.6-4.2 0-5.8 1.6-1.6 4.2-1.6 5.8,0l53.9,53.9c1.6,1.6 1.6,4.2 0,5.8l-53.9,53.9z" fill="#fff"/>
-                      </g>
-                    </svg>
-                  </Col>
-                  <Col>
-                    <h1 className={classNames(style.numbers, 'font-weight-bold')}>4</h1>
                     <p>Earn BTC</p>
                   </Col>
                 </Row>
