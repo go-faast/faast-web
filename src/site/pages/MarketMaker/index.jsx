@@ -72,7 +72,7 @@ export default compose(
         style={{ zIndex: 9 }} 
         className='position-relative' 
         headerColor={blueColor} 
-        translations={translations} 
+        translations={translations}
       />
       <div style={{ minHeight: '85vh', backgroundColor: blueColor }} className={classNames('mb-0 py-5 position-relative')}>
         <Row className='py-3 mx-auto position-relative' style={{ maxWidth: 1280, zIndex: 99 }}>

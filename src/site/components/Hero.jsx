@@ -45,7 +45,7 @@ export default compose(
     <Header translations={translations} />
     <div className='jumbotron jumbotron-fluid hero-technology mb-0' style={{
       backgroundImage: bgImage ? bgImage : `url(${MoonBackground})`,
-      height: '824px',
+      height: '800px',
       backgroundPosition: '50% 25px',
       backgroundSize: '1400px',
       backgroundRepeat: 'no-repeat',
@@ -55,13 +55,15 @@ export default compose(
     }}>
       <Container>
         <Row>
-          <Col sm='12' lg='6' className='text-left pl-md-5 pl-0 ml-4'>
-            <LangLink style={{ textDecoration: 'none' }} to={notificationLink ? notificationLink : '/market-maker'}>
-              <div className='notification mt-md-4 mt-0 mb-4'>
-                <span className='new-pill'>{hero.new}</span>
-                {notification ? notification : hero.notification}
-              </div>
-            </LangLink>
+          <Col sm='12' lg='6' className={classNames('text-left pl-md-5 pl-0 ml-4', !notification && 'mt-xs-0 mt-lg-5')}>
+            {notification && (
+              <LangLink style={{ textDecoration: 'none' }} to={notificationLink ? notificationLink : '/market-maker'}>
+                <div className='notification mt-md-4 mt-0 mb-4'>
+                  <span className='new-pill'>{hero.new}</span>
+                  {notification ? notification : hero.notification}
+                </div>
+              </LangLink>
+            )}
             {headline || (
               <h1 className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
                 {headlineT.goxxed}

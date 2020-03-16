@@ -23,8 +23,9 @@ import { retrievePairData } from 'Actions/rate'
 import { openViewOnlyWallet } from 'Actions/access'
 import { saveSwapWidgetInputs } from 'Actions/app'
 
-import { getRateMinimumDeposit, getRatePrice, isRateLoaded, 
-  getRateMaximumDeposit, rateError, getRateWithdrawalFee, isRateStale } from 'Selectors/rate'
+import { getRateMinimumDeposit, getRatePrice, isRateLoaded, getRateMaximumWithdrawal,
+  getRateMaximumDeposit, rateError, getRateWithdrawalFee, 
+  isRateStale, getRateMinimumWithdrawal } from 'Selectors/rate'
 import { getAllAssetSymbols, getAsset } from 'Selectors/asset'
 import { getWallet } from 'Selectors/wallet'
 import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
@@ -383,6 +384,8 @@ export default compose(
     rateStale: (state, { pair }) => isRateStale(state, pair),
     minimumSend: (state, { pair }) => getRateMinimumDeposit(state, pair),
     maximumSend: (state, { pair }) => getRateMaximumDeposit(state, pair),
+    minimumReceive: (state, { pair }) => getRateMinimumWithdrawal(state, pair),
+    maximumReceive: (state, { pair }) => getRateMaximumWithdrawal(state, pair),
     estimatedRate: (state, { pair }) => getRatePrice(state, pair),
     rateError: (state, { pair }) => rateError(state, pair),
     withdrawalFee: (state, { pair }) => getRateWithdrawalFee(state, pair),
@@ -454,7 +457,6 @@ export default compose(
       if (refundAddress) {
         await validatePayportField('refundAddress', 'refundAddressExtraId', sendAsset, refundAddress, refundAddressExtraId)
       }
-
       return createSwap({
         sendSymbol: sendSymbol,
         sendAmount: sendAmount && estimatedField !== 'send' ? toBigNumber(sendAmount).round(sendAsset.decimals) : undefined,
@@ -518,7 +520,7 @@ export default compose(
           sendAmount = toBigNumber(sendAmount).round(sendAsset.decimals)
           console.log('receive amount', sendAmount.div(estimatedRate).round(receiveAsset.decimals).toString())
           console.log('withdrawal fee', withdrawalFee)
-          const estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals).minus(toBigNumber(withdrawalFee))
+          const estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals)
           console.log('minus', estimatedReceiveAmount.toString())
           updateURLParams({ 
             toAmount: estimatedReceiveAmount ? parseFloat(estimatedReceiveAmount) : undefined,
@@ -555,6 +557,12 @@ export default compose(
       touch('sendAmount')
       calculateReceiveEstimate(x)
     },
+    setReceiveAmount: ({ change, touch, calculateSendEstimate, receiveAsset }) => (x) => {
+      log.debug('setReceiveAmount', x)
+      change('receiveAmount', x && toBigNumber(x).round(receiveAsset.decimals).toString())
+      touch('receiveAmount')
+      calculateSendEstimate(x)
+    },
   }),
   withHandlers({
     handleSelectGeoMax: ({ maxGeoBuy, setSendAmount }) => () => {
@@ -565,12 +573,20 @@ export default compose(
     },
     handleSelectMaximum: ({ maximumSend, setSendAmount }) => () => {
       setSendAmount(maximumSend)
+    },
+    handleSelectMaximumReceive: ({ maximumReceive, setReceiveAmount }) => () => {
+      setReceiveAmount(maximumReceive)
+    },
+    handleSelectMinimumReceive: ({ minimumReceive, setReceiveAmount }) => () => {
+      setReceiveAmount(minimumReceive)
     }
   }),
   withHandlers({
     handleSelectFullBalance: ({ fullBalanceAmount, setSendAmount }) => () => {
       setSendAmount(fullBalanceAmount)
     },
+  }),
+  withHandlers({
     onChangeReceiveAmount: ({ calculateSendEstimate }) => (_, newReceiveAmount) => {
       calculateSendEstimate(newReceiveAmount)
     },
@@ -585,19 +601,21 @@ export default compose(
     },
     validateSendAmount: ({ minimumSend, maximumSend, sendAsset,
       sendSymbol, sendWallet, fullBalanceAmount, maxGeoBuy, handleSelectGeoMax, handleSelectMinimum,
-      handleSelectMaximum, t }) => {
+      handleSelectMaximum, t, handleSelectFullBalance, estimatedField }) => {
       return (
         validator.all(
           ...(sendWallet ? [validator.required()] : []),
           validator.number(),
-          ...(minimumSend ? [validator.gte(minimumSend, <span key={'minimumSend'}>{t('app.widget.sendAmountAtLeast', 'Send amount must be at least')} <Button key={'minimumSend1'} color='link-plain' onClick={handleSelectMinimum}>
+          ...(estimatedField === 'receive' && minimumSend ? [validator.gte(minimumSend, <span key={'minimumSend'}>{t('app.widget.sendAmountAtLeast', 'Send amount must be at least')} <Button key={'minimumSend1'} color='link-plain' onClick={handleSelectMinimum}>
             <Units key={'minimumSend2'} precision={sendAsset.decimals} roundingType='dp' value={minimumSend}/>
           </Button> {sendSymbol} </span>)] : []),
           ...(maxGeoBuy ? [validator.lte(maxGeoBuy, <span key={Math.random()}>{t('app.widget.sendAmountGreaterThan', 'Send amount cannot be greater than')} <Button color='link-plain' onClick={handleSelectGeoMax}>
             <Units precision={sendAsset.decimals} roundingType='dp' value={maxGeoBuy}/>
           </Button> {sendSymbol} <a key={Math.random()} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noopener noreferrer'>{t('app.widget.dueToYourLocation', 'due to your location.')}</a></span>)] : []),
-          ...(sendWallet ? [validator.lte(fullBalanceAmount, t('app.widget.cannotSendMoreThanHave', 'Cannot send more than you have.'))] : []),
-          ...(maximumSend ? [validator.lte(maximumSend, <span key={'maxSend'}>{t('app.widget.sendAmountGreaterThan', 'Send amount cannot be greater than')} <Button key={'maxSend1'} color='link-plain' onClick={handleSelectMaximum}>
+          ...(sendWallet ? [validator.lte(fullBalanceAmount, <span key='moreThan'>{t('app.widget.cannotSendMoreThanHave', 'Cannot send more than you have.')} <span>You have </span><Button color='link-plain' onClick={handleSelectFullBalance}>
+            <Units precision={sendAsset.decimals} roundingType='dp' value={fullBalanceAmount}/>
+          </Button> {sendSymbol} </span>)] : []),
+          ...(estimatedField === 'receive' && maximumSend ? [validator.lte(maximumSend, <span key={'maxSend'}>{t('app.widget.sendAmountGreaterThan', 'Send amount cannot be greater than')} <Button key={'maxSend1'} color='link-plain' onClick={handleSelectMaximum}>
             <Units key={'maxSend2'} precision={sendAsset.decimals} roundingType='dp' value={maximumSend}/></Button> {t('app.widget.ensurePricing', 'to ensure efficient pricing.')}</span>)] : []),
         )
       )
@@ -609,8 +627,17 @@ export default compose(
         )
       )
     },
-    validateReceiveAmount: () => {
-      return validator.number()
+    validateReceiveAmount: ({ maximumReceive, estimatedField, minimumReceive, handleSelectMaximumReceive, handleSelectMinimumReceive, sendAsset, receiveSymbol, t }) => {
+      return ( 
+        validator.all(
+          validator.number(),
+          ...(estimatedField === 'send' && maximumReceive ? [validator.lte(maximumReceive, <span key={'maxReceive'}>{t('app.widget.receiveAmountGreaterThan', 'Receive amount cannot be greater than')} <Button key={'maxReceive2'} color='link-plain' onClick={handleSelectMaximumReceive}>
+            <Units key={'maxReceive3'} precision={sendAsset.decimals} roundingType='dp' value={maximumReceive}/></Button> {t('app.widget.ensurePricing', 'to ensure efficient pricing.')}</span>)] : []),
+          ...(estimatedField === 'send' && minimumReceive ? [validator.gte(minimumReceive, <span key={'minimumReceive'}>{t('app.widget.receiveAmountAtLeast', 'Receive amount must be at least')} <Button key={'minimumReceive1'} color='link-plain' onClick={handleSelectMinimumReceive}>
+            <Units key={'minimumReceive2'} precision={sendAsset.decimals} roundingType='dp' value={minimumReceive}/>
+          </Button> {receiveSymbol} </span>)] : []),
+        )
+      )
     },
     handleSelectedAsset: ({ assetSelect, updateURLParams, setAssetSelect, sendSymbol, receiveSymbol }) => (asset) => {
       const { symbol } = asset

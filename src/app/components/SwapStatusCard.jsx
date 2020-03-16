@@ -169,7 +169,7 @@ export default compose(
             ],
             (txFee || initializing) && [
               <T tag='span' i18nKey='app.swapStatusCard.network'>Network fee:</T>,
-              <UnitsLoading value={txFee} symbol={txFeeSymbol} error={error} precision={null} showFiat/>
+              <UnitsLoading value={txFee} symbol={txFeeSymbol} error={error} precision={null} showFiat />
             ],
             hasSwapFee && [
               <T tag='span' i18nKey='app.swapStatusCard.swapFee'>Swap fee:</T>,

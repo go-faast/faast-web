@@ -1,7 +1,7 @@
 /* eslint-disable react/no-unescaped-entities */
 /* eslint-disable react/jsx-no-comment-textnodes */
-import React from 'react'
-import { compose, setDisplayName, withState } from 'recompose'
+import React, { Fragment } from 'react'
+import { compose, setDisplayName, withState, defaultProps } from 'recompose'
 import classNames from 'class-names'
 
 import GithubBg from 'Img/github-bg.svg'
@@ -35,27 +35,31 @@ const json = [{
   value: "'BAT'"
 }]
 
-const Terminal = ({ response, translations: { static: { terminal: t } } }) => {
+const Terminal = ({ response, theme, includeCopy, includeBg, translations: { static: { terminal: t } } }) => {
   return (
-    <div style={{ backgroundImage: `url(${GithubBg})` }} className={classNames(homeStyle.sectionContainer, style.terminalSection, 'text-center mx-auto position-relative px-sm-0 px-2')}>
-      <h1 className={classNames(homeStyle.heading, 'mb-4')}>Open Source and Public API</h1>
-      <h3 className={classNames(homeStyle.description, 'pb-4 px-md-0 px-3')}>
-        {t.wantToRun} <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://github.com/go-faast/faast-web'>{t.faastPortfolio}</a> {t.project} <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://api.faa.st'>{t.publicAPI}</a> {t.fullControl}
-      </h3>
-      <div className={classNames(style.terminal, 'mx-auto mt-5')}>
+    <div style={{ backgroundImage: includeBg && `url(${GithubBg})`, paddingBottom: !includeBg && 0 }} className={classNames(homeStyle.sectionContainer, style.terminalSection, 'text-center mx-auto position-relative px-sm-0 px-2')}>
+      {includeCopy && (
+        <Fragment>
+          <h1 className={classNames(homeStyle.heading, 'mb-4')}>Open Source and Public API</h1>
+          <h3 className={classNames(homeStyle.description, 'pb-4 px-md-0 px-3')}>
+            {t.wantToRun} <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://github.com/go-faast/faast-web'>{t.faastPortfolio}</a> {t.project} <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://api.faa.st'>{t.publicAPI}</a> {t.fullControl}
+          </h3>
+        </Fragment>
+      )}
+      <div className={classNames(theme === 'light' && style.terminalLight, style.terminal, 'mx-auto mt-5')}>
         <div className={style.terminalActions}>
           <div className={style.close}></div>
           <div className={style.minimize}></div>
           <div className={style.expand}></div>
         </div>
-        <div className={style.terminalHeaderbar}></div>
+        <div className={classNames(theme === 'light' && style.terminalHeaderbarLight, style.terminalHeaderbar)}></div>
         <div className={style.terminalSidebar}></div>
         <div className='pt-5 pl-sm-5 pl-3 text-left'>
           <p className={classNames(style.comment, 'mb-0')}>
             <small>// {t.createSwap}</small>
           </p>
           <p className={style.ellipsis}>
-            <small><span className={style.await}>await</span> http.<span className={style.func}>post</span>('https://api.faast/api/v2/public/swap')</small>
+            <small><span className={style.await}>await</span> http.<span className={classNames(theme === 'light' && style.funcLight, style.func)}>post</span>('https://api.faast/api/v2/public/swap')</small>
           </p>
           <p className='m-0'>
             <small>{'{'}</small>
@@ -63,8 +67,8 @@ const Terminal = ({ response, translations: { static: { terminal: t } } }) => {
           {response.map(({ key, value }) => {
             return (
               <p style={{ lineHeight: '18px' }} className={classNames(style.ellipsis, 'p-0 m-0')} key={key}>
-                <small className={classNames(style.key, 'ml-4 mr-2')}>{key}:</small>
-                <small className={style.value}>{value}</small>
+                <small className={classNames(theme === 'light' && style.keyLight, style.key, 'ml-4 mr-2')}>{key}:</small>
+                <small className={classNames(theme === 'light' && style.valueLight, style.value)}>{value}</small>
               </p>
             )
           })}
@@ -78,5 +82,10 @@ const Terminal = ({ response, translations: { static: { terminal: t } } }) => {
 
 export default compose(
   setDisplayName('Terminal'),
+  defaultProps({
+    includeCopy: true,
+    includeBg: true,
+    theme: 'dark'
+  }),
   withState('response', 'updateResponse', json)
 )((Terminal))

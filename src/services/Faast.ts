@@ -252,27 +252,12 @@ export const fetchOrders = (
 ): Promise<SwapOrder[]> | Promise<any[]> =>
   Promise.all([
     fetchGet(`${apiUrl}/api/v2/public/swaps`, {
-      refund_address: walletId,
+      any_address: walletId,
       page,
       limit,
     }),
-    fetchGet(`${apiUrl}/api/v2/public/swaps`, {
-      user_id: walletId,
-      page,
-      limit,
-    }),
-    fetchGet(`${apiUrl}/api/v2/public/swaps`, {
-      deposit_address: walletId,
-      page,
-      limit,
-    }),
-    fetchGet(`${apiUrl}/api/v2/public/swaps`, {
-      withdrawal_address: walletId,
-      page,
-      limit,
-    }),
-  ]).then(([r1, r2, r3, r4]: OrdersResult[]) =>
-    r1.orders.concat.apply(r1.orders, [r2.orders, r3.orders, r4.orders]).map((order: OrdersResult) => (
+  ]).then(([r1]: OrdersResult[]) =>
+    r1.orders.map((order: OrdersResult) => (
     formatOrder ? formatOrderResult(order) : order
     )))
     .catch((e: any) => {
