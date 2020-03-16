@@ -24,7 +24,7 @@ export const isRateLoading = createItemSelector(getRate, fieldSelector('loading'
 export const isRateStale = createItemSelector(getRate, rate => {
   if (rate) {
     const { lastUpdated } = rate
-    const isStale = (Date.now() - lastUpdated) >= 300000
+    const isStale = (Date.now() - lastUpdated) >= 5000
     return isStale
   } else {
     return true

@@ -24,6 +24,7 @@ export const retrievePairData = (from, to, depositAmount, withdrawalAmount) => (
     dispatch(rateLoading(pair))
     return Faast.fetchPairData(pair, depositAmount, withdrawalAmount)
       .then((data) => { 
+        console.log(data)
         return dispatch(rateUpdated(pair, data)).payload
       })
       .catch((e) => {

@@ -275,7 +275,7 @@ export const sendSwap = (swap, sendOptions) => (dispatch, getState) => Promise.r
     log.debug('sendSwap', swap)
     const { txId } = swap
     const tx = getTx(getState(), txId)
-    if (tx.sent) {
+    if (tx && tx.sent) {
       return
     }
     return dispatch(sendTx(tx, sendOptions))

@@ -16,8 +16,10 @@ import IconLabel from 'Components/IconLabel'
 import WalletBalance from 'Components/WalletBalance'
 
 export const WalletLabel = ({
-  hideIcon, wallet, grouped, wallet: { label: walletLabel, typeLabel }, label, iconProps, showBalance, showLink, stacked, id, ...props,
+  hideIcon, wallet, grouped, label, iconProps, showBalance, showLink, stacked, id, ...props,
 }) => {
+  const walletLabel = wallet && wallet.label
+  const typeLabel = wallet && wallet.typeLabel
   const labelString = label && !grouped ? label : grouped ? typeLabel : walletLabel
   const labelNode = id === defaultPortfolioId ? (<i>{labelString}</i>) : labelString
   const labelLink = showLink && wallet && wallet.address ? (
