@@ -50,9 +50,10 @@ export const getStats = (id, key) => (dispatch) => {
 }
 
 export const affiliateLogin = (id, key) => (dispatch) => {
-  dispatch(loadingLogin())
   dispatch(getAccountDetails(id, key))
     .then(() => {
+      dispatch(push('/affiliates/terms/accept'))
+      dispatch(loadingLogin())
       Promise.all([
         dispatch(getAffiliateWithdrawals(id, key)),
         dispatch(getAffiliateSwaps(id, key, 1, 5)),

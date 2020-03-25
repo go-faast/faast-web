@@ -52,7 +52,9 @@ const Access = () => (
           <TileCol><CreateWallet /></TileCol>
           <TileCol><ImportKeystore /></TileCol>
           <div className='w-100'/>
-          <Col xs='9' sm='12' md='8' lg='6'><AddressSearch inputProps={{ style: { height: 53 } }} /></Col>
+          <Col xs='9' sm='12' md='8' lg='6'>
+            <AddressSearch inputProps={{ style: { height: 53 } }} />
+          </Col>
         </TileRow>
       </Col>
     </Row>

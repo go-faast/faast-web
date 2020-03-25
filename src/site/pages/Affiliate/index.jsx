@@ -23,6 +23,7 @@ import dashboard from 'Img/afilDashboard.png'
 import { fetchGeoRestrictions } from 'Common/actions/app'
 import { retrieveAssets } from 'Common/actions/asset'
 import { getAllAssetsArray, areAssetsLoaded } from 'Common/selectors/asset'
+import { i18nTranslate as trans } from 'Utilities/translate'
 
 import style from './style.scss'
 
@@ -30,22 +31,22 @@ const features = [
   {
     icon: monitor,
     heading: 'Swap Functionality',
-    description: 'Integrating Faa.st into your website or application grants you out of the box crypto to crypto trading functionality. Facilitate transactions and empower users on top of your own platform, without requiring any of the complex infrastructure.',
+    description: trans('static.partners.swap', 'Integrating Faa.st into your website or application grants you out of the box crypto to crypto trading functionality. Facilitate transactions and empower users on top of your own platform, without requiring any of the complex infrastructure.'),
   },
   {
     icon: bitcoin,
     heading: 'Easy Monetization',
-    description: 'Easily monetize your product using a referral link or by integrating our API directly. Enable your users to instantly swap crypto and you’ll earn a percentage on every swap paid in Bitcoin.',
+    description: trans('static.partners.monetize', 'Easily monetize your product using a referral link or by integrating our API directly. Enable your users to instantly swap crypto and you’ll earn a percentage on every swap paid in Bitcoin.'),
   },
   {
     icon: code,
     heading: 'Simple Integration',
-    description: 'Our team worked hard on simplifying the technical areas to allow quick and easy setup. So no matter your project, our affiliate program will allow you to quickly start profiting.',
+    description: trans('static.partners.simpleIntegration', 'Our team worked hard on simplifying the technical areas to allow quick and easy setup. So no matter your project, our affiliate program will allow you to quickly start profiting.'),
   },
   {
     icon: adjust,
     heading: 'Customizable',
-    description: 'Unlike other exchange services, we allow you to choose the fixed and percent fees applied to swaps. This allows you to choose the right monetization model for your use case, and charge accordingly.',
+    description:  trans('static.partners.customizeable', 'Unlike other exchange services, we allow you to choose the fixed and percent fees applied to swaps. This allows you to choose the right monetization model for your use case, and charge accordingly.'),
   }]
 
 export default compose(
@@ -70,7 +71,7 @@ export default compose(
     }
   }),
   withRouteData,
-)(({ supportedAssets, areAssetsLoaded, translations, assetList }) => {
+)(({ supportedAssets, areAssetsLoaded, translations, translations: { static: { partners: t } }, assetList }) => {
   supportedAssets = areAssetsLoaded ? assetList : supportedAssets
   return (
     <div>
@@ -82,11 +83,11 @@ export default compose(
               translations={translations}
               headline={(
                 <h1 className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
-                  Become a Partner and Start Earning Bitcoin
+                  {t.heroText}
                 </h1>
               )}
               rightHero={<AffiliateContact />}
-              subline={<span>The Faa.st affiliate program makes monetizing your product quick, easy, and profitable</span>}
+              subline={<span>{t.subline}</span>}
               cta={(
                 <Button 
                   tag='a' 
@@ -94,7 +95,7 @@ export default compose(
                   color='primary'
                   role='button' 
                   href='https://faa.st/app/affiliates/signup'>
-                    Start earning now
+                  {t.heroButton}
                 </Button> 
               )}
               bgColor={'transparent'}
@@ -110,10 +111,7 @@ export default compose(
           <Container>
             <Row className={classNames(style.whyUseFast, 'text-center mt-xs-5 mt-lg-0 py-5 px-0 mx-2 justify-content-center')}>
               <Col xs='12'>
-                <h1 className='mb-4 mt-xs-5 mt-lg-3 mt-0 pt-xs-5 pt-lg-0 pt-0' style={{ fontWeight: 600 }}>Why Integrate with Faa.st?</h1>
-              </Col>
-              <Col xs='12' className='mb-4'>
-                <h4 style={{ color: '#657586', lineHeight: 1.4, }}>Integrating Faa.st into your website or application grants you out of the box crypto to crypto trading functionality. This enables you to facilitate transactions and empower users on top of your own platform, without requiring any of the complex infrastructure!</h4>
+                <h1 className='mb-4 mt-xs-5 mt-lg-3 mt-0 pt-xs-5 pt-lg-0 pt-0' style={{ fontWeight: 600 }}>{t.whyIntegrate}</h1>
               </Col>
               <Col className='mt-4' xs='12'>
                 <Row className='mt-3 justify-content-center'>
@@ -130,7 +128,7 @@ export default compose(
             </Row>
             <Row className='text-center py-5 px-4 mx-0 mb-5 justify-content-center'>
               <Col className='pb-4 px-0 mb-3' xs='12'>
-                <h2 style={{ fontWeight: 600 }}>Dashboard Features</h2>
+                <h2 style={{ fontWeight: 600 }}>{t.dashboardFeatures}</h2>
               </Col>
               <Col className='mb-5 pb-2 justify-content-center d-flex align-items-center' xs='6'>
                 <img style={{ boxShadow: '0px 5px 11px 1px rgba(200, 216, 236, 0.5)', borderRadius: 4, maxWidth: 500, width: '100vw' }} src={dashboard} />
@@ -138,17 +136,17 @@ export default compose(
               <Col lg='4' md='6' className='text-left ml-xs-0 ml-lg-4'>
                 <Row>
                   <Col style={{ fontSize: 20 }} className='mt-4'>
-                    <i style={{ color: '#00C7B6' }} className='fa fa-check-circle mr-2'></i> Visualize what assets your users are swapping and track your earnings in one easy to use interface
+                    <i style={{ color: '#00C7B6' }} className='fa fa-check-circle mr-2'></i> {t.visualize}
                   </Col>
                 </Row>
                 <Row style={{ fontSize: 20 }} className='mt-4'>
                   <Col>
-                    <i style={{ color: '#00C7B6' }} className='fa fa-check-circle mr-2'></i> Initiate a payout in one click, whenever you want
+                    <i style={{ color: '#00C7B6' }} className='fa fa-check-circle mr-2'></i> {t.payout}
                   </Col>
                 </Row>
                 <Row style={{ fontSize: 20 }} className='mt-4'>
                   <Col>
-                    <i style={{ color: '#00C7B6' }} className='fa fa-check-circle mr-2'></i> Full 24/7 phone and email support from real human beings
+                    <i style={{ color: '#00C7B6' }} className='fa fa-check-circle mr-2'></i> {t.support}
                   </Col>
                 </Row>
               </Col>
@@ -157,8 +155,8 @@ export default compose(
           <Row style={{ backgroundColor: '#F6FAFE' }} className='text-center pt-5 pb-2 px-0 mx-0'>
             <Container>
               <Col className='px-0' xs='12'>
-                <h2 className='pb-0 mb-3' style={{ fontWeight: 600 }}>Join our partners</h2>
-                <h5 style={{ opacity: .75 }}>These affiliates are already earning with Faa.st</h5>
+                <h2 className='pb-0 mb-3' style={{ fontWeight: 600 }}>{t.join}</h2>
+                <h5 style={{ opacity: .75 }}>{t.alreadyIntegrated}</h5>
               </Col>
               <Col className='px-0'>
                 <Row className='d-flex align-items-center justify-content-center mx-0 m-5'>
@@ -184,41 +182,41 @@ export default compose(
           <Row className='pt-5 pb-2 px-0 mx-0 mt-5 mb-5 pb-5'>
             <Container>
               <Col className='text-center'>
-                <h2 style={{ fontWeight: 600 }}>How you can monetize</h2>
+                <h2 style={{ fontWeight: 600 }}>{t.howToMonetize}</h2>
               </Col>
               <Col className='text-center mt-5 mb-4'>
                 <h1 className={classNames(style.numbersGreen, 'font-weight-bold')}>1</h1>
                 <span className='ml-2' style={{ fontWeight: 600, fontSize: 40 }}>API</span>
               </Col>
               <Col className='text-center'>
-                <p style={{ fontSize: 18 }}>The most feature rich and customizable way to monetize your product. Provide swap support right in your website or app and choose the fee you’ll earn on each transaction. Sign up now to begin, or check out our getting started guide for more resources.</p>
+                <p style={{ fontSize: 18 }}>{t.apiDescription}</p>
                 <Terminal theme='light' translations={translations} includeCopy={false} includeBg={false} />
               </Col>
               <Col className='text-center mt-0 mb-4'>
                 <h1 className={classNames(style.numbersGreen, 'font-weight-bold')}>2</h1>
-                <span className='ml-2' style={{ fontWeight: 600, fontSize: 40 }}>Referral Links</span>
+                <span className='ml-2' style={{ fontWeight: 600, fontSize: 40 }}>{t.referralLinks}</span>
               </Col>
               <Col className='text-center'>
-                <p className='mb-5' style={{ fontSize: 18 }}>The easiest way to get started. Simply present your users with a special referral link to the Faa.st website and you’ll earn a percentage on each swap they place. Sign up now to get your link.</p>
+                <p className='mb-5' style={{ fontSize: 18 }}>{t.referralDescription}</p>
                 <div className={style.input}>
                   <p>https://faa.st/swap?aid=YOUR_AID_HERE <i className='fa fa-copy'></i></p>
                 </div>
               </Col>
               <Col className='text-center mt-5'>
-                <Button tag='a' href='/app/affiliates/signup' className='text-white mr-3' color='primary'>Get started</Button> 
+                <Button tag='a' href='/app/affiliates/signup' className='text-white mr-3' color='primary'>{t.getStarted}</Button> 
               </Col>
             </Container>
           </Row>
           <Row className='text-center py-5 mx-0 mt-5 text-white' style={{ backgroundColor: '#374B5D' }}>
             <Container>
               <Col className='mb-5' xs='12'>
-                <h2 style={{ fontWeight: 600 }}>How to get started</h2>
+                <h2 style={{ fontWeight: 600 }}>{t.howTo}</h2>
               </Col>
               <Col xs='12'>
                 <Row>
                   <Col>
                     <h1 className={classNames(style.numbers, 'font-weight-bold')}>1</h1>
-                    <p>Sign up <a href='/app/affiliates/signup'>here</a></p>
+                    <p>{t.signUp} <a href='/app/affiliates/signup'>{t.here} </a></p>
                   </Col>
                   <Col className='align-items-center justify-content-center d-flex' xs='1'>
                     <svg viewBox="0 0 129 129" enableBackground="new 0 0 129 129" width="24px" height="24px">
@@ -229,7 +227,7 @@ export default compose(
                   </Col>
                   <Col>
                     <h1 className={classNames(style.numbers, 'font-weight-bold')}>2</h1>
-                    <p>Integrate Faa.st</p>
+                    <p>{t.integrateFaast}</p>
                   </Col>
                   <Col className='align-items-center justify-content-center d-flex' xs='1'>
                     <svg viewBox="0 0 129 129" enableBackground="new 0 0 129 129" width="24px" height="24px">
@@ -240,7 +238,7 @@ export default compose(
                   </Col>
                   <Col>
                     <h1 className={classNames(style.numbers, 'font-weight-bold')}>3</h1>
-                    <p>Earn BTC</p>
+                    <p>{t.earnBTC}</p>
                   </Col>
                 </Row>
               </Col>
@@ -250,11 +248,11 @@ export default compose(
             <Col className={classNames(style.ctaContainer, 'mx-auto d-flex mb-5 mt-5 px-md-5 px-0 pl-xs-4 pl-md-5 pl-3 py-md-0 py-4')}>
               <Row style={{ flex: 1 }} className='mx-0 px-0 justify-content-between align-items-center'>
                 <Col className='p-0 m-0 d-flex' xs='12' md='6'>
-                  <h2 className='text-white my-0'>Ready to get started?</h2>
+                  <h2 className='text-white my-0'>{t.ready}</h2>
                 </Col>
                 <Col className='p-0 m-0 mt-xs-3 mt-md-0 mt-0 d-flex justify-content-xs-start justify-content-md-end' xs='12' md='6'>
-                  <Button tag='a' href='#' className='text-white mr-3' color='primary'>Get in touch</Button>
-                  <Button tag='a' href='https://api.faa.st' target='_blank' color='white'>Faa.st API Docs</Button>
+                  <Button tag='a' href='#' className='text-white mr-3' color='primary'>{t.getInTouch}</Button>
+                  <Button tag='a' href='https://api.faa.st' target='_blank' color='white'>{t.apiDocs}</Button>
                 </Col>
               </Row>
             </Col>

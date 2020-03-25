@@ -24,8 +24,7 @@ import { openViewOnlyWallet } from 'Actions/access'
 import { saveSwapWidgetInputs } from 'Actions/app'
 
 import { getRateMinimumDeposit, getRatePrice, isRateLoaded, getRateMaximumWithdrawal,
-  getRateMaximumDeposit, rateError, getRateWithdrawalFee, 
-  isRateStale, getRateMinimumWithdrawal } from 'Selectors/rate'
+  getRateMaximumDeposit, rateError, isRateStale, getRateMinimumWithdrawal } from 'Selectors/rate'
 import { getAllAssetSymbols, getAsset } from 'Selectors/asset'
 import { getWallet } from 'Selectors/wallet'
 import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
@@ -69,7 +68,7 @@ const StepOneField = withProps(({ labelClass, inputClass, className, labelCol, i
 }))(ReduxFormField)
 
 const SwapStepOne = ({
-  change, untouch, submitting, balancesLoaded,
+  change, untouch, balancesLoaded,
   sendSymbol, receiveSymbol, assetSymbols, assetSelect, setAssetSelect, 
   validateReceiveAddress, validateRefundAddress, validateSendAmount, validateReceiveAmount,
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled, validateETHAmount,
@@ -77,7 +76,7 @@ const SwapStepOne = ({
   sendWallet, receiveWallet, maxGeoBuy, handleSelectGeoMax, receiveAsset, ethReceiveBalanceAmount,
   onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs = {},
   onChangeRefundAddress, onChangeReceiveAddress, rateError, sendAsset, t, onCloseAssetSelector,
-  validateDepositTag
+  validateDepositTag, isSubmittingSwap
 }) => {
   return (
     <Fragment>
@@ -297,9 +296,9 @@ const SwapStepOne = ({
                 color={rateError ? 'danger' : 'primary'} 
                 type='submit' 
                 event={{ category: 'Swap', action: 'Create Swap' }}
-                disabled={Boolean(submitting || rateError)}
+                disabled={Boolean(isSubmittingSwap || rateError)}
               >
-                {!submitting && !rateError ? (
+                {!isSubmittingSwap && !rateError ? (
                   <T tag='span' i18nKey='app.widget.createSwap'>Create Swap</T>
                 ) : rateError ? (
                   <T tag='span' i18nKey='app.widget.noRate'>Unable to retrieve rate</T>
@@ -388,10 +387,10 @@ export default compose(
     maximumReceive: (state, { pair }) => getRateMaximumWithdrawal(state, pair),
     estimatedRate: (state, { pair }) => getRatePrice(state, pair),
     rateError: (state, { pair }) => rateError(state, pair),
-    withdrawalFee: (state, { pair }) => getRateWithdrawalFee(state, pair),
   })),
   withState('assetSelect', 'setAssetSelect', null), // send, receive, or null
   withState('estimatedField', 'setEstimatedField', 'receive'), // send or receive
+  withState('isSubmittingSwap', 'updateIsSubmittingSwap', false),
   withHandlers({
     onCloseAssetSelector: ({ setAssetSelect }) => () => {
       setAssetSelect(null)
@@ -414,8 +413,9 @@ export default compose(
     onSubmit: ({
       sendSymbol, receiveAsset, sendAsset,
       createSwap, openViewOnly, push, estimatedField,
-      ethSendBalanceAmount, t, fullBalanceAmount
+      ethSendBalanceAmount, t, fullBalanceAmount,updateIsSubmittingSwap
     }) => async (values) => {
+      updateIsSubmittingSwap(true)
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
       let { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveAmount, receiveWalletId, receiveAddressExtraId, refundAddressExtraId } = values
       if (receiveSymbol == 'ETH' || ERC20) {
@@ -425,11 +425,13 @@ export default compose(
         refundAddress = toChecksumAddress(refundAddress)
       }
       if (sendAsset.ERC20 && parseFloat(ethSendBalanceAmount) === 0) {
+        updateIsSubmittingSwap(false)
         throw new SubmissionError({
           refundAddress: t('app.widget.notEnoughEth', 'This wallet does not have enough ETH to cover the gas fees. Please deposit some ETH and try again.'),
         })
       }
       if (sendSymbol === 'XRP' && sendWalletId && toBigNumber(fullBalanceAmount).minus(toBigNumber(sendAmount)).lt(20)) {
+        updateIsSubmittingSwap(false)
         throw new SubmissionError({
           refundAddress: t('app.widget.notEnoughXrp', 'XRP wallets must maintain a minimum balance of 20 XRP.'),
         })
@@ -441,6 +443,7 @@ export default compose(
           if (validation.message) {
             if (validation.message.includes('extraId is required')) {
               const extraIdName = extraAssetFields[asset.symbol].deposit || 'extra ID'
+              updateIsSubmittingSwap(false)
               throw new SubmissionError({
                 [extraIdFieldName]: `${asset.name} ${extraIdName} is required for this address`,
               })
@@ -448,6 +451,7 @@ export default compose(
               message += `: ${validation.message}`
             }
           }
+          updateIsSubmittingSwap(false)
           throw new SubmissionError({
             [addressFieldName]: message,
           })
@@ -470,11 +474,12 @@ export default compose(
         refundAddressExtraId
       })
         .then((swap) => {
+          updateIsSubmittingSwap(false)
           push(`/swap/send?id=${swap.orderId}`)
           if (receiveSymbol === 'ETH' || ERC20) { 
             return openViewOnly(receiveAddress, `/swap/send?id=${swap.orderId}`)
           }
-        })
+        }).catch(() => updateIsSubmittingSwap(false))
     },
     handleSaveSwapWidgetInputs: ({ saveSwapWidgetInputs, receiveAsset, sendAsset, 
       receiveAddress, refundAddress, receiveAmount, sendAmount, sendWallet, receiveWallet }) => (inputs) => {
@@ -514,14 +519,11 @@ export default compose(
     }
     return {
       calculateReceiveEstimate: ({
-        receiveAsset, estimatedRate, setEstimatedField, updateURLParams, sendAsset, withdrawalFee
+        receiveAsset, estimatedRate, setEstimatedField, updateURLParams, sendAsset
       }) => (sendAmount) => {
         if (estimatedRate && sendAmount) {
           sendAmount = toBigNumber(sendAmount).round(sendAsset.decimals)
-          console.log('receive amount', sendAmount.div(estimatedRate).round(receiveAsset.decimals).toString())
-          console.log('withdrawal fee', withdrawalFee)
           const estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals)
-          console.log('minus', estimatedReceiveAmount.toString())
           updateURLParams({ 
             toAmount: estimatedReceiveAmount ? parseFloat(estimatedReceiveAmount) : undefined,
             fromAmount: sendAmount ? parseFloat(sendAmount) : undefined

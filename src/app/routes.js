@@ -52,6 +52,7 @@ export const assetDetail = createPath('/assets/:symbol')
 export const assetIndex = createPath('/assets')
 
 export const affiliateLogin = createPath('/affiliates/login')
+export const affiliateAcceptTerms = createPath('/affiliates/terms/accept')
 export const affiliateSignup = createPath('/affiliates/signup')
 export const affiliateAccountModal = createPath('/affiliates/dashboard/account')
 export const affiliateDashboard = createPath('/affiliates/dashboard')
@@ -98,4 +99,5 @@ export default {
   watchlist,
   trending,
   settings,
+  affiliateAcceptTerms
 }

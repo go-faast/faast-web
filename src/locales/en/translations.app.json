@@ -4,7 +4,7 @@
       "loadingFaast": "Loading Faa.st..."
     },
     "addressSearchForm": {
-      "placeholder": "Search by address..."
+      "placeholder": "Search by ETH address..."
     },
     "priceChart": {
       "yAxisLabel": "Price (USD)",

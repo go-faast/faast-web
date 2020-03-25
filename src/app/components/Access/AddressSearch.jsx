@@ -12,7 +12,7 @@ const AddressSearch = ({ routerPush, ...props }) => (
 )
 
 const mapDispatchToProps = {
-  routerPush: push
+  routerPush: push,
 }
 
 export default connect(null, mapDispatchToProps)(AddressSearch)

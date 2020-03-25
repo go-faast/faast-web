@@ -13,6 +13,7 @@ import SwapWidgetStepTwo from 'Components/SwapWidget/StepTwo'
 import AssetDetail from 'Components/AssetDetail'
 import AssetIndex from 'Components/AssetIndex'
 import AffiliateLogin from 'Components/Affiliate/Login'
+import AffiliateAcceptTerms from 'Components/Affiliate/AcceptTerms'
 import AffiliateSignup from 'Components/Affiliate/Signup'
 import AffiliateDashboard from 'Components/Affiliate/Dashboard'
 import AffiliateSettings from 'Components/Affiliate/Settings'
@@ -32,7 +33,7 @@ import {
   affiliateLogin, affiliateSignup, affiliateDashboard, affiliateSettings,
   affiliatePayouts, affiliateSwaps, affiliateAccountModal,
   watchlist, trending, affiliateTerms, swapWidgetStepTwo, tradeWidgetDetail,
-  connectMobileWallet, settings
+  connectMobileWallet, settings, affiliateAcceptTerms
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -63,6 +64,7 @@ const AppView = ({ hasNoWallets }) => {
         <Route path={affiliateSignup.path} component={AffiliateSignup}/>
         <Route path={affiliateDashboard.path} component={AffiliateDashboard}/>
         <Route path={affiliateSettings.path} component={AffiliateSettings}/>
+        <Route path={affiliateAcceptTerms.path} component={AffiliateAcceptTerms}/>
         <Route path={affiliatePayouts.path} component={AffiliatePayouts}/>
         <Route path={affiliateSwaps.path} component={AffiliateSwaps}/>
         <Route path={affiliateTerms.path} component={AffiliateTerms}/>
