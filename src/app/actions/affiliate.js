@@ -140,7 +140,7 @@ export const getAffiliateSwaps = (id, key, page, limit) => (dispatch) => {
 
 export const restoreCachedAffiliateInfo = () => (dispatch, getState) => {
   const alreadyAcceptedTerms = localStorageGet('affiliate_terms_version_accepted') ? 
-    localStorageGet('affiliate_terms_version_accepted') < config.affiliateSettings.terms_version :
+    localStorageGet('affiliate_terms_version_accepted') >= config.affiliateSettings.terms_version :
     false
   dispatch(updateAffiliateTerms(alreadyAcceptedTerms))
   const cachedAffiliateId = sessionStorageGet('state:affiliate_id')
