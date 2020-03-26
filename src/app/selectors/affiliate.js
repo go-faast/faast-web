@@ -54,3 +54,5 @@ export const swapPieChartData = createSelector(getAffiliateState, ({ stats: { by
       const { swaps_completed, name } = completed
       return { sliced: false, y: swaps_completed, name }})
 })
+
+export const hasAcceptedTerms = createSelector(getAffiliateState, ({ acceptedTerms }) => acceptedTerms)

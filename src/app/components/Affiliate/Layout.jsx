@@ -11,15 +11,17 @@ export default compose(
   setDisplayName('AffiliateLayout'),
   setPropTypes({
     tag: tagPropType,
-    navbarProps: PropTypes.object
+    navbarProps: PropTypes.object,
+    clickableHeaderLink: PropTypes.bool
   }),
   defaultProps({
     tag: Container,
-    navbarProps: {}
+    navbarProps: {},
+    clickableHeaderLink: true
   }),
-)(({ tag: Tag, navbarProps, afterNav, className, children, ...props }) => (
+)(({ tag: Tag, navbarProps, clickableHeaderLink, afterNav, className, children, ...props }) => (
   <div>
-    <AffiliateNavbar {...navbarProps}/>
+    <AffiliateNavbar clickableLogo={clickableHeaderLink} {...navbarProps}/>
     {afterNav}
     <Tag className={classNames(className, 'content pb-5')} {...props}>
       {children}

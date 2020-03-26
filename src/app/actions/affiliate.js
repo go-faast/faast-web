@@ -3,15 +3,19 @@ import { push } from 'react-router-redux'
 import toastr from 'Utilities/toastrWrapper'
 import Faast from 'Services/Faast'
 import { sessionStorageSet, sessionStorageSetJson, sessionStorageGetJson, 
-  sessionStorageGet, sessionStorageClear } from 'Utilities/storage'
+  sessionStorageGet, sessionStorageClear, localStorageSet, localStorageGet } from 'Utilities/storage'
 
+import { hasAcceptedTerms } from 'Selectors/affiliate'
 import { isAffiliateLoggedIn, isAffiliateDataStale } from 'Selectors'
+
+import config from 'Config'
 
 const createAction = newScopedCreateAction(__filename)
 
 export const affiliateDataUpdated = createAction('AFFILIATE_UPDATED')
 export const login = createAction('LOGIN')
 export const loadingLogin = createAction('LOADING_LOGIN')
+export const updateAffiliateTerms = createAction('ACCEPT_TERMS')
 export const logout = createAction('LOGOUT')
 export const loginError = createAction('LOGIN_ERROR')
 export const updateAffiliateId = createAction('UPDATE_ID')
@@ -49,10 +53,20 @@ export const getStats = (id, key) => (dispatch) => {
     })
 }
 
-export const affiliateLogin = (id, key) => (dispatch) => {
+export const acceptTerms = () => (dispatch) => {
+  localStorageSet('affiliate_terms_version_accepted', config.affiliateSettings.terms_version)
+  dispatch(push('/affiliates/dashboard'))
+  dispatch(updateAffiliateTerms(true))
+}
+
+export const affiliateLogin = (id, key) => (dispatch, getState) => {
   dispatch(getAccountDetails(id, key))
     .then(() => {
-      dispatch(push('/affiliates/terms/accept'))
+      if (!hasAcceptedTerms(getState())) {
+        dispatch(push('/affiliates/terms/accept'))
+      } else {
+        dispatch(push('/affiliates/dashboard'))
+      }
       dispatch(loadingLogin())
       Promise.all([
         dispatch(getAffiliateWithdrawals(id, key)),
@@ -125,6 +139,10 @@ export const getAffiliateSwaps = (id, key, page, limit) => (dispatch) => {
 }
 
 export const restoreCachedAffiliateInfo = () => (dispatch, getState) => {
+  const alreadyAcceptedTerms = localStorageGet('affiliate_terms_version_accepted') ? 
+    localStorageGet('affiliate_terms_version_accepted') < config.affiliateSettings.terms_version :
+    false
+  dispatch(updateAffiliateTerms(alreadyAcceptedTerms))
   const cachedAffiliateId = sessionStorageGet('state:affiliate_id')
   const cachedAffiliateKey = sessionStorageGet('state:affiliate_key')
   const cachedAffiliateStats = sessionStorageGetJson('state:affiliate_stats')

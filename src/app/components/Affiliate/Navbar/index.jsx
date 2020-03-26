@@ -25,17 +25,18 @@ import { affiliateLogout } from 'Actions/affiliate'
 
 import Icon from 'Components/Icon'
 import FaastLogo from 'Img/faast-logo.png'
+import { hasAcceptedTerms } from 'Selectors/affiliate'
 
 import { navbar, navbarBrand, navbarLink, active, buttonText } from './style'
 
-const AffiliateNavBar = ({ logout, loggedIn, children, isExpanded, toggleExpanded, ...props }) => (
+const AffiliateNavBar = ({ logout, loggedIn, children, isExpanded, toggleExpanded, hasAcceptedTerms, clickableLogo, ...props }) => (
   <Navbar className={navbar} {...pick(props, Object.keys(Navbar.propTypes))} light>
     <Container>
-      <NavbarBrand tag={Link} to={loggedIn ? '/affiliates/dashboard' : '/affiliates/login'} className={classNames(navbarBrand, !loggedIn ? 'mx-auto' : 'mr-auto')}>
+      <NavbarBrand tag={clickableLogo ? Link : 'span'} to={loggedIn ? '/affiliates/dashboard' : '/affiliates/login'} className={classNames(navbarBrand, !loggedIn || !hasAcceptedTerms ? 'mx-auto' : 'mr-auto')}>
         <Icon src={FaastLogo} height='1.5rem' width='1.5rem' inline className='mx-3'/>
         Faa.st Affiliates
       </NavbarBrand>
-      {loggedIn && (
+      {loggedIn && hasAcceptedTerms && (
         <Fragment>
           <NavbarToggler onClick={toggleExpanded}/>
           <Collapse isOpen={isExpanded} navbar>
@@ -104,6 +105,7 @@ export default compose(
   setDisplayName('AffiliateNavBar'),
   connect(createStructuredSelector({
     loggedIn: isAffiliateLoggedIn,
+    hasAcceptedTerms
   }), {
     logout: affiliateLogout
   }),
