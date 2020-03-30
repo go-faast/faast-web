@@ -23,31 +23,8 @@ import dashboard from 'Img/afilDashboard.png'
 import { fetchGeoRestrictions } from 'Common/actions/app'
 import { retrieveAssets } from 'Common/actions/asset'
 import { getAllAssetsArray, areAssetsLoaded } from 'Common/selectors/asset'
-import { i18nTranslate as trans } from 'Utilities/translate'
 
 import style from './style.scss'
-
-const features = [
-  {
-    icon: monitor,
-    heading: 'Swap Functionality',
-    description: trans('static.partners.swap', 'Integrating Faa.st into your website or application grants you out of the box crypto to crypto trading functionality. Facilitate transactions and empower users on top of your own platform, without requiring any of the complex infrastructure.'),
-  },
-  {
-    icon: bitcoin,
-    heading: 'Easy Monetization',
-    description: trans('static.partners.monetize', 'Easily monetize your product using a referral link or by integrating our API directly. Enable your users to instantly swap crypto and you’ll earn a percentage on every swap paid in Bitcoin.'),
-  },
-  {
-    icon: code,
-    heading: 'Simple Integration',
-    description: trans('static.partners.simpleIntegration', 'Our team worked hard on simplifying the technical areas to allow quick and easy setup. So no matter your project, our affiliate program will allow you to quickly start profiting.'),
-  },
-  {
-    icon: adjust,
-    heading: 'Customizable',
-    description:  trans('static.partners.customizeable', 'Unlike other exchange services, we allow you to choose the fixed and percent fees applied to swaps. This allows you to choose the right monetization model for your use case, and charge accordingly.'),
-  }]
 
 export default compose(
   setDisplayName('Affiliate'),
@@ -73,6 +50,28 @@ export default compose(
   withRouteData,
 )(({ supportedAssets, areAssetsLoaded, translations, translations: { static: { partners: t } }, assetList }) => {
   supportedAssets = areAssetsLoaded ? assetList : supportedAssets
+
+  const features = [
+    {
+      icon: monitor,
+      heading: 'Swap Functionality',
+      description: t.swap
+    },
+    {
+      icon: bitcoin,
+      heading: 'Easy Monetization',
+      description: t.monetize
+    },
+    {
+      icon: code,
+      heading: 'Simple Integration',
+      description: t.simpleIntegration
+    },
+    {
+      icon: adjust,
+      heading: 'Customizable',
+      description:  t.customizeable
+    }]
   return (
     <div>
       <div className='text-dark' style={{ backgroundColor: '#323540' }}>
