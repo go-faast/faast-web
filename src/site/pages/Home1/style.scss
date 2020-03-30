@@ -8,17 +8,17 @@
 
 .heading {
   color: #EFEFEF;
-  font-size: 28px;
+  font-size: 32px;
   font-weight: 600;
 }
 
 .textSize {
-  font-size: 17px;
+  font-size: 20px;
   line-height: 24px;
 }
 
 .description {
-  color: #9C9FA8;
+  color: #bdc3d3;
   @extend .textSize;
 }
 

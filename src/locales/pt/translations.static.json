@@ -1,14 +1,65 @@
 {
     "static": {
+        "newsletter": {
+            "keepUp": "Acompanhe a Newsletter do Faa.st",
+            "subscribeNow": "Assine agora para receber: ",
+            "assetListings": "Atualiza\u00e7\u00f5es em listagens de novos ativos",
+            "exclusiveOffers": "Ofertas exclusivas e competi\u00e7\u00f5es para clientes do Faa.st que n\u00e3o s\u00e3o compartilhadas em nenhum outro lugar",
+            "report": "Uma c\u00f3pia gr\u00e1tis do nosso relat\u00f3rio de Melhores Pr\u00e1ticas para Armazenamento Seguro de Criptomoedas",
+            "secure": "seguro",
+            "fast": "r\u00e1pido",
+            "swap": "swap"
+        },
+        "partners": {
+            "swap": "Integrar o Faa.st ao seu site ou aplicativo lhe traz a funcionalidade das negocia\u00e7\u00f5es de cripto para cripto pronta para usar. Facilite as transa\u00e7\u00f5es e empodere os usu\u00e1rios al\u00e9m da sua plataforma, sem precisar de nenhuma infraestrutura complexa.",
+            "monetize": "Monetize facilmente o seu produto usando um link de indica\u00e7\u00e3o ou integrando o nosso API diretamente. Permita que os seus usu\u00e1rios negociem criptomoedas instantaneamente e ganhe uma porcentagem sobre cada negocia\u00e7\u00e3o feita em Bitcoin.",
+            "simpleIntegration": "A nossa equipe se esfor\u00e7ou para simplificar as \u00e1reas t\u00e9cnicas e permitir uma instala\u00e7\u00e3o r\u00e1pida e f\u00e1cil. Ent\u00e3o, seja qual for o seu projeto, o nosso programa de afiliados permitir\u00e1 que voc\u00ea comece a lucrar rapidamente.",
+            "customizeable": "Diferente de outros servi\u00e7os de c\u00e2mbio, n\u00f3s permitimos que voc\u00ea escolha as taxas fixas e percentuais aplicadas aos swaps. Isso permite que voc\u00ea escolha o modelo de monetiza\u00e7\u00e3o adequado para o seu caso e cobre de acordo.",
+            "heroText": "Torne-se um(a) parceiro(a) e comece a ganhar bitcoins",
+            "subline": "O programa de afiliados da Faa.st torna a monetiza\u00e7\u00e3o do seu produto r\u00e1pida, f\u00e1cil e lucrativa",
+            "heroButton": "Comece a ganhar agora",
+            "whyIntegrate": "Por que integrar-se ao Faa.st?",
+            "integrateSubline": "Integrar o Faa.st ao seu site ou aplicativo lhe traz a funcionalidade das negocia\u00e7\u00f5es de cripto para cripto pronta para usar. Facilite as transa\u00e7\u00f5es e empodere os usu\u00e1rios al\u00e9m da sua plataforma, sem precisar de nenhuma infraestrutura complexa!",
+            "dashboardFeatures": "Recursos do painel",
+            "visualize": "Visualize quais ativos os seus usu\u00e1rios est\u00e3o negociando e monitore os seus ganhos em uma interface simples de usar",
+            "payout": "Inicie um pagamento com um clique, quando quiser",
+            "support": "Suporte 24 horas por telefone e e-mail com humanos reais",
+            "join": "Junte-se aos nossos parceiros",
+            "alreadyIntegrated": "Esses afiliados j\u00e1 est\u00e3o ganhando com o Faa.st",
+            "howToMonetize": "Como voc\u00ea pode monetizar",
+            "apiDescription": "A forma mais personaliz\u00e1vel e rica em recursos para monetizar o seu produto. Ofere\u00e7a suporte a swaps direto no seu site ou app e escolha a taxa que voc\u00ea ganhar\u00e1 com cada transa\u00e7\u00e3o. Registre-se agora para come\u00e7ar ou confira o nosso guia de introdu\u00e7\u00e3o para saber mais.",
+            "referralLinks": "Links de indica\u00e7\u00e3o",
+            "referralDescription": "O jeito mais f\u00e1cil de come\u00e7ar. Basta oferecer um link de indica\u00e7\u00e3o do site do Faa.st aos seus usu\u00e1rios para receber uma porcentagem sobre cada negocia\u00e7\u00e3o que eles efetuarem. Registre-se agora para obter o link.",
+            "getStarted": "Comece agora",
+            "howTo": "Como come\u00e7ar",
+            "signUp": "Registre-se",
+            "here": "aqui",
+            "integrateFaast": "Integre o Faa.st",
+            "earnBTC": "Ganhe BTC",
+            "ready": "Pronto(a) para come\u00e7ar?",
+            "getInTouch": "Entre em contato",
+            "apiDocs": "Docs do API do Faa.st"
+        },
         "email": {
-            "cta": "Registre-se para ter acesso a ofertas exclusivas e sorteios de criptomoedas",
+            "cta": "Receba a newsletter para obter ofertas exclusivas, ficar por dentro do mercado e muito mais.",
             "subscribe": "Assine"
+        },
+        "hero": {
+            "new": "novo",
+            "notification": "Leia sobre o Criador de Mercado Faa.st Beta",
+            "button": "Conectar Sua Carteira",
+            "headline": "Negocie criptomoedas diretamente a partir da sua carteira",
+            "subtitle": "O Faa.st \u00e9 uma plataforma de negocia\u00e7\u00e3o de criptomoedas peer-to-peer sem cust\u00f3dia"
         },
         "reviews": {
             "twitterFam": "#\ud83d\udc9e da Fam\u00edlia do Twitter",
             "viewOriginal": "Ver tweet original"
         },
         "terminal": {
+            "becomeAffiliate": "Seja um Afiliado",
+            "readyToMonetize": "Est\u00e1 pronto para monetizar seu site ou aplicativo? Comece a ganhar hoje mesmo com o nosso",
+            "affiliateProgram": "programa de afiliados",
+            "features": "Taxas personalizadas, pagamentos instant\u00e2neos e suporte 24 horas por dia, 7 dias por semana.",
             "wantToRun": "Quer ter a sua pr\u00f3pria inst\u00e2ncia do portf\u00f3lio de trading do Faa.st? Sem problema. O projeto",
             "faastPortfolio": "Faa.st Portfolio",
             "project": "de open source no GitHub e",
@@ -17,31 +68,31 @@
             "createSwap": "criar swap"
         },
         "dashboard": {
-            "swap": "Comece a negociar seus ativos favoritos instantaneamente, direto da sua carteira",
-            "connect": "Conecte o seu MetaMask, Trezor ou Ledger e acesse o nosso painel geral para acompanhar o seu portf\u00f3lio em m\u00faltiplas carteiras, fazer negocia\u00e7\u00f5es e ver ativos em alta.",
+            "swap": "Gerencie instantaneamente todo o seu portf\u00f3lio",
+            "connect": "Conecte seu MetaMask, Trezor, Ledger ou a carteira da sua prefer\u00eancia para acessar o nosso painel de gerenciamento de portf\u00f3lio completo e monitorar os saldos em diversas carteiras, fazer negocia\u00e7\u00f5es e explorar ativos em alta.",
             "connectYourWallet": "Conecte a sua carteira"
         },
-        "swapWidget": {
+        "header": {
             "swap": "Swap",
+            "marketMaker": "Criador de Mercado",
+            "beta": "beta",
+            "blog": "Blog",
+            "button": "Conectar"
+        },
+        "swapWidget": {
             "swapInstantly": "Swap Instant\u00e2neo",
             "youSend": "Voc\u00ea envia",
             "youReceive": "Voc\u00ea recebe",
             "continue": "Continuar",
             "chooseSend": "Escolha um ativo para enviar",
-            "chooseReceive": "Escolha um ativo para receber"
+            "chooseReceive": "Escolha um ativo para receber",
+            "swap": "Swap"
         },
         "features": {
-            "title": "Recursos",
-            "lowFees": "Taxas baixas",
-            "noRegistration": "Voc\u00ea n\u00e3o precisa criar uma conta \u2014 fa\u00e7a suas negocia\u00e7\u00f5es de forma segura e confidencial.",
-            "swapMultiple": "Fa\u00e7a swap de m\u00faltiplas moedas ao mesmo tempo e crie um portf\u00f3lio diversificado em segundos com uma \u00fanica transa\u00e7\u00e3o.",
-            "noFees": "Sem taxa de dep\u00f3sito ou saque. Apenas uma plataforma de negocia\u00e7\u00e3o on-chain simples e de baixo custo.",
-            "connectYourWallet": "Conecte a sua carteira",
             "comprehensiveTable": "Para uma tabela completa de moedas suportadas",
             "clickHere": "clique aqui.",
             "instantlyBuild": "Crie instantaneamente um portf\u00f3lio de criptomoedas",
             "safeSecure": "Seguro e Protegido",
-            "tradeDirectly": "Negocie diretamente a partir da sua carteira \u2014 n\u00f3s nunca controlamos seus fundos ou vemos sua chave privada.",
             "noSignUp": "N\u00e3o Requer Registro",
             "noRegister": "N\u00e3o \u00e9 necess\u00e1rio se registrar ou compartilhar qualquer informa\u00e7\u00e3o pessoal.",
             "lightningFast": "Muito R\u00e1pido",
@@ -68,12 +119,19 @@
             "trustWallet": "Carteira Trust",
             "coinbaseWallet": "Carteira Coinbase",
             "status": "Status",
-            "keystore": "Armazenamento de chaves",
+            "title": "Recursos",
             "secure": "Seguro",
-            "safestTradingMethod": "O m\u00e9todo de negocia\u00e7\u00e3o mais seguro do mundo \u2013 n\u00f3s n\u00e3o ficamos com o seu dinheiro; se formos hackeados, voc\u00ea n\u00e3o perder\u00e1 nada.",
             "simple": "Simples",
-            "intuitiveMobile": "Uma interface para dispositivos m\u00f3veis intuitiva e amig\u00e1vel torna a negocia\u00e7\u00e3o de criptomoedas simples e f\u00e1cil.",
             "private": "Privado",
+            "lowFees": "Taxas baixas",
+            "noRegistration": "Voc\u00ea n\u00e3o precisa criar uma conta \u2014 fa\u00e7a suas negocia\u00e7\u00f5es de forma segura e confidencial.",
+            "tradeDirectly": "Negocie diretamente a partir da sua carteira \u2014 n\u00f3s nunca controlamos seus fundos ou vemos sua chave privada.",
+            "swapMultiple": "Fa\u00e7a swap de m\u00faltiplas moedas ao mesmo tempo e crie um portf\u00f3lio diversificado em segundos com uma \u00fanica transa\u00e7\u00e3o.",
+            "noFees": "Sem taxa de dep\u00f3sito ou saque. Apenas uma plataforma de negocia\u00e7\u00e3o on-chain simples e de baixo custo.",
+            "connectYourWallet": "Conecte a sua carteira",
+            "keystore": "Armazenamento de chaves",
+            "safestTradingMethod": "O m\u00e9todo de negocia\u00e7\u00e3o mais seguro do mundo \u2013 n\u00f3s n\u00e3o ficamos com o seu dinheiro; se formos hackeados, voc\u00ea n\u00e3o perder\u00e1 nada.",
+            "intuitiveMobile": "Uma interface para dispositivos m\u00f3veis intuitiva e amig\u00e1vel torna a negocia\u00e7\u00e3o de criptomoedas simples e f\u00e1cil.",
             "noPersonalData": "Voc\u00ea n\u00e3o precisa compartilhar dados pessoais, documentos com foto ou qualquer outra coisa \u2013 apenas negocia\u00e7\u00f5es seguras e confidenciais.",
             "getStartedSeconds": "Comece em poucos segundos",
             "addWallet": "Adicionar Carteira",
@@ -85,8 +143,8 @@
         },
         "wallets": {
             "supportedWallets": "Carteiras compat\u00edveis",
-            "ledgerWallet": "Carteira Ledger",
             "trezor": "TREZOR",
+            "ledgerWallet": "Carteira Ledger",
             "metaMask": "MetaMask",
             "mist": "Mist",
             "trustWallet": "Carteira Trust",
@@ -95,10 +153,6 @@
             "keystore": "Keystore"
         },
         "footer": {
-            "readyToTrade": "Pronto(a) para negociar no Faa.st?",
-            "connectYourWallet": "Conecte a sua carteira",
-            "apiDocs": "Docs do API",
-            "supportedAssets": "Ativos suportados",
             "aboutUs": "Sobre N\u00f3s",
             "affiliate": "Programa de Afiliados",
             "portfolio": "Portf\u00f3lio",
@@ -120,7 +174,7 @@
             "status": "Status",
             "knowledge": "Conhecimento",
             "whatIsIco": "O que \u00e9 uma ICO?",
-            "smartContracts": "O que s\u00e3o contratos inteligentes?",
+            "smartContracts": "O que s\u00e3o Contratos Inteligentes?",
             "dao": "O que \u00e9 um DAO?",
             "whatIsEth": "O que \u00e9 o Ethereum?",
             "icoIpoIto": "ICO, IPO, e ITO",
@@ -129,35 +183,11 @@
             "api": "API",
             "pressKit": "Kit de Imprensa",
             "terms": "Termos de Uso",
-            "privacy": "Pol\u00edtica de Privacidade"
-        },
-        "newsletter": {
-            "keepUp": "Acompanhe a Newsletter do Faa.st",
-            "subscribeNow": "Assine agora para receber: ",
-            "assetListings": "Atualiza\u00e7\u00f5es em listagens de novos ativos",
-            "exclusiveOffers": "Ofertas exclusivas e competi\u00e7\u00f5es para clientes do Faa.st que n\u00e3o s\u00e3o compartilhadas em nenhum outro lugar",
-            "report": "Uma c\u00f3pia gr\u00e1tis do nosso relat\u00f3rio de Melhores Pr\u00e1ticas para Armazenamento Seguro de Criptomoedas",
-            "secure": "seguro",
-            "fast": "r\u00e1pido",
-            "swap": "swap"
-        },
-        "hero": {
-            "new": "novo",
-            "notification": "Leia sobre o Criador de Mercado Faa.st Beta",
-            "button": "Conectar Sua Carteira",
-            "headline": {
-                "goxxed": "N\u00e3o seja ludibriado. Seja dono das suas criptomoedas."
-            },
-            "subtitle": {
-                "notYourKeys": "Sem suas chaves, sem suas criptomoedas. Conecte a sua carteira, selecione as suas moedas e fa\u00e7a o swap"
-            }
-        },
-        "header": {
-            "swap": "Swap",
-            "marketMaker": "Criador de Mercado",
-            "beta": "beta",
-            "blog": "Blog",
-            "button": "Conectar"
+            "privacy": "Pol\u00edtica de Privacidade",
+            "readyToTrade": "Pronto(a) para negociar no Faa.st?",
+            "connectYourWallet": "Conecte a sua carteira",
+            "apiDocs": "Docs do API",
+            "supportedAssets": "Ativos suportados"
         },
         "marketMaker": {
             "bitcoinWork": "Coloque seus Bitcoins para trabalhar",

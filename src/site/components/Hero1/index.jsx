@@ -15,9 +15,9 @@ const Hero = ({ supportedAssets, translations, translations: { static: { hero: {
     <Fragment>
       <Header theme='dark' headerColor='#191A1D' translations={translations} />
       <div style={{ backgroundColor: '#191A1D', minHeight: 700 }} className='jumbotron jumbotron-fluid hero-technology position-relative'>
-        <div className='px-md-0 px-2 pb-1'>
+        <div className='px-md-0 px-2 pb-1 mt-lg-4 mt-0'>
           <h1 className={classNames('mt-0', style.header)} style={{ fontWeight: 600, color: '#EFEFEF' }}>{headline}</h1>
-          <h5 className={style.subHeader} style={{ color: '#9C9FA8' }}>{subtitle}</h5>
+          <h5 className={style.subHeader}>{subtitle}</h5>
         </div>
         <div className='position-relative' style={{ zIndex: 999 }}>
           <Fade duration={1200} distance='80px' bottom>

@@ -40,7 +40,7 @@ export default compose(
   }),
 )(({ supportedAssets, to, from, headline, subline, notification, 
   notificationLink, translations = {}, cta, bgImage, bgColor, rightHero,
-  translations: { static: { hero = {}, hero: { headline: headlineT = {}, subtitle = {} } = {} } = {} } }) => (
+  translations: { static: { hero = {}, hero: { headline: headlineT, subtitle } = {} } = {} } }) => (
   <div>
     <Header translations={translations} />
     <div className='jumbotron jumbotron-fluid hero-technology mb-0' style={{
@@ -66,11 +66,11 @@ export default compose(
             )}
             {headline || (
               <h1 className='hero-title mb-4' style={{ fontWeight: 'normal' }}>
-                {headlineT.goxxed}
+                {headlineT}
               </h1>
             )}
             <p className='hero-subtitle mb-4' style={{ fontWeight: 'normal' }}>
-              {subline ? subline : subtitle.notYourKeys}
+              {subline ? subline : subtitle}
             </p>
             <p>
               {cta ? cta : (

@@ -8,6 +8,7 @@
   white-space: nowrap;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .39);
   position: relative;
+  margin-bottom: 150px;
 }
 
 .featuresContainer h1 {
@@ -16,7 +17,7 @@
   position: relative;
   top: 40px;
   padding-bottom: 80px;
-  font-size: 24px;
+  font-size: 30px;
 }
 
 .featureContainer {
@@ -68,7 +69,7 @@
 
 .featureTitle {
   color: #EFEFEF;
-  font-size: 20px;
+  font-size: 24px;
   font-weight: 600;
   margin-top: 20px;
   margin-bottom: 15px;
@@ -76,9 +77,9 @@
 
 .featureDescription {
   margin-bottom: 60px;
-  font-size: 14px;
-  color: #7F8596;
-  line-height: 20px;
+  font-size: 17px;
+  color: rgb(189, 195, 211);
+  line-height: 22px;
 }
 
 .button {

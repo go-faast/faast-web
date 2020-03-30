@@ -128,7 +128,7 @@ export default compose(
             </Row>
             <Row className='text-center py-5 px-4 mx-0 mb-5 justify-content-center'>
               <Col className='pb-4 px-0 mb-3' xs='12'>
-                <h2 style={{ fontWeight: 600 }}>{t.dashboardFeatures}</h2>
+                <h1 style={{ fontWeight: 600 }}>{t.dashboardFeatures}</h1>
               </Col>
               <Col className='mb-5 pb-2 justify-content-center d-flex align-items-center' xs='6'>
                 <img style={{ boxShadow: '0px 5px 11px 1px rgba(200, 216, 236, 0.5)', borderRadius: 4, maxWidth: 500, width: '100vw' }} src={dashboard} />
@@ -182,10 +182,10 @@ export default compose(
           <Row className='pt-5 pb-2 px-0 mx-0 mt-5 mb-5 pb-5'>
             <Container>
               <Col className='text-center'>
-                <h2 style={{ fontWeight: 600 }}>{t.howToMonetize}</h2>
+                <h1 style={{ fontWeight: 600 }}>{t.howToMonetize}</h1>
               </Col>
               <Col className='text-center mt-5 mb-4'>
-                <h1 className={classNames(style.numbersGreen, 'font-weight-bold')}>1</h1>
+                <h1 className={classNames(style.numbersGreen, 'font-weight-bold mr-2')}>1</h1>
                 <span className='ml-2' style={{ fontWeight: 600, fontSize: 40 }}>API</span>
               </Col>
               <Col className='text-center'>
@@ -193,7 +193,7 @@ export default compose(
                 <Terminal theme='light' translations={translations} includeCopy={false} includeBg={false} />
               </Col>
               <Col className='text-center mt-0 mb-4'>
-                <h1 className={classNames(style.numbersGreen, 'font-weight-bold')}>2</h1>
+                <h1 className={classNames(style.numbersGreen, 'font-weight-bold mr-2')}>2</h1>
                 <span className='ml-2' style={{ fontWeight: 600, fontSize: 40 }}>{t.referralLinks}</span>
               </Col>
               <Col className='text-center'>
