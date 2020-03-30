@@ -53,6 +53,7 @@ export default compose(
               <ul>
                 <li><a className='text-white' href='https://bitaccess.ca/about-us/' target='_blank noopener noreferrer'>{t.aboutUs}</a></li>
                 <li><a className='text-white' href='/affiliates'>{t.affiliate}</a></li>
+                <li><a className='text-white' href='/partners'>Partners</a></li>
                 <li><a className='text-white font-xs' href='/app'>{t.portfolio}</a></li>
                 <li><a className='text-white' href='/app/swap'>{t.swap}</a></li>
                 <li><LangLink className='text-white' to='/market-maker'>{t.marketMaker} <sup className={classNames(betaTag, 'text-primary')}><i>{t.beta}</i></sup></LangLink></li>

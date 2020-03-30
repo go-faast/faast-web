@@ -10,36 +10,61 @@
       "fast": "fast",
       "swap": "swap"
     },
+    "partners": {
+      "swap": "Integrating Faa.st into your website or application grants you out of the box crypto to crypto trading functionality. Facilitate transactions and empower users on top of your own platform, without requiring any of the complex infrastructure.",
+      "monetize": "Easily monetize your product using a referral link or by integrating our API directly. Enable your users to instantly swap crypto and you’ll earn a percentage on every swap paid in Bitcoin.",
+      "simpleIntegration": "Our team worked hard on simplifying the technical areas to allow quick and easy setup. So no matter your project, our affiliate program will allow you to quickly start profiting.",
+      "customizeable": "Unlike other exchange services, we allow you to choose the fixed and percent fees applied to swaps. This allows you to choose the right monetization model for your use case, and charge accordingly.",
+      "heroText": "Become a Partner and Start Earning Bitcoin",
+      "subline": "The Faa.st affiliate program makes monetizing your product quick, easy, and profitable",
+      "heroButton": "Start earning now",
+      "whyIntegrate": "Why Integrate with Faa.st?", 
+      "integrateSubline": "Integrating Faa.st into your website or application grants you out of the box crypto to crypto trading functionality. This enables you to facilitate transactions and empower users on top of your own platform, without requiring any of the complex infrastructure!",
+      "dashboardFeatures": "Dashboard Features",
+      "visualize": "Visualize what assets your users are swapping and track your earnings in one easy to use interface",
+      "payout": "Initiate a payout in one click, whenever you want",
+      "support": "Full 24/7 phone and email support from real human beings",
+      "join": "Join our partners",
+      "alreadyIntegrated": "These affiliates are already earning with Faa.st",
+      "howToMonetize": "How you can monetize",
+      "apiDescription": "The most feature rich and customizable way to monetize your product. Provide swap support right in your website or app and choose the fee you’ll earn on each transaction. Sign up now to begin, or check out our getting started guide for more resources.",
+      "referralLinks": "Referral Links",
+      "referralDescription": "The easiest way to get started. Simply present your users with a special referral link to the Faa.st website and you’ll earn a percentage on each swap they place. Sign up now to get your link.",
+      "getStarted": "Get Started",
+      "howTo": "How to get started",
+      "signUp": "Sign up",
+      "here": "here",
+      "integrateFaast": "Integrate Faa.st",
+      "earnBTC": "Earn BTC",
+      "ready": "Ready to get started?",
+      "getInTouch": "Get in touch",
+      "apiDocs": "Faa.st API Docs"
+    },
     "email": {
-      "cta": "Sign up to discover exclusive offers and crypto giveaways",
+      "cta": "Get the newsletter for exclusive offers, industry insights & more.",
       "subscribe": "Subscribe"
     },
     "hero": {
       "new": "new",
       "notification": "Read about the Faa.st Market Maker Beta",
       "button": "Connect Your Wallet",
-      "headline": {
-        "goxxed": "Don't Get Goxxed. Own Your Crypto."
-      },
-      "subtitle": {
-        "notYourKeys": "Not your keys, not your crypto. Connect your wallet, select your coins, and swap."
-      }
+      "headline": "Trade crypto directly from your wallet",
+      "subtitle": "Faa.st is a non-custodial peer-to-peer cryptocurrency trading platform"
     },
     "reviews": {
       "twitterFam": "#💞 from the Twitter Fam",
       "viewOriginal": "View Original Tweet"
     },
     "terminal": {
-      "wantToRun": "Want to run your own instance of the Faa.st trading portfolio? No problem. The open source",
-      "faastPortfolio": "Faa.st Portfolio",
-      "project": "project on GitHub and",
-      "publicAPI": "our public API",
-      "fullControl": "put you in full control of how you want to use Faa.st.",
+      "becomeAffiliate": "Become an Affiliate",
+      "readyToMonetize": "Ready to monetize your website or app? Start earning today with our",
+      "affiliateProgram": "affiliate program",
+      "features": "Custom fee rates, instant payouts, and 24/7 support.",
       "createSwap": "create swap"
     },
     "dashboard": {
-      "swap": "Instantly begin trading your favorite assets, straight from your wallet",
-      "connect": "Connect your MetaMask, Trezor, or Ledger and access our all-in-one dashboard to track your portfolio across multiple wallets, place trades, and watch trending assets.",
+      "swap": "Instantly manage your entire portfolio",
+      "connect": "Connect your MetaMask, Trezor, Ledger, or wallet of choice to access our all-in-one portfolio management dashboard to track balances across multiple wallets, place trades, and explore trending assets.",
       "connectYourWallet": "Connect Your Wallet"
     },
     "header": {

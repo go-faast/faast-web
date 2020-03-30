@@ -1,14 +1,65 @@
 {
     "static": {
+        "newsletter": {
+            "keepUp": "Suivez l'actualit\u00e9 de Faa.st",
+            "subscribeNow": "Abonnez-vous d\u00e8s maintenant pour recevoir : ",
+            "assetListings": "Mises \u00e0 jour sur l'ajout de nouvelles devises",
+            "exclusiveOffers": "Offres et concours exclusifs pour les clients de Faa.st qui ne sont partag\u00e9s nulle part ailleurs",
+            "report": "Une copie gratuite de notre rapport sur les meilleures pratiques pour un stockage s\u00fbr des donn\u00e9es cryptographiques",
+            "secure": "s\u00e9curis\u00e9",
+            "fast": "rapide",
+            "swap": "\u00e9changer"
+        },
+        "partners": {
+            "swap": "L'int\u00e9gration de Faa.st \u00e0 votre site web ou \u00e0 votre application vous permet de b\u00e9n\u00e9ficier d'une fonctionnalit\u00e9 d'\u00e9change de crypto \u00e0 crypto cl\u00e9s en main. Facilitez les transactions de vos utilisateurs et donnez-leur les moyens de profiter de votre propre plateforme, en vous passant des infrastructures complexes.",
+            "monetize": "Mon\u00e9tisez facilement votre produit \u00e0 l'aide d'un lien de parrainage ou en int\u00e9grant directement notre API. Permettez \u00e0 vos utilisateurs d'\u00e9changer des cryptos instantan\u00e9ment et vous gagnerez un pourcentage pour chaque \u00e9change, pay\u00e9 en Bitcoin.",
+            "simpleIntegration": "Notre \u00e9quipe a travaill\u00e9 dur pour simplifier les aspects techniques, vous permettant une installation simple et rapide. Quel que soit votre projet, notre programme de parrainage vous permettra de r\u00e9aliser des b\u00e9n\u00e9fices rapidement.",
+            "customizeable": "Contrairement \u00e0 d'autres services d'\u00e9change, nous vous permettons de choisir les frais fixes et le pourcentage qui s'appliquent \u00e0 chaque \u00e9change. Cela vous permet de choisir le mod\u00e8le de mon\u00e9tisation qui correspond \u00e0 votre cas d'utilisation et de vous faire payer en cons\u00e9quence.",
+            "heroText": "Devenez un partenaire et commencez a gagner des bitcoins",
+            "subline": "Le programme de parrainage Faa.st vous permet de mon\u00e9tiser votre produit de mani\u00e8re simple, rapide et profitable.",
+            "heroButton": "Commencez \u00e0 gagner de l'argent d\u00e8s maintenant",
+            "whyIntegrate": "Pourquoi int\u00e9grer Faa.st ?",
+            "integrateSubline": "En int\u00e9grant Faa.st \u00e0 votre site web ou \u00e0 votre application, vous b\u00e9n\u00e9ficiez d'une fonctionnalit\u00e9 d'\u00e9change de crypto \u00e0 crypto cl\u00e9s en main. Facilitez les transactions de vos utilisateurs et donnez-leur les moyens de profiter de votre propre plateforme, en vous passant des infrastructures complexes.",
+            "dashboardFeatures": "Fonctionnalit\u00e9s du tableau de bord",
+            "visualize": "Visualisez les actifs \u00e9chang\u00e9s par vos utilisateurs et suivez vos gains au sein d'une interface facile \u00e0 utiliser",
+            "payout": "R\u00e9cup\u00e9rez vos gains en un seul clic, quand vous le souhaitez",
+            "support": "Une assistance assur\u00e9e par de vrais \u00eatre humains au t\u00e9l\u00e9phone et par e-mail, 24h\/24, 7j\/7",
+            "join": "Rejoignez nos partenaires",
+            "alreadyIntegrated": "Ces affili\u00e9s profitent d\u00e9j\u00e0 de Faa.st",
+            "howToMonetize": "Comment mon\u00e9tiser",
+            "apiDescription": "Parmi toutes les fa\u00e7ons de mon\u00e9tiser votre produit, aucune autre n'est plus personnalisable ni ne comporte autant de fonctionnalit\u00e9s. Permettez \u00e0 vos utilisateurs d'effectuer des \u00e9changes sur votre site web ou votre app et choisissez les frais que vous percevez pour chaque transaction. Connectez-vous maintenant pour commencer, ou consultez notre guide \u00ab Comment se lancer \u00bb pour voir plus de ressources.",
+            "referralLinks": "Liens de parrainage",
+            "referralDescription": "La fa\u00e7on la plus simple de se lancer. Il vous suffit de proposer \u00e0 vos utilisateurs un lien de parrainage redirigeant vers le site Faa.st, et vous gagnerez un pourcentage pour chacun de leurs \u00e9changes. Inscrivez-vous maintenant pour obtenir votre lien.",
+            "getStarted": "Commencer",
+            "howTo": "Comment se lancer",
+            "signUp": "Inscrivez-vous",
+            "here": "ici",
+            "integrateFaast": "Int\u00e9grer Faa.st",
+            "earnBTC": "Gagnez des BTC",
+            "ready": "Pr\u00eat \u00e0 commencer ?",
+            "getInTouch": "Nous contacter",
+            "apiDocs": "Docs API Faa.st"
+        },
         "email": {
-            "cta": "Inscrivez-vous pour d\u00e9couvrir des offres exclusives et des cadeaux sur les cryptos",
+            "cta": "Recevez le bulletin d'information pour d\u00e9couvrir des offres exclusive, les nouvelles du secteur et plus encore.",
             "subscribe": "S'abonner"
+        },
+        "hero": {
+            "new": "nouveau",
+            "notification": "En savoir plus sur la b\u00eata Market Maker de Faa.st",
+            "button": "Connectez votre portefeuille",
+            "headline": "\u00c9changez directement vos cryptos depuis votre portefeuille",
+            "subtitle": "Faa.st est une plateforme non-custodiale d'\u00e9change de crypto-monnaies en peer-to-peer"
         },
         "reviews": {
             "twitterFam": "#\ud83d\udc9e de la Twitter Fam",
             "viewOriginal": "Voir le tweet original"
         },
         "terminal": {
+            "becomeAffiliate": "Devenez un affili\u00e9",
+            "readyToMonetize": "Pr\u00eat \u00e0 mon\u00e9tiser votre site Web ou votre application ? Commencez \u00e0 gagner de l'argent d\u00e8s aujourd'hui avec notre",
+            "affiliateProgram": "programme d'affiliation",
+            "features": "Commission personnalisable, paiement instantan\u00e9 et assistance 24h\/24, 7j\/7.",
             "wantToRun": "Vous voulez exploiter votre propre instance du portefeuille d'\u00e9change Faa.st ? Pas de probl\u00e8me. Le projet open source",
             "faastPortfolio": "du portefeuille Faa.st",
             "project": "est sur GitHub et",
@@ -17,31 +68,31 @@
             "createSwap": "cr\u00e9er l'\u00e9change"
         },
         "dashboard": {
-            "swap": "Commencez instantan\u00e9ment \u00e0 \u00e9changer vos actifs pr\u00e9f\u00e9r\u00e9s, directement depuis votre portefeuille",
-            "connect": "Connectez votre MetaMask, Trezor ou Ledger et acc\u00e9dez \u00e0 notre tableau de bord tout en un pour suivre vos actifs sur plusieurs portefeuilles, effectuer des transactions et surveiller les tendances.",
+            "swap": "G\u00e9rez instantan\u00e9ment l'int\u00e9gralit\u00e9 de votre portefeuille",
+            "connect": "Connectez votre MetaMask, Trezor, Ledger ou tout autre portefeuille de votre choix pour acc\u00e9der \u00e0 notre tableau de bord permettant la gestion tout-en-un de vos portefeuilles. Suivez vos soldes sur plusieurs portefeuilles, effectuez des transactions et surveillez les tendances.",
             "connectYourWallet": "Connectez votre portefeuille"
         },
-        "swapWidget": {
+        "header": {
             "swap": "\u00c9changer",
+            "marketMaker": "Market Maker",
+            "beta": "b\u00eata",
+            "blog": "Blog",
+            "button": "Connecter"
+        },
+        "swapWidget": {
             "swapInstantly": "Echanger Instantan\u00e9ment",
             "youSend": "Vous envoyez",
             "youReceive": "Vous recevez",
             "continue": "Continuer",
             "chooseSend": "Choisissez l'actif \u00e0 envoyer",
-            "chooseReceive": "Choisissez l'actif \u00e0 recevoir"
+            "chooseReceive": "Choisissez l'actif \u00e0 recevoir",
+            "swap": "\u00c9changer"
         },
         "features": {
-            "title": "Fonctionnalit\u00e9s",
-            "lowFees": "Frais minimes",
-            "noRegistration": "Pas besoin d'ouvrir un compte - rien d'autres que des transactions s\u00fbres et confidentielles.",
-            "swapMultiple": "\u00c9changez plusieurs crypto-monnaies en une seule fois et constituez un portefeuille diversifi\u00e9 en quelques secondes avec une seule transaction.",
-            "noFees": "Pas de frais de d\u00e9p\u00f4t ou de retrait. Rien qu'un moteur d'\u00e9change on-chain peu co\u00fbteux.",
-            "connectYourWallet": "Connectez votre portefeuille",
             "comprehensiveTable": "Pour la liste compl\u00e8te des devises disponibles",
             "clickHere": "cliquez ici.",
             "instantlyBuild": "Cr\u00e9ez instantan\u00e9ment un portefeuille client de crypto-monnaies",
             "safeSecure": "S\u00fbr & S\u00e9curis\u00e9",
-            "tradeDirectly": "\u00c9changez directement \u00e0 partir de votre portefeuille : nous n'avons \u00e0 aucun moment le contr\u00f4le de vos fonds ni l'acc\u00e8s \u00e0 votre cl\u00e9 priv\u00e9e.",
             "noSignUp": "Pas besoin de cr\u00e9er un compte",
             "noRegister": "Il n'est pas n\u00e9cessaire de s'enregistrer ou de partager des informations personnelles.",
             "lightningFast": "Rapide comme l'\u00e9clair",
@@ -68,12 +119,19 @@
             "trustWallet": "Trust Wallet",
             "coinbaseWallet": "Portefeuille Coinbase",
             "status": "Statut",
-            "keystore": "Keystore",
+            "title": "Fonctionnalit\u00e9s",
             "secure": "S\u00e9curis\u00e9",
-            "safestTradingMethod": "La m\u00e9thode d'\u00e9change la plus s\u00fbre au monde - nous n'avons pas votre argent ; si nous \u00e9tions pirat\u00e9s, vous ne perdriez rien.",
             "simple": "Simple",
-            "intuitiveMobile": "L'interface utilisateur intuitive et conviviale rend l'\u00e9change de crypto-monnaies simple et facile.",
             "private": "Priv\u00e9",
+            "lowFees": "Frais minimes",
+            "noRegistration": "Pas besoin d'ouvrir un compte - rien d'autres que des transactions s\u00fbres et confidentielles.",
+            "tradeDirectly": "\u00c9changez directement \u00e0 partir de votre portefeuille : nous n'avons \u00e0 aucun moment le contr\u00f4le de vos fonds ni l'acc\u00e8s \u00e0 votre cl\u00e9 priv\u00e9e.",
+            "swapMultiple": "\u00c9changez plusieurs crypto-monnaies en une seule fois et constituez un portefeuille diversifi\u00e9 en quelques secondes avec une seule transaction.",
+            "noFees": "Pas de frais de d\u00e9p\u00f4t ou de retrait. Rien qu'un moteur d'\u00e9change on-chain peu co\u00fbteux.",
+            "connectYourWallet": "Connectez votre portefeuille",
+            "keystore": "Keystore",
+            "safestTradingMethod": "La m\u00e9thode d'\u00e9change la plus s\u00fbre au monde - nous n'avons pas votre argent ; si nous \u00e9tions pirat\u00e9s, vous ne perdriez rien.",
+            "intuitiveMobile": "L'interface utilisateur intuitive et conviviale rend l'\u00e9change de crypto-monnaies simple et facile.",
             "noPersonalData": "Vous n'avez pas besoin de partager de donn\u00e9es personnelles, une pi\u00e8ce d'identit\u00e9 avec photo ou quoi que ce soit d'autre - seulement des transactions s\u00fbres et confidentielles.",
             "getStartedSeconds": "Commencez en quelques secondes",
             "addWallet": "Ajouter un portefeuille",
@@ -85,8 +143,8 @@
         },
         "wallets": {
             "supportedWallets": "Portefeuilles pris en charge",
-            "ledgerWallet": "Portefeuille Ledger",
             "trezor": "TREZOR",
+            "ledgerWallet": "Portefeuille Ledger",
             "metaMask": "MetaMask",
             "mist": "Mist",
             "trustWallet": "Trust Wallet",
@@ -95,10 +153,6 @@
             "keystore": "Keystore"
         },
         "footer": {
-            "readyToTrade": "Pr\u00eat \u00e0 \u00e9changer sur Faa.st ?",
-            "connectYourWallet": "Connectez votre portefeuille",
-            "apiDocs": "Docs API",
-            "supportedAssets": "Actifs pris en charge",
             "aboutUs": "\u00c0 propos de nous",
             "affiliate": "Programme d'affiliation",
             "portfolio": "Portefeuille",
@@ -120,7 +174,7 @@
             "status": "Statut",
             "knowledge": "Documentation",
             "whatIsIco": "Qu'est-ce qu'une ICO ?",
-            "smartContracts": "Que sont les smart contracts ?",
+            "smartContracts": "Les Smart Contracts, qu'est-ce que c'est ?",
             "dao": "Qu'est-ce qu'une DAO ?",
             "whatIsEth": "Qu'est-ce que l'Ethereum ?",
             "icoIpoIto": "ICO, IPO et ITO",
@@ -129,35 +183,11 @@
             "api": "API",
             "pressKit": "Dossier de presse",
             "terms": "Conditions d'utilisation",
-            "privacy": "Politique de confidentialit\u00e9"
-        },
-        "newsletter": {
-            "keepUp": "Suivez l'actualit\u00e9 de Faa.st",
-            "subscribeNow": "Abonnez-vous d\u00e8s maintenant pour recevoir : ",
-            "assetListings": "Mises \u00e0 jour sur l'ajout de nouvelles devises",
-            "exclusiveOffers": "Offres et concours exclusifs pour les clients de Faa.st qui ne sont partag\u00e9s nulle part ailleurs",
-            "report": "Une copie gratuite de notre rapport sur les meilleures pratiques pour un stockage s\u00fbr des donn\u00e9es cryptographiques",
-            "secure": "s\u00e9curis\u00e9",
-            "fast": "rapide",
-            "swap": "\u00e9changer"
-        },
-        "hero": {
-            "new": "nouveau",
-            "notification": "En savoir plus sur la b\u00eata Market Maker de Faa.st",
-            "button": "Connectez votre portefeuille",
-            "headline": {
-                "goxxed": "Ne vous faites pas Goxxer. Gardez le contr\u00f4le de vos Crypto."
-            },
-            "subtitle": {
-                "notYourKeys": "Si la cl\u00e9 n'est pas \u00e0 vous, les crypto non plus. Connectez votre portefeuille, s\u00e9lectionnez vos crypto-monnaies et \u00e9changez."
-            }
-        },
-        "header": {
-            "swap": "\u00c9changer",
-            "marketMaker": "Market Maker",
-            "beta": "b\u00eata",
-            "blog": "Blog",
-            "button": "Connecter"
+            "privacy": "Politique de confidentialit\u00e9",
+            "readyToTrade": "Pr\u00eat \u00e0 \u00e9changer sur Faa.st ?",
+            "connectYourWallet": "Connectez votre portefeuille",
+            "apiDocs": "Docs API",
+            "supportedAssets": "Actifs pris en charge"
         },
         "marketMaker": {
             "bitcoinWork": "Faites fructifier vos Bitcoins",

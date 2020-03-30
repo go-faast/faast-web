@@ -1,14 +1,65 @@
 {
     "static": {
+        "newsletter": {
+            "keepUp": "Bleiben Sie mit dem Faa.st-Newsletter auf dem Laufenden!",
+            "subscribeNow": "Jetzt anmelden und folgende Vorteile genie\u00dfen:",
+            "assetListings": "Updates zu neuen Assets",
+            "exclusiveOffers": "Exklusive Angebote und Wettbewerbe f\u00fcr Faa.st-Kunden, die sonst nirgendwo geteilt werden",
+            "report": "Eine kostenlose Kopie unseres Berichts zur sicheren Speicherung von Kryptow\u00e4hrungen",
+            "secure": "sicher",
+            "fast": "schnell",
+            "swap": "umtauschen"
+        },
+        "partners": {
+            "swap": "Durch die Integration von Faa.st in Ihre Website oder App erhalten Sie Out-of-the-box-Krypto-to-Krypto-Handelsfunktionen. Erleichtern Sie Transaktionen und bef\u00e4higen Sie Benutzer auf Ihrer eigenen Plattform, ohne dass Sie die komplexe Infrastruktur ben\u00f6tigen.",
+            "monetize": "Monetarisieren Sie Ihr Produkt ganz einfach \u00fcber einen Empfehlungslink oder durch direkte Integration unserer API. Erm\u00f6glichen Sie Ihren Benutzern den sofortigen Tausch von Krypto und Sie verdienen einen Prozentsatz auf jeden in Bitcoin bezahlten Swap.",
+            "simpleIntegration": "Unser Team arbeitete hart an der Vereinfachung der technischen Bereiche, um eine schnelle und einfache Einrichtung zu erm\u00f6glichen. Egal, wie Ihr Projekt aussieht, unser Partnerprogramm erm\u00f6glicht es Ihnen, schnell zu profitieren.",
+            "customizeable": "Im Gegensatz zu anderen B\u00f6rsendiensten k\u00f6nnen Sie bei uns die festen und prozentualen Geb\u00fchren f\u00fcr Swaps w\u00e4hlen. So k\u00f6nnen Sie das richtige Monetarisierungsmodell f\u00fcr Ihren Anwendungsfall w\u00e4hlen und entsprechend berechnen.",
+            "heroText": "Werden Sie Partner und beginnen Sie, Bitcoin zu verdienen",
+            "subline": "Das Faa.st-Partnerprogramm macht die Monetarisierung Ihres Produkts schnell, einfach und profitabel",
+            "heroButton": "Jetzt anfangen zu verdienen",
+            "whyIntegrate": "Warum Faa.st integrieren?",
+            "integrateSubline": "Durch die Integration von Faa.st in Ihre Website oder App erhalten Sie Out-of-the-box-Krypto-to-Krypto-Handelsfunktionen. Damit erleichtern Sie Transaktionen und bef\u00e4higen Benutzer auf Ihrer eigenen Plattform, ohne dass Sie die komplexe Infrastruktur ben\u00f6tigen!",
+            "dashboardFeatures": "Dashboard-Funktionen",
+            "visualize": "Visualisieren Sie, welche Verm\u00f6genswerte Ihre Benutzer umtauschen, und verfolgen Sie Ihre Einnahmen in einer einfach zu bedienenden Oberfl\u00e4che",
+            "payout": "Initiieren Sie eine Auszahlung mit einem Klick, wann immer Sie wollen",
+            "support": "Umfassender Telefon- und E-Mail-Support von echten Personen rund um die Uhr",
+            "join": "Schlie\u00dfen Sie sich unseren Partnern an",
+            "alreadyIntegrated": "Diese Partner verdienen bereits mit Faa.st",
+            "howToMonetize": "Wie kann ich damit verdienen",
+            "apiDescription": "Die funktionsreichste und anpassungsf\u00e4higste Art, Ihr Produkt zu monetarisieren. Bieten Sie Swap-Support direkt auf Ihrer Website oder App an und w\u00e4hlen Sie die Geb\u00fchr, die Sie bei jeder Transaktion verdienen. Registrieren Sie sich jetzt an, um zu beginnen, oder schauen Sie sich unseren Leitfaden f\u00fcr den Einstieg an, um weitere Ressourcen zu erhalten.",
+            "referralLinks": "Empfehlungs-Links",
+            "referralDescription": "Der einfachste Weg, um anzufangen. Pr\u00e4sentieren Sie Ihren Benutzern einfach einen speziellen Empfehlungslink zur Webseite von Faa.st und Sie verdienen einen Prozentsatz auf jeden von ihnen platzierten Swap. Jetzt registrieren, um Ihren Link zu erhalten.",
+            "getStarted": "Erste Schritte",
+            "howTo": "So legen Sie los",
+            "signUp": "Registrieren",
+            "here": "Hier",
+            "integrateFaast": "Faa.st integrieren",
+            "earnBTC": "BTC verdienen",
+            "ready": "Bereit f\u00fcr den Start?",
+            "getInTouch": "Kontakt aufnehmen",
+            "apiDocs": "Faa.st API-Dokumente"
+        },
         "email": {
-            "cta": "Melden Sie sich an, um exklusive Angebote und Kryptogeschenke zu erhalten.",
+            "cta": "Abonnieren Sie unseren Newsletter und erhalten Sie exklusive Angebote, Brancheneinblicke & mehr.",
             "subscribe": "Anmelden"
+        },
+        "hero": {
+            "new": "neu",
+            "notification": "Mehr Infos zur Beta-Version von Faa.st Market Maker",
+            "button": "Wallet verbinden",
+            "headline": "Handeln Sie mit Kryptow\u00e4hrungen direkt \u00fcber Ihre Wallet",
+            "subtitle": "Faa.st ist eine freie Peer-to-Peer-Handelsplattform f\u00fcr Kryptow\u00e4hrungen"
         },
         "reviews": {
             "twitterFam": "#\ud83d\udc9e von der Twitter-Familie",
             "viewOriginal": "Originalbeitrag anzeigen"
         },
         "terminal": {
+            "becomeAffiliate": "Unser Partnerprogramm",
+            "readyToMonetize": "Sind Sie bereit, Ihre Website oder App zu monetarisieren? Verdienen Sie noch heute mit unserem",
+            "affiliateProgram": "Partnerprogramm",
+            "features": "Benutzerdefinierte Geb\u00fchrens\u00e4tze, sofortige Auszahlungen und 24h Support.",
             "wantToRun": "M\u00f6chten Sie eine eigene Instanz des Faa.st-Handelsportfolios betreiben? Kein Problem. Das Open-Source-Projekt des",
             "faastPortfolio": "Faa.st Portfolios",
             "project": "auf GitHub und",
@@ -17,31 +68,31 @@
             "createSwap": "Swap erstellen"
         },
         "dashboard": {
-            "swap": "Beginnen Sie sofort mit dem Handel Ihren bevorzugten Assets \u2013 direkt aus Ihrer Wallet.",
-            "connect": "Verbinden Sie Ihre Wallets von MetaMask, Trezor oder Ledger und nutzen Sie unsere umfassende \u00dcbersicht, um Ihr Portfolio von mehreren Wallets zu verfolgen, Trades zu platzieren und angesagte Assets zu beobachten.",
+            "swap": "Verwalten Sie schnell Ihr gesamtes Portfolio",
+            "connect": "Verbinden Sie Ihre Wallets von MetaMask, Trezor, Ledger oder eine andere Wallet und nutzen Sie unsere umfassende Portfolio-Verwaltung, um Ihr Guthaben von mehreren Wallets zu verfolgen, Trades zu platzieren und angesagte Assets zu erkunden.",
             "connectYourWallet": "Wallet verbinden"
         },
-        "swapWidget": {
+        "header": {
             "swap": "Swap",
+            "marketMaker": "Market Maker",
+            "beta": "Beta",
+            "blog": "Blog",
+            "button": "Verbinden"
+        },
+        "swapWidget": {
             "swapInstantly": "Sofort umtauschen",
             "youSend": "Senden",
             "youReceive": "Erhalten",
             "continue": "Weiter",
             "chooseSend": "Asset zum Senden ausw\u00e4hlen",
-            "chooseReceive": "Asset zum Empfangen ausw\u00e4hlen"
+            "chooseReceive": "Asset zum Empfangen ausw\u00e4hlen",
+            "swap": "Swap"
         },
         "features": {
-            "title": "Funktionen",
-            "lowFees": "Niedrige Geb\u00fchren",
-            "noRegistration": "Sie m\u00fcssen sich bei uns nicht registrieren bzw. ein Konto erstellen. Trades sind sicher und vertraulich.",
-            "swapMultiple": "Tauschen Sie mehrere M\u00fcnzen gleichzeitig um und bauen Sie in Sekundenschnelle mit nur einer Transaktion ein vielf\u00e4ltiges Portfolio auf.",
-            "noFees": "Keine Geb\u00fchren f\u00fcr Einzahlungen oder Abhebungen. Faa.st ist eine kosteng\u00fcnstige On-Chain-Trading-Plattform.",
-            "connectYourWallet": "Wallet verbinden",
             "comprehensiveTable": "F\u00fcr eine umfassende Auflistung aller kompatiblen M\u00fcnzen",
             "clickHere": "hier klicken.",
             "instantlyBuild": "Eigenes Portfolio im Handumdrehen",
             "safeSecure": "Absolut sicher",
-            "tradeDirectly": "Handeln Sie direkt von Ihrer Wallet aus. Wir kontrollieren weder Ihr Guthaben noch sehen wir Ihren privaten Schl\u00fcssel.",
             "noSignUp": "Ohne Registrierung",
             "noRegister": "Sie m\u00fcssen sich nicht registrieren und auch keine pers\u00f6nlichen Daten angeben.",
             "lightningFast": "Sehr schnell",
@@ -68,12 +119,19 @@
             "trustWallet": "Trust Wallet",
             "coinbaseWallet": "Coinbase Wallet",
             "status": "Status",
-            "keystore": "Keystore",
+            "title": "Funktionen",
             "secure": "Sicher",
-            "safestTradingMethod": "Die sicherste Handelsmethode der Welt: Wir besitzen Ihr Geld nicht. Wenn wir gehackt werden, verlieren Sie nichts.",
             "simple": "Einfach",
-            "intuitiveMobile": "Die intuitive Benutzeroberfl\u00e4che f\u00fcr Mobilger\u00e4te macht den Handel mit Kryptow\u00e4hrungen besonders einfach.",
             "private": "Privat",
+            "lowFees": "Niedrige Geb\u00fchren",
+            "noRegistration": "Sie m\u00fcssen sich bei uns nicht registrieren bzw. ein Konto erstellen. Trades sind sicher und vertraulich.",
+            "tradeDirectly": "Handeln Sie direkt von Ihrer Wallet aus. Wir kontrollieren weder Ihr Guthaben noch sehen wir Ihren privaten Schl\u00fcssel.",
+            "swapMultiple": "Tauschen Sie mehrere M\u00fcnzen gleichzeitig um und bauen Sie in Sekundenschnelle mit nur einer Transaktion ein vielf\u00e4ltiges Portfolio auf.",
+            "noFees": "Keine Geb\u00fchren f\u00fcr Einzahlungen oder Abhebungen. Faa.st ist eine kosteng\u00fcnstige On-Chain-Trading-Plattform.",
+            "connectYourWallet": "Wallet verbinden",
+            "keystore": "Keystore",
+            "safestTradingMethod": "Die sicherste Handelsmethode der Welt: Wir besitzen Ihr Geld nicht. Wenn wir gehackt werden, verlieren Sie nichts.",
+            "intuitiveMobile": "Die intuitive Benutzeroberfl\u00e4che f\u00fcr Mobilger\u00e4te macht den Handel mit Kryptow\u00e4hrungen besonders einfach.",
             "noPersonalData": "Sie m\u00fcssen keine personenbezogenen Daten, keinen Lichtbildausweis oder andere Infos hochladen. Trades sind sicher und vertraulich.",
             "getStartedSeconds": "Schnell loslegen",
             "addWallet": "Wallet hinzuf\u00fcgen",
@@ -85,8 +143,8 @@
         },
         "wallets": {
             "supportedWallets": "Unterst\u00fctzte Wallets",
-            "ledgerWallet": "Ledger-Wallet",
             "trezor": "TREZOR",
+            "ledgerWallet": "Ledger-Wallet",
             "metaMask": "MetaMask",
             "mist": "Mist",
             "trustWallet": "Trust Wallet",
@@ -95,10 +153,6 @@
             "keystore": "Keystore"
         },
         "footer": {
-            "readyToTrade": "Sind Sie bereit f\u00fcr Faa.st?",
-            "connectYourWallet": "Wallet verbinden",
-            "apiDocs": "API-Dateien",
-            "supportedAssets": "Unterst\u00fctzte Assets",
             "aboutUs": "\u00dcber uns",
             "affiliate": "Partnerprogramm",
             "portfolio": "Portfolio",
@@ -129,35 +183,11 @@
             "api": "API",
             "pressKit": "Presse",
             "terms": "Nutzungsbedingungen",
-            "privacy": "Datenschutz"
-        },
-        "newsletter": {
-            "keepUp": "Bleiben Sie mit dem Faa.st-Newsletter auf dem Laufenden!",
-            "subscribeNow": "Jetzt anmelden und folgende Vorteile genie\u00dfen:",
-            "assetListings": "Updates zu neuen Assets",
-            "exclusiveOffers": "Exklusive Angebote und Wettbewerbe f\u00fcr Faa.st-Kunden, die sonst nirgendwo geteilt werden",
-            "report": "Eine kostenlose Kopie unseres Berichts zur sicheren Speicherung von Kryptow\u00e4hrungen",
-            "secure": "sicher",
-            "fast": "schnell",
-            "swap": "umtauschen"
-        },
-        "hero": {
-            "new": "neu",
-            "notification": "Mehr Infos zur Beta-Version von Faa.st Market Maker",
-            "button": "Wallet verbinden",
-            "headline": {
-                "goxxed": "Gehen Sie auf Nummer sicher! Besitzen Sie Ihr eigenes Kryptogeld."
-            },
-            "subtitle": {
-                "notYourKeys": "Wenn Sie keine eigenen Schl\u00fcssel haben, besitzen Sie Ihr Kryptogeld nicht. Verbinden Sie Ihre Wallet, w\u00e4hlen Sie Ihre M\u00fcnzen aus und tauschen Sie W\u00e4hrungen."
-            }
-        },
-        "header": {
-            "swap": "Swap",
-            "marketMaker": "Market Maker",
-            "beta": "Beta",
-            "blog": "Blog",
-            "button": "Verbinden"
+            "privacy": "Datenschutz",
+            "readyToTrade": "Sind Sie bereit f\u00fcr Faa.st?",
+            "connectYourWallet": "Wallet verbinden",
+            "apiDocs": "API-Dateien",
+            "supportedAssets": "Unterst\u00fctzte Assets"
         },
         "marketMaker": {
             "bitcoinWork": "Lassen Sie Ihre Bitcoins arbeiten",

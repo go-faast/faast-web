@@ -44,7 +44,7 @@ export default compose(
 )(({ supportedAssets, areAssetsLoaded, assetList, translations = {} }) => {
   supportedAssets = areAssetsLoaded ? assetList : supportedAssets
   return (
-    <div style={{ backgroundColor: '#26282D' }}>
+    <div style={{ backgroundColor: '#26282D', overflowX: 'hidden' }}>
       <Hero supportedAssets={supportedAssets} translations={translations} className='mb-md-5 mb-0'/>
       <DashboardSection translations={translations} />
       <Wallets translations={translations} /> 

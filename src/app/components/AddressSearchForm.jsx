@@ -11,7 +11,7 @@ const AddressSearchForm = reduxForm({
   handleSubmit, size, placeholder, className,
   formProps, inputProps, inputGroupProps, buttonProps, t,
 }) => {
-  placeholder = !placeholder && t('app.addressSearchForm.placeholder', 'Search by address...')
+  placeholder = !placeholder && t('app.addressSearchForm.placeholder', 'Search by ETH address...')
   return (
     <Form onSubmit={handleSubmit} className={className} {...formProps}>
       <InputGroup {...inputGroupProps}>

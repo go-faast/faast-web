@@ -1,0 +1,16 @@
+.header {
+  font-size: 2.5rem
+}
+.subHeader {
+  font-size: 1.35rem;
+  color: #bdc3d3
+}
+
+@media screen and (max-width: 475px) {
+  .header {
+    font-size: 1.8rem
+  }
+  .subHeader {
+    font-size: 1.2rem
+  }
+}

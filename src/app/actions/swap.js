@@ -221,7 +221,11 @@ export const createSwap = (swapParams, options) => (dispatch, getState) => {
     .then(() => getSwap(getState(), swapId))
     .catch((e) => {
       log.error('Failed to create swap', swapParams, e)
-      toastr.error('Failed to create swap, please contact support@faa.st')
+      if (e) {
+        toastr.error(e.Error)
+      } else {
+        toastr.error('Failed to create swap, please contact support@faa.st')
+      }
       dispatch(swapInitFailed(swapId, e.message || e))
       throw e
     })

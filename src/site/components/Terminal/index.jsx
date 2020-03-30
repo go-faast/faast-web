@@ -40,9 +40,9 @@ const Terminal = ({ response, theme, includeCopy, includeBg, translations: { sta
     <div style={{ backgroundImage: includeBg && `url(${GithubBg})`, paddingBottom: !includeBg && 0 }} className={classNames(homeStyle.sectionContainer, style.terminalSection, 'text-center mx-auto position-relative px-sm-0 px-2')}>
       {includeCopy && (
         <Fragment>
-          <h1 className={classNames(homeStyle.heading, 'mb-4')}>Open Source and Public API</h1>
+          <h1 className={classNames(homeStyle.heading, 'mb-4')}>{t.becomeAffiliate}</h1>
           <h3 className={classNames(homeStyle.description, 'pb-4 px-md-0 px-3')}>
-            {t.wantToRun} <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://github.com/go-faast/faast-web'>{t.faastPortfolio}</a> {t.project} <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://api.faa.st'>{t.publicAPI}</a> {t.fullControl}
+            {t.readyToMonetize} <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://faa.st/partners'>{t.affiliateProgram}</a>. {t.features}
           </h3>
         </Fragment>
       )}

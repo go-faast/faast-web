@@ -6,7 +6,7 @@ const genericTitle = `${siteName} is the safest and fastest way to trade crypto 
 module.exports = {
   name: siteName,
   author: 'Bitaccess',
-  title: `${siteName} - Trade Crypto Directly from Your Wallet`,
+  title: `${siteName} - Swap Crypto Directly from Your Wallet`,
   description: `${genericTitle} Quickly build a crypto portfolio of assets including Bitcoin, Ethereum, Litecoin, Monero, and more. Connect your wallet and instantly begin trading for near-zero fees.`,
   year: new Date().getFullYear(),
   pageMeta: {
@@ -19,7 +19,7 @@ module.exports = {
       description: `Safely trade your ${name} crypto directly from your hardware or software wallet. View ${name} (${symbol}) pricing charts, market cap, daily volume and other coin data.`,
     }),
     wallet: ({ name }) => ({
-      title: `Trade Crypto Directly from your ${name} Wallet ${titleSuffix}`,
+      title: `Swap Crypto Directly from your ${name} Wallet ${titleSuffix}`,
       description: `Simply connect your ${name} Wallet and instantly begin trading for near-zero fees.`,
     }),
     blog: () => ({

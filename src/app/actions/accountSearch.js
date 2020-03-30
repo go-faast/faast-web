@@ -3,6 +3,7 @@ import { push } from 'react-router-redux'
 
 import routes from 'Routes'
 import log from 'Log'
+import toastr from 'Utilities/toastrWrapper'
 
 import { newScopedCreateAction } from 'Utilities/action'
 import walletService, { EthereumWalletViewOnly } from 'Services/Wallet'
@@ -24,7 +25,8 @@ export const searchAddress = (addressPromise) => (dispatch, getState) => Promise
   .then((address) => {
     dispatch(setAccountSearchQuery(address))
     if (!(address && isValidAddress(address, 'ETH'))) {
-      return dispatch(setAccountSearchError('Invalid address'))
+      toastr.error('Not a valid Ethereum address')
+      throw new Error('The address provided is not a valid Ethereum address.')
     }
     const walletInstance = new EthereumWalletViewOnly(address)
     walletInstance.setPersistAllowed(false)
@@ -35,6 +37,7 @@ export const searchAddress = (addressPromise) => (dispatch, getState) => Promise
     return dispatch(addWallet(walletInstance))
   })
   .then(({ id }) => {
+    console.log('yoooo why here bro')
     dispatch(setAccountSearchResult(id))
     return dispatch(updateWalletBalances(id))
   })

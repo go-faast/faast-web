@@ -4,14 +4,14 @@ import classNames from 'class-names'
 
 import style from './style.scss'
 
-const EmailSub = ({ translations: { static: { email: t } } }) => {
+const EmailSub = ({ translations: { static: { email } = {} } = {} }) => {
   return (
     <div className={classNames(style.container, 'text-center mt-4')}>
-      <p style={{ color: '#EFEFEF', fontSize: 18 }}>{t.cta}</p>
+      <p style={{ color: '#EFEFEF', fontSize: 22 }}>{email.cta}</p>
       <section className='container-fluid signup-wrapper'>
         <iframe 
           className='position-relative'
-          style={{ zIndex: 9999, width: '100%', maxWidth: 500 }}
+          style={{ zIndex: 9999, width: '100%', maxWidth: 500, }}
           frameBorder='0' 
           scrolling='no' 
           marginHeight='0' 

@@ -5,6 +5,10 @@ import { Row, Col, CarouselControl, Carousel, CarouselItem } from 'reactstrap'
 import Fade from 'react-reveal/Fade'
 
 import TwitterStripes from 'Img/twitter-stripes.svg'
+import CryptoDolla from 'Img/cryptodolla.jpg'
+import CryptOwenW from 'Img/cryptowenw.png'
+import DeepDishCrypto from 'Img/deepdishcrypto.jpg'
+import ArminVanBitcoin from 'Img/arminvanbitcoin.jpg'
 
 import style from './style.scss'
 import homeStyle from 'Site/pages/Home1/style.scss'
@@ -13,7 +17,7 @@ const slides = [{
   name: 'Cryptopotamus',
   username: '@CryptoDolla',
   date: 'Aug 2, 2019',
-  profileImage: 'https://pbs.twimg.com/profile_images/913078899105566723/0UTC1ImL_400x400.jpg',
+  profileImage: CryptoDolla,
   text: [
     'Had the pleasure of checking out the faa.st platform thanks to @goFaast. The UI is beautifully smooth & simple. It has a unique function in $CRYPTO:', 
     'Cross-chain trading from your own wallet, including hardware wallets. This is the only way you should be trading'
@@ -23,7 +27,7 @@ const slides = [{
   name: 'A v B',
   username: '@ArminVanBitcoin',
   date: 'May 24, 2018',
-  profileImage: 'https://pbs.twimg.com/profile_images/1121999658031644673/GHCNxji7_x96.jpg',
+  profileImage: ArminVanBitcoin,
   text: [
     'You can now trade your #altcoin tokens for #bitcoin and vice-versa directly from your Trezor wallet. Secure. Private. Faast.', 
   ],
@@ -32,7 +36,7 @@ const slides = [{
   name: 'Always Go Deep 🇨🇦',
   username: '@DeepDishCrypto',
   date: 'Aug 20, 2019',
-  profileImage: 'https://pbs.twimg.com/profile_images/1163851321528610817/WKD6VT4o_x96.jpg',
+  profileImage: DeepDishCrypto,
   text: [
     '@gofaast is a canadian exchange operating out of Ottawa, our nations captial! 🇨🇦', 
     'If you are Canadian, or enjoy fast cutting edge exchange technology then #Faast is your exchange. Come and try out the swap function for ridiculously low fees! #ubersecure'
@@ -42,7 +46,7 @@ const slides = [{
   name: 'CRYⱣTO OWΞN WIŁSON',
   username: '@CryptOwenWilson',
   date: 'Aug 16, 2019',
-  profileImage: 'https://pbs.twimg.com/profile_images/1147731466622623744/66-kXqJY_x96.png',
+  profileImage: CryptOwenW,
   text: [
     'Trade on @goFaast for some of the lowest fees in the $crypto space! Only .5% fees on either end of the trade. http://Faa.st is one of the best & cheapest methods of swaping one #cryptocurrency to another without giving up your security & peace of mind. Try it out!', 
   ],
