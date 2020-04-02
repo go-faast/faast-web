@@ -118,7 +118,7 @@ export default compose(
     handleConnect: ({ push }) => () => {
       push({
         pathname: '/connect',
-        state: { forwardurl: routes.swapWidget() }
+        state: { forwardurl: typeof window !== 'undefined' ? window.location.href : routes.swapWidget() }
       })
     },
     handleSelect: ({ setSelectedWallet, change, untouch, addressFieldName, walletIdFieldName, symbol }) => (wallet) => {
