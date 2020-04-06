@@ -78,6 +78,10 @@ export const getWalletIdsOfDefaultNestedWallets = createSelector(
   }
 )
 
+export const getCurrentChildWallets = createSelector(
+  getAllWalletsArray,
+  (wallets) => wallets.filter(({ nestedWalletIds, id }) => nestedWalletIds.length == 0 && id !== 'default'))
+
 export const getCurrentChildWalletsForSymbol = createItemSelector(
   getAllWalletsArray,
   (_, symbol) => symbol,

@@ -18,12 +18,15 @@ dirs.testE2eReports = path.join(dirs.testE2e, 'reports')
 dirs.nodeModules = path.join(dirs.root, 'node_modules')
 dirs.site = path.join(dirs.src, 'site')
 dirs.app = path.join(dirs.src, 'app')
+dirs.widget = path.join(dirs.src, 'widget')
 
 dirs.build = path.join(dirs.root, 'build')
 dirs.buildApp = path.join(dirs.build, 'app')
 dirs.buildSite = path.join(dirs.build, 'site')
+dirs.buildWidget = path.join(dirs.build, 'widget')
 
 const appPath = 'app'
+const widgetPath = 'widget'
 
 const bundleOutputPath = 'bundle'
 const faviconOutputPath = 'favicon'
@@ -39,6 +42,7 @@ module.exports = Object.assign({}, envConfig, {
   useHttp,
   dirs,
   appPath,
+  widgetPath,
   bundleOutputPath,
   faviconOutputPath,
   staticOutputPath,

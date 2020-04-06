@@ -345,6 +345,7 @@ export const saveConnectedAccounts = () => (dispatch, getState) => {
     return toastr.error('No accounts are connected')
   }
   let multiWalletId = getWalletId(getState())
+  console.log('mw id', multiWalletId)
   let multiWalletPromise
   if (multiWalletId) {
     const multiWallet = walletService.get(multiWalletId)
@@ -356,6 +357,7 @@ export const saveConnectedAccounts = () => (dispatch, getState) => {
     }
     multiWalletPromise = Promise.resolve(multiWallet)
   } else {
+    console.log('nop3')
     const walletType = getWalletType(getState())
     const MultiWalletType = multiWalletTypes[walletType]
     if (!MultiWalletType) {

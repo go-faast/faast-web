@@ -37,8 +37,8 @@ const ModifyView = (props) => {
 
   const renderHoldings = (wallets) => wallets
     .map((wallet) => {
-      const { id, isReadOnly, holdingsLoaded, assetHoldings } = wallet
-      const addAssetDisabled = !holdingsLoaded
+      const { id, isReadOnly, balancesLoaded, assetHoldings } = wallet
+      const addAssetDisabled = !balancesLoaded
       return (
         <Col xs='12' key={id}>
           <Card>
@@ -62,7 +62,7 @@ const ModifyView = (props) => {
               </Alert>
             ) : (
               <ListGroup>
-                {!holdingsLoaded && (
+                {!balancesLoaded && (
                   <LoadingFullscreen label={<T tag='span' i18nKey='app.loading.balances'>Loading balances...</T>} />
                 )}
                 {assetHoldings.filter(({ shown }) => shown).sort((b,c) => (b.swapEnabled === c.swapEnabled) ? 0 : b.swapEnabled ? -1 : 1).map((a) => {
@@ -95,14 +95,14 @@ const ModifyView = (props) => {
 
                   return (
                     <ListGroupItem key={symbol}>
-                      {holdingsLoaded && disabled && !restricted && (
+                      {balancesLoaded && disabled && !restricted && (
                         <Overlay className='justify-content-end'>
                           <Alert color='info' className='m-1'>
                             {disabledMessage}
                           </Alert>
                         </Overlay>
                       )}
-                      {holdingsLoaded && restricted && (
+                      {balancesLoaded && restricted && (
                         <Overlay className='justify-content-end'>
                           <Alert color='info' className='m-1'>
                             <a className='text-white' href='https://medium.com/faast/faast-location-restrictions-9b14e100d828' target='_blank noreferrer noopener'>{disabledMessage}</a>
