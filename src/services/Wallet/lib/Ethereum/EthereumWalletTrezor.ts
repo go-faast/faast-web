@@ -13,11 +13,11 @@ import { EthTransaction } from './types'
 
 const typeLabel = config.walletTypes.trezor.name
 
-const createAccountGetter = (baseDerivationPath: string, hdKey: HDKey) => (index: number) => {
+const createAccountGetter = (baseDerivationPath: string, hdKey: HDKey, xpub: string) => (index: number) => {
   const derivedKey = hdKey.derive(`m/${index}`)
   const address = '0x' + (pubToAddress(derivedKey.publicKey, true) as Buffer).toString('hex')
   const fullDerivationPath = `${baseDerivationPath}/${index}`
-  return Promise.resolve(new EthereumWalletTrezor(address, fullDerivationPath))
+  return Promise.resolve(new EthereumWalletTrezor(address, fullDerivationPath, xpub))
 }
 
 export default class EthereumWalletTrezor extends EthereumWallet {
@@ -27,8 +27,8 @@ export default class EthereumWalletTrezor extends EthereumWallet {
   /**
    * @param derivationPath - Full path to `address`
    */
-  constructor(address: string, public derivationPath: string, label?: string) {
-    super(address, label)
+  constructor(address: string, public derivationPath: string, label?: string, xpub?: string) {
+    super(address, label, xpub)
   }
 
   getType() { return EthereumWalletTrezor.type }
@@ -42,7 +42,7 @@ export default class EthereumWalletTrezor extends EthereumWallet {
         const hdKey = new HDKey()
         hdKey.publicKey = Buffer.from(publicKey, 'hex')
         hdKey.chainCode = Buffer.from(chainCode, 'hex')
-        return createAccountGetter(derivationPath, hdKey)
+        return createAccountGetter(derivationPath, hdKey, publicKey)
       })
       .then((getAccount) => getAccount(0)
         .then(() => ({

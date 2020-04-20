@@ -28,8 +28,8 @@ export default class MultiWallet extends Wallet {
 
   public walletIds: Set<string>
 
-  constructor(id?: string, walletIds?: string[] | Set<string>, label?: string) {
-    super(id || toHashId(uuid()), label)
+  constructor(id?: string, walletIds?: string[] | Set<string>, label?: string, xpub?: string) {
+    super(id || toHashId(uuid()), label, xpub)
     this.walletIds = new Set(walletIds || [])
   }
 

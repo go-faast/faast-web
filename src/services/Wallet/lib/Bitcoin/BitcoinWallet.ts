@@ -14,6 +14,7 @@ export default abstract class BitcoinWallet extends BitcoreWallet {
   static type = 'BitcoinWallet'
 
   constructor(xpub: string, derivationPath: string, label?: string) {
+    console.log('xpub', xpub)
     super(networks.BTC, xpub, derivationPath, label)
   }
 

@@ -13,6 +13,7 @@ const convertWalletInstance = (wallet) => wallet instanceof Wallet ? ({
   id: wallet.getId(),
   label: wallet.getLabel(),
   type: wallet.getType(),
+  xpub: wallet.getXpub(),
   typeLabel: wallet.getTypeLabel(),
   ...(wallet.isSingleAddress() ? ({
     address: wallet.getAddress(),

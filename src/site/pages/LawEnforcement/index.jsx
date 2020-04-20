@@ -1,11 +1,13 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { Fragment } from 'react'
-import { compose, setDisplayName, withState, withHandlers } from 'recompose'
+import { compose, setDisplayName, withState, withHandlers, lifecycle } from 'recompose'
 import { withRouteData } from 'react-static'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import withTracker from 'Site/components/withTracker'
 import Header from 'Site/components/Header'
+import { updateQueryStringReplace } from 'Actions/router'
+import * as qs from 'query-string'
 import Footer from 'Site/components/Footer'
 import { Input, Container, InputGroup, InputGroupButtonDropdown, 
   DropdownToggle, DropdownMenu, DropdownItem, Button, InputGroupAddon } from 'reactstrap'
@@ -23,7 +25,8 @@ export default compose(
   connect(createStructuredSelector({
   }), {
     getSwapsByAddress,
-    getSwapByOrderId
+    getSwapByOrderId,
+    updateQueryString: updateQueryStringReplace
   }),
   withState('dropdownOpen', 'toggleDropDown', false),
   withState('searchType', 'updateSearchType', 'address'),
@@ -32,11 +35,21 @@ export default compose(
   withState('isLoading', 'updateLoading', false),
   withState('previousSearch', 'updatePreviousSearch', undefined),
   withHandlers({
+    updateURLParams: ({ updateQueryString }) => (params) => {
+      updateQueryString(params)
+    },
+    checkQueryParams: () => () => {
+      const urlParams = qs.parse(location.search)
+      return urlParams
+    }
+  }),
+  withHandlers({
     handleRetrieveData: ({ searchType, updateLoading, updateJSON, getSwapsByAddress, 
-      getSwapByOrderId, query, updatePreviousSearch }) => async () => {
+      getSwapByOrderId, query, updatePreviousSearch, updateURLParams }) => async () => {
       let json
       updateLoading(true)
       updateJSON(undefined)
+      updateURLParams({ q: query, type: searchType })
       if (searchType === 'address') {
         json = await getSwapsByAddress(query)
       } else {
@@ -45,6 +58,19 @@ export default compose(
       updateJSON(json)
       updateLoading(false)
       updatePreviousSearch(query)
+    }
+  }),
+  lifecycle({
+    componentDidMount() {
+      const { checkQueryParams, updateQuery, updateSearchType, handleRetrieveData } = this.props
+      const { q, type } = checkQueryParams()
+      if (q && type) {
+        updateQuery(q)
+        updateSearchType(type)
+        handleRetrieveData()
+      }
+    
+
     }
   })
 )(({ translations, dropdownOpen, toggleDropDown, searchType, updateSearchType, query, updateQuery,

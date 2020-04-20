@@ -34,7 +34,7 @@ export default abstract class BitcoreWallet extends Wallet {
   _latestDiscoveryResult: AccountInfo
 
   constructor(network: NetworkConfig, public xpub: string, public derivationPath: string, label?: string) {
-    super(deriveAddress(xpub, ID_DERIVATION_PATH, network), label)
+    super(deriveAddress(xpub, ID_DERIVATION_PATH, network), label, xpub)
     this.assetSymbol = network.symbol
     this._obfuscatedXpub = ellipsize(xpub, 8, 4)
     this._network = network
