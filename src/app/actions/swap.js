@@ -267,7 +267,7 @@ export const signSwap = (swap, passwordCache = {}) => (dispatch, getState) => Pr
     log.debug('signSwap', swap)
     const { txId } = swap
     const tx = getTx(getState(), txId)
-    if (tx.signed) {
+    if (tx && tx.signed) {
       return
     }
     return dispatch(signTx(tx, passwordCache))

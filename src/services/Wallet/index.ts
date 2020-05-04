@@ -84,7 +84,7 @@ export class WalletService {
   getOrThrow = (id: string, errorMessage?: string) => {
     const wallet = this.get(id)
     if (!wallet) {
-      throw new Error(errorMessage || `Cannot get wallet with id ${id}`)
+      throw new Error(errorMessage || `Cannot get wallet with id ${id}. Please try to reconnect your wallet.`)
     }
     return wallet
   }
