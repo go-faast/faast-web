@@ -59,6 +59,19 @@ export const getLeafWallets = createSelector(
   (wallets) => wallets
     .filter(({ type }) => !type.includes('MultiWallet'))
 )
+
+export const getWalletsByType = createItemSelector(getAllWalletsArray, selectItemId, (wallets, walletType) => 
+  wallets.filter(({ type }) => {
+    if (walletType == 'trezor') {
+      walletType = 'MultiWalletTrezor'
+    } else if (walletType == 'ledger') {
+      walletType = 'MultiWalletLedger'
+    }
+    console.log(type, walletType)
+    return type == walletType
+  })[0]
+)
+
 export const getLeafWalletIds = createSelector(
   getLeafWallets,
   (wallets) => wallets

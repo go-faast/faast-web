@@ -51,6 +51,25 @@ export const getCurrentPortfolioWithWalletHoldings = (state) => {
   return result
 }
 
+export const getCurrentPortfolioWithIndividualWalletHoldings = (state) => {
+  const currentPortfolio = getCurrentPortfolioWithHoldings(state)
+  const result = {
+    ...currentPortfolio,
+    nestedWallets: currentPortfolio.transitiveNestedWalletIds.filter(id => id !== currentPortfolio.nestedWalletIds[0])
+      .map((nestedId) => getWalletWithHoldings(state, nestedId))
+      .map((nestedWallet) => ({
+        ...nestedWallet,
+        weight: toPercentage(nestedWallet.totalFiat, currentPortfolio.totalFiat),
+        assetHoldings: nestedWallet.assetHoldings.map((assetHolding) => ({
+          ...assetHolding,
+          percentage: toPercentage(assetHolding.fiat, currentPortfolio.totalFiat)
+        }))
+      }))
+  }
+  console.log('result', result)
+  return result
+}
+
 export const getCurrentWallet = currySelector(getWallet, getCurrentWalletId)
 export const getCurrentWalletWithHoldings = currySelector(getWalletWithHoldings, getCurrentWalletId)
 export const areCurrentWalletHoldingsLoaded = currySelector(areWalletHoldingsLoaded, getCurrentWalletId)
