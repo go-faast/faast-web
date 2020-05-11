@@ -53,102 +53,205 @@ import Faast from 'Src/services/Faast'
 const DEFAULT_SEND_SYMBOL = 'BTC'
 const DEFAULT_RECEIVE_SYMBOL = 'ETH'
 const DEFAULT_SEND_AMOUNT = 1
-const FORM_NAME = 'embedWidget'
+const FORM_NAME = 'swapWidget'
 const DEBOUNCE_WAIT = 5000 // ms
 
 const getFormValue = formValueSelector(FORM_NAME)
 
 const StepOneField = withProps(({ labelClass, inputClass, className, labelCol, inputCol }) => ({
-  labelClass: classNames('mb-sm-0 mb-lg-2 py-sm-2 p-lg-0', labelClass),
-  inputClass: classNames(inputClass),
+  labelClass: classNames('mb-sm-0 mb-lg-2 py-sm-2 p-lg-0', labelClass, style.customLabel),
+  inputClass: classNames('flat', style.customInput),
   className: classNames('mb-2 gutter-x-3', className),
   row: true,
   labelCol: { xs: '12', sm: '3', md: '2', lg: '12', className: 'text-left text-sm-right text-lg-left', ...labelCol },
   inputCol: { xs: '12', sm: true, md: true, lg: '12', ...inputCol },
 }))(ReduxFormField)
 
-const SwapStepOne = ({ sendSymbol, receiveSymbol, setAssetSelect, 
-  assetSelect, assetSymbols, onCloseAssetSelector, isAssetDisabled, handleSelectedAsset }) => {
+const SwapStepOne = ({
+  change, untouch, balancesLoaded,
+  sendSymbol, receiveSymbol, assetSymbols, assetSelect, setAssetSelect, 
+  validateReceiveAddress, validateRefundAddress, validateSendAmount, validateReceiveAmount,
+  handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled, validateETHAmount,
+  onChangeSendAmount, handleSelectFullBalance, fullBalanceAmount, fullBalanceAmountLoaded,
+  sendWallet, receiveWallet, maxGeoBuy, handleSelectGeoMax, receiveAsset, ethReceiveBalanceAmount,
+  onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs = {},
+  onChangeRefundAddress, onChangeReceiveAddress, rateError, sendAsset, t, onCloseAssetSelector,
+  validateDepositTag, isSubmittingSwap
+}) => {
   return (
     <Fragment>
-      <Form onSubmit={() => {}}>
-        <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
-          <CardHeader className='text-center'>
-              Swap Instantly
-          </CardHeader>
-          <CardBody className='pt-3'>
-            <Row className='gutter-0'>
-              <Col className='position-relative' xs={{ size: 12, order: 1 }} lg>
-                {assetSelect === 'send' && (
-                  <div className={style.assetListContainer}>
-                    <AssetSelector 
-                      selectAsset={handleSelectedAsset} 
-                      supportedAssetSymbols={assetSymbols}
-                      isAssetDisabled={isAssetDisabled}
-                      onClose={onCloseAssetSelector}
-                    />
-                  </div>
-                )}
-                <StepOneField
-                  name='sendAmount'
-                  type='number'
-                  step='any'
-                  placeholder={'Send amount'}
-                  label={'You send'}
-                  fixedFeedback
-                  addonAppend={({ invalid }) => (
-                    <InputGroupAddon addonType="append">
-                      <Button color={invalid ? 'danger' : 'dark'} size='sm' onClick={() => setAssetSelect('send')}>
-                        <CoinIcon key={sendSymbol} symbol={sendSymbol} size={1.25} className='mr-2'/>
-                        {sendSymbol} <i className='fa fa-caret-down'/>
-                      </Button>
-                    </InputGroupAddon>
+      <ProgressBar steps={[
+        <T key='1' tag='span' i18nKey='app.progressBar.createSwap'>Create Swap</T>, 
+        <T key='2' tag='span' i18nKey='app.progressBar.sendSymbol'>Send {sendSymbol}</T>, 
+        <T key='3' tag='span' i18nKey='app.progressBar.receiveSymbol'>Receive {receiveSymbol}</T>
+      ]} 
+      currentStep={0}
+      />
+      {maxGeoBuy && (
+        <Alert color='info' className='mx-auto mt-3 w-75 text-center'>
+          <small>
+            <T tag='span' i18nKey='app.widget.pleaseNote'>Please note: The maximum you can swap is </T> 
+            <Button style={{ color: 'rgba(0, 255, 222, 1)' }} color='link-plain' onClick={handleSelectGeoMax}>
+              <Units precision={sendAsset.decimals} roundingType='dp' value={maxGeoBuy} />
+            </Button> {sendSymbol} <T tag='span' i18nKey='app.widget.dueToLocation'>
+              <a style={{ color: 'rgba(0, 255, 222, 1)' }} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>
+              due to your location.
+              </a>
+            </T>
+          </small>
+        </Alert>
+      )}
+      {assetSelect && (
+        <div 
+          onClick={onCloseAssetSelector} 
+          className='position-fixed' 
+          style={{ width: '100%', height: '100%', top: 0, left: 0, zIndex: 99 }}
+        ></div>
+      )}
+      {!balancesLoaded ? (
+        <LoadingFullscreen label={<T tag='span' i18nKey='app.loading.balances'>Loading balances...</T>} />
+      ) : (
+        <Form onSubmit={handleSubmit}>
+          <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
+            <CardHeader style={{ backgroundColor: '#394045' }} className='text-center border-0'>
+              <T tag='h4' i18nKey='app.widget.swapInstantly' className='my-1'>Swap Instantly</T>
+            </CardHeader>
+            <CardBody className='pt-3'>
+              <Row className='gutter-0'>
+                <Col className='position-relative' xs={{ size: 12, order: 1 }} lg>
+                  {assetSelect === 'send' && (
+                    <div className={style.assetListContainer}>
+                      <AssetSelector 
+                        walletId={sendWallet && sendWallet.id}
+                        selectAsset={handleSelectedAsset} 
+                        supportedAssetSymbols={assetSymbols}
+                        isAssetDisabled={isAssetDisabled}
+                        onClose={onCloseAssetSelector}
+                      />
+                    </div>
                   )}
-                />
-              </Col>
-              <Col xs={{ size: 12, order: 3 }} lg={{ size: 1, order: 2 }} className='text-right text-lg-center'>
-                <Button color='primary' onClick={() => {}} className={style.reverse}>
-                  <SwapIcon/>
-                </Button>
-              </Col>
-              <Col xs={{ size: 12, order: 4 }} lg={{ size: true, order: 3 }}>
-                {assetSelect === 'receive' && (
-                  <div className={style.assetListContainer}>
-                    <AssetSelector 
-                      selectAsset={handleSelectedAsset} 
-                      supportedAssetSymbols={assetSymbols}
-                      isAssetDisabled={isAssetDisabled}
-                      onClose={onCloseAssetSelector}
-                    />
-                  </div>
-                )}
-                <StepOneField
-                  name='receiveAmount'
-                  type='number'
-                  step='any'
-                  placeholder={'Receive amount'}
-                  label={'You send'}
-                  fixedFeedback
-                  addonAppend={({ invalid }) => (
-                    <InputGroupAddon addonType="append">
-                      <Button color={invalid ? 'danger' : 'dark'} size='sm' onClick={() => setAssetSelect('receive')}>
-                        <CoinIcon key={receiveSymbol} symbol={receiveSymbol} size={1.25} className='mr-2'/>
-                        {receiveSymbol} <i className='fa fa-caret-down'/>
-                      </Button>
-                    </InputGroupAddon>
+                  <StepOneField
+                    name='sendAmount'
+                    type='number'
+                    step='any'
+                    placeholder={`${t('app.widget.sendAmountPlaceholder', 'Send amount')}${sendWallet ? '' : t('app.widget.optionalPlaceholder', ' (optional)')}`}
+                    validate={validateSendAmount}
+                    warn={validateETHAmount}
+                    label={t('app.widget.youSend','You send')}
+                    onChange={onChangeSendAmount}
+                    inputClass={classNames({ 'font-italic': estimatedField === 'send' })}
+                    inputGroupClass='flat'
+                    fixedFeedback
+                    addonAppend={({ invalid }) => (
+                      <InputGroupAddon addonType="append">
+                        <Button color={invalid ? 'danger' : 'light'} size='sm' className={style.inputButton} onClick={() => setAssetSelect('send')}>
+                          <CoinIcon key={sendSymbol} symbol={sendSymbol} size={1.25} className='mr-2'/>
+                          {sendSymbol} <i className='fa fa-caret-down'/>
+                        </Button>
+                      </InputGroupAddon>
+                    )}
+                    helpText={sendWallet ? (
+                      <FormText color="dark">
+                        <T tag='span' i18nKey='app.widget.youHave'>You have</T> {fullBalanceAmountLoaded ? (
+                          <Button color='link-plain' onClick={handleSelectFullBalance}>
+                            <Units precision={sendAsset.decimals} roundingType='dp' value={fullBalanceAmount}/>
+                          </Button>
+                        ) : (
+                          <i className='fa fa-spinner fa-pulse'/>
+                        )} {sendSymbol}
+                      </FormText>
+                    ) : !sendAmount ? (
+                      <T tag='span' i18nKey='app.widget.omitted'><FormText color="dark">When omitted, a variable market rate is used.</FormText></T>
+                    ) : estimatedField === 'send' ? (
+                      <T tag='span' i18nKey='app.widget.approxSend'><FormText color="dark">Approximately how much you need to send. Click Create to receive a guaranteed quote.</FormText></T>
+                    ) : (
+                      <T tag='span' i18nKey='app.widget.expectSend'><FormText color="dark">The amount we expect you to send.</FormText></T>
+                    )}
+                  />
+                </Col>
+                {/* <Col xs={{ size: 12, order: 3 }} lg={{ size: 12, order: 2 }} className='text-right text-lg-center'>
+                  <Button color='primary' onClick={handleSwitchAssets} className={style.reverse}>
+                    <SwapIcon/>
+                  </Button>
+                </Col> */}
+                <Col xs={{ size: 12, order: 4 }} lg={{ size: 12, order: 3 }}>
+                  {assetSelect === 'receive' && (
+                    <div className={style.assetListContainer}>
+                      <AssetSelector 
+                        walletId={receiveWallet && receiveWallet.id}
+                        selectAsset={handleSelectedAsset} 
+                        supportedAssetSymbols={assetSymbols}
+                        isAssetDisabled={isAssetDisabled}
+                        onClose={onCloseAssetSelector}
+                      />
+                    </div>
                   )}
+                  <StepOneField
+                    name='receiveAmount'
+                    type='number'
+                    step='any'
+                    placeholder={t('app.widget.receiveAmountPlaceholder', 'Receive amount')}
+                    validate={validateReceiveAmount}
+                    label={t('app.widget.youReceive', 'You receive')}
+                    onChange={onChangeReceiveAmount}
+                    inputGroupClass='flat'
+                    inputClass={classNames({ 'font-italic': estimatedField === 'receive' })}
+                    addonAppend={({ invalid }) => (
+                      <InputGroupAddon addonType="append">
+                        <Button color={invalid ? 'danger' : 'light'} size='sm' className={style.inputButton} onClick={() => setAssetSelect('receive')}>
+                          <CoinIcon key={receiveSymbol} symbol={receiveSymbol} size={1.25} className='mr-2'/>
+                          {receiveSymbol} <i className='fa fa-caret-down'/>
+                        </Button>
+                      </InputGroupAddon>
+                    )}
+                    helpText={estimatedField === 'receive' && receiveAmount ? (
+                      <T tag='span' i18nKey='app.widget.approxReceive'><FormText color="dark">Approximately how much you will receive. Click Create to receive a guaranteed quote.</FormText></T>
+                    ) : !receiveAmount ? (
+                      null
+                    ) : (
+                      <T tag='span' i18nKey='app.widget.guaranteeReceive'><FormText color="dark">The amount you are guaranteed to receive.</FormText></T>
+                    )}
+                  />
+                </Col>
+              </Row>
+              <div className='mt-0 mb-4'>
+                <Checkbox
+                  label={
+                    <T tag='small' i18nKey='app.widget.acceptTerms' className='pl-1 text-dark'>I accept the 
+                      <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'> Faa.st Terms & Conditions</a>
+                    </T>
+                  }
+                  labelClass='p-0'
                 />
-              </Col>
-            </Row>
-          </CardBody>
-        </Card>
-        <Button>Continue</Button>
-      </Form>
+              </div>
+              <GAEventButton 
+                className={classNames('mt-2 mb-0 mx-auto', style.customButton)} 
+                color={rateError ? 'danger' : 'primary'} 
+                type='submit' 
+                event={{ category: 'Swap', action: 'Create Swap' }}
+                disabled={Boolean(isSubmittingSwap || rateError)}
+              >
+                {!isSubmittingSwap && !rateError ? (
+                  <T tag='span' i18nKey='app.widget.createSwap'>Create Swap</T>
+                ) : rateError ? (
+                  <T tag='span' i18nKey='app.widget.noRate'>Unable to retrieve rate</T>
+                ) : (
+                  <T tag='span' i18nKey='app.widget.generatingSwap'>Generating Swap...</T>
+                )}
+              </GAEventButton>
+            </CardBody>
+            <div style={{ color: '#B5BCC4' }} className='text-center font-xs mb-3'>
+              <span>powered by Faa.st</span>
+            </div>
+          </Card>
+        </Form>
+      )}
     </Fragment>
   )}
 
 export default compose(
   setDisplayName('SwapStepOne'),
+  withTranslation(),
   setPropTypes({
     sendSymbol: PropTypes.string, 
     receiveSymbol: PropTypes.string,
@@ -165,7 +268,6 @@ export default compose(
     defaultRefundAddress: undefined,
     defaultReceiveAddress: undefined,
   }),
-  withState('assetSelect', 'setAssetSelect', null),
   connect(createStructuredSelector({
     assetSymbols: getAllAssetSymbols,
     sendAsset: (state, { sendSymbol }) => getAsset(state, sendSymbol),
@@ -178,13 +280,302 @@ export default compose(
     sendWallet: (state) => getWallet(state, getFormValue(state, 'sendWalletId')),
     balancesLoaded: areCurrentPortfolioBalancesLoaded,
     limit: getGeoLimit,
+    previousSwapInputs: getSavedSwapWidgetInputs
   }), {
     createSwap: createSwapAction,
+    push: pushAction,
+    updateQueryString: updateQueryStringReplace,
     retrievePairData: retrievePairData,
+    openViewOnly: openViewOnlyWallet,
+    saveSwapWidgetInputs: saveSwapWidgetInputs,
   }),
+  withProps(({
+    sendSymbol, receiveSymbol,
+    defaultSendAmount, defaultReceiveAmount,
+    defaultRefundAddress, defaultReceiveAddress,
+    sendWallet, sendAsset, limit, previousSwapInputs, receiveWallet,
+  }) => { 
+    const maxGeoBuy = limit && toBigNumber(limit.per_transaction.amount)
+      .div(sendAsset.price).round(sendAsset.decimals, BigNumber.ROUND_DOWN)
+    const { toAmount, fromAmount, toAddress, fromAddress, sendWalletId, receiveWalletId } = previousSwapInputs || {}
+    return ({
+      pair: `${sendSymbol}_${receiveSymbol}`,
+      initialValues: {
+        sendAmount: fromAmount ? parseFloat(fromAmount) : defaultSendAmount,
+        receiveAmount: toAmount ? parseFloat(toAmount) : defaultReceiveAmount,
+        refundWallet: sendWalletId ? 'hi' : fromAddress ? fromAddress : defaultRefundAddress,
+        receiveWallet: receiveWalletId ? undefined : toAddress ? toAddress : defaultReceiveAddress,
+        sendWalletId: sendWalletId ? sendWalletId : undefined,
+        receiveWalletId: receiveWalletId ? receiveWalletId : undefined,
+      },
+      fullBalanceAmount: sendWallet && (sendWallet.balances[sendSymbol] || '0'),
+      ethSendBalanceAmount: sendWallet && (sendWallet.balances['ETH'] || '0'),
+      ethReceiveBalanceAmount: receiveWallet && (receiveWallet.balances['ETH'] || '0'),
+      fullBalanceAmountLoaded: sendWallet && sendWallet.balancesLoaded,
+      maxGeoBuy
+    })}),
+  connect(createStructuredSelector({
+    rateLoaded: (state, { pair }) => isRateLoaded(state, pair),
+    rateStale: (state, { pair }) => isRateStale(state, pair),
+    minimumSend: (state, { pair }) => getRateMinimumDeposit(state, pair),
+    maximumSend: (state, { pair }) => getRateMaximumDeposit(state, pair),
+    minimumReceive: (state, { pair }) => getRateMinimumWithdrawal(state, pair),
+    maximumReceive: (state, { pair }) => getRateMaximumWithdrawal(state, pair),
+    estimatedRate: (state, { pair }) => getRatePrice(state, pair),
+    rateError: (state, { pair }) => rateError(state, pair),
+  })),
+  withState('assetSelect', 'setAssetSelect', null), // send, receive, or null
+  withState('estimatedField', 'setEstimatedField', 'receive'), // send or receive
+  withState('isSubmittingSwap', 'updateIsSubmittingSwap', false),
   withHandlers({
     onCloseAssetSelector: ({ setAssetSelect }) => () => {
       setAssetSelect(null)
+    },
+    isAssetDisabled: ({ assetSelect }) => ({ deposit, receive }) =>
+      !((assetSelect === 'send' && deposit) || 
+      (assetSelect === 'receive' && receive)),
+    validateReceiveAddress: ({ receiveAsset, receiveSymbol, t }) => validator.all(
+      validator.required(),
+      validator.walletAddress(receiveAsset, `${t('app.widget.invalid', 'Invalid')} ${receiveSymbol} ${t('app.widget.address', 'address')}`)
+    ),
+    validateRefundAddress: ({ sendAsset, sendSymbol, t }) => validator.all(
+      ...(sendSymbol === 'XMR' ? [validator.required()] : []),
+      validator.walletAddress(sendAsset, `${t('app.widget.invalid', 'Invalid')} ${sendSymbol} ${t('app.widget.address', 'address')}`)
+    ),
+    validateDepositTag: () => validator.all(
+      validator.number(),
+      validator.integer()
+    ),
+    onSubmit: ({
+      sendSymbol, receiveAsset, sendAsset,
+      createSwap, openViewOnly, push, estimatedField,
+      ethSendBalanceAmount, t, fullBalanceAmount,updateIsSubmittingSwap
+    }) => async (values) => {
+      updateIsSubmittingSwap(true)
+      const { symbol: receiveSymbol, ERC20 } = receiveAsset
+      let { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveAmount, receiveWalletId, receiveAddressExtraId, refundAddressExtraId } = values
+      if (receiveSymbol == 'ETH' || ERC20) {
+        receiveAddress = toChecksumAddress(receiveAddress)
+      }
+      if ((sendSymbol == 'ETH' || sendAsset.ERC20) && refundAddress) {
+        refundAddress = toChecksumAddress(refundAddress)
+      }
+      if (sendAsset.ERC20 && parseFloat(ethSendBalanceAmount) === 0) {
+        updateIsSubmittingSwap(false)
+        throw new SubmissionError({
+          refundAddress: t('app.widget.notEnoughEth', 'This wallet does not have enough ETH to cover the gas fees. Please deposit some ETH and try again.'),
+        })
+      }
+      if (sendSymbol === 'XRP' && sendWalletId && toBigNumber(fullBalanceAmount).minus(toBigNumber(sendAmount)).lt(20)) {
+        updateIsSubmittingSwap(false)
+        throw new SubmissionError({
+          refundAddress: t('app.widget.notEnoughXrp', 'XRP wallets must maintain a minimum balance of 20 XRP.'),
+        })
+      }
+      async function validatePayportField(addressFieldName, extraIdFieldName, asset, address, extraId) {
+        const validation = await Faast.validateAddress(address, asset.symbol, extraId)
+        if (!validation.valid) {
+          let message = `${t('app.widget.invalid', 'Invalid')} ${asset.symbol} ${t('app.widget.address', 'address')}`
+          if (validation.message) {
+            if (validation.message.includes('extraId is required')) {
+              const extraIdName = extraAssetFields[asset.symbol].deposit || 'extra ID'
+              updateIsSubmittingSwap(false)
+              throw new SubmissionError({
+                [extraIdFieldName]: `${asset.name} ${extraIdName} is required for this address`,
+              })
+            } else {
+              message += `: ${validation.message}`
+            }
+          }
+          updateIsSubmittingSwap(false)
+          throw new SubmissionError({
+            [addressFieldName]: message,
+          })
+        } 
+      }
+      await validatePayportField('receiveAddress', 'receiveAddressExtraId', receiveAsset, receiveAddress, receiveAddressExtraId)
+      if (refundAddress) {
+        await validatePayportField('refundAddress', 'refundAddressExtraId', sendAsset, refundAddress, refundAddressExtraId)
+      }
+      return createSwap({
+        sendSymbol: sendSymbol,
+        sendAmount: sendAmount && estimatedField !== 'send' ? toBigNumber(sendAmount).round(sendAsset.decimals) : undefined,
+        sendWalletId,
+        receiveSymbol,
+        receiveAddress,
+        refundAddress,
+        receiveWalletId,
+        receiveAmount: sendAmount && estimatedField !== 'receive' ? toBigNumber(receiveAmount).round(receiveAsset.decimals) : undefined,
+        receiveAddressExtraId,
+        refundAddressExtraId
+      })
+        .then((swap) => {
+          updateIsSubmittingSwap(false)
+          push(`/swap/send?id=${swap.orderId}`)
+          if (receiveSymbol === 'ETH' || ERC20) { 
+            return openViewOnly(receiveAddress, `/swap/send?id=${swap.orderId}`)
+          }
+        }).catch(() => updateIsSubmittingSwap(false))
+    },
+    handleSaveSwapWidgetInputs: ({ saveSwapWidgetInputs, receiveAsset, sendAsset, 
+      receiveAddress, refundAddress, receiveAmount, sendAmount, sendWallet, receiveWallet }) => (inputs) => {
+      // const { to, from, toAddress, fromAddress, toAmount, fromAmount, sendWalletId, receiveWalletId } = inputs
+      // saveSwapWidgetInputs({
+      //   to: to ? to : receiveAsset.symbol,
+      //   from: from ? from : sendAsset.symbol,
+      //   toAddress: toAddress ? toAddress : receiveAddress,
+      //   fromAddress: fromAddress ? fromAddress : refundAddress,
+      //   toAmount: toAmount ? toAmount : receiveAmount ? parseFloat(receiveAmount) : undefined,
+      //   fromAmount: fromAmount ? fromAmount : sendAmount ? parseFloat(sendAmount) : undefined,
+      //   sendWalletId: sendWalletId ? sendWalletId : sendWallet ? sendWallet.id : undefined,
+      //   receiveWalletId: receiveWalletId ? receiveWalletId : receiveWallet ? receiveWallet.id : undefined,
+      // })
+    }
+  }),
+  reduxForm({
+    form: FORM_NAME,
+    enableReinitialize: true,
+    keepDirtyOnReinitialize: true,
+    updateUnregisteredFields: true,
+  }),
+  withHandlers({
+    updateURLParams: ({ updateQueryString, handleSaveSwapWidgetInputs }) => (params) => {
+      // updateQueryString(params)
+      // handleSaveSwapWidgetInputs(params)
+    }
+  }),
+  withHandlers(({ change }) => {
+    const setEstimatedReceiveAmount = (x) => {
+      log.trace('setEstimatedReceiveAmount', x)
+      change('receiveAmount', x && toBigNumber(x))
+    }
+    const setEstimatedSendAmount = (x) => {
+      log.trace('setEstimatedSendAmount', x)
+      change('sendAmount', x && toBigNumber(x))
+    }
+    return {
+      calculateReceiveEstimate: ({
+        receiveAsset, estimatedRate, setEstimatedField, updateURLParams, sendAsset
+      }) => (sendAmount) => {
+        if (estimatedRate && sendAmount) {
+          sendAmount = toBigNumber(sendAmount).round(sendAsset.decimals)
+          const estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals)
+          updateURLParams({ 
+            toAmount: estimatedReceiveAmount ? parseFloat(estimatedReceiveAmount) : undefined,
+            fromAmount: sendAmount ? parseFloat(sendAmount) : undefined
+          })
+          setEstimatedReceiveAmount(estimatedReceiveAmount.toString())
+        } else {
+          setEstimatedReceiveAmount(null)
+        }
+        setEstimatedField('receive')
+      },
+      calculateSendEstimate: ({
+        sendAsset, estimatedRate, setEstimatedField, updateURLParams, receiveAsset
+      }) => (receiveAmount) => {
+        if (estimatedRate && receiveAmount) {
+          receiveAmount = toBigNumber(receiveAmount).round(receiveAsset.decimals)
+          const estimatedSendAmount = receiveAmount.times(estimatedRate).round(sendAsset.decimals)
+          updateURLParams({ 
+            fromAmount: estimatedSendAmount ? parseFloat(estimatedSendAmount) : undefined,
+            toAmount: receiveAmount ? parseFloat(receiveAmount) : undefined
+          })
+          setEstimatedSendAmount(estimatedSendAmount.toString())
+        } else {
+          setEstimatedSendAmount(null)
+        }
+        setEstimatedField('send')
+      },
+    }
+  }),
+  withHandlers({
+    setSendAmount: ({ change, touch, calculateReceiveEstimate, sendAsset }) => (x) => {
+      log.debug('setSendAmount', x)
+      change('sendAmount', x && toBigNumber(x).round(sendAsset.decimals).toString())
+      touch('sendAmount')
+      calculateReceiveEstimate(x)
+    },
+    setReceiveAmount: ({ change, touch, calculateSendEstimate, receiveAsset }) => (x) => {
+      log.debug('setReceiveAmount', x)
+      change('receiveAmount', x && toBigNumber(x).round(receiveAsset.decimals).toString())
+      touch('receiveAmount')
+      calculateSendEstimate(x)
+    },
+  }),
+  withHandlers({
+    handleSelectGeoMax: ({ maxGeoBuy, setSendAmount }) => () => {
+      setSendAmount(maxGeoBuy)
+    },
+    handleSelectMinimum: ({ minimumSend, setSendAmount }) => () => {
+      setSendAmount(minimumSend)
+    },
+    handleSelectMaximum: ({ maximumSend, setSendAmount }) => () => {
+      setSendAmount(maximumSend)
+    },
+    handleSelectMaximumReceive: ({ maximumReceive, setReceiveAmount }) => () => {
+      setReceiveAmount(maximumReceive)
+    },
+    handleSelectMinimumReceive: ({ minimumReceive, setReceiveAmount }) => () => {
+      setReceiveAmount(minimumReceive)
+    }
+  }),
+  withHandlers({
+    handleSelectFullBalance: ({ fullBalanceAmount, setSendAmount }) => () => {
+      setSendAmount(fullBalanceAmount)
+    },
+  }),
+  withHandlers({
+    onChangeReceiveAmount: ({ calculateSendEstimate }) => (_, newReceiveAmount) => {
+      calculateSendEstimate(newReceiveAmount)
+    },
+    onChangeSendAmount: ({ calculateReceiveEstimate }) => (_, newSendAmount) => {
+      calculateReceiveEstimate(newSendAmount)
+    },
+    onChangeRefundAddress: ({ updateURLParams }) => (_, newRefundAddress) => {
+      updateURLParams({ fromAddress: newRefundAddress })
+    },
+    onChangeReceiveAddress: ({ updateURLParams }) => (_, newReceiveAddress) => {
+      updateURLParams({ toAddress: newReceiveAddress })
+    },
+    validateSendAmount: ({ minimumSend, maximumSend, sendAsset,
+      sendSymbol, sendWallet, fullBalanceAmount, maxGeoBuy, handleSelectGeoMax, handleSelectMinimum,
+      handleSelectMaximum, t, handleSelectFullBalance, estimatedField }) => {
+      return (
+        validator.all(
+          ...(sendWallet ? [validator.required()] : []),
+          validator.number(),
+          ...(estimatedField === 'receive' && minimumSend ? [validator.gte(minimumSend, <span key={'minimumSend'}>{t('app.widget.sendAmountAtLeast', 'Send amount must be at least')} <Button key={'minimumSend1'} color='link-plain' onClick={handleSelectMinimum}>
+            <Units key={'minimumSend2'} precision={sendAsset.decimals} roundingType='dp' value={minimumSend}/>
+          </Button> {sendSymbol} </span>)] : []),
+          ...(maxGeoBuy ? [validator.lte(maxGeoBuy, <span key={Math.random()}>{t('app.widget.sendAmountGreaterThan', 'Send amount cannot be greater than')} <Button color='link-plain' onClick={handleSelectGeoMax}>
+            <Units precision={sendAsset.decimals} roundingType='dp' value={maxGeoBuy}/>
+          </Button> {sendSymbol} <a key={Math.random()} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noopener noreferrer'>{t('app.widget.dueToYourLocation', 'due to your location.')}</a></span>)] : []),
+          ...(sendWallet ? [validator.lte(fullBalanceAmount, <span key='moreThan'>{t('app.widget.cannotSendMoreThanHave', 'Cannot send more than you have.')} <span>You have </span><Button color='link-plain' onClick={handleSelectFullBalance}>
+            <Units precision={sendAsset.decimals} roundingType='dp' value={fullBalanceAmount}/>
+          </Button> {sendSymbol} </span>)] : []),
+          ...(estimatedField === 'receive' && maximumSend ? [validator.lte(maximumSend, <span key={'maxSend'}>{t('app.widget.sendAmountGreaterThan', 'Send amount cannot be greater than')} <Button key={'maxSend1'} color='link-plain' onClick={handleSelectMaximum}>
+            <Units key={'maxSend2'} precision={sendAsset.decimals} roundingType='dp' value={maximumSend}/></Button> {t('app.widget.ensurePricing', 'to ensure efficient pricing.')}</span>)] : []),
+        )
+      )
+    },
+    validateETHAmount: ({ sendSymbol, ethSendBalanceAmount }) => {
+      return (
+        validator.all(
+          ...(sendSymbol === 'ETH' ? [validator.lt(ethSendBalanceAmount, <span key='cannotSendWhole'>You are unable to send your entire ETH balance, because some ETH is needed to pay network fees.</span>)] : []),
+        )
+      )
+    },
+    validateReceiveAmount: ({ maximumReceive, estimatedField, minimumReceive, handleSelectMaximumReceive, handleSelectMinimumReceive, sendAsset, receiveSymbol, t }) => {
+      return ( 
+        validator.all(
+          validator.number(),
+          ...(estimatedField === 'send' && maximumReceive ? [validator.lte(maximumReceive, <span key={'maxReceive'}>{t('app.widget.receiveAmountGreaterThan', 'Receive amount cannot be greater than')} <Button key={'maxReceive2'} color='link-plain' onClick={handleSelectMaximumReceive}>
+            <Units key={'maxReceive3'} precision={sendAsset.decimals} roundingType='dp' value={maximumReceive}/></Button> {t('app.widget.ensurePricing', 'to ensure efficient pricing.')}</span>)] : []),
+          ...(estimatedField === 'send' && minimumReceive ? [validator.gte(minimumReceive, <span key={'minimumReceive'}>{t('app.widget.receiveAmountAtLeast', 'Receive amount must be at least')} <Button key={'minimumReceive1'} color='link-plain' onClick={handleSelectMinimumReceive}>
+            <Units key={'minimumReceive2'} precision={sendAsset.decimals} roundingType='dp' value={minimumReceive}/>
+          </Button> {receiveSymbol} </span>)] : []),
+        )
+      )
     },
     handleSelectedAsset: ({ assetSelect, updateURLParams, setAssetSelect, sendSymbol, receiveSymbol }) => (asset) => {
       const { symbol } = asset
@@ -204,14 +595,84 @@ export default compose(
       setAssetSelect(null)
       updateURLParams({ from, to })
     },
-    isAssetDisabled: ({ assetSelect }) => ({ deposit, receive }) =>
-      !((assetSelect === 'send' && deposit) || 
-      (assetSelect === 'receive' && receive)),
   }),
-  reduxForm({
-    form: FORM_NAME,
-    enableReinitialize: true,
-    keepDirtyOnReinitialize: true,
-    updateUnregisteredFields: true,
+  withHandlers({
+    handleSwitchAssets: ({ updateURLParams, sendSymbol, receiveSymbol, sendAmount, 
+      calculateSendEstimate, estimatedField, calculateReceiveEstimate, receiveAmount }) => () => {
+      updateURLParams({ from: receiveSymbol, to: sendSymbol })
+      if (estimatedField === 'receive') {
+        calculateReceiveEstimate(sendAmount)
+      } else {
+        calculateSendEstimate(receiveAmount)
+      }
+      
+    },
+    checkQueryParams: () => () => {
+      const urlParams = qs.parse(location.search)
+      return urlParams
+    }
   }),
+  lifecycle({
+    componentDidUpdate(prevProps) {
+      const {
+        rateLoaded, pair, retrievePairData, estimatedRate, calculateSendEstimate, 
+        calculateReceiveEstimate, estimatedField, sendAmount, receiveAmount, checkQueryParams,
+        previousSwapInputs, updateURLParams, fullBalanceAmount, fullBalanceAmountLoaded, maxGeoBuy, setSendAmount,
+        rateStale
+      } = this.props
+      const urlParams = checkQueryParams()
+      if (Object.keys(urlParams).length === 0 && previousSwapInputs) {
+        updateURLParams(previousSwapInputs)
+      }
+      if (pair && (!rateLoaded || rateStale)) {
+        retrievePairData(pair, null, estimatedField === 'receive' ? sendAmount : undefined, estimatedField === 'send' ? receiveAmount : undefined)
+      }
+      if (prevProps.estimatedRate !== estimatedRate) {
+        if (estimatedField === 'receive') {
+          calculateReceiveEstimate(sendAmount)
+        } else {
+          calculateSendEstimate(receiveAmount)
+        }
+      }
+      if (fullBalanceAmountLoaded !== prevProps.fullBalanceAmountLoaded && maxGeoBuy > fullBalanceAmount) {
+        setSendAmount(fullBalanceAmount)
+      }
+    },
+    componentWillMount() {
+      const { updateURLParams, sendSymbol, receiveSymbol, estimatedField, retrievePairData, pair, sendAmount, receiveAmount } = this.props
+      if (sendSymbol === receiveSymbol) {
+        let from = DEFAULT_SEND_SYMBOL
+        let to = DEFAULT_RECEIVE_SYMBOL
+        if (to === sendSymbol || from === receiveSymbol) {
+          from = to
+          to = DEFAULT_SEND_SYMBOL
+        }
+        updateURLParams({ to, from })
+      } else {
+        retrievePairData(pair, null, estimatedField === 'receive' ? sendAmount : undefined, estimatedField === 'send' ? receiveAmount : undefined)
+      }
+    },
+    componentDidMount() {
+      const { maxGeoBuy, handleSelectGeoMax, defaultSendAmount } = this.props
+      if (maxGeoBuy && maxGeoBuy < defaultSendAmount) {
+        handleSelectGeoMax()
+      }
+    },
+    componentWillUnmount() {
+      const { saveSwapWidgetInputs, sendAsset, receiveAsset, 
+        refundAddress, receiveAddress, sendAmount, receiveAmount,
+        sendWallet, receiveWallet } = this.props
+      saveSwapWidgetInputs({
+        to: receiveAsset ? receiveAsset.symbol : undefined,
+        from: sendAsset ? sendAsset.symbol : undefined,
+        fromAddress: refundAddress,
+        toAddress: receiveAddress,
+        sendWalletId: sendWallet ? sendWallet.id : undefined,
+        receiveWalletId: receiveWallet ? receiveWallet.id : undefined,
+        fromAmount: sendAmount ? parseFloat(sendAmount) : undefined,
+        toAmount: receiveAmount ? parseFloat(receiveAmount) : undefined
+      })
+    }
+  }),
+  debounceHandler('updateURLParams', DEBOUNCE_WAIT),
 )(SwapStepOne)
