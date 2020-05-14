@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import withTracker from 'Site/components/withTracker'
 import Header from 'Site/components/Header'
-import { updateQueryStringReplace } from 'Actions/router'
 import * as qs from 'query-string'
 import Footer from 'Site/components/Footer'
 import { Input, Container, InputGroup, InputGroupButtonDropdown, 
@@ -26,12 +25,13 @@ export default compose(
   }), {
     getSwapsByAddress,
     getSwapByOrderId,
-    updateQueryString: updateQueryStringReplace
   }),
   withHandlers({
     checkQueryParams: () => () => {
-      const urlParams = qs.parse(location.search)
-      return urlParams
+      if (typeof window !== 'undefined') {
+        const urlParams = qs.parse(location.search)
+        return urlParams
+      }
     },
   }),
   withState('shareableURL', 'updateShareableURL', ''),
@@ -44,9 +44,6 @@ export default compose(
     return type || 'address'
   }),
   withHandlers({
-    updateURLParams: ({ updateQueryString }) => (params) => {
-      updateQueryString(params)
-    },
     handleShareableURL: ({ updateShareableURL, query, searchType }) => () => {
       if (typeof window !== 'undefined') {
         updateShareableURL(`${window.location.href}?q=${query}&type=${searchType}`)
