@@ -67,7 +67,7 @@ const StepOneField = withProps(({ labelClass, inputClass, className, labelCol, i
   inputCol: { xs: '12', sm: true, md: true, lg: '12', ...inputCol },
 }))(ReduxFormField)
 
-const SwapStepOne = ({
+const SwapStepTwo = ({
   change, untouch, balancesLoaded,
   sendSymbol, receiveSymbol, assetSymbols, assetSelect, setAssetSelect, 
   validateReceiveAddress, validateRefundAddress, validateSendAmount, validateReceiveAmount,
@@ -119,111 +119,78 @@ const SwapStepOne = ({
             <CardBody className='pt-3'>
               <Row className='gutter-0'>
                 <Col className='position-relative' xs={{ size: 12, order: 1 }} lg>
-                  {assetSelect === 'send' && (
-                    <div className={style.assetListContainer}>
-                      <AssetSelector 
-                        walletId={sendWallet && sendWallet.id}
-                        selectAsset={handleSelectedAsset} 
-                        supportedAssetSymbols={assetSymbols}
-                        isAssetDisabled={isAssetDisabled}
-                        onClose={onCloseAssetSelector}
-                      />
-                    </div>
-                  )}
-                  <StepOneField
-                    name='sendAmount'
-                    type='number'
-                    step='any'
-                    placeholder={`${t('app.widget.sendAmountPlaceholder', 'Send amount')}${sendWallet ? '' : t('app.widget.optionalPlaceholder', ' (optional)')}`}
-                    validate={validateSendAmount}
-                    warn={validateETHAmount}
-                    label={t('app.widget.youSend','You send')}
-                    onChange={onChangeSendAmount}
-                    inputClass={classNames({ 'font-italic': estimatedField === 'send' })}
-                    inputGroupClass='flat'
+                  <StepOneField 
                     fixedFeedback
-                    addonAppend={({ invalid }) => (
-                      <InputGroupAddon addonType="append">
-                        <Button color={invalid ? 'danger' : 'light'} size='sm' className={style.inputButton} onClick={() => setAssetSelect('send')}>
-                          <CoinIcon key={sendSymbol} symbol={sendSymbol} size={1.25} className='mr-2'/>
-                          {sendSymbol} <i className='fa fa-caret-down'/>
-                        </Button>
-                      </InputGroupAddon>
-                    )}
-                    helpText={sendWallet ? (
-                      <FormText color="dark">
-                        <T tag='span' i18nKey='app.widget.youHave'>You have</T> {fullBalanceAmountLoaded ? (
-                          <Button color='link-plain' onClick={handleSelectFullBalance}>
-                            <Units precision={sendAsset.decimals} roundingType='dp' value={fullBalanceAmount}/>
-                          </Button>
-                        ) : (
-                          <i className='fa fa-spinner fa-pulse'/>
-                        )} {sendSymbol}
+                    name='refundAddress'
+                    placeholder={`${sendSymbol} ${t('app.widget.refundAddressPlaceholder', 'refund address')}`}
+                    label={t('app.widget.toWallet', 'To wallet')}
+                    labelClass='mt-3 mt-sm-0 mt-lg-3'
+                    validate={validateRefundAddress}
+                    symbol={sendSymbol}
+                    change={change}
+                    defaultValue={!previousSwapInputs.receiveWalletId ? previousSwapInputs.toAddress : undefined}
+                    untouch={untouch}
+                    formName={FORM_NAME}
+                    onChange={onChangeRefundAddress}
+                    requiredLabel
+                    helpText={sendAsset.ERC20 && parseFloat(ethReceiveBalanceAmount) === 0 && (
+                      <FormText className='text-muted'>
+                     Please note: The {receiveSymbol} you receive will be <a href='https://ethereum.stackexchange.com/questions/52937/cannot-send-erc20-tokens-because-user-has-no-ethereum' target='_blank noreferrer'>stuck upon arrival</a> because your receiving wallet does not have ETH to pay for future network fees.
                       </FormText>
-                    ) : !sendAmount ? (
-                      <T tag='span' i18nKey='app.widget.omitted'><FormText color="dark">When omitted, a variable market rate is used.</FormText></T>
-                    ) : estimatedField === 'send' ? (
-                      <T tag='span' i18nKey='app.widget.approxSend'><FormText color="dark">Approximately how much you need to send. Click Create to receive a guaranteed quote.</FormText></T>
-                    ) : (
-                      <T tag='span' i18nKey='app.widget.expectSend'><FormText color="dark">The amount we expect you to send.</FormText></T>
                     )}
                   />
+                  {Object.keys(extraAssetFields).indexOf(sendSymbol) >= 0 && (
+                    <StepOneField
+                      name='refundAddressExtraId'
+                      type='number'
+                      step='any'
+                      fixedFeedback
+                      placeholder={`${sendSymbol} ${capitalizeFirstLetter(extraAssetFields[sendSymbol].deposit)}`}
+                      validate={validateDepositTag}
+                      label={`${sendSymbol} ${capitalizeFirstLetter(extraAssetFields[sendSymbol].deposit)}`}
+                    />
+                  )}
                 </Col>
                 {/* <Col xs={{ size: 12, order: 3 }} lg={{ size: 12, order: 2 }} className='text-right text-lg-center'>
                   <Button color='primary' onClick={handleSwitchAssets} className={style.reverse}>
                     <SwapIcon/>
                   </Button>
                 </Col> */}
-                <Col xs={{ size: 12, order: 4 }} lg={{ size: 12, order: 3 }}>
-                  {assetSelect === 'receive' && (
-                    <div className={style.assetListContainer}>
-                      <AssetSelector 
-                        walletId={receiveWallet && receiveWallet.id}
-                        selectAsset={handleSelectedAsset} 
-                        supportedAssetSymbols={assetSymbols}
-                        isAssetDisabled={isAssetDisabled}
-                        onClose={onCloseAssetSelector}
-                      />
-                    </div>
-                  )}
-                  <StepOneField
-                    name='receiveAmount'
-                    type='number'
-                    step='any'
-                    placeholder={t('app.widget.receiveAmountPlaceholder', 'Receive amount')}
-                    validate={validateReceiveAmount}
-                    label={t('app.widget.youReceive', 'You receive')}
-                    onChange={onChangeReceiveAmount}
-                    inputGroupClass='flat'
-                    inputClass={classNames({ 'font-italic': estimatedField === 'receive' })}
-                    addonAppend={({ invalid }) => (
-                      <InputGroupAddon addonType="append">
-                        <Button color={invalid ? 'danger' : 'light'} size='sm' className={style.inputButton} onClick={() => setAssetSelect('receive')}>
-                          <CoinIcon key={receiveSymbol} symbol={receiveSymbol} size={1.25} className='mr-2'/>
-                          {receiveSymbol} <i className='fa fa-caret-down'/>
-                        </Button>
-                      </InputGroupAddon>
-                    )}
-                    helpText={estimatedField === 'receive' && receiveAmount ? (
-                      <T tag='span' i18nKey='app.widget.approxReceive'><FormText color="dark">Approximately how much you will receive. Click Create to receive a guaranteed quote.</FormText></T>
-                    ) : !receiveAmount ? (
-                      null
-                    ) : (
-                      <T tag='span' i18nKey='app.widget.guaranteeReceive'><FormText color="dark">The amount you are guaranteed to receive.</FormText></T>
+                <Col className='position-relative' xs={{ size: 12, order: 1 }} lg>
+                  <StepOneField 
+                    tag={StepOneField}
+                    fixedFeedback
+                    name='receiveAddress'
+                    placeholder={`${receiveSymbol} ${t('app.widget.receiveAddressPlaceholder', 'receive address')}`}
+                    label={t('app.widget.toWallet', 'To wallet')}
+                    labelClass='mt-3 mt-sm-0 mt-lg-3'
+                    validate={validateReceiveAddress}
+                    symbol={receiveSymbol}
+                    change={change}
+                    defaultValue={!previousSwapInputs.receiveWalletId ? previousSwapInputs.toAddress : undefined}
+                    untouch={untouch}
+                    formName={FORM_NAME}
+                    onChange={onChangeReceiveAddress}
+                    requiredLabel
+                    helpText={receiveAsset.ERC20 && parseFloat(ethReceiveBalanceAmount) === 0 && (
+                      <FormText className='text-muted'>
+                     Please note: The {receiveSymbol} you receive will be <a href='https://ethereum.stackexchange.com/questions/52937/cannot-send-erc20-tokens-because-user-has-no-ethereum' target='_blank noreferrer'>stuck upon arrival</a> because your receiving wallet does not have ETH to pay for future network fees.
+                      </FormText>
                     )}
                   />
+                  {Object.keys(extraAssetFields).indexOf(receiveSymbol) >= 0 && (
+                    <StepOneField
+                      name='receiveAddressExtraId'
+                      type='number'
+                      step='any'
+                      fixedFeedback
+                      placeholder={`${receiveSymbol} ${capitalizeFirstLetter(extraAssetFields[receiveSymbol].deposit)}`}
+                      validate={validateDepositTag}
+                      label={`${receiveSymbol} ${capitalizeFirstLetter(extraAssetFields[receiveSymbol].deposit)}`}
+                    />
+                  )}
                 </Col>
               </Row>
-              <div className='mt-0 mb-4'>
-                <Checkbox
-                  label={
-                    <T tag='small' i18nKey='app.widget.acceptTerms' className='pl-1 text-dark'>I accept the 
-                      <a href='https://faa.st/terms' target='_blank' rel='noopener noreferrer'> Faa.st Terms & Conditions</a>
-                    </T>
-                  }
-                  labelClass='p-0'
-                />
-              </div>
               <GAEventButton 
                 className={classNames('mt-2 mb-0 mx-auto', style.customButton)} 
                 color={rateError ? 'danger' : 'primary'} 
@@ -250,7 +217,7 @@ const SwapStepOne = ({
   )}
 
 export default compose(
-  setDisplayName('SwapStepOne'),
+  setDisplayName('SwapStepTwo'),
   withTranslation(),
   setPropTypes({
     sendSymbol: PropTypes.string, 
@@ -675,4 +642,4 @@ export default compose(
     }
   }),
   debounceHandler('updateURLParams', DEBOUNCE_WAIT),
-)(SwapStepOne)
+)(SwapStepTwo)
