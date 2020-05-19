@@ -35,8 +35,7 @@ import GAEventButton from 'Components/GAEventButton'
 import ReduxFormField from 'Components/ReduxFormField'
 import Checkbox from 'Components/Checkbox'
 import CoinIcon from 'Components/CoinIcon'
-import AssetSelector from 'Src/app/components/AssetSelectorList'
-import ProgressBar from 'Components/ProgressBar'
+import AssetSelector from 'Components/AssetSelectorList'
 import WalletSelectField from 'Components/WalletSelectField'
 import T from 'Components/i18n/T'
 import { withTranslation } from 'react-i18next'
@@ -44,6 +43,7 @@ import Units from 'Components/Units'
 import { toChecksumAddress } from 'Utilities/convert'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import debounceHandler from 'Hoc/debounceHandler'
+import ProgressBar from '../ProgressBar'
 
 import SwapIcon from 'Img/swap-icon.svg?inline'
 
@@ -80,13 +80,6 @@ const SwapStepOne = ({
 }) => {
   return (
     <Fragment>
-      <ProgressBar steps={[
-        <T key='1' tag='span' i18nKey='app.progressBar.createSwap'>Create Swap</T>, 
-        <T key='2' tag='span' i18nKey='app.progressBar.sendSymbol'>Send {sendSymbol}</T>, 
-        <T key='3' tag='span' i18nKey='app.progressBar.receiveSymbol'>Receive {receiveSymbol}</T>
-      ]} 
-      currentStep={0}
-      />
       {maxGeoBuy && (
         <Alert color='info' className='mx-auto mt-3 w-75 text-center'>
           <small>
@@ -114,9 +107,23 @@ const SwapStepOne = ({
         <Form onSubmit={handleSubmit}>
           <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
             <CardHeader style={{ backgroundColor: '#394045' }} className='text-center border-0'>
-              <T tag='h4' i18nKey='app.widget.swapInstantly' className='my-1'>Swap Instantly</T>
+              {/* <T tag='h4' i18nKey='app.widget.swapInstantly' className='my-1'>Swap Instantly</T> */}
             </CardHeader>
             <CardBody className='pt-3'>
+              <ProgressBar 
+                steps={[
+                  { 
+                    text: 'Choose Assets',
+                  },
+                  {
+                    text: 'Input Addresses'
+                  },
+                  {
+                    text: `Receive ${receiveSymbol}`
+                  }
+                ]} 
+                currentStep={0}
+              />
               <Row className='gutter-0'>
                 <Col className='position-relative' xs={{ size: 12, order: 1 }} lg>
                   {assetSelect === 'send' && (
@@ -232,7 +239,7 @@ const SwapStepOne = ({
                 disabled={Boolean(isSubmittingSwap || rateError)}
               >
                 {!isSubmittingSwap && !rateError ? (
-                  <T tag='span' i18nKey='app.widget.createSwap'>Create Swap</T>
+                  <span>Continue</span>
                 ) : rateError ? (
                   <T tag='span' i18nKey='app.widget.noRate'>Unable to retrieve rate</T>
                 ) : (

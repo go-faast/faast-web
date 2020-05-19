@@ -8,8 +8,8 @@ import { reduxForm, formValueSelector, SubmissionError } from 'redux-form'
 import { push as pushAction } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
 import {
-  Form, Button, Card, CardHeader, CardBody, InputGroupAddon, Row, Col,
-  FormText, Alert
+  Form, Button, Card, CardHeader, CardBody, Row, Col,
+  FormText
 } from 'reactstrap'
 
 import log from 'Log'
@@ -33,11 +33,6 @@ import extraAssetFields from 'Config/extraAssetFields'
 
 import GAEventButton from 'Components/GAEventButton'
 import ReduxFormField from 'Components/ReduxFormField'
-import Checkbox from 'Components/Checkbox'
-import CoinIcon from 'Components/CoinIcon'
-import AssetSelector from 'Src/app/components/AssetSelectorList'
-import ProgressBar from 'Components/ProgressBar'
-import WalletSelectField from 'Components/WalletSelectField'
 import T from 'Components/i18n/T'
 import { withTranslation } from 'react-i18next'
 import Units from 'Components/Units'
@@ -45,7 +40,7 @@ import { toChecksumAddress } from 'Utilities/convert'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import debounceHandler from 'Hoc/debounceHandler'
 
-import SwapIcon from 'Img/swap-icon.svg?inline'
+import ProgressBar from '../ProgressBar'
 
 import style from './style.scss'
 import Faast from 'Src/services/Faast'
@@ -69,45 +64,13 @@ const StepOneField = withProps(({ labelClass, inputClass, className, labelCol, i
 
 const SwapStepTwo = ({
   change, untouch, balancesLoaded,
-  sendSymbol, receiveSymbol, assetSymbols, assetSelect, setAssetSelect, 
-  validateReceiveAddress, validateRefundAddress, validateSendAmount, validateReceiveAmount,
-  handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled, validateETHAmount,
-  onChangeSendAmount, handleSelectFullBalance, fullBalanceAmount, fullBalanceAmountLoaded,
-  sendWallet, receiveWallet, maxGeoBuy, handleSelectGeoMax, receiveAsset, ethReceiveBalanceAmount,
-  onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs = {},
-  onChangeRefundAddress, onChangeReceiveAddress, rateError, sendAsset, t, onCloseAssetSelector,
+  sendSymbol, receiveSymbol, validateReceiveAddress, validateRefundAddress,
+  handleSubmit, receiveAsset, ethReceiveBalanceAmount, previousSwapInputs = {},
+  onChangeRefundAddress, onChangeReceiveAddress, rateError, sendAsset, t,
   validateDepositTag, isSubmittingSwap
 }) => {
   return (
     <Fragment>
-      <ProgressBar steps={[
-        <T key='1' tag='span' i18nKey='app.progressBar.createSwap'>Create Swap</T>, 
-        <T key='2' tag='span' i18nKey='app.progressBar.sendSymbol'>Send {sendSymbol}</T>, 
-        <T key='3' tag='span' i18nKey='app.progressBar.receiveSymbol'>Receive {receiveSymbol}</T>
-      ]} 
-      currentStep={0}
-      />
-      {maxGeoBuy && (
-        <Alert color='info' className='mx-auto mt-3 w-75 text-center'>
-          <small>
-            <T tag='span' i18nKey='app.widget.pleaseNote'>Please note: The maximum you can swap is </T> 
-            <Button style={{ color: 'rgba(0, 255, 222, 1)' }} color='link-plain' onClick={handleSelectGeoMax}>
-              <Units precision={sendAsset.decimals} roundingType='dp' value={maxGeoBuy} />
-            </Button> {sendSymbol} <T tag='span' i18nKey='app.widget.dueToLocation'>
-              <a style={{ color: 'rgba(0, 255, 222, 1)' }} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>
-              due to your location.
-              </a>
-            </T>
-          </small>
-        </Alert>
-      )}
-      {assetSelect && (
-        <div 
-          onClick={onCloseAssetSelector} 
-          className='position-fixed' 
-          style={{ width: '100%', height: '100%', top: 0, left: 0, zIndex: 99 }}
-        ></div>
-      )}
       {!balancesLoaded ? (
         <LoadingFullscreen label={<T tag='span' i18nKey='app.loading.balances'>Loading balances...</T>} />
       ) : (
@@ -117,13 +80,26 @@ const SwapStepTwo = ({
               <T tag='h4' i18nKey='app.widget.swapInstantly' className='my-1'>Swap Instantly</T>
             </CardHeader>
             <CardBody className='pt-3'>
+              <ProgressBar 
+                steps={[
+                  { 
+                    text: 'Choose Assets',
+                  },
+                  {
+                    text: 'Input Addresses'
+                  },
+                  {
+                    text: `Receive ${receiveSymbol}`
+                  }
+                ]} 
+                currentStep={1}
+              />
               <Row className='gutter-0'>
                 <Col className='position-relative' xs={{ size: 12, order: 1 }} lg>
                   <StepOneField 
-                    fixedFeedback
                     name='refundAddress'
                     placeholder={`${sendSymbol} ${t('app.widget.refundAddressPlaceholder', 'refund address')}`}
-                    label={t('app.widget.toWallet', 'To wallet')}
+                    label={t('app.widget.refundAddress', 'Refund address')}
                     labelClass='mt-3 mt-sm-0 mt-lg-3'
                     validate={validateRefundAddress}
                     symbol={sendSymbol}
@@ -151,18 +127,12 @@ const SwapStepTwo = ({
                     />
                   )}
                 </Col>
-                {/* <Col xs={{ size: 12, order: 3 }} lg={{ size: 12, order: 2 }} className='text-right text-lg-center'>
-                  <Button color='primary' onClick={handleSwitchAssets} className={style.reverse}>
-                    <SwapIcon/>
-                  </Button>
-                </Col> */}
-                <Col className='position-relative' xs={{ size: 12, order: 1 }} lg>
+                <Col className='position-relative' xs={{ size: 12, order: 1 }} lg={{ size: 12, order: 3 }}>
                   <StepOneField 
                     tag={StepOneField}
-                    fixedFeedback
                     name='receiveAddress'
                     placeholder={`${receiveSymbol} ${t('app.widget.receiveAddressPlaceholder', 'receive address')}`}
-                    label={t('app.widget.toWallet', 'To wallet')}
+                    label={t('app.widget.receiveAddress', 'Receive Address')}
                     labelClass='mt-3 mt-sm-0 mt-lg-3'
                     validate={validateReceiveAddress}
                     symbol={receiveSymbol}

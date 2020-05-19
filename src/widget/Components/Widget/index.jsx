@@ -13,7 +13,7 @@ import StepTwo from './StepTwo'
 
 const SwapWidget = ({ orderId, blocked, stepOne }) => (
   <Fragment>
-    <StepOne />
+    <StepTwo />
   </Fragment>
 )
 
