@@ -26,6 +26,7 @@ import AssetTrending from 'Components/AssetTrending'
 import Footer from 'Components/Footer'
 import MobileWalletModal from 'Components/MobileWalletModal'
 import Settings from 'Components/Settings'
+import Wallets from 'Components/Wallets'
 
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
@@ -33,7 +34,7 @@ import {
   affiliateLogin, affiliateSignup, affiliateDashboard, affiliateSettings,
   affiliatePayouts, affiliateSwaps, affiliateAccountModal,
   watchlist, trending, affiliateTerms, swapWidgetStepTwo, tradeWidgetDetail,
-  connectMobileWallet, settings, affiliateAcceptTerms
+  connectMobileWallet, settings, affiliateAcceptTerms, wallets
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -50,6 +51,7 @@ const AppView = ({ hasNoWallets }) => {
         <WalletOpened path={dashboard.path} component={Dashboard}/>
         <WalletOpened path={rebalance.path} component={Modify}/>
         <WalletOpened path={settings.path} component={Settings}/>
+        <WalletOpened path={wallets.path} component={Wallets}/>
 
         {/* Routes that don't require a connected wallet */}
         <Route path={connect.path} component={Connect}/>

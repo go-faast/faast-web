@@ -90,6 +90,13 @@ export const getSentSwaps = createSelector(
       (isManual && orderStatus !== 'awaiting deposit'))
 )
 
+export const getSentSwapsByAsset = createItemSelector(
+  getSentSwaps,
+  selectItemId,
+  (allSwaps, symbol) => allSwaps
+    .filter(({ sendAsset, receiveAsset }) => sendAsset.symbol == symbol || receiveAsset.symbol == symbol)
+)
+
 export const getConnectedWalletSentSwaps = createSelector(
   getSentSwaps,
   getAllWalletIds,
