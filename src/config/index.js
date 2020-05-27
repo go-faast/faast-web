@@ -30,7 +30,7 @@ export default {
     affiliate_margin: 0.2, 
     affiliate_id: 'DLABdEEmJUcLfLs2Y7jkkZntvdENT3nL',
     affiliate_fixed_fee: 0.02,
-    terms_version: 1 // use whole numbers
+    terms_version: 2 // use whole numbers
   },
   explorerUrls: {
     BTC: 'https://blockchain.info',

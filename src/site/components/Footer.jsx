@@ -20,7 +20,7 @@ export default compose(
   defaultProps({
     footerClass: '',
     showEmail: true
-  }),
+  })
 )(({ showEmail, footerClass, translations: { static: { footer: t = {} } = {} } }) => (
   <Fragment>
     {showEmail && (
@@ -37,7 +37,6 @@ export default compose(
             <div className='col-6 col-sm-6 col-md-2 col-xl-2 offset-xl-1 item px-3'>
               <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>Faa.st</h3>
               <ul>
-                <li><a className='text-white' href='https://bitaccess.ca/about-us/' target='_blank noopener noreferrer'>{t.aboutUs}</a></li>
                 <li><a className='text-white' href='/affiliates'>{t.affiliate}</a></li>
                 <li><a className='text-white' href='/partners'>Partners</a></li>
                 <li><a className='text-white font-xs' href='/app'>{t.portfolio}</a></li>
