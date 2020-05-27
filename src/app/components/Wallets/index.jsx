@@ -14,13 +14,22 @@ const getQuery = ({ match }) => match.params.symbol
 const Wallets = ({ assets, push, selectedWallet }) => {
   return (
     <Layout>
-      <Card style={{ marginTop: 80 }} className='pt-4'>
+      <Card style={{ marginTop: 80 }} className='py-4'>
         <Row>
-          <Col xs='2'>
+          <Col className='ml-5' xs='2' style={{ maxHeight: 500, overflowY: 'scroll' }}>
             <Row>
               {assets.map(asset => {
                 return (
-                  <Col tag={Button} onClick={() => push(`/wallets/${asset.symbol}`)} size='sm' color='ultra-dark' key={asset.symbol} xs='12'>
+                  <Col 
+                    tag={Button} 
+                    onClick={() => push(`/wallets/${asset.symbol}`)} 
+                    size='sm' 
+                    xs='12'
+                    className='mt-0 py-2 flat'
+                    style={{ borderWidth: '0px', borderRadius: 0 }}
+                    color='dark' 
+                    key={asset.symbol}
+                  >
                     <CoinIcon symbol={asset.symbol} className='mr-2' />
                     {asset.symbol}
                   </Col>
@@ -28,7 +37,7 @@ const Wallets = ({ assets, push, selectedWallet }) => {
               })}
             </Row>
           </Col>
-          <Col xs='9'>
+          <Col className='ml-5' xs='8'>
             <WalletDetail symbol={selectedWallet} />
           </Col>
         </Row>
