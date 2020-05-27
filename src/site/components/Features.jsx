@@ -27,7 +27,7 @@ import MacbookScreenshot2 from 'Img/macbook-screenshot-02.png'
 export default compose(
   setDisplayName('Features')
 )(({ supportedAssets = [], translations: { static: { features: t = {} } = {} } }) => (
-  <>
+  <Fragment>
     <div className='features-clean'>
       <div className='container' style={{ paddingTop: '100px' }}>
         <h2 className='text-center' style={{ marginBottom: '75px', fontWeight: 'normal' }}>
@@ -84,7 +84,7 @@ export default compose(
               <small>
                 {t.method} {t.click} <a className='text-dark' href='https://medium.com/faast/faast-vs-kyber-swap-vs-bittrex-binance-which-saves-you-the-most-on-token-swaps-1ee9c4b16c79' target='_blank noopener'>
                   {t.here}
-                                     </a> {t.learnMore}
+                </a> {t.learnMore}
               </small>
             </p>
             <p className='lead text-center py-3 px-3 mb-4' style={{ backgroundColor: '#F3F5F8' }}>
@@ -281,7 +281,7 @@ export default compose(
           <p className='text-white'>{t.productHunt}</p>
           <LazyLoad offset={500} height={55}>
             <iframe
-src='https://yvoschaap.com/producthunt/counter.html#href=https%3A%2F%2Fwww.producthunt.com%2Fr%2Fp%2F114880&layout=tall'
+              src='https://yvoschaap.com/producthunt/counter.html#href=https%3A%2F%2Fwww.producthunt.com%2Fr%2Fp%2F114880&layout=tall'
               width='56px' height='65px' scrolling='no' frameBorder={0}
             >
             </iframe>
@@ -289,5 +289,5 @@ src='https://yvoschaap.com/producthunt/counter.html#href=https%3A%2F%2Fwww.produ
         </div>
       </div>
     </div>
-  </>
+  </Fragment>
 ))

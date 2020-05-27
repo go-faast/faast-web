@@ -22,7 +22,7 @@ export default compose(
     footerClass: ''
   })
 )(({ footerClass, translations, translations: { static: { footer: t = {} } = {} } }) => (
-  <>
+  <Fragment>
     <div className='footer-clean position-relative' style={{ backgroundColor: '#191A1D', paddingTop: '0px', marginTop: 320 }}>
       <div style={{ top: -150 }} className='position-absolute'>
         <img style={{ width: '100vw', height: 260 }} src={FooterChart} />
@@ -120,5 +120,5 @@ export default compose(
         </div>
       </footer>
     </div>
-  </>
+  </Fragment>
 ))

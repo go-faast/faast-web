@@ -22,7 +22,7 @@ export default compose(
     showEmail: true
   })
 )(({ showEmail, footerClass, translations: { static: { footer: t = {} } = {} } }) => (
-  <>
+  <Fragment>
     {showEmail && (
       <div className='pt-5'>
         <LazyLoad offset={1000} height={100}>
@@ -106,5 +106,5 @@ export default compose(
         </div>
       </footer>
     </div>
-  </>
+  </Fragment>
 ))
