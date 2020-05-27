@@ -12,7 +12,7 @@ export default compose(
   withTracker,
   withRouteData
 )(({ translations }) => (
-  <>
+  <Fragment>
     <Header translations={translations} />
     <div className='container my-4'>
       <Card>
@@ -153,5 +153,5 @@ Use the Services in any manner that could interfere with, disrupt, negatively af
       </Card>
     </div>
     <Footer translations={translations} />
-  </>
+  </Fragment>
 ))
