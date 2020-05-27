@@ -16,13 +16,13 @@ import style from './style.scss'
 export default compose(
   setDisplayName('Footer'),
   setPropTypes({
-    footerClass: PropTypes.string,
+    footerClass: PropTypes.string
   }),
   defaultProps({
-    footerClass: '',
-  }),
+    footerClass: ''
+  })
 )(({ footerClass, translations, translations: { static: { footer: t = {} } = {} } }) => (
-  <Fragment>
+  <>
     <div className='footer-clean position-relative' style={{ backgroundColor: '#191A1D', paddingTop: '0px', marginTop: 320 }}>
       <div style={{ top: -150 }} className='position-absolute'>
         <img style={{ width: '100vw', height: 260 }} src={FooterChart} />
@@ -51,7 +51,6 @@ export default compose(
             <div className='col-6 col-sm-6 col-md-2 col-xl-2 offset-xl-1 item px-3'>
               <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>Faa.st</h3>
               <ul>
-                <li><a className='text-white' href='https://bitaccess.ca/about-us/' target='_blank noopener noreferrer'>{t.aboutUs}</a></li>
                 <li><a className='text-white' href='/affiliates'>{t.affiliate}</a></li>
                 <li><a className='text-white' href='/partners'>Partners</a></li>
                 <li><a className='text-white font-xs' href='/app'>{t.portfolio}</a></li>
@@ -121,5 +120,5 @@ export default compose(
         </div>
       </footer>
     </div>
-  </Fragment>
+  </>
 ))
