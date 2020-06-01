@@ -204,7 +204,7 @@ export default compose(
               !createdAtFormatted ? loadingValue : createdAtFormatted
             ],
             marketMakerName && [
-              <T tag='span' i18nKey='app.swapStatusCard.marketMaker'>Market Maker:</T>,
+              <T tag='span' i18nKey='app.swapStatusCard.marketMaker'>Trading with:</T>,
               marketMakerName
             ],
             [
