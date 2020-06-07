@@ -33,7 +33,7 @@ export default compose(
       <h5 className='font-weight-bold'>ELIGIBILITY</h5>
       <p>By accessing or using the Site, you represent and warrant that you are at least 18 years old and have not previously been suspended or removed from the Site. You also represent and warrant that you are not a resident of a Restricted Location as listed below. The list of Restricted States is subject to change at any time.</p>
 
-      <p>RESTRICTED LOCATIONS: NORTH KOREA, IRAN, CUBA, UNITED STATES, SUDAN, UNITED KINGDOM, CRIMEA</p>
+      <p>RESTRICTED LOCATIONS: NORTH KOREA, IRAN, CUBA, UNITED STATES, SUDAN, UNITED KINGDOM, CRIMEA, CANADA</p>
 
       <h5 className='font-weight-bold'>Third Parties</h5>
       <p>Faast has no control over, or liability for, the delivery, quality, safety, legality or any other aspect of any goods or services that you may purchase or sell to or from a third party. Faast is not responsible for ensuring that a buyer or a seller you may transact with will actually complete the transaction or is authorized to do so. If you experience a problem with any goods or services purchased from, or sold to, a third party in connection with cryptocurrency transferred using the Faast services, or if you have a dispute with such third party, you must resolve the dispute directly with that third party.</p>
