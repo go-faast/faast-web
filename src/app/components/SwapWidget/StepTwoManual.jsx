@@ -34,7 +34,7 @@ const StepTwoManual = ({
   swap: {
     orderId = '', sendSymbol = '', depositAddress = '', receiveSymbol = '', receiveAddress = '',
     sendAmount, receiveAmount, orderStatus = '', refundAddress = '', isFixedPrice, sendAsset, 
-    depositAddressExtraId, withdrawalAddressExtraId, refundAddressExtraId,
+    depositAddressExtraId, withdrawalAddressExtraId, refundAddressExtraId, marketMakerName,
   },
 }) => {
   const depositFieldName = extraAssetFields[sendSymbol] && extraAssetFields[sendSymbol].deposit
@@ -114,7 +114,11 @@ const StepTwoManual = ({
             ? [<T tag='span' i18nKey='app.stepTwoManual.depositAmount'>Send amount:</T>, <Units value={sendAmount} symbol={sendSymbol} precision={8}/>]
             : (minimumDeposit && [<T tag='span' i18nKey='app.stepTwoManual.minimumAmount'>Send minimum:</T>, <Units value={minimumDeposit} symbol={sendSymbol} precision={8}/>]),
           !sendAmount && (maxiumumDeposit && [<T tag='span' i18nKey='app.stepTwoManual.maximumAmount'>Send maximum:</T>, <Units value={maxiumumDeposit} symbol={sendSymbol} precision={8}/>]),
-          receiveAmount && [<T tag='span' i18nKey='app.stepTwoManual.receiveAmount'>Receive amount:</T>, <Units value={receiveAmount} symbol={receiveSymbol} precision={8}/>]
+          receiveAmount && [<T tag='span' i18nKey='app.stepTwoManual.receiveAmount'>Receive amount:</T>, <Units value={receiveAmount} symbol={receiveSymbol} precision={8}/>],
+          marketMakerName && [
+            <T tag='span' i18nKey='app.swapStatusCard.marketMaker'>Trading with:</T>,
+            marketMakerName
+          ],
         ]}/>
         <div className='mt-2'>
           <small className='text-muted'>

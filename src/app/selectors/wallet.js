@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { union, flatMap } from 'lodash'
+import { union, flatMap, uniqBy } from 'lodash'
 
 import { ZERO, toUnit, toPercentage } from 'Utilities/convert'
 import { fixPercentageRounding, reduceByKey, mapValues } from 'Utilities/helpers'
@@ -51,7 +51,7 @@ export const getWallet = createItemSelector(
 export const getWalletOrDefault = createItemSelector(getWallet, (wallet) => wallet || {})
 
 export const getAllWallets = (state) => mapValues(getWalletState(state), (_, id) => getWallet(state, id))
-export const getAllWalletsArray = createSelector(getAllWallets, Object.values)
+export const getAllWalletsArray = createSelector(getAllWallets, (wallets) => uniqBy(Object.values(wallets), 'id'))
 export const getAllWalletIds = createSelector(getAllWallets, Object.keys)
 
 export const getLeafWallets = createSelector(

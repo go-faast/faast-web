@@ -43,6 +43,7 @@ export interface SwapOrder {
   depositAddressExtraId?: string,
   withdrawalAddressExtraId?: string,
   refundAddressExtraId?: string
+  marketMakerName?: string
 }
 
 export type HdAccount = {
