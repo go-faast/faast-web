@@ -7,10 +7,11 @@ import classNames from 'class-names'
 import { push as pushAction } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
 import { Card, CardHeader, CardBody, Alert } from 'reactstrap'
-
+import { getSwap } from 'Selectors/swap'
 import DepositQRCode from 'Components/DepositQRCode'
 import ClipboardCopyField from 'Components/ClipboardCopyField'
 import { toBigNumber } from 'Utilities/convert'
+import { refreshSwap } from 'Actions/swap'
 import { capitalizeFirstLetter } from 'Utilities/helpers'
 import * as qs from 'query-string'
 import { createSwap as createSwapAction } from 'Actions/swap'
@@ -100,56 +101,44 @@ const StepThree = ({ receiveSymbol, depositAddressExtraId, depositAddress, sendA
 export default compose(
   setDisplayName('StepThree'),
   withTranslation(),
-  connect(createStructuredSelector({
-    assetSymbols: getAllAssetSymbols,
-    sendAsset: (state, { sendSymbol }) => getAsset(state, sendSymbol),
-    receiveAsset: (state, { receiveSymbol }) => getAsset(state, receiveSymbol),
-    balancesLoaded: areCurrentPortfolioBalancesLoaded,
-    limit: getGeoLimit,
-    previousSwapInputs: getSavedSwapWidgetInputs
-  }), {
-    createSwap: createSwapAction,
-    push: pushAction,
-    updateQueryString: updateQueryStringReplace,
-    retrievePairData: retrievePairData,
-    openViewOnly: openViewOnlyWallet,
-    saveSwapWidgetInputs: saveSwapWidgetInputs,
+  setPropTypes({
+    swap: PropTypes.object.isRequired,
   }),
-  withProps(({
-    sendSymbol, receiveSymbol,
-    defaultSendAmount, defaultReceiveAmount,
-    defaultRefundAddress, defaultReceiveAddress,
-    sendWallet, sendAsset, limit, previousSwapInputs, receiveWallet,
-  }) => { 
-    const maxGeoBuy = limit && toBigNumber(limit.per_transaction.amount)
-      .div(sendAsset.price).round(sendAsset.decimals, BigNumber.ROUND_DOWN)
-    const { toAmount, fromAmount, toAddress, fromAddress, sendWalletId, receiveWalletId } = previousSwapInputs || {}
+  connect((state, { swap: { pair, id } }) => ({
+    minimumDeposit: getRateMinimumDeposit(state, pair),
+    maxiumumDeposit: getRateMaximumDeposit(state,pair),
+    estimatedRate: getRatePrice(state, pair),
+    limit: getGeoLimit(state),
+    currentSwap: getSwap(state, id),
+  }), {
+    push: pushAction,
+    refreshSwap,
+    retrievePairData: retrievePairData,
+  }),
+  withProps(({ swap: { rateLockedUntil, rate, sendAsset }, estimatedRate, swap, limit, currentSwap }) => {
+    const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : null
     return ({
-      pair: `${sendSymbol}_${receiveSymbol}`,
-      initialValues: {
-        sendAmount: fromAmount ? parseFloat(fromAmount) : defaultSendAmount,
-        receiveAmount: toAmount ? parseFloat(toAmount) : defaultReceiveAmount,
-        refundWallet: sendWalletId ? 'hi' : fromAddress ? fromAddress : defaultRefundAddress,
-        receiveWallet: receiveWalletId ? undefined : toAddress ? toAddress : defaultReceiveAddress,
-        sendWalletId: sendWalletId ? sendWalletId : undefined,
-        receiveWalletId: receiveWalletId ? receiveWalletId : undefined,
-      },
-      fullBalanceAmount: sendWallet && (sendWallet.balances[sendSymbol] || '0'),
-      ethSendBalanceAmount: sendWallet && (sendWallet.balances['ETH'] || '0'),
-      ethReceiveBalanceAmount: receiveWallet && (receiveWallet.balances['ETH'] || '0'),
-      fullBalanceAmountLoaded: sendWallet && sendWallet.balancesLoaded,
-      maxGeoBuy
-    })}),
-  connect(createStructuredSelector({
-    rateLoaded: (state, { pair }) => isRateLoaded(state, pair),
-    rateStale: (state, { pair }) => isRateStale(state, pair),
-    minimumSend: (state, { pair }) => getRateMinimumDeposit(state, pair),
-    maximumSend: (state, { pair }) => getRateMaximumDeposit(state, pair),
-    minimumReceive: (state, { pair }) => getRateMinimumWithdrawal(state, pair),
-    maximumReceive: (state, { pair }) => getRateMaximumWithdrawal(state, pair),
-    estimatedRate: (state, { pair }) => getRatePrice(state, pair),
-    rateError: (state, { pair }) => rateError(state, pair),
-  })),
+      secondsUntilPriceExpiry: (Date.parse(rateLockedUntil) - Date.now()) / 1000,
+      quotedRate: rate || estimatedRate,
+      maxGeoBuy,
+      swap: currentSwap ? currentSwap : swap
+    })
+  }),
+  withHandlers({
+    handleTimerEnd: ({ refreshSwap, swap }) => () => {
+      refreshSwap(swap.orderId)
+    },
+  }),
   lifecycle({
+    componentDidUpdate() {
+      const { swap, minimumDeposit, retrievePairData } = this.props
+      if (!minimumDeposit) {
+        retrievePairData(swap.pair)
+      }
+    },
+    componentWillMount() {
+      const { swap, retrievePairData } = this.props
+      retrievePairData(swap.pair)
+    }
   }),
 )(StepThree)
