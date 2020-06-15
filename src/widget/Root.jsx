@@ -1,11 +1,8 @@
 import React from 'react'
 import { Provider } from 'react-redux'
-import { ConnectedRouter } from 'react-router-redux'
-import ReduxToastr from 'react-redux-toastr'
 
 import App from './Components/App'
 import store from './store'
-import history from './history'
 import ReactGA from 'react-ga'
 
 ReactGA.initialize('UA-100689193-1')

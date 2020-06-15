@@ -7,19 +7,16 @@ import classNames from 'class-names'
 import { reduxForm, formValueSelector, SubmissionError } from 'redux-form'
 import { push as pushAction } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
-import {
-  Form, Button, Card, CardHeader, CardBody, Row, Col,
-  FormText
-} from 'reactstrap'
+import { Form, Button, Card, CardHeader, CardBody, Row, Col } from 'reactstrap'
 
 import log from 'Log'
 import { toBigNumber } from 'Utilities/convert'
 import * as validator from 'Utilities/validator'
 import { capitalizeFirstLetter } from 'Utilities/helpers'
-import * as qs from 'query-string'
 import { createSwap as createSwapAction } from 'Actions/swap'
-import { saveSwapWidgetInputs } from 'Actions/app'
-import { getSavedSwapWidgetInputs } from 'Selectors/app'
+import { saveSwapWidgetInputs, updateCreatedSwap } from 'Actions/widget'
+import { getAsset } from 'Selectors/asset'
+import { getSavedSwapWidgetInputs } from 'Selectors/widget'
 import extraAssetFields from 'Config/extraAssetFields'
 
 import GAEventButton from 'Components/GAEventButton'
@@ -28,7 +25,6 @@ import T from 'Components/i18n/T'
 import { withTranslation } from 'react-i18next'
 import Units from 'Components/Units'
 import { toChecksumAddress } from 'Utilities/convert'
-import debounceHandler from 'Hoc/debounceHandler'
 
 import ProgressBar from '../ProgressBar'
 
@@ -36,7 +32,6 @@ import style from './style.scss'
 import Faast from 'Src/services/Faast'
 
 const FORM_NAME = 'swapWidget'
-const DEBOUNCE_WAIT = 5000 // ms
 
 const getFormValue = formValueSelector(FORM_NAME)
 
@@ -50,11 +45,8 @@ const StepOneField = withProps(({ labelClass, inputClass, className, labelCol, i
 }))(ReduxFormField)
 
 const SwapStepTwo = ({
-  change, untouch,
-  sendSymbol, receiveSymbol, validateReceiveAddress, validateRefundAddress,
-  handleSubmit, receiveAsset, ethReceiveBalanceAmount, previousSwapInputs = {},
-  onChangeRefundAddress, onChangeReceiveAddress, rateError, sendAsset, t,
-  validateDepositTag, isSubmittingSwap
+  change, untouch, sendSymbol, receiveSymbol, validateReceiveAddress, validateRefundAddress,
+  handleSubmit, previousSwapInputs = {}, rateError, t, validateDepositTag, isSubmittingSwap
 }) => {
   return (
     <Fragment>
@@ -73,8 +65,11 @@ const SwapStepTwo = ({
                   text: 'Input Addresses'
                 },
                 {
+                  text: `Send ${sendSymbol}`
+                },
+                {
                   text: `Receive ${receiveSymbol}`
-                }
+                },
               ]} 
               currentStep={1}
             />
@@ -91,13 +86,7 @@ const SwapStepTwo = ({
                   defaultValue={!previousSwapInputs.receiveWalletId ? previousSwapInputs.toAddress : undefined}
                   untouch={untouch}
                   formName={FORM_NAME}
-                  onChange={onChangeRefundAddress}
                   requiredLabel
-                  helpText={sendAsset.ERC20 && parseFloat(ethReceiveBalanceAmount) === 0 && (
-                    <FormText className='text-muted'>
-                     Please note: The {receiveSymbol} you receive will be <a href='https://ethereum.stackexchange.com/questions/52937/cannot-send-erc20-tokens-because-user-has-no-ethereum' target='_blank noreferrer'>stuck upon arrival</a> because your receiving wallet does not have ETH to pay for future network fees.
-                    </FormText>
-                  )}
                 />
                 {Object.keys(extraAssetFields).indexOf(sendSymbol) >= 0 && (
                   <StepOneField
@@ -124,13 +113,7 @@ const SwapStepTwo = ({
                   defaultValue={!previousSwapInputs.receiveWalletId ? previousSwapInputs.toAddress : undefined}
                   untouch={untouch}
                   formName={FORM_NAME}
-                  onChange={onChangeReceiveAddress}
                   requiredLabel
-                  helpText={receiveAsset.ERC20 && parseFloat(ethReceiveBalanceAmount) === 0 && (
-                    <FormText className='text-muted'>
-                     Please note: The {receiveSymbol} you receive will be <a href='https://ethereum.stackexchange.com/questions/52937/cannot-send-erc20-tokens-because-user-has-no-ethereum' target='_blank noreferrer'>stuck upon arrival</a> because your receiving wallet does not have ETH to pay for future network fees.
-                    </FormText>
-                  )}
                 />
                 {Object.keys(extraAssetFields).indexOf(receiveSymbol) >= 0 && (
                   <StepOneField
@@ -162,7 +145,7 @@ const SwapStepTwo = ({
             </GAEventButton>
           </CardBody>
           <div style={{ color: '#B5BCC4' }} className='text-center font-xs mb-3'>
-            <span>powered by Faa.st</span>
+            <span>powered by <a href='https://faa.st' target='_blank noreferrer'>Faa.st</a></span>
           </div>
         </Card>
       </Form>
@@ -185,13 +168,12 @@ export default compose(
     receiveAddress: (state) => getFormValue(state, 'receiveAddress'),
     sendAsset: (state, { sendSymbol }) => getAsset(state, sendSymbol),
     receiveAsset: (state, { receiveSymbol }) => getAsset(state, receiveSymbol),
-    receiveWallet: (state) => getWallet(state, getFormValue(state, 'receiveWalletId')),
-    sendWallet: (state) => getWallet(state, getFormValue(state, 'sendWalletId')),
     previousSwapInputs: getSavedSwapWidgetInputs
   }), {
     createSwap: createSwapAction,
     push: pushAction,
     saveSwapWidgetInputs: saveSwapWidgetInputs,
+    updateCreatedSwap
   }),
   withState('isSubmittingSwap', 'updateIsSubmittingSwap', false),
   withHandlers({
@@ -208,12 +190,13 @@ export default compose(
       validator.integer()
     ),
     onSubmit: ({
-      sendSymbol, receiveAsset, sendAsset,
-      createSwap, openViewOnly, push, estimatedField, t, updateIsSubmittingSwap
+      sendSymbol, receiveAsset, sendAsset, saveSwapWidgetInputs,
+      createSwap, t, updateIsSubmittingSwap, updateCreatedSwap, previousSwapInputs
     }) => async (values) => {
       updateIsSubmittingSwap(true)
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
-      let { sendAmount, receiveAddress, refundAddress, sendWalletId, receiveAmount, receiveWalletId, receiveAddressExtraId, refundAddressExtraId } = values
+      const sendAmount = previousSwapInputs && previousSwapInputs.fromAmount
+      let { receiveAddress, refundAddress, receiveAddressExtraId, refundAddressExtraId } = values
       if (receiveSymbol == 'ETH' || ERC20) {
         receiveAddress = toChecksumAddress(receiveAddress)
       }
@@ -256,25 +239,13 @@ export default compose(
       })
         .then((swap) => {
           updateIsSubmittingSwap(false)
+          updateCreatedSwap(swap)
           saveSwapWidgetInputs({
+            ...previousSwapInputs,
             fromAddress: refundAddress,
             toAddress: receiveAddress,
           })
         }).catch(() => updateIsSubmittingSwap(false))
-    },
-    handleSaveSwapWidgetInputs: ({ saveSwapWidgetInputs, receiveAsset, sendAsset, 
-      receiveAddress, refundAddress, receiveAmount, sendAmount, sendWallet, receiveWallet }) => (inputs) => {
-      // const { to, from, toAddress, fromAddress, toAmount, fromAmount, sendWalletId, receiveWalletId } = inputs
-      // saveSwapWidgetInputs({
-      //   to: to ? to : receiveAsset.symbol,
-      //   from: from ? from : sendAsset.symbol,
-      //   toAddress: toAddress ? toAddress : receiveAddress,
-      //   fromAddress: fromAddress ? fromAddress : refundAddress,
-      //   toAmount: toAmount ? toAmount : receiveAmount ? parseFloat(receiveAmount) : undefined,
-      //   fromAmount: fromAmount ? fromAmount : sendAmount ? parseFloat(sendAmount) : undefined,
-      //   sendWalletId: sendWalletId ? sendWalletId : sendWallet ? sendWallet.id : undefined,
-      //   receiveWalletId: receiveWalletId ? receiveWalletId : receiveWallet ? receiveWallet.id : undefined,
-      // })
     }
   }),
   reduxForm({
@@ -283,19 +254,4 @@ export default compose(
     keepDirtyOnReinitialize: true,
     updateUnregisteredFields: true,
   }),
-  withHandlers(({ change }) => {
-    const setEstimatedReceiveAmount = (x) => {
-      log.trace('setEstimatedReceiveAmount', x)
-      change('receiveAmount', x && toBigNumber(x))
-    }
-  }),
-  withHandlers({
-    onChangeRefundAddress: ({ updateURLParams }) => (_, newRefundAddress) => {
-      updateURLParams({ fromAddress: newRefundAddress })
-    },
-    onChangeReceiveAddress: ({ updateURLParams }) => (_, newReceiveAddress) => {
-      updateURLParams({ toAddress: newReceiveAddress })
-    },
-  }),
-  debounceHandler('updateURLParams', DEBOUNCE_WAIT),
 )(SwapStepTwo)

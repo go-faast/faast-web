@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unescaped-entities */
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
@@ -10,43 +11,35 @@ import { Card, CardHeader, CardBody, Alert } from 'reactstrap'
 import { getSwap } from 'Selectors/swap'
 import DepositQRCode from 'Components/DepositQRCode'
 import ClipboardCopyField from 'Components/ClipboardCopyField'
-import { toBigNumber } from 'Utilities/convert'
+import Expandable from 'Components/Expandable'
 import { refreshSwap } from 'Actions/swap'
 import { capitalizeFirstLetter } from 'Utilities/helpers'
-import * as qs from 'query-string'
-import { createSwap as createSwapAction } from 'Actions/swap'
-import { updateQueryStringReplace } from 'Actions/router'
 import { retrievePairData } from 'Actions/rate'
-import { openViewOnlyWallet } from 'Actions/access'
-import { saveSwapWidgetInputs } from 'Actions/app'
+import Timer from 'Components/Timer'
 
-import { getRateMinimumDeposit, getRatePrice, isRateLoaded, getRateMaximumWithdrawal,
-  getRateMaximumDeposit, rateError, isRateStale, getRateMinimumWithdrawal } from 'Selectors/rate'
-import { getAllAssetSymbols, getAsset } from 'Selectors/asset'
-import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
-import { getGeoLimit, getSavedSwapWidgetInputs } from 'Selectors/app'
-import extraAssetFields from 'Config/extraAssetFields'
+import { getRateMinimumDeposit, getRatePrice, getRateMaximumDeposit, } from 'Selectors/rate'
+import { getGeoLimit } from 'Selectors/app'
 
 import T from 'Components/i18n/T'
 import { withTranslation } from 'react-i18next'
 import Units from 'Components/Units'
-import debounceHandler from 'Hoc/debounceHandler'
-
+import extraAssetFields from 'Src/config/extraAssetFields'
 import ProgressBar from '../ProgressBar'
 
 import style from './style.scss'
-import Faast from 'Src/services/Faast'
 
 
-const StepThree = ({ receiveSymbol, depositAddressExtraId, depositAddress, sendAsset, sendAmount,
-  depositFieldName, sendSymbol, maxGeoBuy }) => {
+const StepThree = ({ swap, swap: { orderId, receiveSymbol, depositAddressExtraId, depositAddress, sendAsset, 
+  sendAmount, sendSymbol, maxGeoBuy, isFixedPrice, orderStatus }, minimumDeposit, handleTimerEnd, secondsUntilPriceExpiry }) => {
+  const depositFieldName = extraAssetFields[sendSymbol] && extraAssetFields[sendSymbol].deposit
+  console.log(swap)
   return (
     <Fragment>
       <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
         <CardHeader style={{ backgroundColor: '#394045' }} className='text-center border-0'>
           <T tag='h4' i18nKey='app.widget.swapInstantly' className='my-1'>Swap Instantly</T>
         </CardHeader>
-        <CardBody className='pt-3'>
+        <CardBody className='pt-3 text-center'>
           <ProgressBar 
             steps={[
               { 
@@ -56,30 +49,55 @@ const StepThree = ({ receiveSymbol, depositAddressExtraId, depositAddress, sendA
                 text: 'Input Addresses'
               },
               {
+                text: `Send ${sendSymbol}`
+              },
+              {
                 text: `Receive ${receiveSymbol}`
               }
             ]} 
             currentStep={2}
           />
-          <DepositQRCode 
-            className='mt-3' 
-            scan 
-            size={150} 
-            depositTag={depositAddressExtraId}
-            address={depositAddress} 
-            asset={sendAsset} 
-            amount={sendAmount}
-          />
+          <h4 className='mt-4'>
+            <T tag='span' className='text-dark' i18nKey='app.stepTwoManual.send'>Send</T> {(sendAmount && sendAmount > 0)
+              ? (<Units className='text-dark' value={sendAmount} symbol={sendSymbol} precision={8} showIcon/>)
+              : (minimumDeposit ? (
+                <Fragment><T tag='span' className='text-dark' i18nKey='app.stepTwoManual.atLeast'>at least</T> <Units className='text-dark' value={minimumDeposit} symbol={sendSymbol} precision={8} showIcon/>
+                </Fragment>
+              ) : null)} <T className='text-dark' tag='span' i18nKey='app.stepTwoManual.toAddres'>to address{depositAddressExtraId && <span> with {depositFieldName}</span>}:</T>
+          </h4>
+          <span className='text-dark d-inline-block' style={{ fontSize: 14 }}>
+            [ <Expandable
+              shrunk={<i className='fa fa-spinner fa-pulse mr-1'/>}
+              expanded={<span>Order status is updated automatically. Please do not refresh.</span>}/> 
+            {orderStatus} ]
+          </span>
+          <div className='text-center'>
+            <DepositQRCode 
+              className='mt-1' 
+              scan={false}
+              size={120} 
+              depositTag={depositAddressExtraId}
+              address={depositAddress} 
+              asset={sendAsset} 
+              amount={sendAmount}
+            />
+          </div>
           {depositAddressExtraId && (
             <div className='text-left mt-3'>
               <span>Send address:</span>
             </div>
           )}
-          <ClipboardCopyField value={depositAddress}/>
+          <ClipboardCopyField 
+            className={classNames('flat', style.customInput)}
+            value={depositAddress}
+          />
           {depositAddressExtraId && (
             <div className='text-left'>
               <span>{capitalizeFirstLetter(depositFieldName)}:</span>
-              <ClipboardCopyField value={depositAddressExtraId}/>
+              <ClipboardCopyField 
+                className={classNames('flat', style.customInput)}
+                value={depositAddressExtraId}
+              />
               <Alert color='warning' className='mx-auto mt-3 text-center'>
             Important: You must send {sendSymbol} to the address with the above {depositFieldName}. If you don't include a {depositFieldName} we won't be able to process your swap.
               </Alert>
@@ -90,9 +108,23 @@ const StepThree = ({ receiveSymbol, depositAddressExtraId, depositAddress, sendA
               <T tag='small' i18nKey='app.stepTwoManual.geoLimit'>Please note: The maximum you can swap is <Units precision={8} roundingType='dp' value={maxGeoBuy}/> {sendSymbol} <a style={{ color: 'rgba(0, 255, 222, 1)' }} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>due to your location.</a></T>
             </Alert>
           )}
+          <div className='mt-2'>
+            <small className='text-muted'>
+              {!isFixedPrice ? (
+                <T tag='span' i18nKey='app.stepTwoManual.fixedPrice'>* Quoted rate is an estimate based on current market conditions. Actual rate may vary.</T>
+              ) : (secondsUntilPriceExpiry > 0 && (
+                <Timer style={{ color: '#8392ac' }} seconds={secondsUntilPriceExpiry}
+                  label={ <T tag='span' i18nKey='app.stepTwoManual.quotedRate'>* Quoted rate is guaranteed if funds are sent within:</T>}
+                  onTimerEnd={handleTimerEnd}/>
+              ))}
+            </small>
+            <small className='d-block' style={{ color: '#8392ac' }}>
+              ** Your swap ID is <a href={`https://faa.st/app/orders/${orderId}`} target='_blank noreferrer'>{orderId}</a>
+            </small>
+          </div>
         </CardBody>
         <div style={{ color: '#B5BCC4' }} className='text-center font-xs mb-3'>
-          <span>powered by Faa.st</span>
+          <span>powered by <a href='https://faa.st' target='_blank noreferrer'>Faa.st</a></span>
         </div>
       </Card>
     </Fragment>
@@ -121,7 +153,7 @@ export default compose(
       secondsUntilPriceExpiry: (Date.parse(rateLockedUntil) - Date.now()) / 1000,
       quotedRate: rate || estimatedRate,
       maxGeoBuy,
-      swap: currentSwap ? currentSwap : swap
+      swap: currentSwap ? currentSwap : swap,
     })
   }),
   withHandlers({

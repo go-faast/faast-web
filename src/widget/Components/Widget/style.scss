@@ -26,11 +26,12 @@
 .container {
   background: #fff;
   box-shadow: none;
+  border: none;
   border: 1px solid #EAEEF3;
   margin-top: 20px;
   margin-left: auto;
   margin-right: auto;
-  border-radius: 6px;
+  border-radius: 4px;
   &.stepOne {
     max-width: 540px;
   }
@@ -69,10 +70,10 @@
 
 .customButton {
   background: #00D7B8;
-  box-shadow: 0 2px 4px 0 #02A991;
+  box-shadow: 0 1px 1px 0 #02A991;
   color: #054F45 !important;
   font-weight: 600;
-  border-radius: 6px;
+  border-radius: 4px;
   width: 100%;
   &:hover {
     border: 1px solid transparent;

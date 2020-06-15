@@ -14,7 +14,7 @@ const ProgressBar = ({ steps, currentStep }) => {
           <div key={step.text} className={classNames(style.formStepsItem, i == currentStep && style.formStepsItemActive, i < currentStep && style.formStepsItemCompleted)}>
             <div className={style.formStepsItemContent}>
               <span className={style.formStepsItemIcon}>{i + 1}</span>
-              <span className={i >= currentStep && i > 0 && style.formStepsItemLine}></span>
+              <span className={i !== 0 && style.formStepsItemLine}></span>
               <span className={style.formStepsItemText}>{step.text}</span>
             </div>
           </div>

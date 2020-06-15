@@ -19,7 +19,7 @@ import * as qs from 'query-string'
 import { createSwap as createSwapAction } from 'Actions/swap'
 import { updateQueryStringReplace } from 'Actions/router'
 import { retrievePairData } from 'Actions/rate'
-import { saveSwapWidgetInputs } from 'Actions/app'
+import { saveSwapWidgetInputs } from 'Actions/widget'
 
 import { getRateMinimumDeposit, getRatePrice, isRateLoaded, getRateMaximumWithdrawal,
   getRateMaximumDeposit, rateError, isRateStale, getRateMinimumWithdrawal } from 'Selectors/rate'
@@ -91,7 +91,7 @@ const SwapStepOne = ({
       <Form onSubmit={handleSubmit}>
         <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
           <CardHeader style={{ backgroundColor: '#394045' }} className='text-center border-0'>
-            {/* <T tag='h4' i18nKey='app.widget.swapInstantly' className='my-1'>Swap Instantly</T> */}
+            <T tag='h4' i18nKey='app.widget.swapInstantly' className='my-1'>Swap Instantly</T>
           </CardHeader>
           <CardBody className='pt-3'>
             <ProgressBar 
@@ -101,6 +101,9 @@ const SwapStepOne = ({
                 },
                 {
                   text: 'Input Addresses'
+                },
+                {
+                  text: `Send ${sendSymbol}`
                 },
                 {
                   text: `Receive ${receiveSymbol}`
@@ -117,6 +120,7 @@ const SwapStepOne = ({
                       supportedAssetSymbols={assetSymbols}
                       isAssetDisabled={isAssetDisabled}
                       onClose={onCloseAssetSelector}
+                      dark={false}
                     />
                   </div>
                 )}
@@ -161,6 +165,7 @@ const SwapStepOne = ({
                       supportedAssetSymbols={assetSymbols}
                       isAssetDisabled={isAssetDisabled}
                       onClose={onCloseAssetSelector}
+                      dark={false}
                     />
                   </div>
                 )}
@@ -219,7 +224,7 @@ const SwapStepOne = ({
             </GAEventButton>
           </CardBody>
           <div style={{ color: '#B5BCC4' }} className='text-center font-xs mb-3'>
-            <span>powered by Faa.st</span>
+            <span>powered by <a href='https://faa.st' target='_blank noreferrer'>Faa.st</a></span>
           </div>
         </Card>
       </Form>
