@@ -111,6 +111,10 @@ module.exports = function (stage, outputPathPrefix = '') {
   }, {
     resourceQuery: /file/,
     use: fileAssetLoader
+  },
+  {
+    resourceQuery: /\.pdf$/,
+    use: fileAssetLoader
   }, {
     test: /\.svg$/,
     oneOf: [{     
