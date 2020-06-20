@@ -42,11 +42,11 @@ const StepFour = ({ swap, swap: { receiveSymbol, sendSymbol } }) => {
             ]} 
             currentStep={3}
           />
-          <div className='mt-3'>
+          <div className='mt-3 text-left'>
             <SwapStatusCard swap={swap} expanded light/>
           </div>
-          <div className='text-center mt-2'>
-            <a href={`https://faa.st/app/orders/${swap.orderId}`}>View your order on Faa.st</a>
+          <div className='text-center mt-3'>
+            <a href={`https://faa.st/app/orders/${swap.orderId}`} target='_blank noreferrer'>View your order on Faa.st</a>
           </div>
         </CardBody>
         <div style={{ color: '#B5BCC4' }} className='text-center font-xs mb-3'>

@@ -33,7 +33,7 @@ const SwapWidget = ({ swapInputs, swap, defaultSendSymbol, defaultReceiveSymbol 
         <StepOne defaultSendSymbol={defaultSendSymbol} defaultReceiveSymbol={defaultReceiveSymbol} />
       ) : checkStepOne(swapInputs) && !checkStepTwo(swapInputs) ? (
         <StepTwo sendSymbol={swapInputs && swapInputs.from ? swapInputs.from : undefined} receiveSymbol={swapInputs && swapInputs.to ? swapInputs.to : undefined } />
-      ) : checkStepThree(swap) ? (
+      ) : !checkStepThree(swap) ? (
         <StepThree swap={swap} />
       ) : (
         <StepFour swap={swap} />

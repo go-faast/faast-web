@@ -124,7 +124,7 @@ export default compose(
                   {sendAmount ? (<Col xs='12' className={classNames(!light ? 'text-white' : style.textDark)}>
                     <Units value={sendAmount} symbol={sendSymbol} prefix='-'/>
                   </Col>) : null}
-                  {sendAsset ? (<Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, sendAsset)}</Col>)
+                  {sendAsset ? (<Col xs='12' className={classNames('mt-0 pt-0 order-sm-3 font-size-xs', !light ? 'text-white' : style.textDark)}>{priceChange(createdAt, sendAsset)}</Col>)
                     : null}
                 </Row>
               </Col>
@@ -143,7 +143,7 @@ export default compose(
                   {receiveAmount ? (<Col xs='12' className={classNames(!light ? 'text-white' : style.textDark)}>
                     <UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} prefix='+'/>
                   </Col>) : null}
-                  {receiveAsset ? (<Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, receiveAsset)}</Col>)
+                  {receiveAsset ? (<Col xs='12' className={classNames('mt-0 pt-0 order-sm-3 font-size-xs', !light ? 'text-white' : style.textDark)}>{priceChange(createdAt, receiveAsset)}</Col>)
                     : null}
                 </Row>
               </Col>
