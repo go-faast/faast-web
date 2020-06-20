@@ -63,7 +63,7 @@ export default compose(
               <ul style={{ listStyleType: 'circle' }} className='pl-3 mt-3'>
                 <li>{t.assetListings}</li>
                 <li>{t.exclusiveOffers}</li>
-                <li>{t.report}</li>
+                <li><a href='/static/how-to-store-crypto.pdf' target='_blank'>{t.report}</a></li>
               </ul>
             </h5>
             <div style={{ maxWidth: 505, overflow: 'hidden' }} className='mt-4 pt-1'>
