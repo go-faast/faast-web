@@ -1,24 +1,22 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
-import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
-import { compose, setDisplayName, withProps, withState, withHandlers, setPropTypes, defaultProps, lifecycle } from 'recompose'
+import { compose, setDisplayName, withProps, withHandlers, setPropTypes, lifecycle } from 'recompose'
 import classNames from 'class-names'
 import { push as pushAction } from 'react-router-redux'
-import { createStructuredSelector } from 'reselect'
 import { Card, CardHeader, CardBody, Alert } from 'reactstrap'
-import { getSwap } from 'Selectors/swap'
+import { getSwap } from 'Common/selectors/swap'
 import DepositQRCode from 'Components/DepositQRCode'
 import ClipboardCopyField from 'Components/ClipboardCopyField'
 import Expandable from 'Components/Expandable'
 import { refreshSwap } from 'Actions/swap'
 import { capitalizeFirstLetter } from 'Utilities/helpers'
-import { retrievePairData } from 'Actions/rate'
+import { retrievePairData } from 'Common/actions/rate'
 import Timer from 'Components/Timer'
 
-import { getRateMinimumDeposit, getRatePrice, getRateMaximumDeposit, } from 'Selectors/rate'
-import { getGeoLimit } from 'Selectors/app'
+import { getRateMinimumDeposit, getRatePrice, getRateMaximumDeposit, } from 'Common/selectors/rate'
+import { getGeoLimit } from 'Common/selectors/app'
 
 import T from 'Components/i18n/T'
 import { withTranslation } from 'react-i18next'
@@ -29,10 +27,9 @@ import ProgressBar from '../ProgressBar'
 import style from './style.scss'
 
 
-const StepThree = ({ swap, swap: { orderId, receiveSymbol, depositAddressExtraId, depositAddress, sendAsset, 
+const StepThree = ({ swap: { orderId, receiveSymbol, depositAddressExtraId, depositAddress, sendAsset, 
   sendAmount, sendSymbol, maxGeoBuy, isFixedPrice, orderStatus }, minimumDeposit, handleTimerEnd, secondsUntilPriceExpiry }) => {
   const depositFieldName = extraAssetFields[sendSymbol] && extraAssetFields[sendSymbol].deposit
-  console.log(swap)
   return (
     <Fragment>
       <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>

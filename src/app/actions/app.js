@@ -28,7 +28,6 @@ export const updateConnectForwardUrl = createAction('UPDATE_CONNECT_FORWARD_URL'
 export const resetAll = createAction('RESET_ALL')
 export const updateAssetsFilterByTradeable = createAction('UPDATE_ASSETS_TRADEABLE_FILTER')
 export const updateRememberWallets = createAction('UPDATE_REMEMBER_WALLES')
-export const updateSwapWidgetInputs = createAction('UPDATE_SWAP_WIDGET_INPUTS', (inputs) => (inputs))
 
 export const restoreState = (dispatch) => Promise.resolve()
   .then(() => {
@@ -108,11 +107,6 @@ export const toggleAssetsByTradeable = () => (dispatch, getState) => Promise.res
     localStorageSet('filterTradeableAssets', filter)
     dispatch(updateAssetsFilterByTradeable(filter))
   })
-
-export const saveSwapWidgetInputs = (inputs) => (dispatch) => Promise.resolve()
-  .then(() => {
-    dispatch(updateSwapWidgetInputs(inputs))
-  })  
 
 export const updateConnectForward = (url) => (dispatch) => Promise.resolve()
   .then(() => {

@@ -2,10 +2,10 @@ import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import BigNumber from 'bignumber.js'
 import { connect } from 'react-redux'
-import { compose, setDisplayName, withProps, withState, withHandlers, setPropTypes, defaultProps, lifecycle } from 'recompose'
+import { compose, setDisplayName, withProps, withState, withHandlers, 
+  setPropTypes, defaultProps, lifecycle } from 'recompose'
 import classNames from 'class-names'
 import { reduxForm, formValueSelector } from 'redux-form'
-import { push as pushAction } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
 import {
   Form, Button, Card, CardHeader, CardBody, InputGroupAddon, Row, Col,
@@ -16,15 +16,14 @@ import log from 'Log'
 import { toBigNumber } from 'Utilities/convert'
 import * as validator from 'Utilities/validator'
 import * as qs from 'query-string'
-import { createSwap as createSwapAction } from 'Actions/swap'
-import { updateQueryStringReplace } from 'Actions/router'
-import { retrievePairData } from 'Actions/rate'
+import { retrievePairData } from 'Common/actions/rate'
 import { saveSwapWidgetInputs } from 'Actions/widget'
 
 import { getRateMinimumDeposit, getRatePrice, isRateLoaded, getRateMaximumWithdrawal,
-  getRateMaximumDeposit, rateError, isRateStale, getRateMinimumWithdrawal } from 'Selectors/rate'
-import { getAllAssetSymbols, getAsset } from 'Selectors/asset'
-import { getGeoLimit, getSavedSwapWidgetInputs } from 'Selectors/app'
+  getRateMaximumDeposit, rateError, isRateStale, getRateMinimumWithdrawal } from 'Common/selectors/rate'
+import { getAllAssetSymbols, getAsset } from 'Common/selectors/asset'
+import { getGeoLimit } from 'Common/selectors/app'
+import { getSavedSwapWidgetInputs } from 'Selectors/widget'
 
 import GAEventButton from 'Components/GAEventButton'
 import ReduxFormField from 'Components/ReduxFormField'
@@ -34,8 +33,6 @@ import AssetSelector from 'Components/AssetSelectorList'
 import T from 'Components/i18n/T'
 import { withTranslation } from 'react-i18next'
 import Units from 'Components/Units'
-import LoadingFullscreen from 'Components/LoadingFullscreen'
-import debounceHandler from 'Hoc/debounceHandler'
 import ProgressBar from '../ProgressBar'
 import SwapIcon from 'Img/swap-icon.svg?inline'
 
@@ -45,11 +42,10 @@ const DEFAULT_SEND_SYMBOL = 'BTC'
 const DEFAULT_RECEIVE_SYMBOL = 'ETH'
 const DEFAULT_SEND_AMOUNT = 1
 const FORM_NAME = 'swapWidget'
-const DEBOUNCE_WAIT = 5000 // ms
 
 const getFormValue = formValueSelector(FORM_NAME)
 
-const StepOneField = withProps(({ labelClass, inputClass, className, labelCol, inputCol }) => ({
+const StepOneField = withProps(({ labelClass, className, labelCol, inputCol }) => ({
   labelClass: classNames('mb-sm-0 mb-lg-2 py-sm-2 p-lg-0', labelClass, style.customLabel),
   inputClass: classNames('flat', style.customInput),
   className: classNames('mb-2 gutter-x-3', className),
@@ -61,9 +57,8 @@ const StepOneField = withProps(({ labelClass, inputClass, className, labelCol, i
 const SwapStepOne = ({
   sendSymbol, receiveSymbol, assetSymbols, assetSelect, setAssetSelect, validateSendAmount, validateReceiveAmount,
   handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
-  onChangeSendAmount, maxGeoBuy, handleSelectGeoMax, receiveAsset,
-  onChangeReceiveAmount, estimatedField, sendAmount, receiveAmount, previousSwapInputs = {},
-  rateError, sendAsset, t, onCloseAssetSelector, validateDepositTag, isSubmittingSwap
+  onChangeSendAmount, maxGeoBuy, handleSelectGeoMax, onChangeReceiveAmount, estimatedField,
+  sendAmount, receiveAmount, rateError, sendAsset, t, onCloseAssetSelector, isSubmittingSwap
 }) => {
   return (
     <Fragment>
@@ -257,9 +252,6 @@ export default compose(
     limit: getGeoLimit,
     previousSwapInputs: getSavedSwapWidgetInputs
   }), {
-    createSwap: createSwapAction,
-    push: pushAction,
-    updateQueryString: updateQueryStringReplace,
     retrievePairData: retrievePairData,
     saveSwapWidgetInputs: saveSwapWidgetInputs,
   }),
@@ -517,5 +509,4 @@ export default compose(
       })
     }
   }),
-  debounceHandler('updateURLParams', DEBOUNCE_WAIT),
 )(SwapStepOne)
