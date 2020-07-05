@@ -14,7 +14,7 @@ import classNames from 'class-names'
 import BitcoinLogo from 'Img/newsletter-btc.svg'
 import EthereumLogo from 'Img/newsletter-eth.svg'
 import LitecoinLogo from 'Img/newsletter-ltc.svg'
-import EbookCover from 'Img/ebook.jpg'
+import EbookCover from 'Img/ebook.png'
 
 import SwapIcon from 'Img/swap-icon.svg'
 
@@ -63,7 +63,7 @@ export default compose(
               <ul style={{ listStyleType: 'circle' }} className='pl-3 mt-3'>
                 <li>{t.assetListings}</li>
                 <li>{t.exclusiveOffers}</li>
-                <li><a href='/static/how-to-store-crypto.pdf' target='_blank'>{t.report}</a></li>
+                <li>{t.report}</li>
               </ul>
             </h5>
             <div style={{ maxWidth: 505, overflow: 'hidden' }} className='mt-4 pt-1'>
