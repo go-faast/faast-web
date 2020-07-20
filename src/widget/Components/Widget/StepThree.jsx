@@ -10,7 +10,7 @@ import { getSwap } from 'Common/selectors/swap'
 import DepositQRCode from 'Components/DepositQRCode'
 import ClipboardCopyField from 'Components/ClipboardCopyField'
 import Expandable from 'Components/Expandable'
-import { refreshSwap } from 'Actions/swap'
+import { refreshSwap } from 'Common/actions/swap'
 import { capitalizeFirstLetter } from 'Utilities/helpers'
 import { retrievePairData } from 'Common/actions/rate'
 import Timer from 'Components/Timer'
@@ -32,7 +32,7 @@ const StepThree = ({ swap: { orderId, receiveSymbol, depositAddressExtraId, depo
   const depositFieldName = extraAssetFields[sendSymbol] && extraAssetFields[sendSymbol].deposit
   return (
     <Fragment>
-      <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
+      <Card className={classNames('justify-content-center p-0 m-0', style.container, style.stepOne)}>
         <CardHeader style={{ backgroundColor: '#394045' }} className='text-center border-0'>
           <T tag='h4' i18nKey='app.widget.swapInstantly' className='my-1'>Swap Instantly</T>
         </CardHeader>

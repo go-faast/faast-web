@@ -5,7 +5,7 @@ import {
   initialState as commonInitialState
 } from 'Common/reducers/app'
 import { appReady, appError, updateAssetsFilterByTradeable, 
-  updateSwapWidgetInputs, updateConnectForwardUrl, updateRememberWallets } from 'Actions/app'
+  updateConnectForwardUrl, updateRememberWallets } from 'Actions/app'
 
 export default createReducer({
   ...commonReducerFunctions,

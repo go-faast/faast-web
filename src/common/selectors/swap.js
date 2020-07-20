@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { mapValues } from 'Utilities/helpers'
+import { mapValues, dateSort } from 'Utilities/helpers'
 import { createItemSelector, selectItemId } from 'Utilities/selector'
 import { toBigNumber } from 'Utilities/convert'
 import { MultiWallet } from 'Services/Wallet'
@@ -78,4 +78,9 @@ export const getSwap = createItemSelector(
   getAllSwaps,
   selectItemId,
   (allSwaps, id) => allSwaps[id] || Object.values(allSwaps).find((s) => s.orderId === id)
+)
+
+export const getAllSwapsArray = createSelector(
+  getAllSwaps,
+  (allSwaps) => dateSort(Object.values(allSwaps), 'desc', 'createdAt')
 )

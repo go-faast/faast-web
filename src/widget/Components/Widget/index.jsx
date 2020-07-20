@@ -1,10 +1,10 @@
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { compose, setDisplayName, withProps, withHandlers } from 'recompose'
+import { compose, setDisplayName, withProps, withHandlers, lifecycle } from 'recompose'
 import * as qs from 'query-string'
 import { getSavedSwapWidgetInputs } from 'Selectors/widget'
-import { getSwap } from 'Selectors/swap'
+import { getSwap } from 'Common/selectors/swap'
 
 import StepOne from './StepOne'
 import StepTwo from './StepTwo'
@@ -54,6 +54,11 @@ export default compose(
       const urlParams = qs.parse(location.search)
       return urlParams
     },
+  }),
+  lifecycle({
+    componentWillMount() {
+      document.body.style.backgroundColor = 'transparent'
+    }
   }),
   withProps(({ checkQueryParams }) => { 
     const { to, from } = checkQueryParams() || {}

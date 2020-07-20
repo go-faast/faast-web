@@ -5,9 +5,8 @@ import { connect } from 'react-redux'
 import { hot } from 'react-hot-loader'
 
 import { init } from 'Actions/app'
-import { isAppReady, getAppError, isDefaultPortfolioEmpty, getSavedSwapWidgetInputs, shouldShowFeedbackForm } from 'Selectors'
+import { isAppReady, getAppError } from 'Selectors'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
-import FeedbackForm from 'Components/FeedbackForm'
 
 // Import stylesheets here so they're noticed by HMR
 import 'react-redux-toastr/src/styles/index.scss?nsm'
@@ -38,6 +37,6 @@ export default compose(
       <Widget/>
     </Fragment>
   ) : (
-    <LoadingFullscreen label={'Loading Widget'} error={error}/>
+    <LoadingFullscreen bgColor='#fff' label={'Loading Widget'} error={error}/>
   )
 ))

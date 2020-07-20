@@ -4,7 +4,6 @@ import { omit, pick } from 'lodash'
 import { createUpdater, createUpserter } from 'Utilities/helpers'
 import { BigNumber, ZERO } from 'Utilities/convert'
 import { SwapOrder } from 'Types'
-import { resetAll } from 'Actions/app'
 import {
   swapAdded, swapUpdated, swapError,
   swapInitStarted, swapInitSuccess, swapInitFailed,
@@ -22,7 +21,8 @@ type SwapState = SwapOrder & {
 }
 
 const initialState = {}
-const swapInitialState: SwapState = {
+
+export const commonSwapInitialState: SwapState = {
   // Frontend fields
   id: '',
   sendAmount: undefined, // Used to specify swap tx amount with full precision. If undefined use depositAmount
@@ -59,7 +59,7 @@ const swapInitialState: SwapState = {
   refundAddressExtraId: undefined,
 }
 
-const upsert = createUpserter('id', swapInitialState)
+const upsert = createUpserter('id', commonSwapInitialState)
 const update = createUpdater('id')
 
 const normalizeTx = (tx?: { id?: string }) => tx && tx.id ? ({
@@ -68,20 +68,28 @@ const normalizeTx = (tx?: { id?: string }) => tx && tx.id ? ({
 
 const normalize = (swap: { id?: string, orderId?: string, tx?: object }) => ({
   id: swap.id || swap.orderId,
-  ...pick(swap, Object.keys(swapInitialState)),
+  ...pick(swap, Object.keys(commonSwapInitialState)),
   ...normalizeTx(swap.tx),
 })
 
-export default createReducer({
+export const commonReducerFunctions = {
+  // @ts-ignore
   [swapAdded]: (state, swap) => upsert(state, normalize(swap)),
+  // @ts-ignore
   [swapUpdated]: (state, swap) => update(state, normalize(swap)),
+  // @ts-ignore
   [swapError]: (state, swap) => update(state, normalize(swap)),
+  // @ts-ignore
   [swapInitStarted]: (state, { id }) => update(state, {
     id,
     initializing: true,
     initialized: false,
-    error: swapInitialState.error,
+    error: commonSwapInitialState.error,
   }),
+  // @ts-ignore
   [swapInitSuccess]: (state, { id }) => update(state, { id, initializing: false, initialized: true }),
+  // @ts-ignore
   [swapInitFailed]: (state, { id, error }) => update(state, { id, initializing: false, error, errorType: 'init' }),
-}, initialState)
+}
+
+export default createReducer(commonReducerFunctions, initialState)

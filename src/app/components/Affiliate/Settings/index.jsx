@@ -61,6 +61,19 @@ const AffiliateSettings = ({ minimumWithdrawal, isModalOpen, toggleModalOpen, af
                   </p></small>
                 </Col>
                 <hr className='w-100 border-light'/>
+                <Col sm='12'>
+                  <small><p className={classNames('mb-1 font-weight-bold', text)}>Referral Widget</p></small>
+                  <Input 
+                    className={classNames('flat mb-2', input)} 
+                    value="<iframe src='https://faa.st/widget?from=BTC&to=ETH' 
+                    style='height:100%;border:none;min-height:600px;' />" 
+                    type='text' 
+                    autoFocus 
+                    readOnly
+                  />
+                  <iframe src='http://localhost:9000/widget?to=XRP&from=LINK' width='100%' style={{ height: '100%', border: 'none', minHeight: 600 }} />
+                </Col>
+                <hr className='w-100 border-light'/>
                 <Col>
                   <small><p className={classNames('mb-1 font-weight-bold', text)}>Initiate Earnings Withdrawal</p></small>
                   <Form id='withdrawal-form' onSubmit={handleSubmit}>

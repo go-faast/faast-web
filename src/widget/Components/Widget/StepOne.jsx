@@ -56,7 +56,7 @@ const StepOneField = withProps(({ labelClass, className, labelCol, inputCol }) =
 
 const SwapStepOne = ({
   sendSymbol, receiveSymbol, assetSymbols, assetSelect, setAssetSelect, validateSendAmount, validateReceiveAmount,
-  handleSubmit, handleSelectedAsset, handleSwitchAssets, isAssetDisabled,
+  handleSubmit, handleSelectedAsset, isAssetDisabled, handleSwitchAssets,
   onChangeSendAmount, maxGeoBuy, handleSelectGeoMax, onChangeReceiveAmount, estimatedField,
   sendAmount, receiveAmount, rateError, sendAsset, t, onCloseAssetSelector, isSubmittingSwap
 }) => {
@@ -84,7 +84,7 @@ const SwapStepOne = ({
         ></div>
       )}
       <Form onSubmit={handleSubmit}>
-        <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
+        <Card className={classNames('justify-content-center p-0 m-0', style.container, style.stepOne)}>
           <CardHeader style={{ backgroundColor: '#394045' }} className='text-center border-0'>
             <T tag='h4' i18nKey='app.widget.swapInstantly' className='my-1'>Swap Instantly</T>
           </CardHeader>
@@ -147,11 +147,11 @@ const SwapStepOne = ({
                   )}
                 />
               </Col>
-              {/* <Col xs={{ size: 12, order: 3 }} lg={{ size: 12, order: 2 }} className='text-right text-lg-center'>
-                  <Button color='primary' onClick={handleSwitchAssets} className={style.reverse}>
-                    <SwapIcon/>
-                  </Button>
-                </Col> */}
+              <Col xs={{ size: 12, order: 3 }} lg={{ size: 12, order: 2 }} style={{ position: 'relative', top: -15, right: 25, maxHeight: 20 }} className='text-right text-lg-center m-0'>
+                <Button color='transparent' onClick={handleSwitchAssets} className={classNames('p-0', style.reverse)}>
+                  <SwapIcon />
+                </Button>
+              </Col>
               <Col xs={{ size: 12, order: 4 }} lg={{ size: 12, order: 3 }}>
                 {assetSelect === 'receive' && (
                   <div className={style.assetListContainer}>

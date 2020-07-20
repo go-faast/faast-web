@@ -11,7 +11,7 @@ import { Form, Card, CardHeader, CardBody, Row, Col } from 'reactstrap'
 import { toBigNumber } from 'Utilities/convert'
 import * as validator from 'Utilities/validator'
 import { capitalizeFirstLetter } from 'Utilities/helpers'
-import { createSwap as createSwapAction } from 'Actions/swap'
+import { createSwap as createSwapAction } from 'Common/actions/swap'
 import { saveSwapWidgetInputs, updateCreatedSwap } from 'Actions/widget'
 import { getAsset } from 'Common/selectors/asset'
 import { getSavedSwapWidgetInputs } from 'Selectors/widget'
@@ -32,7 +32,7 @@ const FORM_NAME = 'swapWidget'
 
 const getFormValue = formValueSelector(FORM_NAME)
 
-const StepOneField = withProps(({ labelClass, inputClass, className, labelCol, inputCol }) => ({
+const StepOneField = withProps(({ labelClass, className, labelCol, inputCol }) => ({
   labelClass: classNames('mb-sm-0 mb-lg-2 py-sm-2 p-lg-0', labelClass, style.customLabel),
   inputClass: classNames('flat', style.customInput),
   className: classNames('mb-2 gutter-x-3', className),
@@ -48,7 +48,7 @@ const SwapStepTwo = ({
   return (
     <Fragment>
       <Form onSubmit={handleSubmit}>
-        <Card className={classNames('justify-content-center p-0', style.container, style.stepOne)}>
+        <Card className={classNames('justify-content-center p-0 m-0', style.container, style.stepOne)}>
           <CardHeader style={{ backgroundColor: '#394045' }} className='text-center border-0'>
             <T tag='h4' i18nKey='app.widget.swapInstantly' className='my-1'>Swap Instantly</T>
           </CardHeader>
