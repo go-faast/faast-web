@@ -5,7 +5,7 @@ import { createUpdater, createUpserter } from 'Utilities/helpers'
 import { BigNumber, ZERO } from 'Utilities/convert'
 import { SwapOrder } from 'Types'
 import {
-  swapAdded, swapUpdated, swapError,
+  swapAdded, swapUpdated, swapError, restoreSwaps,
   swapInitStarted, swapInitSuccess, swapInitFailed,
 } from 'Common/actions/swap'
 
@@ -77,6 +77,11 @@ export const commonReducerFunctions = {
   [swapAdded]: (state, swap) => upsert(state, normalize(swap)),
   // @ts-ignore
   [swapUpdated]: (state, swap) => update(state, normalize(swap)),
+  // @ts-ignore
+  [restoreSwaps]: (state, swaps) => ({
+    ...state,
+    ...swaps,
+  }),
   // @ts-ignore
   [swapError]: (state, swap) => update(state, normalize(swap)),
   // @ts-ignore

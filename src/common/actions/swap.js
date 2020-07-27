@@ -21,6 +21,7 @@ export const swapInitSuccess = createAction('INIT_SUCCESS', idPayload)
 export const swapInitFailed = createAction('INIT_FAILED', (id, errorMessage) => ({ id, error: errorMessage }))
 export const swapUpdated = createAction('UPDATED', (id, data) => ({ id, ...data }))
 export const swapError = createAction('ERROR', (id, error, errorType = '') => ({ id, error, errorType }))
+export const restoreSwaps = createAction('RESTORE_SWAPS', swaps => swaps)
 
 export const getSwapsByAddress = (walletId, page = 1, limit = 100) => () => {
   return Faast.fetchOrders(walletId, page, limit, false)

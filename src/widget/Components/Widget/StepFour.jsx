@@ -2,47 +2,41 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { compose, setDisplayName, withProps, setPropTypes } from 'recompose'
+import { compose, setDisplayName, withProps, setPropTypes, withHandlers } from 'recompose'
 import classNames from 'class-names'
-import { Card, CardHeader, CardBody } from 'reactstrap'
+import { Card, CardHeader, CardBody, Button } from 'reactstrap'
 import { getSwap } from 'Common/selectors/swap'
 import SwapStatusCard from 'Components/SwapStatusCard'
-import { refreshSwap } from 'Actions/swap'
+import { restoreSwapWidget } from 'Actions/widget'
 
-import T from 'Components/i18n/T'
 import { withTranslation } from 'react-i18next'
 import ProgressBar from '../ProgressBar'
+import FaastLogo from 'Img/faast-logo.png'
 
 import style from './style.scss'
 
-const StepFour = ({ swap, swap: { receiveSymbol, sendSymbol } }) => {
+const StepFour = ({ swap, handleStartNewSwap, swap: { receiveSymbol } }) => {
   return (
     <Fragment>
       <Card className={classNames('justify-content-center p-0 m-0', style.container, style.stepOne)}>
-        <CardHeader style={{ backgroundColor: '#394045' }} className='text-center border-0'>
-          <T tag='h4' i18nKey='app.widget.swapInstantly' className='my-1'>Swap Instantly</T>
+        <CardHeader style={{ backgroundColor: '#394045' }} className='pl-4 border-0'>
+          <h4 className='my-1'><img src={FaastLogo} className='mr-2 text-left' width="30" height="30" /> Faa.st</h4>
         </CardHeader>
+        <ProgressBar 
+          text={`Receive ${receiveSymbol}`}
+          currentStep={4}
+        />
         <CardBody className='pt-3'>
-          <ProgressBar 
-            steps={[
-              { 
-                text: 'Choose Assets',
-              },
-              {
-                text: 'Input Addresses'
-              },
-              {
-                text: `Send ${sendSymbol}`
-              },
-              {
-                text: `Receive ${receiveSymbol}`
-              }
-            ]} 
-            currentStep={3}
-          />
           <div className='mt-3 text-left'>
             <SwapStatusCard swap={swap} expanded light/>
           </div>
+          <Button 
+            color='primary'
+            onClick={handleStartNewSwap}
+            className={classNames('mt-2 mb-0 mx-auto', style.customButton)} 
+          >
+            Start new swap
+          </Button>
           <div className='text-center mt-3'>
             <a href={`https://faa.st/app/orders/${swap.orderId}`} target='_blank noreferrer'>View your order on Faa.st</a>
           </div>
@@ -63,11 +57,16 @@ export default compose(
   connect((state, { swap: { id } }) => ({
     currentSwap: getSwap(state, id),
   }), {
-    refreshSwap,
+    restoreSwapWidget
   }),
   withProps(({ swap, currentSwap }) => {
     return ({
       swap: currentSwap ? currentSwap : swap,
     })
   }),
+  withHandlers({
+    handleStartNewSwap: ({ restoreSwapWidget }) => () => {
+      restoreSwapWidget({ swapInputs: undefined })
+    }
+  })
 )(StepFour)

@@ -3,7 +3,7 @@
 .assetListContainer {
   position: absolute;
   z-index: 999;
-  top: 32px;
+  top: 30px;
   width: 100%;
 }
 
@@ -62,7 +62,7 @@
   border: 1px solid #EAEEF3 !important;
   border-radius: 4px;
   color: #3C3C40 !important;
-
+  width: 100%;
   &::placeholder {
     color: #9C9FA8 !important;
   }
@@ -70,7 +70,7 @@
 
 .customButton {
   background: #00D7B8;
-  box-shadow: 0 1px 1px 0 #02A991;
+  box-shadow: none;
   color: #054F45 !important;
   font-weight: 600;
   border-radius: 4px;
@@ -92,6 +92,7 @@
     fill: #000;
     width: 16px;
     height: 16px;
+    transform: rotate(90deg);
   }
 }
 
@@ -115,9 +116,5 @@
 @include media-breakpoint-down(md) {
   .reverse {
     margin: 0 0 1rem 0;
-
-    svg {
-      transform: rotate(90deg);
-    }
   }
 }

@@ -13,8 +13,6 @@ import 'react-redux-toastr/src/styles/index.scss?nsm'
 import '../../styles/global?nsm'
 import 'faast-ui'
 
-import T from 'Components/i18n/T'
-
 import Widget from '../Widget'
 
 export default compose(

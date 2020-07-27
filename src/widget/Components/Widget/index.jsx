@@ -3,34 +3,23 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, withProps, withHandlers, lifecycle } from 'recompose'
 import * as qs from 'query-string'
-import { getSavedSwapWidgetInputs } from 'Selectors/widget'
+import { getSavedSwapWidgetInputs, getCurrentStep } from 'Selectors/widget'
 import { getSwap } from 'Common/selectors/swap'
 
 import StepOne from './StepOne'
 import StepTwo from './StepTwo'
 import StepThree from './StepThree'
 import StepFour from './StepFour'
+import { localStorageSet } from 'Src/utilities/storage'
 
-const checkStepOne = (swap) => {
-  return swap && swap.toAmount && swap.fromAmount && swap.to && swap.from
-}
-
-const checkStepTwo = (swap) => {
-  return swap && swap.fromAddress && swap.toAddress
-}
-
-const checkStepThree = (swap) => {
-  return swap.orderStatus && swap.orderStatus == 'awaiting deposit'
-}
-
-const SwapWidget = ({ swapInputs, swap, defaultSendSymbol, defaultReceiveSymbol }) => {
+const SwapWidget = ({ currentStep, swap, defaultSendSymbol, defaultReceiveSymbol, swapInputs }) => {
   return (
     <Fragment>
-      {!checkStepOne(swapInputs) && !checkStepTwo(swapInputs) ? (
+      {currentStep == 1 ? (
         <StepOne defaultSendSymbol={defaultSendSymbol} defaultReceiveSymbol={defaultReceiveSymbol} />
-      ) : checkStepOne(swapInputs) && !checkStepTwo(swapInputs) ? (
+      ) : currentStep == 2 ? (
         <StepTwo sendSymbol={swapInputs && swapInputs.from ? swapInputs.from : undefined} receiveSymbol={swapInputs && swapInputs.to ? swapInputs.to : undefined } />
-      ) : !checkStepThree(swap) ? (
+      ) : currentStep == 3 ? (
         <StepThree swap={swap} />
       ) : (
         <StepFour swap={swap} />
@@ -43,6 +32,7 @@ export default compose(
   setDisplayName('SwapWidget'),
   connect(createStructuredSelector({
     swapInputs: getSavedSwapWidgetInputs,
+    currentStep: getCurrentStep
   }),{
   }),
   connect(createStructuredSelector({
@@ -55,15 +45,20 @@ export default compose(
       return urlParams
     },
   }),
+  withProps(({ checkQueryParams }) => { 
+    const { to, from, affiliateId } = checkQueryParams() || {}
+    return ({
+      defaultSendSymbol: from,
+      defaultReceiveSymbol: to,
+      affiliateId
+    })}),
   lifecycle({
     componentWillMount() {
       document.body.style.backgroundColor = 'transparent'
+    },
+    componentDidMount() {
+      const { affiliateId } = this.props
+      localStorageSet('affiliateId', affiliateId)
     }
   }),
-  withProps(({ checkQueryParams }) => { 
-    const { to, from } = checkQueryParams() || {}
-    return ({
-      defaultSendSymbol: from,
-      defaultReceiveSymbol: to
-    })}),
 )(SwapWidget)

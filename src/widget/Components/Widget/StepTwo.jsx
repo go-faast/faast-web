@@ -22,6 +22,7 @@ import ReduxFormField from 'Components/ReduxFormField'
 import T from 'Components/i18n/T'
 import { withTranslation } from 'react-i18next'
 import { toChecksumAddress } from 'Utilities/convert'
+import FaastLogo from 'Img/faast-logo.png'
 
 import ProgressBar from '../ProgressBar'
 
@@ -37,39 +38,28 @@ const StepOneField = withProps(({ labelClass, className, labelCol, inputCol }) =
   inputClass: classNames('flat', style.customInput),
   className: classNames('mb-2 gutter-x-3', className),
   row: true,
-  labelCol: { xs: '12', sm: '3', md: '2', lg: '12', className: 'text-left text-sm-right text-lg-left', ...labelCol },
+  labelCol: { xs: '12', className: 'text-left', ...labelCol },
   inputCol: { xs: '12', sm: true, md: true, lg: '12', ...inputCol },
 }))(ReduxFormField)
 
 const SwapStepTwo = ({
   change, untouch, sendSymbol, receiveSymbol, validateReceiveAddress, validateRefundAddress,
-  handleSubmit, previousSwapInputs = {}, rateError, t, validateDepositTag, isSubmittingSwap
+  handleSubmit, previousSwapInputs = {}, rateError, t, validateDepositTag, isSubmittingSwap,
+  onBack
 }) => {
   return (
     <Fragment>
       <Form onSubmit={handleSubmit}>
         <Card className={classNames('justify-content-center p-0 m-0', style.container, style.stepOne)}>
-          <CardHeader style={{ backgroundColor: '#394045' }} className='text-center border-0'>
-            <T tag='h4' i18nKey='app.widget.swapInstantly' className='my-1'>Swap Instantly</T>
+          <CardHeader style={{ backgroundColor: '#394045' }} className='text-left pl-4 border-0'>
+            <h4 className='my-1'><img src={FaastLogo} className='mr-2' width="30" height="30" /> Faa.st</h4>
           </CardHeader>
-          <CardBody className='pt-3'>
-            <ProgressBar 
-              steps={[
-                { 
-                  text: 'Choose Assets',
-                },
-                {
-                  text: 'Input Addresses'
-                },
-                {
-                  text: `Send ${sendSymbol}`
-                },
-                {
-                  text: `Receive ${receiveSymbol}`
-                },
-              ]} 
-              currentStep={1}
-            />
+          <ProgressBar 
+            text={'Input Addresses'}
+            currentStep={2}
+            onBack={onBack}
+          />
+          <CardBody className='pt-0'>
             <Row className='gutter-0'>
               <Col className='position-relative' xs={{ size: 12, order: 1 }} lg>
                 <StepOneField 
@@ -186,6 +176,13 @@ export default compose(
       validator.number(),
       validator.integer()
     ),
+    onBack: ({ saveSwapWidgetInputs }) => () => {
+      saveSwapWidgetInputs({
+        fromAddress: undefined,
+        toAddress: undefined,
+        currentStep: 1
+      })
+    },
     onSubmit: ({
       sendSymbol, receiveAsset, sendAsset, saveSwapWidgetInputs,
       createSwap, t, updateIsSubmittingSwap, updateCreatedSwap, previousSwapInputs
@@ -241,6 +238,7 @@ export default compose(
             ...previousSwapInputs,
             fromAddress: refundAddress,
             toAddress: receiveAddress,
+            currentStep: 3
           })
         }).catch(() => updateIsSubmittingSwap(false))
     }

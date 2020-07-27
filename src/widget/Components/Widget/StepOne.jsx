@@ -35,6 +35,7 @@ import { withTranslation } from 'react-i18next'
 import Units from 'Components/Units'
 import ProgressBar from '../ProgressBar'
 import SwapIcon from 'Img/swap-icon.svg?inline'
+import FaastLogo from 'Img/faast-logo.png'
 
 import style from './style.scss'
 
@@ -50,7 +51,7 @@ const StepOneField = withProps(({ labelClass, className, labelCol, inputCol }) =
   inputClass: classNames('flat', style.customInput),
   className: classNames('mb-2 gutter-x-3', className),
   row: true,
-  labelCol: { xs: '12', sm: '3', md: '2', lg: '12', className: 'text-left text-sm-right text-lg-left', ...labelCol },
+  labelCol: { xs: '12', className: 'text-left', ...labelCol },
   inputCol: { xs: '12', sm: true, md: true, lg: '12', ...inputCol },
 }))(ReduxFormField)
 
@@ -85,27 +86,14 @@ const SwapStepOne = ({
       )}
       <Form onSubmit={handleSubmit}>
         <Card className={classNames('justify-content-center p-0 m-0', style.container, style.stepOne)}>
-          <CardHeader style={{ backgroundColor: '#394045' }} className='text-center border-0'>
-            <T tag='h4' i18nKey='app.widget.swapInstantly' className='my-1'>Swap Instantly</T>
+          <CardHeader style={{ backgroundColor: '#394045' }} className='text-left pl-4 border-0'>
+            <h4 className='my-1'><img src={FaastLogo} className='mr-2' width="30" height="30" /> Faa.st</h4>
           </CardHeader>
+          <ProgressBar 
+            text={'Choose Assets'}
+            currentStep={1}
+          />
           <CardBody className='pt-3'>
-            <ProgressBar 
-              steps={[
-                { 
-                  text: 'Choose Assets',
-                },
-                {
-                  text: 'Input Addresses'
-                },
-                {
-                  text: `Send ${sendSymbol}`
-                },
-                {
-                  text: `Receive ${receiveSymbol}`
-                }
-              ]} 
-              currentStep={0}
-            />
             <Row className='gutter-0'>
               <Col className='position-relative' xs={{ size: 12, order: 1 }} lg>
                 {assetSelect === 'send' && (
@@ -116,6 +104,7 @@ const SwapStepOne = ({
                       isAssetDisabled={isAssetDisabled}
                       onClose={onCloseAssetSelector}
                       dark={false}
+                      rowsToShow={3}
                     />
                   </div>
                 )}
@@ -129,6 +118,7 @@ const SwapStepOne = ({
                   onChange={onChangeSendAmount}
                   inputClass={classNames({ 'font-italic': estimatedField === 'send' })}
                   inputGroupClass='flat'
+                  labelClass='d-block'
                   fixedFeedback
                   addonAppend={({ invalid }) => (
                     <InputGroupAddon addonType="append">
@@ -147,7 +137,7 @@ const SwapStepOne = ({
                   )}
                 />
               </Col>
-              <Col xs={{ size: 12, order: 3 }} lg={{ size: 12, order: 2 }} style={{ position: 'relative', top: -15, right: 25, maxHeight: 20 }} className='text-right text-lg-center m-0'>
+              <Col xs={{ size: 12, order: 3 }} style={{ position: 'relative', top: -15, right: 25, maxHeight: 20 }} className='text-right m-0'>
                 <Button color='transparent' onClick={handleSwitchAssets} className={classNames('p-0', style.reverse)}>
                   <SwapIcon />
                 </Button>
@@ -160,6 +150,7 @@ const SwapStepOne = ({
                       supportedAssetSymbols={assetSymbols}
                       isAssetDisabled={isAssetDisabled}
                       onClose={onCloseAssetSelector}
+                      rowsToShow={3}
                       dark={false}
                     />
                   </div>
@@ -298,10 +289,11 @@ export default compose(
       updateIsSubmittingSwap(true)
       let { sendAmount, receiveAmount } = values
       saveSwapWidgetInputs({
-        to: sendSymbol,
-        from: receiveSymbol,
+        to: receiveSymbol,
+        from: sendSymbol,
         toAmount: receiveAmount ? parseFloat(receiveAmount) : undefined,
         fromAmount: sendAmount ? parseFloat(sendAmount) : undefined,
+        currentStep: 2
       })
       updateIsSubmittingSwap(false)
     }
@@ -458,13 +450,8 @@ export default compose(
     componentDidUpdate(prevProps) {
       const {
         rateLoaded, pair, retrievePairData, estimatedRate, calculateSendEstimate, 
-        calculateReceiveEstimate, estimatedField, sendAmount, receiveAmount, checkQueryParams,
-        previousSwapInputs, updateURLParams, rateStale
+        calculateReceiveEstimate, estimatedField, sendAmount, receiveAmount, rateStale
       } = this.props
-      const urlParams = checkQueryParams()
-      if (Object.keys(urlParams).length === 0 && previousSwapInputs) {
-        updateURLParams(previousSwapInputs)
-      }
       if (pair && (!rateLoaded || rateStale)) {
         retrievePairData(pair, null, estimatedField === 'receive' ? sendAmount : undefined, estimatedField === 'send' ? receiveAmount : undefined)
       }
@@ -498,15 +485,16 @@ export default compose(
         handleSelectGeoMax()
       }
     },
-    componentWillUnmount() {
-      const { saveSwapWidgetInputs, sendAsset, receiveAsset, 
-        sendAmount, receiveAmount } = this.props
-      saveSwapWidgetInputs({
-        to: receiveAsset ? receiveAsset.symbol : undefined,
-        from: sendAsset ? sendAsset.symbol : undefined,
-        fromAmount: sendAmount ? parseFloat(sendAmount) : undefined,
-        toAmount: receiveAmount ? parseFloat(receiveAmount) : undefined
-      })
-    }
+    // componentWillUnmount() {
+    //   const { saveSwapWidgetInputs, sendAsset, receiveAsset, 
+    //     sendAmount, receiveAmount } = this.props
+    //   saveSwapWidgetInputs({
+    //     to: receiveAsset ? receiveAsset.symbol : undefined,
+    //     from: sendAsset ? sendAsset.symbol : undefined,
+    //     fromAmount: sendAmount ? parseFloat(sendAmount) : undefined,
+    //     toAmount: receiveAmount ? parseFloat(receiveAmount) : undefined,
+    //     currentStep: 1,
+    //   })
+    // }
   }),
 )(SwapStepOne)

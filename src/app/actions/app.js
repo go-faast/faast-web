@@ -13,6 +13,8 @@ import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
 import { restoreTxs } from './tx'
 import { retrieveAllSwaps, restoreSwapTxIds, restoreSwapPolling } from './swap'
 import { fetchGeoRestrictions, languageLoad } from 'Common/actions/app'
+import { restoreSwaps } from 'Common/actions/swap'
+import { restoreSwapWidget } from 'Actions/widget'
 import { setCurrencySymbol } from './currency'
 import { currencies } from 'Config/currencies'
 
@@ -42,6 +44,16 @@ export const restoreState = (dispatch) => Promise.resolve()
       dispatch(retrieveAssets()) // Retrieve updated assets in background
     } else {
       return dispatch(retrieveAssets()) // asset list required to restore wallets
+    }
+  }).then(() => {
+    const swapCache = localStorageGetJson('state:swaps')
+    if (swapCache) {
+      dispatch(restoreSwaps(swapCache))
+    }
+  }).then(() => {
+    const swapWidgetCache = localStorageGetJson('state:swapWidget')
+    if (swapWidgetCache) {
+      dispatch(restoreSwapWidget(swapWidgetCache))
     }
   })
   .then(() => dispatch(restoreAllPortfolios()))

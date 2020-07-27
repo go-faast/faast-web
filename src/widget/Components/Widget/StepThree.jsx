@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose, setDisplayName, withProps, withHandlers, setPropTypes, lifecycle } from 'recompose'
 import classNames from 'class-names'
-import { push as pushAction } from 'react-router-redux'
 import { Card, CardHeader, CardBody, Alert } from 'reactstrap'
 import { getSwap } from 'Common/selectors/swap'
 import DepositQRCode from 'Components/DepositQRCode'
@@ -13,6 +12,7 @@ import Expandable from 'Components/Expandable'
 import { refreshSwap } from 'Common/actions/swap'
 import { capitalizeFirstLetter } from 'Utilities/helpers'
 import { retrievePairData } from 'Common/actions/rate'
+import { saveSwapWidgetInputs } from 'Actions/widget'
 import Timer from 'Components/Timer'
 
 import { getRateMinimumDeposit, getRatePrice, getRateMaximumDeposit, } from 'Common/selectors/rate'
@@ -23,37 +23,26 @@ import { withTranslation } from 'react-i18next'
 import Units from 'Components/Units'
 import extraAssetFields from 'Src/config/extraAssetFields'
 import ProgressBar from '../ProgressBar'
+import FaastLogo from 'Img/faast-logo.png'
 
 import style from './style.scss'
 
 
-const StepThree = ({ swap: { orderId, receiveSymbol, depositAddressExtraId, depositAddress, sendAsset, 
+const StepThree = ({ onBack, swap: { orderId, depositAddressExtraId, depositAddress, sendAsset, 
   sendAmount, sendSymbol, maxGeoBuy, isFixedPrice, orderStatus }, minimumDeposit, handleTimerEnd, secondsUntilPriceExpiry }) => {
   const depositFieldName = extraAssetFields[sendSymbol] && extraAssetFields[sendSymbol].deposit
   return (
     <Fragment>
       <Card className={classNames('justify-content-center p-0 m-0', style.container, style.stepOne)}>
-        <CardHeader style={{ backgroundColor: '#394045' }} className='text-center border-0'>
-          <T tag='h4' i18nKey='app.widget.swapInstantly' className='my-1'>Swap Instantly</T>
+        <CardHeader style={{ backgroundColor: '#394045' }} className='text-left pl-4 border-0'>
+          <h4 className='my-1'><img src={FaastLogo} className='mr-2' width="30" height="30" /> Faa.st</h4>
         </CardHeader>
+        <ProgressBar 
+          text={`Send ${sendSymbol}`}
+          currentStep={3}
+          onBack={onBack}
+        />
         <CardBody className='pt-3 text-center'>
-          <ProgressBar 
-            steps={[
-              { 
-                text: 'Choose Assets',
-              },
-              {
-                text: 'Input Addresses'
-              },
-              {
-                text: `Send ${sendSymbol}`
-              },
-              {
-                text: `Receive ${receiveSymbol}`
-              }
-            ]} 
-            currentStep={2}
-          />
           <h4 className='mt-4'>
             <T tag='span' className='text-dark' i18nKey='app.stepTwoManual.send'>Send</T> {(sendAmount && sendAmount > 0)
               ? (<Units className='text-dark' value={sendAmount} symbol={sendSymbol} precision={8} showIcon/>)
@@ -62,12 +51,6 @@ const StepThree = ({ swap: { orderId, receiveSymbol, depositAddressExtraId, depo
                 </Fragment>
               ) : null)} <T className='text-dark' tag='span' i18nKey='app.stepTwoManual.toAddres'>to address{depositAddressExtraId && <span> with {depositFieldName}</span>}:</T>
           </h4>
-          <span className='text-dark d-inline-block' style={{ fontSize: 14 }}>
-            [ <Expandable
-              shrunk={<i className='fa fa-spinner fa-pulse mr-1'/>}
-              expanded={<span>Order status is updated automatically. Please do not refresh.</span>}/> 
-            {orderStatus} ]
-          </span>
           <div className='text-center'>
             <DepositQRCode 
               className='mt-1' 
@@ -105,6 +88,12 @@ const StepThree = ({ swap: { orderId, receiveSymbol, depositAddressExtraId, depo
               <T tag='small' i18nKey='app.stepTwoManual.geoLimit'>Please note: The maximum you can swap is <Units precision={8} roundingType='dp' value={maxGeoBuy}/> {sendSymbol} <a style={{ color: 'rgba(0, 255, 222, 1)' }} href='https://medium.com/@goFaast/9b14e100d828' target='_blank noreferrer noopener'>due to your location.</a></T>
             </Alert>
           )}
+          <span className='text-dark d-inline-block' style={{ fontSize: 14 }}>
+            [ <span className='mr-1 font-weight-bold'>Status:</span> <Expandable
+              shrunk={<i className='fa fa-spinner fa-pulse mr-1'/>}
+              expanded={<span>Order status is updated automatically. Please do not refresh.</span>}/> 
+            {orderStatus} ]
+          </span>
           <div className='mt-2'>
             <small className='text-muted'>
               {!isFixedPrice ? (
@@ -140,9 +129,9 @@ export default compose(
     limit: getGeoLimit(state),
     currentSwap: getSwap(state, id),
   }), {
-    push: pushAction,
     refreshSwap,
     retrievePairData: retrievePairData,
+    saveSwapWidgetInputs
   }),
   withProps(({ swap: { rateLockedUntil, rate, sendAsset }, estimatedRate, swap, limit, currentSwap }) => {
     const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : null
@@ -157,12 +146,22 @@ export default compose(
     handleTimerEnd: ({ refreshSwap, swap }) => () => {
       refreshSwap(swap.orderId)
     },
+    onBack: ({ saveSwapWidgetInputs }) => () => {
+      saveSwapWidgetInputs({
+        currentStep: 2
+      })
+    },
   }),
   lifecycle({
     componentDidUpdate() {
-      const { swap, minimumDeposit, retrievePairData } = this.props
+      const { swap, minimumDeposit, retrievePairData, currentSwap, saveSwapWidgetInputs } = this.props
       if (!minimumDeposit) {
         retrievePairData(swap.pair)
+      }
+      if (currentSwap.orderStatus && currentSwap.orderStatus == 'awaiting deposit') {
+        saveSwapWidgetInputs({
+          currentStep: 4
+        })
       }
     },
     componentWillMount() {

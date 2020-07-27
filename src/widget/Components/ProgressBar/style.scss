@@ -2,8 +2,10 @@
 	display: block;
 	width: 100%;
 	position: relative;
-  margin: 10px auto;
-  text-align:center;
+	margin: 0px auto;
+	padding: 7px 0px;
+	text-align:center;
+	border-bottom: 1px solid #EAEEF3;
 	
 	&:after {
 		content: "";
@@ -15,7 +17,7 @@
 		padding: 0;
 		position: relative;
 		display: inline-block;
-		width: 25%;
+		width: 100%;
 		text-align: center;
 	}
 
@@ -26,22 +28,20 @@
 	&ItemIcon {
 		background: #eceff1;
 		color: #8191ab;
-		display: block;
-		border-radius: 100%;
+		display: inline-block;
+		border-radius: 20px;
 		text-align: center;
-		width: 25px;
-		height: 25px;
-		line-height: 25px;
-		margin: 0 auto 10px auto;
+		padding: 2px 8px;
+		margin: 0 8px 0px auto;
 		position: relative;
-		font-size: 13px;
-		font-weight: 700;
+		font-size: 12px;
+		font-weight: 600;
 		z-index: 2;
 	}
 	// Step text
 	&ItemText {
 		font-size: 13px;
-		color: #8191ab;
+		color: #67748a;
 		font-weight: 500;
 	}
 

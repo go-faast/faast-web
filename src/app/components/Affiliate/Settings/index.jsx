@@ -13,6 +13,7 @@ import { reduxForm, formValueSelector, change, untouch } from 'redux-form'
 import ReduxFormField from 'Components/ReduxFormField'
 import toastr from 'Utilities/toastrWrapper'
 import config from 'Config'
+import ClipboardCopyField from 'Components/ClipboardCopyField'
 
 import { affiliateId, secretKey, getAsset, getAffiliateBalance, getMinimumWithdrawal, 
   isLoadingLogin, isAffiliateLoggedIn } from 'Selectors'
@@ -63,15 +64,15 @@ const AffiliateSettings = ({ minimumWithdrawal, isModalOpen, toggleModalOpen, af
                 <hr className='w-100 border-light'/>
                 <Col sm='12'>
                   <small><p className={classNames('mb-1 font-weight-bold', text)}>Referral Widget</p></small>
-                  <Input 
+                  <ClipboardCopyField 
                     className={classNames('flat mb-2', input)} 
-                    value="<iframe src='https://faa.st/widget?from=BTC&to=ETH' 
-                    style='height:100%;border:none;min-height:600px;' />" 
+                    value={"<iframe src='https://faa.st/widget?from=BTC&to=ETH&affiliateId=" + affiliateId +  
+                    "' style='height:100%;border:none;min-height:600px;' />"}
                     type='text' 
                     autoFocus 
                     readOnly
                   />
-                  <iframe src='http://localhost:9000/widget?to=XRP&from=LINK' width='100%' style={{ height: '100%', border: 'none', minHeight: 600 }} />
+                  <iframe src='http://localhost:9000/widget?to=BTC&from=ETH' width='100%' style={{ height: '100%', border: 'none', minHeight: 680 }} />
                 </Col>
                 <hr className='w-100 border-light'/>
                 <Col>
