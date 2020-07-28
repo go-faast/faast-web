@@ -58,7 +58,7 @@ gulp.task('build:lambda', run('netlify-lambda build src/lambda'))
 
 gulp.task('prebuild', gulp.series('clean'))
 
-const build = gulp.series('prebuild', gulp.parallel(['build:widget', 'build:site', 'build:lambda']))
+const build = gulp.series('prebuild', gulp.parallel(['build:app','build:widget', 'build:site', 'build:lambda']))
 
 gulp.task('build', build)
 
