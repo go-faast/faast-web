@@ -21,7 +21,7 @@ const APP_PORT = process.env.APP_PORT || 9000
 const vendorDeps = ['font-awesome-4.7/css/font-awesome.min.css']
 
 const routerBaseName = path.join('/', widgetPath)
-const outputPathPrefix = isDev ? widgetPath : '' // Prefix output path during development for proxy purposes
+const outputPathPrefix = isDev ? widgetPath : 'widget' // Prefix output path during development for proxy purposes
 const baseConfig = getBaseConfig(isDev ? 'dev' : 'prod', outputPathPrefix)
 
 let config = merge.strategy({
