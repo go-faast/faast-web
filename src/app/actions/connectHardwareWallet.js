@@ -18,10 +18,10 @@ import walletService, {
   RippleWalletTrezor, RippleWalletLedger
 } from 'Services/Wallet'
 
-import { getAsset } from 'Selectors'
+import { getAsset, getWalletsByType } from 'Selectors'
 import {
   getConnectTimeoutId, getRetryTimerId, getDerivationPath, getAccountRetriever, getSelectedAccountIndex,
-  getAccountPageSize, getSelectedPageIndex, isStatusReset, getAssetSymbol, getWalletType, getWalletId,
+  getAccountPageSize, getSelectedPageIndex, isStatusReset, getAssetSymbol, getWalletType,
   getConnectedAccountIds, getConnectBatchQueue
 } from 'Selectors/connectHardwareWallet'
 
@@ -344,8 +344,9 @@ export const saveConnectedAccounts = () => (dispatch, getState) => {
   if (!connectedAccountIds.length) {
     return toastr.error('No accounts are connected')
   }
-  let multiWalletId = getWalletId(getState())
-  console.log('mw id', multiWalletId)
+  const walletType = getWalletType(getState())
+  const multiWalletExists = getWalletsByType(getState(), walletType)
+  let multiWalletId = multiWalletExists && multiWalletExists.id
   let multiWalletPromise
   if (multiWalletId) {
     const multiWallet = walletService.get(multiWalletId)
@@ -356,9 +357,8 @@ export const saveConnectedAccounts = () => (dispatch, getState) => {
       return toastr.error(`Not a MultiWallet ${multiWalletId}`)
     }
     multiWalletPromise = Promise.resolve(multiWallet)
+    dispatch(routerPush('/dashboard'))
   } else {
-    console.log('nop3')
-    const walletType = getWalletType(getState())
     const MultiWalletType = multiWalletTypes[walletType]
     if (!MultiWalletType) {
       return toastr.error(`Missing save configuration for ${walletType}`)

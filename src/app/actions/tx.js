@@ -68,7 +68,10 @@ export const createTx = (walletId, address, amount, assetSymbol, options = {}) =
 
 export const signTx = (tx, passwordCache) => (dispatch) => Promise.resolve().then(() => {
   log.debug('signTx', tx)
-  const { walletId } = tx
+  let walletId
+  if (tx) {
+    walletId = tx.walletId
+  }
   const walletInstance = walletService.getOrThrow(walletId)
   if (!walletInstance.isSignTransactionSupported()) {
     return

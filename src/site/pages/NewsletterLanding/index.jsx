@@ -14,6 +14,7 @@ import classNames from 'class-names'
 import BitcoinLogo from 'Img/newsletter-btc.svg'
 import EthereumLogo from 'Img/newsletter-eth.svg'
 import LitecoinLogo from 'Img/newsletter-ltc.svg'
+import EbookCover from 'Img/ebook.png'
 
 import SwapIcon from 'Img/swap-icon.svg'
 
@@ -34,6 +35,11 @@ export default compose(
         <Header translations={translations} headerColor={'transparent'} />
       </div>
       <div className={coinContainer}>
+        <img 
+          src={EbookCover} 
+          className='position-absolute d-lg-block d-none' 
+          style={{ width: 325, height: 500, zIndex: 99, opacity: .9 }} 
+        />
         <div className={classNames(eth, line)}>
           <img src={EthereumLogo} style={{ width: 91, height: 93 }} />
         </div>
@@ -96,6 +102,15 @@ export default compose(
               </div>
             </div>
           </div>
+          <Row>
+            <Col>
+              <img 
+                className='d-lg-none d-block pb-4 pl-4'
+                src={EbookCover} 
+                style={{ width: 325, height: 500, zIndex: 99, }} 
+              />
+            </Col>
+          </Row>
         </Col>
         <Col className='p-0' sm='2'>
         </Col>

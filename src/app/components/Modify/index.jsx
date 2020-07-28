@@ -11,7 +11,7 @@ import log from 'Utilities/log'
 import toastr from 'Utilities/toastrWrapper'
 import { ZERO, toBigNumber } from 'Utilities/convert'
 
-import { getCurrentPortfolioWithWalletHoldings, getAllAssets, isAppRestricted, isAppBlocked } from 'Selectors'
+import { getCurrentPortfolioWithIndividualWalletHoldings, getAllAssets, isAppRestricted, isAppBlocked } from 'Selectors'
 import { toggleOrderModal, showOrderModal } from 'Actions/orderModal'
 import { createSwundle } from 'Actions/swundle'
 
@@ -392,7 +392,7 @@ class Modify extends Component {
 }
 
 const mapStateToProps = createStructuredSelector({
-  portfolio: getCurrentPortfolioWithWalletHoldings,
+  portfolio: getCurrentPortfolioWithIndividualWalletHoldings,
   allAssets: getAllAssets,
   isAppRestricted: isAppRestricted,
   blocked: isAppBlocked,

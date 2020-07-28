@@ -27,7 +27,7 @@ import { text, affilateTable, card, cardHeader, cardFooter, smallCard } from './
 const WithdrawalTableRow = ({
   withdrawal, 
   withdrawal: { created_at, withdrawal_address, withdrawal_amount = 0, 
-    withdrawal_currency = 'BTC', status, transaction_id },
+    withdrawal_currency = 'BTC', status, transaction_ids },
   size,
   ...props
 }) => {
@@ -45,8 +45,12 @@ const WithdrawalTableRow = ({
         <Units value={withdrawal_amount} symbol={withdrawal_currency} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>
       </td>
       <td>
-        {transaction_id ? (
-          <a href={`https://www.blockchain.com/btc/tx/${transaction_id}`} target='_blank noreferrer'>View</a>
+        {transaction_ids.length == 1 ? (
+          <a href={`https://www.blockchain.com/btc/tx/${transaction_ids[0]}`} target='_blank noreferrer'>View</a>
+        ) : transaction_ids.length > 1 ? (
+          transaction_ids.map((t,i) => (
+            <a style={{ marginRight: 1 }} key={t} href={`https://www.blockchain.com/btc/tx/${t}`} target='_blank noreferrer'>{i + 1}</a>
+          ))
         ) : <span style={{ opacity: .6, cursor: 'default' }}>View</span>}
       </td>
     </tr>

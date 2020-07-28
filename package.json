@@ -1,7 +1,7 @@
 {
   "name": "faast-web",
   "productName": "Faa.st",
-  "version": "3.3.39",
+  "version": "3.3.47",
   "description": "A decentralized cryptocurrency portfolio manager and exchange.",
   "contributors": [
     "Nathan Wood <nathan@bitaccess.co>",
@@ -187,7 +187,7 @@
     "style-loader": "^0.18.2",
     "svg-react-loader": "^0.4.5",
     "testcafe": "^1.6.0",
-    "trezor-connect": "7.0.3",
+    "trezor-connect": "^8.1.5",
     "ts-loader": "^3.5.0",
     "tslint": "5.17.0",
     "typescript": "3.5.1",

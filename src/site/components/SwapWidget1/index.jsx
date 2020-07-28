@@ -41,7 +41,7 @@ const SwapWidget = ({ onSubmit, handleSelectedAsset, isAssetDisabled, handleSwit
   return (
     <Fragment>
       <Form className='px-lg-0 px-2' onSubmit={handleSubmit}>
-        <Row className={classNames(container, 'mx-auto align-items-center mt-5 p-md-2 px-4')}>
+        <Row className={classNames(container, 'mx-auto align-items-center mt-4 p-md-2 px-4')}>
           <Col className='d-lg-none d-block mt-4'>
             <h2 style={{ color: '#3C4050' }} >{swapWidget.swapInstantly}</h2>
           </Col>

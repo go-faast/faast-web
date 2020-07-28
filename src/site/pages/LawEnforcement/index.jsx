@@ -6,7 +6,6 @@ import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import withTracker from 'Site/components/withTracker'
 import Header from 'Site/components/Header'
-import { updateQueryStringReplace } from 'Actions/router'
 import * as qs from 'query-string'
 import Footer from 'Site/components/Footer'
 import { Input, Container, InputGroup, InputGroupButtonDropdown, 
@@ -26,12 +25,33 @@ export default compose(
   }), {
     getSwapsByAddress,
     getSwapByOrderId,
-    updateQueryString: updateQueryStringReplace
+  }),
+  withHandlers({
+    checkQueryParams: () => () => {
+      if (typeof window !== 'undefined') {
+        const urlParams = qs.parse(location.search)
+        return urlParams
+      }
+    },
+  }),
+  withState('shareableURL', 'updateShareableURL', ''),
+  withState('query', 'updateQuery', ({ checkQueryParams }) => {
+    const { q } = checkQueryParams()
+    return q
+  }),
+  withState('searchType', 'updateSearchType', ({ checkQueryParams }) => {
+    const { type } = checkQueryParams()
+    return type || 'address'
+  }),
+  withHandlers({
+    handleShareableURL: ({ updateShareableURL, query, searchType }) => () => {
+      if (typeof window !== 'undefined') {
+        updateShareableURL(`${window.location.href}?q=${query}&type=${searchType}`)
+      }
+    }
   }),
   withState('dropdownOpen', 'toggleDropDown', false),
-  withState('searchType', 'updateSearchType', 'address'),
   withState('json', 'updateJSON', undefined),
-  withState('query', 'updateQuery', undefined),
   withState('isLoading', 'updateLoading', false),
   withState('previousSearch', 'updatePreviousSearch', undefined),
   withHandlers({
@@ -45,13 +65,14 @@ export default compose(
   }),
   withHandlers({
     handleRetrieveData: ({ searchType, updateLoading, updateJSON, getSwapsByAddress, 
-      getSwapByOrderId, query, updatePreviousSearch, updateURLParams }) => async () => {
+      getSwapByOrderId, query, updatePreviousSearch, handleShareableURL, updateURLParams }) => async () => {
       let json
       updateLoading(true)
       updateJSON(undefined)
       updateURLParams({ q: query, type: searchType })
       if (searchType === 'address') {
         json = await getSwapsByAddress(query)
+        handleShareableURL()
       } else {
         json = await getSwapByOrderId(query)
       }
@@ -69,12 +90,10 @@ export default compose(
         updateSearchType(type)
         handleRetrieveData()
       }
-    
-
     }
   })
 )(({ translations, dropdownOpen, toggleDropDown, searchType, updateSearchType, query, updateQuery,
-  handleRetrieveData, json, isLoading, previousSearch }) => (
+  handleRetrieveData, json, isLoading, previousSearch, shareableURL }) => (
   <Fragment>
     <Header translations={translations} headerColor='#1845a0' />
     <div className='jumbotron jumbotron-fluid hero-technology mb-0 pb-5' style={{ 
@@ -128,7 +147,8 @@ export default compose(
             }} 
             className='text-left p-4 mt-5'
           >
-            <h3 className='mb-4 text-dark'>Results <a href={searchType === 'address' ? `https://api.faa.st/api/v2/public/swaps?withdrawal_address=${previousSearch}&refund_address=${previousSearch}&limit=100` : `https://api.faa.st/api/v2/public/swaps/${query}`} target='_blank noreferrer'>(Full API Response)</a></h3>
+            <h3 className='text-dark'>Results <a href={searchType === 'address' ? `https://api.faa.st/api/v2/public/swaps?withdrawal_address=${previousSearch}&refund_address=${previousSearch}&limit=100` : `https://api.faa.st/api/v2/public/swaps/${query}`} target='_blank noreferrer'>(Full API Response)</a></h3>
+            <p className='text-dark mb-4'><small>Shareable url: {shareableURL}</small></p>
             <div style={{ maxHeight: 400, overflow: 'scroll' }}>
               <ReactJson src={json} theme='rjv-default' collapsed={2} iconStyle='circle' />
             </div>

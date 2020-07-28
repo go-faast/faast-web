@@ -60,7 +60,7 @@ export const openWallet = (walletPromise, forwardUrl) => (dispatch, getState) =>
     })
     .then(() => {
       forwardUrl = forwardUrl ? forwardUrl : (getConnectForwardUrl(getState()) || '/dashboard')
-      if (forwardUrl && forwardUrl.indexOf('?') >= 0 && typeof window !== 'undefined') {
+      if (forwardUrl && typeof window !== 'undefined' && forwardUrl.indexOf('swap?') >= 0) {
         window.location.href = forwardUrl
       } else if (forwardUrl) {
         dispatch(push(forwardUrl))

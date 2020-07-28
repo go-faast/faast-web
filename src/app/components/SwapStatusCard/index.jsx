@@ -93,7 +93,7 @@ export default compose(
   }))
 )(({
   swap: {
-    orderId, sendWalletId, sendSymbol, sendAsset, sendAmount,
+    orderId, sendWalletId, sendSymbol, sendAsset, sendAmount, marketMakerName,
     receiveWalletId, receiveSymbol, receiveAsset, receiveAmount, receiveAddress,
     error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee,
     tx: { confirmed, succeeded, hash: txHash, feeAmount: txFee, feeSymbol: txFeeSymbol },
@@ -206,6 +206,10 @@ export default compose(
             [
               <T tag='span' i18nKey='app.swapStatusCard.date'>Date:</T>,
               !createdAtFormatted ? loadingValue : createdAtFormatted
+            ],
+            marketMakerName && [
+              <T tag='span' i18nKey='app.swapStatusCard.marketMaker'>Trading with:</T>,
+              marketMakerName
             ],
             [
               <T tag='span' i18nKey='app.swapStatusCard.orderId'>Order ID:</T>,
