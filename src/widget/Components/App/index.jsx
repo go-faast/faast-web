@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { hot } from 'react-hot-loader'
 
 import { init } from 'Actions/app'
-import { isAppReady, getAppError } from 'Selectors'
+import { isAppReady, getAppError } from 'Selectors/app'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 
 // Import stylesheets here so they're noticed by HMR

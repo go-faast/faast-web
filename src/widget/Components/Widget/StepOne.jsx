@@ -485,16 +485,5 @@ export default compose(
         handleSelectGeoMax()
       }
     },
-    // componentWillUnmount() {
-    //   const { saveSwapWidgetInputs, sendAsset, receiveAsset, 
-    //     sendAmount, receiveAmount } = this.props
-    //   saveSwapWidgetInputs({
-    //     to: receiveAsset ? receiveAsset.symbol : undefined,
-    //     from: sendAsset ? sendAsset.symbol : undefined,
-    //     fromAmount: sendAmount ? parseFloat(sendAmount) : undefined,
-    //     toAmount: receiveAmount ? parseFloat(receiveAmount) : undefined,
-    //     currentStep: 1,
-    //   })
-    // }
   }),
 )(SwapStepOne)

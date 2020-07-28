@@ -10,7 +10,7 @@ import StepOne from './StepOne'
 import StepTwo from './StepTwo'
 import StepThree from './StepThree'
 import StepFour from './StepFour'
-import { localStorageSet } from 'Src/utilities/storage'
+import { localStorageSet } from 'Utilities/storage'
 
 const SwapWidget = ({ currentStep, swap, defaultSendSymbol, defaultReceiveSymbol, swapInputs }) => {
   return (
