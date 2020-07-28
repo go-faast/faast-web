@@ -72,7 +72,7 @@ const AffiliateSettings = ({ minimumWithdrawal, isModalOpen, toggleModalOpen, af
                     autoFocus 
                     readOnly
                   />
-                  <iframe src='http://localhost:9000/widget?to=BTC&from=ETH' width='100%' style={{ height: '100%', border: 'none', minHeight: 680 }} />
+                  <iframe src={`https://${window.location.hostname}/widget?to=BTC&from=ETH`} width='100%' style={{ height: '100%', border: 'none', minHeight: 680 }} />
                 </Col>
                 <hr className='w-100 border-light'/>
                 <Col>
