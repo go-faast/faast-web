@@ -57,6 +57,7 @@ export const commonSwapInitialState: SwapState = {
   depositAddressExtraId: undefined,
   withdrawalAddressExtraId: undefined,
   refundAddressExtraId: undefined,
+  marketMakerName: undefined,
 }
 
 const upsert = createUpserter('id', commonSwapInitialState)
