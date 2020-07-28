@@ -52,7 +52,7 @@ gulp.task('combine:widget', () => mergeDist(path.join(dirs.buildWidget, '**/*'))
 gulp.task('combine:site', () => mergeDist(path.join(dirs.buildSite, '**/*')))
 
 gulp.task('build:app', gulp.series('compile:app', 'combine:app'))
-gulp.task('build:widget', gulp.series('compile:app', 'combine:widge'))
+gulp.task('build:widget', gulp.series('compile:app', 'combine:widget'))
 gulp.task('build:site', gulp.series('compile:site', 'combine:site'))
 gulp.task('build:lambda', run('netlify-lambda build src/lambda'))
 
