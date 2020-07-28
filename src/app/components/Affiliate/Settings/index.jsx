@@ -67,7 +67,7 @@ const AffiliateSettings = ({ minimumWithdrawal, isModalOpen, toggleModalOpen, af
                   <ClipboardCopyField 
                     className={classNames('flat mb-2', input)} 
                     value={"<iframe src='https://faa.st/widget?from=BTC&to=ETH&affiliateId=" + affiliateId +  
-                    "' style='height:100%;border:none;min-height:600px;' />"}
+                    "' style='height:100%;border:none;min-height:680px;' />"}
                     type='text' 
                     autoFocus 
                     readOnly
