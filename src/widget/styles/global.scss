@@ -1,0 +1,152 @@
+@import '~faast-ui/src/style/index.scss';
+@import 'variables';
+
+.watchlist-unselected {
+  color: #d0d7df;
+  transition: all .2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    color: #ffef94;
+  }
+}
+
+svg {
+  font-family: 'Open Sans', 'Helvetica', 'Arial', sans-serif !important;
+}
+
+.custom-hover {
+  transition: all .15s ease-in-out;
+  opacity: 1;
+  filter: brightness(1);
+
+  &:hover {
+    filter: brightness(1.1);
+    text-decoration: none !important;
+  }
+}
+
+.font-xs {
+  font-size: 75%;
+}
+
+.font-xxs {
+  font-size: 60%;
+}
+
+.watchlist-selected {
+  color: #ffef94;
+  transition: all .2s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    color: #f9db2d
+  }
+}
+
+.swapChangeArrow {
+  position: relative;
+  vertical-align: middle;
+  top: -2px;
+}
+
+.wordBreak {
+  word-break: break-all;
+}
+
+.textEllipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.highcharts-credits {
+  display: none !important;
+}
+
+.page-item.disabled .page-link {
+  color: #05B8AB !important;
+  background-color: #212121 !important;
+  border: 1px solid #353535 !important;
+  opacity: .5;
+}
+
+@-webkit-keyframes blinker {
+  from {
+    opacity: 1.0;
+  }
+
+  to {
+    opacity: 0.0;
+  }
+}
+
+.blink {
+  text-decoration: blink;
+  -webkit-animation-name: blinker;
+  -webkit-animation-duration: 0.8s;
+  -webkit-animation-iteration-count: infinite;
+  -webkit-animation-timing-function: ease-in-out;
+  -webkit-animation-direction: alternate;
+}
+
+.beta-tag {
+  font-family: 'Kaushan Script', cursive;
+  font-size: $font-size-xs;
+  color: $primary;
+}
+
+.navbar-nav {
+  white-space: nowrap;
+}
+
+.navbar-collapse {
+  justify-content: flex-end;
+}
+
+.redux-toastr {
+  .toastr {
+    border-radius: $border-radius;
+    box-shadow: $component-shadow;
+
+    &.rrt-error {
+      background-color: $ultra-dark;
+      border-bottom: 0.25rem solid $danger;
+    }
+  }
+
+  .rrt-middle-container {
+    .rrt-title {
+      font-size: $font-size-sm !important;
+      font-weight: $font-weight-base !important;
+    }
+  }
+
+  .rrt-right-container {
+    .close-toastr {
+      font-size: $font-size-sm !important;
+      color: $text-color;
+    }
+  }
+
+  .rrt-confirm-holder {
+    .shadow {
+      background-color: rgba($modal-backdrop-bg, $modal-backdrop-opacity);
+    }
+
+    .rrt-confirm {
+      background-color: $ultra-dark;
+      border-radius: $border-radius;
+      color: $text-color;
+      box-shadow: $component-shadow;
+      border: $component-border;
+
+      .rrt-buttons-holder {
+        .rrt-button {
+          @extend .btn-ultra-dark;
+          @extend .flat;
+        }
+      }
+    }
+  }
+}
