@@ -17,7 +17,7 @@ const isMocking = process.env.MOCK === 'true'
 const DEPLOY_ENV = process.env.DEPLOY_ENV || 'local' // can be production, staging, develop, or local
 
 // Leave empty when not deploying behind a specific domain
-const siteRoot = process.env.SITE_ROOT || ''
+const siteRoot = process.env.SITE_ROOT || 'https://faa.st'
 
 module.exports = {
   NODE_ENV,
