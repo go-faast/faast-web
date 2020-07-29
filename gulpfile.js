@@ -44,21 +44,18 @@ gulp.task('test:e2e', () =>
     })))
 
 gulp.task('compile:app', run('webpack --config etc/webpack.config.app.js'))
-gulp.task('compile:widget', run('webpack --config etc/webpack.config.widget.js'))
 gulp.task('compile:site', run('node --max_old_space_size=8192 ./node_modules/react-static/bin/react-static-build'))
 
 gulp.task('combine:app', () => mergeDist(path.join(dirs.buildApp, '**/*')))
-gulp.task('combine:widget', () => mergeDist(path.join(dirs.buildWidget, '**/*')))
 gulp.task('combine:site', () => mergeDist(path.join(dirs.buildSite, '**/*')))
 
 gulp.task('build:app', gulp.series('compile:app', 'combine:app'))
-gulp.task('build:widget', gulp.series('compile:widget', 'combine:widget'))
 gulp.task('build:site', gulp.series('compile:site', 'combine:site'))
 gulp.task('build:lambda', run('netlify-lambda build src/lambda'))
 
 gulp.task('prebuild', gulp.series('clean'))
 
-const build = gulp.series('prebuild', 'build:app', gulp.parallel('build:widget', 'build:site', 'build:lambda'))
+const build = gulp.series('prebuild', gulp.parallel('build:app', 'build:site', 'build:lambda'))
 
 gulp.task('build', build)
 

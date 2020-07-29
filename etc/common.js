@@ -23,7 +23,6 @@ dirs.widget = path.join(dirs.src, 'widget')
 dirs.build = path.join(dirs.root, 'build')
 dirs.buildApp = path.join(dirs.build, 'app')
 dirs.buildSite = path.join(dirs.build, 'site')
-dirs.buildWidget = path.join(dirs.build, 'widget')
 
 const appPath = 'app'
 const widgetPath = 'widget'
