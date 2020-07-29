@@ -27,7 +27,7 @@ import FaastLogo from 'Img/faast-logo.png'
 import ProgressBar from '../ProgressBar'
 
 import style from './style.scss'
-import Faast from 'Src/services/Faast'
+import Faast from 'Services/Faast'
 
 const FORM_NAME = 'swapWidget'
 
