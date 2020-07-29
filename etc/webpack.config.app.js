@@ -39,14 +39,16 @@ const htmlMinifyOption = isDev ? false : {
   removeEmptyAttributes: true,
 }
 
+const entryPoints = {
+  app: ['babel-polyfill', path.join(dirs.app, 'index.jsx')],
+  widget: ['babel-polyfill', path.join(dirs.widget, 'index.jsx')],
+}
+
 let config = merge.strategy({
   'module.rules': 'replace',
 })(baseConfig, {
   context: dirs.root,
-  entry: {
-    app: ['babel-polyfill', path.join(dirs.app, 'index.jsx')],
-    widget: ['babel-polyfill', path.join(dirs.widget, 'index.jsx')],
-  },
+  entry: entryPoints,
   output: {
     filename: path.join(outputPathPrefix, bundleOutputPath, isDev ? '[name].[hash:8].js' : '[name].[chunkHash:8].js'),
     path: dirs.buildApp,
@@ -56,17 +58,21 @@ let config = merge.strategy({
     new webpack.DefinePlugin({
       'process.env.ROUTER_BASE_NAME': JSON.stringify(routerBaseName),
     }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common',
+      minChunks: Object.keys(entryPoints).length,
+    }),
     new HtmlPlugin({
       template: path.join(dirs.app, 'index.html'),
       filename: path.join(appPath, 'index.html'),
-      chunks: ['app-manifest', 'app-vendor', 'app'],
+      chunks: ['app', 'common'],
       title: pkg.productName,
       minify: htmlMinifyOption,
     }),
     new HtmlPlugin({
       template: path.join(dirs.widget, 'index.html'),
       filename: path.join(widgetPath, 'index.html'),
-      chunks: ['widget-manifest', 'widget-vendor', 'widget'],
+      chunks: ['widget', 'common'],
       title: pkg.productName,
       minify: htmlMinifyOption,
     }),
@@ -86,24 +92,6 @@ let config = merge.strategy({
       append: false,
       hash: true
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'app-vendor',
-      chunks: 'app',
-      minChunks: (module) => module.context && module.context.indexOf('node_modules') >= 0
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'widget-vendor',
-      chunks: 'widget',
-      minChunks: (module) => module.context && module.context.indexOf('node_modules') >= 0
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'app-manifest',
-      chunks: 'app',
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'widget-manifest',
-      chunks: 'widget',
-    }),
   ]
 })
 
@@ -115,6 +103,7 @@ if (!isDev) {
       new ExtractTextPlugin({
         filename: path.join(outputPathPrefix, bundleOutputPath, '[name].[contenthash:8].css'),
         ignoreOrder: true,
+        allChunks: true,
       }),
       new webpack.optimize.ModuleConcatenationPlugin(),
       new webpack.HashedModuleIdsPlugin(),
