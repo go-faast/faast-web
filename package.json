@@ -30,7 +30,7 @@
     "dev:app": "cross-env NODE_ENV=development webpack-dev-server --config etc/webpack.config.app.js --progress",
     "dev:site": "cross-env NODE_ENV=development react-static start",
     "dev:proxy": "ws --config-file etc/lws.config.dev.js",
-    "dev": "concurrently -c blue,green,red,yellow -n app,site,widget,proxy \"npm:dev:app\" \"npm:dev:site\" \"npm:dev:proxy\"",
+    "dev": "concurrently -c blue,green,yellow -n app,site,proxy \"npm:dev:app\" \"npm:dev:site\" \"npm:dev:proxy\"",
     "build:app": "gulp build:app",
     "build:site": "gulp build:site",
     "build:ipfs": "cross-env IPFS=true npm run build",
