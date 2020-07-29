@@ -1,0 +1,17 @@
+@import "~Styles/variables";
+
+.innerknob {
+  background-color: $primary;
+  cursor: pointer;
+}
+.innerprogress {
+  background-color: $grey-dark;
+  div {
+    span:last-child {
+      background-color: $primary;
+    }
+  }
+}
+.value {
+  background-color: $primary;
+}

@@ -1,0 +1,93 @@
+.text {
+  color: #525252;
+}
+.card {
+  background-color: #fff;
+  border: none;
+  box-shadow: 0px 3px 4px 1px rgba(207, 219, 224, .17) !important;
+  border-radius: 4px;
+}
+.smallCard {
+  max-width: 600px;
+}
+
+.affilateTable {
+  background-color: #fff;
+  th {
+    // border-color: #ebeff1 !important;
+    border: none !important;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+  tr td {
+    border: none !important;
+  }
+  tr:nth-child(even) {
+    background-color: #fafbfd !important;
+  }
+}
+
+.cardHeader {
+  background: #fff;
+  border: none;
+  color: #525252;
+  margin-bottom: 10px;
+  border-radius: 4px !important;
+  font-size: 16px;
+  font-weight: 200;
+}
+
+.cardFooter {
+  background-color: #fff;
+  border-color: #ECECEC;
+}
+
+.input {
+  background-color: #fafbfd !important;
+  border-color: #ebeff1 !important;
+  color: #596872 !important;
+  &::placeholder {
+    color: #798893;
+  }
+}
+
+.withdrawal {
+  background-color: #00C9F7 !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 2px;
+  border: none !important;
+  &:hover {
+    background-color: #00b7e0 !important;
+    color: #fff !important;
+  }
+  &:focus {
+    background-color: #3493C0 !important;
+    color: #fff !important;
+  }
+  &:active {
+    background-color: #3493C0 !important;
+    color: #fff !important;
+  }
+}
+
+.withdrawalOutline {
+  background-color: #fff !important;
+  color: #00C9F7 !important;
+  font-weight: 600;
+  border-radius: 2px;
+  border: 1px solid #00C9F7 !important;
+  &:hover {
+    background-color: #00b7e0 !important;
+    color: #fff !important;
+  }
+  &:focus {
+    background-color: #3493C0 !important;
+    color: #fff !important;
+  }
+  &:active {
+    background-color: #3493C0 !important;
+    color: #fff !important;
+  }
+}

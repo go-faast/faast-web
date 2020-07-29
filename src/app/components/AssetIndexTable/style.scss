@@ -1,0 +1,33 @@
+@import '~Styles/variables';
+
+.mediaBody {
+  position: relative; 
+  top: -2px;
+  width: 100%;
+  max-width: 175px;
+}
+
+.indexTable {
+  line-height: 1;
+  white-space: nowrap;
+  margin-bottom: 0;
+  cursor: pointer;
+  td {
+    vertical-align: middle;
+    padding: .6rem;
+  }
+}
+
+.sortingArrow {
+  width: 12px; 
+  fill: rgba(255, 255, 255, 0.9);
+}
+
+@media screen and (max-width: 414px) {
+  .indexTable {
+    td {
+      max-width: 170px;
+      padding: .6rem 0rem .6rem 0.3rem;
+    }
+  }
+}

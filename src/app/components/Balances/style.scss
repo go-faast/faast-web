@@ -1,0 +1,7 @@
+@import '~faast-ui/src/style/index';
+
+.statLabel {
+  @extend .text-muted;
+  @extend .text-uppercase;
+  @extend .letter-spacing;
+}

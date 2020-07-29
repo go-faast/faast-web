@@ -1,0 +1,12 @@
+@import "~Styles/variables";
+
+.accessTile {
+  height: 150px;
+  width: 100%;
+  padding: 0.5rem !important;
+  display: flex !important;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  white-space: normal !important;
+}
