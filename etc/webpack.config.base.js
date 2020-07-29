@@ -4,7 +4,6 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const convPaths = require('convert-tsconfig-paths-to-webpack-aliases').default
-const HappyPack = require('happypack')
 
 const {
   useHttps, dirs, imgOutputPath, fontOutputPath, fileOutputPath, bundleOutputPath, 
@@ -97,15 +96,15 @@ module.exports = function (stage, outputPathPrefix = '') {
       }
     }, {
       exclude: /node_modules/,
-      use: 'happypack/loader?id=jsx',
+      use: [jsLoader],
     }]
   }, {
     test: /(\.css|\.scss)$/,
     oneOf: [{
       resourceQuery: /(nsm|global)/,
-      loader: cssLoader({ modules: false })
+      use: cssLoader({ modules: false })
     }, {
-      loader: cssLoader(),
+      use: cssLoader(),
     }]
   }, {
     resourceQuery: /file/,
@@ -120,11 +119,11 @@ module.exports = function (stage, outputPathPrefix = '') {
       resourceQuery: /inline/,
       loader: 'svg-react-loader'
     }, {
-      use: 'happypack/loader?id=img',
+      use: imgAssetLoader
     }]
   }, {
     test: /\.(png|jpe?g|gif|ico)(\?.*)?$/,
-    use: 'happypack/loader?id=img',
+    use: imgAssetLoader,
   }, {
     test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
     use: fontAssetLoader
@@ -143,14 +142,6 @@ module.exports = function (stage, outputPathPrefix = '') {
       __filename: true,
     },
     plugins: [
-      new HappyPack({
-        id: 'jsx',
-        loaders: [jsLoader]
-      }),
-      new HappyPack({
-        id: 'img',
-        loaders: [imgAssetLoader],
-      }),
       new webpack.DefinePlugin({
         'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
         'process.env.IPFS': JSON.stringify(process.env.IPFS),
