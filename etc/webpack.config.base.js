@@ -17,9 +17,6 @@ const baseOptions = {
   preferredDevTool: process.env.DEVTOOL || 'eval'
 }
 const variants = {
-  minified: [true, false],
-  debug: [true, false],
-  target: ['commonjs2', 'var', 'umd', 'amd']
 }
 
 module.exports = createVariants(baseOptions, variants, function (stage, outputPathPrefix = '') {
