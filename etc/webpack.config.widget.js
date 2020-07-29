@@ -119,4 +119,4 @@ if (!isDev) {
   })
 }
 
-module.exports = createVariants(baseOptions, variants, config)
+module.exports = createVariants(baseOptions, variants, () => config)
