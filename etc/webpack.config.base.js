@@ -24,8 +24,7 @@ module.exports = function (stage, outputPathPrefix = '') {
   }
   const cssLoader = ({ sourceMap = true, modules = true } = {}) => {
     const primaryCssLoaders = [{
-      // loader: 'css-loader', // translates CSS into CommonJS modules
-      use: 'happypack/loader?id=css',
+      loader: 'css-loader', // translates CSS into CommonJS modules
       options: {
         sourceMap,
         modules,
@@ -42,8 +41,7 @@ module.exports = function (stage, outputPathPrefix = '') {
         }
       }
     }, {
-      // loader: 'sass-loader', // compiles SASS to CSS
-      use: 'happypack/loader?id=sass',
+      loader: 'sass-loader', // compiles SASS to CSS
       options: { 
         sourceMap,
         includePaths: [dirs.src],
@@ -152,14 +150,6 @@ module.exports = function (stage, outputPathPrefix = '') {
       new HappyPack({
         id: 'jsx',
         loaders: [jsLoader]
-      }),
-      new HappyPack({
-        id: 'sass',
-        loaders: ['css?modules&importLoaders=2&sourceMap!autoprefixer?browsers=last 2 version!sass?outputStyle=expanded&sourceMap=true&sourceMapContents=true']
-      }),
-      new HappyPack({
-        id: 'css',
-        loaders: ['css-loader'],
       }),
       new HappyPack({
         id: 'img',
