@@ -16,7 +16,7 @@ const aliases = convPaths(tsconfig)
 module.exports = function (stage, outputPathPrefix = '') {
   const isDev = stage === 'dev'
   const jsLoader = {
-    loader: 'babel-loader',
+    loader: 'babel-loader?cacheDirectory',
     options: {
       cacheDirectory: true,
     }
@@ -153,6 +153,8 @@ module.exports = function (stage, outputPathPrefix = '') {
         new OptimizeCssAssetsPlugin(),
         new UglifyJsPlugin({
           sourceMap: true,
+          cache: true,
+          parallel: true,
           uglifyOptions: {
             mangle: {
               reserved: ['BigInteger', 'ECPair', 'Point']
