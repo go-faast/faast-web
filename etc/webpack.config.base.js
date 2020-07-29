@@ -115,7 +115,6 @@ module.exports = function (stage, outputPathPrefix = '') {
     test: /\.svg$/,
     oneOf: [{     
       resourceQuery: /inline/,
-      use: 'happypack/loader',
       loader: 'svg-react-loader'
     }, {
       use: 'happypack/loader?id=img',
