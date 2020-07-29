@@ -144,7 +144,7 @@ module.exports = function (stage, outputPathPrefix = '') {
         id: 'tsx',
         loaders: [
           jsLoader,
-          { loader: 'ts-loader' },
+          'ts-loader',
         ]
       }),
       new HappyPack({
