@@ -153,11 +153,11 @@ module.exports = function (stage, outputPathPrefix = '') {
       }),
       new HappyPack({
         id: 'css1',
-        loaders: [...cssLoader({ modules: false })]
+        loaders: cssLoader({ modules: false })
       }),
       new HappyPack({
         id: 'css2',
-        loaders: [...cssLoader()],
+        loaders: cssLoader(),
       }),
       new HappyPack({
         id: 'img',
