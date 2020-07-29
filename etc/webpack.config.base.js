@@ -45,7 +45,7 @@ module.exports = function (stage, outputPathPrefix = '') {
       loader: 'sass-loader', // compiles SASS to CSS
       options: { 
         sourceMap,
-        includePaths: [dirs.nodeModules, dirs.src],
+        includePaths: [dirs.src],
         sourceMapContents: true,
         outputStyle: 'expanded',
         precision: 6,
