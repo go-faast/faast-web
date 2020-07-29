@@ -4,7 +4,6 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 const convPaths = require('convert-tsconfig-paths-to-webpack-aliases').default
-const createVariants = require('parallel-webpack').createVariants
 
 const {
   useHttps, dirs, imgOutputPath, fontOutputPath, fileOutputPath, bundleOutputPath, 
@@ -13,13 +12,8 @@ const {
 // Needs to be valid JSON. All comments in tsconfig.json must be removed.
 const tsconfig = require('../tsconfig.json')
 const aliases = convPaths(tsconfig)
-const baseOptions = {
-  preferredDevTool: process.env.DEVTOOL || 'eval'
-}
-const variants = {
-}
 
-module.exports = createVariants(baseOptions, variants, function (stage, outputPathPrefix = '') {
+module.exports = function (stage, outputPathPrefix = '') {
   const isDev = stage === 'dev'
   const jsLoader = {
     loader: 'babel-loader',
@@ -172,4 +166,4 @@ module.exports = createVariants(baseOptions, variants, function (stage, outputPa
       host: 'localhost',
     }
   }
-})
+}
