@@ -44,7 +44,7 @@ let config = merge.strategy({
 })(baseConfig, {
   context: dirs.root,
   entry: {
-    main: ['babel-polyfill', path.join(dirs.app, 'index.jsx')],
+    app: ['babel-polyfill', path.join(dirs.app, 'index.jsx')],
     widget: ['babel-polyfill', path.join(dirs.widget, 'index.jsx')],
   },
   output: {
@@ -59,14 +59,14 @@ let config = merge.strategy({
     new HtmlPlugin({
       template: path.join(dirs.app, 'index.html'),
       filename: path.join(appPath, 'index.html'),
-      excludeChunks: ['widget'],
+      chunks: ['manifest', 'vendor', 'app'],
       title: pkg.productName,
       minify: htmlMinifyOption,
     }),
     new HtmlPlugin({
       template: path.join(dirs.widget, 'index.html'),
       filename: path.join(widgetPath, 'index.html'),
-      excludeChunks: ['main'],
+      excludeChunks: ['manifest', 'vendor', 'widget'],
       title: pkg.productName,
       minify: htmlMinifyOption,
     }),
@@ -87,11 +87,22 @@ let config = merge.strategy({
       hash: true
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
+      name: 'app-vendor',
+      chunks: 'app',
       minChunks: (module) => module.context && module.context.indexOf('node_modules') >= 0
     }),
     new webpack.optimize.CommonsChunkPlugin({
-      name: 'manifest'
+      name: 'widget-vendor',
+      chunks: 'widget',
+      minChunks: (module) => module.context && module.context.indexOf('node_modules') >= 0
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'app-manifest',
+      chunks: 'app',
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'widget-manifest',
+      chunks: 'widget',
     }),
   ]
 })
