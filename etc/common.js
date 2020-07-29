@@ -24,7 +24,7 @@ dirs.build = path.join(dirs.root, 'build')
 dirs.buildApp = path.join(dirs.build, 'app')
 dirs.buildSite = path.join(dirs.build, 'site')
 
-const appPath = 'app'
+const appPath = ''
 const widgetPath = 'widget'
 
 const bundleOutputPath = 'bundle'
