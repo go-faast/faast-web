@@ -59,14 +59,14 @@ let config = merge.strategy({
     new HtmlPlugin({
       template: path.join(dirs.app, 'index.html'),
       filename: path.join(appPath, 'index.html'),
-      chunks: ['manifest', 'vendor', 'app'],
+      chunks: ['app-manifest', 'app-vendor', 'app'],
       title: pkg.productName,
       minify: htmlMinifyOption,
     }),
     new HtmlPlugin({
       template: path.join(dirs.widget, 'index.html'),
       filename: path.join(widgetPath, 'index.html'),
-      excludeChunks: ['manifest', 'vendor', 'widget'],
+      excludeChunks: ['widget-manifest', 'widget-vendor', 'widget'],
       title: pkg.productName,
       minify: htmlMinifyOption,
     }),
