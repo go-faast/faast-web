@@ -66,7 +66,7 @@ let config = merge.strategy({
     new HtmlPlugin({
       template: path.join(dirs.widget, 'index.html'),
       filename: path.join(widgetPath, 'index.html'),
-      excludeChunks: ['widget-manifest', 'widget-vendor', 'widget'],
+      chunks: ['widget-manifest', 'widget-vendor', 'widget'],
       title: pkg.productName,
       minify: htmlMinifyOption,
     }),
