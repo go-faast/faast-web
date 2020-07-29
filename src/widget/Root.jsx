@@ -1,7 +1,7 @@
 import React from 'react'
 import { Provider } from 'react-redux'
 
-import App from './Components/App'
+import App from './components/App'
 import store from './store'
 import ReactGA from 'react-ga'
 
