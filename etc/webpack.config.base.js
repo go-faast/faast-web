@@ -161,9 +161,7 @@ module.exports = function (stage, outputPathPrefix = '') {
       ...(stage !== 'prod' ? [] : [
         new OptimizeCssAssetsPlugin(),
         new UglifyJsPlugin({
-          sourceMap: false,
-          cache: true,
-          parallel: true,
+          sourceMap: true,
           uglifyOptions: {
             mangle: {
               reserved: ['BigInteger', 'ECPair', 'Point']
