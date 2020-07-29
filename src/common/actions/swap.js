@@ -125,6 +125,20 @@ export const createOrder = (swap) => (dispatch) => {
   })
 }
 
+export const refreshSwap = (swapOrderId) => (dispatch, getState) => {
+  return Faast.refreshSwap(swapOrderId)
+    .then((swap) => {
+      const existingSwap = getSwap(getState(), swapOrderId)
+      swap.id = existingSwap ? existingSwap.id : swap.orderId
+      dispatch(swapUpdated(swap.id, swap))
+    })
+    .catch((e) => {
+      log.error(`Failed to refresh swap ${swapOrderId}`, e)
+      toastr.error(`Failed to refresh swap ${swapOrderId}`)
+      throw e
+    })
+}
+
 export const setSwapTx = (swapId, tx, outputIndex = 0) => (dispatch) => {
   dispatch(swapUpdated(swapId, { sendAmount: tx.outputs[outputIndex].amount, txId: tx.id }))
 }

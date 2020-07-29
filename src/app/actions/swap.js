@@ -1,17 +1,14 @@
 import { flatten } from 'lodash'
-
 import { MultiWallet } from 'Services/Wallet'
 import { newScopedCreateAction } from 'Utilities/action'
 import log from 'Log'
 import Faast from 'Services/Faast'
 import toastr from 'Utilities/toastrWrapper'
-
 import { signTx, sendTx, updateTxReceipt, pollTxReceipt } from 'Actions/tx'
 import { defaultPortfolioId } from 'Actions/portfolio'
 import { walletOrdersLoading, walletOrdersLoaded, walletOrdersAllLoaded } from 'Actions/wallet'
-
 import { getSwap, getTx, getWallet } from 'Selectors'
-import { swapUpdated, swapAdded, createSwapTx } from 'Common/actions/swap'
+import { swapAdded, createSwapTx } from 'Common/actions/swap'
 
 export * from 'Common/actions/swap'
 
@@ -91,20 +88,6 @@ export const retrieveSwap = (swapOrderId) => (dispatch, getState)  => Promise.re
         throw e
       })
   })
-
-export const refreshSwap = (swapOrderId) => (dispatch, getState) => {
-  return Faast.refreshSwap(swapOrderId)
-    .then((swap) => {
-      const existingSwap = getSwap(getState(), swapOrderId)
-      swap.id = existingSwap ? existingSwap.id : swap.orderId
-      dispatch(swapUpdated(swap.id, swap))
-    })
-    .catch((e) => {
-      log.error(`Failed to refresh swap ${swapOrderId}`, e)
-      toastr.error(`Failed to refresh swap ${swapOrderId}`)
-      throw e
-    })
-}
 
 export const signSwap = (swap, passwordCache = {}) => (dispatch, getState) => Promise.resolve()
   .then(() => {
