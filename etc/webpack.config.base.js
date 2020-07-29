@@ -80,7 +80,10 @@ module.exports = function (stage, outputPathPrefix = '') {
   const rules = [{
     test: /\.tsx?$/,
     exclude: /node_modules/,
-    use: 'happypack/loader?id=tsx',
+    use: [
+      jsLoader,
+      { loader: 'ts-loader' },
+    ]
   }, {
     test: /\.jsx?$/,
     rules: [{
@@ -140,13 +143,6 @@ module.exports = function (stage, outputPathPrefix = '') {
       __filename: true,
     },
     plugins: [
-      new HappyPack({
-        id: 'tsx',
-        loaders: [
-          jsLoader,
-          'ts-loader',
-        ]
-      }),
       new HappyPack({
         id: 'jsx',
         loaders: [jsLoader]
