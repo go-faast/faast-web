@@ -24,7 +24,7 @@ module.exports = function (stage, outputPathPrefix = '') {
   }
   const cssLoader = ({ sourceMap = true, modules = true } = {}) => {
     const primaryCssLoaders = [{
-      loader: 'css-loader', // translates CSS into CommonJS modules
+      // loader: 'css-loader', // translates CSS into CommonJS modules
       use: 'happypack/loader?id=css',
       options: {
         sourceMap,
