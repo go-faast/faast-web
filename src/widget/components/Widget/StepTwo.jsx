@@ -61,7 +61,7 @@ const SwapStepTwo = ({
           />
           <CardBody className='pt-0'>
             <Row className='gutter-0'>
-              <Col className='position-relative' xs={{ size: 12, order: 1 }} lg>
+              <Col className='position-relative' xs={{ size: 12, order: 1 }}>
                 <StepOneField 
                   name='refundAddress'
                   placeholder={`${sendSymbol} ${t('app.widget.refundAddressPlaceholder', 'refund address')}`}

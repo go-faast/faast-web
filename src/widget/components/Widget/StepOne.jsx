@@ -95,7 +95,7 @@ const SwapStepOne = ({
           />
           <CardBody className='pt-3'>
             <Row className='gutter-0'>
-              <Col className='position-relative' xs={{ size: 12, order: 1 }} lg>
+              <Col className='position-relative' xs={{ size: 12, order: 1 }}>
                 {assetSelect === 'send' && (
                   <div className={style.assetListContainer}>
                     <AssetSelector 
