@@ -10,7 +10,7 @@ import LoadingFullscreen from 'Components/LoadingFullscreen'
 
 // Import stylesheets here so they're noticed by HMR
 import 'react-redux-toastr/src/styles/index.scss?nsm'
-import '../../styles/global?nsm'
+import 'Styles/global?nsm'
 import 'faast-ui'
 
 import Widget from '../Widget'

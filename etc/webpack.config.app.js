@@ -7,8 +7,14 @@ const FaviconPlugin = require('favicons-webpack-plugin')
 const CleanPlugin = require('clean-webpack-plugin')
 const CopyPlugin = require('copy-webpack-plugin')
 const IncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
+const createVariants = require('parallel-webpack').createVariants
 
 const pkg = require('../package.json')
+const baseOptions = {
+  preferredDevTool: process.env.DEVTOOL || 'eval'
+}
+const variants = {
+}
 
 const {
   isDev, isIpfs, useHttps, dirs, appPath, widgetPath, bundleOutputPath, vendorOutputPath, faviconOutputPath,
@@ -126,4 +132,4 @@ if (!isDev) {
   })
 }
 
-module.exports =  config
+module.exports = createVariants(baseOptions, variants, () => config)
