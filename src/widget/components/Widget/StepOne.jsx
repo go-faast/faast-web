@@ -104,7 +104,7 @@ const SwapStepOne = ({
             <Row className='gutter-0'>
               <Col className='position-relative' xs={{ size: 12, order: 1 }}>
                 {assetSelect === 'send' && (
-                  <div className={style.assetListContainer}>
+                  <div className={style.assetListContainer} style={{ zIndex: 999 }}>
                     <AssetSelector 
                       selectAsset={handleSelectedAsset} 
                       supportedAssetSymbols={assetSymbols}
@@ -120,7 +120,6 @@ const SwapStepOne = ({
                   type='number'
                   step='any'
                   placeholder={`${t('app.widget.sendAmountPlaceholder', 'Send amount')}${t('app.widget.optionalPlaceholder', ' (optional)')}`}
-                  validate={validateSendAmount}
                   label={t('app.widget.youSend','You send')}
                   onChange={onChangeSendAmount}
                   inputClass={classNames({ 'font-italic': estimatedField === 'send' })}
@@ -151,7 +150,7 @@ const SwapStepOne = ({
               </Col>
               <Col xs={{ size: 12, order: 4 }} lg={{ size: 12, order: 3 }}>
                 {assetSelect === 'receive' && (
-                  <div className={style.assetListContainer}>
+                  <div className={style.assetListContainer} style={{ zIndex: 999 }}>
                     <AssetSelector 
                       selectAsset={handleSelectedAsset} 
                       supportedAssetSymbols={assetSymbols}

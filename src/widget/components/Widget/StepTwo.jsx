@@ -15,6 +15,7 @@ import { createSwap as createSwapAction } from 'Common/actions/swap'
 import { saveSwapWidgetInputs, updateCreatedSwap } from 'Actions/widget'
 import { getAsset } from 'Common/selectors/asset'
 import { getSavedSwapWidgetInputs } from 'Selectors/widget'
+import { getSwapError } from 'Selectors/'
 import extraAssetFields from 'Config/extraAssetFields'
 
 import GAEventButton from 'Components/GAEventButton'
@@ -45,7 +46,7 @@ const StepOneField = withProps(({ labelClass, className, labelCol, inputCol }) =
 const SwapStepTwo = ({
   change, untouch, sendSymbol, receiveSymbol, validateReceiveAddress, validateRefundAddress,
   handleSubmit, previousSwapInputs = {}, rateError, t, validateDepositTag, isSubmittingSwap,
-  onBack
+  onBack, swapError
 }) => {
   return (
     <Fragment>
@@ -114,6 +115,7 @@ const SwapStepTwo = ({
                 )}
               </Col>
             </Row>
+            <span>{swapError}</span>
             <GAEventButton 
               className={classNames('mt-2 mb-0 mx-auto', style.customButton)} 
               color={rateError ? 'danger' : 'primary'} 
@@ -154,7 +156,7 @@ export default compose(
     receiveAddress: (state) => getFormValue(state, 'receiveAddress'),
     sendAsset: (state, { sendSymbol }) => getAsset(state, sendSymbol),
     receiveAsset: (state, { receiveSymbol }) => getAsset(state, receiveSymbol),
-    previousSwapInputs: getSavedSwapWidgetInputs
+    previousSwapInputs: getSavedSwapWidgetInputs,
   }), {
     createSwap: createSwapAction,
     push: pushAction,
@@ -162,6 +164,7 @@ export default compose(
     updateCreatedSwap
   }),
   withState('isSubmittingSwap', 'updateIsSubmittingSwap', false),
+  withState('swapError', 'updateSwapError', ''),
   withHandlers({
     validateReceiveAddress: ({ receiveAsset, receiveSymbol, t }) => validator.all(
       validator.required(),
@@ -183,10 +186,11 @@ export default compose(
       })
     },
     onSubmit: ({
-      sendSymbol, receiveAsset, sendAsset, saveSwapWidgetInputs,
+      sendSymbol, receiveAsset, sendAsset, saveSwapWidgetInputs, updateSwapError,
       createSwap, t, updateIsSubmittingSwap, updateCreatedSwap, previousSwapInputs
     }) => async (values) => {
       updateIsSubmittingSwap(true)
+      updateSwapError('')
       const { symbol: receiveSymbol, ERC20 } = receiveAsset
       const sendAmount = previousSwapInputs && previousSwapInputs.fromAmount
       let { receiveAddress, refundAddress, receiveAddressExtraId, refundAddressExtraId } = values
@@ -239,7 +243,10 @@ export default compose(
             toAddress: receiveAddress,
             currentStep: 3
           })
-        }).catch(() => updateIsSubmittingSwap(false))
+        }).catch((e) => { 
+          updateSwapError(e.message)
+          updateIsSubmittingSwap(false)
+        })
     }
   }),
   reduxForm({

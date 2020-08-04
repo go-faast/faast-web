@@ -25,6 +25,7 @@ export default compose(
   }),
   lifecycle({
     componentWillMount () {
+      document.body.style.backgroundColor = '#ffffff'
       this.props.initApp()
     }
   }),

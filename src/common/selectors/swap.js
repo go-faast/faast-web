@@ -80,6 +80,8 @@ export const getSwap = createItemSelector(
   (allSwaps, id) => allSwaps[id] || Object.values(allSwaps).find((s) => s.orderId === id)
 )
 
+export const getSwapError = createSelector(getSwap, (swap) => swap && swap.error)
+
 export const getAllSwapsArray = createSelector(
   getAllSwaps,
   (allSwaps) => dateSort(Object.values(allSwaps), 'desc', 'createdAt')

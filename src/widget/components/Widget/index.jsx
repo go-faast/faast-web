@@ -53,9 +53,6 @@ export default compose(
       affiliateId
     })}),
   lifecycle({
-    componentWillMount() {
-      document.body.style.backgroundColor = '#ffffff'
-    },
     componentDidMount() {
       const { affiliateId } = this.props
       localStorageSet('affiliateId', affiliateId)
