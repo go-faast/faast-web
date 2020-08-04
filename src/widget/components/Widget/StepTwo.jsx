@@ -64,8 +64,8 @@ const SwapStepTwo = ({
               <Col className='position-relative' xs={{ size: 12, order: 1 }}>
                 <StepOneField 
                   name='refundAddress'
-                  placeholder={`${sendSymbol} ${t('app.widget.refundAddressPlaceholder', 'refund address')}`}
-                  label={t('app.widget.refundAddress', 'Refund address')}
+                  placeholder={`${sendSymbol} refund address (optional)`}
+                  label={`${sendSymbol} Refund Address`}
                   labelClass='mt-3 mt-sm-0 mt-lg-3'
                   validate={validateRefundAddress}
                   symbol={sendSymbol}
@@ -73,7 +73,6 @@ const SwapStepTwo = ({
                   defaultValue={!previousSwapInputs.receiveWalletId ? previousSwapInputs.toAddress : undefined}
                   untouch={untouch}
                   formName={FORM_NAME}
-                  requiredLabel
                 />
                 {Object.keys(extraAssetFields).indexOf(sendSymbol) >= 0 && (
                   <StepOneField
@@ -92,7 +91,7 @@ const SwapStepTwo = ({
                   tag={StepOneField}
                   name='receiveAddress'
                   placeholder={`${receiveSymbol} ${t('app.widget.receiveAddressPlaceholder', 'receive address')}`}
-                  label={t('app.widget.receiveAddress', 'Receive Address')}
+                  label={`${receiveSymbol} Receive Address`}
                   labelClass='mt-3 mt-sm-0 mt-lg-3'
                   validate={validateReceiveAddress}
                   symbol={receiveSymbol}
