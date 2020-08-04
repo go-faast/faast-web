@@ -36,7 +36,7 @@ export default compose(
   }),{
   }),
   connect(createStructuredSelector({
-    swap: (state, { swapInputs }) => getSwap(state, swapInputs && swapInputs.swap && swapInputs.swap.id)
+    swap: (state, { swapInputs }) => getSwap(state, swapInputs && swapInputs.swap && swapInputs.swap.id),
   }),{
   }),
   withHandlers({
@@ -54,7 +54,7 @@ export default compose(
     })}),
   lifecycle({
     componentWillMount() {
-      document.body.style.backgroundColor = 'transparent'
+      document.body.style.backgroundColor = '#ffffff'
     },
     componentDidMount() {
       const { affiliateId } = this.props

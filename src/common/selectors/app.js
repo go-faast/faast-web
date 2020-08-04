@@ -12,7 +12,7 @@ export const getAppLanguage = createSelector(getAppState, ({ language }) => {
   }
   return language
 })
-
+export const isAppBlocked = createSelector(getAppState, ({ blocked }) => blocked)
 export const getGeoLimit = createSelector(getAppState, ({ limit }) => limit)
 export const getSavedSwapWidgetInputs = createSelector(getAppState, ({ savedSwapWidgetInputs }) => savedSwapWidgetInputs)
 export const shouldShowFeedbackForm = createSelector(getAppState, ({ showFeedbackForm }) => showFeedbackForm)

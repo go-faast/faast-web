@@ -24,6 +24,8 @@ import { getRateMinimumDeposit, getRatePrice, isRateLoaded, getRateMaximumWithdr
 import { getAllAssetSymbols, getAsset } from 'Common/selectors/asset'
 import { getGeoLimit } from 'Common/selectors/app'
 import { getSavedSwapWidgetInputs } from 'Selectors/widget'
+import { isAppBlocked } from 'Common/selectors/app'
+import Overlay from 'Components/Overlay'
 
 import GAEventButton from 'Components/GAEventButton'
 import ReduxFormField from 'Components/ReduxFormField'
@@ -57,7 +59,7 @@ const StepOneField = withProps(({ labelClass, className, labelCol, inputCol }) =
 
 const SwapStepOne = ({
   sendSymbol, receiveSymbol, assetSymbols, assetSelect, setAssetSelect, validateSendAmount, validateReceiveAmount,
-  handleSubmit, handleSelectedAsset, isAssetDisabled, handleSwitchAssets,
+  handleSubmit, handleSelectedAsset, isAssetDisabled, handleSwitchAssets, isAppBlocked,
   onChangeSendAmount, maxGeoBuy, handleSelectGeoMax, onChangeReceiveAmount, estimatedField,
   sendAmount, receiveAmount, rateError, sendAsset, t, onCloseAssetSelector, isSubmittingSwap
 }) => {
@@ -81,11 +83,16 @@ const SwapStepOne = ({
         <div 
           onClick={onCloseAssetSelector} 
           className='position-fixed' 
-          style={{ width: '100%', height: '100%', top: 0, left: 0, zIndex: 99 }}
+          style={{ width: '100%', height: '100%', top: 0, left: 0, zIndex: 99999 }}
         ></div>
       )}
       <Form onSubmit={handleSubmit}>
         <Card className={classNames('justify-content-center p-0 m-0', style.container, style.stepOne)}>
+          {isAppBlocked && (
+            <Overlay>
+              <h4 className='text-center'>Unfortunately, due to regulations Faa.st is unable to serve your country.</h4>
+            </Overlay>
+          )}
           <CardHeader style={{ backgroundColor: '#394045' }} className='text-left pl-4 border-0'>
             <h4 className='my-1'><img src={FaastLogo} className='mr-2' width="30" height="30" /> Faa.st</h4>
           </CardHeader>
@@ -241,7 +248,8 @@ export default compose(
     sendAmount: (state) => getFormValue(state, 'sendAmount'),
     receiveAmount: (state) => getFormValue(state, 'receiveAmount'),
     limit: getGeoLimit,
-    previousSwapInputs: getSavedSwapWidgetInputs
+    previousSwapInputs: getSavedSwapWidgetInputs,
+    isAppBlocked
   }), {
     retrievePairData: retrievePairData,
     saveSwapWidgetInputs: saveSwapWidgetInputs,

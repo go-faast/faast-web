@@ -8,7 +8,6 @@ const getAppState = ({ app }) => app
 export const isAppReady = createSelector(getAppState, ({ ready }) => ready)
 export const getAppError = createSelector(getAppState, ({ error }) => error)
 export const shouldRememberWallets = createSelector(getAppState, ({ rememberWallets }) => rememberWallets)
-export const isAppBlocked = createSelector(getAppState, ({ blocked }) => blocked)
 export const isAppRestricted = createSelector(getAppState, ({ restricted }) => restricted)
 export const getTradeableAssetFilter = createSelector(getAppState, ({ filterTradeableAssets }) => filterTradeableAssets)
 export const getConnectForwardUrl = createSelector(getAppState, ({ connectForwardUrl }) => connectForwardUrl)
