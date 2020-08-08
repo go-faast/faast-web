@@ -18,11 +18,5 @@ module.exports = {
   }, {
     from: '/*',
     to: `${siteDomain}/$1`,
-  }, {
-    from: '/widget',
-    to: `${appDomain}/widget`,
-  }, {
-    from: '/widget/*',
-    to: `${appDomain}/widget/$1`,
   }],
 }
