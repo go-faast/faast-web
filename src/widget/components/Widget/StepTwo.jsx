@@ -245,7 +245,6 @@ export default compose(
             currentStep: 3
           })
         }).catch((e) => { 
-          console.log('yoooooo')
           updateSwapError(e.message)
           updateIsSubmittingSwap(false)
         })

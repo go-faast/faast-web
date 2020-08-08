@@ -37,7 +37,6 @@ export const searchAddress = (addressPromise) => (dispatch, getState) => Promise
     return dispatch(addWallet(walletInstance))
   })
   .then(({ id }) => {
-    console.log('yoooo why here bro')
     dispatch(setAccountSearchResult(id))
     return dispatch(updateWalletBalances(id))
   })

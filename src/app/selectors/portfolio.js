@@ -66,7 +66,6 @@ export const getCurrentPortfolioWithIndividualWalletHoldings = (state) => {
         }))
       }))
   }
-  console.log('result', result)
   return result
 }
 
