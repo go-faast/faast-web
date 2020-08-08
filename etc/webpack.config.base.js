@@ -15,12 +15,14 @@ const aliases = convPaths(tsconfig)
 
 module.exports = function (stage, outputPathPrefix = '') {
   const isDev = stage === 'dev'
+
   const jsLoader = {
     loader: 'babel-loader',
     options: {
       cacheDirectory: true,
     }
   }
+
   const cssLoader = ({ sourceMap = true, modules = true } = {}) => {
     const primaryCssLoaders = [{
       loader: 'css-loader', // translates CSS into CommonJS modules
@@ -43,7 +45,7 @@ module.exports = function (stage, outputPathPrefix = '') {
       loader: 'sass-loader', // compiles SASS to CSS
       options: { 
         sourceMap,
-        includePaths: [dirs.src],
+        includePaths: [dirs.nodeModules, dirs.src],
         sourceMapContents: true,
         outputStyle: 'expanded',
         precision: 6,
@@ -96,7 +98,7 @@ module.exports = function (stage, outputPathPrefix = '') {
       }
     }, {
       exclude: /node_modules/,
-      use: [jsLoader],
+      use: [jsLoader]
     }]
   }, {
     test: /(\.css|\.scss)$/,
@@ -123,7 +125,7 @@ module.exports = function (stage, outputPathPrefix = '') {
     }]
   }, {
     test: /\.(png|jpe?g|gif|ico)(\?.*)?$/,
-    use: imgAssetLoader,
+    use: imgAssetLoader
   }, {
     test: /\.(woff2?|eot|ttf|otf)(\?.*)?$/,
     use: fontAssetLoader
