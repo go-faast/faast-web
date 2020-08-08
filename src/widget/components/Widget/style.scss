@@ -1,5 +1,9 @@
 @import '~Styles/variables';
 
+body {
+  background: #fff !important;
+}
+
 .assetListContainer {
   position: absolute;
   z-index: 99999;

@@ -122,6 +122,7 @@ const SwapStepOne = ({
                   placeholder={`${t('app.widget.sendAmountPlaceholder', 'Send amount')}${t('app.widget.optionalPlaceholder', ' (optional)')}`}
                   label={t('app.widget.youSend','You send')}
                   onChange={onChangeSendAmount}
+                  validate={validateSendAmount}
                   inputClass={classNames({ 'font-italic': estimatedField === 'send' })}
                   inputGroupClass='flat'
                   labelClass='d-block'

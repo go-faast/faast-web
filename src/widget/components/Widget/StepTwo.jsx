@@ -15,7 +15,6 @@ import { createSwap as createSwapAction } from 'Common/actions/swap'
 import { saveSwapWidgetInputs, updateCreatedSwap } from 'Actions/widget'
 import { getAsset } from 'Common/selectors/asset'
 import { getSavedSwapWidgetInputs } from 'Selectors/widget'
-import { getSwapError } from 'Selectors/'
 import extraAssetFields from 'Config/extraAssetFields'
 
 import GAEventButton from 'Components/GAEventButton'
@@ -115,7 +114,9 @@ const SwapStepTwo = ({
                 )}
               </Col>
             </Row>
-            <span>{swapError}</span>
+            {swapError && (
+              <span className='invalid-feedback d-block'>Error: {swapError}</span>
+            )}
             <GAEventButton 
               className={classNames('mt-2 mb-0 mx-auto', style.customButton)} 
               color={rateError ? 'danger' : 'primary'} 
@@ -244,6 +245,7 @@ export default compose(
             currentStep: 3
           })
         }).catch((e) => { 
+          console.log('yoooooo')
           updateSwapError(e.message)
           updateIsSubmittingSwap(false)
         })
