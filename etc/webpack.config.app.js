@@ -95,7 +95,7 @@ if (!isDev) {
     plugins: [
       new CleanPlugin(dirs.buildApp, { root: dirs.root, exclude: [faviconOutputPath.replace(/\/$/, '')] }),
       new ExtractTextPlugin({
-        filename: path.join(outputPathPrefix, bundleOutputPath, '[name].[contenthash:8].css'),
+        filename: path.join(outputPathPrefix, bundleOutputPath, '[name].[chunkhash:8].css'),
         ignoreOrder: true,
         allChunks: true,
       }),

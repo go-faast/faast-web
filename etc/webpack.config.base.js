@@ -160,7 +160,6 @@ module.exports = function (stage, outputPathPrefix = '') {
         new OptimizeCssAssetsPlugin(),
         new UglifyJsPlugin({
           sourceMap: true,
-          cache: false,
           uglifyOptions: {
             mangle: {
               reserved: ['BigInteger', 'ECPair', 'Point']
