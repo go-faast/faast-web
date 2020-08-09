@@ -239,8 +239,6 @@ export default compose(
     defaultSendAmount: DEFAULT_SEND_AMOUNT,
     defaultReceiveAmount: null,
   }),
-  withState('sendSymbol', 'updateSendSymbol', ({ defaultSendSymbol }) => defaultSendSymbol),
-  withState('receiveSymbol', 'updateReceiveSymbol', ({ defaultReceiveSymbol }) => defaultReceiveSymbol),
   connect(createStructuredSelector({
     assetSymbols: getAllAssetSymbols,
     sendAsset: (state, { sendSymbol }) => getAsset(state, sendSymbol),
@@ -253,6 +251,13 @@ export default compose(
   }), {
     retrievePairData: retrievePairData,
     saveSwapWidgetInputs: saveSwapWidgetInputs,
+  }),
+  withState('sendSymbol', 'updateSendSymbol', ({ defaultSendSymbol, previousSwapInputs }) => (previousSwapInputs && previousSwapInputs.from) || defaultSendSymbol),
+  withState('receiveSymbol', 'updateReceiveSymbol', ({ defaultReceiveSymbol, previousSwapInputs }) => (previousSwapInputs && previousSwapInputs.to) || defaultReceiveSymbol),
+  connect(createStructuredSelector({
+    sendAsset: (state, { sendSymbol }) => getAsset(state, sendSymbol),
+    receiveAsset: (state, { receiveSymbol }) => getAsset(state, receiveSymbol),
+  }), {
   }),
   withProps(({
     sendSymbol, receiveSymbol, defaultSendAmount, defaultReceiveAmount, sendAsset, 
@@ -488,7 +493,8 @@ export default compose(
       }
     },
     componentDidMount() {
-      const { maxGeoBuy, handleSelectGeoMax, defaultSendAmount } = this.props
+      const { maxGeoBuy, handleSelectGeoMax, defaultSendAmount,  setSendAmount, previousSwapInputs } = this.props
+      setSendAmount((previousSwapInputs && previousSwapInputs.fromAmount) || DEFAULT_SEND_AMOUNT)
       if (maxGeoBuy && maxGeoBuy < defaultSendAmount) {
         handleSelectGeoMax()
       }
