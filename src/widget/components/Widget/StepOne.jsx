@@ -83,7 +83,7 @@ const SwapStepOne = ({
         <div 
           onClick={onCloseAssetSelector} 
           className='position-fixed' 
-          style={{ width: '100%', height: '100%', top: 0, left: 0, zIndex: 99999 }}
+          style={{ width: '100%', height: '100%', top: 0, left: 0, zIndex: 9 }}
         ></div>
       )}
       <Form onSubmit={handleSubmit}>
