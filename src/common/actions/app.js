@@ -18,6 +18,7 @@ export const restrictionsUpdated = createAction('UPDATE_RESTRICTIONS', (res) => 
 export const restrictionsError = createAction('RESTRICTIONS_ERROR')
 export const updateLanguage = createAction('UPDATE_LANGUAGE', (language) => ({ language }))
 export const toggleFeedbackForm = createAction('TOGGLE_FEEDBACK', (showFeedbackForm, requestedAsset) => ({ showFeedbackForm, requestedAsset }))
+export const updateSwapWidgetInputs = createAction('UPDATE_SWAP_WIDGET_INPUTS', (inputs) => (inputs))
 
 export const languageLoad = () => (dispatch) => {
   let lang = localStorageGet('i18nextLng') || 'en'
@@ -41,6 +42,11 @@ export const fetchGeoRestrictions = () => (dispatch) => Promise.resolve()
         log.error(e)
       })
   }) 
+
+export const saveSwapWidgetInputs = (inputs) => (dispatch) => Promise.resolve()
+  .then(() => {
+    dispatch(updateSwapWidgetInputs(inputs))
+  })  
 
 export const doToggleFeedbackForm = (initialValues) => (dispatch, getState) => {
   const currentState = shouldShowFeedbackForm(getState())

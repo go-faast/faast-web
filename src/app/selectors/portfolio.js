@@ -55,8 +55,8 @@ export const getCurrentPortfolioWithIndividualWalletHoldings = (state) => {
   const currentPortfolio = getCurrentPortfolioWithHoldings(state)
   const result = {
     ...currentPortfolio,
-    nestedWallets: currentPortfolio.transitiveNestedWalletIds.filter(id => id !== currentPortfolio.nestedWalletIds[0])
-      .map((nestedId) => getWalletWithHoldings(state, nestedId))
+    nestedWallets: currentPortfolio.nestedWallets.filter((w, i) => w.id !== currentPortfolio.nestedWalletIds[i] || w.type.toLowerCase().indexOf('multiwallet') < 0)
+      .map((nestedWallet) => getWalletWithHoldings(state, nestedWallet.id))
       .map((nestedWallet) => ({
         ...nestedWallet,
         weight: toPercentage(nestedWallet.totalFiat, currentPortfolio.totalFiat),
@@ -66,7 +66,6 @@ export const getCurrentPortfolioWithIndividualWalletHoldings = (state) => {
         }))
       }))
   }
-  console.log('result', result)
   return result
 }
 

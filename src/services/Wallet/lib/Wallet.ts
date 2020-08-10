@@ -18,7 +18,6 @@ export default abstract class Wallet {
 
   /** The ID of this wallet */
   getId(): string { return this.id }
-
   getLabel(): string { return this.label || this.getType() }
   setLabel(label: string): void { this.label = label }
 

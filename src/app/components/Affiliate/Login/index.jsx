@@ -19,7 +19,7 @@ const AffiliateLogin = ({ isLoadingLogin }) => {
   return (
     <Fragment>
       {isLoadingLogin ? (
-        <LoadingFullScreen label='Loading Affiliate Stats...' />
+        <LoadingFullScreen bgColor='#fff' label='Loading Affiliate Stats...' />
       ) : (
         <AffiliateLayout className='pt-5'>
           <Card className={classNames(card, smallCard, 'mx-auto')}>

@@ -4,7 +4,7 @@ import { compose, setDisplayName, setPropTypes, defaultProps, withProps } from '
 import { Row, Col, Card, CardBody, CardFooter, Alert, Collapse, Button } from 'reactstrap'
 import classNames from 'class-names'
 import config from 'Config'
-import withToggle from '../hoc/withToggle'
+import withToggle from 'Hoc/withToggle'
 
 import ChangePercent from 'Components/ChangePercent'
 import ArrowIcon from 'Components/ArrowIcon'
@@ -17,8 +17,10 @@ import Spinner from 'Components/Spinner'
 import DataLayout from 'Components/DataLayout'
 import T from 'Components/i18n/T'
 
-const StatusFooter = ({ className, children, ...props }) => (
-  <CardFooter className={classNames('font-size-xs py-2 px-3', className)} {...props}>
+import style from './style.scss'
+
+const StatusFooter = ({ className, light, children, ...props }) => (
+  <CardFooter className={classNames('font-size-xs py-2 px-3', light && style.light, className)} {...props}>
     {children}
   </CardFooter>
 )
@@ -74,12 +76,14 @@ export default compose(
     showDetails: PropTypes.bool,
     expanded: PropTypes.bool,
     showShortStatus: PropTypes.bool,
+    light: PropTypes.bool
   }),
   defaultProps({
     showWalletLabels: true,
     showFees: false,
     showDetails: false,
-    expanded: null
+    expanded: null,
+    light: false,
   }),
   withToggle('expandedState'),
   withProps(({ swap, expanded, isExpandedState, toggleExpandedState }) => ({
@@ -95,16 +99,16 @@ export default compose(
     tx: { confirmed, succeeded, hash: txHash, feeAmount: txFee, feeSymbol: txFeeSymbol },
     status: { code, details, detailsCode }, createdAt, createdAtFormatted, initializing, isManual
   },
-  shortStatus, showShortStatus, showDetails, isExpanded, togglerProps, expanded
+  shortStatus, showShortStatus, showDetails, isExpanded, togglerProps, expanded, light
 }) => {
   const isComplete = code === 'complete'
   const loadingValue = (error
     ? (<span className='text-danger'>-</span>)
     : (<Spinner inline size='sm'/>))
   return (
-    <Card className='flat'>
+    <Card className={classNames('flat', light && style.light)}>
       <CardBody
-        className={classNames('py-2 pr-3 pl-2 border-0 lh-0', { 'py-3': !receiveAmount && !sendAmount })}
+        className={classNames('py-2 pr-3 pl-2 border-0 lh-0', light && style.light, { 'py-3': !receiveAmount && !sendAmount })}
         style={{ minHeight: '4rem' }}
         {...togglerProps}>
         <Row className='gutter-0 align-items-center font-size-small text-muted'>
@@ -116,11 +120,11 @@ export default compose(
               <Col xs='12' sm='auto'><CoinIcon symbol={sendSymbol}/></Col>
               <Col xs='12' sm>
                 <Row className='gutter-2'>
-                  <Col xs='12' className='order-sm-2 font-size-sm pt-0'>{sendAsset.name}</Col>
-                  {sendAmount ? (<Col xs='12' className='text-white'>
+                  <Col xs='12' className={classNames('order-sm-2 font-size-sm pt-0', !light ? 'text-white' : style.textDark)}>{sendAsset.name}</Col>
+                  {sendAmount ? (<Col xs='12' className={classNames(!light ? 'text-white' : style.textDark)}>
                     <Units value={sendAmount} symbol={sendSymbol} prefix='-'/>
                   </Col>) : null}
-                  {sendAsset ? (<Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, sendAsset)}</Col>)
+                  {sendAsset ? (<Col xs='12' className={classNames('mt-0 pt-0 order-sm-3 font-size-xs', !light ? 'text-white' : style.textDark)}>{priceChange(createdAt, sendAsset)}</Col>)
                     : null}
                 </Row>
               </Col>
@@ -135,11 +139,11 @@ export default compose(
               <Col xs='12' sm='auto' className='order-sm-2'><CoinIcon symbol={receiveSymbol}/></Col>
               <Col xs='12' sm>
                 <Row className='gutter-2'>
-                  <Col xs='12' className='order-sm-2 font-size-sm pt-0'>{receiveAsset ? receiveAsset.name : receiveSymbol}</Col>
-                  {receiveAmount ? (<Col xs='12' className='text-white'>
+                  <Col xs='12' className={classNames('order-sm-2 font-size-sm pt-0', !light ? 'text-white' : style.textDark)}>{receiveAsset ? receiveAsset.name : receiveSymbol}</Col>
+                  {receiveAmount ? (<Col xs='12' className={classNames(!light ? 'text-white' : style.textDark)}>
                     <UnitsLoading value={receiveAmount} symbol={receiveSymbol} error={error} prefix='+'/>
                   </Col>) : null}
-                  {receiveAsset ? (<Col xs='12' className='mt-0 pt-0 order-sm-3 font-size-xs'>{priceChange(createdAt, receiveAsset)}</Col>)
+                  {receiveAsset ? (<Col xs='12' className={classNames('mt-0 pt-0 order-sm-3 font-size-xs', !light ? 'text-white' : style.textDark)}>{priceChange(createdAt, receiveAsset)}</Col>)
                     : null}
                 </Row>
               </Col>
@@ -153,7 +157,7 @@ export default compose(
           <StatusFooter className='text-center text-muted'>{details}</StatusFooter>
         ))}
       <Collapse isOpen={isExpanded}>
-        <StatusFooter>
+        <StatusFooter light={light}>
           <DataLayout rows={[
             [
               <T tag='span' i18nKey='app.swapStatusCard.status'>Status:</T>,

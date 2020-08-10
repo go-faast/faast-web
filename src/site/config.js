@@ -1,7 +1,7 @@
 const siteName = 'Faa.st'
 const titleSuffix = `- ${siteName}`
 
-const genericTitle = `${siteName} is the safest and fastest way to trade crypto directly from your wallet.`
+const genericTitle = `${siteName} is the safest and fastest way to trade crypto directly from your hardware or software wallet.`
 
 module.exports = {
   name: siteName,
@@ -12,7 +12,7 @@ module.exports = {
   pageMeta: {
     supportedAssets: () => ({
       title: `Supported Assets ${titleSuffix}`,
-      description: `A full list of crypto assets currently available to trade on ${siteName}.`
+      description: `A comprehensive list of crypto assets currently available to swap on ${siteName}.`,
     }),
     asset: ({ type, name, symbol }) => ({
       title: `Instantly ${type} ${name} (${symbol}) ${titleSuffix}`,
@@ -23,8 +23,8 @@ module.exports = {
       description: `Simply connect your ${name} Wallet and instantly begin trading for near-zero fees.`
     }),
     blog: () => ({
-      title: `Blog ${titleSuffix}`,
-      description: `A blog about trading on ${siteName} and the state of crypto including topics involving regulation, pricing, wallets, mining, and more.`
+      title: `Cryptocurrency Market Blog ${titleSuffix}`,
+      description: `Learn how to trade your crypto directly from your wallet on ${siteName} and about topics involving regulation, pricing, wallets, mining, and more.`,
     }),
     blogPost: ({ post }) => ({
       title: `${post.title} - Blog ${titleSuffix}`,
@@ -32,7 +32,7 @@ module.exports = {
     }),
     marketMaker: () => ({
       title: `Market Maker Program (Beta) ${titleSuffix}`,
-      description: `Earn interest on your Bitcoin by fulfilling trades placed on the ${siteName}. Sign up for the Beta now.`
+      description: `Earn interest and grow your Bitcoin holdings by fulfilling trades placed on the ${siteName}. Sign up for the Beta now ${titleSuffix}`,
     }),
     affiliate: () => ({
       title: `Affiliate Partnerships ${titleSuffix}`,
@@ -48,11 +48,11 @@ module.exports = {
     }),
     lawEnforcement: () => ({
       title: `Law Enforcement Support ${titleSuffix}`,
-      description: 'Search for the Faa.st swap history of a specific wallet address.'
+      description: 'Search for the Faa.st swap history of a specific wallet address using the Faast API.',
     }),
     newsletter: () => ({
       title: `Keep up with Crypto and Sign Up for the ${siteName} Newsletter`,
-      description: `Stay up-to-date with all things ${siteName} with our newsletter`
+      description: `Subscribe to our newsletter to stay up-to-date with the ${siteName} decentralized crypto exchange.`,
     }),
     pricing: () => ({
       title: `Exchange Fees and Pricing ${titleSuffix}`,

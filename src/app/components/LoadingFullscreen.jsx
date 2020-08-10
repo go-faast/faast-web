@@ -3,7 +3,7 @@ import Overlay from 'Components/Overlay'
 import Loading from 'Components/Loading'
 
 const LoadingFullscreen = (props) => (
-  <Overlay>
+  <Overlay style={props.bgColor && { backgroundColor: props.bgColor }}>
     <Loading center {...props}/>
   </Overlay>
 )

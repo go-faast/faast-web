@@ -67,7 +67,6 @@ export const getWalletsByType = createItemSelector(getAllWalletsArray, selectIte
     } else if (walletType == 'ledger') {
       walletType = 'MultiWalletLedger'
     }
-    console.log(type, walletType)
     return type == walletType
   })[0]
 )
@@ -90,6 +89,10 @@ export const getWalletIdsOfDefaultNestedWallets = createSelector(
     return defaultWallet && defaultWallet[0] && defaultWallet[0].nestedWalletIds
   }
 )
+
+export const getCurrentChildWallets = createSelector(
+  getAllWalletsArray,
+  (wallets) => wallets.filter(({ nestedWalletIds, id }) => nestedWalletIds.length == 0 && id !== 'default'))
 
 export const getCurrentChildWalletsForSymbol = createItemSelector(
   getAllWalletsArray,

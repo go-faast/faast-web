@@ -34,7 +34,6 @@ const ModifyView = (props) => {
   const saveButtonContent = (<T i18nKey='app.rebalance.saveChanges'><i className='fa fa-check mr-2' />Save Changes</T>)
   const addButtonContent = (<T i18nKey='app.rebalance.addAsset'><i className='fa fa-plus'/> add asset</T>)
   const removeButtonContent = (<T i18nKey='app.rebalance.remove'><i className='fa fa-times'/> remove</T>)
-
   const renderHoldings = (wallets) => wallets
     .map((wallet) => {
       const { id, isReadOnly, balancesLoaded, assetHoldings } = wallet

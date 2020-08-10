@@ -11,7 +11,7 @@ const IncludeAssetsPlugin = require('html-webpack-include-assets-plugin')
 const pkg = require('../package.json')
 
 const {
-  isDev, isIpfs, useHttps, dirs, appPath, bundleOutputPath, vendorOutputPath, faviconOutputPath,
+  isDev, isIpfs, useHttps, dirs, appPath, widgetPath, bundleOutputPath, vendorOutputPath, faviconOutputPath,
 } = require('./common.js')
 
 const getBaseConfig = require('./webpack.config.base.js')
@@ -24,11 +24,25 @@ const routerBaseName = path.join('/', appPath)
 const outputPathPrefix = isDev ? appPath : '' // Prefix output path during development for proxy purposes
 const baseConfig = getBaseConfig(isDev ? 'dev' : 'prod', outputPathPrefix)
 
+const htmlMinifyOption = isDev ? false : {
+  removeAttributeQuotes: true,
+  collapseWhitespace: true,
+  html5: true,
+  minifyCSS: true,
+  removeComments: true,
+  removeEmptyAttributes: true,
+}
+
+const entryPoints = {
+  app: ['babel-polyfill', path.join(dirs.app, 'index.jsx')],
+  widget: ['babel-polyfill', path.join(dirs.widget, 'index.jsx')],
+}
+
 let config = merge.strategy({
   'module.rules': 'replace',
 })(baseConfig, {
   context: dirs.root,
-  entry: ['babel-polyfill', path.join(dirs.app, 'index.jsx')],
+  entry: entryPoints,
   output: {
     filename: path.join(outputPathPrefix, bundleOutputPath, isDev ? '[name].[hash:8].js' : '[name].[chunkHash:8].js'),
     path: dirs.buildApp,
@@ -38,18 +52,23 @@ let config = merge.strategy({
     new webpack.DefinePlugin({
       'process.env.ROUTER_BASE_NAME': JSON.stringify(routerBaseName),
     }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common',
+      minChunks: Object.keys(entryPoints).length,
+    }),
     new HtmlPlugin({
       template: path.join(dirs.app, 'index.html'),
       filename: path.join(appPath, 'index.html'),
+      chunks: ['app', 'common'],
       title: pkg.productName,
-      minify: isDev ? false : {
-        removeAttributeQuotes: true,
-        collapseWhitespace: true,
-        html5: true,
-        minifyCSS: true,
-        removeComments: true,
-        removeEmptyAttributes: true,
-      }
+      minify: htmlMinifyOption,
+    }),
+    new HtmlPlugin({
+      template: path.join(dirs.widget, 'index.html'),
+      filename: path.join(widgetPath, 'index.html'),
+      chunks: ['widget', 'common'],
+      title: pkg.productName,
+      minify: htmlMinifyOption,
     }),
     new FaviconPlugin({
       logo: path.join(dirs.res, 'img', 'faast-logo.png'),
@@ -67,13 +86,6 @@ let config = merge.strategy({
       append: false,
       hash: true
     }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: (module) => module.context && module.context.indexOf('node_modules') >= 0
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'manifest'
-    }),
   ]
 })
 
@@ -85,6 +97,7 @@ if (!isDev) {
       new ExtractTextPlugin({
         filename: path.join(outputPathPrefix, bundleOutputPath, '[name].[contenthash:8].css'),
         ignoreOrder: true,
+        allChunks: true,
       }),
       new webpack.optimize.ModuleConcatenationPlugin(),
       new webpack.HashedModuleIdsPlugin(),
