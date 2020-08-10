@@ -64,7 +64,7 @@ const StepThree = ({ onBack, swap: { orderId, depositAddressExtraId, depositAddr
           </div>
           {depositAddressExtraId && (
             <div className='text-left mt-3'>
-              <span>Send address:</span>
+              <span className='text-dark'>Send address:</span>
             </div>
           )}
           <ClipboardCopyField 
@@ -73,12 +73,12 @@ const StepThree = ({ onBack, swap: { orderId, depositAddressExtraId, depositAddr
           />
           {depositAddressExtraId && (
             <div className='text-left'>
-              <span>{capitalizeFirstLetter(depositFieldName)}:</span>
+              <span className='text-dark'>{capitalizeFirstLetter(depositFieldName)}:</span>
               <ClipboardCopyField 
                 className={classNames('flat', style.customInput)}
                 value={depositAddressExtraId}
               />
-              <Alert color='warning' className='mx-auto mt-3 text-center'>
+              <Alert color='info' className='mx-auto mt-3 text-center'>
             Important: You must send {sendSymbol} to the address with the above {depositFieldName}. If you don't include a {depositFieldName} we won't be able to process your swap.
               </Alert>
             </div>

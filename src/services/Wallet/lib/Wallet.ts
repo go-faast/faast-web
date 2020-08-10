@@ -10,7 +10,7 @@ import { AddressFormat, DEFAULT_FORMAT as DEFAULT_ADDRESS_FORMAT } from 'Utiliti
 
 export default abstract class Wallet {
 
-  constructor(public id: string, public label?: string, public xpub?: string) {}
+  constructor(public id: string, public label?: string) {}
 
   _persistAllowed: boolean = true
   _assetProvider: AssetProvider = () => []
@@ -18,9 +18,6 @@ export default abstract class Wallet {
 
   /** The ID of this wallet */
   getId(): string { return this.id }
-
-  getXpub(): string { return this.xpub }
-
   getLabel(): string { return this.label || this.getType() }
   setLabel(label: string): void { this.label = label }
 

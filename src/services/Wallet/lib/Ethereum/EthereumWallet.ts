@@ -52,8 +52,8 @@ export default abstract class EthereumWallet extends Wallet {
 
   static type = 'EthereumWallet';
 
-  constructor(public address: string, label?: string, xpub?: string) {
-    super(address.toLowerCase(), label, xpub)
+  constructor(public address: string, label?: string) {
+    super(address.toLowerCase(), label)
   }
 
   getLabel() { return this.label || `Ethereum ${ellipsize(this.getAddress(), 6, 4)}` }
