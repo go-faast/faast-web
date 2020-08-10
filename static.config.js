@@ -448,7 +448,7 @@ export default {
             })
           } catch (err) {
             // error saving post
-            console.log('error saving post', err)
+            console.log('error saving post')
           }
         }
       })
