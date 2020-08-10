@@ -278,11 +278,31 @@ export default compose(
   lifecycle({
     componentDidMount() {
       const { previousSwapInputs, setReceiveAddress, setRefundAddress, 
-        setRefundAddressExtraId, setReceiveAddressExtraId } = this.props
-      setReceiveAddress(previousSwapInputs.toAddress)
-      setRefundAddress(previousSwapInputs.fromAddress)
-      setRefundAddressExtraId(previousSwapInputs.fromExtraId)
-      setReceiveAddressExtraId(previousSwapInputs.toExtraId)
+        setRefundAddressExtraId, setReceiveAddressExtraId, sendSymbol, saveSwapWidgetInputs,
+        receiveSymbol } = this.props
+      const { toAddress, fromAddress, fromExtraId, toExtraId } = previousSwapInputs
+      if (toAddress) {
+        setReceiveAddress(toAddress)
+      }
+      if (fromAddress) {
+        setRefundAddress(fromAddress)
+      }
+      if (fromExtraId) {
+        setRefundAddressExtraId(fromExtraId)
+      }
+      if (setRefundAddressExtraId) {
+        setReceiveAddressExtraId(toExtraId)
+      }
+      if (Object.keys(extraAssetFields).indexOf(sendSymbol) < 0) {
+        saveSwapWidgetInputs({
+          fromExtraId: undefined
+        })
+      }
+      if (Object.keys(extraAssetFields).indexOf(receiveSymbol) < 0) {
+        saveSwapWidgetInputs({
+          toExtraId: undefined
+        })
+      }
     }
   })
 )(SwapStepTwo)
