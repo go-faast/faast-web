@@ -9,7 +9,7 @@ import { getSwap } from 'Common/selectors/swap'
 import DepositQRCode from 'Components/DepositQRCode'
 import ClipboardCopyField from 'Components/ClipboardCopyField'
 import Expandable from 'Components/Expandable'
-import { refreshSwap } from 'Common/actions/swap'
+import { refreshSwap, restoreSwapPolling } from 'Common/actions/swap'
 import { capitalizeFirstLetter } from 'Utilities/helpers'
 import { retrievePairData } from 'Common/actions/rate'
 import { saveSwapWidgetInputs } from 'Actions/widget'
@@ -131,7 +131,8 @@ export default compose(
   }), {
     refreshSwap,
     retrievePairData: retrievePairData,
-    saveSwapWidgetInputs
+    saveSwapWidgetInputs,
+    restoreSwapPolling
   }),
   withProps(({ swap: { rateLockedUntil, rate, sendAsset }, estimatedRate, swap, limit, currentSwap }) => {
     const maxGeoBuy = limit ? limit.per_transaction.amount / parseFloat(sendAsset.price) : null
@@ -158,15 +159,16 @@ export default compose(
       if (!minimumDeposit) {
         retrievePairData(swap.pair)
       }
-      if (currentSwap.orderStatus && currentSwap.orderStatus == 'awaiting deposit') {
+      if (currentSwap.orderStatus && currentSwap.orderStatus != 'awaiting deposit') {
         saveSwapWidgetInputs({
           currentStep: 4
         })
       }
     },
     componentWillMount() {
-      const { swap, retrievePairData } = this.props
+      const { swap, retrievePairData, restoreSwapPolling, currentSwap } = this.props
       retrievePairData(swap.pair)
+      restoreSwapPolling(currentSwap.id)
     }
   }),
 )(StepThree)

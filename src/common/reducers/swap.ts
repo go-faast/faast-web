@@ -7,6 +7,7 @@ import { SwapOrder } from 'Types'
 import {
   swapAdded, swapUpdated, swapError, restoreSwaps,
   swapInitStarted, swapInitSuccess, swapInitFailed,
+  swapOrderStatusUpdated,
 } from 'Common/actions/swap'
 
 type SwapState = SwapOrder & {
@@ -92,6 +93,8 @@ export const commonReducerFunctions = {
     initialized: false,
     error: commonSwapInitialState.error,
   }),
+  // @ts-ignore
+  [swapOrderStatusUpdated]: update,
   // @ts-ignore
   [swapInitSuccess]: (state, { id }) => update(state, { id, initializing: false, initialized: true }),
   // @ts-ignore

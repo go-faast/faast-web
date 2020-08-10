@@ -4,11 +4,12 @@ import { newScopedCreateAction } from 'Utilities/action'
 import log from 'Log'
 import Faast from 'Services/Faast'
 import toastr from 'Utilities/toastrWrapper'
-import { signTx, sendTx, updateTxReceipt, pollTxReceipt } from 'Actions/tx'
+import { signTx, sendTx } from 'Actions/tx'
 import { defaultPortfolioId } from 'Actions/portfolio'
 import { walletOrdersLoading, walletOrdersLoaded, walletOrdersAllLoaded } from 'Actions/wallet'
-import { getSwap, getTx, getWallet } from 'Selectors'
-import { swapAdded, createSwapTx } from 'Common/actions/swap'
+import { getTx, getWallet } from 'Selectors'
+import { getSwap } from 'Common/selectors/swap'
+import { swapAdded, createSwapTx, pollOrderStatus } from 'Common/actions/swap'
 
 export * from 'Common/actions/swap'
 
@@ -17,7 +18,6 @@ const createAction = newScopedCreateAction(__filename)
 export const resetSwaps = createAction('RESET_ALL')
 export const swapsRetrieved = createAction('RETRIEVED', (orders) => orders, (_, walletId) => ({ walletId }))
 export const swapRemoved = createAction('REMOVED', (id) => ({ id }))
-export const swapOrderStatusUpdated = createAction('STATUS_UPDATED', (id, status) => ({ id, orderStatus: status }))
 export const swapTxIdUpdated = createAction('TX_ID_UPDATED', (id, txId) => ({ id, txId }))
 
 export const retrieveSwaps = (walletId, page, limit) => (dispatch, getState) => {
@@ -121,71 +121,3 @@ export const sendSwap = (swap, sendOptions) => (dispatch, getState) => Promise.r
     return dispatch(pollOrderStatus(updatedSwap)) 
   })
   .then(() => getSwap(getState(), swap.id))
-
-const updateOrderStatus = (swap) => (dispatch) => {
-  const { id, orderId, orderStatus } = swap
-  if (!orderId) {
-    log.info(`updateOrderStatus: swap ${id} has no orderId`)
-    return
-  }
-  return Faast.fetchSwap(orderId)
-    .then((order) => {
-      if (order.orderStatus !== orderStatus) {
-        dispatch(swapOrderStatusUpdated(id, order.orderStatus))
-      }
-      return order
-    })
-    .catch(log.error)
-}
-
-const isSwapFinalized = (swap) => swap && (swap.orderStatus === 'complete' || swap.orderStatus === 'failed' || swap.orderStatus === 'cancelled')
-
-export const pollOrderStatus = (swap) => (dispatch) => {
-  const { id, orderId, orderStatus, tx, errorType } = swap
-  if (!orderId) {
-    log.warn(`pollOrderStatus: swap ${id} has no orderId`)
-    return
-  }
-  if (isSwapFinalized(swap)) {
-    // log.debug(`pollOrderStatus: swap ${id} is finalized, won't poll`)
-    return
-  }
-  if (orderStatus === 'awaiting deposit' && (errorType === 'createSwapTx' || (tx && !tx.sent))) {
-    // log.debug(`pollOrderStatus: swap ${id} has unsent tx, won't poll`)
-    return
-  }
-  const orderStatusInterval = window.setInterval(() => {
-    dispatch(updateOrderStatus(swap))
-      .then((order) => {
-        if (isSwapFinalized(order)) {
-          clearInterval(orderStatusInterval)
-        }
-      })
-  }, 10000)
-
-  window.faast.intervals.orderStatus.push(orderStatusInterval)
-}
-
-export const restoreSwapPolling = (swapId) => (dispatch, getState) => {
-  let swap = getSwap(getState(),  swapId)
-  if (!swap) {
-    log.debug(`restoreSwapPolling: could not find swap ${swapId}`)
-    return
-  }
-  return Promise.all([
-    swap.txId ? updateTxReceipt(swap.txId) : null,
-    updateOrderStatus(swap)
-  ]).then(() => {
-    swap = getSwap(getState(), swap.id)
-    const { tx } = swap
-    if (tx && tx.sent && !tx.receipt) {
-      dispatch(pollTxReceipt(swap.txId))
-        .then(() => {
-          Faast.provideSwapDepositTx(swap.orderId, tx.hash)
-          return pollOrderStatus(swap)
-        })
-    } else {
-      dispatch(pollOrderStatus(swap))
-    }
-  })
-}

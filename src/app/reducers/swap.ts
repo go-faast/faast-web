@@ -5,7 +5,7 @@ import { omit, pick } from 'lodash'
 import { createUpdater, createUpserter } from 'Utilities/helpers'
 import { commonSwapInitialState, commonReducerFunctions } from 'Common/reducers/swap'
 import {
-  resetSwaps, swapsRetrieved, swapRemoved, swapOrderStatusUpdated, swapTxIdUpdated,
+  resetSwaps, swapsRetrieved, swapRemoved, swapTxIdUpdated,
 } from 'Actions/swap'
 
 import { resetAll } from 'Actions/app'
@@ -33,6 +33,5 @@ export default createReducer({
     .map(normalize)
     .reduce(upsert, state),
   [swapRemoved]: (state, { id }) => omit(state, id),
-  [swapOrderStatusUpdated]: update,
   [swapTxIdUpdated]: update,
 }, initialState)

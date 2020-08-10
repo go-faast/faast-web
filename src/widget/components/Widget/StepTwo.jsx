@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { compose, setDisplayName, withProps, withState, withHandlers, setPropTypes, defaultProps } from 'recompose'
+import { compose, setDisplayName, withProps, withState, withHandlers, setPropTypes, defaultProps, lifecycle } from 'recompose'
 import classNames from 'class-names'
 import { reduxForm, formValueSelector, SubmissionError } from 'redux-form'
 import { push as pushAction } from 'react-router-redux'
@@ -239,10 +239,11 @@ export default compose(
           updateIsSubmittingSwap(false)
           updateCreatedSwap(swap)
           saveSwapWidgetInputs({
-            ...previousSwapInputs,
             fromAddress: refundAddress,
             toAddress: receiveAddress,
-            currentStep: 3
+            toExtraId: receiveAddressExtraId,
+            fromExtraId: refundAddressExtraId,
+            currentStep: 3,
           })
         }).catch((e) => { 
           updateSwapError(e.message)
@@ -256,4 +257,32 @@ export default compose(
     keepDirtyOnReinitialize: true,
     updateUnregisteredFields: true,
   }),
+  withHandlers({
+    setReceiveAddress: ({ change, touch }) => (x) => {
+      change('receiveAddress', x)
+      touch('receiveAddress')
+    },
+    setRefundAddress: ({ change, touch }) => (x) => {
+      change('refundAddress', x)
+      touch('refundAddress')
+    },
+    setRefundAddressExtraId: ({ change, touch }) => (x) => {
+      change('refundAddressExtraId', x)
+      touch('refundAddressExtraId')
+    },
+    setReceiveAddressExtraId: ({ change, touch }) => (x) => {
+      change('receiveAddressExtraId', x)
+      touch('receiveAddressExtraId')
+    },
+  }),
+  lifecycle({
+    componentDidMount() {
+      const { previousSwapInputs, setReceiveAddress, setRefundAddress, 
+        setRefundAddressExtraId, setReceiveAddressExtraId } = this.props
+      setReceiveAddress(previousSwapInputs.toAddress)
+      setRefundAddress(previousSwapInputs.fromAddress)
+      setRefundAddressExtraId(previousSwapInputs.fromExtraId)
+      setReceiveAddressExtraId(previousSwapInputs.toExtraId)
+    }
+  })
 )(SwapStepTwo)

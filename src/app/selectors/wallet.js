@@ -67,7 +67,6 @@ export const getWalletsByType = createItemSelector(getAllWalletsArray, selectIte
     } else if (walletType == 'ledger') {
       walletType = 'MultiWalletLedger'
     }
-    console.log(type, walletType)
     return type == walletType
   })[0]
 )
