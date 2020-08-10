@@ -53,7 +53,6 @@ export const getCurrentPortfolioWithWalletHoldings = (state) => {
 
 export const getCurrentPortfolioWithIndividualWalletHoldings = (state) => {
   const currentPortfolio = getCurrentPortfolioWithHoldings(state)
-  console.log('currentPortfolio', currentPortfolio)
   const result = {
     ...currentPortfolio,
     nestedWallets: currentPortfolio.nestedWallets.filter((w, i) => w.id !== currentPortfolio.nestedWalletIds[i] || w.type.toLowerCase().indexOf('multiwallet') < 0)

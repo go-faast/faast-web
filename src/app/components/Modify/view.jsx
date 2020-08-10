@@ -315,7 +315,6 @@ const ModifyView = (props) => {
             </Modal>
           )}/>
           <Row className='gutter-x-0 gutter-y-3'>
-            {console.log('portfolio', portfolio)}
             {renderHoldings(portfolio.nestedWallets)}
           </Row>
         </Fragment>

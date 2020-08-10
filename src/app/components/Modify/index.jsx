@@ -68,7 +68,6 @@ class Modify extends Component {
 
   getInitialState = (props, state) => {
     const { portfolio } = props
-    console.log('port', portfolio)
     const walletHoldings = { ...state.walletHoldings }
     const walletHoldingsLoaded = { ...state.walletHoldingsLoaded }
     portfolio.nestedWallets.forEach(({ id, holdingsLoaded, assetHoldings }) => {

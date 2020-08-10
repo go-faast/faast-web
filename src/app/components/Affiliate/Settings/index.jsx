@@ -67,12 +67,16 @@ const AffiliateSettings = ({ minimumWithdrawal, isModalOpen, toggleModalOpen, af
                   <ClipboardCopyField 
                     className={classNames('flat mb-2', input)} 
                     value={"<iframe src='https://faa.st/widget?from=BTC&to=ETH&affiliateId=" + affiliateId +  
-                    "' style='height:100%;border:none;min-height:680px;' />"}
+                    "' style='height:100%;border:none;min-height:804px;maxWidth:540px;' />"}
                     type='text' 
                     autoFocus 
                     readOnly
                   />
-                  <iframe src={`https://${typeof window !== undefined && window.location ? window.location.hostname : 'faa.st'}/widget?to=BTC&from=ETH`} width='100%' style={{ height: '100%', border: 'none', minHeight: 680 }} />
+                  {/* */}
+                  <iframe src={`https://${typeof window !== undefined && window.location ? window.location.hostname : 'faa.st'}/widget?to=BTC&from=ETH`}
+                    width='100%' 
+                    style={{ height: '100%', border: 'none', minHeight: 804, maxWidth: 540 }} 
+                  />
                 </Col>
                 <hr className='w-100 border-light'/>
                 <Col>

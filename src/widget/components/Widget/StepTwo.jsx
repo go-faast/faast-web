@@ -79,7 +79,6 @@ const SwapStepTwo = ({
                     name='refundAddressExtraId'
                     type='number'
                     step='any'
-                    fixedFeedback
                     placeholder={`${sendSymbol} ${capitalizeFirstLetter(extraAssetFields[sendSymbol].deposit)}`}
                     validate={validateDepositTag}
                     label={`${sendSymbol} ${capitalizeFirstLetter(extraAssetFields[sendSymbol].deposit)}`}
@@ -106,7 +105,6 @@ const SwapStepTwo = ({
                     name='receiveAddressExtraId'
                     type='number'
                     step='any'
-                    fixedFeedback
                     placeholder={`${receiveSymbol} ${capitalizeFirstLetter(extraAssetFields[receiveSymbol].deposit)}`}
                     validate={validateDepositTag}
                     label={`${receiveSymbol} ${capitalizeFirstLetter(extraAssetFields[receiveSymbol].deposit)}`}
