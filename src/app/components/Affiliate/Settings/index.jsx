@@ -21,7 +21,6 @@ import { initiateAffiliateWithdrawal } from 'Services/Faast'
 
 import AffiliateLayout from 'Components/Affiliate/Layout'
 import { card, cardHeader, input, text, smallCard, withdrawal } from '../style'
-import { localStorageGet } from 'Src/utilities/storage'
 
 const FORM_NAME = 'affiliate_withdrawal'
 
