@@ -46,16 +46,18 @@ export default compose(
     },
   }),
   withProps(({ checkQueryParams }) => { 
-    const { to, from, affiliateId } = checkQueryParams() || {}
+    const { to, from, affiliateId, affiliateMargin } = checkQueryParams() || {}
     return ({
       defaultSendSymbol: from,
       defaultReceiveSymbol: to,
-      affiliateId
+      affiliateId,
+      affiliateMargin
     })}),
   lifecycle({
     componentDidMount() {
-      const { affiliateId } = this.props
+      const { affiliateId, affiliateMargin } = this.props
       localStorageSet('affiliateId', affiliateId)
+      localStorageSet('affiliateMargin', affiliateMargin)
     }
   }),
 )(SwapWidget)
