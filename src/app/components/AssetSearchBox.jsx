@@ -25,7 +25,7 @@ const FORM_NAME = 'assetSearch'
 
 const AssetSearch = ({
   size, placeholder, buttonProps, performSearch, results, 
-  dirty, reset, style, className, handleSubmit,
+  dirty, reset, style, className, handleSubmit, inputClass
 }) => (
   <Form
     onSubmit={handleSubmit}
@@ -37,6 +37,7 @@ const AssetSearch = ({
       type='search'
       autoCorrect='false'
       autoCapitalize='false'
+      inputClass={inputClass}
       spellCheck='false'
       placeholder={placeholder}
       onChange={performSearch}
@@ -113,13 +114,14 @@ export default compose(
   }),
   withState('results', 'updateResults', []),
   withHandlers({
-    performSearch: ({ updateResults, fuse }) => (_, query) => {
+    performSearch: ({ updateResults, fuse, displayResults }) => (_, query) => {
       let results
       if (!query) {
         results = []
       } else {
         results = fuse.search(query).slice(0, MAX_RESULTS)
       }
+      displayResults(results)
       updateResults(results)
     },
     onSubmit: ({ results, push }) => (values, dispatch, { reset }) => {

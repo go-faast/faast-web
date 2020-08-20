@@ -27,6 +27,8 @@ import Footer from 'Components/Footer'
 import MobileWalletModal from 'Components/MobileWalletModal'
 import Settings from 'Components/Settings'
 import Wallets from 'Components/Wallets'
+import WalletDepositModal from 'Components/WalletDepositModal'
+import WalletWithdrawalModal from 'Components/WalletWithdrawalModal'
 
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
@@ -34,7 +36,8 @@ import {
   affiliateLogin, affiliateSignup, affiliateDashboard, affiliateSettings,
   affiliatePayouts, affiliateSwaps, affiliateAccountModal,
   watchlist, trending, affiliateTerms, swapWidgetStepTwo, tradeWidgetDetail,
-  connectMobileWallet, settings, affiliateAcceptTerms, wallets
+  connectMobileWallet, settings, affiliateAcceptTerms, wallets, walletDepositModal,
+  walletWithdrawalModal
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -87,6 +90,12 @@ const AppView = ({ hasNoWallets }) => {
       )}/>
       <ModalRoute exact closePath={tradeHistory.path} path={tradeDetail.path} render={(props) => (
         <TradeDetailModal tradeId={props.match.params.tradeId} {...props}/>
+      )}/>
+      <ModalRoute exact path={walletDepositModal.path} render={(props) => (
+        <WalletDepositModal walletId={props.match.params.walletId} symbol={props.match.params.symbol} {...props}/>
+      )}/>
+      <ModalRoute exact path={walletWithdrawalModal.path} render={(props) => (
+        <WalletWithdrawalModal walletId={props.match.params.walletId} symbol={props.match.params.symbol} {...props}/>
       )}/>
       <ModalRoute closePath={tradeHistory.path} path={tradeWidgetDetail.path} render={(props) => (
         <TradeDetailModal tradeId={props.match.params.tradeId} {...props}/>

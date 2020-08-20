@@ -1,13 +1,13 @@
 import { createSelector } from 'reselect'
 import config from 'Config'
 import { createItemSelector, currySelector } from 'Utilities/selector'
-import { toPercentage } from 'Utilities/convert'
-
+import { toPercentage, toBigNumber } from 'Utilities/convert'
 import {
   getAllWallets, getWallet, getWalletWithHoldings, getWalletNestedIds, getWalletTransitiveNestedIds,
   getWalletHoldingsError, areWalletHoldingsLoaded, areWalletBalancesLoaded, getWalletLabel,
-  areWalletBalancesUpdating
+  areWalletBalancesUpdating, getAllWalletsArray
 } from './wallet'
+import { getAllAssetsArray } from 'Selectors/asset'
 
 const { defaultPortfolioId } = config
 
@@ -99,3 +99,25 @@ export const getCurrentPortfolioWalletsForSymbol = createItemSelector(
   (portfolio, symbol) => !(portfolio && portfolio.nestedWallets)
     ? []
     : portfolio.nestedWallets.filter(({ supportedAssets }) => supportedAssets.includes(symbol)))
+
+
+export const getAllAssetsWithHoldings = createSelector(
+  getAllAssetsArray,
+  getAllWalletsArray,
+  (assets, wallets) => {
+    return assets.map((asset) => {
+      let balance
+      wallets.map(({ id, balances }) => {
+        if (id === 'default') {
+          balance = balances[asset.symbol] || toBigNumber(0)
+        }
+      })
+      asset.balance = balance
+      asset.balanceUSD = balance.times(asset.price)
+      return asset
+    })
+  }
+)
+export const getAllActiveAssetsWithHoldings = createSelector(
+  getAllAssetsWithHoldings,
+  (assets) => assets.filter(a => a.balance.gt(0) || (a.deposit || a.receive)))

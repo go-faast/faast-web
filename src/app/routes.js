@@ -42,6 +42,8 @@ export const rebalance = createPath('/rebalance')
 export const rebalanceInstructions = createPath(rebalance, '/instructions')
 export const viewOnlyAddress = createPath('/address/:addressQuery')
 export const tradeHistory = createPath('/orders')
+export const walletDepositModal = createPath('/wallets/:symbol/receive/:walletId')
+export const walletWithdrawalModal = createPath('/wallets/:symbol/send/:walletId')
 export const wallets = createPath('/wallets/:symbol?')
 export const tradeWidgetDetail = createPath('/orders/widget/:tradeId')
 export const tradeDetail = createPath('/orders/:tradeId')
@@ -102,4 +104,6 @@ export default {
   settings,
   affiliateAcceptTerms,
   wallets,
+  walletDepositModal,
+  walletWithdrawalModal,
 }
