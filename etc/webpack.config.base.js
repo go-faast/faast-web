@@ -83,7 +83,12 @@ module.exports = function (stage, outputPathPrefix = '') {
     exclude: /node_modules/,
     use: [
       jsLoader,
-      { loader: 'ts-loader' },
+      { 
+        loader: 'ts-loader',
+        options: { 
+          transpileOnly: true 
+        } 
+      },
     ]
   }, {
     test: /\.jsx?$/,
@@ -110,6 +115,10 @@ module.exports = function (stage, outputPathPrefix = '') {
     }]
   }, {
     resourceQuery: /file/,
+    use: fileAssetLoader
+  },
+  {
+    resourceQuery: /\.pdf$/,
     use: fileAssetLoader
   }, {
     test: /\.svg$/,

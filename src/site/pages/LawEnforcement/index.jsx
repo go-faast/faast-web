@@ -55,11 +55,21 @@ export default compose(
   withState('isLoading', 'updateLoading', false),
   withState('previousSearch', 'updatePreviousSearch', undefined),
   withHandlers({
+    updateURLParams: ({ updateQueryString }) => (params) => {
+      updateQueryString(params)
+    },
+    checkQueryParams: () => () => {
+      const urlParams = qs.parse(location.search)
+      return urlParams
+    }
+  }),
+  withHandlers({
     handleRetrieveData: ({ searchType, updateLoading, updateJSON, getSwapsByAddress, 
-      getSwapByOrderId, query, updatePreviousSearch, handleShareableURL }) => async () => {
+      getSwapByOrderId, query, updatePreviousSearch, handleShareableURL, updateURLParams }) => async () => {
       let json
       updateLoading(true)
       updateJSON(undefined)
+      updateURLParams({ q: query, type: searchType })
       if (searchType === 'address') {
         json = await getSwapsByAddress(query)
         handleShareableURL()

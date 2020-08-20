@@ -13,6 +13,7 @@ import { reduxForm, formValueSelector, change, untouch } from 'redux-form'
 import ReduxFormField from 'Components/ReduxFormField'
 import toastr from 'Utilities/toastrWrapper'
 import config from 'Config'
+import ClipboardCopyField from 'Components/ClipboardCopyField'
 
 import { affiliateId, secretKey, getAsset, getAffiliateBalance, getMinimumWithdrawal, 
   isLoadingLogin, isAffiliateLoggedIn } from 'Selectors'
@@ -26,7 +27,8 @@ const FORM_NAME = 'affiliate_withdrawal'
 const getFormValue = formValueSelector(FORM_NAME)
 
 const AffiliateSettings = ({ minimumWithdrawal, isModalOpen, toggleModalOpen, affiliateId, secretKey, 
-  handleSubmit, validateWithdrawalAddress, invalid, balance, withdrawalAddress, keyInputType, handleInputType }) => {
+  affiliateMargin, handleSubmit, validateWithdrawalAddress, invalid, balance, 
+  updateAffiliateMargin, withdrawalAddress, keyInputType, handleInputType }) => {
   return (
     <AffiliateLayout className='pt-3'>
       <Row className='mt-4'>
@@ -59,6 +61,27 @@ const AffiliateSettings = ({ minimumWithdrawal, isModalOpen, toggleModalOpen, af
                   <small><p className={classNames('mt-1 mb-1', text)}>
                     Receive {config.affiliateSettings.affiliate_margin}% commission on any swap placed using this link.
                   </p></small>
+                </Col>
+                <hr className='w-100 border-light'/>
+                <Col sm='12' style={{ height: '100%' }}>
+                  <small><p className={classNames('mb-3 font-weight-bold', text)}>Referral Swap Widget</p></small>
+                  <small><p className={classNames('mb-2 ', text)}>Set widget affiliate margin:</p></small>
+                  <Input style={{ width: 90, backgroundColor: '#fff' }} className={classNames('flat', input)} onChange={(e) => updateAffiliateMargin(e.target.value)} value={affiliateMargin} type='number' min='0' max='0.5' step='0.05' autoFocus />
+                  <small><p className={classNames('mb-2 mt-2', text)}>Embed code:</p></small>
+                  <ClipboardCopyField 
+                    className={classNames('flat mb-2', input)} 
+                    value={"<iframe src='https://faa.st/widget?from=BTC&to=ETH&affiliateId=" + affiliateId + '&affiliateMargin=' + affiliateMargin +  
+                    "' style='height:100%;border:none;min-height:804px;maxWidth:540px;' />"}
+                    type='text' 
+                    successText='Embed code copied successfully!'
+                    autoFocus 
+                    readOnly
+                  />
+                  {/* */}
+                  <iframe src={`https://${typeof window !== undefined && window.location ? window.location.hostname : 'faa.st'}/widget?to=BTC&from=ETH`}
+                    width='100%' 
+                    style={{ height: '100%', border: 'none', minHeight: 804, maxWidth: 540 }} 
+                  />
                 </Col>
                 <hr className='w-100 border-light'/>
                 <Col>
@@ -141,6 +164,7 @@ export default compose(
     push,
   }),
   withState('keyInputType', 'updateKeyInputType', 'password'),
+  withState('affiliateMargin', 'updateAffiliateMargin', 0.2),
   withToggle('modalOpen'),
   withHandlers({
     onSubmit: ({ affiliateId, secretKey, toggleModalOpen, change, untouch }) => ({ withdrawal_address }) => {

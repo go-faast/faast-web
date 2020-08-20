@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { union, flatMap } from 'lodash'
+import { union, flatMap, uniqBy } from 'lodash'
 
 import { ZERO, toUnit, toPercentage } from 'Utilities/convert'
 import { fixPercentageRounding, reduceByKey, mapValues } from 'Utilities/helpers'
@@ -51,7 +51,7 @@ export const getWallet = createItemSelector(
 export const getWalletOrDefault = createItemSelector(getWallet, (wallet) => wallet || {})
 
 export const getAllWallets = (state) => mapValues(getWalletState(state), (_, id) => getWallet(state, id))
-export const getAllWalletsArray = createSelector(getAllWallets, Object.values)
+export const getAllWalletsArray = createSelector(getAllWallets, (wallets) => uniqBy(Object.values(wallets), 'id'))
 export const getAllWalletIds = createSelector(getAllWallets, Object.keys)
 
 export const getLeafWallets = createSelector(
@@ -67,7 +67,6 @@ export const getWalletsByType = createItemSelector(getAllWalletsArray, selectIte
     } else if (walletType == 'ledger') {
       walletType = 'MultiWalletLedger'
     }
-    console.log(type, walletType)
     return type == walletType
   })[0]
 )
@@ -90,6 +89,10 @@ export const getWalletIdsOfDefaultNestedWallets = createSelector(
     return defaultWallet && defaultWallet[0] && defaultWallet[0].nestedWalletIds
   }
 )
+
+export const getCurrentChildWallets = createSelector(
+  getAllWalletsArray,
+  (wallets) => wallets.filter(({ nestedWalletIds, id }) => nestedWalletIds.length == 0 && id !== 'default'))
 
 export const getCurrentChildWalletsForSymbol = createItemSelector(
   getAllWalletsArray,

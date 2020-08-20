@@ -14,8 +14,10 @@ const { apiUrl, affiliateSettings } = config
 
 const getAffiliateSettings = () => {
   const affiliateId = sessionStorageGet('affiliateId')
+  const affiliateMargin = sessionStorageGet('affiliateMargin')
   return {
     ...affiliateSettings,
+    affiliate_margin: typeof affiliateMargin === 'number' ? affiliateMargin : affiliateSettings.affiliate_margin,
     affiliate_id: typeof affiliateId === 'string' ? affiliateId : affiliateSettings.affiliate_id,
   }
 }
@@ -153,6 +155,7 @@ export const formatOrderResult = (r: any): SwapOrder => ({
   refundAddressExtraId: r.refund_address_extra_id,
   receiveTxId: r.txId,
   depositAddressExtraId: r.deposit_address_extra_id,
+  marketMakerName: r.maker_name,
 })
 
 export const fetchSwap = (swapId: string, formatOrder = true): Promise<SwapOrder> => {

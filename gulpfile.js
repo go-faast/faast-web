@@ -31,7 +31,7 @@ gulp.task('test:e2e', () =>
     .pipe(testcafe({
       // https://github.com/DevExpress/gulp-testcafe/blob/master/index.js
       app: 'npm run start',
-      browsers: [ 'firefox'],
+      browsers: ['firefox'],
       reporter: [
         {
           name: 'spec'
@@ -55,7 +55,7 @@ gulp.task('build:lambda', run('netlify-lambda build src/lambda'))
 
 gulp.task('prebuild', gulp.series('clean'))
 
-const build = gulp.series('prebuild', gulp.parallel(['build:app', 'build:site', 'build:lambda']))
+const build = gulp.series('prebuild', 'build:app', 'build:site', 'build:lambda')
 
 gulp.task('build', build)
 

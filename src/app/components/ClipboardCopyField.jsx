@@ -18,10 +18,10 @@ export default compose(
       handleFocus: () => (event) => {
         event.target.select()
       },
-      handleCopy: () => () => {
+      handleCopy: ({ successText }) => () => {
         inputRef.select()
         document.execCommand('copy')
-        toastr.info('Address copied to clipboard')
+        toastr.info(successText ? successText : 'Address copied to clipboard')
       },
     }
   })

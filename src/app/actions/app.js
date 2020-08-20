@@ -7,12 +7,14 @@ import log from 'Utilities/log'
 import { restoreCachedAffiliateInfo } from 'Actions/affiliate'
 import walletService from 'Services/Wallet'
 
-import { retrieveAssets, restoreAssets } from './asset'
-import { setSettings } from './settings'
-import { restoreAllPortfolios, updateAllHoldings } from './portfolio'
-import { restoreTxs } from './tx'
-import { retrieveAllSwaps, restoreSwapTxIds, restoreSwapPolling } from './swap'
+import { retrieveAssets, restoreAssets } from 'Actions/asset'
+import { setSettings } from 'Actions/settings'
+import { restoreAllPortfolios, updateAllHoldings } from 'Actions/portfolio'
+import { restoreTxs } from 'Actions/tx'
+import { retrieveAllSwaps, restoreSwapTxIds, restoreSwapPolling } from 'Actions/swap'
 import { fetchGeoRestrictions, languageLoad } from 'Common/actions/app'
+import { restoreSwaps } from 'Common/actions/swap'
+import { restoreSwapWidget } from 'Actions/widget'
 import { setCurrencySymbol } from './currency'
 import { currencies } from 'Config/currencies'
 
@@ -28,7 +30,6 @@ export const updateConnectForwardUrl = createAction('UPDATE_CONNECT_FORWARD_URL'
 export const resetAll = createAction('RESET_ALL')
 export const updateAssetsFilterByTradeable = createAction('UPDATE_ASSETS_TRADEABLE_FILTER')
 export const updateRememberWallets = createAction('UPDATE_REMEMBER_WALLES')
-export const updateSwapWidgetInputs = createAction('UPDATE_SWAP_WIDGET_INPUTS', (inputs) => (inputs))
 
 export const restoreState = (dispatch) => Promise.resolve()
   .then(() => {
@@ -43,6 +44,16 @@ export const restoreState = (dispatch) => Promise.resolve()
       dispatch(retrieveAssets()) // Retrieve updated assets in background
     } else {
       return dispatch(retrieveAssets()) // asset list required to restore wallets
+    }
+  }).then(() => {
+    const swapCache = localStorageGetJson('state:swaps')
+    if (swapCache) {
+      dispatch(restoreSwaps(swapCache))
+    }
+  }).then(() => {
+    const swapWidgetCache = localStorageGetJson('state:swapWidget')
+    if (swapWidgetCache) {
+      dispatch(restoreSwapWidget(swapWidgetCache))
     }
   })
   .then(() => dispatch(restoreAllPortfolios()))
@@ -108,11 +119,6 @@ export const toggleAssetsByTradeable = () => (dispatch, getState) => Promise.res
     localStorageSet('filterTradeableAssets', filter)
     dispatch(updateAssetsFilterByTradeable(filter))
   })
-
-export const saveSwapWidgetInputs = (inputs) => (dispatch) => Promise.resolve()
-  .then(() => {
-    dispatch(updateSwapWidgetInputs(inputs))
-  })  
 
 export const updateConnectForward = (url) => (dispatch) => Promise.resolve()
   .then(() => {
