@@ -18,6 +18,7 @@ import connectHardwareWallet from './connectHardwareWallet'
 import tx from './tx'
 import rate from './rate'
 import widget from './widget'
+import withdrawal from './withdrawal'
 import currency from './currency'
 import i18n from './i18n'
 
@@ -33,6 +34,7 @@ export default combineReducers({
   tx,
   swap,
   widget,
+  withdrawal,
   swundle,
   orderModal,
   settings,

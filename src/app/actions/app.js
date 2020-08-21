@@ -15,6 +15,7 @@ import { retrieveAllSwaps, restoreSwapTxIds, restoreSwapPolling } from 'Actions/
 import { fetchGeoRestrictions, languageLoad } from 'Common/actions/app'
 import { restoreSwaps } from 'Common/actions/swap'
 import { restoreSwapWidget } from 'Actions/widget'
+import { restoreWithdrawals } from 'Actions/withdrawal'
 import { setCurrencySymbol } from './currency'
 import { currencies } from 'Config/currencies'
 
@@ -49,6 +50,11 @@ export const restoreState = (dispatch) => Promise.resolve()
     const swapCache = localStorageGetJson('state:swaps')
     if (swapCache) {
       dispatch(restoreSwaps(swapCache))
+    }
+  }).then(() => {
+    const withdrawalCache = localStorageGetJson('state:withdrawal')
+    if (withdrawalCache) {
+      dispatch(restoreWithdrawals(withdrawalCache))
     }
   }).then(() => {
     const swapWidgetCache = localStorageGetJson('state:swapWidget')

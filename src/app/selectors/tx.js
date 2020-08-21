@@ -35,6 +35,7 @@ export const getAllTxs = createSelector(
   getAllWallets,
   (txState, allAssets, allWallets) => mapValues(txState, createTxExtender(allAssets, allWallets)))
 export const getAllTxsArray = createSelector(getAllTxs, Object.values)
+export const getTxsByAsset = createItemSelector(getAllTxsArray, selectItemId, (allTxs, symbol) => allTxs.filter(tx => tx.asset.symbol = symbol))
 export const getTx = createItemSelector(getAllTxs, selectItemId, (allTxs, id) => allTxs[id])
 export const getPreviousTransaction = createItemSelector(getAllTxsArray, selectItemId, (allTxs, address) => {
   return allTxs.filter(tx => { 

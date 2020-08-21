@@ -16,6 +16,7 @@ import WalletLabel from 'Components/WalletLabel'
 import Spinner from 'Components/Spinner'
 import DataLayout from 'Components/DataLayout'
 import T from 'Components/i18n/T'
+import { statusIcons } from 'Components/TradeTable'
 
 import style from './style.scss'
 
@@ -95,13 +96,14 @@ export default compose(
   swap: {
     orderId, sendWalletId, sendSymbol, sendAsset, sendAmount, marketMakerName,
     receiveWalletId, receiveSymbol, receiveAsset, receiveAmount, receiveAddress,
-    error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee,
-    tx: { confirmed, succeeded, hash: txHash, feeAmount: txFee, feeSymbol: txFeeSymbol },
+    error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee, txId,
+    tx: { feeAmount: txFee, feeSymbol: txFeeSymbol },
     status: { code, details, detailsCode }, createdAt, createdAtFormatted, initializing, isManual
   },
   shortStatus, showShortStatus, showDetails, isExpanded, togglerProps, expanded, light
 }) => {
   const isComplete = code === 'complete'
+  const explorerURL = txFeeSymbol ? config.explorerUrls[txFeeSymbol] : sendAsset.ERC20 ? config.explorerUrls['ETH'] : config.explorerUrls[sendSymbol]
   const loadingValue = (error
     ? (<span className='text-danger'>-</span>)
     : (<Spinner inline size='sm'/>))
@@ -215,17 +217,11 @@ export default compose(
               <T tag='span' i18nKey='app.swapStatusCard.orderId'>Order ID:</T>,
               orderId ? orderId : loadingValue
             ],
-            txHash && [
+            txId && explorerURL && [
               <T tag='span' i18nKey='app.swapStatusCard.sentTx'>Sent txn:</T>,
               <Fragment>
-                <a href={`${config.explorerUrls[txFeeSymbol]}/tx/${txHash}`} target='_blank' rel='noopener noreferrer' className='word-break-all mr-2'>{txHash}</a> 
-                {!confirmed ? (
-                  <i className='fa fa-spinner fa-pulse'/>
-                ) : (succeeded ? (
-                  <i className='fa fa-check-circle-o text-success'/>
-                ) : (
-                  <i className='fa fa-exclamation-circle text-danger'/>
-                ))}
+                <a href={`${explorerURL}/tx/${txId}`} target='_blank' rel='noopener noreferrer' className='word-break-all mr-2'>{txId}</a> 
+                {statusIcons[detailsCode] || statusIcons[code]}
               </Fragment>
             ]
           ]}/>

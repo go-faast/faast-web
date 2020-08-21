@@ -44,6 +44,14 @@ export function number() {
   }
 }
 
+export function cannotEqual(x, errorMessage) {
+  return (value) => {
+    if (isProvided(value) && value === x) {
+      return errorMessage || `The value cannot be ${x}.`
+    }
+  }
+}
+
 export function integer() {
   return (value) => {
     if (isProvided(value) && !Number.isInteger(parseFloat(value))) {

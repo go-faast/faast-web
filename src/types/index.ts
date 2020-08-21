@@ -38,10 +38,11 @@ export interface SwapOrder {
   amountWithdrawn?: BigNumber
   backendOrderId?: string
   backendOrderState?: string
-  receiveTxId?: string,
-  refundAddress?: string,
-  depositAddressExtraId?: string,
-  withdrawalAddressExtraId?: string,
+  receiveTxId?: string
+  txId?: string
+  refundAddress?: string
+  depositAddressExtraId?: string
+  withdrawalAddressExtraId?: string
   refundAddressExtraId?: string
   marketMakerName?: string
 }

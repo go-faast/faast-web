@@ -45,17 +45,21 @@ export default compose(
       </ModalHeader>
       <ModalBody className='px-0 p-sm-3 text-center'>
         <CoinIcon className='mb-3' width={60} height={60} size='' symbol={symbol} />
-        <h5>Your {symbol} address:</h5>
-        <Fragment>
-          <DepositQRCode 
-            className='my-2' 
-            scan={false}
-            size={120} 
-            address={address} 
-            asset={asset}
-          />
-          <ClipboardCopyField value={address} />
-        </Fragment>
+        <h5>Your {asset.name} address:</h5>
+        {address ? (
+          <Fragment>
+            <DepositQRCode 
+              className='my-2' 
+              scan={false}
+              size={120} 
+              address={address} 
+              asset={asset}
+            />
+            <ClipboardCopyField value={address} />
+          </Fragment>
+        ) : (
+          <Loading className='py-3' label={'Loading...'} center />
+        )}
       </ModalBody>
     </Modal>
   )

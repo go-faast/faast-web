@@ -109,7 +109,6 @@ export const TableRow = ({
       </tr>
     </Fragment>
   )
-  
 }
 
 const TradeTable = ({ handleClick, hideIfNone, tableTitle, 

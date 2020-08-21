@@ -55,7 +55,7 @@ export const createAggregateTx = (walletId, outputs, assetSymbol, options) => (d
     .then((tx) => dispatch(addTx(tx)))
 })
 
-export const createTx = (walletId, address, amount, assetSymbol, options = {}) => (dispatch, getState) => Promise.resolve().then(() => {
+export const createTx = (walletId, address, amount, assetSymbol, options = { }) => (dispatch, getState) => Promise.resolve().then(() => {
   const walletInstance = walletService.get(walletId)
   if (!walletInstance) {
     throw new Error(`Cannot get wallet ${walletId}`)
@@ -63,7 +63,9 @@ export const createTx = (walletId, address, amount, assetSymbol, options = {}) =
   const previousTransaction = getPreviousTransaction(getState(), walletInstance.address)
   options.previousTx = previousTransaction
   return walletInstance.createTransaction(address, amount, assetSymbol, options)
-    .then((tx) => dispatch(addTx(tx)))
+    .then((tx) => { 
+      return dispatch(addTx(tx))
+    })
 })
 
 export const signTx = (tx, passwordCache) => (dispatch) => Promise.resolve().then(() => {

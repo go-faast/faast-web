@@ -153,7 +153,8 @@ export const formatOrderResult = (r: any): SwapOrder => ({
   backendOrderState: r.order_state,
   withdrawalAddressExtraId: r.withdrawal_address_extra_id,
   refundAddressExtraId: r.refund_address_extra_id,
-  receiveTxId: r.txId,
+  receiveTxId: r.transaction_id,
+  txId: r.deposit_tx_id,
   depositAddressExtraId: r.deposit_address_extra_id,
   marketMakerName: r.maker_name,
 })
