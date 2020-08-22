@@ -16,7 +16,7 @@ import CoinIcon from 'Components/CoinIcon'
 import { withTranslation } from 'react-i18next'
 import ReduxFormField from 'Components/ReduxFormField'
 import { reduxForm, formValueSelector } from 'redux-form'
-import Units from 'Components/units'
+import Units from 'Components/Units'
 
 const FORM_NAME = 'wallet_withdrawal'
 const getFormValue = formValueSelector(FORM_NAME)
@@ -24,8 +24,6 @@ const getFormValue = formValueSelector(FORM_NAME)
 const WalletWithdrawalModal = ({ toggle, handleSubmit, asset, wallet, validateSendAmount,
   validateSendAddress, sendAmount, symbol, handleUpdateSendAmount, receiveAddress, tx, 
   handleSendTx, isSubmitting, ...props, }) => {
-  console.log('tx:', tx)
-  console.log('wallet', wallet)
   const balance = wallet.balances[symbol]
   const remainingBalance = balance && balance.minus(toBigNumber(sendAmount))
   return (
@@ -170,9 +168,7 @@ export default compose(
     onSubmit: ({ createWithdrawalTx, walletId, updateTx, symbol, receiveAddress, 
       sendAmount, updateIsSubmitting }) => async () => {
       updateIsSubmitting(true)
-      console.log('submitting')
       const tx = await createWithdrawalTx(walletId, receiveAddress, sendAmount, symbol)
-      console.log('got back', tx)
       updateTx(tx)
       updateIsSubmitting(false)
     },

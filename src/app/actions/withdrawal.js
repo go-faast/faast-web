@@ -32,7 +32,6 @@ export const createWithdrawalTx = (walletId, address, amount, assetSymbol, optio
 
 export const signAndSubmitTx = (tx, passwordCache = {}, sendOptions) => (dispatch) => Promise.resolve()
   .then(async () => {
-    console.log('tx to be signed', tx)
     await dispatch(signTx(tx, passwordCache))
     const sentTx = await dispatch(sendTx(tx, sendOptions))
     if (sentTx) {
@@ -43,7 +42,6 @@ export const signAndSubmitTx = (tx, passwordCache = {}, sendOptions) => (dispatc
         hash: sentTx.hash,
         sentAt: Date.now()
       }))
-      console.log(sentTx)
       toastr.success('Transaction successfully sent!')
       return sentTx
     }

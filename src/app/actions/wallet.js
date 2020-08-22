@@ -100,7 +100,6 @@ const disownWallet = (walletId) => (dispatch, getState) => {
 export const removeWallet = (id) => (dispatch) => Promise.resolve()
   .then(() => {
     log.debug('removeWallet', id)
-    console.log('remove wallet', id)
     return walletService.get(id)
   })
   .then((walletInstance) => {
