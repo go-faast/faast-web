@@ -1,7 +1,8 @@
-import * as React from 'react'
-import { compose, setDisplayName, withProps, withHandlers, withState, withPropsOnChange, lifecycle } from 'recompose'
+import React, { Fragment } from 'react'
+import { compose, setDisplayName, withProps, withHandlers, withState, withPropsOnChange } from 'recompose'
 import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
+import { Helmet } from 'react-helmet'
 import { createStructuredSelector } from 'reselect'
 import { Row, Col, Button, Card, Input } from 'reactstrap'
 import { getAllActiveAssetsWithHoldings, areCurrentPortfolioBalancesUpdating } from 'Selectors/portfolio'
@@ -12,6 +13,7 @@ import WalletDetail from 'Components/WalletDetail'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 import Fuse from 'fuse.js'
 import HeroChart from 'Img/hero-chart.svg'
+import CloseButton from 'Img/xCross.svg?inline'
 import { sortObjOfArrayByTwoProperties } from 'Utilities/helpers'
 import { ellipsize } from 'Utilities/display'
 import Units from 'Components/Units'
@@ -21,17 +23,25 @@ import styles from './style.scss'
 const getQuery = ({ match }) => match.params.symbol
 const MAX_RESULTS = 10
 
-const WalletSearch = ({ push, selectedWallet, performSearch, query, results, className }) => (
+const WalletSearch = ({ selectedWallet, performSearch, query, results, 
+  updateShowMobileSearch, handleSelectWallet, className }) => (
   <Col 
     className={classNames(styles.walletList, className)}
     lg='2' 
     md='12'
   >
     <Row className='m-0'>
-      <Col className='p-0' xs='12'>
+      <Col className='p-0 position-relative' xs='12'>
+        <CloseButton 
+          className='position-absolute cursor-pointer d-lg-none d-block'
+          style={{ top: -3, right: 15, zIndex: 999 }}
+          width='18'
+          fill='#ccc' 
+          onClick={() => updateShowMobileSearch(false)}
+        />
         <Input
           value={query}
-          type='search'
+          type='text'
           className='flat mb-2 pl-3'
           style={{ backgroundColor: '#272727', borderLeft: 'none', borderRight: 'none', borderTop: 'none', borderRadius: 0 }}
           color='dark'
@@ -48,7 +58,7 @@ const WalletSearch = ({ push, selectedWallet, performSearch, query, results, cla
             tag={Button} 
             xs='12'
             key={symbol}
-            onClick={() => push(`/wallets/${symbol}`)} 
+            onClick={() => handleSelectWallet(symbol)} 
             size='sm' 
             className='mt-0 py-2 px-0 pr-xl-4 pr-2 flat text-right'
             style={{ borderWidth: '0px', borderRadius: 0, borderRight: selected ? '2px solid #00d7b8' : '2px solid transparent', backgroundColor: selected && '#2e2e2e' }}
@@ -66,52 +76,60 @@ const WalletSearch = ({ push, selectedWallet, performSearch, query, results, cla
   </Col>
 )
 
-const Wallets = ({ push, selectedWallet, performSearch, query, results, updateShowMobileSearch,
-  showMobileSearch, loadingBalances }) => {
+const Wallets = ({ selectedWallet, performSearch, query, results, updateShowMobileSearch,
+  showMobileSearch, loadingBalances, handleSelectWallet }) => {
   return (
-    <Layout>
-      {loadingBalances && (
-        <LoadingFullscreen 
-          label={<T tag='span' i18nKey='app.loading.balances'>Loading balances...</T>}  
-        />
-      )}
-      <Card style={{ marginTop: 80, overflow: 'hidden' }} className='py-0'>
-        <Row className='p-0 m-0'>
-          {!showMobileSearch ? (
-            <WalletSearch 
-              className='p-0 d-lg-block d-none'
-              push={push} 
-              selectedWallet={selectedWallet} 
-              performSearch={performSearch} 
-              query={query} 
-              results={results} 
-            />
-          ) : (
-            <WalletSearch 
-              className='p-0 d-lg-none d-block'
-              push={push} 
-              selectedWallet={selectedWallet} 
-              performSearch={performSearch} 
-              query={query} 
-              results={results} 
-            />
-          )}
-          <Col 
-            className={classNames(styles.walletDetail, 'py-4 px-sm-5 px-2')}
-            md='12'
-            lg='10'
-          >
-            <div style={{ left: 0, width: '100%', height: 280 }} className={classNames('position-absolute')}>
-              <img className='position-absolute' style={{ left: 0, filter: 'saturate(0)', width: '100%', height: 280 }} src={HeroChart} />
-              <div className={styles.gradient}></div>  
-            </div>
-            <div className='position-relative' style={{ zIndex: 99 }}>
-              <WalletDetail symbol={selectedWallet} showMobileSearch={(v) => updateShowMobileSearch(v)} />
-            </div>
-          </Col>
-        </Row>
-      </Card>
-    </Layout>
+    <Fragment>
+      <Helmet>
+        <title>Connected Cryptocurrency Wallets - Faa.st</title>
+        <meta name='description' content='Send and receive Bitcoin, Ethereum, and other coins from your hardware or software wallets.' /> 
+      </Helmet>
+      <Layout>
+        {loadingBalances && (
+          <LoadingFullscreen 
+            label={<T tag='span' i18nKey='app.loading.balances'>Loading balances...</T>}  
+          />
+        )}
+        <Card style={{ marginTop: 80, overflow: 'hidden' }} className='py-0'>
+          <Row className='p-0 m-0'>
+            {!showMobileSearch ? (
+              <WalletSearch 
+                className='p-0 d-lg-block d-none'
+                handleSelectWallet={handleSelectWallet}
+                selectedWallet={selectedWallet} 
+                updateShowMobileSearch={updateShowMobileSearch}
+                performSearch={performSearch} 
+                query={query} 
+                results={results} 
+              />
+            ) : (
+              <WalletSearch 
+                className='p-0 d-lg-none d-block'
+                handleSelectWallet={handleSelectWallet}
+                updateShowMobileSearch={updateShowMobileSearch}
+                selectedWallet={selectedWallet} 
+                performSearch={performSearch} 
+                query={query} 
+                results={results} 
+              />
+            )}
+            <Col 
+              className={classNames(styles.walletDetail, 'py-4 px-sm-5 px-2')}
+              md='12'
+              lg='10'
+            >
+              <div style={{ left: 0, width: '100%', height: 280 }} className={classNames('position-absolute')}>
+                <img className='position-absolute' style={{ left: 0, filter: 'saturate(0)', width: '100%', height: 280 }} src={HeroChart} />
+                <div className={styles.gradient}></div>  
+              </div>
+              <div className='position-relative' style={{ zIndex: 99 }}>
+                <WalletDetail symbol={selectedWallet} showMobileSearch={(v) => updateShowMobileSearch(v)} />
+              </div>
+            </Col>
+          </Row>
+        </Card>
+      </Layout>
+    </Fragment>
   )
 }
 
@@ -171,13 +189,9 @@ export default compose(
       }
       updateResults(results)
     },
-  }),
-  lifecycle({
-    componentDidUpdate(prevProps) {
-      const { selectedWallet, updateShowMobileSearch } = this.props
-      if (prevProps.selectedWallet !== selectedWallet) {
-        updateShowMobileSearch(false)
-      }
+    handleSelectWallet: ({ push, updateShowMobileSearch }) => (symbol) => {
+      push(`/wallets/${symbol}`)
+      updateShowMobileSearch(false)
     }
-  })
+  }),
 )(Wallets)

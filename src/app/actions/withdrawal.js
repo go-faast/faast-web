@@ -1,4 +1,5 @@
 import { newScopedCreateAction } from 'Utilities/action'
+import toastr from 'Utilities/toastrWrapper'
 import log from 'Utilities/log'
 import { createTx, signTx, sendTx } from 'Actions/tx'
 
@@ -43,6 +44,7 @@ export const signAndSubmitTx = (tx, passwordCache = {}, sendOptions) => (dispatc
         sentAt: Date.now()
       }))
       console.log(sentTx)
+      toastr.success('Transaction successfully sent!')
       return sentTx
     }
   })

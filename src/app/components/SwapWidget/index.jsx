@@ -7,6 +7,7 @@ import Layout from 'Components/Layout'
 import * as qs from 'query-string'
 import { withRouter } from 'react-router'
 import { isAppBlocked } from 'Selectors'
+import Link from 'Components/Link'
 
 import Blocked from 'Components/Blocked'
 import StepOne from './StepOne'
@@ -25,6 +26,9 @@ const SwapWidget = ({ orderId, blocked, stepOne }) => (
       {!orderId
         ? (<StepOne {...stepOne}/>) 
         : (<StepTwo orderId={orderId} />)}
+      <div className='text-center mt-3 font-sm'>
+        <Link to='/rebalance'>Want to swap multiple coins at once? Use our rebalance tool.</Link>
+      </div>
     </Layout>
   </Fragment>
 )
