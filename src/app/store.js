@@ -9,7 +9,7 @@ import reducers from './reducers'
 import { localStorageSetJson, localStorageGetJson } from 'Utilities/storage'
 import { isAppReady } from 'Selectors'
 import config from 'Config'
-import { getAssetState, getTxState, getSentSwapOrderTxIds } from 'Selectors'
+import { getAssetState, getTxState, getSentSwapOrderTxIds, getWithdrawalState } from 'Selectors'
 import history from './history'
 import { googleAnalytics } from './reactGA'
 
@@ -28,6 +28,7 @@ const store = createStore(reducers, composeEnhancers(applyMiddleware(...middlewa
 let cachedAssets
 let cachedTxs
 let cachedSwapTxIds
+let cachedWithdrawals
 
 store.subscribe(throttle(() => {
   const state = store.getState()
@@ -52,6 +53,11 @@ store.subscribe(throttle(() => {
     if (assetState !== cachedAssets) {
       localStorageSetJson('state:asset', assetState)
       cachedAssets = assetState
+    }
+    const withdrawalState = getWithdrawalState(state)
+    if (withdrawalState !== cachedWithdrawals) {
+      localStorageSetJson('state:withdrawal', withdrawalState)
+      cachedWithdrawals = withdrawalState
     }
   }
 }, 1000))

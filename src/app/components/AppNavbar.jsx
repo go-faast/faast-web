@@ -75,10 +75,10 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded,
             </DropdownMenu>
           </Dropdown>
           {!disablePortfolioLinks && ([
-            <NavItem key='rebalance'>
-              <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/rebalance'>
-                <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-sliders'/>
-                <T tag='span' i18nKey='app.nav.rebalance' className='nav-link-label d-sm-inline'>Rebalance</T>
+            <NavItem key='wallets'>
+              <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to='/wallets'>
+                <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-square'/>
+                <T tag='span' i18nKey='app.nav.wallets' className='nav-link-label d-sm-inline'>Wallets</T>
               </NavLink>
             </NavItem>
           ])}

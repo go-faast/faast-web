@@ -1,4 +1,5 @@
 import { createSelector } from 'reselect'
+import { createItemSelector, selectItemId } from 'Utilities/selector'
 import {
   getSwapRequiresSigning, getSwapReadyToSign, getSwapReadyToSend,
 } from 'Utilities/swap'
@@ -13,9 +14,17 @@ export const getSentSwaps = createSelector(
   getAllSwapsArray,
   (allSwaps) => allSwaps
     .filter(({ orderStatus, tx, isManual }) =>
-      orderStatus !== 'awaiting deposit' ||
+      orderStatus &&
+      (orderStatus !== 'awaiting deposit' ||
       tx.sent ||
-      (isManual && orderStatus !== 'awaiting deposit'))
+      (isManual && orderStatus !== 'awaiting deposit')))
+)
+
+export const getSentSwapsByAsset = createItemSelector(
+  getSentSwaps,
+  selectItemId,
+  (allSwaps, symbol) => allSwaps
+    .filter(({ sendAsset, receiveAsset }) => sendAsset.symbol == symbol || receiveAsset.symbol == symbol)
 )
 
 export const getConnectedWalletSentSwaps = createSelector(

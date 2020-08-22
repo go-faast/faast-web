@@ -12,3 +12,5 @@ export * from './wallet'
 export * from './walletPasswordPrompt'
 export * from './tx'
 export * from './i18n'
+export * from './withdrawal'
+

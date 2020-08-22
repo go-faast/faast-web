@@ -36,7 +36,6 @@ export const getAllAssets = createSelector(getAssetState, getSelectedCurrency, g
   }
 }))
 
-
 export const getAllAssetsArray = createSelector(getAllAssets, Object.values)
 
 export const getAllAssetSymbols = createSelector(getAllAssets, Object.keys)
