@@ -135,12 +135,6 @@ const Wallets = ({ selectedWallet, performSearch, query, results, updateShowMobi
 
 export default compose(
   setDisplayName('Wallets'),
-  withProps((props) => {
-    const selectedWallet = getQuery(props) || 'BTC'
-    return ({
-      selectedWallet,
-    })
-  }),
   connect(createStructuredSelector({
     assets: getAllActiveAssetsWithHoldings,
     balancesLoading: areCurrentPortfolioBalancesUpdating
@@ -155,6 +149,13 @@ export default compose(
     }
   }),
   withState('results', 'updateResults', ({ assets, applySortOrder }) => applySortOrder(assets)),
+  withProps((props) => {
+    const highestBalance = props.results && props.results[0] && props.results[0].symbol
+    const selectedWallet = getQuery(props) || highestBalance || 'BTC'
+    return ({
+      selectedWallet,
+    })
+  }),
   withPropsOnChange(['assets'], ({ assets, query, applySortOrder, updateResults }) => {
     if (!query) {
       updateResults(applySortOrder(assets))
