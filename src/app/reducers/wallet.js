@@ -27,6 +27,7 @@ const walletInitialState = {
   balances: {},
   balancesUpdating: false,
   balancesLoaded: false,
+  balancesLastUpdated: undefined,
   balancesError: '',
   ordersAllLoaded: false,
   ordersLoading: false,
@@ -53,6 +54,7 @@ export default createReducer({
     balances,
     balancesUpdating: false,
     balancesError: '',
+    balancesLastUpdated: Date.now()
   }),
   [walletBalancesLoaded]: (state, { id, balances }) => updateWallet(state, {
     id,

@@ -40,6 +40,7 @@ const doGetWallet = (walletState, id) => {
     balancesError,
     supportedAssets,
     unsendableAssets,
+    shouldUpdateBalances: (Date.now() - wallet.balancesLastUpdated) > 300000
   }
 }
 

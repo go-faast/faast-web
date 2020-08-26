@@ -9,6 +9,7 @@ import walletService from 'Services/Wallet'
 
 import { retrieveAssets, restoreAssets } from 'Actions/asset'
 import { setSettings } from 'Actions/settings'
+import { getRouterLocation } from 'Selectors/router'
 import { restoreAllPortfolios, updateAllHoldings } from 'Actions/portfolio'
 import { restoreTxs } from 'Actions/tx'
 import { retrieveAllSwaps, restoreSwapTxIds, restoreSwapPolling } from 'Actions/swap'
@@ -69,19 +70,26 @@ export const restoreState = (dispatch) => Promise.resolve()
     if (txState) {
       dispatch(restoreTxs(txState))
     }
-    return dispatch(retrieveAllSwaps())
+    // return dispatch(retrieveAllSwaps())
+    return
   })
   .then((retrievedSwaps) => {
     const swapTxIds = localStorageGetJson('state:swap-txId')
     if (swapTxIds) {
       dispatch(restoreSwapTxIds(swapTxIds))
     }
-    retrievedSwaps.forEach(({ orderId }) => dispatch(restoreSwapPolling(orderId)))
+    // retrievedSwaps.forEach(({ orderId }) => dispatch(restoreSwapPolling(orderId)))
   })
   .catch((e) => {
     log.error(e)
     throw new Error('Error loading app: ' + e.message)
   })
+
+export const restoreAPISwaps = () => (dispatch)  => {
+  dispatch(retrieveAllSwaps()).then((retrievedSwaps) => {
+    retrievedSwaps.forEach(({ orderId }) => dispatch(restoreSwapPolling(orderId)))
+  })
+}
 
 export const restoreRememberWallets = () => (dispatch) => {
   let rememberWallets = localStorageGet('remember_wallets') || 'local'
@@ -121,7 +129,8 @@ export const setupBlockstack = (dispatch) => Promise.resolve()
 export const toggleAssetsByTradeable = () => (dispatch, getState) => Promise.resolve()
   .then(() => {
     let filter = getTradeableAssetFilter(getState())
-    filter = typeof filter !== 'undefined' ? !filter : (localStorageGet('filterTradeableAssets') == 'true')
+    const current = localStorageGet('filterTradeableAssets') || 'true'
+    filter = typeof filter !== 'undefined' ? !filter : (current == 'true')
     localStorageSet('filterTradeableAssets', filter)
     dispatch(updateAssetsFilterByTradeable(filter))
   })
@@ -150,8 +159,8 @@ export const setupAffiliateReferral = () => Promise.resolve()
 export const init = () => (dispatch) => Promise.resolve()
   .then(() => dispatch(fetchGeoRestrictions()))
   .then(() => dispatch(restoreState))
-  .then(() => dispatch(setupBlockstack))
   .then(() => dispatch(appReady()))
+  .then(() => dispatch(restoreAPISwaps()))
   .then(() => setupAffiliateReferral())
   .catch((e) => {
     log.error(e)

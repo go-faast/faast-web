@@ -20,10 +20,11 @@ class Dashboard extends Component {
 
   componentWillMount () {
     const { updateAllHoldings } = this.props
-    const balancesInterval = window.setInterval(updateAllHoldings, 30000)
+    const balancesInterval = window.setInterval(updateAllHoldings, 180000)
     this.setState({ balancesInterval })
     const { wallet } = this.props
-    if (!(wallet.balancesLoaded && wallet.balancesUpdating)) {
+    if (wallet.shouldUpdateBalances && !wallet.balancesUpdating) {
+      console.log('HEEERE')
       updateAllHoldings()
     }
   }
@@ -40,7 +41,6 @@ class Dashboard extends Component {
   render () {
     const { wallet, isDefaultPortfolioEmpty, doToggleFeedbackForm } = this.props
     const isViewOnly = wallet.isReadOnly
-
     if (isDefaultPortfolioEmpty && !isViewOnly) {
       return (<Redirect to='/connect'/>)
     }
