@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react'
+import { OverlayScrollbarsComponent } from 'overlayscrollbars-react'
 import { compose, setDisplayName, withProps, withHandlers, withState, withPropsOnChange } from 'recompose'
 import { push } from 'react-router-redux'
 import { connect } from 'react-redux'
@@ -26,7 +27,9 @@ const MAX_RESULTS = 10
 const WalletSearch = ({ selectedWallet, performSearch, query, results, 
   updateShowMobileSearch, handleSelectWallet, className }) => (
   <Col 
-    className={classNames(styles.walletList, className)}
+    tag={OverlayScrollbarsComponent}
+    options={{ scrollbars: { autoHide: 'scroll' } }}
+    className={classNames(styles.walletList, className, 'os-host-flexbox')}
     lg='2' 
     md='12'
   >
@@ -114,6 +117,8 @@ const Wallets = ({ selectedWallet, performSearch, query, results, updateShowMobi
               />
             )}
             <Col 
+              tag={OverlayScrollbarsComponent}
+              options={{ scrollbars: { autoHide: 'scroll' } }}
               className={classNames(styles.walletDetail, 'py-4 px-sm-5 px-2')}
               md='12'
               lg='10'

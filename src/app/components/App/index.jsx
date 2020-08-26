@@ -12,6 +12,7 @@ import FeedbackForm from 'Components/FeedbackForm'
 
 // Import stylesheets here so they're noticed by HMR
 import 'react-redux-toastr/src/styles/index.scss?nsm'
+import 'overlayscrollbars/css/OverlayScrollbars.css?nsm'
 import 'Styles/global?nsm'
 import 'faast-ui'
 
