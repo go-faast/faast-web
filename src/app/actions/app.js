@@ -6,9 +6,10 @@ import { filterUrl } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import { restoreCachedAffiliateInfo } from 'Actions/affiliate'
 import walletService from 'Services/Wallet'
-
+import config from 'Config'
 import { retrieveAssets, restoreAssets } from 'Actions/asset'
 import { setSettings } from 'Actions/settings'
+import { removeAllWallets } from 'Actions/wallet'
 import { restoreAllPortfolios, updateAllHoldings } from 'Actions/portfolio'
 import { restoreTxs } from 'Actions/tx'
 import { retrieveAllSwaps, restoreSwapTxIds, restoreSwapPolling } from 'Actions/swap'
@@ -64,6 +65,7 @@ export const restoreState = (dispatch) => Promise.resolve()
   })
   .then(() => dispatch(restoreAllPortfolios()))
   .then(() => {
+    dispatch(handleWalletConnectVersioning())
     dispatch(updateAllHoldings())
     const txState = localStorageGetJson('state:tx')
     if (txState) {
@@ -82,6 +84,21 @@ export const restoreState = (dispatch) => Promise.resolve()
     log.error(e)
     throw new Error('Error loading app: ' + e.message)
   })
+
+export const handleWalletConnectVersioning = () => (dispatch) => {
+  let walletConnectVersion = localStorageGet('walletConnectVersion') 
+  walletConnectVersion = walletConnectVersion ? parseInt(walletConnectVersion) : 0
+  if (walletConnectVersion < config.wallet_connect_version) {
+    localStorageSet('walletConnectVersion', config.wallet_connect_version)
+    dispatch(removeAllWallets())
+  }
+}
+
+export const restoreAPISwaps = () => (dispatch)  => {
+  dispatch(retrieveAllSwaps()).then((retrievedSwaps) => {
+    retrievedSwaps.forEach(({ orderId }) => dispatch(restoreSwapPolling(orderId)))
+  })
+}
 
 export const restoreRememberWallets = () => (dispatch) => {
   let rememberWallets = localStorageGet('remember_wallets') || 'local'
@@ -121,7 +138,8 @@ export const setupBlockstack = (dispatch) => Promise.resolve()
 export const toggleAssetsByTradeable = () => (dispatch, getState) => Promise.resolve()
   .then(() => {
     let filter = getTradeableAssetFilter(getState())
-    filter = typeof filter !== 'undefined' ? !filter : (localStorageGet('filterTradeableAssets') == 'true')
+    const current = localStorageGet('filterTradeableAssets') || 'true'
+    filter = typeof filter !== 'undefined' ? !filter : (current == 'true')
     localStorageSet('filterTradeableAssets', filter)
     dispatch(updateAssetsFilterByTradeable(filter))
   })
@@ -150,7 +168,6 @@ export const setupAffiliateReferral = () => Promise.resolve()
 export const init = () => (dispatch) => Promise.resolve()
   .then(() => dispatch(fetchGeoRestrictions()))
   .then(() => dispatch(restoreState))
-  .then(() => dispatch(setupBlockstack))
   .then(() => dispatch(appReady()))
   .then(() => setupAffiliateReferral())
   .catch((e) => {

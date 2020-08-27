@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import { createStructuredSelector } from 'reselect'
+import { isDefaultPortfolioEmpty } from 'Selectors/portfolio'
 import { compose, setDisplayName, withPropsOnChange } from 'recompose'
 import Layout from 'Components/Layout'
 import * as qs from 'query-string'
@@ -13,7 +14,7 @@ import Blocked from 'Components/Blocked'
 import StepOne from './StepOne'
 import StepTwo from './StepTwo'
 
-const SwapWidget = ({ orderId, blocked, stepOne }) => (
+const SwapWidget = ({ orderId, blocked, stepOne, isDefaultPortfolioEmpty }) => (
   <Fragment>
     <Helmet>
       <title>Instantly and Safely Trade 70+ Cryptocurrencies - Faa.st</title>
@@ -26,9 +27,11 @@ const SwapWidget = ({ orderId, blocked, stepOne }) => (
       {!orderId
         ? (<StepOne {...stepOne}/>) 
         : (<StepTwo orderId={orderId} />)}
-      <div className='text-center mt-3 font-sm'>
-        <Link to='/rebalance'>Want to swap multiple coins at once? Use our rebalance tool.</Link>
-      </div>
+      {!isDefaultPortfolioEmpty && (
+        <div className='text-center mt-3 font-sm'>
+          <Link to='/rebalance'>Want to swap multiple coins at once? Use our rebalance tool.</Link>
+        </div>
+      )}
     </Layout>
   </Fragment>
 )
@@ -37,6 +40,7 @@ export default compose(
   setDisplayName('SwapWidget'),
   connect(createStructuredSelector({
     blocked: isAppBlocked,
+    isDefaultPortfolioEmpty,
   }),{
   }),
   withRouter,

@@ -34,80 +34,76 @@ export const TableRow = ({
   ...props
 }) => {
   return (
-    <Fragment>
-      <tr className='cursor-pointer d-none d-sm-table-row' {...props}>
-        <td>{createStatusLabel(swap)}</td>
-        <td className='d-none d-sm-table-cell'>{createdAtFormatted}</td>
-        <td className='d-none d-sm-table-cell'>
-          <CoinSymbol symbol={sendSymbol} showSymbol/>
-          <i className='fa fa-long-arrow-right text-grey mx-2'/> 
-          <CoinSymbol symbol={receiveSymbol} showSymbol/>
-        </td>
-        <td>{receiveAmount
-          ? (<Units value={receiveAmount} symbol={receiveSymbol} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>)
-          : NODATA}
-        </td>
-        <td>{sendAmount
-          ? (<Units value={sendAmount} symbol={sendSymbol} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>)
-          : NODATA}
-        </td>
-        <td className='d-none d-sm-table-cell'>{rate > 0
-          ? (<Units value={rate} precision={6}/>)
-          : (sendAmount && receiveAmount) ? <Units value={sendAmount.div(receiveAmount)} precision={6}/> 
-            : NODATA}
-        </td>
-      </tr>
-      <tr className='cursor-pointer d-table-row d-sm-none' {...props}>
-        <td className='py-3'>
-          <Row style={{ justifyContent: 'space-between' }} className='gutter-2 align-items-center text-center pb-2'>
-            <Col xs='5'>
-              <CoinSymbol symbol={sendSymbol} size='md'/>
-              <p className='mt-2 mb-0 font-xs'>{sendAsset && sendAsset.name}</p>
-              <div className='mt-1 text-muted font-xs'>
-                {sendAmount
-                  ? (<Units value={sendAmount} precision={6} symbol={sendSymbol} showSymbol/>)
-                  : NODATA}
-              </div>
-            </Col>
-            <Col xs='1'>
-              <i className='fa fa-long-arrow-right text-grey mx-2'/> 
-            </Col>
-            <Col xs='5'>
-              <CoinSymbol symbol={receiveSymbol} size='md'/>
-              <p className='mt-2 mb-0 font-xs'>{receiveAsset && receiveAsset.name}</p>
-              <div className='mt-1 text-muted font-xs'>
-                {receiveAmount
-                  ? (<Units value={receiveAmount} symbol={receiveSymbol} precision={6} showSymbol/>)
-                  : NODATA}
-              </div>
-            </Col>
-          </Row>
-          <div className='pl-2 ml-1 font-xs mt-2 mb-2'>
-            <div className='mt-1'>
-              <span style={{ width: 45 }} className='mr-2 d-inline-block'>Status:</span>
-              <span>
-                {createStatusLabel(swap)} {details}
-              </span>
+    <tr className='cursor-pointer' {...props}>
+      <td className='d-sm-none d-table-cell py-3'>
+        <Row style={{ justifyContent: 'space-between' }} className='gutter-2 align-items-center text-center pb-2'>
+          <Col xs='5'>
+            <CoinSymbol symbol={sendSymbol} size='md'/>
+            <p className='mt-2 mb-0 font-xs'>{sendAsset && sendAsset.name}</p>
+            <div className='mt-1 text-muted font-xs'>
+              {sendAmount
+                ? (<Units value={sendAmount} precision={6} symbol={sendSymbol} showSymbol/>)
+                : NODATA}
             </div>
-            <div className='mt-1'>
-              <span style={{ width: 45 }} className='mr-2 d-inline-block'>Date:</span>
-              <span>
-                {createdAtFormatted}
-              </span>
+          </Col>
+          <Col xs='1'>
+            <i className='fa fa-long-arrow-right text-grey mx-2'/> 
+          </Col>
+          <Col xs='5'>
+            <CoinSymbol symbol={receiveSymbol} size='md'/>
+            <p className='mt-2 mb-0 font-xs'>{receiveAsset && receiveAsset.name}</p>
+            <div className='mt-1 text-muted font-xs'>
+              {receiveAmount
+                ? (<Units value={receiveAmount} symbol={receiveSymbol} precision={6} showSymbol/>)
+                : NODATA}
             </div>
-            <div className='mt-1'>
-              <span style={{ width: 45 }} className='mr-2 d-inline-block'>Rate:</span>
-              <span>
-                {rate > 0
-                  ? (<Units value={rate} precision={6}/>)
-                  : (sendAmount && receiveAmount) ? <Units value={sendAmount.div(receiveAmount)} precision={6}/> 
-                    : NODATA}
-              </span>
-            </div>
+          </Col>
+        </Row>
+        <div className='pl-2 ml-1 font-xs mt-2 mb-2'>
+          <div className='mt-1'>
+            <span style={{ width: 45 }} className='mr-2 d-inline-block'>Status:</span>
+            <span>
+              {createStatusLabel(swap)} {details}
+            </span>
           </div>
-        </td>
-      </tr>
-    </Fragment>
+          <div className='mt-1'>
+            <span style={{ width: 45 }} className='mr-2 d-inline-block'>Date:</span>
+            <span>
+              {createdAtFormatted}
+            </span>
+          </div>
+          <div className='mt-1'>
+            <span style={{ width: 45 }} className='mr-2 d-inline-block'>Rate:</span>
+            <span>
+              {rate > 0
+                ? (<Units value={rate} precision={6}/>)
+                : (sendAmount && receiveAmount) ? <Units value={sendAmount.div(receiveAmount)} precision={6}/> 
+                  : NODATA}
+            </span>
+          </div>
+        </div>
+      </td>
+      <td className='d-none d-sm-table-cell'>{createStatusLabel(swap)}</td>
+      <td className='d-none d-sm-table-cell'>{createdAtFormatted}</td>
+      <td className='d-none d-sm-table-cell'>
+        <CoinSymbol symbol={sendSymbol} showSymbol/>
+        <i className='fa fa-long-arrow-right text-grey mx-2'/> 
+        <CoinSymbol symbol={receiveSymbol} showSymbol/>
+      </td>
+      <td className='d-none d-sm-table-cell'>{receiveAmount
+        ? (<Units value={receiveAmount} symbol={receiveSymbol} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>)
+        : NODATA}
+      </td>
+      <td className='d-none d-sm-table-cell'>{sendAmount
+        ? (<Units value={sendAmount} symbol={sendSymbol} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>)
+        : NODATA}
+      </td>
+      <td className='d-none d-sm-table-cell'>{rate > 0
+        ? (<Units value={rate} precision={6}/>)
+        : (sendAmount && receiveAmount) ? <Units value={sendAmount.div(receiveAmount)} precision={6}/> 
+          : NODATA}
+      </td>
+    </tr>
   )
 }
 

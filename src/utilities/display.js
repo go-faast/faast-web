@@ -60,6 +60,26 @@ export const formatDateToWords = (date) => {
   return `${months[monthIndex]} ${day}, ${year}`
 }
 
+export const timeSince = (timeStamp) => {
+  if (!timeStamp) {
+    return
+  }
+  const now = new Date(),
+    secondsPast = (now.getTime() - timeStamp) / 1000;
+  if (secondsPast < 60) {
+    return parseInt(secondsPast) + ' sec ago';
+  }
+  if (secondsPast < 3600) {
+    return parseInt(secondsPast / 60) + ' min ago';
+  }
+  if (secondsPast <= 86400) {
+    return parseInt(secondsPast / 3600) + ' hr ago';
+  }
+  if (secondsPast > 86400) {
+    return parseInt(secondsPast / 86400) + ' days ago'
+  }
+}
+
 const replaceString = (str, match, fn) => {
   var curCharStart = 0
   var curCharLen = 0

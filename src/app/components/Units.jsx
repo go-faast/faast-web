@@ -40,6 +40,9 @@ class Units extends React.Component {
       if (maxDigits && digitCount > maxDigits) {
         shrunk = value.toExponential(precision)
       }
+      if (currency && toBigNumber(value).gte(1)) {
+        shrunk = value.toFormat(2)
+      }
     }
     if (abbrevSuffix) {
       shrunk = `${shrunk}${abbrevSuffix}`

@@ -11,6 +11,7 @@ import { Modal, ModalBody, ModalHeader, Form, Button } from 'reactstrap'
 import { getWallet } from 'Selectors/wallet'
 import { pick } from 'lodash'
 import { createWithdrawalTx, signAndSubmitTx } from 'Actions/withdrawal'
+import { updateHoldings } from 'Actions/portfolio'
 import { getAsset } from 'Selectors/asset'
 import CoinIcon from 'Components/CoinIcon'
 import { withTranslation } from 'react-i18next'
@@ -24,7 +25,7 @@ const getFormValue = formValueSelector(FORM_NAME)
 const WalletWithdrawalModal = ({ toggle, handleSubmit, asset, wallet, validateSendAmount,
   validateSendAddress, sendAmount, symbol, handleUpdateSendAmount, receiveAddress, tx, 
   handleSendTx, isSubmitting, ...props, }) => {
-  const balance = wallet.balances[symbol]
+  const balance = wallet.balances[symbol] || toBigNumber(0)
   const remainingBalance = balance && balance.minus(toBigNumber(sendAmount))
   return (
     <Modal
@@ -159,7 +160,8 @@ export default compose(
   }), {
     createWithdrawalTx,
     signAndSubmitTx,
-    push
+    push,
+    updateHoldings
   }),
   withState('address', 'updateAddress', ''),
   withState('tx', 'updateTx', ''),
@@ -189,10 +191,11 @@ export default compose(
     enableReinitialize: true,
   }),
   withHandlers({
-    handleSendTx: ({ tx, signAndSubmitTx, push, symbol, updateIsSubmitting }) => async () => {
+    handleSendTx: ({ tx, signAndSubmitTx, push, symbol, updateIsSubmitting, updateHoldings, walletId }) => async () => {
       updateIsSubmitting(true)
       try {
         await signAndSubmitTx(tx, {})
+        updateHoldings(walletId)
         push(`/wallets/${symbol}`)
         updateIsSubmitting(false)
       } catch (err) {

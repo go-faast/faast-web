@@ -174,7 +174,7 @@ export const updateWalletBalances = (walletId) => (dispatch, getState) => Promis
         !walletLoaded ? (
           getAllBalances(walletInstance, walletId)
             .then((symbolToBalance) =>  {
-              return dispatch(walletBalancesUpdated(walletId, symbolToBalance))
+              dispatch(walletBalancesUpdated(walletId, symbolToBalance))
             }).catch((e) => dispatch(handleBalanceErrors(walletId, e)))
         ) : dispatch(walletBalancesUpdated(walletId, symbolToBalance))
         // Retrieve used addresses in background

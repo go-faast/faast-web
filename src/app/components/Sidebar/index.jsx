@@ -3,6 +3,7 @@ import React, { Fragment } from 'react'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
+import { OverlayScrollbarsComponent } from 'overlayscrollbars-react'
 import {
   ListGroup, ListGroupItem, Card, Badge, Media,
   Dropdown, DropdownToggle, DropdownMenu, DropdownItem,
@@ -109,7 +110,10 @@ const Sidebar = ({
         </ListGroupItem>
         <ListGroupItem className='p-0 text-center d-none d-md-block'>
           <T tag='small' i18nKey='app.sidebar.watchlist'><p className={sidebarLabel}>Watchlist</p></T>
-          <div style={{ maxHeight: '171px', overflowY: 'auto' }}>
+          <OverlayScrollbarsComponent
+            options={{ scrollbars: { autoHide: 'scroll' } }}
+            className='os-host-flexbox'
+            style={{ maxHeight: '171px' }}>
             {watchlist.map((asset) => {
               const { symbol, price, change24, change7d, change1, price24hAgo, price7dAgo, price1hAgo } = asset
               const percentChange = timeFrame === '1d' ? change24 : timeFrame === '7d' ? change7d : change1
@@ -145,7 +149,7 @@ const Sidebar = ({
                 </Fragment>
               )
             })}
-          </div>
+          </OverlayScrollbarsComponent>
         </ListGroupItem>
         <ListGroupItem className='border-bottom-0 p-0 text-center d-none d-md-block'>
           <small>
@@ -187,7 +191,11 @@ const Sidebar = ({
             </div>
           </small>
           
-          <div style={{ maxHeight: '214px', overflowY: 'auto' }}>
+          <OverlayScrollbarsComponent
+            options={{ scrollbars: { autoHide: 'scroll' } }} 
+            style={{ maxHeight: '214px', overflowY: 'auto' }}
+            className='os-host-flexbox'
+          >
             {trendingPositive.map((asset, i) => {
               const { symbol, price, change24, change7d, change1, price24hAgo, price7dAgo, price1hAgo } = asset
               const percentChange = trendingTimeFrame === '1d' ? change24 : trendingTimeFrame === '7d' ? change7d : change1
@@ -268,7 +276,7 @@ const Sidebar = ({
                 )
               })}
             </div>
-          </div>
+          </OverlayScrollbarsComponent>
         </ListGroupItem>
       </ListGroup>
     </Card>

@@ -26,6 +26,7 @@ export default {
   navbar: {
     expand: 'md',
   },
+  wallet_connect_version: 1,
   affiliateSettings: {
     affiliate_margin: 0.2, 
     affiliate_id: 'DLABdEEmJUcLfLs2Y7jkkZntvdENT3nL',

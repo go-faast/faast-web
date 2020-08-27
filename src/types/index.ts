@@ -39,7 +39,7 @@ export interface SwapOrder {
   backendOrderId?: string
   backendOrderState?: string
   receiveTxId?: string
-  txId?: string
+  depositTxId?: string
   refundAddress?: string
   depositAddressExtraId?: string
   withdrawalAddressExtraId?: string

@@ -38,6 +38,9 @@ const newTxErrorHandler = (dispatch, tx, methodName, failureAction, filterMessag
     return tx
   }
   dispatch(failureAction(tx.id, message))
+  if (e.message.indexOf('Invalid parameters: must provide an Ethereum address') >= 0) {
+    throw new Error('Please switch to the correct wallet account.')
+  }
   if (message !== e.message) {
     throw new Error(message)
   }
