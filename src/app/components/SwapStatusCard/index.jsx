@@ -96,7 +96,7 @@ export default compose(
   swap: {
     orderId, sendWalletId, sendSymbol, sendAsset, sendAmount, marketMakerName,
     receiveWalletId, receiveSymbol, receiveAsset, receiveAmount, receiveAddress,
-    error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee, txId,
+    error, friendlyError, rate, fee: swapFee, hasFee: hasSwapFee, depositTxId,
     tx: { feeAmount: txFee, feeSymbol: txFeeSymbol },
     status: { code, details, detailsCode }, createdAt, createdAtFormatted, initializing, isManual
   },
@@ -217,10 +217,10 @@ export default compose(
               <T tag='span' i18nKey='app.swapStatusCard.orderId'>Order ID:</T>,
               orderId ? orderId : loadingValue
             ],
-            txId && explorerURL && [
+            depositTxId && explorerURL && [
               <T tag='span' i18nKey='app.swapStatusCard.sentTx'>Sent txn:</T>,
               <Fragment>
-                <a href={`${explorerURL}/tx/${txId}`} target='_blank' rel='noopener noreferrer' className='word-break-all mr-2'>{txId}</a> 
+                <a href={`${explorerURL}/tx/${depositTxId}`} target='_blank' rel='noopener noreferrer' className='word-break-all mr-2'>{depositTxId}</a> 
                 {statusIcons[detailsCode] || statusIcons[code]}
               </Fragment>
             ]

@@ -7,6 +7,7 @@ import { Helmet } from 'react-helmet'
 import { createStructuredSelector } from 'reselect'
 import { Row, Col, Button, Card, Input } from 'reactstrap'
 import { getAllActiveAssetsWithHoldings, areCurrentPortfolioBalancesUpdating } from 'Selectors/portfolio'
+import { updateAllHoldings } from 'Actions/portfolio'
 import Layout from 'Components/Layout'
 import CoinIcon from 'Components/CoinIcon'
 import T from 'Components/i18n/T'
@@ -144,7 +145,8 @@ export default compose(
     assets: getAllActiveAssetsWithHoldings,
     balancesLoading: areCurrentPortfolioBalancesUpdating
   }), {
-    push
+    push,
+    updateAllHoldings
   }),
   withState('query', 'updateQuery', ''),
   withState('showMobileSearch', 'updateShowMobileSearch', false),

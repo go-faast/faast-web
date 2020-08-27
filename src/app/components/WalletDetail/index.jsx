@@ -1,7 +1,7 @@
 import React, { Fragment } from 'react'
 import { compose, setDisplayName, withProps } from 'recompose'
 import { toBigNumber } from 'Utilities/convert'
-import { formatDate } from 'Utilities/display'
+import { formatDate, timeSince } from 'Utilities/display'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
@@ -9,10 +9,12 @@ import { Row, Col, Button, Table } from 'reactstrap'
 import { getHoldingsByAsset, getCurrentChildWalletsForSymbol } from 'Selectors/wallet'
 import { getSentSwapsByAsset } from 'Selectors/swap'
 import { getAsset } from 'Selectors/asset'
+import { updateHoldings } from 'Actions/portfolio'
 import { getSentWithdrawalsByAsset } from 'Selectors/withdrawal'
 import Units from 'Components/Units'
 import CoinIcon from 'Components/CoinIcon'
 import Expandable from 'Components/Expandable'
+import Link from 'Components/Link'
 import { removeWallet } from 'Actions/wallet'
 import { ellipsize } from 'Utilities/display'
 import config from 'Config'
@@ -100,6 +102,9 @@ const TransactionRow = ({ transaction: { data: transaction, type }, asset }) => 
           <span> to </span> 
           <CoinIcon style={{ top: -1 }} className='mx-1 position-relative' symbol={transaction.receiveSymbol} size='sm' />
           <Units value={transaction.receiveAmount} precision={6} symbol={transaction.receiveSymbol} showSymbol/>
+          <Link className='ml-2' to={`/orders/${transaction.id}`}>
+            <i className='fa fa-link' />
+          </Link>
         </td>
       ) : (
         <td>
@@ -109,9 +114,9 @@ const TransactionRow = ({ transaction: { data: transaction, type }, asset }) => 
       )}
       {type === 'swap' ? (
         <td>
-          {transaction.txId && explorerURL ? (
+          {transaction.depositTxId && explorerURL ? (
             <Fragment>
-              <a href={`${explorerURL}/tx/${transaction.txId}`} target='_blank' rel='noopener noreferrer' className='word-break-all font-sm'>{ellipsize(transaction.txId, 20)}</a>
+              <a href={`${explorerURL}/tx/${transaction.depositTxId}`} target='_blank' rel='noopener noreferrer' className='word-break-all font-sm'>{ellipsize(transaction.depositTxId, 14)}</a>
             </Fragment>
           ) : 
             '-'
@@ -121,7 +126,7 @@ const TransactionRow = ({ transaction: { data: transaction, type }, asset }) => 
         <td>
           {transaction.hash && explorerURL ? (
             <Fragment>
-              <a href={`${explorerURL}/tx/${transaction.hash}`} target='_blank' rel='noopener noreferrer' className='word-break-all font-sm'>{ellipsize(transaction.hash, 20)}</a>
+              <a href={`${explorerURL}/tx/${transaction.hash}`} target='_blank' rel='noopener noreferrer' className='word-break-all font-sm'>{ellipsize(transaction.hash, 14)}</a>
             </Fragment>
           ) : 
             '-'
@@ -129,8 +134,8 @@ const TransactionRow = ({ transaction: { data: transaction, type }, asset }) => 
         </td>
       )}
       <td>{type === 'swap' ? 
-        transaction.createdAtFormatted : 
-        formatDate(transaction.sentAt, 'yyyy-MM-dd hh:mm:ss')}
+        <Expandable shrunk={<span className='text-muted font-sm'>{timeSince(transaction.createdAt)}</span>} expanded={transaction.createdAtFormatted}></Expandable> : 
+        <Expandable shrunk={<span className='text-muted font-sm'>{timeSince(transaction.sentAt)}</span>} expanded={formatDate(transaction.sentAt, 'yyyy-MM-dd hh:mm:ss')}></Expandable>}
       </td>
     </tr>
   )
@@ -141,10 +146,10 @@ const TransactionTable = ({ transactions, symbol, asset }) => {
     <Table striped={false} responsive className='text-left'>
       <thead>
         <tr>
-          <th>Type</th>
+          <th></th>
           <th>Amount</th>
-          <th>Transaction ID</th>
-          <th>Date</th>
+          <th>Tx ID</th>
+          <th></th>
         </tr>
       </thead>
       <tbody>
@@ -211,7 +216,8 @@ export default compose(
     withdrawals: (state, { symbol }) => getSentWithdrawalsByAsset(state, symbol)
   }), {
     push,
-    removeWallet
+    removeWallet,
+    updateHoldings
   }),
   withProps(({ sentSwaps, withdrawals }) => {
     let transactions = []
@@ -237,5 +243,5 @@ export default compose(
     return ({
       transactions
     })
-  })
+  }),
 )(WalletDetail)

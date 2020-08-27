@@ -46,7 +46,7 @@ const renderAssetRows = ({ assetRows, push }) => {
           <span className={collapsedRow}>&nbsp;{symbol}</span>
         </td>
         <td onClick={() => push(routes.assetDetail(symbol))} >
-          <Units value={fiatValue} precision={6} symbolSpaced={false} includeTrailingZeros prefixSymbol currency />
+          <Units value={fiatValue} precision={6} symbolSpaced={false} prefixSymbol currency />
           <div className={classNames(collapsedOnly, collapsedRow)}>{displayWeight}</div>
         </td>
         <td onClick={() => push(routes.assetDetail(symbol))} className={expandedOnly}>

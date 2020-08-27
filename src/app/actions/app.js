@@ -6,10 +6,10 @@ import { filterUrl } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import { restoreCachedAffiliateInfo } from 'Actions/affiliate'
 import walletService from 'Services/Wallet'
-
+import config from 'Config'
 import { retrieveAssets, restoreAssets } from 'Actions/asset'
 import { setSettings } from 'Actions/settings'
-import { getRouterLocation } from 'Selectors/router'
+import { removeAllWallets } from 'Actions/wallet'
 import { restoreAllPortfolios, updateAllHoldings } from 'Actions/portfolio'
 import { restoreTxs } from 'Actions/tx'
 import { retrieveAllSwaps, restoreSwapTxIds, restoreSwapPolling } from 'Actions/swap'
@@ -65,25 +65,34 @@ export const restoreState = (dispatch) => Promise.resolve()
   })
   .then(() => dispatch(restoreAllPortfolios()))
   .then(() => {
+    dispatch(handleWalletConnectVersioning())
     dispatch(updateAllHoldings())
     const txState = localStorageGetJson('state:tx')
     if (txState) {
       dispatch(restoreTxs(txState))
     }
-    // return dispatch(retrieveAllSwaps())
-    return
+    return dispatch(retrieveAllSwaps())
   })
   .then((retrievedSwaps) => {
     const swapTxIds = localStorageGetJson('state:swap-txId')
     if (swapTxIds) {
       dispatch(restoreSwapTxIds(swapTxIds))
     }
-    // retrievedSwaps.forEach(({ orderId }) => dispatch(restoreSwapPolling(orderId)))
+    retrievedSwaps.forEach(({ orderId }) => dispatch(restoreSwapPolling(orderId)))
   })
   .catch((e) => {
     log.error(e)
     throw new Error('Error loading app: ' + e.message)
   })
+
+export const handleWalletConnectVersioning = () => (dispatch) => {
+  let walletConnectVersion = localStorageGet('walletConnectVersion') 
+  walletConnectVersion = walletConnectVersion ? parseInt(walletConnectVersion) : 0
+  if (walletConnectVersion < config.wallet_connect_version) {
+    localStorageSet('walletConnectVersion', config.wallet_connect_version)
+    dispatch(removeAllWallets())
+  }
+}
 
 export const restoreAPISwaps = () => (dispatch)  => {
   dispatch(retrieveAllSwaps()).then((retrievedSwaps) => {
@@ -160,7 +169,6 @@ export const init = () => (dispatch) => Promise.resolve()
   .then(() => dispatch(fetchGeoRestrictions()))
   .then(() => dispatch(restoreState))
   .then(() => dispatch(appReady()))
-  .then(() => dispatch(restoreAPISwaps()))
   .then(() => setupAffiliateReferral())
   .catch((e) => {
     log.error(e)

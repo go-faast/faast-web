@@ -16,11 +16,13 @@ const doGetWallet = (walletState, id) => {
   }
   const nestedWallets = wallet.nestedWalletIds.map((nestedWalletId) => doGetWallet(walletState, nestedWalletId)).filter(Boolean)
   let { balances, balancesLoaded, balancesUpdating, balancesError, supportedAssets, unsendableAssets } = wallet
+  let shouldUpdateBalances
   if (wallet.type.includes('MultiWallet')) {
     if (nestedWallets.length) {
       balances = reduceByKey(nestedWallets.map((w) => w.balances), (x, y) => x.plus(y), ZERO)
       balancesLoaded = nestedWallets.every((w) => w.balancesLoaded)
       balancesUpdating = nestedWallets.some((w) => w.balancesUpdating)
+      shouldUpdateBalances = nestedWallets.some(w =>  (Date.now() - w.balancesLastUpdated) > 180000)
       balancesError = nestedWallets.map((w) => w.balancesError).find(Boolean) || ''
       supportedAssets = union(...nestedWallets.map((w) => w.supportedAssets))
       unsendableAssets = union(...nestedWallets.map((w) => w.unsendableAssets))
@@ -40,7 +42,7 @@ const doGetWallet = (walletState, id) => {
     balancesError,
     supportedAssets,
     unsendableAssets,
-    shouldUpdateBalances: (Date.now() - wallet.balancesLastUpdated) > 300000
+    shouldUpdateBalances,
   }
 }
 
@@ -163,7 +165,7 @@ export const getWalletWithHoldings = createItemSelector(
         const { symbol, price = ZERO, change24 = ZERO, change7d = ZERO, change1 = ZERO } = asset
         const balance = balances[symbol] || ZERO
         const shown = balance.greaterThan(0)
-        const fiat = toUnit(balance, price, 2)
+        const fiat = balance.times(price)
         const price24hAgo = price.div(change24.plus(100).div(100))
         const fiat24hAgo = toUnit(balance, price24hAgo, 2)
         const price7dAgo = price.div(change7d.plus(100).div(100))

@@ -54,6 +54,7 @@ export const commonSwapInitialState: SwapState = {
   backendOrderId: undefined,
   backendOrderState: undefined,
   receiveTxId: undefined,
+  depositTxId: undefined,
   refundAddress: undefined,
   depositAddressExtraId: undefined,
   withdrawalAddressExtraId: undefined,

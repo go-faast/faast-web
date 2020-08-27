@@ -56,7 +56,7 @@ export const getInternationalRate = (symbol: string): Promise<number> => {
   }
 
 export function fetchAssets(): Promise<any[]> {
-  return fetchPost(`${apiUrl}/api/v2/public/currencies`, { include: 'marketInfo' }, { retries: 2 })
+  return fetchGet(`${apiUrl}/api/v2/public/currencies`, { include: 'marketInfo' }, { retries: 2 })
     .then((assets: Array<Partial<Asset>>) => assets.filter((asset) => {
       if (!asset.symbol) {
         log.warn('omitting asset without symbol', asset)
@@ -153,8 +153,8 @@ export const formatOrderResult = (r: any): SwapOrder => ({
   backendOrderState: r.order_state,
   withdrawalAddressExtraId: r.withdrawal_address_extra_id,
   refundAddressExtraId: r.refund_address_extra_id,
-  receiveTxId: r.transaction_id,
-  txId: r.deposit_tx_id,
+  receiveTxId: r.transaction_id || r.txId,
+  depositTxId: r.deposit_tx_id,
   depositAddressExtraId: r.deposit_address_extra_id,
   marketMakerName: r.maker_name,
 })

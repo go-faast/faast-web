@@ -89,7 +89,6 @@ export const updateHoldings = (walletId) => (dispatch) => {
 }
 
 export const updateAllHoldings = () => (dispatch) => {
-  console.log('am updating all holdings')
   return Promise.all([
     dispatch(retrieveAssets()),
     dispatch(updateWalletBalances(defaultPortfolioId)),

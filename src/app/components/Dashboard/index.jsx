@@ -24,8 +24,7 @@ class Dashboard extends Component {
     this.setState({ balancesInterval })
     const { wallet } = this.props
     if (wallet.shouldUpdateBalances && !wallet.balancesUpdating) {
-      console.log('HEEERE')
-      updateAllHoldings()
+      setTimeout(() => updateAllHoldings(), 5000)
     }
   }
 

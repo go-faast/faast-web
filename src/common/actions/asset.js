@@ -34,7 +34,6 @@ export const retrieveAssets = () => (dispatch, getState) => {
   dispatch(assetsLoading())
   return Faast.fetchAssets()
     .then((assets) => { 
-      console.log('assets', assets)
       dispatch(assetsLoaded(assets))
       dispatch(assetPricesUpdated(assets))
     })

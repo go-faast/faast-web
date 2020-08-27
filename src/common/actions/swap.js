@@ -214,10 +214,9 @@ const updateOrderStatus = (swap) => (dispatch) => {
 const isSwapFinalized = (swap) => swap && (swap.orderStatus === 'complete' || swap.orderStatus === 'failed' || swap.orderStatus === 'cancelled')
 
 export const pollOrderStatus = (swap) => (dispatch) => {
-  const { id, orderId, orderStatus, tx, errorType, isManual, updatedAt, createdAt } = swap
-  const updatedAtInt = Date.now(updatedAt)
-  const createdAtInt = Date.now(createdAt)
-  const over2DayOld = updatedAt && (Date.now() - updatedAtInt  > 86400000 * 2) || Date.now() - createdAtInt > 86400000 * 2
+  const { id, orderId, orderStatus, tx, errorType, isManual, createdAt } = swap
+  const createdAtInt = createdAt ? createdAt.getTime() : Date.now()
+  const over2DayOld = (Date.now() - createdAtInt) > 86400000 * 2
   if (!orderId) {
     log.warn(`pollOrderStatus: swap ${id} has no orderId`)
     return
@@ -227,8 +226,12 @@ export const pollOrderStatus = (swap) => (dispatch) => {
     return
   }
   if ((orderStatus === 'awaiting deposit' && (errorType === 'createSwapTx' || (tx && !tx.sent))
-    && !isManual) || over2DayOld) {
+    && !isManual)) {
     log.debug(`pollOrderStatus: swap ${id} has unsent tx, won't poll`)
+    return
+  }
+  if (orderStatus === 'awaiting deposit' && over2DayOld) {
+    log.debug(`pollOrderStatus: swap ${id} is old won't poll`)
     return
   }
   const orderStatusInterval = window.setInterval(() => {
