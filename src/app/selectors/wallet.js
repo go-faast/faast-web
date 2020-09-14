@@ -2,7 +2,7 @@ import { createSelector } from 'reselect'
 import { union, flatMap, uniqBy } from 'lodash'
 
 import { ZERO, toUnit, toPercentage } from 'Utilities/convert'
-import { fixPercentageRounding, reduceByKey, mapValues } from 'Utilities/helpers'
+import { fixPercentageRounding, reduceByKey, mapValues, getMaxValue } from 'Utilities/helpers'
 import { createItemSelector, selectItemId, fieldSelector } from 'Utilities/selector'
 
 import { getAllAssets, areAssetPricesLoaded, getAssetPricesError } from './asset'
@@ -15,14 +15,14 @@ const doGetWallet = (walletState, id) => {
     return wallet
   }
   const nestedWallets = wallet.nestedWalletIds.map((nestedWalletId) => doGetWallet(walletState, nestedWalletId)).filter(Boolean)
-  let { balances, balancesLoaded, balancesUpdating, balancesError, supportedAssets, unsendableAssets } = wallet
-  let shouldUpdateBalances
+  let { balances, balancesLoaded, balancesUpdating, balancesError, supportedAssets, 
+    unsendableAssets, balancesLastUpdated } = wallet
   if (wallet.type.includes('MultiWallet')) {
     if (nestedWallets.length) {
       balances = reduceByKey(nestedWallets.map((w) => w.balances), (x, y) => x.plus(y), ZERO)
       balancesLoaded = nestedWallets.every((w) => w.balancesLoaded)
       balancesUpdating = nestedWallets.some((w) => w.balancesUpdating)
-      shouldUpdateBalances = nestedWallets.some(w =>  (Date.now() - w.balancesLastUpdated) > 180000)
+      balancesLastUpdated = getMaxValue(nestedWallets, 'balancesLastUpdated')
       balancesError = nestedWallets.map((w) => w.balancesError).find(Boolean) || ''
       supportedAssets = union(...nestedWallets.map((w) => w.supportedAssets))
       unsendableAssets = union(...nestedWallets.map((w) => w.unsendableAssets))
@@ -42,7 +42,7 @@ const doGetWallet = (walletState, id) => {
     balancesError,
     supportedAssets,
     unsendableAssets,
-    shouldUpdateBalances,
+    balancesLastUpdated,
   }
 }
 

@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { Redirect, withRouter } from 'react-router-dom'
 import { createStructuredSelector } from 'reselect'
 import { Helmet } from 'react-helmet'
-
 import {
   getCurrentWalletWithHoldings, isDefaultPortfolioEmpty
 } from 'Selectors'
@@ -18,13 +17,13 @@ class Dashboard extends Component {
     this._removeWallet = this._removeWallet.bind(this)
   }
 
-  componentWillMount () {
+  componentDidMount () {
     const { updateAllHoldings } = this.props
-    const balancesInterval = window.setInterval(updateAllHoldings, 180000)
+    const balancesInterval = window.setInterval(updateAllHoldings, 120000)
     this.setState({ balancesInterval })
     const { wallet } = this.props
-    if (wallet.shouldUpdateBalances && !wallet.balancesUpdating) {
-      setTimeout(() => updateAllHoldings(), 5000)
+    if (Date.now() - wallet.balancesLastUpdated > 180000 && !wallet.balancesUpdating) {
+      setTimeout(updateAllHoldings, 5000)
     }
   }
 
