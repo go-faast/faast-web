@@ -17,7 +17,8 @@
 }
 
 .walletList {
-    max-height: calc(100vh - 100px); 
+    max-height: calc(100vh - 100px);
+    height: calc(100vh - 100px);
     min-height: 500px;
     overflow-y: scroll;
     border-right: 1px solid #353535;
@@ -33,6 +34,7 @@
 @media screen and (max-width: 983px) {
     .walletDetail {
         max-height: 100%;
+        height: 100%;
         position: relative;
         z-index: 9;
         height: 100%;

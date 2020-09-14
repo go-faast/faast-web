@@ -163,10 +163,7 @@ export default compose(
       selectedWallet,
     })
   }),
-  withPropsOnChange(['assets'], ({ assets, query, applySortOrder, updateResults }) => {
-    if (!query) {
-      updateResults(applySortOrder(assets))
-    }
+  withPropsOnChange(['assets'], ({ assets }) => {
     const fuse = new Fuse(assets, {
       shouldSort: true,
       threshold: 0.6,

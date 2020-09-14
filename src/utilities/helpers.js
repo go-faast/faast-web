@@ -433,3 +433,10 @@ export const sortObjOfArrayByTwoProperties = (fields) => (a, b) => fields.map(o 
   const d1 = typeof b[o] === 'object' ? toNumber(b[o]) : b[o]
   return c1 > d1 ? dir : c1 < d1 ? -(dir) : 0
 }).reduce((p, n) => p ? p : n, 0)
+
+
+export const getMaxValue = (array, property) => {
+  if (!array || array.length === 0) return
+  if (array.length === 1) return array[0][property]
+  return Math.max.apply(Math, array.map((o) => o[property]))
+}
