@@ -13,13 +13,13 @@ import LoginForm from './form'
 import AffiliateLayout from 'Components/Affiliate/Layout'
 import LoadingFullScreen from 'Components/LoadingFullscreen'
 
-import { card, cardHeader, smallCard } from '../style'
+import { card, cardHeader, smallCard, text } from '../style'
 
 const AffiliateLogin = ({ isLoadingLogin }) => {
   return (
     <Fragment>
       {isLoadingLogin ? (
-        <LoadingFullScreen bgColor='#fff' label='Loading Affiliate Stats...' />
+        <LoadingFullScreen bgColor='#fff' label={<span className={text}>Loading Affiliate Stats...</span>} />
       ) : (
         <AffiliateLayout className='pt-5'>
           <Card className={classNames(card, smallCard, 'mx-auto')}>

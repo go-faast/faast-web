@@ -30,12 +30,16 @@
 
 .cardHeader {
   background: #fff;
-  border: none;
   color: #525252;
+  border-color: #ebeff1;
   margin-bottom: 10px;
-  border-radius: 4px !important;
+  border-radius: 0px 2px 0px 2px !important;
   font-size: 16px;
-  font-weight: 200;
+  font-weight: 400;
+}
+
+.modalContent {
+  background-color: #fff;
 }
 
 .cardFooter {
@@ -89,5 +93,12 @@
   &:active {
     background-color: #3493C0 !important;
     color: #fff !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .smallCard {
+    max-width: 100%;
+    width: 100%;
   }
 }
