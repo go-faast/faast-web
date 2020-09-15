@@ -193,11 +193,10 @@ export default compose(
           untouch(FORM_NAME, 'withdrawal_address')
           const message = e.message.toLowerCase()
           if (message.indexOf('withdrawal in progress') >= 0 || message.indexOf('busy at the moment') >= 0) {
-            toastr.error('There was an error, its likely that a withdrawal is already in progress. Please contact support for more info.')
+            toastr.error('There was an error. It is likely that a withdrawal is already in progress. Please contact support for more info.')
           } else {
             toastr.error('There was an issue initiating your withdrawal. Please try again.')
           }
-         
         })
     },
     handleInputType: ({ keyInputType, updateKeyInputType }) => () => {
