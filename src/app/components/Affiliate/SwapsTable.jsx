@@ -28,7 +28,7 @@ const TableRow = ({
   ...props
 }) => (
   <tr {...props}>
-    <td>{createStatusLabel(swap)}</td>
+    <td><span className='position-relative' style={{ left: 8 }}>{createStatusLabel(swap)}</span></td>
     {size === 'large' && (<td className='d-none d-sm-table-cell'>{createdAtFormatted}</td>)}
     <td className='d-none d-sm-table-cell'>
       <CoinSymbol symbol={sendSymbol}/>

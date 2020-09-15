@@ -33,10 +33,13 @@ const WithdrawalTableRow = ({
 }) => {
   if (status == 'paid' || status == 'complete') { withdrawal.status = { detailsCode: 'complete', details: 'Paid' } } 
   if (status == 'pending') { withdrawal.status = { detailsCode: 'pending', details: 'Pending' } }
+  if (status == 'processing') { withdrawal.status = { detailsCode: 'pending', details: 'Pending' } }
   if (status == 'error') { withdrawal.status = { detailsCode: 'failed', details: 'Error' } }
   return (
     <tr {...props}>
-      <td>{createStatusLabel(withdrawal)}</td>
+      <td>
+        <span style={{ left: 8 }} className='position-relative'>{createStatusLabel(withdrawal)}</span>
+      </td>
       {size === 'large' && (<td>{created_at}</td>)}
       <td>
         <Expandable shrunk={ellipsize(withdrawal_address, 15, 3)} expanded={withdrawal_address} />
@@ -49,7 +52,9 @@ const WithdrawalTableRow = ({
           <a href={`https://www.blockchain.com/btc/tx/${transaction_ids[0]}`} target='_blank noreferrer'>View</a>
         ) : transaction_ids.length > 1 ? (
           transaction_ids.map((t,i) => (
-            <a style={{ marginRight: 1 }} key={t} href={`https://www.blockchain.com/btc/tx/${t}`} target='_blank noreferrer'>{i + 1}</a>
+            t !== 'pending' ? (
+              <a style={{ marginRight: 1 }} key={t} href={`https://www.blockchain.com/btc/tx/${t}`} target='_blank noreferrer'>{i + 1}</a>) :
+              (<span key={`${t}-${i}`} style={{ opacity: .6, cursor: 'default', marginRight: 1 }}>{i + 1}</span>)
           ))
         ) : <span style={{ opacity: .6, cursor: 'default' }}>View</span>}
       </td>

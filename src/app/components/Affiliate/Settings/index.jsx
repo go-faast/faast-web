@@ -20,7 +20,7 @@ import { affiliateId, secretKey, getAsset, getAffiliateBalance, getMinimumWithdr
 import { initiateAffiliateWithdrawal } from 'Services/Faast'
 
 import AffiliateLayout from 'Components/Affiliate/Layout'
-import { card, cardHeader, input, text, smallCard, withdrawal } from '../style'
+import { card, cardHeader, input, text, smallCard, withdrawal, modalContent } from '../style'
 
 const FORM_NAME = 'affiliate_withdrawal'
 
@@ -108,11 +108,22 @@ const AffiliateSettings = ({ minimumWithdrawal, isModalOpen, toggleModalOpen, af
                       </p>
                     )}
                     <Modal
-                      size='md' isOpen={isModalOpen} toggle={toggleModalOpen} className={'border-0 mt-6 mx-md-auto'} contentClassName={classNames('p-0 border-0 flat')}>
-                      <ModalHeader close={<span className='cursor-pointer' onClick={toggleModalOpen}>cancel</span>} tag='h4' toggle={toggleModalOpen} className={cardHeader}>
+                      size='md' isOpen={isModalOpen} 
+                      toggle={toggleModalOpen} 
+                      className={'border-0 mt-6 mx-md-auto'} 
+                      contentClassName={classNames(modalContent, 'p-0 border-0 flat')}
+                    >
+                      <ModalHeader 
+                        close={<span className='cursor-pointer' 
+                          onClick={toggleModalOpen}>cancel</span>} 
+                        tag='h4'
+                        style={{ backgroundColor: '#fff' }} 
+                        toggle={toggleModalOpen} 
+                        className={cardHeader}
+                      >
                         Confirm Withdrawal
                       </ModalHeader>
-                      <ModalBody className={classNames(cardHeader, 'p-0 p-sm-3')}>
+                      <ModalBody style={{ backgroundColor: '#fff' }} className={classNames(cardHeader, 'p-0 p-sm-3')}>
                         <Row>
                           <Col sm='12'>
                             <small><p className={classNames('mt-1 mb-1 font-weight-bold', text)}>Amount to be Withdrawn</p></small>
@@ -176,11 +187,17 @@ export default compose(
           toastr.info('Withdrawal successfully initiated.')
           
         })
-        .catch(() => {
+        .catch((e) => {
           toggleModalOpen()
           change(FORM_NAME, 'withdrawal_address', null)
           untouch(FORM_NAME, 'withdrawal_address')
-          toastr.error('There was an issue initiating your withdrawal. Please try again.')
+          const message = e.message.toLowerCase()
+          if (message.indexOf('withdrawal in progress') >= 0 || message.indexOf('busy at the moment') >= 0) {
+            toastr.error('There was an error, its likely that a withdrawal is already in progress. Please contact support for more info.')
+          } else {
+            toastr.error('There was an issue initiating your withdrawal. Please try again.')
+          }
+         
         })
     },
     handleInputType: ({ keyInputType, updateKeyInputType }) => () => {
