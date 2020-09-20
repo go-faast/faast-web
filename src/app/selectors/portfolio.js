@@ -71,6 +71,9 @@ export const getCurrentPortfolioWithIndividualWalletHoldings = (state) => {
 
 export const getCurrentWallet = currySelector(getWallet, getCurrentWalletId)
 export const getCurrentWalletWithHoldings = currySelector(getWalletWithHoldings, getCurrentWalletId)
+export const getCurrentWalletHeldSymbols = createSelector(getCurrentWalletWithHoldings, (wallet) => {
+  return wallet.balances ? Object.keys(wallet.balances) : []
+})
 export const areCurrentWalletHoldingsLoaded = currySelector(areWalletHoldingsLoaded, getCurrentWalletId)
 export const getCurrentWalletHoldingsError = currySelector(getWalletHoldingsError, getCurrentWalletId)
 

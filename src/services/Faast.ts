@@ -120,6 +120,15 @@ export const fetchPriceChart = (cmcIDno: number) => {
   return fetchGet(`${apiUrl}/api/v1/data/cmc/price/${cmcID}`, { dataset: 'historical' })
 }
 
+export const fetchCoinNews = (symbols: string) => {
+  return fetchGet('https://cors-anywhere.herokuapp.com/https://cryptopanic.com/api/v1/posts/',
+  {
+    auth_token: 'd0aea93a6e4c23f3ecac3246e99e9be621b55a17',
+    currencies: symbols,
+    kind: 'news',
+  })
+}
+
 export const fetchPairData = (pair: string, depositAmount?: string, withdrawalAmount?: string) =>
   fetchGet(`${apiUrl}/api/v2/public/price/${pair}`, {
     affiliate_margin: getAffiliateSettings().affiliate_margin,
@@ -476,4 +485,5 @@ export default {
   formatOrderResult,
   validateAddress,
   getInternationalRate,
+  fetchCoinNews,
 }

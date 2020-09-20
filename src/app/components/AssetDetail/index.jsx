@@ -1,26 +1,27 @@
 import React, { Fragment } from 'react'
 import { Helmet } from 'react-helmet'
-import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, setPropTypes, withProps } from 'recompose'
-import { Card, CardHeader, Row, Col, CardBody, Media, Button } from 'reactstrap'
+import { Card, CardHeader, Row, Col, CardBody, Media } from 'reactstrap'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
-
 import { getAsset } from 'Selectors/asset'
 
 import conditionalRedirect from 'Hoc/conditionalRedirect'
 import routes from 'Routes'
 
 import Layout from 'Components/Layout'
-import PriceChart from 'Components/PriceChart'
+// import PriceChart from 'Components/PriceChart'
+import LiveChart from 'Components/LiveTradingViewChart'
+import SwapWidget from 'Components/AssetDetailSwapWidget'
 import CoinIcon from 'Components/CoinIcon'
 import Units from 'Components/Units'
 import ChangePercent from 'Components/ChangePercent'
 import PriceArrowIcon from 'Components/PriceArrowIcon'
 import AssetSearchBox from 'Components/AssetSearchBox'
 import WatchlistStar from 'Components/WatchlistStar'
+import NewsTable from 'Components/NewsTable'
 import T from 'Components/i18n/T'
 
 const getQuery = ({ match }) => match.params.symbol
@@ -43,22 +44,8 @@ const marketData = [
   }
 ]
 
-const AssetDetail = ({ symbol, asset }) => {
-  const { name, price, change24, deposit, receive, cmcIDno } = asset
-  const buySellButtons = (
-    <Row className='gutter-2 justify-content-md-end'>
-      <Col xs='auto'>
-        <Link to={`/swap?to=${symbol}`}>
-          <Button color='success' size='sm' disabled={!receive}><T tag='span' i18nKey='app.coinDetail.buy'>Buy</T> {symbol}</Button>
-        </Link>
-      </Col>
-      <Col xs='auto'>
-        <Link to={`/swap?from=${symbol}`} className='d-inline-block'>
-          <Button color='danger' size='sm' disabled={!deposit}><T tag='span' i18nKey='app.coinDetail.sell'>Sell</T> {symbol}</Button>
-        </Link>
-      </Col>
-    </Row>
-  )
+const AssetDetail = ({ symbol, asset, newsSymbols }) => {
+  const { name, price, change24 } = asset
   return (
     <Fragment>
       <Helmet>
@@ -68,7 +55,6 @@ const AssetDetail = ({ symbol, asset }) => {
       <Layout className='pt-3 p-0 p-sm-3'>
         <AssetSearchBox className='mx-3 mx-sm-0 mb-3 ml-md-auto'/>
         <div className='m-3 mx-sm-0 d-lg-none'>
-          {buySellButtons}
         </div>
         <Card>
           <CardHeader className='py-2'>
@@ -132,14 +118,22 @@ const AssetDetail = ({ symbol, asset }) => {
                 </Col>
               ))}
               <Col className='d-none d-lg-block'>
-                {buySellButtons}
               </Col>
             </Row>
           </CardHeader>
-          <CardBody className='text-center'>
-            <PriceChart cmcIDno={cmcIDno} chartOpen/> 
+          <CardBody style={{ height: 420 }} className='text-center p-0'>
+            <LiveChart symbol={symbol} />
+            {/* <PriceChart cmcIDno={cmcIDno} chartOpen/>  */}
           </CardBody>
         </Card>
+        <Row className='pb-5 mb-5'>
+          <Col lg='6' md='12' className='pr-lg-0 pr-3'>
+            <SwapWidget symbol={symbol} />
+          </Col>
+          <Col>
+            <NewsTable symbols={newsSymbols} cardTitle={`${symbol} News`} maxHeight={491} size='sm' />
+          </Col>
+        </Row>
       </Layout>
     </Fragment>
   )
@@ -152,13 +146,15 @@ export default compose(
   }),
   withProps((props) => {
     const symbol = getQuery(props).toUpperCase()
+    const newsSymbols = [symbol]
     return ({
       symbol,
+      newsSymbols
     })
   }),
   connect(createStructuredSelector({
     asset: (state, { symbol }) => getAsset(state, symbol),
-  }),{
+  }), {
   }),
   conditionalRedirect(
     routes.assetIndex(),

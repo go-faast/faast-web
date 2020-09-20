@@ -25,4 +25,12 @@ export const getWatchlistAsset = createItemSelector(getAllAssetsWithWatchlist, s
 
 export const isAssetOnWatchlist = createItemSelector(getWatchlistAsset, fieldSelector('onWatchlist'))
 
+export const getWatchlistSymbols = createSelector(getAllAssetsArrayWithWatchlist, (assets) => { 
+  const symbols = []
+  assets.forEach(asset => {
+    if (asset.onWatchlist) symbols.push(asset.symbol)
+  })
+  return symbols
+})
+
 export const getWatchlist = createSelector(getAllAssetsArrayWithWatchlist, (assets) => assets.filter(asset => asset.onWatchlist).sort((a, b) => b.marketCap.comparedTo(a.marketCap)))

@@ -66,7 +66,7 @@ export const createOrder = (swap) => (dispatch) => {
     log.error(`Cannot create swap order for ${swap}`)
     return
   }
-  const {
+  let {
     id, sendAmount, sendSymbol, receiveSymbol, sendWalletId, receiveWalletId, receiveAmount: withdrawalAmount,
     receiveAddressExtraId, refundAddressExtraId,
   } = swap
@@ -186,7 +186,7 @@ export const createSwap = (swapParams, options) => (dispatch, getState) => {
     .catch((e) => {
       log.error('Failed to create swap', swapParams, e)
       if (e) {
-        toastr.error(e.Error)
+        toastr.error(e.message)
       } else {
         toastr.error('Failed to create swap, please contact support@faa.st')
       }

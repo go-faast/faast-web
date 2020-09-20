@@ -1,6 +1,10 @@
 @import '~faast-ui/src/style/index.scss';
 @import 'variables';
 
+html.theme-dark .chart-page {
+  background-color: #272727 !important;
+}
+
 .watchlist-unselected {
   color: #d0d7df;
   transition: all .2s ease-in-out;

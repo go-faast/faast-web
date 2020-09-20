@@ -21,10 +21,12 @@ import widget from './widget'
 import withdrawal from './withdrawal'
 import currency from './currency'
 import i18n from './i18n'
+import news from './news'
 
 export default combineReducers({
   app,
   i18n,
+  news,
   accountSearch,
   portfolio,
   wallet,

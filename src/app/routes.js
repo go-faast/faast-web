@@ -50,6 +50,7 @@ export const tradeDetail = createPath('/orders/:tradeId')
 export const swapWidgetStepTwo = createPath('/swap/send')
 export const swapWidget = createPath('/swap')
 export const watchlist = createPath('/assets/watchlist')
+export const assetNews = createPath('/assets/news')
 export const trending = createPath('/assets/trending/:timeFrame?')
 export const assetDetail = createPath('/assets/:symbol')
 export const assetIndex = createPath('/assets')
@@ -90,6 +91,7 @@ export default {
   connectHwWalletAssetAccounts,
   viewOnlyAddress,
   assetIndex,
+  assetNews,
   walletInfoModal,
   affiliateLogin,
   affiliateSignup,

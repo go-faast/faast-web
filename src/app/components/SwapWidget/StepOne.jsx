@@ -622,10 +622,10 @@ export default compose(
         )
       )
     },
-    validateETHAmount: ({ sendSymbol, ethSendBalanceAmount }) => {
+    validateETHAmount: ({ sendSymbol, ethSendBalanceAmount, sendWallet }) => {
       return (
         validator.all(
-          ...(sendSymbol === 'ETH' ? [validator.lt(ethSendBalanceAmount, <span key='cannotSendWhole'>You are unable to send your entire ETH balance, because some ETH is needed to pay network fees.</span>)] : []),
+          ...(sendSymbol === 'ETH' && sendWallet ? [validator.lt(ethSendBalanceAmount, <span key='cannotSendWhole'>You are unable to send your entire ETH balance, because some ETH is needed to pay network fees.</span>)] : []),
         )
       )
     },

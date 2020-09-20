@@ -32,8 +32,8 @@ export const createWithdrawalTx = (walletId, address, amount, assetSymbol, optio
 
 export const signAndSubmitTx = (tx, passwordCache = {}, sendOptions) => (dispatch) => Promise.resolve()
   .then(async () => {
-    await dispatch(signTx(tx, passwordCache))
-    const sentTx = await dispatch(sendTx(tx, sendOptions))
+    const newTx = await dispatch(signTx(tx, passwordCache))
+    const sentTx = await dispatch(sendTx(newTx, sendOptions))
     if (sentTx) {
       dispatch(updateWithdrawal({
         id: sentTx.id,

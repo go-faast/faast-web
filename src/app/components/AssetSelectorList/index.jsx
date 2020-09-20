@@ -188,7 +188,7 @@ export default compose(
     performSearch: ({ updateResults, fuse, applySortOrder, extendedAssets }) => (query) => {
       let results
       if (!query) {
-        results = extendedAssets
+        results = extendedAssets.filter(a => a.swapEnabled)
       } else {
         results = fuse.search(query)
         results = applySortOrder(results)
