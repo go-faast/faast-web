@@ -12,6 +12,7 @@ import SwapWidget from 'Components/SwapWidget'
 import SwapWidgetStepTwo from 'Components/SwapWidget/StepTwo'
 import AssetDetail from 'Components/AssetDetail'
 import AssetIndex from 'Components/AssetIndex'
+import AssetNews from 'Components/AssetNews'
 import AffiliateLogin from 'Components/Affiliate/Login'
 import AffiliateAcceptTerms from 'Components/Affiliate/AcceptTerms'
 import AffiliateSignup from 'Components/Affiliate/Signup'
@@ -37,7 +38,7 @@ import {
   affiliatePayouts, affiliateSwaps, affiliateAccountModal,
   watchlist, trending, affiliateTerms, swapWidgetStepTwo, tradeWidgetDetail,
   connectMobileWallet, settings, affiliateAcceptTerms, wallets, walletDepositModal,
-  walletWithdrawalModal
+  walletWithdrawalModal, assetNews
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -62,6 +63,7 @@ const AppView = ({ hasNoWallets }) => {
         <Route path={swapWidget.path} component={SwapWidget} />
         <Route path={swapWidgetStepTwo.path} component={SwapWidgetStepTwo}/>
         <Route path={watchlist.path} component={AssetWatchlist}/>
+        <Route path={assetNews.path} component={AssetNews} />
         <Route path={trending.path} component={AssetTrending}/>
         <Route path={assetDetail.path} component={AssetDetail}/>
         <Route path={assetIndex.path} component={AssetIndex}/>

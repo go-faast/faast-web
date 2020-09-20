@@ -440,3 +440,9 @@ export const getMaxValue = (array, property) => {
   if (array.length === 1) return array[0][property]
   return Math.max.apply(Math, array.map((o) => o[property]))
 }
+
+export const sortByStringDate = (array, property) => {
+  return array.sort((a,b) => {
+    return new Date(b[property]) - new Date(a[property])
+  })
+}

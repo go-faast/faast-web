@@ -12,12 +12,14 @@ import { connect } from 'react-redux'
 import { getWalletWithHoldings, } from 'Selectors'
 import { getConnectedWalletsPendingSwaps } from 'Selectors/swap'
 import { areCurrentPortfolioBalancesUpdating } from 'Selectors/portfolio'
+import { getNewsSymbols } from 'Selectors/news'
 import { updateAllHoldings } from 'Actions/portfolio'
 import { removeAllWallets } from 'Actions/wallet'
 
 import withToggle from 'Hoc/withToggle'
 
 import TradeTable from 'Components/TradeTable'
+import NewsTable from 'Components/NewsTable'
 import { tableHeadingsOpen } from 'Components/TradeHistory'
 import ChangePercent from 'Components/ChangePercent'
 import Address from 'Components/Address'
@@ -32,7 +34,7 @@ import { statLabel } from './style'
 import Expandable from '../Expandable'
 
 const Balances = ({ wallet, handleRemove, removeAllWallets, isDropdownOpen, toggleDropdownOpen, 
-  handleAdd, isAlreadyInPortfolio, showStats, pendingSwaps, updateAllHoldings, areBalancesUpdating }) => {
+  handleAdd, isAlreadyInPortfolio, showStats, pendingSwaps, newsSymbols, updateAllHoldings, areBalancesUpdating }) => {
   const {
     address, assetHoldings, holdingsLoaded, holdingsError, label, totalFiat, 
     totalFiat24hAgo, totalChange, id
@@ -135,6 +137,15 @@ const Balances = ({ wallet, handleRemove, removeAllWallets, isDropdownOpen, togg
           )}
         />
       )}
+      {pendingSwaps && (
+        <TradeTable 
+          tableTitle={<T tag='span' i18nKey='app.orders.openOrderTitle'>Open Orders</T>}
+          swaps={uniqBy(pendingSwaps, 'orderId')}
+          tableHeadings={tableHeadingsOpen}
+          hideIfNone
+          classProps='mt-3'
+        />
+      )}
       <Card>
         <CardHeader className={showStats ? 'grid-group' : null}>
           {!showStats && (
@@ -174,16 +185,8 @@ const Balances = ({ wallet, handleRemove, removeAllWallets, isDropdownOpen, togg
           )}
         </CardHeader>
         <AssetTable assetRows={assetRows}/>
-      </Card>
-      {pendingSwaps && (
-        <TradeTable 
-          tableTitle={<T tag='span' i18nKey='app.orders.openOrderTitle'>Open Orders</T>}
-          swaps={uniqBy(pendingSwaps, 'orderId')}
-          tableHeadings={tableHeadingsOpen}
-          hideIfNone
-          classProps='mt-3'
-        />
-      )}
+      </Card>   
+      <NewsTable symbols={newsSymbols} size='sm' cardTitle='Latest News' />
       {assetRows.length > 0 && (<Card className='mt-3'>
         <CardHeader>
           <T tag='h5' i18nKey='app.dashboard.distribution'>Distribution</T>
@@ -225,14 +228,15 @@ ConnectedBalances.propTypes = {
 
 Balances.Connected = ConnectedBalances
 
-const mapStateToProps = connect(createStructuredSelector({
-  pendingSwaps: getConnectedWalletsPendingSwaps,
-  areBalancesUpdating: areCurrentPortfolioBalancesUpdating
-}), {
-  updateAllHoldings: updateAllHoldings,
-  removeAllWallets,
-})
-
 
 export { Balances, ConnectedBalances }
-export default compose(withToggle('dropdownOpen'), mapStateToProps)(Balances)
+export default compose(
+  withToggle('dropdownOpen'),
+  connect(createStructuredSelector({
+    pendingSwaps: getConnectedWalletsPendingSwaps,
+    areBalancesUpdating: areCurrentPortfolioBalancesUpdating,
+    newsSymbols: getNewsSymbols,
+  }), {
+    updateAllHoldings: updateAllHoldings,
+    removeAllWallets,
+  }))(Balances)

@@ -82,7 +82,6 @@ export const signTx = (tx, passwordCache) => (dispatch) => Promise.resolve().the
     return
   }
   dispatch(txSigningStart(tx.id))
-
   const passwordPromise = (isUndefined(passwordCache[walletId]) && walletInstance.isPasswordProtected())
     ? dispatch(getWalletPassword(walletId))
     : Promise.resolve(passwordCache[walletId])

@@ -74,7 +74,7 @@ export default compose(
   })
 )(({ assetRows, push }) => (
   <Fragment>
-    {assetRows.length === 0 ? (
+    {assetRows && assetRows.length === 0 ? (
       <p className='text-center mt-3'>
         <T tag='i' i18nKey='app.assetTable.noAssets'>No assets to show</T>
       </p>

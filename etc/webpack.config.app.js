@@ -48,6 +48,13 @@ let config = merge.strategy({
     path: dirs.buildApp,
     publicPath: isIpfs ? './' : '/',
   },
+  externals: {
+    fs: '{}',
+    tls: '{}',
+    net: '{}',
+    dns: '{}',
+    readline: '{}'
+  },
   plugins: [
     new webpack.DefinePlugin({
       'process.env.ROUTER_BASE_NAME': JSON.stringify(routerBaseName),

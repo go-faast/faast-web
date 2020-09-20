@@ -65,6 +65,10 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded,
                 <T tag='span' i18nKey='app.nav.allAssets'>All Assets</T>
               </DropdownItem>
               <DropdownItem className='m-0' divider/>
+              <DropdownItem tag={Link} to={'/assets/news'} className='text-muted py-2'>
+                <T tag='span' i18nKey='app.nav.news'>News</T>
+              </DropdownItem>
+              <DropdownItem className='m-0' divider/>
               <DropdownItem tag={Link} to={'/assets/trending'} className='text-muted py-2'>
                 <T tag='span' i18nKey='app.nav.trending'>Trending</T>
               </DropdownItem>
