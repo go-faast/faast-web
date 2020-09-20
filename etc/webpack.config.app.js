@@ -18,7 +18,7 @@ const getBaseConfig = require('./webpack.config.base.js')
 
 const APP_PORT = process.env.APP_PORT || 8080
 
-const vendorDeps = ['font-awesome-4.7/css/font-awesome.min.css']
+const vendorDeps = ['charting_library/charting_library.min.js', 'font-awesome-4.7/css/font-awesome.min.css']
 
 const routerBaseName = path.join('/', appPath)
 const outputPathPrefix = isDev ? appPath : '' // Prefix output path during development for proxy purposes
@@ -63,6 +63,7 @@ let config = merge.strategy({
       name: 'common',
       minChunks: Object.keys(entryPoints).length,
     }),
+    new CopyPlugin([{ from: path.join(dirs.res, 'vendor'), to: path.join(outputPathPrefix, vendorOutputPath) }]),
     new HtmlPlugin({
       template: path.join(dirs.app, 'index.html'),
       filename: path.join(appPath, 'index.html'),
@@ -87,11 +88,9 @@ let config = merge.strategy({
       cache: true,
       inject: true
     }),
-    new CopyPlugin([{ from: path.join(dirs.res, 'vendor'), to: path.join(outputPathPrefix, vendorOutputPath) }]),
     new IncludeAssetsPlugin({
       assets: vendorDeps.map((vendorDep) => path.join(outputPathPrefix, vendorOutputPath, vendorDep)),
-      append: false,
-      hash: true
+      append: true,
     }),
   ]
 })

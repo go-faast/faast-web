@@ -44,7 +44,7 @@ export default compose(
     symbol: 'BTC',
     interval: '5',
     containerId: 'tv-chart',
-    libraryPath: '/app/static/vendor/charting_library/',
+    libraryPath: `/${(location.hostname === 'localhost' || location.hostname === '127.0.0.1') && 'app/'}static/vendor/charting_library/`,
     chartsStorageUrl: 'https://saveload.tradingview.com',
     chartsStorageApiVersion: '1.1',
     clientId: 'tradingview.com',
