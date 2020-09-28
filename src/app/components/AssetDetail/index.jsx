@@ -2,17 +2,19 @@ import React, { Fragment } from 'react'
 import { Helmet } from 'react-helmet'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { compose, setDisplayName, setPropTypes, withProps } from 'recompose'
-import { Card, CardHeader, Row, Col, CardBody, Media } from 'reactstrap'
+import { compose, setDisplayName, setPropTypes, withProps, withState } from 'recompose'
+import { Card, CardHeader, Row, Col, CardBody, Media, Dropdown, 
+  DropdownMenu, DropdownToggle, DropdownItem } from 'reactstrap'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
 import { getAsset } from 'Selectors/asset'
 
 import conditionalRedirect from 'Hoc/conditionalRedirect'
+import withToggle from 'Hoc/withToggle'
 import routes from 'Routes'
 
 import Layout from 'Components/Layout'
-// import PriceChart from 'Components/PriceChart'
+import PriceChart from 'Components/PriceChart'
 import LiveChart from 'Components/LiveTradingViewChart'
 import SwapWidget from 'Components/AssetDetailSwapWidget'
 import CoinIcon from 'Components/CoinIcon'
@@ -44,8 +46,44 @@ const marketData = [
   }
 ]
 
-const AssetDetail = ({ symbol, asset, newsSymbols }) => {
-  const { name, price, change24 } = asset
+const ChartDropDown = ({ isDropdownOpen, toggleDropdownOpen, showLiveChart, updateShowLiveChart }) => (
+  <Dropdown 
+    style={{ listStyleType: 'none' }} 
+    isOpen={isDropdownOpen} 
+    className='justify-content-start'
+    size='sm' 
+    toggle={toggleDropdownOpen}
+  >
+    <DropdownToggle 
+      className={'cursor-pointer flat'}
+      color='dark' 
+      caret
+    >
+      {showLiveChart ? 'Live Candlestick' : 'Historical'}
+    </DropdownToggle>
+    <DropdownMenu className='p-0'>
+      <DropdownItem 
+        tag={'button'}
+        active={showLiveChart} 
+        onClick={() => updateShowLiveChart(true)}
+      >
+        Live Candlestick
+      </DropdownItem>
+      <DropdownItem 
+        tag={'button'}
+        active={!showLiveChart} 
+        onClick={() => updateShowLiveChart(false)}
+      >
+         Historical
+      </DropdownItem>
+    </DropdownMenu>
+  </Dropdown>
+)
+
+const AssetDetail = ({ symbol, asset, newsSymbols, showLiveChart, updateShowLiveChart, 
+  isDropdownOpen, toggleDropdownOpen, isMobileDropdownOpen, toggleMobileDropdownOpen }) => {
+  const { name, price, change24, cmcIDno } = asset
+  
   return (
     <Fragment>
       <Helmet>
@@ -55,6 +93,12 @@ const AssetDetail = ({ symbol, asset, newsSymbols }) => {
       <Layout className='pt-3 p-0 p-sm-3'>
         <AssetSearchBox className='mx-3 mx-sm-0 mb-3 ml-md-auto'/>
         <div className='m-3 mx-sm-0 d-lg-none'>
+          <ChartDropDown
+            isDropdownOpen={isMobileDropdownOpen} 
+            updateShowLiveChart={updateShowLiveChart}
+            toggleDropdownOpen={toggleMobileDropdownOpen}
+            showLiveChart={showLiveChart}
+          />
         </div>
         <Card>
           <CardHeader className='py-2'>
@@ -117,20 +161,29 @@ const AssetDetail = ({ symbol, asset, newsSymbols }) => {
                   />
                 </Col>
               ))}
-              <Col className='d-none d-lg-block'>
+              <Col className='d-none d-lg-flex gutter-2 justify-content-end'>
+                <ChartDropDown
+                  isDropdownOpen={isDropdownOpen} 
+                  updateShowLiveChart={updateShowLiveChart}
+                  toggleDropdownOpen={toggleDropdownOpen}
+                  showLiveChart={showLiveChart}
+                />
               </Col>
             </Row>
           </CardHeader>
           <CardBody style={{ height: 420 }} className='text-center p-0'>
-            <LiveChart symbol={symbol} />
-            {/* <PriceChart cmcIDno={cmcIDno} chartOpen/>  */}
+            {showLiveChart ? (
+              <LiveChart symbol={symbol} />
+            ) : (
+              <PriceChart cmcIDno={cmcIDno} chartOpen/> 
+            )}
           </CardBody>
         </Card>
         <Row className='pb-5 mb-5'>
           <Col lg='6' md='12' className='pr-lg-0 pr-3'>
             <SwapWidget symbol={symbol} />
           </Col>
-          <Col>
+          <Col lg='6' md='12'>
             <NewsTable symbols={newsSymbols} cardTitle={`${symbol} News`} maxHeight={491} size='sm' />
           </Col>
         </Row>
@@ -156,6 +209,9 @@ export default compose(
     asset: (state, { symbol }) => getAsset(state, symbol),
   }), {
   }),
+  withState('showLiveChart', 'updateShowLiveChart', true),
+  withToggle('dropdownOpen'),
+  withToggle('mobileDropdownOpen'),
   conditionalRedirect(
     routes.assetIndex(),
     ({ asset }) => !asset

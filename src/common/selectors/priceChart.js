@@ -10,7 +10,9 @@ export const getAllPriceCharts = createSelector(getPriceChartState, (priceCharts
 })
 
 export const getPriceChart = createItemSelector(getAllPriceCharts, selectItemId, (allCharts, symbol) => allCharts[symbol])
-export const getPriceChartData = createItemSelector(getPriceChart, fieldSelector('data'))
+export const getPriceChartData = createItemSelector(getPriceChart, fieldSelector('priceData'))
+export const getMarketCapChartData = createItemSelector(getPriceChart, fieldSelector('marketCapData'))
+export const getVolumeChartData = createItemSelector(getPriceChart, fieldSelector('volumeData'))
 export const isPriceChartLoading = createItemSelector(getPriceChart, fieldSelector('loading'))
 export const isPriceChartStale = createItemSelector(getPriceChart, priceChart => {
   if (priceChart) {

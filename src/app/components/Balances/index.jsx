@@ -185,8 +185,7 @@ const Balances = ({ wallet, handleRemove, removeAllWallets, isDropdownOpen, togg
           )}
         </CardHeader>
         <AssetTable assetRows={assetRows}/>
-      </Card>   
-      <NewsTable symbols={newsSymbols} size='sm' cardTitle='Latest News' />
+      </Card>
       {assetRows.length > 0 && (<Card className='mt-3'>
         <CardHeader>
           <T tag='h5' i18nKey='app.dashboard.distribution'>Distribution</T>
@@ -201,6 +200,7 @@ const Balances = ({ wallet, handleRemove, removeAllWallets, isDropdownOpen, togg
           <PieChart portfolio={wallet} />
         </CardBody>
       </Card>)}
+      <NewsTable symbols={newsSymbols} size='sm' cardTitle='Latest News' />
     </Fragment>
   )
 }

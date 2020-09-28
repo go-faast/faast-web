@@ -117,7 +117,10 @@ export const formatAssetMarketData = (r: any): any => {
 
 export const fetchPriceChart = (cmcIDno: number) => {
   const cmcID = cmcIDno.toString()
-  return fetchGet(`${apiUrl}/api/v1/data/cmc/price/${cmcID}`, { dataset: 'historical' })
+  return fetchGet(`${apiUrl}/api/v1/data/cmc/price/${cmcID}`, {
+    dataset: 'historical',
+    include: 'volume_24h_usd,market_cap_usd,price_usd',
+  })
 }
 
 export const fetchCoinNews = (symbols: string) => {

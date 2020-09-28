@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { compose, setDisplayName, setPropTypes, lifecycle, defaultProps, withProps } from 'recompose'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { getPriceChartData, isPriceChartLoading } from 'Common/selectors/priceChart'
+import { getPriceChartData, isPriceChartLoading, getMarketCapChartData, getVolumeChartData } from 'Common/selectors/priceChart'
 import { fetchPriceChartData } from 'Common/actions/priceChart'
 import ReactHighstock from 'react-highcharts/ReactHighstock.src'
 import { themeColor } from 'Utilities/style'
@@ -12,6 +12,8 @@ import { i18nTranslate as t } from 'Utilities/translate'
 import { withTranslation } from 'react-i18next'
 
 const priceSeriesName = 'Price (USD)'
+const marketCapSeriesName = 'Market Cap (USD)'
+const volumeSeriesName = 'Volume 24h (USD)'
 
 ReactHighstock.Highcharts.setOptions({
   lang: {
@@ -38,14 +40,14 @@ ReactHighstock.Highcharts.setOptions({
 
 const PriceChart = ({ config, isPriceChartLoading }) => {
   return isPriceChartLoading ? 
-    <i className='fa fa-spinner fa-pulse'/> : <ReactHighstock config={config}/>
+    <i className='fa fa-spinner fa-pulse mt-5'/> : <ReactHighstock config={config}/>
 }
 
 const initialConfig = {
   chart: {
-    height: 350,
+    height: 420,
   },
-  colors: [themeColor.primary],
+  colors: [themeColor.primary, '#fc4e42', '#4293fc'],
   navigator: {
     enabled: false
   },
@@ -60,7 +62,7 @@ const initialConfig = {
       dataLabels: {
         color: '#B0B0B3'
       },
-      fillOpacity: 0.75,
+      fillOpacity: 0.3,
       marker: {
         radius: 2,
         fillColor: themeColor.ultraDark,
@@ -136,11 +138,32 @@ const initialConfig = {
     type: 'area',
     tooltip: {
       valuePrefix: '$',
-      pointFormat: '<b>{point.y}</b> USD',
+      pointFormat: 'Price: <b>{point.y}</b> USD ',
     },
-    threshold: null
+    threshold: null,
+    yAxis: 0,
+  }, {
+    name: marketCapSeriesName,
+    data: [],
+    type: 'area',
+    tooltip: {
+      valuePrefix: '$',
+      pointFormat: 'Market Cap: <b>{point.y}</b> USD ',
+    },
+    threshold: null,
+    yAxis: 1
+  }, {
+    name: volumeSeriesName,
+    data: [],
+    type: 'area',
+    tooltip: {
+      valuePrefix: '$',
+      pointFormat: 'Volume 24h: <b>{point.y}</b> USD',
+    },
+    threshold: null,
+    yAxis: 2
   }],
-  yAxis: {
+  yAxis: [{
     min: 0,
     opposite: false,
     gridLineColor: '#707073',
@@ -168,14 +191,72 @@ const initialConfig = {
       width: 1,
       color: '#808080'
     }]
-  },
+  }, {
+    gridLineColor: '#707073',
+    title: {
+      text: marketCapSeriesName,
+      style: {
+        color: themeColor.primary
+      }
+    },
+    labels: {
+      y: null, // Center vertically
+      format: '${value}',
+      align: 'right',
+      enabled: false,
+      style: {
+        color: themeColor.primary,
+        backgroundColor: 'transparent',
+        fontSize: '12px'
+      }
+    },
+    lineColor: '#707073',
+    minorGridLineColor: '#505053',
+    tickColor: '#707073',
+    tickWidth: 1,
+    plotLines: [{
+      value: 0,
+      width: 1,
+      color: '#808080'
+    }]
+  }, {
+    gridLineColor: '#707073',
+    title: {
+      text: volumeSeriesName,
+      style: {
+        color: themeColor.primary
+      }
+    },
+    labels: {
+      y: null, // Center vertically
+      format: '${value}',
+      enabled: false,
+      align: 'right',
+      style: {
+        color: themeColor.primary,
+        backgroundColor: 'transparent',
+        fontSize: '12px'
+      }
+    },
+    lineColor: '#707073',
+    minorGridLineColor: '#505053',
+    tickColor: '#707073',
+    tickWidth: 1,
+    plotLines: [{
+      value: 0,
+      width: 1,
+      color: '#808080'
+    }]
+  }],
 }
 
 export default compose(
   setDisplayName('PriceChart'),
   withTranslation(),
   connect(createStructuredSelector({
-    data: (state, { cmcIDno }) => getPriceChartData(state, cmcIDno),
+    priceData: (state, { cmcIDno }) => getPriceChartData(state, cmcIDno),
+    marketCapData: (state, { cmcIDno }) => getMarketCapChartData(state, cmcIDno),
+    volumeData: (state, { cmcIDno }) => getVolumeChartData(state, cmcIDno),
     isPriceChartLoading: (state, { cmcIDno }) => isPriceChartLoading(state, cmcIDno)
   }), {
     fetchPriceChart: fetchPriceChartData
@@ -189,15 +270,21 @@ export default compose(
     chartOpen: false,
     toggle: false
   }),
-  withProps(({ data, t }) => {
+  withProps(({ priceData, marketCapData, volumeData, t }) => {
     const translatedName = t('app.priceChart.yAxisLabel', 'Price (USD)')
-    initialConfig.yAxis.title.text = translatedName
-    const config = (data 
+    initialConfig.yAxis[0].title.text = translatedName
+    const config = (priceData 
       ? {
         ...initialConfig,
         series: [{
           ...initialConfig.series[0],
-          data: data
+          data: priceData
+        }, {
+          ...initialConfig.series[1],
+          data: marketCapData
+        }, {
+          ...initialConfig.series[2],
+          data: volumeData
         }]
       } 
       : initialConfig)

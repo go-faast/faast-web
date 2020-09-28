@@ -15,6 +15,7 @@ import Units from 'Components/Units'
 import CoinIcon from 'Components/CoinIcon'
 import Expandable from 'Components/Expandable'
 import Link from 'Components/Link'
+import WalletLabel from 'Components/WalletLabel'
 import { removeWallet } from 'Actions/wallet'
 import { ellipsize } from 'Utilities/display'
 import config from 'Config'
@@ -27,7 +28,9 @@ const WalletRow = ({ wallet, symbol, push, removeWallet }) => {
   const balance = wallet.balances[symbol]
   return (
     <tr>
-      <td>{wallet.label}</td>
+      <td>
+        <WalletLabel wallet={wallet} />
+      </td>
       <td><Units value={balance} symbol={symbol} /></td>
       <td>
         <Button 
