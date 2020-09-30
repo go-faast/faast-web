@@ -46,6 +46,11 @@ export default compose(
                 </small>
               </li>
               <li className='list-inline-item mr-3'>
+                <small><a className='text-muted' href='https://hackerone.com/bitaccess' target='_blank noreferrer'>
+                  <T tag='span' i18nKey='app.footer.bugBounty'>Bug Bounty</T>
+                </a></small>
+              </li>
+              <li className='list-inline-item mr-3'>
                 <small><a className='text-muted' href='https://faa.st/terms'>
                   <T tag='span' i18nKey='app.footer.termsConditions'>Terms & Conditions</T>
                 </a></small>

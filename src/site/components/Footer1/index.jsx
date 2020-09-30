@@ -58,6 +58,7 @@ export default compose(
                 <li><LangLink className='text-white' to='/market-maker'>{t.marketMaker} <sup className={classNames(betaTag, 'text-primary')}><i>{t.beta}</i></sup></LangLink></li>
                 <li><a className='text-white' href='/law-enforcement'>Law Enforcement</a></li>
                 <li><a className='text-white' href='/blog'>{t.blog}</a></li>
+                <li><a className='text-white' href='https://hackerone.com/bitaccess' target='_blank noreferrer'>Bug Bounty</a></li>
               </ul>
             </div>
             <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-3'>
