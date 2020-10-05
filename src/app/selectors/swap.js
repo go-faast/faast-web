@@ -31,7 +31,7 @@ export const getSentSwapsByAsset = createItemSelector(
   getConnectedWalletSentSwaps,
   selectItemId,
   (allSwaps, symbol) => allSwaps
-    .filter(({ sendAsset, receiveAsset }) => sendAsset.symbol == symbol || receiveAsset.symbol == symbol)
+    .filter(({ sendAsset, receiveAsset }) => sendAsset && receiveAsset && sendAsset.symbol == symbol || receiveAsset.symbol == symbol)
 )
 
 export const getConnectedWalletsCompletedSwaps = createSelector(

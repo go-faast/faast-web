@@ -9,7 +9,7 @@ import {
   addWallet, removeWallet, restoreAllWallets, updateWalletBalances, addNestedWallets
 } from 'Actions/wallet'
 import { retrieveAssets } from 'Common/actions/asset'
-import { getDefaultPortfolio } from 'Selectors'
+import { getDefaultPortfolio, getCurrentWalletHeldSymbols } from 'Selectors'
 
 import { i18nTranslate as t } from 'Utilities/translate'
 
@@ -88,9 +88,10 @@ export const updateHoldings = (walletId) => (dispatch) => {
   ]).catch(log.error)
 }
 
-export const updateAllHoldings = () => (dispatch) => {
+export const updateAllHoldings = () => (dispatch, getState) => {
+  const heldSymbols = getCurrentWalletHeldSymbols(getState())
   return Promise.all([
-    dispatch(retrieveAssets()),
+    dispatch(retrieveAssets(heldSymbols)),
     dispatch(updateWalletBalances(defaultPortfolioId)),
   ]).catch(log.error)
 }
