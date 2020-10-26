@@ -27,8 +27,9 @@ import { getAllAssetSymbols, getAsset } from 'Selectors/asset'
 import { getWallet } from 'Selectors/wallet'
 import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
 import { getGeoLimit, getSavedSwapWidgetInputs } from 'Selectors/app'
+import { isAppBlocked } from 'Selectors'
 import extraAssetFields from 'Config/extraAssetFields'
-
+import GrumpyCat from 'Img/grumpy-cat.gif'
 import GAEventButton from 'Components/GAEventButton'
 import ReduxFormField from 'Components/ReduxFormField'
 import Checkbox from 'Components/Checkbox'
@@ -68,7 +69,7 @@ const AssetDetailSwapWidget = ({
   onChangeSendAmount, sendWallet, receiveWallet, symbol, receiveAsset, ethReceiveBalanceAmount,
   onChangeReceiveAmount, estimatedField, previousSwapInputs = {},
   onChangeRefundAddress, onChangeReceiveAddress, rateError, t, onCloseAssetSelector,
-  validateDepositTag, isSubmittingSwap
+  validateDepositTag, isSubmittingSwap, isBlocked
 }) => {
   return (
     <Fragment>
@@ -85,8 +86,16 @@ const AssetDetailSwapWidget = ({
             <T tag='h5' i18nKey='app.widget.swapInstantl'>Swap {symbol}</T>
           </CardHeader>
           <CardBody className='pt-3'>
-            {!balancesLoaded ? (
+            {!balancesLoaded && !isBlocked ? (
               <Loading label={<T tag='span' i18nKey='app.loading.balances'>Loading balances...</T>} />
+            ) : isBlocked ? (
+              <Row>
+                <Col className='text-center'>
+                  <img className='d-block mx-auto mb-2' style={{ minWidth: '320px', maxWidth: '400px', width: '95%' }} src={GrumpyCat}/>
+                  <T tag='span' i18nKey='app.blocked.sorry'>Sorry, you are accessing faa.st from a blocked location. 
+                If you are getting this message in error, you can learn more <a href='https://medium.com/faast/faast-location-restrictions-9b14e100d828' target='_blank noopener noreferrer'>here.</a></T>
+                </Col>
+              </Row>
             ) : (
               <Fragment>
                 <Row className='gutter-0'>
@@ -346,6 +355,7 @@ export default compose(
     maximumReceive: (state, { pair }) => getRateMaximumWithdrawal(state, pair),
     estimatedRate: (state, { pair }) => getRatePrice(state, pair),
     rateError: (state, { pair }) => rateError(state, pair),
+    isBlocked: isAppBlocked
   })),
   withState('assetSelect', 'setAssetSelect', null), // send, receive, or null
   withState('estimatedField', 'setEstimatedField', 'receive'), // send or receive
