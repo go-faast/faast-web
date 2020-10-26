@@ -1,5 +1,7 @@
 import React, { Fragment } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
+import AuthenticatedRoute from 'Components/Auth/AuthenticatedRoute'
+
 import Connect from 'Components/Connect'
 import TradeHistory from 'Components/TradeHistory'
 import WalletOpened from 'Components/WalletOpened'
@@ -30,6 +32,10 @@ import Settings from 'Components/Settings'
 import Wallets from 'Components/Wallets'
 import WalletDepositModal from 'Components/WalletDepositModal'
 import WalletWithdrawalModal from 'Components/WalletWithdrawalModal'
+import MakerLogin from 'Components/Maker/Login'
+import MakerDashboard from 'Components/Maker/Dashboard'
+import MakerSwaps from 'Components/Maker/Swaps'
+import MakerSettings from 'Components/Maker/Settings'
 
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
@@ -38,7 +44,7 @@ import {
   affiliatePayouts, affiliateSwaps, affiliateAccountModal,
   watchlist, trending, affiliateTerms, swapWidgetStepTwo, tradeWidgetDetail,
   connectMobileWallet, settings, affiliateAcceptTerms, wallets, walletDepositModal,
-  walletWithdrawalModal, assetNews
+  walletWithdrawalModal, assetNews, makerLogin, makerDashboard, makerSwaps, makerSettings,
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -76,6 +82,11 @@ const AppView = ({ hasNoWallets }) => {
         <Route path={affiliateSwaps.path} component={AffiliateSwaps}/>
         <Route path={affiliateTerms.path} component={AffiliateTerms}/>
         <Route path={tradeHistory.path} component={TradeHistory}/>
+
+        <Route path={makerLogin.path} component={MakerLogin} />
+        <AuthenticatedRoute path={makerDashboard.path} component={MakerDashboard} />
+        <AuthenticatedRoute path={makerSwaps.path} component={MakerSwaps} />
+        <AuthenticatedRoute path={makerSettings.path} component={MakerSettings} />
       
         {/* Legacy routes */}
         <Redirect exact from='/affiliates' to={affiliateLogin.path}/>

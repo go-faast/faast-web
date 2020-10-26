@@ -55,6 +55,7 @@
     ]
   },
   "dependencies": {
+    "@auth0/auth0-react": "^1.1.0",
     "@ledgerhq/hw-app-btc": "4.73.4",
     "@ledgerhq/hw-app-eth": "4.73.4",
     "@ledgerhq/hw-app-xrp": "^4.73.4",
