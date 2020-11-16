@@ -1,27 +1,21 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { compose, setDisplayName, withHandlers } from 'recompose'
-import { Form, Button } from 'reactstrap'
-import { reduxForm } from 'redux-form'
-import ReduxFormField from 'Components/ReduxFormField'
-import classNames from 'class-names'
-import { useAuth0 } from '@auth0/auth0-react'
+import { compose, setDisplayName, withHandlers, withState } from 'recompose'
+import { Button } from 'reactstrap'
 
-import { input } from '../style'
+import { withAuth } from 'Components/Auth'
 
 import { affiliateLogin } from 'Actions/affiliate'
-import { areSwapsLoading } from 'Selectors'
 
-const MakerLoginForm = ({ areSwapsLoading, onSubmit }) => {
-  const { isLoading, loginWithRedirect } = useAuth0()
+const MakerLoginForm = ({ onSubmit, isLoading }) => {
   return (
     <Button 
       className='w-100 flat' 
       color='primary' 
       type='submit'
-      onClick={() => loginWithRedirect()}
-      disabled={isLoading || areSwapsLoading}
+      onClick={onSubmit}
+      disabled={isLoading}
     >
       Login
     </Button>
@@ -30,15 +24,17 @@ const MakerLoginForm = ({ areSwapsLoading, onSubmit }) => {
 
 export default compose(
   setDisplayName('MakerLoginForm'),
+  withAuth(),
   connect(createStructuredSelector({
-    areSwapsLoading: areSwapsLoading,
   }), {
     login: affiliateLogin
   }),
+  withState('isLoading', 'updateIsLoading', false),
   withHandlers({
-    onSubmit: () => () => {
-      const { loginWithRedirect } = useAuth0()
-      loginWithRedirect()
+    onSubmit: ({ auth, updateIsLoading }) => () => {
+      updateIsLoading(true)
+      auth.login()
+      updateIsLoading(false)
     }
   }),
 )(MakerLoginForm)

@@ -1,4 +1,4 @@
-import { values, mapValues } from 'lodash'
+import { mapValues } from 'lodash'
 import { createSelector } from 'reselect'
 
 import { getAllAssets } from './asset'
@@ -11,9 +11,9 @@ const getMakerState = ({ maker }) => maker
 // Maker selectors
 export const isMakerLoggedIn = createSelector(getMakerState, ({ loggedIn }) => loggedIn)
 export const hasLoginError = createSelector(getMakerState, ({ loginError }) => loginError)
-export const isLoadingLogin = createSelector(getMakerState, ({ loadingLogin }) => loadingLogin)
-export const isMakerDataStale = createSelector(getMakerState, affiliate => {
-  const { lastUpdated } = affiliate
+export const isLoadingData = createSelector(getMakerState, ({ loadingData }) => loadingData)
+export const isMakerDataStale = createSelector(getMakerState, makerState => {
+  const { lastUpdated } = makerState
   return (Date.now() - lastUpdated) >= 120000
 })
 export const areSwapsLoading = createSelector(getMakerState, ({ swapsLoading }) => swapsLoading)
@@ -26,6 +26,15 @@ export const makerSwaps = createSelector(
   ({ swaps }, allAssets, allWallets, allTxs) => mapValues(swaps, createSwapExtender(allAssets, allWallets, allTxs)))
 
 export const makerSwapsArray = createSelector(makerSwaps, Object.values)
-export const getMakerProfile = createSelector(getMakerState, ({ balance }) => balance)
-export const makerId = createSelector(getMakerState, ({ affiliate_id }) => affiliate_id)
-export const secretKey = createSelector(getMakerState, ({ secret_key }) => secret_key)
+export const getMakerBalances = createSelector(getMakerState, ({ balances }) => balances)
+export const getMakerProfile = createSelector(getMakerState, ({ profile }) => profile)
+export const getMakerStats = createSelector(getMakerState, ({ stats }) => stats)
+export const getMakerProfit = createSelector(getMakerStats, (stats) => {
+  if (stats && stats.expenses) {
+    const profit = stats.revenue - stats.expenses.total
+    return profit
+  } else {
+    return 0
+  }
+})
+export const makerId = createSelector(getMakerProfile, ({ makerId }) => makerId)

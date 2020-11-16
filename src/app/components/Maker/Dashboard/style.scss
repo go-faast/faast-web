@@ -16,6 +16,16 @@
   box-shadow: rgba(0, 0, 0, 0.06) 0px 3px 4px 1px !important;
 }
 
+.lightInput {
+  background-color: white !important;
+  border-color: #ECECEF !important;
+  color: #3C3C40 !important;
+
+  &::placeholder {
+    color: #777 !important;
+  }
+}
+
 .statCol {
   padding-top: 7px;
   padding-bottom: 13px;

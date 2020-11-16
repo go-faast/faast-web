@@ -1,6 +1,5 @@
 import React, { Fragment } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
-import AuthenticatedRoute from 'Components/Auth/AuthenticatedRoute'
 
 import Connect from 'Components/Connect'
 import TradeHistory from 'Components/TradeHistory'
@@ -34,8 +33,11 @@ import WalletDepositModal from 'Components/WalletDepositModal'
 import WalletWithdrawalModal from 'Components/WalletWithdrawalModal'
 import MakerLogin from 'Components/Maker/Login'
 import MakerDashboard from 'Components/Maker/Dashboard'
+import MakerLoading from 'Components/Maker/Loading'
 import MakerSwaps from 'Components/Maker/Swaps'
+import MakerBalances from 'Components/Maker/Balances'
 import MakerSettings from 'Components/Maker/Settings'
+import { AuthenticatedRoute, AuthRoutes } from 'Components/Auth'
 
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
@@ -45,6 +47,7 @@ import {
   watchlist, trending, affiliateTerms, swapWidgetStepTwo, tradeWidgetDetail,
   connectMobileWallet, settings, affiliateAcceptTerms, wallets, walletDepositModal,
   walletWithdrawalModal, assetNews, makerLogin, makerDashboard, makerSwaps, makerSettings,
+  makerLoading, makerBalances
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -83,9 +86,12 @@ const AppView = ({ hasNoWallets }) => {
         <Route path={affiliateTerms.path} component={AffiliateTerms}/>
         <Route path={tradeHistory.path} component={TradeHistory}/>
 
+        <AuthRoutes path={'/makers/login/auth'} successPath={'/makers/login/loading'} />
+        <AuthenticatedRoute path={makerLoading.path} component={MakerLoading} />
         <Route path={makerLogin.path} component={MakerLogin} />
         <AuthenticatedRoute path={makerDashboard.path} component={MakerDashboard} />
         <AuthenticatedRoute path={makerSwaps.path} component={MakerSwaps} />
+        <AuthenticatedRoute path={makerBalances.path} component={MakerBalances} />
         <AuthenticatedRoute path={makerSettings.path} component={MakerSettings} />
       
         {/* Legacy routes */}

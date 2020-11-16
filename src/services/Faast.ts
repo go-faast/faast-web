@@ -468,13 +468,12 @@ export const createAffiliateSignature = (requestJSON: string | boolean, secret: 
 }
 
 export const getMakerSwaps = (
-  makerId: string,
   accessToken: string,
   page: number = 1,
   limit: number = 50,
 ): Promise<void> => {
   return fetchGet(`${apiUrl}/api/v2/public/maker/swaps`,
-  { makerId, limit, page },
+  { limit, page },
   {
     headers: {
       Authorization: `Bearer ${accessToken}`,
@@ -488,19 +487,36 @@ export const getMakerSwaps = (
 }
 
 export const getMakerProfile = (
-  makerId: string,
   accessToken: string,
-  page: number = 1,
-  limit: number = 50,
 ): Promise<void> => {
   return fetchGet(`${apiUrl}/api/v2/public/maker/profile`,
-  { makerId, limit, page },
+  undefined,
   {
     headers: {
       Authorization: `Bearer ${accessToken}`,
     },
   })
-  .then((profile) => profile)
+  .then((profile) => {
+    console.log('profile', profile)
+    return profile
+  })
+  .catch((e: any) => {
+    log.error(e)
+    return e
+  })
+}
+
+export const getMakerStatistics = (
+  accessToken: string,
+): Promise<void> => {
+  return fetchGet(`${apiUrl}/api/v2/public/maker/statistics`,
+  undefined,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((stats) => stats)
   .catch((e: any) => {
     log.error(e)
     return e
@@ -531,4 +547,5 @@ export default {
   fetchCoinNews,
   getMakerSwaps,
   getMakerProfile,
+  getMakerStatistics,
 }

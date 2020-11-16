@@ -9,25 +9,24 @@ import {
   NavLink,
   NavbarToggler,
 } from 'reactstrap'
+import { push } from 'react-router-redux'
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { setDisplayName, compose, lifecycle } from 'recompose'
+import { setDisplayName, compose, lifecycle, withState } from 'recompose'
 import { pick } from 'lodash'
 import classNames from 'class-names'
 import config from 'Config'
-import { isMakerLoggedIn } from 'Selectors/maker'
 import withToggle from 'Hoc/withToggle'
-import { useAuth0 } from '@auth0/auth0-react'
 import { makerLogout } from 'Actions/maker'
+import { withAuth } from 'Components/Auth'
 
 import Icon from 'Components/Icon'
 import FaastLogo from 'Img/faast-logo.png'
 
 import { navbar, navbarBrand, navbarLink, active } from './style'
 
-const MakersNavBar = ({ loggedIn, children, isExpanded, toggleExpanded, hasAcceptedTerms, clickableLogo, ...props }) => {
-  const { logout } = useAuth0()
+const MakersNavBar = ({ logoutMaker, children, loggedIn, isExpanded, toggleExpanded, clickableLogo, ...props }) => {
   return (
     <Navbar className={navbar} {...pick(props, Object.keys(Navbar.propTypes))} dark>
       <Container>
@@ -35,7 +34,7 @@ const MakersNavBar = ({ loggedIn, children, isExpanded, toggleExpanded, hasAccep
           <Icon src={FaastLogo} height='1.5rem' width='1.5rem' inline className='mx-3'/>
           <span className='text-white'>Faa.st | <span style={{ fontSize: 16 }}>Makers</span></span>
         </NavbarBrand>
-        {loggedIn && hasAcceptedTerms && (
+        {loggedIn && (
           <Fragment>
             <NavbarToggler onClick={toggleExpanded}/>
             <Collapse isOpen={isExpanded} navbar>
@@ -52,16 +51,10 @@ const MakersNavBar = ({ loggedIn, children, isExpanded, toggleExpanded, hasAccep
                     <span className='ml-2 d-sm-inline'>Swaps</span>
                   </NavLink>
                 </NavItem>
-                <NavItem key='withdrawals'>
-                  <NavLink className={classNames(navbarLink, 'px-1 px-lg-2')} activeClassName={active} tag={RouterNavLink} to='/makers/withdrawals'>
+                <NavItem key='balances'>
+                  <NavLink className={classNames(navbarLink, 'px-1 px-lg-2')} activeClassName={active} tag={RouterNavLink} to='/makers/balances'>
                     <i style={{ top: 2 }} className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-history position-relative'/>
-                    <span className='ml-2 nav-link-label d-sm-inline'>Withdrawals</span>
-                  </NavLink>
-                </NavItem>
-                <NavItem key='docs'>
-                  <NavLink className={classNames(navbarLink, 'px-1 px-lg-2')} activeClassName={active} tag='a' href='https://api.faa.st' target='_blank noopener noreferrer'>
-                    <i style={{ top: 2 }} className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-code position-relative'/>
-                    <span className='ml-2 nav-link-label d-sm-inline'>Docs</span>
+                    <span className='ml-2 nav-link-label d-sm-inline'>Balances</span>
                   </NavLink>
                 </NavItem>
                 <NavItem key='settings'>
@@ -73,7 +66,7 @@ const MakersNavBar = ({ loggedIn, children, isExpanded, toggleExpanded, hasAccep
               </Nav>
             </Collapse>
             <div>
-              <p onClick={() => logout({ returnTo: 'https://faa.st/app/makers/login' })} className={classNames(navbarLink, active, 'd-inline cursor-pointer mx-md-0 mx-3')}>
+              <p onClick={logoutMaker} className={classNames(navbarLink, active, 'd-inline cursor-pointer mx-md-0 mx-3')}>
               Logout
               </p>
             </div>
@@ -97,15 +90,23 @@ MakersNavBar.defaultProps = {
 
 export default compose(
   setDisplayName('MakersNavBar'),
+  withAuth(),
   connect(createStructuredSelector({
-    loggedIn: isMakerLoggedIn,
   }), {
-    logoutMaker: makerLogout
+    logoutMaker: makerLogout,
+    push
   }),
   withToggle('expanded'),
+  withState('loggedIn', 'updateLoggedIn', ({ auth }) => auth.isAuthenticated()),
   lifecycle({
     componentWillMount() {
       document.body.style.backgroundColor = '#f5f6fa'
+    },
+    componentDidUpdate() {
+      const { auth } = this.props
+      if (!auth.isAuthenticated()) {
+        push('/makers/login')
+      }
     }
   })
 )(MakersNavBar)

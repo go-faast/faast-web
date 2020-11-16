@@ -2,7 +2,7 @@ import React from 'react'
 import { compose, setDisplayName } from 'recompose'
 import { Route } from 'react-router-dom'
 
-import { Authenticated } from 'Components/Auth/Authenticated'
+import { Authenticated } from 'Components/Auth'
 
 export default compose(
   setDisplayName('AuthenticatedRoute'),

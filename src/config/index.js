@@ -55,4 +55,10 @@ export default {
   highCharts,
   tokenFunctionSignatures,
   extraAssetFields,
+  auth0: {
+    domain: envConfig.isDev ? 'faast-staging.eu.auth0.com' : 'faast.eu.auth0.com',
+    clientId: envConfig.isDev ? 'WUE4HYOZO4xIHoiGYAhDqw0txRuwvFsG' : '6rTS34Q5qU8x7Tr6CKNPjFEJu0NJ7Xjf',
+    callbackUrl: envConfig.isDev ? 'http://localhost:8080/app/makers/login/auth/callback' : 'https://faa.st/app/makers/login/auth/callback',
+    audience: 'https://testapi.faa.st'
+  }
 }
