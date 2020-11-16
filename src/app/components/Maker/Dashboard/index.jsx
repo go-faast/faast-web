@@ -25,7 +25,6 @@ const MakerDashboard = ({ profile, makerProfit }) => {
   return (
     <Fragment>
       <AffiliateLayout className='pt-3'>
-        {/* <StatsChart /> */}
         <Fragment>
           <Row className={classNames(row, statContainer, 'text-center mt-3')}>
             <Col className={classNames('mt-0', statCol)} sm='12' md='4'>

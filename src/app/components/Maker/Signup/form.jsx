@@ -63,7 +63,7 @@ export default compose(
     register
   }),
   withHandlers({
-    onSubmit: ({  }) => ({ affiliateId, address, email }) => {
+    onSubmit: () => () => {
       // register
     }
   }),
