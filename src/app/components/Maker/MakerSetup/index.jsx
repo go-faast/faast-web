@@ -1,17 +1,14 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { Fragment } from 'react'
-import { Helmet } from 'react-helmet'
-import { Link } from 'react-router-dom'
 import { Card, CardHeader, CardBody, Row, Col } from 'reactstrap'
 import { compose, setDisplayName } from 'recompose'
 import classNames from 'class-names'
-import SignupForm from './form'
 
 import MakerLayout from 'Components/Maker/Layout'
 
 import { card, cardHeader, smallCard } from '../style'
 
-const BinanceSetup = () => {
+const MakerSetup = () => {
   return (
     <Fragment>
       <MakerLayout className='pt-5'>
@@ -71,5 +68,5 @@ const BinanceSetup = () => {
 }
 
 export default compose(
-  setDisplayName('BinanceSetup'),
-)(BinanceSetup)
+  setDisplayName('MakerSetup'),
+)(MakerSetup)

@@ -1,11 +1,8 @@
 /* eslint-disable react/no-unescaped-entities */
 import React, { Fragment } from 'react'
-import { Helmet } from 'react-helmet'
-import { Link } from 'react-router-dom'
 import { Card, CardHeader, CardBody, Row, Col } from 'reactstrap'
 import { compose, setDisplayName } from 'recompose'
 import classNames from 'class-names'
-import SignupForm from './form'
 
 import BinanceSetup1 from 'Img/binancesetup1.png'
 import BinanceSetup2 from 'Img/binancesetup2.png'
