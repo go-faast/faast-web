@@ -103,10 +103,10 @@ export default compose(
     componentWillMount() {
       document.body.style.backgroundColor = '#f5f6fa'
     },
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
       const { loggedIn, push } = this.props
       if (!loggedIn) {
-        push('/makers/login')
+        // push('/makers/login')
       }
     }
   })

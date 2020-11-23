@@ -61,6 +61,7 @@ export default class Auth {
 
   constructor() {
     this.login = this.login.bind(this)
+    this.signUp = this.signUp.bind(this)
     this.logout = this.logout.bind(this)
     this.handleCallback = this.handleCallback.bind(this)
     this.isAuthenticated = isAuthenticated
@@ -78,6 +79,11 @@ export default class Auth {
   login() {
     console.log('Auth#login')
     this.auth0.authorize()
+  }
+
+  signUp(data) {
+    console.log('Auth#signup')
+    this.auth0.signup(data)
   }
 
   handleCallback() {

@@ -52,6 +52,14 @@ export function cannotEqual(x, errorMessage) {
   }
 }
 
+export function needsToEqual(x, errorMessage) {
+  return (value) => {
+    if (isProvided(value) && value !== x) {
+      return errorMessage || `The value needs to equal ${x}.`
+    }
+  }
+}
+
 export function integer() {
   return (value) => {
     if (isProvided(value) && !Number.isInteger(parseFloat(value))) {

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 import { Card, CardHeader, CardBody } from 'reactstrap'
 import { compose, setDisplayName } from 'recompose'
 import classNames from 'class-names'
-import LoginForm from './form'
+import SignupForm from './form'
 
 import MakerLayout from 'Components/Maker/Layout'
 
@@ -23,7 +23,7 @@ const MakerSignup = () => {
             <span>Market Maker Signup</span>
           </CardHeader>
           <CardBody className={card}>
-            <LoginForm/>
+            <SignupForm/>
           </CardBody>
         </Card>
         <small className='text-center'>

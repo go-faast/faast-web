@@ -66,6 +66,7 @@ export const affiliatePayouts = createPath('/affiliates/withdrawals')
 export const affiliateTerms = createPath('/affiliates/terms')
 
 export const makerLogin = createPath('/makers/login')
+export const makerRegister = createPath('/makers/register')
 export const makerLoading = createPath('/makers/login/loading')
 export const makerLoginCallback = createPath('/makers/login/callback')
 export const makerAccountModal = createPath('/makers/dashboard/account')
@@ -122,5 +123,6 @@ export default {
   makerSwaps,
   makerBalances,
   makerSettings,
-  makerLoading
+  makerLoading,
+  makerRegister
 }

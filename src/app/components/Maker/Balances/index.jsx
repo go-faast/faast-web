@@ -4,7 +4,7 @@ import MakerLayout from 'Components/Maker/Layout'
 import BalancesTable from 'Components/Maker/BalanceTable'
 
 
-const MakerSwaps = () => {
+const MakerBalances = () => {
   return (
     <MakerLayout className='pt-4'>
       <BalancesTable />
@@ -13,5 +13,5 @@ const MakerSwaps = () => {
 }
 
 export default compose(
-  setDisplayName('MakerSwaps'),
-)(MakerSwaps)
+  setDisplayName('MakerBalances'),
+)(MakerBalances)
