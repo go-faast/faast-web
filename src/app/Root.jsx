@@ -8,7 +8,7 @@ import { i18nInitialized, languageChanged, namespaceLoaded } from 'Actions/i18n'
 import i18n from './i18n'
 
 import AuthService from 'Services/Auth'
-import { AuthProvider } from 'Components/auth'
+import { AuthProvider } from 'Components/Auth'
 
 import App from 'Components/App'
 import store from './store'
