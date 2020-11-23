@@ -4,14 +4,12 @@ import { toBigNumber } from 'Utilities/numbers'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { withRouter } from 'react-router'
-import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
+import { compose, setDisplayName, setPropTypes, defaultProps, withProps } from 'recompose'
 import { Table, Card, CardHeader, CardBody, CardFooter } from 'reactstrap'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
 import Units from 'Components/Units'
-import Loading from 'Components/Loading'
 import CoinIcon from 'Components/CoinIcon'
-
 
 import { getMakerBalances } from 'Selectors/maker'
 
@@ -33,25 +31,25 @@ const BalanceTableRow = ({
         <Units value={toBigNumber(exchange).plus(toBigNumber(wallet))} symbol={symbol} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>
       </td>
       <td>
-        <Units value={toBigNumber(exchangeUsd).plus(toBigNumber(walletUsd))} symbol={'$'} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }} prefixSymbol />
+        <Units value={toBigNumber(exchangeUsd).plus(toBigNumber(walletUsd))} symbol={'$'} precision={6} showSymbol showIcon currency symbolSpaced={false} iconProps={{ className: 'd-sm-none' }} prefixSymbol />
       </td>
     </tr>
   )
 }
 
-const AffiliateBalanceTable = ({ balances, size, areWithdrawalsLoading }) => {
+const MakerBalanceTable = ({ balances, size }) => {
   balances = size === 'small' ? balances.slice(0,6) : balances
   return (
     <Fragment>
       <Card className={classNames(card, size === 'small' && smallCard, size != 'small' && 'mx-auto')}>
         <CardHeader className={cardHeader}>Current Balances</CardHeader>
         <CardBody className={classNames(balances.length > 0 && 'p-0', 'text-center')}>
-          {areWithdrawalsLoading ? (<Loading className='py-4' />) : balances.length > 0 ? (
+          {balances.length > 0 ? (
             <Fragment>
               <Table className={classNames('text-left', text, affilateTable)} striped responsive>
                 <thead>
                   <tr>
-                    <th style={{ left: 8 }}>Coin</th>
+                    <th className='position-relative' style={{ left: 8 }}>Coin</th>
                     <th>Amount</th>
                     <th>Balance (USD)</th>
                   </tr>
@@ -68,7 +66,7 @@ const AffiliateBalanceTable = ({ balances, size, areWithdrawalsLoading }) => {
                 <CardFooter 
                   tag={Link} 
                   to='/makers/balances'
-                  className={classNames(cardFooter, text, balances.length < 6 && 'position-absolute', 'p-2 text-center cursor-pointer d-block w-100')}
+                  className={classNames(cardFooter, text, 'p-2 pt-2 text-center cursor-pointer d-block w-100')}
                   style={{ bottom: 0 }}
                 >
                   <span className='font-weight-bold'>View All Balances</span>
@@ -76,10 +74,9 @@ const AffiliateBalanceTable = ({ balances, size, areWithdrawalsLoading }) => {
             </Fragment>
           ) :
             <div className='d-flex align-items-center justify-content-center'>
-              <p className={text}>No Balances yet.</p>
+              <p className={classNames('mb-0', text)}>No Balances yet.</p>
             </div>
           }
-          
         </CardBody>
       </Card>
     </Fragment>
@@ -87,10 +84,16 @@ const AffiliateBalanceTable = ({ balances, size, areWithdrawalsLoading }) => {
 }
 
 export default compose(
-  setDisplayName('AffiliateWithdrawalTable'),
+  setDisplayName('MakerBalanceTable'),
   connect(createStructuredSelector({
     balances: getMakerBalances,
   }), {
+  }),
+  withProps(({ balances }) => {
+    balances = balances ? balances.sort((a,b) => (b.exchangeUsd + b.walletUsd) - (a.exchangeUsd + a.walletUsd)) : []
+    return ({
+      balances
+    })
   }),
   setPropTypes({
     size: PropTypes.string
@@ -99,4 +102,4 @@ export default compose(
     size: 'large'
   }),
   withRouter,
-)(AffiliateBalanceTable)
+)(MakerBalanceTable)

@@ -27,14 +27,7 @@ export default compose(
   lifecycle({
     componentDidMount() {
       const { loginMaker } = this.props
-      console.log('htllooooo')
       loginMaker()
-        .then(() => {
-          push('/makers/dashboard')
-        })
-        .catch(() => {
-          push('/makers/login')
-        })
     },
   })
 )(MakerLoading)

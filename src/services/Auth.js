@@ -3,7 +3,7 @@ import { WebAuth } from 'auth0-js'
 import config from 'Config'
 const { auth0: authConfig } = config
 
-const REQUESTED_SCOPES = 'read:current_user update:current_user_metadata'
+const REQUESTED_SCOPES = 'openid email profile'
 
 const KEY_ID_TOKEN = 'auth:idToken'
 const KEY_ACCESS_TOKEN = 'auth:accessToken'
@@ -23,7 +23,7 @@ function setSession(authResult) {
 }
 
 /** Clear auth session information from local storage */
-function clearSession() {
+export function clearSession() {
   localStorage.removeItem(KEY_ACCESS_TOKEN)
   localStorage.removeItem(KEY_ID_TOKEN)
   localStorage.removeItem(KEY_EXPIRES_AT)

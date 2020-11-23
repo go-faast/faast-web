@@ -6,36 +6,36 @@ import { compose, setDisplayName } from 'recompose'
 import classNames from 'class-names'
 import LoginForm from './form'
 
-import AffiliateLayout from 'Components/Affiliate/Layout'
+import MakerLayout from 'Components/Maker/Layout'
 
 import { card, cardHeader, smallCard } from '../style'
 
-const AffiliateSignup = () => {
+const MakerSignup = () => {
   return (
     <Fragment>
       <Helmet>
-        <title>Faa.st Affiliate / Referral Program - Sign up</title>
-        <meta name='description' content='Earn Bitcoin on each cryptocurrency trade that is made using your affiliate id. Integrate the Faa.st API into your application and easily allow your users to trade their crypto.' /> 
+        <title>Faa.st Market Maker Program - Sign up</title>
+        <meta name='description' content='Earn passive interest on your Bitcoin by fulfilling swaps as a member of the Faa.st Maker Maker program.' /> 
       </Helmet>
-      <AffiliateLayout className='pt-5'>
+      <MakerLayout className='pt-5'>
         <Card className={classNames(card, smallCard, 'mx-auto')}>
           <CardHeader className={classNames(cardHeader, 'text-center')}>
-            <span>Affiliate API Signup</span>
+            <span>Market Maker Signup</span>
           </CardHeader>
           <CardBody className={card}>
             <LoginForm/>
           </CardBody>
         </Card>
         <small className='text-center'>
-          <Link to='/affiliates/login' style={{ color: '#8aa2b5' }} className='pt-3 d-block font-weight-bold'>
-          Already registered with the Faa.st Affiliate API? Login here.
+          <Link to='/makers/login' style={{ color: '#8aa2b5' }} className='pt-3 d-block font-weight-bold'>
+          Already registered as a Faa.st Market Maker? Login here.
           </Link>
         </small>
-      </AffiliateLayout>
+      </MakerLayout>
     </Fragment>
   )
 }
 
 export default compose(
-  setDisplayName('AffiliateSignup'),
-)(AffiliateSignup)
+  setDisplayName('MakerSignup'),
+)(MakerSignup)

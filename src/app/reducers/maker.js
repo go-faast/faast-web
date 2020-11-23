@@ -1,11 +1,12 @@
 import { createReducer } from 'redux-act'
-import { statsRetrieved, statsError, login, swapsRetrieved, swapsError, loginError,
-  updateMakerId, updateSecretKey, resetMaker, logout, updateProfile,
-  swapsLoading, makerDataUpdated, swapHistoryTotalUpdated, loadingData,
+import { 
+  statsRetrieved, statsError, login, swapsRetrieved, swapsError, loginError,
+  resetMaker, logout, updateProfile,
+  swapsLoading, makerDataUpdated, loadingData,
   updateBalances
 } from 'Actions/maker'
 
-const profile = {
+/* const profile = {
   isOnline: true,
   isSuspended: false,
   isBlocked: false,
@@ -13,9 +14,9 @@ const profile = {
   reputationGrade: 'B',
   swapsInProgress: -3,
   swapsCompleted: 11524,
-  capacityAddress: '',
-  capacityMaximumBtc: 0,
-  capacityAvailableBtc: 0,
+  capacityAddress: 'bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh',
+  capacityMaximumBtc: 10,
+  capacityAvailableBtc: 70,
   volumeOutstandingBtc: -0.5330140900000313,
   volumeOutstandingUsd: -5699.870000000046,
   balances: [
@@ -310,6 +311,8 @@ const profile = {
       hotwalletAddress: '0xc633fdadd08048bb8dc4dfbf584fbf8f94e67a42'
     }
   ],
+  swapMarginMin: .05,
+  swapMarginMax: 5,
   erc20PayportsAvailable: 0,
   erc20PayportPoolSize: 10,
   warnings: [
@@ -944,20 +947,23 @@ const profile = {
   },
   lastSwapProcessedAt: '2020-09-21T18:12:14.884Z'
 }
+*/
 
 const initialState = {
   lastUpdated: undefined,
-  balances: profile.balances,
+  balances: [],
   loggedIn: false,
   loadingData: false,
-  profile,
+  profile: {},
   swapCount: undefined,
-  maker_id: '',
   loginError: false,
   swapsError: '',
   swapsLoading: false,
   statsError: '',
-  stats: {},
+  stats: {
+    revenue: undefined,
+    expenses: {}
+  },
   swaps: {},
 }
 
@@ -966,7 +972,6 @@ export default createReducer({
   [loadingData]: (state, loadingData) => ({ ...state, loadingData }),
   [logout]: (state) => ({ ...state, loggedIn: false, loginError: false }),
   [loginError]: (state) => ({ ...state, loggedIn: false, loginError: true, loadingLogin: false }),
-  [updateMakerId]: (state, id) => ({ ...state, affiliate_id: id }),
   [updateProfile]: (state, profile) => ({ ...state, profile }),
   [updateBalances]: (state, balances) => ({ ...state, balances }),
   [makerDataUpdated]: (state, timestamp = Date.now()) => ({ ...state, lastUpdated: timestamp }),

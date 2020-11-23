@@ -7,7 +7,7 @@ import SwapsTable from 'Components/Maker/SwapsTable'
 const MakerSwaps = () => {
   return (
     <MakerLayout className='pt-4'>
-      <SwapsTable />
+      <SwapsTable title={'Recently Fulfilled Swaps'} />
     </MakerLayout>
   )
 }

@@ -5,7 +5,7 @@ import { withRouter } from 'react-router-dom'
 import qs from 'qs'
 
 import withAuth from './withAuth'
-import LoadingFullScreen from 'Components/Loading'
+import LoadingFullScreen from 'Components/LoadingFullscreen'
 import { text } from 'Components/Maker/style'
 
 export default compose(

@@ -3,14 +3,15 @@ import { push } from 'react-router-redux'
 import { createStructuredSelector } from 'reselect'
 import { Card, CardHeader, CardBody } from 'reactstrap'
 import { connect } from 'react-redux'
-import { compose, setDisplayName, lifecycle, withState } from 'recompose'
+import { compose, setDisplayName, lifecycle } from 'recompose'
 import classNames from 'class-names'
 import LoginForm from './form'
 
 import { withAuth } from 'Components/Auth'
 import MakerLayout from 'Components/Maker/Layout'
+import { isMakerLoggedIn } from 'Selectors/maker'
 
-import { card, cardHeader, smallCard, text } from '../style'
+import { card, cardHeader, smallCard } from '../style'
 
 const MakerLogin = () => {
   return (
@@ -33,19 +34,14 @@ export default compose(
   setDisplayName('MakerLogin'),
   withAuth(),
   connect(createStructuredSelector({
+    loggedIn: isMakerLoggedIn
   }), {
     push: push,
   }),
   lifecycle({
-    componentWillMount() {
-      const { loggedIn, push } = this.props
+    componentDidUpdate() {
+      const { push, loggedIn } = this.props
       if (loggedIn) {
-        push('/makers/dashboard')
-      }
-    },
-    componentDidUpdate(prevProps) {
-      const { auth, push } = this.props
-      if (auth.isAuthenticated() && !prevProps.auth.isAuthenticated()) {
         push('/makers/dashboard')
       }
     }

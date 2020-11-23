@@ -4,9 +4,9 @@ import { compose, setDisplayName, withState, withHandlers } from 'recompose'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { Form, Input, FormGroup, Label, Button } from 'reactstrap'
-import AffiliateLayout from 'Components/Affiliate/Layout'
-import TermsText from 'Components/Affiliate/TermsText'
-import { acceptTerms } from 'Actions/affiliate'
+import MakerLayout from 'Components/Maker/Layout'
+import TermsText from 'Components/Maker/TermsText'
+import { acceptTerms } from 'Actions/maker'
 
 export default compose(
   setDisplayName('AcceptTerms'),
@@ -21,7 +21,7 @@ export default compose(
     }
   })
 )(({ checked, updateChecked, handleAcceptTerms }) => (
-  <AffiliateLayout clickableHeaderLink={false} className='pt-5'>
+  <MakerLayout clickableHeaderLink={false} className='pt-5'>
     <div style={{ width: '100%', maxWidth: 600 }} className='container text-center'>
       <h2 className='text-left text-dark'>Terms and Conditions</h2>
       <div className='text-dark mx-auto p-3 font-xs text-left' style={{ width: '100%', height: '100%', maxHeight: 350, overflowY: 'scroll', backgroundColor: '#fff' }}>
@@ -32,7 +32,7 @@ export default compose(
           <FormGroup check>
             <Label className='text-dark' check>
               <Input value={checked} onChange={() => updateChecked(!checked)} type="checkbox" />{' '}
-              I have read and agree to the Faa.st Affiliate Terms & Conditions
+              I have read and agree to the Faa.st Market Maker Terms & Conditions
             </Label>
           </FormGroup>
         </Form>
@@ -41,5 +41,5 @@ export default compose(
         Continue to Dashboard
       </Button>
     </div>
-  </AffiliateLayout>
+  </MakerLayout>
 ))

@@ -482,7 +482,7 @@ export const getMakerSwaps = (
   .then((swaps) => swaps)
   .catch((e: any) => {
     log.error(e)
-    return e
+    throw new Error(e)
   })
 }
 
@@ -497,12 +497,11 @@ export const getMakerProfile = (
     },
   })
   .then((profile) => {
-    console.log('profile', profile)
     return profile
   })
   .catch((e: any) => {
     log.error(e)
-    return e
+    throw new Error(e)
   })
 }
 
@@ -519,7 +518,7 @@ export const getMakerStatistics = (
   .then((stats) => stats)
   .catch((e: any) => {
     log.error(e)
-    return e
+    throw new Error(e)
   })
 }
 

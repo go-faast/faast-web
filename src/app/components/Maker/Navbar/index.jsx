@@ -13,13 +13,14 @@ import { push } from 'react-router-redux'
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
-import { setDisplayName, compose, lifecycle, withState } from 'recompose'
+import { setDisplayName, compose, lifecycle } from 'recompose'
 import { pick } from 'lodash'
 import classNames from 'class-names'
 import config from 'Config'
 import withToggle from 'Hoc/withToggle'
 import { makerLogout } from 'Actions/maker'
 import { withAuth } from 'Components/Auth'
+import { isMakerLoggedIn } from 'Selectors/maker'
 
 import Icon from 'Components/Icon'
 import FaastLogo from 'Img/faast-logo.png'
@@ -92,19 +93,19 @@ export default compose(
   setDisplayName('MakersNavBar'),
   withAuth(),
   connect(createStructuredSelector({
+    loggedIn: isMakerLoggedIn
   }), {
     logoutMaker: makerLogout,
     push
   }),
   withToggle('expanded'),
-  withState('loggedIn', 'updateLoggedIn', ({ auth }) => auth.isAuthenticated()),
   lifecycle({
     componentWillMount() {
       document.body.style.backgroundColor = '#f5f6fa'
     },
     componentDidUpdate() {
-      const { auth } = this.props
-      if (!auth.isAuthenticated()) {
+      const { loggedIn, push } = this.props
+      if (!loggedIn) {
         push('/makers/login')
       }
     }

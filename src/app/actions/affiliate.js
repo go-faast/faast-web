@@ -130,7 +130,6 @@ export const getAffiliateSwaps = (id, key, page, limit) => (dispatch) => {
   return Faast.getAffiliateSwaps(id, key, page, limit)
     .then((swaps) => {
       dispatch(swapHistoryTotalUpdated(swaps.total))
-      console.log(swaps)
       sessionStorageSetJson('state:swap_history_total', swaps.total)
       swaps = swaps.orders.map(Faast.formatOrderResult)
       sessionStorageSetJson('state:affiliate_swaps', swaps)

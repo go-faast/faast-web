@@ -5,6 +5,7 @@ import blockstack from 'Utilities/blockstack'
 import { filterUrl } from 'Utilities/helpers'
 import log from 'Utilities/log'
 import { restoreCachedAffiliateInfo } from 'Actions/affiliate'
+import { restoreCachedMakerInfo } from 'Actions/maker'
 import walletService from 'Services/Wallet'
 import config from 'Config'
 import { retrieveAssets, restoreAssets } from 'Actions/asset'
@@ -38,6 +39,7 @@ export const restoreState = (dispatch) => Promise.resolve()
     dispatch(restoreRememberWallets())
     dispatch(toggleAssetsByTradeable())
     dispatch(restoreCachedAffiliateInfo())
+    dispatch(restoreCachedMakerInfo())
     dispatch(languageLoad())
     dispatch(currencyLoad())
     const assetCache = localStorageGetJson('state:asset')

@@ -29,6 +29,6 @@ module.exports = {
   isMocking,
   siteRoot,
   siteUrl: siteRoot || 'https://faa.st',
-  apiUrl: 'http://127.0.0.1:3101' || process.env.API_URL || 'https://api.faa.st',
+  apiUrl: process.env.API_URL || 'https://api.faa.st',
   logLevel: process.env.LOG_LEVEL || (isDev ? 'debug' : 'info'),
 }

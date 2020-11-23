@@ -150,6 +150,7 @@
     "precss": "^2.0.0",
     "prop-types": "^15.6.0",
     "qrcode.react": "^0.7.1",
+    "random-username-generator": "^1.0.4",
     "re-reselect": "^1.0.1",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",

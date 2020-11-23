@@ -2,8 +2,6 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { compose, setDisplayName, setPropTypes, withProps } from 'recompose'
 
-import LogoutLink from './LogoutLink'
-
 const joinTruthy = (items, delim = ',') => items.filter((item) => !!item).join(delim)
 
 export default compose(
@@ -24,7 +22,7 @@ export default compose(
         <b className="text-primary">Sorry! </b>You don&#39;t have permission to access this page.
       </i></h2>
       <h3>
-        You could go back to the <a href="/">Homepage</a> or <LogoutLink/>
+        Unable to authenticate your market maker. Try to <a href='/makers/login'>login again.</a>.
       </h3>
       {formattedError && (<h4>Error: {formattedError}</h4>)}
     </div>
