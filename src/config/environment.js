@@ -35,6 +35,6 @@ module.exports = {
     domain: process.env.AUTH0_DOMAIN || 'faast-staging.eu.auth0.com'  ,
     clientId: process.env.AUTH0_CLIENT_ID || 'WUE4HYOZO4xIHoiGYAhDqw0txRuwvFsG',
     callbackUrl: process.env.AUTH0_CALLBACK || 'http://localhost:8080/app/makers/login/auth/callback',
-    audience: process.env.AUDIENCE || 'https://testapi.faa.st'
+    audience: process.env.AUTH0_AUDIENCE || 'https://testapi.faa.st'
   }
 }
