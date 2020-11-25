@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react'
 import { Switch, Route, Redirect } from 'react-router-dom'
+
 import Connect from 'Components/Connect'
 import TradeHistory from 'Components/TradeHistory'
 import WalletOpened from 'Components/WalletOpened'
@@ -30,6 +31,14 @@ import Settings from 'Components/Settings'
 import Wallets from 'Components/Wallets'
 import WalletDepositModal from 'Components/WalletDepositModal'
 import WalletWithdrawalModal from 'Components/WalletWithdrawalModal'
+import MakerLogin from 'Components/Maker/Login'
+import MakerDashboard from 'Components/Maker/Dashboard'
+import MakerLoading from 'Components/Maker/Loading'
+import MakerSwaps from 'Components/Maker/Swaps'
+import MakerBalances from 'Components/Maker/Balances'
+import MakerSettings from 'Components/Maker/Settings'
+import MakerRegister from 'Components/Maker/Signup'
+import { AuthenticatedRoute, AuthRoutes } from 'Components/Auth'
 
 import {
   root, dashboard, rebalance, connect, viewOnlyAddress,
@@ -38,7 +47,8 @@ import {
   affiliatePayouts, affiliateSwaps, affiliateAccountModal,
   watchlist, trending, affiliateTerms, swapWidgetStepTwo, tradeWidgetDetail,
   connectMobileWallet, settings, affiliateAcceptTerms, wallets, walletDepositModal,
-  walletWithdrawalModal, assetNews
+  walletWithdrawalModal, assetNews, makerLogin, makerDashboard, makerSwaps, makerSettings,
+  makerLoading, makerBalances, makerRegister
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -76,6 +86,15 @@ const AppView = ({ hasNoWallets }) => {
         <Route path={affiliateSwaps.path} component={AffiliateSwaps}/>
         <Route path={affiliateTerms.path} component={AffiliateTerms}/>
         <Route path={tradeHistory.path} component={TradeHistory}/>
+
+        <AuthRoutes path={'/makers/login/auth'} successPath={'/makers/login/loading'} />
+        <AuthenticatedRoute path={makerLoading.path} component={MakerLoading} />
+        <Route path={makerLogin.path} component={MakerLogin} />
+        <Route path={makerRegister.path} component={MakerRegister} />
+        <AuthenticatedRoute path={makerDashboard.path} component={MakerDashboard} />
+        <AuthenticatedRoute path={makerSwaps.path} component={MakerSwaps} />
+        <AuthenticatedRoute path={makerBalances.path} component={MakerBalances} />
+        <AuthenticatedRoute path={makerSettings.path} component={MakerSettings} />
       
         {/* Legacy routes */}
         <Redirect exact from='/affiliates' to={affiliateLogin.path}/>

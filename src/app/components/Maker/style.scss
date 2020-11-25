@@ -1,0 +1,104 @@
+.text {
+  color: #525252 !important;
+}
+.card {
+  background-color: #fff !important;
+  border: none !important;
+  box-shadow: 0px 3px 4px 1px rgba(207, 219, 224, .17) !important;
+  border-radius: 4px;
+}
+.smallCard {
+  max-width: 600px;
+}
+
+.affilateTable {
+  background-color: #fff !important;
+  th {
+    // border-color: #ebeff1 !important;
+    border: none !important;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+  }
+  tr td {
+    border: none !important;
+  }
+  tr:nth-child(even) {
+    background-color: #fafbfd !important;
+  }
+}
+
+.cardHeader {
+  background: #fff !important;
+  color: #525252 !important;
+  border-color: #ebeff1 !important;
+  margin-bottom: 10px;
+  border-radius: 0px 2px 0px 2px !important;
+  font-size: 16px;
+  font-weight: 400;
+}
+
+.modalContent {
+  background-color: #fff !important;
+}
+
+.cardFooter {
+  background-color: #fff !important;
+  border-color: #ECECEC !important;
+}
+
+.input {
+  background-color: #fafbfd !important;
+  border-color: #ebeff1 !important;
+  color: #596872 !important;
+  &::placeholder {
+    color: #798893 !important;
+  }
+}
+
+.withdrawal {
+  background-color: #00C9F7 !important;
+  color: #fff !important;
+  font-weight: 600;
+  border-radius: 2px;
+  border: none !important;
+  &:hover {
+    background-color: #00b7e0 !important;
+    color: #fff !important;
+  }
+  &:focus {
+    background-color: #3493C0 !important;
+    color: #fff !important;
+  }
+  &:active {
+    background-color: #3493C0 !important;
+    color: #fff !important;
+  }
+}
+
+.withdrawalOutline {
+  background-color: #fff !important;
+  color: #00C9F7 !important;
+  font-weight: 600;
+  border-radius: 2px;
+  border: 1px solid #00C9F7 !important;
+  &:hover {
+    background-color: #00b7e0 !important;
+    color: #fff !important;
+  }
+  &:focus {
+    background-color: #3493C0 !important;
+    color: #fff !important;
+  }
+  &:active {
+    background-color: #3493C0 !important;
+    color: #fff !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .smallCard {
+    max-width: 100%;
+    width: 100%;
+  }
+}

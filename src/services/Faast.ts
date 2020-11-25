@@ -467,6 +467,61 @@ export const createAffiliateSignature = (requestJSON: string | boolean, secret: 
     .digest('hex')
 }
 
+export const getMakerSwaps = (
+  accessToken: string,
+  page: number = 1,
+  limit: number = 50,
+): Promise<void> => {
+  return fetchGet(`${apiUrl}/api/v2/public/maker/swaps`,
+  { limit, page },
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((swaps) => swaps)
+  .catch((e: any) => {
+    log.error(e)
+    throw new Error(e)
+  })
+}
+
+export const getMakerProfile = (
+  accessToken: string,
+): Promise<void> => {
+  return fetchGet(`${apiUrl}/api/v2/public/maker/profile`,
+  undefined,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((profile) => {
+    return profile
+  })
+  .catch((e: any) => {
+    log.error(e)
+    throw new Error(e)
+  })
+}
+
+export const getMakerStatistics = (
+  accessToken: string,
+): Promise<void> => {
+  return fetchGet(`${apiUrl}/api/v2/public/maker/statistics`,
+  undefined,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((stats) => stats)
+  .catch((e: any) => {
+    log.error(e)
+    throw new Error(e)
+  })
+}
+
 export default {
   fetchAssets,
   fetchPriceChart,
@@ -489,4 +544,7 @@ export default {
   validateAddress,
   getInternationalRate,
   fetchCoinNews,
+  getMakerSwaps,
+  getMakerProfile,
+  getMakerStatistics,
 }

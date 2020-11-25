@@ -22,6 +22,7 @@ import withdrawal from './withdrawal'
 import currency from './currency'
 import i18n from './i18n'
 import news from './news'
+import maker from './maker'
 
 export default combineReducers({
   app,
@@ -33,6 +34,7 @@ export default combineReducers({
   asset,
   affiliate,
   rate,
+  maker,
   tx,
   swap,
   widget,

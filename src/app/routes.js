@@ -65,6 +65,16 @@ export const affiliateSwaps = createPath('/affiliates/swaps')
 export const affiliatePayouts = createPath('/affiliates/withdrawals')
 export const affiliateTerms = createPath('/affiliates/terms')
 
+export const makerLogin = createPath('/makers/login')
+export const makerRegister = createPath('/makers/register')
+export const makerLoading = createPath('/makers/login/loading')
+export const makerLoginCallback = createPath('/makers/login/callback')
+export const makerAccountModal = createPath('/makers/dashboard/account')
+export const makerDashboard = createPath('/makers/dashboard')
+export const makerSwaps = createPath('/makers/swaps')
+export const makerBalances = createPath('/makers/balances')
+export const makerSettings = createPath('/makers/settings')
+
 export const connectMobileWallet = createPath(connect, '/mobile/connect/:walletType')
 export const connect = createPath('/connect')
 export const connectHwWallet = createPath(connect, '/hw/:walletType')
@@ -108,4 +118,11 @@ export default {
   wallets,
   walletDepositModal,
   walletWithdrawalModal,
+  makerLogin,
+  makerDashboard,
+  makerSwaps,
+  makerBalances,
+  makerSettings,
+  makerLoading,
+  makerRegister
 }
