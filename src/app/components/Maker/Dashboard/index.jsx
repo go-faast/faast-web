@@ -21,7 +21,7 @@ import { makerId, getMakerProfile, getMakerProfit } from 'Selectors/maker'
 import { statContainer, row, statCol } from './style'
 import { card, cardHeader, text, smallCard, input } from '../style'
 
-const MakerDashboard = ({ profile: { capacityAddress, approxTotalBalances: { total: { BTC: balanceBTC = '-' } = {} } = {}, 
+const MakerDashboard = ({ profile: { capacityAddress, approxTotalBalances: { total: { BTC: balanceBTC = '-', USD: balanceUSD = '-' } = {} } = {}, 
   swapsCompleted = '-', capacityMaximumBtc = '-' }, makerProfit }) => {
   return (
     <Fragment>
@@ -36,14 +36,14 @@ const MakerDashboard = ({ profile: { capacityAddress, approxTotalBalances: { tot
             </Col>
             <Col className={classNames('mt-xs-3 mt-md-0 mt-0', statCol)} sm='12' md='4'>
               <div className={classNames('mx-auto')}>
-                <p className='text-center mb-0'>Swaps Completed</p>
-                <p className='pt-0 mb-0'>{swapsCompleted}</p>
+                <p className='text-center mb-0'>Total Balance (USD)</p>
+                <p className='pt-0 mb-0'>${balanceUSD}</p>
               </div>
             </Col>
             <Col className={classNames('mt-xs-3 mt-md-0 mt-0', statCol)} sm='12' md='4'>
               <div className={classNames('mx-auto')}>
-                <p className='text-center mb-0'>Capacity Amount (BTC)</p>
-                <p className='pt-0 mb-0'>{capacityMaximumBtc}</p>
+                <p className='text-center mb-0'>Swaps Completed</p>
+                <p className='pt-0 mb-0'>{swapsCompleted}</p>
               </div>
             </Col>
           </Row>
@@ -55,11 +55,11 @@ const MakerDashboard = ({ profile: { capacityAddress, approxTotalBalances: { tot
                 <CardBody className='text-center'>
                   {makerProfit ? (
                     <Fragment>
-                      <p className='mb-0' style={{ fontSize: 70 }}>🎉</p>
-                      <span style={{ fontSize: 50 }} className={text}>{makerProfit > 0 && '+'}<Units value={makerProfit} symbol='BTC' precision={6} className={classNames('font-weight-bold mt-0 mb-4 d-inline-block', text)} /></span>
+                      <p className='my-3' style={{ fontSize: 70 }}>🎉</p>
+                      <span style={{ fontSize: 50 }} className={text}>{makerProfit > 0 && '+'}<Units value={makerProfit} symbol='BTC' precision={6} className={classNames('font-weight-bold mt-0 mb-2 d-inline-block', text)} /></span>
                     </Fragment>
                   ) : (
-                    <Loading />
+                    <Loading  />
                   )}
                 </CardBody>
               </Card>
@@ -74,6 +74,9 @@ const MakerDashboard = ({ profile: { capacityAddress, approxTotalBalances: { tot
                   {capacityAddress ? (
                     <Fragment>
                       <QRCode address={capacityAddress} size={150} />
+                      <p className={text}>
+                        <span>[Current Balance: </span>{capacityMaximumBtc} BTC]
+                      </p>
                       <p style={{ fontWeight: 600 }} className={classNames('text-left mb-0', text)}>Capacity Address:</p>
                       <ClipboardCopyField className={input} value={capacityAddress} />
                       <small className={classNames('text-left d-block', text)}>Depositing more BTC to your capacity address will increase the swap value your maker can process.</small>

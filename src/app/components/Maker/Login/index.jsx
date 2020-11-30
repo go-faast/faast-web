@@ -39,7 +39,7 @@ export default compose(
     push: push,
   }),
   lifecycle({
-    componentDidUpdate() {
+    componentDidMount() {
       const { push, loggedIn } = this.props
       if (loggedIn) {
         push('/makers/dashboard')

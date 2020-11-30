@@ -101,7 +101,7 @@ export default compose(
     loggedIn: isAffiliateLoggedIn,
     hasAcceptedTerms
   }), {
-    logout: affiliateLogout
+    logout: affiliateLogout,
   }),
   withToggle('expanded'),
   lifecycle({

@@ -44,7 +44,10 @@ export interface SwapOrder {
   depositAddressExtraId?: string
   withdrawalAddressExtraId?: string
   refundAddressExtraId?: string
-  marketMakerName?: string
+  marketMakerName?: string,
+  valueUsd?: BigNumber,
+  valueBtc?: BigNumber,
+  revenueMakerBtc?: BigNumber,
 }
 
 export type HdAccount = {

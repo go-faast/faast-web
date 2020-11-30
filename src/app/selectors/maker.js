@@ -14,7 +14,7 @@ export const hasLoginError = createSelector(getMakerState, ({ loginError }) => l
 export const isLoadingData = createSelector(getMakerState, ({ loadingData }) => loadingData)
 export const isMakerDataStale = createSelector(getMakerState, makerState => {
   const { lastUpdated } = makerState
-  return (Date.now() - lastUpdated) >= 120000
+  return (Date.now() - lastUpdated) >= 300000
 })
 export const areSwapsLoading = createSelector(getMakerState, ({ swapsLoading }) => swapsLoading)
 export const makerStats = createSelector(getMakerState, ({ stats }) => stats)
@@ -31,7 +31,7 @@ export const getMakerProfile = createSelector(getMakerState, ({ profile }) => pr
 export const getMakerStats = createSelector(getMakerState, ({ stats }) => stats)
 export const getMakerProfit = createSelector(getMakerStats, (stats) => {
   if (stats && stats.expenses) {
-    const profit = stats.revenue - stats.expenses.total
+    const profit = stats.revenue && stats.revenue.maker_revenue_btc - stats.expenses.total
     return profit
   } else {
     return 0

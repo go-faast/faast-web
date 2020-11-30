@@ -7,7 +7,8 @@ import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
 import { Table, Card, CardHeader, CardBody, CardFooter, Row, Col } from 'reactstrap'
 import PropTypes from 'prop-types'
 import classNames from 'class-names'
-
+import ChangePercent from 'Components/ChangePercent'
+import { toBigNumber } from 'Utilities/numbers'
 import { createStatusLabel, CoinSymbol } from 'Components/TradeTable'
 import Loading from 'Components/Loading'
 import Units from 'Components/Units'
@@ -21,33 +22,36 @@ const NODATA = '---'
 
 const TableRow = ({
   swap, size,
-  swap: { sendAmount, sendSymbol, receiveAmount, receiveSymbol, createdAtFormatted, rate },
+  swap: { sendSymbol, receiveSymbol, createdAtFormatted, valueUsd, valueBtc, revenueMakerBtc },
   ...props
-}) => (
-  <tr {...props}>
-    <td><span className='position-relative' style={{ left: 8 }}>{createStatusLabel(swap)}</span></td>
-    {size === 'large' && (<td className='d-none d-sm-table-cell'>{createdAtFormatted}</td>)}
-    <td className='d-none d-sm-table-cell'>
-      <CoinSymbol symbol={sendSymbol}/>
-      <i className='fa fa-long-arrow-right text-grey mx-2'/> 
-      <CoinSymbol symbol={receiveSymbol}/>
-    </td>
-    <td>{receiveAmount
-      ? (<Units value={receiveAmount} symbol={receiveSymbol} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>)
-      : NODATA}
-    </td>
-    <td>{sendAmount
-      ? (<Units value={sendAmount} symbol={sendSymbol} precision={6} showSymbol showIcon iconProps={{ className: 'd-sm-none' }}/>)
-      : NODATA}
-    </td>
-    {size === 'large' && (
-      <td>{rate > 0
-        ? (<Units value={rate} precision={6}/>)
+}) => {
+  const revenueUsd = toBigNumber(valueUsd).div(valueBtc).times(revenueMakerBtc)
+  const percentGain = revenueUsd.div(valueUsd).times(100)
+  return (
+    <tr {...props}>
+      <td><span className='position-relative' style={{ left: 8 }}>{createStatusLabel(swap)}</span></td>
+      {size === 'large' && (<td className='d-none d-sm-table-cell'>{createdAtFormatted}</td>)}
+      <td className='d-none d-sm-table-cell'>
+        <CoinSymbol symbol={sendSymbol}/>
+        <i className='fa fa-long-arrow-right text-grey mx-2'/> 
+        <CoinSymbol symbol={receiveSymbol}/>
+      </td>
+      <td>{revenueUsd && !revenueUsd.isNaN()
+        ? (<Units value={revenueUsd} symbol={'$'} precision={6} showSymbol prefixSymbol symbolSpaced={false} currency />)
         : NODATA}
       </td>
-    )}
-  </tr>
-)
+      {size === 'large' && (
+        <td>{revenueMakerBtc && !toBigNumber(revenueMakerBtc).isNaN() && toBigNumber(revenueMakerBtc).gt(0)
+          ? (<Units value={revenueMakerBtc} symbol={'BTC'} precision={6} showSymbol />)
+          : NODATA}
+        </td>
+      )}
+      <td>{percentGain && !percentGain.isNaN()
+        ? (<ChangePercent>{percentGain}</ChangePercent>)
+        : NODATA}
+      </td>
+    </tr>
+  )}
 
 const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading, title }) => {
   swaps = swaps && size === 'small' ? swaps.slice(0,6) : swaps
@@ -69,9 +73,9 @@ const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading, title }) => {
                       <th></th>
                       {size === 'large' ? (<th className='d-none d-sm-table-cell'>Date</th>) : null}
                       <th className='d-none d-sm-table-cell'>Pair</th>
-                      <th>Received</th>
-                      <th>Sent</th>
-                      {size === 'large' ? (<th>Rate</th>) : null}
+                      <th>Revenue (USD)</th>
+                      {size === 'large' ? (<th>Revenue (BTC)</th>) : null}
+                      <th>% Revenue</th>
                     </tr>
                   </thead>
                   <tbody>

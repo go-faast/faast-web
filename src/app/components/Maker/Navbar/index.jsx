@@ -10,6 +10,7 @@ import {
   NavbarToggler,
 } from 'reactstrap'
 import { push } from 'react-router-redux'
+import { restoreCachedMakerInfo } from 'Actions/maker'
 import { Link, NavLink as RouterNavLink } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { createStructuredSelector } from 'reselect'
@@ -20,15 +21,19 @@ import config from 'Config'
 import withToggle from 'Hoc/withToggle'
 import { makerLogout } from 'Actions/maker'
 import { withAuth } from 'Components/Auth'
-import { isMakerLoggedIn } from 'Selectors/maker'
+import { isMakerLoggedIn, isLoadingData } from 'Selectors/maker'
+import LoadingFullScreen from 'Components/LoadingFullscreen'
+import { text } from '../style'
 
 import Icon from 'Components/Icon'
 import FaastLogo from 'Img/faast-logo.png'
 
 import { navbar, navbarBrand, navbarLink, active } from './style'
 
-const MakersNavBar = ({ logoutMaker, children, loggedIn, isExpanded, toggleExpanded, clickableLogo, ...props }) => {
-  return (
+const MakersNavBar = ({ logoutMaker, children, loggedIn, isLoadingData, isExpanded, toggleExpanded, clickableLogo, ...props }) => {
+  return isLoadingData ? (
+    <LoadingFullScreen bgColor='#fff' label={<span className={text}>Loading Maker Stats...</span>} />
+  ) : (
     <Navbar className={navbar} {...pick(props, Object.keys(Navbar.propTypes))} dark>
       <Container>
         <NavbarBrand tag={clickableLogo ? Link : 'span'} to={loggedIn ? '/makers/dashboard' : '/makers/login'} className={classNames(navbarBrand, !loggedIn ? 'mx-auto' : 'mr-auto')}>
@@ -93,17 +98,17 @@ export default compose(
   setDisplayName('MakersNavBar'),
   withAuth(),
   connect(createStructuredSelector({
-    loggedIn: isMakerLoggedIn
+    loggedIn: isMakerLoggedIn,
+    isLoadingData
   }), {
     logoutMaker: makerLogout,
-    push
+    push,
+    restoreCachedMakerInfo
   }),
   withToggle('expanded'),
   lifecycle({
     componentWillMount() {
       document.body.style.backgroundColor = '#f5f6fa'
     },
-    componentDidUpdate() {
-    }
   })
 )(MakersNavBar)

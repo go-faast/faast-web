@@ -169,6 +169,9 @@ export const formatOrderResult = (r: any): SwapOrder => ({
   depositTxId: r.deposit_tx_id,
   depositAddressExtraId: r.deposit_address_extra_id,
   marketMakerName: r.maker_name,
+  valueUsd: toBigNumber(r.value_usd),
+  valueBtc: toBigNumber(r.value_btc),
+  revenueMakerBtc: toBigNumber(r.revenue_maker_btc),
 })
 
 export const fetchSwap = (swapId: string, formatOrder = true): Promise<SwapOrder> => {

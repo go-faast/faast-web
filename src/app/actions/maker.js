@@ -2,7 +2,7 @@ import { newScopedCreateAction } from 'Utilities/action'
 import { push } from 'react-router-redux'
 import Faast from 'Services/Faast'
 import { getSession, clearSession } from 'Services/Auth'
-import { localStorageSetJson, localStorageGetJson } from 'Utilities/storage'
+import { sessionStorageSetJson, sessionStorageGetJson, sessionStorageClear } from 'Utilities/storage'
 
 import { isMakerLoggedIn, isMakerDataStale } from 'Selectors/maker'
 import Toastr from 'Utilities/toastrWrapper'
@@ -37,7 +37,7 @@ export const getStats = () => (dispatch) => {
   const accessToken = dispatch(getMakerAccessToken())
   return Faast.getMakerStatistics(accessToken)
     .then((stats) => {
-      localStorageSetJson('state:maker_stats', stats)
+      sessionStorageSetJson('state:maker_stats', stats)
       dispatch(statsRetrieved(stats))
     })
     .catch((e) => { 
@@ -47,25 +47,26 @@ export const getStats = () => (dispatch) => {
 }
 
 export const getAllMakerData = () => (dispatch) => {
+  dispatch(loadingData(true))
   return Promise.all([
     dispatch(getMakerProfile()),
     dispatch(getMakerSwaps(1)),
     dispatch(getStats())
   ]).then(() => {
     dispatch(makerDataUpdated())
-    localStorageSetJson('state:maker_lastUpdated', Date.now())
+    sessionStorageSetJson('state:maker_lastUpdated', Date.now())
+    dispatch(loadingData(false))
   }).catch(() => { 
-    throw new Error('Error fetch your market maker data. Please try again later.') 
+    dispatch(loadingData(false))
+    throw new Error('Error fetching your market maker data. Please try again later.') 
   })
 }
 
 export const loginMaker = () => async (dispatch) => {
   try {
-    dispatch(loadingData(true))
     await dispatch(getAllMakerData())
     dispatch(login())
-    dispatch(loadingData(false))
-    return dispatch(push('/makers/dashboard'))
+    dispatch(push('/makers/dashboard'))
   } catch (err) {
     dispatch(loginError(err))
     dispatch(push('/makers/login'))
@@ -79,8 +80,8 @@ export const getMakerProfile = () => (dispatch) => {
     .then((profile) => {
       if (profile) {
         dispatch(updateBalances(profile.balances))
-        localStorageSetJson('state:maker_balances', profile.balances)
-        localStorageSetJson('state:maker_profile', profile)
+        sessionStorageSetJson('state:maker_balances', profile.balances)
+        sessionStorageSetJson('state:maker_profile', profile)
         return dispatch(updateProfile(profile))
       }
     })
@@ -93,9 +94,9 @@ export const getMakerSwaps = (page, limit = 20) => (dispatch) => {
   return Faast.getMakerSwaps(accessToken, page, limit)
     .then((swaps) => {
       dispatch(swapHistoryTotalUpdated(swaps.total))
-      localStorageSetJson('state:maker_swap_history_total', swaps.total)
+      sessionStorageSetJson('state:maker_swap_history_total', swaps.total)
       swaps = swaps && swaps.orders && swaps.orders.map(Faast.formatOrderResult)
-      localStorageSetJson('state:maker_swaps', swaps)
+      sessionStorageSetJson('state:maker_swaps', swaps)
       return dispatch(swapsRetrieved(swaps))
     })
     .catch((e) => {
@@ -105,20 +106,20 @@ export const getMakerSwaps = (page, limit = 20) => (dispatch) => {
 }
 
 export const restoreCachedMakerInfo = () => (dispatch, getState) => {
-  const cachedMakerStats = localStorageGetJson('state:maker_stats')
-  const cachedMakerSwaps = localStorageGetJson('state:maker_swaps')
-  const cachedMakerProfile = localStorageGetJson('state:maker_profile')
-  const cachedMakerBalances = localStorageGetJson('state:maker_balances')
-  const cachedLastUpdated = localStorageGetJson('state:maker_lastUpdated')
+  const cachedMakerStats = sessionStorageGetJson('state:maker_stats')
+  const cachedMakerSwaps = sessionStorageGetJson('state:maker_swaps')
+  const cachedMakerProfile = sessionStorageGetJson('state:maker_profile')
+  const cachedMakerBalances = sessionStorageGetJson('state:maker_balances')
+  const cachedLastUpdated = sessionStorageGetJson('state:maker_lastUpdated')
   if (cachedMakerStats && cachedMakerSwaps && cachedMakerBalances && cachedLastUpdated) {
-    dispatch(loginMaker())
     dispatch(statsRetrieved(cachedMakerStats))
     dispatch(swapsRetrieved(cachedMakerSwaps))
     dispatch(updateProfile(cachedMakerProfile))
     dispatch(updateBalances(cachedMakerBalances))
     dispatch(makerDataUpdated(parseInt(cachedLastUpdated)))
+    dispatch(login())
     if (isMakerDataStale(getState())) {
-      return dispatch(push('/makers/login/loading'))
+      return dispatch(getAllMakerData())
     }
     return
   }
@@ -130,6 +131,7 @@ export const restoreCachedMakerInfo = () => (dispatch, getState) => {
 
 export const makerLogout = () => (dispatch) => {
   clearSession()
+  sessionStorageClear()
   dispatch(resetMaker())
   dispatch(logout())
   dispatch(push('/makers/login'))

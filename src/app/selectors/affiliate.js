@@ -17,7 +17,7 @@ export const getSwapChartData = createSelector(getAffiliateState, ({ swapChartDa
 export const isSwapChartLoading = createSelector(getAffiliateState, ({ swapChartLoading }) => swapChartLoading)
 export const isAffiliateDataStale = createSelector(getAffiliateState, affiliate => {
   const { lastUpdated } = affiliate
-  return (Date.now() - lastUpdated) >= 120000
+  return (Date.now() - lastUpdated) >= 300000
 })
 export const areWithdrawalsLoading = createSelector(getAffiliateState, ({ withdrawalsLoading }) => withdrawalsLoading)
 export const getTotalWithdrawals = createSelector(getAffiliateState, ({ totalWithdrawals }) => totalWithdrawals)

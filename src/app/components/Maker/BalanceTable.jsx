@@ -38,7 +38,7 @@ const BalanceTableRow = ({
 }
 
 const MakerBalanceTable = ({ balances, size }) => {
-  balances = size === 'small' ? balances.slice(0,6) : balances
+  balances = size === 'small' ? balances.slice(0,7) : balances
   return (
     <Fragment>
       <Card className={classNames(card, size === 'small' && smallCard, size != 'small' && 'mx-auto')}>
@@ -62,15 +62,6 @@ const MakerBalanceTable = ({ balances, size }) => {
                   })}
                 </tbody>
               </Table>
-              {size === 'small' && balances.length > 0 && (
-                <CardFooter 
-                  tag={Link} 
-                  to='/makers/balances'
-                  className={classNames(cardFooter, text, 'p-2 pt-2 text-center cursor-pointer d-block w-100')}
-                  style={{ bottom: 0 }}
-                >
-                  <span className='font-weight-bold'>View All Balances</span>
-                </CardFooter>)}
             </Fragment>
           ) :
             <div className='d-flex align-items-center justify-content-center'>
@@ -78,6 +69,15 @@ const MakerBalanceTable = ({ balances, size }) => {
             </div>
           }
         </CardBody>
+        {size === 'small' && balances.length > 0 && (
+          <CardFooter 
+            tag={Link} 
+            to='/makers/balances'
+            className={classNames(cardFooter, text, balances.length <= 6 && 'position-absolute', 'p-2 text-center cursor-pointer d-block w-100')}
+            style={{ bottom: 0 }}
+          >
+            <span className='font-weight-bold'>View All Balances</span>
+          </CardFooter>)}
       </Card>
     </Fragment>
   )
