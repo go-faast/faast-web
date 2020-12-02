@@ -148,6 +148,7 @@
     "parse-unit": "^1.0.1",
     "postcss-loader": "^2.0.10",
     "precss": "^2.0.0",
+    "project-name-generator": "^2.1.9",
     "prop-types": "^15.6.0",
     "qrcode.react": "^0.7.1",
     "random-username-generator": "^1.0.4",

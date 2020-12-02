@@ -2,6 +2,7 @@ import { newScopedCreateAction } from 'Utilities/action'
 import { push } from 'react-router-redux'
 import Faast from 'Services/Faast'
 import { getSession, clearSession } from 'Services/Auth'
+import AuthService from 'Services/Auth'
 import { sessionStorageSetJson, sessionStorageGetJson, sessionStorageClear } from 'Utilities/storage'
 
 import { isMakerLoggedIn, isMakerDataStale } from 'Selectors/maker'
@@ -103,6 +104,22 @@ export const getMakerSwaps = (page, limit = 20) => (dispatch) => {
       dispatch(swapsError(e))
       throw new Error(e)
     })
+}
+
+export const register = (formData) => async (dispatch) => {
+  try {
+    const Auth = new AuthService()
+    Auth.signUp({ 
+      email: formData.email, 
+      password: formData.password,
+      connection: 'Username-Password-Authentication' 
+    })
+    const maker = await Faast.registerMaker(formData)
+    
+  } catch (err) {
+    console.log('error registering!!')
+    throw new Error(err.message)
+  }
 }
 
 export const restoreCachedMakerInfo = () => (dispatch, getState) => {

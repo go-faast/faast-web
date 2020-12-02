@@ -6,7 +6,7 @@ import { Form, Button, Row, Col } from 'reactstrap'
 import { reduxForm, formValueSelector } from 'redux-form'
 import ReduxFormField from 'Components/ReduxFormField'
 import classNames from 'class-names'
-import rug from 'random-username-generator'
+import generate from 'project-name-generator'
 import * as validator from 'Utilities/validator'
 
 const FORM_NAME = 'maker_signup'
@@ -22,20 +22,20 @@ const MakerSignupForm = ({ handleSubmit, randomNames, generateRandomNames, updat
   return (
     <Form onSubmit={handleSubmit}>
       <ReduxFormField
-        name='email'
-        type='email'
-        placeholder='Email Address'
-        validate={validateRequired}
-        inputClass={classNames('flat', input)}
-        label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Email Address</p></small>}
-      />
-      <ReduxFormField
         name='name'
         type='text'
         validate={validateRequired}
         placeholder='Full Name'
         inputClass={classNames('flat', input)}
         label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Full Name</p></small>}
+      />
+      <ReduxFormField
+        name='email'
+        type='email'
+        placeholder='Email Address'
+        validate={validateRequired}
+        inputClass={classNames('flat', input)}
+        label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Email Address</p></small>}
       />
       <ReduxFormField
         name='publicName'
@@ -46,6 +46,22 @@ const MakerSignupForm = ({ handleSubmit, randomNames, generateRandomNames, updat
         placeholder='Public Maker Name'
         inputClass={classNames('flat mb-0', input)}
         label={<small><p className={classNames('mt-0 mb-0 pb-0 font-weight-bold', text)}>Public Maker Name</p></small>}
+      />
+      <ReduxFormField
+        name='password'
+        type='password'
+        validate={validateRequired}
+        placeholder='Password'
+        inputClass={classNames('flat', input)}
+        label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Password</p></small>}
+      />
+      <ReduxFormField
+        name='confirmPassword'
+        type='confirmPassword'
+        placeholder='Confirm Password'
+        validate={confirmPassword}
+        inputClass={classNames('flat', input)}
+        label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Confirm Password</p></small>}
       />
       {randomNames.length > 0 && (
         <Fragment>
@@ -72,26 +88,30 @@ const MakerSignupForm = ({ handleSubmit, randomNames, generateRandomNames, updat
         </Fragment>
       )}
       <ReduxFormField
+        name='type'
+        type='select'
+        requiredLabel
+        validate={validateRequired}
+        label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Choose which exchange you use</p></small>}
+      >
+        <option value='' defaultValue disabled>Select an exchange</option>
+        <option value='binance'>Binance</option>
+      </ReduxFormField>
+      <ReduxFormField
+        name='type'
+        type='select'
+        requiredLabel
+        validate={validateRequired}
+        label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Choose assets to support</p></small>}
+      >
+        <option value='' defaultValue disabled>Select an exchange</option>
+        <option value='binance'>Binance</option>
+      </ReduxFormField>
+      <ReduxFormField
         name='makerId'
         type='hidden'
         placeholder='Maker ID'
         inputClass={classNames('flat', input)}
-      />
-      <ReduxFormField
-        name='password'
-        type='password'
-        validate={validateRequired}
-        placeholder='Password'
-        inputClass={classNames('flat', input)}
-        label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Password</p></small>}
-      />
-      <ReduxFormField
-        name='confirmPassword'
-        type='confirmPassword'
-        placeholder='Confirm Password'
-        validate={confirmPassword}
-        inputClass={classNames('flat', input)}
-        label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Confirm Password</p></small>}
       />
       <Button className='w-100 flat' color='primary' type='submit'>Signup</Button>
     </Form>
@@ -129,15 +149,20 @@ export default compose(
     )
   }),
   withHandlers({
-    onSubmit: () => () => {
-      // register
+    onSubmit: ({ register }) => ({ email, publicName, makerId, password, name }) => {
+      register({
+        email,
+        publicName,
+        makerId,
+        password,
+        name
+      })
     },
     generateRandomNames: ({ updateRandomNames, updateMakerName }) => () => {
       const names = []
       updateMakerName(undefined)
-      rug.setSeperator(' ')
       for (let i = 0; i < 4; i++) {
-        names.push(rug.generate())
+        names.push(generate().spaced)
       }
       updateRandomNames(names)
     }
