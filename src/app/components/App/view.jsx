@@ -38,6 +38,10 @@ import MakerSwaps from 'Components/Maker/Swaps'
 import MakerBalances from 'Components/Maker/Balances'
 import MakerSettings from 'Components/Maker/Settings'
 import MakerRegister from 'Components/Maker/Signup'
+import MakerRegisterProfile from 'Components/Maker/SignupProfile'
+import MakerAccountModal from 'Components/Maker/AccountModal'
+import MakerSetup from 'Components/Maker/MakerSetup'
+import MakerExchangeSetup from 'Components/Maker/BinanceSetup'
 import { AuthenticatedRoute, AuthRoutes } from 'Components/Auth'
 
 import {
@@ -48,7 +52,8 @@ import {
   watchlist, trending, affiliateTerms, swapWidgetStepTwo, tradeWidgetDetail,
   connectMobileWallet, settings, affiliateAcceptTerms, wallets, walletDepositModal,
   walletWithdrawalModal, assetNews, makerLogin, makerDashboard, makerSwaps, makerSettings,
-  makerLoading, makerBalances, makerRegister
+  makerLoading, makerBalances, makerRegister, makerRegisterProfile, makerAccountModal,
+  makerSetup, makerExchangeSetup
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -90,7 +95,10 @@ const AppView = ({ hasNoWallets }) => {
         <AuthRoutes path={'/makers/login/auth'} successPath={'/makers/login/loading'} />
         <AuthenticatedRoute path={makerLoading.path} component={MakerLoading} />
         <Route path={makerLogin.path} component={MakerLogin} />
+        <Route path={makerRegisterProfile.path} component={MakerRegisterProfile} />
         <Route path={makerRegister.path} component={MakerRegister} />
+        <Route path={makerSetup.path} component={MakerSetup} />
+        <Route path={makerExchangeSetup.path} component={MakerExchangeSetup} />
         <AuthenticatedRoute path={makerDashboard.path} component={MakerDashboard} />
         <AuthenticatedRoute path={makerSwaps.path} component={MakerSwaps} />
         <AuthenticatedRoute path={makerBalances.path} component={MakerBalances} />
@@ -123,6 +131,9 @@ const AppView = ({ hasNoWallets }) => {
       )}/>
       <ModalRoute closePath={affiliateDashboard.path} path={affiliateAccountModal.path} render={(props) => (
         <AffiliateAccountModal {...props}/>
+      )}/>
+      <ModalRoute closePath={makerDashboard.path} path={makerAccountModal.path} render={(props) => (
+        <MakerAccountModal {...props}/>
       )}/>
       <Footer />
     </Fragment>

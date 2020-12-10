@@ -1,7 +1,7 @@
 import { newScopedCreateAction } from 'Utilities/action'
 import { push } from 'react-router-redux'
 import Faast from 'Services/Faast'
-import { getSession, clearSession } from 'Services/Auth'
+import { getSession } from 'Services/Auth'
 import AuthService from 'Services/Auth'
 import { sessionStorageSetJson, sessionStorageGetJson, sessionStorageClear } from 'Utilities/storage'
 
@@ -65,6 +65,11 @@ export const getAllMakerData = () => (dispatch) => {
 
 export const loginMaker = () => async (dispatch) => {
   try {
+    const user = await getAuth0User()
+    console.log('USER:', user)
+    if (user && (!user.app_metadata || user.app_metadata && !user.app_metadata.maker_id)) {
+      return dispatch(push('/makers/register/profile'))
+    }
     await dispatch(getAllMakerData())
     dispatch(login())
     dispatch(push('/makers/dashboard'))
@@ -72,6 +77,29 @@ export const loginMaker = () => async (dispatch) => {
     dispatch(loginError(err))
     dispatch(push('/makers/login'))
     Toastr.error(err.message)
+  }
+}
+
+export const getAuth0User = () => async (dispatch) => {
+  const accessToken = dispatch(getMakerAccessToken())
+  const userId = getSession().tokenPayload && getSession().tokenPayload.sub
+  const user = await Faast.getAuth0User(accessToken, userId)
+  return user
+}
+
+export const registerMaker = (profile) => async (dispatch) => {
+  try {
+    const accessToken = dispatch(getMakerAccessToken())
+    const userId = getSession().tokenPayload && getSession().tokenPayload.sub
+    profile.auth0UserId = userId
+    const makerProfile = await Faast.createMaker(accessToken, profile)
+    console.log(makerProfile)
+    dispatch(updateProfile(makerProfile))
+    dispatch(push('/makers/dashboard/account'))
+  } catch (err) {
+    dispatch(loginError(err))
+    dispatch(push('/makers/login'))
+    Toastr.error('Unable to complete user signup. Please contact support@faa.st.')
   }
 }
 
@@ -106,22 +134,6 @@ export const getMakerSwaps = (page, limit = 20) => (dispatch) => {
     })
 }
 
-export const register = (formData) => async (dispatch) => {
-  try {
-    const Auth = new AuthService()
-    Auth.signUp({ 
-      email: formData.email, 
-      password: formData.password,
-      connection: 'Username-Password-Authentication' 
-    })
-    const maker = await Faast.registerMaker(formData)
-    
-  } catch (err) {
-    console.log('error registering!!')
-    throw new Error(err.message)
-  }
-}
-
 export const restoreCachedMakerInfo = () => (dispatch, getState) => {
   const cachedMakerStats = sessionStorageGetJson('state:maker_stats')
   const cachedMakerSwaps = sessionStorageGetJson('state:maker_swaps')
@@ -147,9 +159,10 @@ export const restoreCachedMakerInfo = () => (dispatch, getState) => {
 }
 
 export const makerLogout = () => (dispatch) => {
-  clearSession()
+  const Auth = new AuthService()
   sessionStorageClear()
   dispatch(resetMaker())
   dispatch(logout())
-  dispatch(push('/makers/login'))
+  Auth.logout()
+  // dispatch(push('/makers/login'))
 }

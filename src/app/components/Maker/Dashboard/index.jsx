@@ -1,8 +1,9 @@
 import React, { Fragment } from 'react'
 import { createStructuredSelector } from 'reselect'
-import { Row, Col, Card, CardHeader, CardBody, CardDeck } from 'reactstrap'
+import { Row, Col, Card, CardHeader, CardBody, CardDeck, CardFooter } from 'reactstrap'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
+import { toBigNumber } from 'Utilities/numbers'
 import { compose, setDisplayName, lifecycle } from 'recompose'
 import QRCode from 'Components/DepositQRCode'
 import ClipboardCopyField from 'Components/ClipboardCopyField'
@@ -12,82 +13,122 @@ import BalancesTable from 'Components/Maker/BalanceTable'
 // import StatsChart from './statsChart'
 import Units from 'Components/Units'
 import Loading from 'Components/Loading'
-
+import { getAssetPrice } from 'Selectors/asset'
 import { getStats } from 'Actions/maker'
 import classNames from 'class-names'
 
-import { makerId, getMakerProfile, getMakerProfit } from 'Selectors/maker'
+import { makerId, getMakerProfile, getMakerProfit, isMakerActivated } from 'Selectors/maker'
 
 import { statContainer, row, statCol } from './style'
 import { card, cardHeader, text, smallCard, input } from '../style'
 
-const MakerDashboard = ({ profile: { capacityAddress, approxTotalBalances: { total: { BTC: balanceBTC = '-', USD: balanceUSD = '-' } = {} } = {}, 
-  swapsCompleted = '-', capacityMaximumBtc = '-' }, makerProfit }) => {
+
+const MakerDashboard = ({ isMakerActivated, profile, profile: { capacityAddress, approxTotalBalances: { total: { BTC: balanceBTC = '-', USD: balanceUSD = '-' } = {} } = {}, 
+  swapsCompleted = '-', capacityMaximumBtc = '-' }, makerProfit, btcPrice }) => {
+  const CapacityWalletRow = () => (
+    <Card className={classNames(card, smallCard)}>
+      <CardHeader className={cardHeader}>Capacity Wallet</CardHeader>
+      <CardBody className='text-center'>
+        {capacityAddress ? (
+          <Fragment>
+            <QRCode address={capacityAddress} size={150} />
+            <p className={text}>
+              <span>[Current Balance: </span>{capacityMaximumBtc} BTC]
+            </p>
+            <p style={{ fontWeight: 600 }} className={classNames('text-left mb-0', text)}>Capacity Address:</p>
+            <ClipboardCopyField className={input} value={capacityAddress} />
+            <small className={classNames('text-left d-block', text)}>Depositing more BTC to your capacity address will increase the swap value your maker can process.</small>
+          </Fragment>
+        ) : (
+          <Loading />
+        )}
+      </CardBody>
+    </Card>
+  )
+
   return (
     <Fragment>
       <MakerLayout className='pt-3'>
         <Fragment>
-          <Row className={classNames(row, statContainer, 'text-center mt-3')}>
-            <Col className={classNames('mt-0', statCol)} sm='12' md='4'>
-              <div className={classNames('mx-auto')}>
-                <p className='text-center mb-0'>Total Balance (BTC)</p>
-                <p className='pt-0 mb-0'>{balanceBTC}</p>
-              </div>
-            </Col>
-            <Col className={classNames('mt-xs-3 mt-md-0 mt-0', statCol)} sm='12' md='4'>
-              <div className={classNames('mx-auto')}>
-                <p className='text-center mb-0'>Total Balance (USD)</p>
-                <p className='pt-0 mb-0'>${balanceUSD}</p>
-              </div>
-            </Col>
-            <Col className={classNames('mt-xs-3 mt-md-0 mt-0', statCol)} sm='12' md='4'>
-              <div className={classNames('mx-auto')}>
-                <p className='text-center mb-0'>Swaps Completed</p>
-                <p className='pt-0 mb-0'>{swapsCompleted}</p>
-              </div>
-            </Col>
-          </Row>
-          <Row className='mt-4'>
-            <CardDeck style={{ flex: 1 }}>
-              <SwapsTable title={'Recent Swaps'} size='small'/>
-              <Card className={classNames(card, smallCard)}>
-                <CardHeader className={cardHeader}>Profit to Date</CardHeader>
-                <CardBody className='text-center'>
-                  {makerProfit ? (
-                    <Fragment>
-                      <p className='my-3' style={{ fontSize: 70 }}>🎉</p>
-                      <span style={{ fontSize: 50 }} className={text}>{makerProfit > 0 && '+'}<Units value={makerProfit} symbol='BTC' precision={6} className={classNames('font-weight-bold mt-0 mb-2 d-inline-block', text)} /></span>
-                    </Fragment>
-                  ) : (
-                    <Loading  />
-                  )}
-                </CardBody>
-              </Card>
-            </CardDeck>
-          </Row>
-          <Row className='mt-4'>
-            <CardDeck style={{ flex: 1 }}>
-              <BalancesTable size='small' />
-              <Card className={classNames(card, smallCard)}>
-                <CardHeader className={cardHeader}>Capacity Wallet</CardHeader>
-                <CardBody className='text-center'>
-                  {capacityAddress ? (
-                    <Fragment>
-                      <QRCode address={capacityAddress} size={150} />
-                      <p className={text}>
-                        <span>[Current Balance: </span>{capacityMaximumBtc} BTC]
-                      </p>
-                      <p style={{ fontWeight: 600 }} className={classNames('text-left mb-0', text)}>Capacity Address:</p>
-                      <ClipboardCopyField className={input} value={capacityAddress} />
-                      <small className={classNames('text-left d-block', text)}>Depositing more BTC to your capacity address will increase the swap value your maker can process.</small>
-                    </Fragment>
-                  ) : (
-                    <Loading />
-                  )}
-                </CardBody>
-              </Card>
-            </CardDeck>
-          </Row>
+          {profile && !isMakerActivated ? (
+            <Fragment>
+              <Row className='mt-4'>
+                <CardDeck style={{ flex: 1 }}>
+                  <Card>
+                    <CardHeader>Setup Maker</CardHeader>
+                    <CardBody>
+                      <ol>
+                        <li>
+                          <a href='/makers/setup/server' target='_blank'>Setup your market maker on a virtual private server</a>
+                        </li>
+                        <li>
+                          <a href='/makers/setup/exchanges' target='_blank'>Setup your exchange API account</a>
+                        </li>
+                      </ol>
+                    </CardBody>
+                    <CardFooter>
+                      Have questions? Contact us: support@faa.st
+                    </CardFooter>
+                  </Card>
+                  <CapacityWalletRow /> 
+                </CardDeck>
+              </Row>
+            </Fragment>
+          ) : (
+            <Fragment>
+              <Row className={classNames(row, statContainer, 'text-center mt-3')}>
+                <Col className={classNames('mt-xs-3 mt-md-0 mt-0', statCol)} sm='12' md='4'>
+                  <div className={classNames('mx-auto')}>
+                    <p className='text-center mb-0'>Total Balance (USD)</p>
+                    <p className='pt-0 mb-0'>${balanceUSD}</p>
+                  </div>
+                </Col>
+                <Col className={classNames('mt-0', statCol)} sm='12' md='4'>
+                  <div className={classNames('mx-auto')}>
+                    <p className='text-center mb-0'>Total Balance (BTC)</p>
+                    <p className='pt-0 mb-0'>{balanceBTC}</p>
+                  </div>
+                </Col>
+                <Col className={classNames('mt-xs-3 mt-md-0 mt-0', statCol)} sm='12' md='4'>
+                  <div className={classNames('mx-auto')}>
+                    <p className='text-center mb-0'>Swaps Completed</p>
+                    <p className='pt-0 mb-0'>{swapsCompleted}</p>
+                  </div>
+                </Col>
+              </Row>
+              <Row className='mt-4'>
+                <CardDeck style={{ flex: 1 }}>
+                  <SwapsTable title={'Recent Swaps'} size='small'/>
+                  <Card className={classNames(card, smallCard)}>
+                    <CardHeader className={cardHeader}>Rewards to Date</CardHeader>
+                    <CardBody className='text-center'>
+                      {makerProfit && btcPrice ? (
+                        <Fragment>
+                          <p className='my-3' style={{ fontSize: 70 }}>🎉</p>
+                          <span style={{ fontSize: 50 }} className={text}>
+                            {makerProfit > 0 && '+'}<Units value={toBigNumber(makerProfit).times(btcPrice)} symbol='$' currency prefixSymbol symbolSpaced={false} precision={6} className={classNames('font-weight-bold mt-0 mb-2 d-inline-block', text)} />
+                          </span>
+                          <div>
+                            <span style={{ fontSize: 20 }} className={text}>
+                              {makerProfit > 0 && '+'}<Units value={makerProfit} symbol='BTC' precision={6} className={classNames('mt-0 mb-2 d-inline-block', text)} />
+                            </span>
+                          </div>
+                        </Fragment>
+                      ) : (
+                        <Loading  />
+                      )}
+                    </CardBody>
+                  </Card>
+                </CardDeck>
+              </Row>
+              <Row className='mt-4'>
+                <CardDeck style={{ flex: 1 }}>
+                  <BalancesTable size='small' />
+                  <CapacityWalletRow />
+                </CardDeck>
+              </Row>
+            </Fragment>
+          )}
         </Fragment>
       </MakerLayout>
     </Fragment>
@@ -99,7 +140,9 @@ export default compose(
   connect(createStructuredSelector({
     profile: getMakerProfile,
     makerId,
-    makerProfit: getMakerProfit
+    isMakerActivated,
+    makerProfit: getMakerProfit,
+    btcPrice: (state) => getAssetPrice(state, 'BTC'),
   }), {
     getStats,
     push: push,

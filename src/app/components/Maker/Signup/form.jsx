@@ -1,182 +1,32 @@
-import React, { Fragment } from 'react'
-import { connect } from 'react-redux'
-import { createStructuredSelector } from 'reselect'
-import { compose, lifecycle, setDisplayName, withHandlers, withState } from 'recompose'
-import { Form, Button, Row, Col } from 'reactstrap'
-import { reduxForm, formValueSelector } from 'redux-form'
-import ReduxFormField from 'Components/ReduxFormField'
-import classNames from 'class-names'
-import generate from 'project-name-generator'
-import * as validator from 'Utilities/validator'
+import React from 'react'
+import { compose, setDisplayName, withHandlers, withState } from 'recompose'
+import { Button } from 'reactstrap'
 
-const FORM_NAME = 'maker_signup'
+import { withAuth } from 'Components/Auth'
 
-const getFormValue = formValueSelector(FORM_NAME)
-
-import { input, text } from '../style'
-
-import { register } from 'Actions/maker'
-
-const MakerSignupForm = ({ handleSubmit, randomNames, generateRandomNames, updateMakerName,
-  validateRequired, confirmPassword, publicName }) => {
+const MakerRegisterForm = ({ onSubmit, isLoading }) => {
   return (
-    <Form onSubmit={handleSubmit}>
-      <ReduxFormField
-        name='name'
-        type='text'
-        validate={validateRequired}
-        placeholder='Full Name'
-        inputClass={classNames('flat', input)}
-        label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Full Name</p></small>}
-      />
-      <ReduxFormField
-        name='email'
-        type='email'
-        placeholder='Email Address'
-        validate={validateRequired}
-        inputClass={classNames('flat', input)}
-        label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Email Address</p></small>}
-      />
-      <ReduxFormField
-        name='publicName'
-        type='hidden'
-        className='mb-0'
-        validate={validateRequired}
-        readonly
-        placeholder='Public Maker Name'
-        inputClass={classNames('flat mb-0', input)}
-        label={<small><p className={classNames('mt-0 mb-0 pb-0 font-weight-bold', text)}>Public Maker Name</p></small>}
-      />
-      <ReduxFormField
-        name='password'
-        type='password'
-        validate={validateRequired}
-        placeholder='Password'
-        inputClass={classNames('flat', input)}
-        label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Password</p></small>}
-      />
-      <ReduxFormField
-        name='confirmPassword'
-        type='confirmPassword'
-        placeholder='Confirm Password'
-        validate={confirmPassword}
-        inputClass={classNames('flat', input)}
-        label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Confirm Password</p></small>}
-      />
-      {randomNames.length > 0 && (
-        <Fragment>
-          <small className={text}>Choose a maker name from the auto-generated options below.</small>
-          <Row className='mx-1 mt-2'>
-            {randomNames.map((name, i) => {
-              const selected = publicName == name
-              return (
-                <Col 
-                  className={classNames('p-2 text-center cursor-pointer mb-1', i < randomNames.length - 1 && 'mr-1')}
-                  style={{ border: selected ? '1px solid #00D7B8' : '1px solid #ccc', borderRadius: 2, color: selected ? '#00D7B8' : '#525252' }}
-                  onClick={() => updateMakerName(name)} 
-                  xs='4'
-                  key={name}
-                >
-                  <small>{name}</small>
-                </Col>
-              )
-            })}
-          </Row>
-          <Button size='sm' color='primary' className={classNames('d-block flat ml-1 mt-2', text)} onClick={generateRandomNames}>
-            <i className='fa fa-refresh' /> Refresh Options
-          </Button>
-        </Fragment>
-      )}
-      <ReduxFormField
-        name='type'
-        type='select'
-        requiredLabel
-        validate={validateRequired}
-        label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Choose which exchange you use</p></small>}
-      >
-        <option value='' defaultValue disabled>Select an exchange</option>
-        <option value='binance'>Binance</option>
-      </ReduxFormField>
-      <ReduxFormField
-        name='type'
-        type='select'
-        requiredLabel
-        validate={validateRequired}
-        label={<small><p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Choose assets to support</p></small>}
-      >
-        <option value='' defaultValue disabled>Select an exchange</option>
-        <option value='binance'>Binance</option>
-      </ReduxFormField>
-      <ReduxFormField
-        name='makerId'
-        type='hidden'
-        placeholder='Maker ID'
-        inputClass={classNames('flat', input)}
-      />
-      <Button className='w-100 flat' color='primary' type='submit'>Signup</Button>
-    </Form>
+    <Button 
+      className='w-100 flat' 
+      color='primary' 
+      type='submit'
+      onClick={onSubmit}
+      disabled={isLoading}
+    >
+      Register
+    </Button>
   )
 }
 
 export default compose(
-  setDisplayName('MakerSignupForm'),
-  connect(createStructuredSelector({
-    password: (state) => getFormValue(state, 'password'),
-    publicName: (state) => getFormValue(state, 'publicName'),
-  }), {
-    register
-  }),
-  withState('randomNames', 'updateRandomNames', []),
-  reduxForm({
-    form: FORM_NAME,
-    enableReinitialize: true,
-    keepDirtyOnReinitialize: true,
-    updateUnregisteredFields: true,
-  }),
+  setDisplayName('MakerRegisterForm'),
+  withAuth(),
+  withState('isLoading', 'updateIsLoading', false),
   withHandlers({
-    updateMakerName: ({ change }) => (name) => {
-      change('publicName', name)
-    },
-    validateEmail: () => validator.all(
-      validator.required(),
-    ),
-    validateRequired: () => validator.all(
-      validator.required(),
-    ),
-    confirmPassword: ({ password }) => validator.all(
-      validator.required(),
-      validator.needsToEqual(password, 'The passwords do not match.')
-    )
-  }),
-  withHandlers({
-    onSubmit: ({ register }) => ({ email, publicName, makerId, password, name }) => {
-      register({
-        email,
-        publicName,
-        makerId,
-        password,
-        name
-      })
-    },
-    generateRandomNames: ({ updateRandomNames, updateMakerName }) => () => {
-      const names = []
-      updateMakerName(undefined)
-      for (let i = 0; i < 4; i++) {
-        names.push(generate().spaced)
-      }
-      updateRandomNames(names)
+    onSubmit: ({ auth, updateIsLoading }) => () => {
+      updateIsLoading(true)
+      auth.signUp()
+      updateIsLoading(false)
     }
   }),
-  lifecycle({
-    componentDidMount() {
-      const { generateRandomNames } = this.props
-      generateRandomNames()
-    },
-    componentDidUpdate(prevProps) {
-      const { publicName, change } = this.props
-      if (publicName !== prevProps.publicName) {
-        change('makerId', publicName.replace(/\s/g,''))
-      }
-    }
-  }),
-)(MakerSignupForm)
+)(MakerRegisterForm)

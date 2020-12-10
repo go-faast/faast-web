@@ -32,9 +32,10 @@ module.exports = {
   apiUrl: process.env.API_URL || 'https://api.faa.st',
   logLevel: process.env.LOG_LEVEL || (isDev ? 'debug' : 'info'),
   auth0: {
-    domain: DEPLOY_ENV == 'production' ? 'faast.eu.auth0.com' : 'faast-staging.eu.auth0.com',
-    clientId: DEPLOY_ENV == 'production' ? '6rTS34Q5qU8x7Tr6CKNPjFEJu0NJ7Xjf' : 'WUE4HYOZO4xIHoiGYAhDqw0txRuwvFsG',
+    domain: DEPLOY_ENV == 'local' ? 'faast.eu.auth0.com' : 'faast-staging.eu.auth0.com',
+    clientId: DEPLOY_ENV == 'local' ? '6rTS34Q5qU8x7Tr6CKNPjFEJu0NJ7Xjf' : 'WUE4HYOZO4xIHoiGYAhDqw0txRuwvFsG',
     callbackUrl: isDev ? 'http://localhost:8080/app/makers/login/auth/callback' : `${siteRoot}/app/makers/login/auth/callback`,
-    audience: DEPLOY_ENV == 'production' ? 'https://api.faa.st' : 'https://testapi.faa.st'
+    audience: DEPLOY_ENV == 'local' ? 'https://api.faa.st' : 'https://testapi.faa.st',
+    logoutURL: DEPLOY_ENV == 'production' ? 'https://faa.st/app/makers/login' : 'http://localhost:8080/app/makers/login',
   }
 }

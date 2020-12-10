@@ -28,10 +28,11 @@ export const makerSwaps = createSelector(
 export const makerSwapsArray = createSelector(makerSwaps, Object.values)
 export const getMakerBalances = createSelector(getMakerState, ({ balances }) => balances)
 export const getMakerProfile = createSelector(getMakerState, ({ profile }) => profile)
+export const isMakerActivated = createSelector(getMakerProfile, ({ isSuspended }) => !isSuspended)
 export const getMakerStats = createSelector(getMakerState, ({ stats }) => stats)
 export const getMakerProfit = createSelector(getMakerStats, (stats) => {
   if (stats && stats.expenses) {
-    const profit = stats.revenue && stats.revenue.maker_revenue_btc - stats.expenses.total
+    const profit = stats.revenue && stats.revenue.maker_rewards_usd - stats.expenses.total
     return profit
   } else {
     return 0
