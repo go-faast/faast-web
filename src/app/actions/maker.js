@@ -95,7 +95,7 @@ export const registerMaker = (profile) => async (dispatch) => {
     const makerProfile = await Faast.createMaker(accessToken, profile)
     console.log(makerProfile)
     dispatch(updateProfile(makerProfile))
-    dispatch(push('/makers/dashboard/account'))
+    dispatch(push('/makers/dashboard'))
   } catch (err) {
     dispatch(loginError(err))
     dispatch(push('/makers/login'))
