@@ -13,18 +13,17 @@ import BalancesTable from 'Components/Maker/BalanceTable'
 // import StatsChart from './statsChart'
 import Units from 'Components/Units'
 import Loading from 'Components/Loading'
-import { getAssetPrice } from 'Selectors/asset'
 import { getStats } from 'Actions/maker'
 import classNames from 'class-names'
 
-import { makerId, getMakerProfile, getMakerProfit } from 'Selectors/maker'
+import { makerId, getMakerProfile, getMakerProfitUSD, getMakerProfitBTC } from 'Selectors/maker'
 
 import { statContainer, row, statCol } from './style'
 import { card, cardHeader, text, smallCard, input } from '../style'
 
 
 const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalances: { total: { BTC: balanceBTC = '-', USD: balanceUSD = '-' } = {} } = {}, 
-  swapsCompleted = '-', capacityMaximumBtc = '-', isRegistrationComplete }, makerProfit, btcPrice }) => {
+  swapsCompleted = '-', capacityMaximumBtc = '-', isRegistrationComplete }, makerProfitUSD, makerProfitBTC }) => {
   const CapacityWalletRow = () => (
     <Card className={classNames(card, smallCard)}>
       <CardHeader className={cardHeader}>Capacity Wallet</CardHeader>
@@ -107,17 +106,19 @@ const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalanc
                   <Card className={classNames(card, smallCard)}>
                     <CardHeader className={cardHeader}>Rewards to Date</CardHeader>
                     <CardBody className='text-center'>
-                      {makerProfit && btcPrice ? (
+                      {makerProfitUSD ? (
                         <Fragment>
                           <p className='my-3' style={{ fontSize: 70 }}>🎉</p>
                           <span style={{ fontSize: 50 }} className={text}>
-                            {makerProfit > 0 && '+'}<Units value={toBigNumber(makerProfit).times(btcPrice)} symbol='$' currency prefixSymbol symbolSpaced={false} precision={6} className={classNames('font-weight-bold mt-0 mb-2 d-inline-block', text)} />
+                            {makerProfitUSD > 0 && '+'}<Units value={toBigNumber(makerProfitUSD)} symbol='$' currency prefixSymbol symbolSpaced={false} precision={6} className={classNames('font-weight-bold mt-0 mb-2 d-inline-block', text)} />
                           </span>
-                          <div>
-                            <span style={{ fontSize: 20 }} className={text}>
-                              {makerProfit > 0 && '+'}<Units value={makerProfit} symbol='BTC' precision={6} className={classNames('mt-0 mb-2 d-inline-block', text)} />
-                            </span>
-                          </div>
+                          {makerProfitBTC ? (
+                            <div>
+                              <span style={{ fontSize: 20 }} className={text}>
+                                {makerProfitBTC > 0 && '+'}<Units value={makerProfitBTC} symbol='BTC' precision={6} className={classNames('mt-0 mb-2 d-inline-block', text)} />
+                              </span>
+                            </div>
+                          ) : null}
                         </Fragment>
                       ) : (
                         <Loading  />
@@ -145,8 +146,8 @@ export default compose(
   connect(createStructuredSelector({
     profile: getMakerProfile,
     makerId,
-    makerProfit: getMakerProfit,
-    btcPrice: (state) => getAssetPrice(state, 'BTC'),
+    makerProfitUSD: getMakerProfitUSD,
+    makerProfitBTC: getMakerProfitBTC,
   }), {
     getStats,
     push: push,
