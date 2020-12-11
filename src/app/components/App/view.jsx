@@ -95,7 +95,7 @@ const AppView = ({ hasNoWallets }) => {
         <AuthRoutes path={'/makers/login/auth'} successPath={'/makers/login/loading'} />
         <AuthenticatedRoute path={makerLoading.path} component={MakerLoading} />
         <Route path={makerLogin.path} component={MakerLogin} />
-        <Route path={makerRegisterProfile.path} component={MakerRegisterProfile} />
+        <AuthenticatedRoute path={makerRegisterProfile.path} component={MakerRegisterProfile} />
         <Route path={makerRegister.path} component={MakerRegister} />
         <Route path={makerSetup.path} component={MakerSetup} />
         <Route path={makerExchangeSetup.path} component={MakerExchangeSetup} />

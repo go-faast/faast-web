@@ -17,7 +17,7 @@ const MakerSignup = () => {
         <title>Faa.st Market Maker Program - Sign up</title>
         <meta name='description' content='Earn passive interest on your Bitcoin by fulfilling swaps as a member of the Faa.st Maker Maker program.' /> 
       </Helmet>
-      <MakerLayout className='pt-5'>
+      <MakerLayout clickableLogo={false} className='pt-5'>
         <Card className={classNames(card, smallCard, 'mx-auto')}>
           <CardHeader className={classNames(cardHeader, 'text-center')}>
             <span>Market Maker Signup</span>

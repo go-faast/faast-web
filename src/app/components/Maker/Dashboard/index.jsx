@@ -17,19 +17,19 @@ import { getAssetPrice } from 'Selectors/asset'
 import { getStats } from 'Actions/maker'
 import classNames from 'class-names'
 
-import { makerId, getMakerProfile, getMakerProfit, isMakerActivated } from 'Selectors/maker'
+import { makerId, getMakerProfile, getMakerProfit } from 'Selectors/maker'
 
 import { statContainer, row, statCol } from './style'
 import { card, cardHeader, text, smallCard, input } from '../style'
 
 
-const MakerDashboard = ({ isMakerActivated, profile, profile: { capacityAddress, approxTotalBalances: { total: { BTC: balanceBTC = '-', USD: balanceUSD = '-' } = {} } = {}, 
-  swapsCompleted = '-', capacityMaximumBtc = '-' }, makerProfit, btcPrice }) => {
+const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalances: { total: { BTC: balanceBTC = '-', USD: balanceUSD = '-' } = {} } = {}, 
+  swapsCompleted = '-', capacityMaximumBtc = '-', registrationComplete }, makerProfit, btcPrice }) => {
   const CapacityWalletRow = () => (
     <Card className={classNames(card, smallCard)}>
       <CardHeader className={cardHeader}>Capacity Wallet</CardHeader>
-      <CardBody className='text-center'>
-        {capacityAddress ? (
+      <CardBody className='text-center d-flex justify-content-center'>
+        {profile && capacityAddress ? (
           <Fragment>
             <QRCode address={capacityAddress} size={150} />
             <p className={text}>
@@ -39,6 +39,10 @@ const MakerDashboard = ({ isMakerActivated, profile, profile: { capacityAddress,
             <ClipboardCopyField className={input} value={capacityAddress} />
             <small className={classNames('text-left d-block', text)}>Depositing more BTC to your capacity address will increase the swap value your maker can process.</small>
           </Fragment>
+        ) : profile && !capacityAddress ? (
+          <div className='d-flex align-items-center justify-content-center'>
+            <p className={text}>Your capacity wallet details are not available at this time.</p>
+          </div>
         ) : (
           <Loading />
         )}
@@ -50,24 +54,25 @@ const MakerDashboard = ({ isMakerActivated, profile, profile: { capacityAddress,
     <Fragment>
       <MakerLayout className='pt-3'>
         <Fragment>
-          {profile && !isMakerActivated ? (
+          {profile && !registrationComplete ? (
             <Fragment>
               <Row className='mt-4'>
                 <CardDeck style={{ flex: 1 }}>
-                  <Card>
-                    <CardHeader>Setup Maker</CardHeader>
+                  <Card className={classNames(card, smallCard)}>
+                    <CardHeader className={cardHeader}>Setup Maker</CardHeader>
                     <CardBody>
-                      <ol>
-                        <li>
-                          <a href='/makers/setup/server' target='_blank'>Setup your market maker on a virtual private server</a>
-                        </li>
+                      <p className={text}>Before you can start earning rewards by fulfilling swaps, you need to setup your maker on a virtual server and your exchange API accounts. You can find guides below:</p>
+                      <ol className={text}>
                         <li>
                           <a href='/makers/setup/exchanges' target='_blank'>Setup your exchange API account</a>
                         </li>
+                        <li>
+                          <a href='/makers/setup/server' target='_blank'>Setup your market maker on a virtual private server</a>
+                        </li>
                       </ol>
                     </CardBody>
-                    <CardFooter>
-                      Have questions? Contact us: support@faa.st
+                    <CardFooter className={classNames(text, cardHeader, 'mb-0')}>
+                      Have questions? <b>Contact us: support@faa.st</b>
                     </CardFooter>
                   </Card>
                   <CapacityWalletRow /> 
@@ -140,7 +145,6 @@ export default compose(
   connect(createStructuredSelector({
     profile: getMakerProfile,
     makerId,
-    isMakerActivated,
     makerProfit: getMakerProfit,
     btcPrice: (state) => getAssetPrice(state, 'BTC'),
   }), {

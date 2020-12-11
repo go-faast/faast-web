@@ -560,9 +560,8 @@ export const createMaker = (
 
 export const getAuth0User = (
   accessToken: string,
-  userId: string,
 ): Promise<void> => {
-  return fetchGet(`${apiUrl}/api/v2/public/maker/users/${userId}`,
+  return fetchGet(`${apiUrl}/api/v2/public/maker/users`,
   undefined,
   {
     headers: {
