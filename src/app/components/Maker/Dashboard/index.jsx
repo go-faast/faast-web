@@ -24,7 +24,7 @@ import { card, cardHeader, text, smallCard, input } from '../style'
 
 
 const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalances: { total: { BTC: balanceBTC = '-', USD: balanceUSD = '-' } = {} } = {}, 
-  swapsCompleted = '-', capacityMaximumBtc = '-', registrationComplete }, makerProfit, btcPrice }) => {
+  swapsCompleted = '-', capacityMaximumBtc = '-', isRegistrationComplete }, makerProfit, btcPrice }) => {
   const CapacityWalletRow = () => (
     <Card className={classNames(card, smallCard)}>
       <CardHeader className={cardHeader}>Capacity Wallet</CardHeader>
@@ -54,7 +54,7 @@ const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalanc
     <Fragment>
       <MakerLayout className='pt-3'>
         <Fragment>
-          {profile && !registrationComplete ? (
+          {profile && !isRegistrationComplete ? (
             <Fragment>
               <Row className='mt-4'>
                 <CardDeck style={{ flex: 1 }}>
