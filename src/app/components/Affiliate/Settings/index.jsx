@@ -13,7 +13,6 @@ import { reduxForm, formValueSelector, change, untouch } from 'redux-form'
 import ReduxFormField from 'Components/ReduxFormField'
 import toastr from 'Utilities/toastrWrapper'
 import config from 'Config'
-import ClipboardCopyField from 'Components/ClipboardCopyField'
 
 import { affiliateId, secretKey, getAsset, getAffiliateBalance, getMinimumWithdrawal, 
   isLoadingLogin, isAffiliateLoggedIn } from 'Selectors'
