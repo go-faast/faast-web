@@ -2,16 +2,19 @@ import React, { Fragment } from 'react'
 import { Helmet } from 'react-helmet'
 import { Link } from 'react-router-dom'
 import { Card, CardHeader, CardBody } from 'reactstrap'
-import { compose, setDisplayName } from 'recompose'
+import { compose, lifecycle, setDisplayName, withState } from 'recompose'
 import classNames from 'class-names'
+import { withAuth } from 'Components/Auth'
 import SignupForm from './form'
-
+import LoadingFullscreen from 'Components/LoadingFullscreen'
 import MakerLayout from 'Components/Maker/Layout'
 
 import { card, cardHeader, smallCard } from '../style'
 
-const MakerSignup = () => {
-  return (
+const MakerSignup = ({ isLoading }) => {
+  return isLoading ? (
+    <LoadingFullscreen bgColor='#fff' />
+  ) : (
     <Fragment>
       <Helmet>
         <title>Faa.st Market Maker Program - Sign up</title>
@@ -38,4 +41,15 @@ const MakerSignup = () => {
 
 export default compose(
   setDisplayName('MakerSignup'),
+  withAuth(),
+  withState('isLoading', 'updateIsLoading', true),
+  lifecycle({
+    componentDidMount() {
+      const { auth, updateIsLoading } = this.props
+      auth.signUp()
+      setTimeout(() => {
+        updateIsLoading(false)
+      }, 3000)
+    }
+  })
 )(MakerSignup)
