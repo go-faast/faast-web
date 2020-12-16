@@ -22,7 +22,7 @@ export default compose(
         <b className="text-primary">Sorry! </b>You don&#39;t have permission to access this page.
       </i></h2>
       <h3>
-        Unable to authenticate your market maker. Try to <a href='/makers/login'>login again.</a>.
+        Unable to authenticate your market maker. Try to <a href='/makers/login'>login again.</a>
       </h3>
       {formattedError && (<h4>Error: {formattedError}</h4>)}
     </div>
