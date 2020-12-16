@@ -99,14 +99,16 @@ export default compose(
     onClose: PropTypes.func,
     walletId: PropTypes.string,
     rowsToShow: PropTypes.number,
-    dark: PropTypes.bool
+    dark: PropTypes.bool,
+    onlyShowEnabled: PropTypes.bool
   }),
   defaultProps({
     supportedAssetSymbols: [],
     portfolioSymbols: [],
     isAssetDisabled: (asset) => !asset.swapEnabled,
     rowsToShow: 5,
-    dark: true
+    dark: true,
+    onlyShowEnabled: false,
   }),
   connect(createStructuredSelector({
     assets: getAllAssetsArray,
@@ -121,13 +123,14 @@ export default compose(
       return list.sort(sortObjOfArrayByTwoProperties(['disabled', '-marketCap']))
     },
     assetExtender: ({ supportedAssetSymbols, portfolioSymbols, 
-      isAssetDisabled, isAppRestricted, doToggleFeedbackForm }) => (assets) => {
+      isAssetDisabled, isAppRestricted, doToggleFeedbackForm, onlyShowEnabled }) => (assets) => {
+      assets = onlyShowEnabled ? assets.filter(a => !isAssetDisabled(a)) : assets
       return assets.map((a) => {
         const unsupportedWallet = !supportedAssetSymbols.includes(a.symbol)
         const alreadyInPortfolio = portfolioSymbols.includes(a.symbol)
         const swapDisabled = isAssetDisabled(a)
         const restricted = a.restricted && isAppRestricted
-        const disabled = swapDisabled || unsupportedWallet || alreadyInPortfolio || restricted
+        const disabled = !onlyShowEnabled && (swapDisabled || unsupportedWallet || alreadyInPortfolio || restricted)
         const disabledMessage = swapDisabled
           ? <T tag='span' i18nKey='app.assetSelector.comingSoo'>
             <span 
@@ -149,14 +152,16 @@ export default compose(
               : (alreadyInPortfolio
                 ? <T tag='span' i18nKey='app.assetSelector.alreadyAdded'>already added</T>
                 : null)))
-        return {
-          ...a,
-          restricted,
-          disabled,
-          disabledMessage,
-          swapDisabled,
-          unsupportedWallet,
-          alreadyInPortfolio,
+        if (!restricted && !swapDisabled) {
+          return {
+            ...a,
+            restricted,
+            disabled,
+            disabledMessage,
+            swapDisabled,
+            unsupportedWallet,
+            alreadyInPortfolio,
+          }
         }
       })
     }

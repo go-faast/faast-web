@@ -12,7 +12,7 @@ import BinanceSetup5 from 'Img/binancesetup5.png'
 
 import MakerLayout from 'Components/Maker/Layout'
 
-import { card, cardHeader, smallCard } from '../style'
+import { card, cardHeader, smallCard, text } from '../style'
 
 const BinanceSetup = () => {
   return (
@@ -24,25 +24,25 @@ const BinanceSetup = () => {
           </CardHeader>
           <CardBody className={card}>
             <Row>
-              <Col>
-                <h2>Enable 2FA and verify yourself</h2>
+              <Col xs='12'>
+                <h5 className={classNames(text, 'mt-2')}>1) Enable 2FA and verify yourself</h5>
                 <div>
-                  <img src={BinanceSetup1} />
+                  <img style={{ maxWidth: '100%' }} src={BinanceSetup1} />
                 </div>
               </Col>
-              <Col>
-                <h2>Turn on Anti-phishing code</h2>
+              <Col xs='12'>
+                <h5 className={classNames(text, 'mt-4')}>2) Turn on Anti-phishing code</h5>
                 <div>
-                  <img src={BinanceSetup2} />
-                  <img src={BinanceSetup3} />
+                  <img style={{ maxWidth: '100%' }} src={BinanceSetup2} />
+                  <img style={{ maxWidth: '100%' }} src={BinanceSetup3} />
                 </div>
               </Col>
-              <Col>
-                <h2>API Key Setup</h2>
+              <Col xs='12'>
+                <h5 className={classNames(text, 'mt-4')}>3) API Key Setup</h5>
                 <div>
-                  <img src={BinanceSetup4} />
-                  <p>Below is a shot of the API restrictions form. You'll want to check those checkboxes and hit "Restriction access to trusted IPs only", set your server's IP address (click Confirm), and then hit the Save button in the top right of the form.</p>
-                  <img src={BinanceSetup5} />
+                  <img style={{ maxWidth: '100%', maxHeight: 500 }} src={BinanceSetup4} />
+                  <p className={text}>Below is a shot of the API restrictions form. You'll want to check those checkboxes and hit "Restriction access to trusted IPs only", set your server's IP address (click Confirm), and then hit the Save button in the top right of the form.</p>
+                  <img style={{ maxWidth: '100%' }} src={BinanceSetup5} />
                 </div>
               </Col>
             </Row>

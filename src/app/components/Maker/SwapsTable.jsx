@@ -27,6 +27,11 @@ const TableRow = ({
 }) => {
   const revenueUsd = toBigNumber(valueUsd).div(valueBtc).times(revenueMakerBtc)
   const percentGain = revenueUsd.div(valueUsd).times(100)
+  const swapStatus = swap && swap.status
+  const isComplete = swapStatus && swapStatus.detailsCode == 'complete'
+  if (swapStatus && swapStatus.detailsCode == 'contact_support') {
+    swap.status.detailsCode = 'pending'
+  }
   return (
     <tr {...props}>
       <td><span className='position-relative' style={{ left: 8 }}>{createStatusLabel(swap)}</span></td>
@@ -36,20 +41,20 @@ const TableRow = ({
         <i className='fa fa-long-arrow-right text-grey mx-2'/> 
         <CoinSymbol symbol={receiveSymbol}/>
       </td>
+      <td>{valueUsd && !toBigNumber(valueUsd).isNaN() && (toBigNumber(valueUsd).gt(0) || isComplete)
+        ? (<Units value={toBigNumber(valueUsd)} symbol={'$'} precision={6} showSymbol currency prefixSymbol symbolSpaced={false} />)
+        : NODATA}
+      </td>
       <td>{revenueUsd && !revenueUsd.isNaN()
         ? (<Units value={revenueUsd} symbol={'$'} precision={6} showSymbol prefixSymbol symbolSpaced={false} currency />)
         : NODATA}
       </td>
       {size === 'large' && (
-        <td>{revenueMakerBtc && !toBigNumber(revenueMakerBtc).isNaN() && toBigNumber(revenueMakerBtc).gt(0)
-          ? (<Units value={revenueMakerBtc} symbol={'BTC'} precision={6} showSymbol />)
+        <td>{percentGain && !percentGain.isNaN()
+          ? (<ChangePercent>{percentGain}</ChangePercent>)
           : NODATA}
         </td>
       )}
-      <td>{percentGain && !percentGain.isNaN()
-        ? (<ChangePercent>{percentGain}</ChangePercent>)
-        : NODATA}
-      </td>
     </tr>
   )}
 
@@ -73,9 +78,9 @@ const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading, title }) => {
                       <th></th>
                       {size === 'large' ? (<th className='d-none d-sm-table-cell'>Date</th>) : null}
                       <th className='d-none d-sm-table-cell'>Pair</th>
-                      <th>Revenue (USD)</th>
-                      {size === 'large' ? (<th>Revenue (BTC)</th>) : null}
-                      <th>% Revenue</th>
+                      <th>Swap Value (USD)</th>
+                      <th>Reward (USD)</th>
+                      {size === 'large' ? (<th>% Reward</th>) : null}
                     </tr>
                   </thead>
                   <tbody>

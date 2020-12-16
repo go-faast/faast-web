@@ -1,7 +1,7 @@
 import { newScopedCreateAction } from 'Utilities/action'
 import { push } from 'react-router-redux'
 import Faast from 'Services/Faast'
-import { getSession, clearSession } from 'Services/Auth'
+import { getSession } from 'Services/Auth'
 import { sessionStorageSetJson, sessionStorageGetJson, sessionStorageClear } from 'Utilities/storage'
 
 import { isMakerLoggedIn, isMakerDataStale } from 'Selectors/maker'
@@ -24,26 +24,25 @@ export const swapsLoading = createAction('SWAPS_LOADING')
 export const statsError = createAction('STATS_ERROR')
 export const swapHistoryTotalUpdated = createAction('SWAP_HISTORY_TOTAL_UPDATED')
 
-const getMakerAccessToken = () => (dispatch) => {
+const getMakerAccessToken = () => () => {
   const accessToken = getSession().accessToken
-  if (accessToken) {
-    return accessToken
-  } else {
-    dispatch(push('/makers/login'))
-  }
+  return accessToken
 }
 
 export const getStats = () => (dispatch) => {
   const accessToken = dispatch(getMakerAccessToken())
-  return Faast.getMakerStatistics(accessToken)
-    .then((stats) => {
-      sessionStorageSetJson('state:maker_stats', stats)
-      dispatch(statsRetrieved(stats))
-    })
-    .catch((e) => { 
-      dispatch(statsError(e))
-      throw new Error(e)
-    })
+  if (accessToken) {
+    return Faast.getMakerStatistics(accessToken)
+      .then((stats) => {
+        sessionStorageSetJson('state:maker_stats', stats)
+        dispatch(statsRetrieved(stats))
+      })
+      .catch((e) => { 
+        dispatch(statsError(e))
+        throw new Error(e)
+      })
+  }
+  return
 }
 
 export const getAllMakerData = () => (dispatch) => {
@@ -64,6 +63,11 @@ export const getAllMakerData = () => (dispatch) => {
 
 export const loginMaker = () => async (dispatch) => {
   try {
+    let user = await dispatch(getAuth0User())
+    user = user[0]
+    if (user && (!user.app_metadata || user.app_metadata && !user.app_metadata.maker_id)) {
+      return dispatch(push('/makers/register/profile'))
+    }
     await dispatch(getAllMakerData())
     dispatch(login())
     dispatch(push('/makers/dashboard'))
@@ -74,35 +78,63 @@ export const loginMaker = () => async (dispatch) => {
   }
 }
 
+export const getAuth0User = () => async (dispatch) => {
+  const accessToken = dispatch(getMakerAccessToken())
+  const userId = getSession().tokenPayload && getSession().tokenPayload.sub
+  const user = await Faast.getAuth0User(accessToken, userId)
+  return user
+}
+
+export const registerMaker = (profile) => async (dispatch) => {
+  try {
+    const accessToken = dispatch(getMakerAccessToken())
+    const userId = getSession().tokenPayload && getSession().tokenPayload.sub
+    profile.auth0UserId = userId
+    const makerProfile = await Faast.createMaker(accessToken, profile)
+    dispatch(updateProfile(makerProfile))
+    dispatch(login())
+    dispatch(push('/makers/dashboard'))
+  } catch (err) {
+    dispatch(loginError(err))
+    dispatch(push('/makers/login'))
+    Toastr.error('Unable to complete user signup. Please contact support@faa.st.')
+  }
+}
+
 export const getMakerProfile = () => (dispatch) => {
   const accessToken = dispatch(getMakerAccessToken())
-  return Faast.getMakerProfile(accessToken)
-    .then((profile) => {
-      if (profile) {
-        dispatch(updateBalances(profile.balances))
-        sessionStorageSetJson('state:maker_balances', profile.balances)
-        sessionStorageSetJson('state:maker_profile', profile)
-        return dispatch(updateProfile(profile))
-      }
-    })
-
+  if (accessToken) {
+    return Faast.getMakerProfile(accessToken)
+      .then((profile) => {
+        if (profile) {
+          dispatch(updateBalances(profile.balances))
+          sessionStorageSetJson('state:maker_balances', profile.balances)
+          sessionStorageSetJson('state:maker_profile', profile)
+          return dispatch(updateProfile(profile))
+        }
+      })
+  }
+  return
 }
 
 export const getMakerSwaps = (page, limit = 20) => (dispatch) => {
   const accessToken = dispatch(getMakerAccessToken())
-  dispatch(swapsLoading())
-  return Faast.getMakerSwaps(accessToken, page, limit)
-    .then((swaps) => {
-      dispatch(swapHistoryTotalUpdated(swaps.total))
-      sessionStorageSetJson('state:maker_swap_history_total', swaps.total)
-      swaps = swaps && swaps.orders && swaps.orders.map(Faast.formatOrderResult)
-      sessionStorageSetJson('state:maker_swaps', swaps)
-      return dispatch(swapsRetrieved(swaps))
-    })
-    .catch((e) => {
-      dispatch(swapsError(e))
-      throw new Error(e)
-    })
+  if (accessToken) {
+    dispatch(swapsLoading())
+    return Faast.getMakerSwaps(accessToken, page, limit)
+      .then((swaps) => {
+        dispatch(swapHistoryTotalUpdated(swaps.total))
+        sessionStorageSetJson('state:maker_swap_history_total', swaps.total)
+        swaps = swaps && swaps.orders && swaps.orders.map(Faast.formatOrderResult)
+        sessionStorageSetJson('state:maker_swaps', swaps)
+        return dispatch(swapsRetrieved(swaps))
+      })
+      .catch((e) => {
+        dispatch(swapsError(e))
+        throw new Error(e)
+      })
+  }
+  return
 }
 
 export const restoreCachedMakerInfo = () => (dispatch, getState) => {
@@ -130,7 +162,6 @@ export const restoreCachedMakerInfo = () => (dispatch, getState) => {
 }
 
 export const makerLogout = () => (dispatch) => {
-  clearSession()
   sessionStorageClear()
   dispatch(resetMaker())
   dispatch(logout())

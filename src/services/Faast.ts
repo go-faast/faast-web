@@ -40,6 +40,20 @@ export const postFeedback = (type: string, answer: string, email: string,
   .catch((e) => e)
 }
 
+export const postPartners = (data: { email: string, company: string, product: string }) => {
+  // tslint:disable-next-line:max-line-length
+  return fetchGet('https://docs.google.com/forms/d/e/1FAIpQLSfpKHM9fpnoq61L9OhwtwXGvw_GGFA4Oi1Q6UC8uT-ZoxiAhQ/formResponse', {
+    'entry.1492611083': data.email,
+    'entry.680292588': data.company,
+    'entry.289487858': data.product,
+  }, {
+    headers: {
+    accept: 'application/json',
+  },
+  }).then((r) => r)
+  .catch((e) => e)
+}
+
 export const getFastGasPrice = (): Promise<number> => {
 return fetchGet('https://ethgasstation.info/json/ethgasAPI.json')
   .then((r) => {
@@ -525,6 +539,42 @@ export const getMakerStatistics = (
   })
 }
 
+export const createMaker = (
+  accessToken: string,
+  maker: object,
+): Promise<void> => {
+  return fetchPost(`${apiUrl}/api/v2/public/maker/create`,
+  { maker },
+  undefined,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((makerProfile) => makerProfile)
+  .catch((e: any) => {
+    log.error(e)
+    throw new Error(e)
+  })
+}
+
+export const getAuth0User = (
+  accessToken: string,
+): Promise<void> => {
+  return fetchGet(`${apiUrl}/api/v2/public/maker/users`,
+  undefined,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((user) => user)
+  .catch((e: any) => {
+    log.error(e)
+    throw new Error(e)
+  })
+}
+
 export default {
   fetchAssets,
   fetchPriceChart,
@@ -550,4 +600,7 @@ export default {
   getMakerSwaps,
   getMakerProfile,
   getMakerStatistics,
+  postPartners,
+  createMaker,
+  getAuth0User,
 }

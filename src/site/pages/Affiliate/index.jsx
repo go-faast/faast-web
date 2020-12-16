@@ -7,7 +7,7 @@ import { createStructuredSelector } from 'reselect'
 import classNames from 'class-names'
 import { compose, setDisplayName, lifecycle, withProps } from 'recompose'
 import withTracker from 'Site/components/withTracker'
-import AffiliateContact from 'Site/components/AffiliateContact'
+import PartnersContactForm from 'Site/components/PartnersContact'
 import Terminal from 'Site/components/Terminal'
 
 import Footer from 'Site/components/Footer'
@@ -85,7 +85,7 @@ export default compose(
                   {t.heroText}
                 </h1>
               )}
-              rightHero={<AffiliateContact />}
+              rightHero={<PartnersContactForm />}
               subline={<span>{t.subline}</span>}
               cta={(
                 <Button 

@@ -28,7 +28,7 @@ const MakerSettings = ({ makerId, profile: { swapMarginMin, swapMarginMax, asset
                 <hr className='w-100 border-light'/>
                 <Col sm='12'>
                   <small><p className={classNames('mt-1 mb-1 font-weight-bold', text)}>Supported Assets</p></small>
-                  {!assetsEnabled || (assetsEnabled && assetsEnabled.length < 1) ? (
+                  {!assetsEnabled || (assetsEnabled && assetsEnabled.length == 0) ? (
                     <span className={text}>Your maker supports all available assets.</span>
                   ) : (
                     <span className={text}>Your maker supports {assetsEnabled.map((a,i) => 
@@ -37,7 +37,7 @@ const MakerSettings = ({ makerId, profile: { swapMarginMin, swapMarginMax, asset
                   )}
                 </Col>
                 <hr className='w-100 border-light'/>
-                {swapMarginMin && swapMarginMax && (
+                {swapMarginMin && swapMarginMax ? (
                   <Fragment>
                     <Col sm='12'>
                       <small><p className={classNames('mt-1 mb-1 font-weight-bold', text)}>Margin Range</p></small>
@@ -45,7 +45,7 @@ const MakerSettings = ({ makerId, profile: { swapMarginMin, swapMarginMax, asset
                     </Col>
                     <hr className='w-100 border-light'/>
                   </Fragment>
-                )}
+                ) : null}
                 <Col sm='12'>
                   <small><p className={classNames('mb-1 font-weight-bold', text)}>Have a question?</p></small>
                   <span className={text}>Email us at support@faa.st</span>

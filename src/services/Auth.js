@@ -9,6 +9,7 @@ const KEY_ID_TOKEN = 'auth:idToken'
 const KEY_ACCESS_TOKEN = 'auth:accessToken'
 const KEY_EXPIRES_AT = 'auth:expiresAt'
 const KEY_ACCESS_SCOPES = 'auth:accessScopes'
+const KEY_TOKEN_PAYLOAD = 'auth:tokenPayload'
 
 /** Store auth session information in local storage */
 function setSession(authResult) {
@@ -17,6 +18,7 @@ function setSession(authResult) {
   // If no scopes are in result, all requested scopes were granted
   const scopes = authResult.scope || REQUESTED_SCOPES || ''
   localStorage.setItem(KEY_ID_TOKEN, authResult.idToken)
+  localStorage.setItem(KEY_TOKEN_PAYLOAD, JSON.stringify(authResult.idTokenPayload))
   localStorage.setItem(KEY_ACCESS_TOKEN, authResult.accessToken)
   localStorage.setItem(KEY_EXPIRES_AT, expiresAt)
   localStorage.setItem(KEY_ACCESS_SCOPES, JSON.stringify(scopes))
@@ -28,12 +30,14 @@ export function clearSession() {
   localStorage.removeItem(KEY_ID_TOKEN)
   localStorage.removeItem(KEY_EXPIRES_AT)
   localStorage.removeItem(KEY_ACCESS_SCOPES)
+  localStorage.removeItem(KEY_TOKEN_PAYLOAD)
 }
 
 /** Get auth session information from local storage */
 export function getSession() {
   return {
     accessToken: localStorage.getItem(KEY_ACCESS_TOKEN),
+    tokenPayload: JSON.parse(localStorage.getItem(KEY_TOKEN_PAYLOAD)) || {},
     idToken: localStorage.getItem(KEY_ID_TOKEN),
     expiresAt: JSON.parse(localStorage.getItem(KEY_EXPIRES_AT) || '0'),
     accessScopes: JSON.parse(localStorage.getItem(KEY_ACCESS_SCOPES) || '""').split(' '),
@@ -81,9 +85,11 @@ export default class Auth {
     this.auth0.authorize()
   }
 
-  signUp(data) {
+  signUp() {
     console.log('Auth#signup')
-    this.auth0.signup(data)
+    this.auth0.authorize({
+      action: 'signup',
+    })
   }
 
   handleCallback() {
@@ -108,5 +114,9 @@ export default class Auth {
   logout() {
     console.log('Auth#logout')
     clearSession()
+    this.auth0.logout({
+      returnTo: authConfig.logoutURL,
+      clientID: authConfig.clientId,
+    })
   }
 }
