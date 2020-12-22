@@ -218,7 +218,6 @@ export default compose(
     },
     selectedAssetsDoesHaveERC20: ({ assetList, selectedAssets }) => () => {
       const hasERC20 = assetList.filter(a => selectedAssets.indexOf(a.symbol) >= 0).some(a => a.ERC20)
-      console.log(hasERC20)
       return hasERC20
     },
     removeAsset: ({ selectedAssets, updateSelectedAssets }) => (sym) => {
