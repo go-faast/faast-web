@@ -27,7 +27,7 @@ const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalanc
   const CapacityWalletRow = () => (
     <Card className={classNames(card, smallCard)}>
       <CardHeader className={cardHeader}>Capacity Wallet</CardHeader>
-      <CardBody className='text-center d-flex justify-content-center'>
+      <CardBody className={`text-center ${profile && !capacityAddress ? 'd-flex justify-content-center' : ''}`}>
         {profile && capacityAddress ? (
           <Fragment>
             <QRCode address={capacityAddress} size={150} />
@@ -60,13 +60,13 @@ const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalanc
                   <Card className={classNames(card, smallCard)}>
                     <CardHeader className={cardHeader}>Setup Maker</CardHeader>
                     <CardBody>
-                      <p className={text}>Before you can start earning rewards by fulfilling swaps, you need to setup your maker on a virtual server and your exchange API accounts. You can find guides below:</p>
+                      <p className={text}>Before you can start earning rewards by fulfilling swaps, you need to setup your maker on a cloud server, setup your exchange API accounts, and fund your maker. You can find guides below:</p>
                       <ol className={text}>
                         <li>
-                          <a href='/makers/setup/exchanges' target='_blank'>Setup your exchange API account</a>
+                          <a href='/app/makers/setup/exchanges' target='_blank'>Setup your exchange API account</a>
                         </li>
                         <li>
-                          <a href='/makers/setup/server' target='_blank'>Setup your market maker on a virtual private server</a>
+                          <a href='/app/makers/setup/server' target='_blank'>Setup your market maker on a cloud server</a>
                         </li>
                       </ol>
                     </CardBody>

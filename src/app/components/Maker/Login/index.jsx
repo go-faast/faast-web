@@ -44,9 +44,10 @@ export default compose(
   withState('isLoading', 'updateIsLoading', true),
   lifecycle({
     componentDidMount() {
-      const { push, loggedIn, auth, updateIsLoading } = this.props
-      if (loggedIn) {
-        push('/makers/dashboard')
+      const { auth, updateIsLoading } = this.props
+      if (auth.isAuthenticated()) {
+        // push('/makers/login/loading')
+        auth.login()
       } else {
         auth.login()
         setTimeout(() => {

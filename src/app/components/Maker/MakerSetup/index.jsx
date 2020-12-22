@@ -50,13 +50,6 @@ const MakerSetup = () => {
                 <h5 className={classNames(text, 'mt-4')}>5. Confirm the mnemonic</h5>
               </Col>
               <Col xs='12'>
-                <h5 className={classNames(text, 'mt-4')}>6. Send BTC to your capacity address and exchange address to begin fulfilling swaps.</h5>
-                <p className={text}>You'll be able to market maker for swaps valued up to at most the amount of BTC in your capacity address.</p>
-              </Col>
-              <Col xs='12'>
-                <h5 className={classNames(text, 'my-4')}>7. Your market maker node is all set up! Please return to the dashboard and keep this server running to continue earning.</h5>
-              </Col>
-              <Col xs='12'>
                 <span>If you have any questions, don't hesitate to email us at support@faa.st.</span>
               </Col>
             </Row>

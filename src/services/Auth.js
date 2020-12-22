@@ -82,12 +82,15 @@ export default class Auth {
 
   login() {
     console.log('Auth#login')
-    this.auth0.authorize()
+    this.auth0.authorize({
+      prompt: 'login'
+    })
   }
 
   signUp() {
     console.log('Auth#signup')
     this.auth0.authorize({
+      prompt: 'login',
       action: 'signup',
     })
   }

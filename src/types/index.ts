@@ -47,7 +47,7 @@ export interface SwapOrder {
   marketMakerName?: string,
   valueUsd?: BigNumber,
   valueBtc?: BigNumber,
-  revenueMakerBtc?: BigNumber,
+  makerRewardsBtc?: BigNumber,
 }
 
 export type HdAccount = {

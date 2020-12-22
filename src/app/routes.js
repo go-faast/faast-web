@@ -73,6 +73,7 @@ export const makerLoginCallback = createPath('/makers/login/callback')
 export const makerAccountModal = createPath('/makers/dashboard/account')
 export const makerSetup = createPath('/makers/setup/server')
 export const makerExchangeSetup = createPath('/makers/setup/exchanges')
+export const makerBalanceSetup = createPath('/makers/setup/balances')
 export const makerDashboard = createPath('/makers/dashboard')
 export const makerSwaps = createPath('/makers/swaps')
 export const makerBalances = createPath('/makers/balances')
@@ -127,5 +128,6 @@ export default {
   makerBalances,
   makerSettings,
   makerLoading,
-  makerRegister
+  makerRegister,
+  makerBalanceSetup
 }

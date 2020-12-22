@@ -27,8 +27,9 @@ import { input, text } from '../style'
 import { registerMaker } from 'Actions/maker'
 
 const MakerSignupForm = ({ handleSubmit, randomNames, generateRandomNames, updateMakerName,
-  validateRequired, publicName, handleSelectedAsset, isAssetDisabled, assetCheckbox,
-  isAssetSelectorOpen, toggleAssetSelector, assetList, selectedAssets, removeAsset, isLoading }) => {
+  validateRequired, publicName, handleSelectedAsset, isAssetDisabled, assetCheckbox, 
+  selectedAssetsDoesHaveERC20, isAssetSelectorOpen, toggleAssetSelector, assetList, 
+  selectedAssets, removeAsset, isLoading }) => {
   return (
     <Form onSubmit={handleSubmit}>
       <ReduxFormField
@@ -66,13 +67,14 @@ const MakerSignupForm = ({ handleSubmit, randomNames, generateRandomNames, updat
         </Fragment>
       )}
       <p className={classNames('mt-4 mb-0 pb-0 font-weight-bold', text)}>Choose Supported Assets</p>
-      <small className={classNames(text, 'd-block')}>(ETH is required as it used to pay fees)</small>
+      <small className={classNames(text, 'd-block')}>Please remember you will be exposed to the price changes of assets you support.</small>
+      {selectedAssetsDoesHaveERC20(selectedAssets) && <small className={classNames(text, 'd-block')}>(ETH is required as it used to pay fees)</small>}
       {selectedAssets.length > 0 && !assetCheckbox && (
         <Fragment>
           {selectedAssets.map(sym => (
             <div className='px-3 py-2 d-inline-block my-2 mr-2 text-center cursor-pointer' style={{ border: '1px solid #ebeff1', borderRadius: 2 }} key={sym}>
               <span className={text}><CoinIcon symbol={sym} size='sm' className='mr-2'/>{sym}</span>
-              {sym !== 'ETH' && (
+              {selectedAssetsDoesHaveERC20(selectedAssets) && sym == 'ETH' ? null : (
                 <span className={classNames(text, 'ml-3')} onClick={() => removeAsset(sym)}>✕</span>
               )}
             </div>
@@ -163,11 +165,11 @@ export default compose(
   }),
   withProps(({ assets }) => ({
     assetList: assets ? assets.filter(({ deposit, receive }) => deposit && receive)
-      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl', 'marketCap')) : []
+      .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl', 'marketCap', 'ERC20')) : []
   })),
   withState('randomNames', 'updateRandomNames', []),
   withState('isLoading', 'updateIsLoading', false),
-  withState('selectedAssets', 'updateSelectedAssets', ['ETH']),
+  withState('selectedAssets', 'updateSelectedAssets', ['BTC']),
   withState('isAssetSelectorOpen', 'toggleAssetSelector', false),
   withHandlers({
     onSubmit: ({ registerMaker, updateIsLoading, selectedAssets }) => async ({ publicName, makerId, fullName, exchangesEnabled }) => {
@@ -204,12 +206,20 @@ export default compose(
   withHandlers({
     isAssetDisabled: () => ({ deposit, receive }) => !(deposit && receive),
     handleSelectedAsset: ({ selectedAssets, updateSelectedAssets }) => (asset) => {
-      const { symbol } = asset
+      const { symbol, ERC20 } = asset
       const arr = [...selectedAssets]
       if (arr.indexOf(symbol) < 0) {
         arr.push(symbol)
-        updateSelectedAssets(arr)
       }
+      if (ERC20 && arr.indexOf('ETH') < 0) {
+        arr.push('ETH')
+      }
+      updateSelectedAssets(arr)
+    },
+    selectedAssetsDoesHaveERC20: ({ assetList, selectedAssets }) => () => {
+      const hasERC20 = assetList.filter(a => selectedAssets.indexOf(a.symbol) >= 0).some(a => a.ERC20)
+      console.log(hasERC20)
+      return hasERC20
     },
     removeAsset: ({ selectedAssets, updateSelectedAssets }) => (sym) => {
       const arr = [...selectedAssets]

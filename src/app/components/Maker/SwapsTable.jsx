@@ -22,10 +22,10 @@ const NODATA = '---'
 
 const TableRow = ({
   swap, size,
-  swap: { sendSymbol, receiveSymbol, createdAtFormatted, valueUsd, valueBtc, revenueMakerBtc },
+  swap: { sendSymbol, receiveSymbol, createdAtFormatted, valueUsd, valueBtc, makerRewardsBtc = toBigNumber(0) },
   ...props
 }) => {
-  const revenueUsd = toBigNumber(valueUsd).div(valueBtc).times(revenueMakerBtc)
+  const revenueUsd = toBigNumber(valueUsd).div(valueBtc).times(makerRewardsBtc)
   const percentGain = revenueUsd.div(valueUsd).times(100)
   const swapStatus = swap && swap.status
   const isComplete = swapStatus && swapStatus.detailsCode == 'complete'
@@ -41,20 +41,20 @@ const TableRow = ({
         <i className='fa fa-long-arrow-right text-grey mx-2'/> 
         <CoinSymbol symbol={receiveSymbol}/>
       </td>
-      <td>{valueUsd && !toBigNumber(valueUsd).isNaN() && (toBigNumber(valueUsd).gt(0) || isComplete)
-        ? (<Units value={toBigNumber(valueUsd)} symbol={'$'} precision={6} showSymbol currency prefixSymbol symbolSpaced={false} />)
-        : NODATA}
-      </td>
+      {size === 'large' && (
+        <td>{valueUsd && !toBigNumber(valueUsd).isNaN() && (toBigNumber(valueUsd).gt(0) || isComplete)
+          ? (<Units value={toBigNumber(valueUsd)} symbol={'$'} precision={6} showSymbol currency prefixSymbol symbolSpaced={false} />)
+          : NODATA}
+        </td>
+      )}
       <td>{revenueUsd && !revenueUsd.isNaN()
         ? (<Units value={revenueUsd} symbol={'$'} precision={6} showSymbol prefixSymbol symbolSpaced={false} currency />)
         : NODATA}
       </td>
-      {size === 'large' && (
-        <td>{percentGain && !percentGain.isNaN()
-          ? (<ChangePercent>{percentGain}</ChangePercent>)
-          : NODATA}
-        </td>
-      )}
+      <td>{percentGain && !percentGain.isNaN()
+        ? (<ChangePercent>{percentGain}</ChangePercent>)
+        : NODATA}
+      </td>
     </tr>
   )}
 
@@ -78,9 +78,9 @@ const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading, title }) => {
                       <th></th>
                       {size === 'large' ? (<th className='d-none d-sm-table-cell'>Date</th>) : null}
                       <th className='d-none d-sm-table-cell'>Pair</th>
-                      <th>Swap Value (USD)</th>
+                      {size === 'large' ? (<th>Swap Value (USD)</th>) : null}
                       <th>Reward (USD)</th>
-                      {size === 'large' ? (<th>% Reward</th>) : null}
+                      <th>% Reward</th>
                     </tr>
                   </thead>
                   <tbody>

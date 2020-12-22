@@ -32,7 +32,7 @@ const MakerSettings = ({ makerId, profile: { swapMarginMin, swapMarginMax, asset
                     <span className={text}>Your maker supports all available assets.</span>
                   ) : (
                     <span className={text}>Your maker supports {assetsEnabled.map((a,i) => 
-                      <span key={a}>{i < assetsEnabled.length - 1 ? a : `and ${a}`}{i < assetsEnabled.length - 1 && ', '}</span>
+                      <span key={a}>{i < assetsEnabled.length - 1 ? `${a} ` : `and ${a}`}</span>
                     )}.</span>
                   )}
                 </Col>
