@@ -42,6 +42,7 @@ import MakerRegisterProfile from 'Components/Maker/SignupProfile'
 import MakerAccountModal from 'Components/Maker/AccountModal'
 import MakerSetup from 'Components/Maker/MakerSetup'
 import MakerExchangeSetup from 'Components/Maker/BinanceSetup'
+import MakerBalanceSetup from 'Components/Maker/BalanceSetup'
 import { AuthenticatedRoute, AuthRoutes } from 'Components/Auth'
 
 import {
@@ -53,7 +54,7 @@ import {
   connectMobileWallet, settings, affiliateAcceptTerms, wallets, walletDepositModal,
   walletWithdrawalModal, assetNews, makerLogin, makerDashboard, makerSwaps, makerSettings,
   makerLoading, makerBalances, makerRegister, makerRegisterProfile, makerAccountModal,
-  makerSetup, makerExchangeSetup
+  makerSetup, makerExchangeSetup, makerBalanceSetup
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -95,10 +96,11 @@ const AppView = ({ hasNoWallets }) => {
         <AuthRoutes path={'/makers/login/auth'} successPath={'/makers/login/loading'} />
         <AuthenticatedRoute path={makerLoading.path} component={MakerLoading} />
         <Route path={makerLogin.path} component={MakerLogin} />
-        <AuthenticatedRoute path={makerRegisterProfile.path} component={MakerRegisterProfile} />
+        <Route path={makerRegisterProfile.path} component={MakerRegisterProfile} />
         <Route path={makerRegister.path} component={MakerRegister} />
         <Route path={makerSetup.path} component={MakerSetup} />
         <Route path={makerExchangeSetup.path} component={MakerExchangeSetup} />
+        <Route path={makerBalanceSetup.path} component={MakerBalanceSetup} />
         <AuthenticatedRoute path={makerDashboard.path} component={MakerDashboard} />
         <AuthenticatedRoute path={makerSwaps.path} component={MakerSwaps} />
         <AuthenticatedRoute path={makerBalances.path} component={MakerBalances} />

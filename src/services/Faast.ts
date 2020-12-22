@@ -185,7 +185,7 @@ export const formatOrderResult = (r: any): SwapOrder => ({
   marketMakerName: r.maker_name,
   valueUsd: toBigNumber(r.value_usd),
   valueBtc: toBigNumber(r.value_btc),
-  revenueMakerBtc: toBigNumber(r.revenue_maker_btc),
+  makerRewardsBtc: toBigNumber(r.maker_rewards_btc),
 })
 
 export const fetchSwap = (swapId: string, formatOrder = true): Promise<SwapOrder> => {
@@ -496,7 +496,7 @@ export const getMakerSwaps = (
       Authorization: `Bearer ${accessToken}`,
     },
   })
-  .then((swaps) => swaps)
+  .then((swaps) => { console.log(swaps); return swaps })
   .catch((e: any) => {
     log.error(e)
     throw new Error(e)

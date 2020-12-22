@@ -124,8 +124,7 @@ export default compose(
     },
     assetExtender: ({ supportedAssetSymbols, portfolioSymbols, 
       isAssetDisabled, isAppRestricted, doToggleFeedbackForm, onlyShowEnabled }) => (assets) => {
-      assets = onlyShowEnabled ? assets.filter(a => !isAssetDisabled(a)) : assets
-      return assets.map((a) => {
+      assets = assets.map((a) => {
         const unsupportedWallet = !supportedAssetSymbols.includes(a.symbol)
         const alreadyInPortfolio = portfolioSymbols.includes(a.symbol)
         const swapDisabled = isAssetDisabled(a)
@@ -152,18 +151,17 @@ export default compose(
               : (alreadyInPortfolio
                 ? <T tag='span' i18nKey='app.assetSelector.alreadyAdded'>already added</T>
                 : null)))
-        if (!restricted && !swapDisabled) {
-          return {
-            ...a,
-            restricted,
-            disabled,
-            disabledMessage,
-            swapDisabled,
-            unsupportedWallet,
-            alreadyInPortfolio,
-          }
+        return {
+          ...a,
+          restricted,
+          disabled,
+          disabledMessage,
+          swapDisabled,
+          unsupportedWallet,
+          alreadyInPortfolio,
         }
       })
+      return assets = onlyShowEnabled ? assets.filter(a => !isAssetDisabled(a)) : assets
     }
   }),
   withState('extendedAssets', 'updateExtendedAssets', ({ assets, applySortOrder, assetExtender }) => {
