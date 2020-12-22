@@ -46,8 +46,7 @@ export default compose(
     componentDidMount() {
       const { auth, updateIsLoading } = this.props
       if (auth.isAuthenticated()) {
-        // push('/makers/login/loading')
-        auth.login()
+        push('/makers/login/loading')
       } else {
         auth.login()
         setTimeout(() => {
