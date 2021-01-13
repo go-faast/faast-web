@@ -5,6 +5,7 @@ import { compose, setDisplayName, withState, defaultProps } from 'recompose'
 import classNames from 'class-names'
 
 import GithubBg from 'Img/github-bg.svg'
+import GithubBgLight from 'Img/github-bg-light.svg'
 
 import style from './style.scss'
 import homeStyle from 'Site/pages/Home1/style.scss'
@@ -37,7 +38,7 @@ const json = [{
 
 const Terminal = ({ response, theme, includeCopy, includeBg, translations: { static: { terminal: t } } }) => {
   return (
-    <div style={{ backgroundImage: includeBg && `url(${GithubBg})`, paddingBottom: !includeBg && 0 }} className={classNames(homeStyle.sectionContainer, style.terminalSection, 'text-center mx-auto position-relative px-sm-0 px-2')}>
+    <div style={{ backgroundImage: includeBg && theme == 'dark' ? `url(${GithubBg})` : includeBg && theme !== 'dark' ? `url(${GithubBgLight})` : null, paddingBottom: !includeBg && 0 }} className={classNames(homeStyle.sectionContainer, style.terminalSection, 'text-center mx-auto position-relative px-sm-0 px-2')}>
       {includeCopy && (
         <Fragment>
           <h1 className={classNames(homeStyle.heading, 'mb-4')}>{t.becomeAffiliate}</h1>
@@ -53,7 +54,7 @@ const Terminal = ({ response, theme, includeCopy, includeBg, translations: { sta
           <div className={style.expand}></div>
         </div>
         <div className={classNames(theme === 'light' && style.terminalHeaderbarLight, style.terminalHeaderbar)}></div>
-        <div className={style.terminalSidebar}></div>
+        <div className={classNames(theme === 'light' && style.terminalSidebar, style.terminalSidebarLight)}></div>
         <div className='pt-5 pl-sm-5 pl-3 text-left'>
           <p className={classNames(style.comment, 'mb-0')}>
             <small>// {t.createSwap}</small>
