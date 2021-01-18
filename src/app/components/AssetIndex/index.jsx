@@ -4,8 +4,9 @@ import * as qs from 'query-string'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router'
 import { createStructuredSelector } from 'reselect'
-import { compose, setDisplayName, withProps } from 'recompose'
+import { compose, setDisplayName, withProps, lifecycle } from 'recompose'
 import withToggle from 'Hoc/withToggle'
+import { retreiveAssets } from 'Actions/asset'
 
 import AssetIndexTable from 'Components/AssetIndexTable'
 import Layout from 'Components/Layout'
@@ -59,5 +60,12 @@ export default compose(
     pricesLoaded: areAssetPricesLoaded,
     pricesError: getAssetPricesError
   }), {
+    retreiveAssets
   }),
+  lifecycle({
+    componentDidMount() {
+      const { retreiveAssets } = this.props
+      retreiveAssets()
+    }
+  })
 )(AssetIndex)

@@ -69,8 +69,8 @@ export const getInternationalRate = (symbol: string): Promise<number> => {
     .catch((e) => e)
   }
 
-export function fetchAssets(): Promise<any[]> {
-  return fetchGet(`${apiUrl}/api/v2/public/currencies`, { include: 'marketInfo' }, { retries: 2 })
+export function fetchAssets(symbols: []): Promise<any[]> {
+  return fetchGet(`${apiUrl}/api/v2/public/currencies`, { include: 'marketInfo', symbols }, { retries: 2 })
     .then((assets: Array<Partial<Asset>>) => assets.filter((asset) => {
       if (!asset.symbol) {
         log.warn('omitting asset without symbol', asset)

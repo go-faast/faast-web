@@ -8,6 +8,7 @@ import {
 } from 'Selectors'
 import { updateAllHoldings, removePortfolio, defaultPortfolioId } from 'Actions/portfolio'
 import { doToggleFeedbackForm } from 'Actions/app'
+import { retrieveAssets } from 'Actions/asset'
 
 import DashboardView from './view'
 
@@ -18,9 +19,11 @@ class Dashboard extends Component {
   }
 
   componentDidMount () {
-    const { updateAllHoldings } = this.props
-    const balancesInterval = window.setInterval(updateAllHoldings, 120000)
+    const { updateAllHoldings, retrieveAssets } = this.props
+    const balancesInterval = window.setInterval(updateAllHoldings, 180000)
     this.setState({ balancesInterval })
+    const assetsInterval = window.setInterval(retrieveAssets, 300000)
+    this.setState({ assetsInterval })
     const { wallet } = this.props
     if (Date.now() - wallet.balancesLastUpdated > 180000 && !wallet.balancesUpdating) {
       setTimeout(updateAllHoldings, 5000)
@@ -29,6 +32,7 @@ class Dashboard extends Component {
 
   componentWillUnmount () {
     window.clearInterval(this.state.balancesInterval)
+    window.clearInterval(this.state.assetsInterval)
   }
 
   _removeWallet () {
@@ -72,6 +76,7 @@ const mapStateToProps = createStructuredSelector({
 const mapDispatchToProps = {
   updateAllHoldings,
   removePortfolio,
+  retrieveAssets,
   doToggleFeedbackForm,
 }
 

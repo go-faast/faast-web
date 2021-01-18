@@ -25,14 +25,14 @@ export const restoreAssets = (assetState) => (dispatch) => {
   dispatch(assetsRestored(assetState))
 }
 
-export const retrieveAssets = () => (dispatch, getState) => {
+export const retrieveAssets = (symbols) => (dispatch, getState) => {
   const currencySymbol = getSelectedLabel(getState())
   dispatch(retrieveCurrencyRate(currencySymbol))
   if (areAssetsLoading(getState())) {
     return
   }
   dispatch(assetsLoading())
-  return Faast.fetchAssets()
+  return Faast.fetchAssets(symbols)
     .then((assets) => { 
       dispatch(assetsLoaded(assets))
       dispatch(assetPricesUpdated(assets))
