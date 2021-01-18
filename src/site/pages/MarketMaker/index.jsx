@@ -9,7 +9,7 @@ import withTracker from 'Site/components/withTracker'
 
 import CoinIcon from 'Components/CoinIcon'
 import Header from 'Site/components/Header'
-import Footer from 'Site/components/Footer'
+import Footer from 'Site/components/Footer1'
 import Terminal from 'Site/components/Terminal'
 import MakerBg from 'Img/maker-bg.svg'
 import MakerSetup from 'Img/maker-setup.svg?inline'
@@ -61,14 +61,15 @@ export default compose(
         <p>Liquidity mining is a community based approach to market making. A market maker (or Liquidity provider) enables markets to operate by pulling supply from different sources to ensure efficient prices. In return, market makers tend to earn a rewards when regular trades (also known as market takers) place market trades.</p>
         <p>Liquidity mining is <b>automated market making.</b> Instead of manually making trades and writing scripts, you download an open-source application which automates all of this for you. All you need to do is configure the application, and keep an eye on your accounts to make sure they're all running fine.</p>
       </div>,
+      id: 'liquiditymining'
     },
     {
-      q: 'Is Faast Regulated?',
-      a: <p>Faast is a bulletin board to connect two cryptocurrency users who then trade themselves. Faast's  design has taken consideration to the <a target='_blank' href='https://www.fatf-gafi.org/media/fatf/documents/recommendations/RBA-VA-VASPs.pdf'>2019 FATF Guidance - Section 39.</a> Faast provides a forum where buyers and sellers can post bids and offers, but the parties trade themselves on self hosted wallets, which is also in accordance with FinCEN staff guidance <a target='_blank' href='https://www.fincen.gov/sites/default/files/2019-05/FinCEN%20Guidance%20CVC%20FINAL%20508.pdf'>"FIN-2019-G001".</a></p>,
+      q: 'Is Faa.st Regulated?',
+      a: <p>Faa.st is a bulletin board to connect two cryptocurrency users who then trade themselves. Faa.st's  design has taken consideration to the <a target='_blank' href='https://www.fatf-gafi.org/media/fatf/documents/recommendations/RBA-VA-VASPs.pdf'>2019 FATF Guidance - Section 39.</a> Faa.st provides a forum where buyers and sellers can post bids and offers, but the parties trade themselves on self hosted wallets, which is also in accordance with FinCEN staff guidance <a target='_blank' href='https://www.fincen.gov/sites/default/files/2019-05/FinCEN%20Guidance%20CVC%20FINAL%20508.pdf'>"FIN-2019-G001".</a></p>,
     },
     {
-      q: 'Does Faast Monitor Transactions?',
-      a: <p>While Faast itself does not qualify as a virtual asset service provider (VASP), we take fraud very seriously. Faast actively collaborates with law enforcement when an appropriate request has been submitted. Furthermore, Faast has a <a href='https://faa.st/law-enforcement' target='_blank'>simple website law enforcement can use</a> to quickly search addresses to follow swaps across blockchains. Faast discourages the use of its platform as an anonymising service, and takes active precautions to prevent such use, in accordance to our <a href='https://faa.st/terms' target='_blank'>terms of use.</a></p>,
+      q: 'Does Faa.st Monitor Transactions?',
+      a: <p>While Faa.st itself does not qualify as a virtual asset service provider (VASP), we take fraud very seriously. Faa.st actively collaborates with law enforcement when an appropriate request has been submitted. Furthermore, Faa.st has a <a href='https://faa.st/law-enforcement' target='_blank'>simple website law enforcement can use</a> to quickly search addresses to follow swaps across blockchains. Faa.st discourages the use of its platform as an anonymising service, and takes active precautions to prevent such use, in accordance to our <a href='https://faa.st/terms' target='_blank'>terms of use.</a></p>,
     },
     {
       q: 'As a trader, how can I be sure that the maker fulfills the order?',
@@ -80,7 +81,7 @@ export default compose(
     },
     {
       q: 'Can a DeFi hack drain everyones wallets?',
-      a: "No. The Faast network operates very differently from DeFi platforms such as UniSwap. Hacking Faast doesn't gain access to any wallets. There is not currently a single smart contract where all participants deposit their cryptocurrency, and can be the target of attack. When running a Faast maker node, your cryptocurrency remain in your custody with your private keys. Possible risk  lies in the security of device running your maker node. You should take precautions to prevent unauthorized access to your server, and ensure that you backup your wallet seed offline, and never store it in plaintext on the internet.",
+      a: "No. The Faa.st network operates very differently from DeFi platforms such as UniSwap. Hacking Faa.st doesn't gain access to any wallets. There is not currently a single smart contract where all participants deposit their cryptocurrency, and can be the target of attack. When running a Faa.st maker node, your cryptocurrency remain in your custody with your private keys. Possible risk  lies in the security of device running your maker node. You should take precautions to prevent unauthorized access to your server, and ensure that you backup your wallet seed offline, and never store it in plaintext on the internet.",
     },
     {
       q: 'What do I need to run a market maker node?',
@@ -104,7 +105,7 @@ export default compose(
     },
     {
       q: 'What is the maximum amount of trade value I will be able to fulfill at any one time?',
-      a: 'All makers open a capacity payment channel with the Faast network. The size of this capacity channel limits the size of any single swap at a time.',
+      a: 'All makers open a capacity payment channel with the Faa.st network. The size of this capacity channel limits the size of any single swap at a time.',
     },
     {
       q: 'How are wallet/exchange/api keys proven safe?',
@@ -114,10 +115,18 @@ export default compose(
       q: 'Do I need to keep my crypto on an exchange in order to complete trades?',
       a: 'Generally, all crypto is withdrawn from your exchange account after a swap is complete.',
     },
+    {
+      q: 'What are atomic swaps?',
+      a: <div>
+        <p>Atomic swaps are blockchain transactions wherein a trade can occur in which the trade also acts as the settlement. This means that the deposit and withdrawal of a trade happen at the same time, and can't be reversed! This removes all counter-party risk from cryptocurrency trading, which is a very big deal. The technology to enable this has existed for some time now, but there is a larger problem: <b>counter-party discovery.</b> Due to how blockchains function, discovery, pricing and all the rest can't really happen cross chain. We need a new type of network for that.</p>
+        <p>In short, how do traders find makers? Our goal is to provide the simplest and fastest method to achieve this. The initial launch of the Faa.st maker program is a small step towards this goal. As we continue to roll our new atomic swaps, <b>we aim to be the de-facto network for swap discovery.</b></p>
+      </div>,
+      id: 'atomicswaps'
+    }
   ]
   return (
     <div style={{ maxWidth: '100vw' }}>
-      <div style={{ background: `url(${MakerBg})`, backgroundSize: 'cover', height: '90vh', width: '100%' }}>
+      <div style={{ background: `url(${MakerBg})`, backgroundSize: 'cover', height: '90vh', width: '100%', minHeight: 650 }}>
         <div className={classNames(coinContainer, 'd-none d-lg-block')}>
           <div className={classNames(eth, line)}>
             <img src={EthereumLogo} style={{ width: 91, height: 93 }} />
@@ -152,18 +161,18 @@ export default compose(
                 className={classNames('btn btn-primary btn-lg hero-button py-2 mr-3', shadow)}
                 color='primary'
                 role='button' 
-                href='/app/connect'
+                href='/app/makers/register'
               >
-                Sign up for beta
+                Sign up for Beta
               </Button>
               <Button 
                 tag='a' 
                 className={classNames('btn btn-primary btn-lg hero-button py-2', shadow)}
                 color='white'
                 role='button' 
-                href='/app/connect'
+                href='https://api.faa.st'
               >
-                Read the docs
+                Read the Docs
               </Button>
             </p>
           </Col>
@@ -180,8 +189,8 @@ export default compose(
                   <Col 
                     xs='6' 
                     key={coin} 
-                    className={classNames(shadow, 'py-3 mb-2', i % 2 == 0 && 'mr-2')} 
-                    style={{ backgroundColor: '#fff', borderRadius: 4, maxWidth: 250 }}
+                    className={classNames(shadow, 'py-3 mb-2 text-center', i % 2 == 0 && 'mr-2 ml-lg-0 ml-2')} 
+                    style={{ backgroundColor: '#fff', borderRadius: 4, maxWidth: 250, cursor: 'default' }}
                   >
                     <CoinIcon style={{ marginRight: 10 }} symbol={coin} /> 
                     <span style={{ fontSize: 22, color: '#1A212A', fontWeight: 600, verticalAlign: 'middle' }}>{coin}</span>
@@ -202,7 +211,7 @@ export default compose(
             Earn Rewards by Providing Liquidity
             </h2>
             <h5 className={sectionDescription}>Balances held while liquidity mining earn rewards based on volume and activity.</h5>
-            <a className={classNames(sectionLink, link, 'mb-3 d-inline-block')} href='/app/connect'>
+            <a className={classNames(sectionLink, link, 'mb-3 d-inline-block')} href='#liquiditymining'>
               More on Liquidity Mining <i className='fa fa-arrow-right' />
             </a>
         </Col>
@@ -223,12 +232,12 @@ export default compose(
             <h5 className={sectionDescription}>
             Specialize in a coin you’re holding for the long run. Allow others to trade for coins they’re excited about and earn rewards in a coin you’re excited about.
             </h5>
-            <a className={classNames(sectionLink, link, 'mb-3 d-inline-block')} href='/app/connect'>
-              More on Specialization <i className='fa fa-arrow-right' />
+            <a className={classNames(sectionLink, link, 'mb-3 d-inline-block')} href='/app/makers/register'>
+              Specialize Now <i className='fa fa-arrow-right' />
             </a>
         </Col>
         <Col className='p-0 pl-md-3 pl-0 text-xs-center text-left' xs={{ order: 1, size: 12 }}  lg={{ order: 1, size: 6 }}>
-          <StackedCoins style={{ width: 500 }} />
+          <StackedCoins style={{ width: '100%', maxWidth: 500 }} />
         </Col>
       </Row>
       <Row style={{ marginTop: 0, background: '#F9FAFB' }} className={classNames(sectionContainer, 'px-0 mx-0 position-relative')}>
@@ -237,15 +246,17 @@ export default compose(
             <h1 className={classNames('font-weight-bold mb-3', sectionTitle)} style={{ color: blueColor }}>Getting Started is Fast and Easy</h1>
             <h3 className={sectionDescription} style={{ color: '#43546B' }}>Run a simple and open source app that automates everything for you.</h3>
             <MakerSetup style={{ maxWidth: '100%' }} className='my-5' />
-            <Button 
+            <div>
+              <Button 
                 tag='a' 
                 className={classNames('btn btn-primary btn-lg hero-button py-2 mr-3 flat')}
                 color='primary'
                 role='button' 
-                href='/app/connect'
+                href='/app/makers/register'
               >
-                More on the setup process
+                Get Started Now
               </Button>
+            </div>
           </div>
         </Col>
       </Row>
@@ -256,7 +267,7 @@ export default compose(
             How does Faa.st work?
           </h5>
           <h1 className={classNames('font-weight-bold mb-3', sectionTitle)} style={{ color: blueColor }}>Peer to Peer Swaps with Market Makers</h1>
-          <h3 className={sectionDescription} style={{ color: '#43546B' }}>As opposed to most exchanges and swap services, Faast is fully peer to peer. This means that Faast itself is not a counterparty to any swaps. Faast operates a service to list market makers, and match them with traders.</h3>
+          <h3 className={sectionDescription} style={{ color: '#43546B' }}>As opposed to most exchanges and swap services, Faa.st is fully peer to peer. This means that Faa.st itself is not a counterparty to any swaps. Faa.st operates a service to list market makers, and match them with traders.</h3>
           <HowFaastworks style={{ maxWidth: '100%' }} className='mt-5 pt-4' />
         </Container>
         </Col>
@@ -269,7 +280,7 @@ export default compose(
           </h5>
           <h1 className={classNames('font-weight-bold mb-3', sectionTitle)} style={{ color: blueColor }}>Buidl what’s missing</h1>
           <h3 className={classNames(sectionDescription, 'py-3')} style={{ color: '#43546B' }}>
-            Is the crypto or token you're looking to support not available? Is the exchange you trade on not currently supported?  The faast maker node is open source, you're welcome to make contributions on our github repository. If you're not a developer, you can still help! Just keep us posted on any issues you might notice.
+            Is the crypto or token you're looking to support not available? Is the exchange you trade on not currently supported?  The Faa.st maker node is open source, you're welcome to make contributions on our github repository. If you're not a developer, you can still help! Just keep us posted on any issues you might notice.
           </h3>
           <Terminal translations={translations} includeCopy={false} theme='light' />
         </Container>
@@ -283,16 +294,16 @@ export default compose(
           </h5>
           <h1 className={classNames('font-weight-bold mb-3', sectionTitle)} style={{ color: blueColor }}>Atomic Swaps on the Horizon</h1>
           <h3 className={classNames(sectionDescription, 'mt-4')} style={{ color: '#43546B' }}>
-            Atomic swaps are blockchain transactions wherein a trade can occur in which the trade also acts as the settlement. This means that the deposit and withdrawal of a trade happen at the same time, and can't be reversed! This removes all counter-party risk from cryptocurrency trading, which is a very big deal. Our goal is to provide the simplest and fastest method to achieve this. The initial launch of the Faast maker program is a small step towards this goal. As we continue to roll our new atomic swaps, we aim to be the de-facto network for swap discovery.
+            Atomic swaps are blockchain transactions wherein a trade can occur in which the trade also acts as the settlement. This means that the deposit and withdrawal of a trade happen at the same time, and can't be reversed! This removes all counter-party risk from cryptocurrency trading, which is a very big deal. Our goal is to provide the simplest and fastest method to achieve this. The initial launch of the Faa.st maker program is a small step towards this goal. As we continue to roll our new atomic swaps, we aim to be the de-facto network for swap discovery.
           </h3>
           <Button 
             tag='a' 
             className={classNames('btn btn-primary btn-lg hero-button py-2 mr-3 flat mt-4')}
             color='primary'
             role='button' 
-            href='/app/connect'
+            href='#atomicswaps'
           >
-            Learn more about Atomic Swaps
+            More about Atomic Swaps
           </Button>
         </Container>
         </Col>
@@ -303,7 +314,7 @@ export default compose(
           <Container>
             {faqCopy.map((x, i) => {
               return (
-                <Row key={i} className={classNames('text-left mb-3', i == 0 && 'mt-5')}>
+                <Row key={i} id={x.id || ''} className={classNames('text-left mb-3', i == 0 && 'mt-5')}>
                   <Col>
                     <Collapse isOpen={true}>
                       <Card className='flat border-0'>
