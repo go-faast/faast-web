@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="244px" height="1241px" viewBox="0 0 244 1241" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 7</title>
+    <defs>
+        <path d="M4,0 L221,0 C223.209139,0 225,1.790861 225,4 L225,120 C225,122.209139 223.209139,124 221,124 L4,124 C1.790861,124 0,122.209139 0,120 L0,4 C0,1.790861 1.790861,0 4,0 Z" id="path-1"></path>
+        <filter x="-5.8%" y="-8.9%" width="111.6%" height="121.0%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.733071888   0 0 0 0 0.784279168   0 0 0 0 0.820850317  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <path d="M4,0 L216,0 C218.209139,0 220,1.790861 220,4 L220,120 C220,122.209139 218.209139,124 216,124 L4,124 C1.790861,124 0,122.209139 0,120 L0,4 C0,1.790861 1.790861,0 4,0 Z" id="path-3"></path>
+        <filter x="-5.9%" y="-8.9%" width="111.8%" height="121.0%" filterUnits="objectBoundingBox" id="filter-4">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.733071888   0 0 0 0 0.784279168   0 0 0 0 0.820850317  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <path d="M4,0 L221,0 C223.209139,0 225,1.790861 225,4 L225,120 C225,122.209139 223.209139,124 221,124 L4,124 C1.790861,124 0,122.209139 0,120 L0,4 C0,1.790861 1.790861,0 4,0 Z" id="path-5"></path>
+        <filter x="-5.8%" y="-8.9%" width="111.6%" height="121.0%" filterUnits="objectBoundingBox" id="filter-6">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.733071888   0 0 0 0 0.784279168   0 0 0 0 0.820850317  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <path d="M4,0 L221,0 C223.209139,0 225,1.790861 225,4 L225,120 C225,122.209139 223.209139,124 221,124 L4,124 C1.790861,124 0,122.209139 0,120 L0,4 C0,1.790861 1.790861,0 4,0 Z" id="path-7"></path>
+        <filter x="-5.8%" y="-8.9%" width="111.6%" height="121.0%" filterUnits="objectBoundingBox" id="filter-8">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.733071888   0 0 0 0 0.784279168   0 0 0 0 0.820850317  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <path d="M4,0 L216,0 C218.209139,0 220,1.790861 220,4 L220,120 C220,122.209139 218.209139,124 216,124 L4,124 C1.790861,124 0,122.209139 0,120 L0,4 C0,1.790861 1.790861,0 4,0 Z" id="path-9"></path>
+        <filter x="-5.9%" y="-8.9%" width="111.8%" height="121.0%" filterUnits="objectBoundingBox" id="filter-10">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.733333333   0 0 0 0 0.784313725   0 0 0 0 0.819607843  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <path d="M4,0 L216,0 C218.209139,0 220,1.790861 220,4 L220,120 C220,122.209139 218.209139,124 216,124 L4,124 C1.790861,124 0,122.209139 0,120 L0,4 C0,1.790861 1.790861,0 4,0 Z" id="path-11"></path>
+        <filter x="-5.9%" y="-8.9%" width="111.8%" height="121.0%" filterUnits="objectBoundingBox" id="filter-12">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="4" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.733071888   0 0 0 0 0.784279168   0 0 0 0 0.820850317  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Desktop-HD" transform="translate(-40.000000, -48.000000)">
+            <g id="Group-7" transform="translate(48.000000, 54.000000)">
+                <line x1="112.5" y1="117.5" x2="112.5" y2="1217.5" id="Line-3" stroke="#1A212A" stroke-linecap="square"></line>
+                <circle id="Oval" stroke="#1A212A" fill="#FBFCFE" cx="112.5" cy="166.5" r="16.5"></circle>
+                <g id="Group" transform="translate(3.000000, 1045.000000)">
+                    <g id="Rectangle">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-4)" xlink:href="#path-3"></use>
+                        <use fill="#7FA4FF" fill-rule="evenodd" xlink:href="#path-3"></use>
+                    </g>
+                    <text id="Maker-sends-BTC-to-t" font-family="OpenSans-SemiBold, Open Sans" font-size="20" font-weight="500" fill="#1A212A">
+                        <tspan x="29.8095703" y="55">Maker sends BTC </tspan>
+                        <tspan x="69.5166016" y="82">to trader</tspan>
+                    </text>
+                </g>
+                <g id="Group-4" transform="translate(3.000000, 418.000000)">
+                    <g id="Rectangle">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-4)" xlink:href="#path-3"></use>
+                        <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-3"></use>
+                    </g>
+                    <text id="Maker-receives-ETH-d" font-family="OpenSans-SemiBold, Open Sans" font-size="22" font-weight="500" fill="#1A212A">
+                        <tspan x="29.7290039" y="38">Maker receives </tspan>
+                        <tspan x="47.0078125" y="68">ETH deposit </tspan>
+                        <tspan x="47.7919922" y="98">from trader</tspan>
+                    </text>
+                </g>
+                <g id="Group-3" transform="translate(0.000000, 627.000000)">
+                    <g id="Rectangle">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-4)" xlink:href="#path-3"></use>
+                        <use fill="#7FA4FF" fill-rule="evenodd" xlink:href="#path-3"></use>
+                    </g>
+                    <text id="Maker-automatically" font-family="OpenSans-SemiBold, Open Sans" font-size="20" font-weight="500" fill="#1A212A">
+                        <tspan x="13.625" y="42">Maker automatically </tspan>
+                        <tspan x="17.1113281" y="69">hedges the swap on </tspan>
+                        <tspan x="52.2138672" y="96">an exchange</tspan>
+                    </text>
+                </g>
+                <g id="Group-5" transform="translate(3.000000, 209.000000)">
+                    <g id="Rectangle">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-4)" xlink:href="#path-3"></use>
+                        <use fill="#00D7B8" fill-rule="evenodd" xlink:href="#path-3"></use>
+                    </g>
+                    <text id="Faa.st-finds-a-maker" font-family="OpenSans-SemiBold, Open Sans" font-size="20" font-weight="500" fill="#1A212A">
+                        <tspan x="15.9150391" y="55">Faa.st finds a maker </tspan>
+                        <tspan x="27.3212891" y="82">specialized in BTC</tspan>
+                    </text>
+                </g>
+                <g id="Group-6" transform="translate(3.000000, 0.000000)">
+                    <g id="Rectangle">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-10)" xlink:href="#path-7"></use>
+                        <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-9"></use>
+                    </g>
+                    <text id="Trader-wants-to-swap" font-family="OpenSans-SemiBold, Open Sans" font-size="22" font-weight="500" fill="#1A212A">
+                        <tspan x="36.3320312" y="39">Trader wants </tspan>
+                        <tspan x="41.5419922" y="69">to swap ETH </tspan>
+                        <tspan x="67.7314453" y="99">for BTC</tspan>
+                    </text>
+                </g>
+                <circle id="Oval" stroke="#1A212A" fill="#FBFCFE" cx="112.5" cy="584.5" r="16.5"></circle>
+                <circle id="Oval" stroke="#1A212A" fill="#7FA4FF" cx="112.5" cy="793.5" r="16.5"></circle>
+                <g id="Group-2" transform="translate(3.000000, 836.000000)">
+                    <g id="Rectangle">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-4)" xlink:href="#path-3"></use>
+                        <use fill="#FBFCFE" fill-rule="evenodd" xlink:href="#path-3"></use>
+                    </g>
+                    <text id="Trader-receives-BTC" font-family="OpenSans-SemiBold, Open Sans" font-size="22" font-weight="500" fill="#1A212A">
+                        <tspan x="28.3486328" y="37">Trader receives </tspan>
+                        <tspan x="60.7148438" y="67">BTC from </tspan>
+                        <tspan x="76.0976562" y="97">Maker</tspan>
+                    </text>
+                </g>
+                <circle id="Oval" stroke="#1A212A" fill="#FBFCFE" cx="112.5" cy="1002.5" r="16.5"></circle>
+                <circle id="Oval" stroke="#1A212A" fill="#7FA4FF" cx="112.5" cy="1217.5" r="16.5"></circle>
+                <circle id="Oval-4" stroke="#1A212A" fill="#00D7B8" cx="112.5" cy="375.5" r="16.5"></circle>
+            </g>
+        </g>
+    </g>
+</svg>

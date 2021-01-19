@@ -16,7 +16,7 @@
 }
 
 .terminalLight {
-  background-color: #e9edf5;
+  background-color: #2C343E;
   box-shadow: 0 4px 8px 0px rgba(128, 145, 184, 0.29);
 }
 
@@ -32,7 +32,7 @@
 }
 
 .terminalHeaderbarLight {
-  background-color: #a8b3c1;
+  background-color: #1E232A;
 }
 
 .ellipsis {
@@ -77,8 +77,12 @@
   z-index: 2;
 }
 
+.terminalSidebarLight {
+  background-color: #262D36;
+}
+
 .comment {
-  color: #414347;
+  color: #95A0C3;
 }
 
 .success {
@@ -90,7 +94,7 @@
 }
 
 .keyLight {
-  color: rgb(83, 77, 187);
+  color: #8380DE;
 }
 
 .value {
@@ -98,7 +102,7 @@
 }
 
 .valueLight {
-  color: rgb(16, 156, 145);
+  color: #FBF69C;
 }
 
 .func {

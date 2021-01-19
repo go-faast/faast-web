@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React from 'react'
 import { compose, setDisplayName, setPropTypes, defaultProps } from 'recompose'
 import { Row, Col, Button } from 'reactstrap'
 import siteConfig from 'Site/config'
@@ -16,17 +16,21 @@ import style from './style.scss'
 export default compose(
   setDisplayName('Footer'),
   setPropTypes({
-    footerClass: PropTypes.string
+    footerClass: PropTypes.string,
+    theme: PropTypes.string
   }),
   defaultProps({
-    footerClass: ''
+    footerClass: '',
+    theme: 'dark'
   })
-)(({ footerClass, translations, translations: { static: { footer: t = {} } = {} } }) => (
-  <Fragment>
-    <div className='footer-clean position-relative' style={{ backgroundColor: '#191A1D', paddingTop: '0px', marginTop: 320 }}>
-      <div style={{ top: -150 }} className='position-absolute'>
-        <img style={{ width: '100vw', height: 260 }} src={FooterChart} />
-      </div>
+)(({ footerClass, theme, translations, translations: { static: { footer: t = {} } = {} } }) => (
+  <div style={{ backgroundColor: '#191A1D', marginTop: theme == 'dark' ? 320 : 0 }} className='pt-0'>
+    <div className='footer-clean position-relative' style={{ backgroundColor: '#191A1D', paddingTop: theme != 'dark' && 70 }}>
+      {theme == 'dark' && (
+        <div style={{ top: -150 }} className='position-absolute'>
+          <img style={{ width: '100vw', height: 260 }} src={FooterChart} />
+        </div>
+      )}
       <Row className='p-0 m-0'>
         <Col className='px-0'>
           <EmailSub translations={translations} />
@@ -36,7 +40,7 @@ export default compose(
         <Col className={classNames(style.ctaContainer, 'mx-auto d-flex mb-5 px-md-5 px-0 pl-xs-4 pl-md-5 pl-3 py-md-0 py-4')}>
           <Row style={{ flex: 1 }} className='mx-0 px-0 justify-content-between align-items-center'>
             <Col className='p-0 m-0 d-flex' xs='12' md='6'>
-              <h2 className='text-white my-0'>{t.readyToTrade}</h2>
+              <h2 className='text-white my-3'>{t.readyToTrade}</h2>
             </Col>
             <Col className='p-0 m-0 mt-xs-3 mt-md-0 mt-0 d-flex justify-content-xs-start justify-content-md-end' xs='12' md='6'>
               <Button tag='a' href='/app/connect' className='text-white mr-3' color='primary'>{t.connectYourWallet}</Button>
@@ -121,5 +125,5 @@ export default compose(
         </div>
       </footer>
     </div>
-  </Fragment>
+  </div>
 ))
