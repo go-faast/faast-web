@@ -6,7 +6,7 @@ import { withRouter } from 'react-router'
 import { createStructuredSelector } from 'reselect'
 import { compose, setDisplayName, withProps, lifecycle } from 'recompose'
 import withToggle from 'Hoc/withToggle'
-import { retreiveAssets } from 'Actions/asset'
+import { retrieveAssets } from 'Actions/asset'
 
 import AssetIndexTable from 'Components/AssetIndexTable'
 import Layout from 'Components/Layout'
@@ -60,12 +60,12 @@ export default compose(
     pricesLoaded: areAssetPricesLoaded,
     pricesError: getAssetPricesError
   }), {
-    retreiveAssets
+    retrieveAssets
   }),
   lifecycle({
     componentDidMount() {
-      const { retreiveAssets } = this.props
-      retreiveAssets()
+      const { retrieveAssets } = this.props
+      retrieveAssets()
     }
   })
 )(AssetIndex)
