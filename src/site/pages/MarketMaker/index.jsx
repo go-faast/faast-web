@@ -13,8 +13,10 @@ import Footer from 'Site/components/Footer1'
 import Terminal from 'Site/components/Terminal'
 import MakerBg from 'Img/maker-bg.svg'
 import MakerSetup from 'Img/maker-setup.svg?inline'
+import MakerSetupMobile from 'Img/maker-setup-mobile.svg?inline'
 import StackedCoins from 'Img/stacked-coins.svg?inline'
-import HowFaastworks from 'Img/how-faast-works.svg?inline'
+import HowFaastWorks from 'Img/how-faast-works.svg?inline'
+import HowFaastWorksMobile from 'Img/how-faast-works-mobile.svg?inline'
 import BitcoinLogo from 'Img/newsletter-btc.svg'
 import EthereumLogo from 'Img/newsletter-eth.svg'
 import LitecoinLogo from 'Img/newsletter-ltc.svg'
@@ -126,7 +128,7 @@ export default compose(
   ]
   return (
     <div style={{ maxWidth: '100vw' }}>
-      <div style={{ background: `url(${MakerBg})`, backgroundSize: 'cover', height: '90vh', width: '100%', minHeight: 650 }}>
+      <div style={{ background: `url(${MakerBg})`, backgroundSize: 'cover', width: '100%', minHeight: 650 }}>
         <div className={classNames(coinContainer, 'd-none d-lg-block')}>
           <div className={classNames(eth, line)}>
             <img src={EthereumLogo} style={{ width: 91, height: 93 }} />
@@ -148,8 +150,8 @@ export default compose(
         <div style={{ minHeight: '85vh' }} className={classNames('mb-0 py-5 position-relative')}>
         <Container>
         <Row>
-          <Col sm='12' lg='6' className={classNames('text-left pl-md-5 pl-0 ml-4', 'mt-xs-5 mt-lg-5 pt-4')}>
-            <h1 className='hero-title mb-4' style={{ fontWeight: 'normal', fontSize: 46, fontWeight: 600 }}>
+          <Col sm='12' lg='6' className={classNames('text-left pl-md-5 pl-0 ml-4', 'mt-xs-5 mt-lg-5 pt-5')}>
+            <h1 className='hero-title mb-4' style={{ fontWeight: 'normal', fontSize: 48, fontWeight: 600 }}>
               Liquidity mining now available on Faa.st
             </h1>
             <p className='hero-subtitle mb-4' style={{ fontWeight: 'normal', color: '#B3BCD8' }}>
@@ -161,7 +163,8 @@ export default compose(
                 className={classNames('btn btn-primary btn-lg hero-button py-2 mr-3', shadow)}
                 color='primary'
                 role='button' 
-                href='/app/makers/register'
+                href='https://docs.google.com/forms/d/e/1FAIpQLSfxnI0SPvQu-4oVi2YCa7Lp_UEK8WyDFNFSMoXVxZD7Ioxjzw/formResponse'
+                target='_blank noreferrer'
               >
                 Sign up for Beta
               </Button>
@@ -171,6 +174,7 @@ export default compose(
                 color='white'
                 role='button' 
                 href='https://api.faa.st'
+                target='_blank noreferrer'
               >
                 Read the Docs
               </Button>
@@ -232,8 +236,8 @@ export default compose(
             <h5 className={sectionDescription}>
             Specialize in a coin you’re holding for the long run. Allow others to trade for coins they’re excited about and earn rewards in a coin you’re excited about.
             </h5>
-            <a className={classNames(sectionLink, link, 'mb-3 d-inline-block')} href='/app/makers/register'>
-              Specialize Now <i className='fa fa-arrow-right' />
+            <a className={classNames(sectionLink, link, 'mb-3 d-inline-block')} href='https://docs.google.com/forms/d/e/1FAIpQLSfxnI0SPvQu-4oVi2YCa7Lp_UEK8WyDFNFSMoXVxZD7Ioxjzw/formResponse' target='_blank noreferrer'>
+              Start Stacking Now <i className='fa fa-arrow-right' />
             </a>
         </Col>
         <Col className='p-0 pl-md-3 pl-0 text-xs-center text-left' xs={{ order: 1, size: 12 }}  lg={{ order: 1, size: 6 }}>
@@ -245,14 +249,16 @@ export default compose(
           <div className={classNames('mx-auto px-4 py-5 text-center', shadowLight)} style={{ maxWidth: '90%', backgroundColor: '#fff', borderRadius: 4, position: 'relative', marginTop: -360 }}>
             <h1 className={classNames('font-weight-bold mb-3', sectionTitle)} style={{ color: blueColor }}>Getting Started is Fast and Easy</h1>
             <h3 className={sectionDescription} style={{ color: '#43546B' }}>Run a simple and open source app that automates everything for you.</h3>
-            <MakerSetup style={{ maxWidth: '100%' }} className='my-5' />
+            <MakerSetup style={{ maxWidth: '100%' }} className='my-5 d-lg-inline-block d-none' />
+            <MakerSetupMobile style={{ maxWidth: '100%' }} className='d-lg-none d-inline-block my-5' />
             <div>
               <Button 
                 tag='a' 
-                className={classNames('btn btn-primary btn-lg hero-button py-2 mr-3 flat')}
+                className={classNames('btn btn-primary btn-lg hero-button py-2 flat')}
                 color='primary'
                 role='button' 
-                href='/app/makers/register'
+                href='https://docs.google.com/forms/d/e/1FAIpQLSfxnI0SPvQu-4oVi2YCa7Lp_UEK8WyDFNFSMoXVxZD7Ioxjzw/formResponse'
+                target='_blank noreferrer'
               >
                 Get Started Now
               </Button>
@@ -268,7 +274,10 @@ export default compose(
           </h5>
           <h1 className={classNames('font-weight-bold mb-3', sectionTitle)} style={{ color: blueColor }}>Peer to Peer Swaps with Market Makers</h1>
           <h3 className={sectionDescription} style={{ color: '#43546B' }}>As opposed to most exchanges and swap services, Faa.st is fully peer to peer. This means that Faa.st itself is not a counterparty to any swaps. Faa.st operates a service to list market makers, and match them with traders.</h3>
-          <HowFaastworks style={{ maxWidth: '100%' }} className='mt-5 pt-4' />
+          <HowFaastWorks style={{ maxWidth: '100%' }} className='mt-5 pt-4 d-lg-block d-none' />
+          <div className='text-center mt-5'>
+            <HowFaastWorksMobile className='d-lg-none d-inline-block' />
+          </div>
         </Container>
         </Col>
       </Row>
@@ -331,6 +340,6 @@ export default compose(
           </Container>
         </Col>
       </Row>
-      <Footer translations={translations} />
+      <Footer translations={translations} theme='light' />
     </div>
   )})

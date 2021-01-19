@@ -60,7 +60,7 @@ const Terminal = ({ response, theme, includeCopy, includeBg, translations: { sta
             <small>// {t.createSwap}</small>
           </p>
           <p className={style.ellipsis}>
-            <small><span className={style.await}>await</span> http.<span className={classNames(theme === 'light' && style.funcLight, style.func)}>post</span>('https://api.faast/api/v2/public/swap')</small>
+            <small style={{ color: '#fff' }}><span className={style.await}>await</span> http.<span className={classNames(theme === 'light' && style.funcLight, style.func)}>post</span>('https://api.faast/api/v2/public/swap')</small>
           </p>
           <p className='m-0'>
             <small>{'{'}</small>
