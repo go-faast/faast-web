@@ -10,6 +10,7 @@ import Toastr from 'Utilities/toastrWrapper'
 const createAction = newScopedCreateAction(__filename)
 
 export const makerDataUpdated = createAction('MAKER_UPDATED')
+export const removeSecretKey = createAction('REMOVE_SECRET_KEY')
 export const login = createAction('MAKER_LOGIN')
 export const logout = createAction('MAKER_LOGOUT')
 export const loadingData = createAction('MAKER_LOADING_LOGIN')
@@ -93,7 +94,7 @@ export const registerMaker = (profile) => async (dispatch) => {
     const makerProfile = await Faast.createMaker(accessToken, profile)
     dispatch(updateProfile(makerProfile))
     dispatch(login())
-    dispatch(push('/makers/dashboard'))
+    dispatch(push('/makers/dashboard/account'))
   } catch (err) {
     dispatch(loginError(err))
     dispatch(push('/makers/login'))

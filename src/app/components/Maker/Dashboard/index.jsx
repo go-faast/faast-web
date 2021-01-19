@@ -16,13 +16,14 @@ import Loading from 'Components/Loading'
 import { getStats } from 'Actions/maker'
 import classNames from 'class-names'
 
-import { makerId, getMakerProfile, getMakerProfitUSD, getMakerProfitBTC } from 'Selectors/maker'
+import { makerId, getMakerProfile, getMakerProfitUSD, getMakerProfitBTC, getMakerSecret,
+  getTotalBalanceBTC } from 'Selectors/maker'
 
 import { statContainer, row, statCol } from './style'
 import { card, cardHeader, text, smallCard, input } from '../style'
 
 
-const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalances: { total: { BTC: balanceBTC = '-', USD: balanceUSD = '-' } = {} } = {}, 
+const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAddress, approxTotalBalances: { total: { USD: balanceUSD = '-' } = {} } = {}, 
   swapsCompleted = '-', capacityMaximumBtc = '-', isRegistrationComplete }, makerProfitUSD, makerProfitBTC }) => {
   const CapacityWalletRow = () => (
     <Card className={classNames(card, smallCard)}>
@@ -66,7 +67,13 @@ const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalanc
                           <a href='/app/makers/setup/exchanges' target='_blank'>Setup your exchange API account</a>
                         </li>
                         <li>
-                          <a href='/app/makers/setup/server' target='_blank'>Setup your market maker on a cloud server</a>
+                          <a href='/app/makers/setup/server' target='_blank'>Setup your market maker on a server</a>
+                        </li>
+                        <li>
+                          <a href={'/app/makers/dashboard/capacity'}>Deposit BTC to your capacity address</a>
+                        </li>
+                        <li>
+                          <a href='/app/makers/balances' target='_blank'>Setup your market maker on a server</a>
                         </li>
                       </ol>
                     </CardBody>
@@ -90,7 +97,7 @@ const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalanc
                 <Col className={classNames('mt-0', statCol)} sm='12' md='4'>
                   <div className={classNames('mx-auto')}>
                     <p className='text-center mb-0'>Total Balance (BTC)</p>
-                    <p className='pt-0 mb-0'>{balanceBTC}</p>
+                    <p className='pt-0 mb-0'>{totalBalanceBTC}</p>
                   </div>
                 </Col>
                 <Col className={classNames('mt-xs-3 mt-md-0 mt-0', statCol)} sm='12' md='4'>
@@ -148,12 +155,18 @@ export default compose(
     makerId,
     makerProfitUSD: getMakerProfitUSD,
     makerProfitBTC: getMakerProfitBTC,
+    makerSecret: getMakerSecret,
+    totalBalanceBTC: getTotalBalanceBTC
   }), {
     getStats,
     push: push,
   }),
   lifecycle({
     componentDidMount() {
+      const { makerSecret } = this.props
+      if (makerSecret) {
+        push('/makers/dashboard/account')
+      }
     }
   }),
 )(MakerDashboard)

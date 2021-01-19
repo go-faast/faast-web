@@ -39,7 +39,8 @@ import MakerBalances from 'Components/Maker/Balances'
 import MakerSettings from 'Components/Maker/Settings'
 import MakerRegister from 'Components/Maker/Signup'
 import MakerRegisterProfile from 'Components/Maker/SignupProfile'
-import MakerAccountModal from 'Components/Maker/AccountModal'
+import LlamaSecretModal from 'Components/Maker/LlamaSecretModal'
+import CapacityDepositModal from 'Components/Maker/CapacityDepositModal'
 import MakerSetup from 'Components/Maker/MakerSetup'
 import MakerExchangeSetup from 'Components/Maker/BinanceSetup'
 import MakerBalanceSetup from 'Components/Maker/BalanceSetup'
@@ -54,7 +55,7 @@ import {
   connectMobileWallet, settings, affiliateAcceptTerms, wallets, walletDepositModal,
   walletWithdrawalModal, assetNews, makerLogin, makerDashboard, makerSwaps, makerSettings,
   makerLoading, makerBalances, makerRegister, makerRegisterProfile, makerAccountModal,
-  makerSetup, makerExchangeSetup, makerBalanceSetup
+  makerSetup, makerExchangeSetup, makerBalanceSetup, capacityDepositModal
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -135,7 +136,10 @@ const AppView = ({ hasNoWallets }) => {
         <AffiliateAccountModal {...props}/>
       )}/>
       <ModalRoute closePath={makerDashboard.path} path={makerAccountModal.path} render={(props) => (
-        <MakerAccountModal {...props}/>
+        <LlamaSecretModal {...props}/>
+      )}/>
+      <ModalRoute closePath={makerDashboard.path} path={capacityDepositModal.path} render={(props) => (
+        <CapacityDepositModal {...props}/>
       )}/>
       <Footer />
     </Fragment>

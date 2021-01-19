@@ -5,6 +5,7 @@ import { getAllAssets } from './asset'
 import { getAllWallets } from './wallet'
 import { getAllTxs } from './tx'
 import { createSwapExtender } from './swap'
+import { toBigNumber } from 'Utilities/numbers'
 
 const getMakerState = ({ maker }) => maker
 
@@ -28,6 +29,13 @@ export const makerSwaps = createSelector(
 export const makerSwapsArray = createSelector(makerSwaps, Object.values)
 export const getMakerBalances = createSelector(getMakerState, ({ balances }) => balances)
 export const getMakerProfile = createSelector(getMakerState, ({ profile }) => profile)
+export const getTotalBalanceBTC = createSelector(getMakerProfile, ({ profile }) => { 
+  const approxBTC = profile.approxTotalBalances.total.BTC
+  const feesOwed = profile.feesOwed
+  return parseFloat(approxBTC) - parseFloat(feesOwed)
+})
+export const getCapacityAddress = createSelector(getMakerProfile, ({ capacityAddress }) => capacityAddress)
+export const getMakerSecret = createSelector(getMakerProfile, ({ llamaSecret }) => llamaSecret)
 export const isMakerActivated = createSelector(getMakerProfile, ({ isSuspended }) => !isSuspended)
 export const getMakerStats = createSelector(getMakerState, ({ stats }) => stats)
 export const getMakerProfitUSD = createSelector(getMakerStats, (stats) => {

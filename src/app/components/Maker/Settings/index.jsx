@@ -4,7 +4,7 @@ import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
 import { compose, setDisplayName } from 'recompose'
-import { Row, Col, Card, Input, CardHeader, CardBody } from 'reactstrap'
+import { Row, Col, Card, Input, CardHeader, CardBody, Button } from 'reactstrap'
 import classNames from 'class-names'
 
 import { makerId, getMakerProfile } from 'Selectors/maker'
@@ -37,6 +37,10 @@ const MakerSettings = ({ makerId, profile: { swapMarginMin, swapMarginMax, asset
                   )}
                 </Col>
                 <hr className='w-100 border-light'/>
+                <Col sm='12'>
+                  <small><p className={classNames('mt-1 mb-1 font-weight-bold', text)}>Withdraw BTC Capacity</p></small>
+                  <Button></Button>
+                </Col>
                 {swapMarginMin && swapMarginMax ? (
                   <Fragment>
                     <Col sm='12'>
