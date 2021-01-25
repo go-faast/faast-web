@@ -127,7 +127,7 @@ export default compose(
     }
   ]
   return (
-    <div style={{ maxWidth: '100vw' }}>
+    <div style={{ maxWidth: '100vw', overflow: 'hidden' }}>
       <div style={{ background: `url(${MakerBg})`, backgroundSize: 'cover', width: '100%', minHeight: 650 }}>
         <div className={classNames(coinContainer, 'd-none d-lg-block')}>
           <div className={classNames(eth, line)}>
@@ -160,7 +160,7 @@ export default compose(
             <p>
               <Button 
                 tag='a' 
-                className={classNames('btn btn-primary btn-lg hero-button py-2 mr-3', shadow)}
+                className={classNames('btn btn-primary btn-lg hero-button py-2 mr-3 mb-sm-0 mb-3', shadow)}
                 color='primary'
                 role='button' 
                 href='https://docs.google.com/forms/d/e/1FAIpQLSfxnI0SPvQu-4oVi2YCa7Lp_UEK8WyDFNFSMoXVxZD7Ioxjzw/formResponse'
@@ -170,7 +170,7 @@ export default compose(
               </Button>
               <Button 
                 tag='a' 
-                className={classNames('btn btn-primary btn-lg hero-button py-2', shadow)}
+                className={classNames('btn btn-primary btn-lg hero-button py-2 mb-sm-0 mb-3', shadow)}
                 color='white'
                 role='button' 
                 href='https://api.faa.st'
@@ -206,7 +206,7 @@ export default compose(
         <Col 
           xs={{ order: 0, size: 12 }} 
           lg={{ order: 1, size: 6 }} 
-          className={classNames(textContainer, 'p-0 pr-5 pl-5 mb-lg-0 mb-3 align-self-center')}
+          className={classNames(textContainer, 'p-0 px-md-5 px-4 mb-lg-0 mb-3 align-self-center')}
         >
             <h5 className={classNames(sectionIntro, 'mb-3')}>
               Liquidity Mining
@@ -224,7 +224,7 @@ export default compose(
         <Col 
           xs={{ order: 0, size: 12 }} 
           lg={{ order: 0, size: 6 }} 
-          className={classNames(textContainer, 'p-0 pl-5 mb-lg-0 mb-3 mx-auto')}s
+          className={classNames(textContainer, 'p-0 pl-md-5 pl-4 mb-lg-0 mb-3 mx-auto')}s
           style={{ maxWidth: 600 }}
         >
             <h5 className={classNames(sectionIntro, 'mb-3')}>
@@ -250,7 +250,7 @@ export default compose(
             <h1 className={classNames('font-weight-bold mb-3', sectionTitle)} style={{ color: blueColor }}>Getting Started is Fast and Easy</h1>
             <h3 className={sectionDescription} style={{ color: '#43546B' }}>Run a simple and open source app that automates everything for you.</h3>
             <MakerSetup style={{ maxWidth: '100%' }} className='my-5 d-lg-inline-block d-none' />
-            <MakerSetupMobile style={{ maxWidth: '100%' }} className='d-lg-none d-inline-block my-5' />
+            <MakerSetupMobile style={{ maxWidth: '100%' }} className='d-lg-none d-inline-block my-md-5 my-0' />
             <div>
               <Button 
                 tag='a' 
@@ -283,7 +283,7 @@ export default compose(
       </Row>
       <Row style={{ background: '#F9FAFB'}} className='text-center pb-5 pt-5 mx-0'>
         <Col style={{ paddingTop: 80 }}>
-        <Container>
+        <Container className='px-0'>
           <h5 style={{ color: '#5F6D7E' }} className={classNames(sectionIntro, 'mb-4')}>
             Contribute
           </h5>

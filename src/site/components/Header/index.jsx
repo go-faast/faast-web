@@ -70,7 +70,7 @@ export default compose(
   }),
   withToggle('expanded'),
 )(({ theme, handleSelectLanguage, headerColor, toggleExpanded, isExpanded, translations: { static: { header = {} } = {}  }, ...props }) => (
-  <Navbar {...pick(props, Object.keys(Navbar.propTypes))} expand='sm' className={darkestText}
+  <Navbar {...pick(props, Object.keys(Navbar.propTypes))} expand='md' className={darkestText}
     style={{ border: 0, backgroundColor: headerColor ? headerColor : 'transparent', paddingLeft: '12px' }}>
     <Container>
       <NavbarBrand tag={LangLink} to='' className={classNames((theme == 'light' ? darkestText : 'text-white'))} style={{ fontWeight: 400 }}>
