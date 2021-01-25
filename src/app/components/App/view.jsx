@@ -41,6 +41,7 @@ import MakerRegister from 'Components/Maker/Signup'
 import MakerRegisterProfile from 'Components/Maker/SignupProfile'
 import LlamaSecretModal from 'Components/Maker/LlamaSecretModal'
 import CapacityDepositModal from 'Components/Maker/CapacityDepositModal'
+import RetractCapacityModal from 'Components/Maker/RetractCapacityModal'
 import MakerSetup from 'Components/Maker/MakerSetup'
 import MakerExchangeSetup from 'Components/Maker/BinanceSetup'
 import MakerBalanceSetup from 'Components/Maker/BalanceSetup'
@@ -55,7 +56,7 @@ import {
   connectMobileWallet, settings, affiliateAcceptTerms, wallets, walletDepositModal,
   walletWithdrawalModal, assetNews, makerLogin, makerDashboard, makerSwaps, makerSettings,
   makerLoading, makerBalances, makerRegister, makerRegisterProfile, makerAccountModal,
-  makerSetup, makerExchangeSetup, makerBalanceSetup, capacityDepositModal
+  makerSetup, makerExchangeSetup, makerBalanceSetup, capacityDepositModal, makerRetractCapacityModal
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -140,6 +141,9 @@ const AppView = ({ hasNoWallets }) => {
       )}/>
       <ModalRoute closePath={makerDashboard.path} path={capacityDepositModal.path} render={(props) => (
         <CapacityDepositModal {...props}/>
+      )}/>
+      <ModalRoute closePath={makerSettings.path} path={makerRetractCapacityModal.path} render={(props) => (
+        <RetractCapacityModal {...props}/>
       )}/>
       <Footer />
     </Fragment>

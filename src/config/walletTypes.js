@@ -63,7 +63,8 @@ export default {
     translationKey: 'app.walletTypes.ledger',
     supportedAssets: {
       ETH: {
-        derivationPath: 'm/44\'/60\'/0\''
+        derivationPath: 'm/44\'/60\'/0\'/0',
+        legacy: 'm/44\'/60\'/0\''
       },
       XRP: {
         derivationPath: 'm/44\'/144\'/0\'/0'

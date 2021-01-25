@@ -166,7 +166,7 @@ export default compose(
                   </Col>
                   <Col className='mb-xs-4 mb-lg-0' xs='12' md='6' lg='4'>
                     <a href='https://emberfund.io' target='_blank noreferrer'>
-                      <img width='260' src='https://www.emberfund.io/images/logo-horizontal.svg' />
+                      <img width='70' src='https://play-lh.googleusercontent.com/t7mCSKMhUYq99ktJ9B5b94LvY0EUKTYphgv5jd_t_QnB1SJ5GQDtN3Ak8wQHiieIi0xj' />
                     </a>
                   </Col>
                   <Col className='mb-xs-4 mb-lg-0' xs='12' md='6' lg='4'>

@@ -539,12 +539,86 @@ export const getMakerStatistics = (
   })
 }
 
+export const getMakerBalanceTargets = (
+  accessToken: string,
+): Promise<void> => {
+  return fetchGet(`${apiUrl}/api/v2/public/maker/balanceTargets`,
+  undefined,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((balanceTargets) => balanceTargets)
+  .catch((e: any) => {
+    log.error(e)
+    throw new Error(e)
+  })
+}
+
 export const createMaker = (
   accessToken: string,
   maker: object,
 ): Promise<void> => {
   return fetchPost(`${apiUrl}/api/v2/public/maker/create`,
   { maker },
+  undefined,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((makerProfile) => makerProfile)
+  .catch((e: any) => {
+    log.error(e)
+    throw new Error(e)
+  })
+}
+
+export const disableMaker = (
+  accessToken: string,
+): Promise<void> => {
+  return fetchPost(`${apiUrl}/api/v2/public/maker/disable`,
+  undefined,
+  undefined,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((makerProfile) => makerProfile)
+  .catch((e: any) => {
+    log.error(e)
+    throw new Error(e)
+  })
+}
+
+export const enableMaker = (
+  accessToken: string,
+): Promise<void> => {
+  return fetchPost(`${apiUrl}/api/v2/public/maker/enable`,
+  undefined,
+  undefined,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((makerProfile) => makerProfile)
+  .catch((e: any) => {
+    log.error(e)
+    throw new Error(e)
+  })
+}
+
+export const retractCapacity = (
+  accessToken: string,
+  amount: number
+): Promise<void> => {
+  return fetchPost(`${apiUrl}/api/v2/public/maker/retract`,
+  {
+    amount
+  },
   undefined,
   {
     headers: {
@@ -603,4 +677,8 @@ export default {
   postPartners,
   createMaker,
   getAuth0User,
+  enableMaker,
+  disableMaker,
+  retractCapacity,
+  getMakerBalanceTargets
 }

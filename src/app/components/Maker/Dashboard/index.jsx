@@ -73,7 +73,7 @@ const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAdd
                           <a href={'/app/makers/dashboard/capacity'}>Deposit BTC to your capacity address</a>
                         </li>
                         <li>
-                          <a href='/app/makers/balances' target='_blank'>Setup your market maker on a server</a>
+                          <a href='/app/makers/balances' target='_blank'>Deposit sufficient amounts of supported assets</a>
                         </li>
                       </ol>
                     </CardBody>

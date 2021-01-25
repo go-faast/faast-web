@@ -3,16 +3,19 @@ import React, { Fragment } from 'react'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
 import { push } from 'react-router-redux'
-import { compose, setDisplayName } from 'recompose'
+import { compose, setDisplayName, withHandlers } from 'recompose'
 import { Row, Col, Card, Input, CardHeader, CardBody, Button } from 'reactstrap'
 import classNames from 'class-names'
 
-import { makerId, getMakerProfile } from 'Selectors/maker'
+import { makerId, getMakerProfile, isMakerDisabled, isAbleToRetractCapacity } from 'Selectors/maker'
+import { disableMaker, enableMaker } from 'Actions/maker'
 
 import MakerLayout from 'Components/Maker/Layout'
 import { card, cardHeader, input, text, smallCard } from '../style'
+import style from './style.scss'
 
-const MakerSettings = ({ makerId, profile: { swapMarginMin, swapMarginMax, assetsEnabled } = {} }) => {
+const MakerSettings = ({ makerId, isMakerDisabled, handleSwitch, isAbleToRetractCapacity,
+  profile: { swapMarginMin, swapMarginMax, assetsEnabled } = {} }) => {
   return (
     <MakerLayout className='pt-3'>
       <Row className='mt-4'>
@@ -38,8 +41,31 @@ const MakerSettings = ({ makerId, profile: { swapMarginMin, swapMarginMax, asset
                 </Col>
                 <hr className='w-100 border-light'/>
                 <Col sm='12'>
+                  <small><p className={classNames('mt-1 mb-1 font-weight-bold', text)}>{isMakerDisabled ? 'Enable' : 'Disable'} Maker</p></small>
+                  <div className='mt-2'>
+                    <label className={style.switcher}>
+                      <input type='checkbox' onClick={handleSwitch} checked={!isMakerDisabled} />
+                      <span className={classNames(style.slider, style.round)}></span>
+                    </label>
+                  </div>
+                </Col>
+                <hr className='w-100 border-light'/>
+                <Col sm='12'>
                   <small><p className={classNames('mt-1 mb-1 font-weight-bold', text)}>Withdraw BTC Capacity</p></small>
-                  <Button></Button>
+                  <span style={{ fontWeight: 600 }} className={classNames(text)}>Steps to withdrawal capacity:</span>
+                  <ol className={text}>
+                    <li>Disable Maker</li>
+                    <li>Wait 72 hours (Your maker must be disabled for 72 hours to ensure all of your in progress trades have been completed before withdrawing)</li>
+                    <li>Click the button below and enter the amount you would like to withdrawal</li>
+                  </ol>
+                  <Button 
+                    color='primary' 
+                    size='md' 
+                    onClick={() => push('/makers/settings/retract')}
+                    disabled={!isAbleToRetractCapacity}
+                  >
+                    Withdraw Capacity
+                  </Button>
                 </Col>
                 {swapMarginMin && swapMarginMax ? (
                   <Fragment>
@@ -71,7 +97,20 @@ export default compose(
   connect(createStructuredSelector({
     makerId,
     profile: getMakerProfile,
+    isMakerDisabled,
+    isAbleToRetractCapacity
   }), {
     push,
+    disableMaker,
+    enableMaker
   }),
+  withHandlers({
+    handleSwitch: ({ isMakerDisabled, disableMaker, enableMaker }) => () => {
+      if (isMakerDisabled) {
+        enableMaker()
+      } else {
+        disableMaker()
+      }
+    }
+  })
 )(MakerSettings)

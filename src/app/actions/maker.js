@@ -4,7 +4,7 @@ import Faast from 'Services/Faast'
 import { getSession } from 'Services/Auth'
 import { sessionStorageSetJson, sessionStorageGetJson, sessionStorageClear } from 'Utilities/storage'
 
-import { isMakerLoggedIn, isMakerDataStale } from 'Selectors/maker'
+import { isMakerLoggedIn, isMakerDataStale, getMakerProfile as selectMakerProfile, isAbleToRetractCapacity } from 'Selectors/maker'
 import Toastr from 'Utilities/toastrWrapper'
 
 const createAction = newScopedCreateAction(__filename)
@@ -73,6 +73,7 @@ export const loginMaker = () => async (dispatch) => {
     dispatch(login())
     dispatch(push('/makers/dashboard'))
   } catch (err) {
+    console.log(err)
     dispatch(loginError(err))
     dispatch(push('/makers/login'))
     Toastr.error(err.message)
@@ -82,6 +83,8 @@ export const loginMaker = () => async (dispatch) => {
 export const getAuth0User = () => async (dispatch) => {
   const accessToken = dispatch(getMakerAccessToken())
   const userId = getSession().tokenPayload && getSession().tokenPayload.sub
+  console.log('user id:', userId)
+  console.log(accessToken)
   const user = await Faast.getAuth0User(accessToken, userId)
   return user
 }
@@ -117,6 +120,54 @@ export const getMakerProfile = () => (dispatch) => {
   }
   return
 }
+
+export const disableMaker = () => (dispatch) => {
+  const accessToken = dispatch(getMakerAccessToken())
+  if (accessToken) {
+    return Faast.disableMaker(accessToken)
+      .then((profile) => {
+        return dispatch(updateProfile(profile))
+      }).catch(() => {
+        Toastr.error('Unable to disable maker. Please try again.')
+      })
+  }
+}
+
+export const enableMaker = () => (dispatch) => {
+  const accessToken = dispatch(getMakerAccessToken())
+  return Faast.enableMaker(accessToken)
+    .then((profile) => {
+      return dispatch(updateProfile(profile))
+    }).catch(() => {
+      Toastr.error('Unable to enable maker. Please try again.')
+    })
+}
+
+export const retractCapacity = (amount) => (dispatch, getState) => {
+  const accessToken = dispatch(getMakerAccessToken())
+  const ableToRetractCapacity = isAbleToRetractCapacity(getState())
+  if (!ableToRetractCapacity) {
+    Toastr.error('You are unable to withdrawal from your capacity address. support@faa.st')
+  }
+  return Faast.retractCapacity(accessToken, amount)
+    .then(() => {
+      Toastr.success(`Successfully retracted ${amount} BTC. Your balance should be reflected shortly.`)
+    }).catch(() => {
+      Toastr.error('Unable to enable maker. Please try again.')
+    })
+}
+
+export const getBalanceTargets = () => (dispatch, getState) => {
+  const accessToken = dispatch(getMakerAccessToken())
+  const makerProfile = selectMakerProfile(getState())
+  return Faast.getMakerBalanceTargets(accessToken)
+    .then((balanceTargets) => {
+      dispatch(updateProfile({ ...makerProfile, balanceTargets }))
+    }).catch(() => {
+      Toastr.error('Unable to enable maker. Please try again.')
+    })
+}
+
 
 export const getMakerSwaps = (page, limit = 20) => (dispatch) => {
   const accessToken = dispatch(getMakerAccessToken())
