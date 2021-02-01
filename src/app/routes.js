@@ -79,6 +79,7 @@ export const makerDashboard = createPath('/makers/dashboard')
 export const makerSwaps = createPath('/makers/swaps')
 export const makerBalances = createPath('/makers/balances')
 export const makerSettings = createPath('/makers/settings')
+export const makerNotifications = createPath('/makers/notifications')
 export const makerRetractCapacityModal = createPath('/makers/settings/retract')
 
 export const connectMobileWallet = createPath(connect, '/mobile/connect/:walletType')
@@ -133,5 +134,6 @@ export default {
   makerRegister,
   makerBalanceSetup,
   capacityDepositModal,
-  makerRetractCapacityModal
+  makerRetractCapacityModal,
+  makerNotifications
 }

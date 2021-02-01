@@ -45,6 +45,7 @@ import RetractCapacityModal from 'Components/Maker/RetractCapacityModal'
 import MakerSetup from 'Components/Maker/MakerSetup'
 import MakerExchangeSetup from 'Components/Maker/BinanceSetup'
 import MakerBalanceSetup from 'Components/Maker/BalanceSetup'
+import MakerNotifications from 'Components/Maker/Notifications'
 import { AuthenticatedRoute, AuthRoutes } from 'Components/Auth'
 
 import {
@@ -56,7 +57,7 @@ import {
   connectMobileWallet, settings, affiliateAcceptTerms, wallets, walletDepositModal,
   walletWithdrawalModal, assetNews, makerLogin, makerDashboard, makerSwaps, makerSettings,
   makerLoading, makerBalances, makerRegister, makerRegisterProfile, makerAccountModal,
-  makerSetup, makerExchangeSetup, makerBalanceSetup, capacityDepositModal, makerRetractCapacityModal
+  makerSetup, makerExchangeSetup, makerBalanceSetup, capacityDepositModal, makerRetractCapacityModal, makerNotifications
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -107,6 +108,7 @@ const AppView = ({ hasNoWallets }) => {
         <AuthenticatedRoute path={makerSwaps.path} component={MakerSwaps} />
         <AuthenticatedRoute path={makerBalances.path} component={MakerBalances} />
         <AuthenticatedRoute path={makerSettings.path} component={MakerSettings} />
+        <AuthenticatedRoute path={makerNotifications.path} component={MakerNotifications} />
       
         {/* Legacy routes */}
         <Redirect exact from='/affiliates' to={affiliateLogin.path}/>

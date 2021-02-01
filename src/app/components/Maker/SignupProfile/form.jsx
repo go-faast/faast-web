@@ -56,7 +56,7 @@ const MakerSignupForm = ({ handleSubmit, randomNames, generateRandomNames, updat
                   xs='5'
                   key={name}
                 >
-                  <small>{name}</small>
+                  <span style={{ fontSize: 14 }}>{name}</span>
                 </Col>
               )
             })}
@@ -74,15 +74,25 @@ const MakerSignupForm = ({ handleSubmit, randomNames, generateRandomNames, updat
           {selectedAssets.map(sym => (
             <div className='px-3 py-2 d-inline-block my-2 mr-2 text-center cursor-pointer' style={{ border: '1px solid #ebeff1', borderRadius: 2 }} key={sym}>
               <span className={text}><CoinIcon symbol={sym} size='sm' className='mr-2'/>{sym}</span>
-              {selectedAssetsDoesHaveERC20(selectedAssets) && sym == 'ETH' ? null : (
+              {selectedAssetsDoesHaveERC20(selectedAssets) && sym == 'ETH' || selectedAssets.length == 1 ? null : (
                 <span className={classNames(text, 'ml-3')} onClick={() => removeAsset(sym)}>✕</span>
               )}
             </div>
           ))}
-          <Button size='sm' color='primary' className={classNames('d-block flat ml-1 mt-2 mb-3', text)} onClick={() => toggleAssetSelector(true)}>
+          <Button size='sm' color='light' className={classNames('d-block flat ml-1 mt-2 mb-3', text)} onClick={() => toggleAssetSelector(true)}>
           Add More Assets
           </Button>
         </Fragment>
+      )}
+      {isAssetSelectorOpen && (
+        <AssetSelector 
+          selectAsset={handleSelectedAsset} 
+          supportedAssetSymbols={assetList}
+          isAssetDisabled={isAssetDisabled}
+          onlyShowEnabled={true}
+          onClose={() => toggleAssetSelector(false)}
+          dark={false}
+        />
       )}
       <div className='mt-2 mb-4'>
         <Checkbox
@@ -94,16 +104,6 @@ const MakerSignupForm = ({ handleSubmit, randomNames, generateRandomNames, updat
           labelClass='p-0'
         />
       </div>
-      {isAssetSelectorOpen && (
-        <AssetSelector 
-          selectAsset={handleSelectedAsset} 
-          supportedAssetSymbols={assetList}
-          isAssetDisabled={isAssetDisabled}
-          onlyShowEnabled={true}
-          onClose={() => toggleAssetSelector(false)}
-          dark={false}
-        />
-      )}
       <ReduxFormField
         name='exchangesEnabled'
         type='select'
@@ -124,19 +124,40 @@ const MakerSignupForm = ({ handleSubmit, randomNames, generateRandomNames, updat
         placeholder='Maker ID'
         inputClass={classNames('flat', input)}
       />
-      <ReduxFormField
-        name='fullName'
-        type='text'
-        validate={validateRequired}
-        placeholder='Full Name'
-        inputClass={classNames('flat', input)}
-        label={
-          <div>
-            <p className={classNames('mt-3 mb-0 font-weight-bold', text)}>Full Name</p>
-            <small className={text}>Write your full name to indicate you accept the terms below.</small>
-          </div>
-        }
-      />
+      <hr className='w-100 border-light'/>
+      <Row>
+        <Col xs='12' lg='6'>
+          <ReduxFormField
+            name='firstName'
+            type='text'
+            validate={validateRequired}
+            placeholder='First Name'
+            inputClass={classNames('flat', input)}
+            label={
+              <div>
+                <p className={classNames('mt-0 mb-0 font-weight-bold', text)}>First Name</p>
+              </div>
+            }
+          />
+        </Col>
+        <Col xs='12' lg='6'>
+          <ReduxFormField
+            name='lastName'
+            type='text'
+            validate={validateRequired}
+            placeholder='Last Name'
+            inputClass={classNames('flat', input)}
+            label={
+              <div>
+                <p className={classNames('mt-0 mb-0 font-weight-bold', text)}>Last Name</p>
+              </div>
+            }
+          />
+        </Col>
+        <Col xs='12'>
+          <small className={text}>By writing your full name above you are indicating that you have read and agree to the Faa.st Terms below.</small>
+        </Col>
+      </Row>
       <div className='mt-2 mb-4'>
         <Checkbox
           label={
@@ -172,14 +193,16 @@ export default compose(
   withState('selectedAssets', 'updateSelectedAssets', ['BTC']),
   withState('isAssetSelectorOpen', 'toggleAssetSelector', false),
   withHandlers({
-    onSubmit: ({ registerMaker, updateIsLoading, selectedAssets }) => async ({ publicName, makerId, fullName, exchangesEnabled }) => {
+    onSubmit: ({ registerMaker, updateIsLoading, selectedAssets }) => async ({ publicName, makerId, firstName, lastName, exchangesEnabled }) => {
       selectedAssets = selectedAssets.length == 0 ? null : selectedAssets
       const exchangesArray = [exchangesEnabled]
       updateIsLoading(true)
       await registerMaker({
         publicName,
         makerId,
-        fullName,
+        firstName,
+        lastName,
+        fullName: `${firstName} ${lastName}`,
         assetsEnabled: selectedAssets,
         exchangesEnabled: exchangesArray
       })
@@ -253,7 +276,7 @@ export default compose(
       if (assetCheckbox && !prevProps.assetCheckbox) {
         updateSelectedAssets([])
       } else if (!assetCheckbox && prevProps.assetCheckbox) {
-        updateSelectedAssets(['ETH'])
+        updateSelectedAssets(['BTC'])
       }
     }
   }),

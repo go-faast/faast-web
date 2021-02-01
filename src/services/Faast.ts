@@ -632,6 +632,27 @@ export const retractCapacity = (
   })
 }
 
+export const updateMaker = (
+  accessToken: string,
+  data: number
+): Promise<void> => {
+  return fetchPost(`${apiUrl}/api/v2/public/maker/update`,
+  {
+    data
+  },
+  undefined,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((makerProfile) => makerProfile)
+  .catch((e: any) => {
+    log.error(e)
+    throw new Error(e)
+  })
+}
+
 export const getAuth0User = (
   accessToken: string,
 ): Promise<void> => {
@@ -674,6 +695,7 @@ export default {
   getMakerSwaps,
   getMakerProfile,
   getMakerStatistics,
+  updateMaker,
   postPartners,
   createMaker,
   getAuth0User,

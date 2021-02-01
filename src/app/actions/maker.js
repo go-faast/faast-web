@@ -1,8 +1,8 @@
 import { newScopedCreateAction } from 'Utilities/action'
 import { push } from 'react-router-redux'
 import Faast from 'Services/Faast'
-import { getSession } from 'Services/Auth'
-import { sessionStorageSetJson, sessionStorageGetJson, sessionStorageClear } from 'Utilities/storage'
+import { getSession, clearSession } from 'Services/Auth'
+import { sessionStorageSetJson, sessionStorageGetJson } from 'Utilities/storage'
 
 import { isMakerLoggedIn, isMakerDataStale, getMakerProfile as selectMakerProfile, isAbleToRetractCapacity } from 'Selectors/maker'
 import Toastr from 'Utilities/toastrWrapper'
@@ -65,7 +65,6 @@ export const getAllMakerData = () => (dispatch) => {
 export const loginMaker = () => async (dispatch) => {
   try {
     let user = await dispatch(getAuth0User())
-    user = user[0]
     if (user && (!user.app_metadata || user.app_metadata && !user.app_metadata.maker_id)) {
       return dispatch(push('/makers/register/profile'))
     }
@@ -75,7 +74,7 @@ export const loginMaker = () => async (dispatch) => {
   } catch (err) {
     console.log(err)
     dispatch(loginError(err))
-    dispatch(push('/makers/login'))
+    dispatch(makerLogout())
     Toastr.error(err.message)
   }
 }
@@ -103,6 +102,18 @@ export const registerMaker = (profile) => async (dispatch) => {
     dispatch(push('/makers/login'))
     Toastr.error('Unable to complete user signup. Please contact support@faa.st.')
   }
+}
+
+export const updateMaker = (data) => async (dispatch) => {
+  try {
+    const accessToken = dispatch(getMakerAccessToken())
+    const maker = await Faast.updateMaker(accessToken, data)
+    dispatch(updateProfile(maker))
+    return maker
+  } catch (err) {
+    Toastr.error('Unable to update your maker. Please try again later.')
+  }
+  
 }
 
 export const getMakerProfile = () => (dispatch) => {
@@ -214,8 +225,7 @@ export const restoreCachedMakerInfo = () => (dispatch, getState) => {
 }
 
 export const makerLogout = () => (dispatch) => {
-  sessionStorageClear()
+  clearSession()
   dispatch(resetMaker())
-  dispatch(logout())
   dispatch(push('/makers/login'))
 }

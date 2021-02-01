@@ -42,7 +42,7 @@ export default compose(
 )(({ amount, capacityBalance, amountError, isLoading, updateAmount, toggle, ...props }) => {
   return (
     <Modal
-      size='md' toggle={toggle} className={'border-0 mt-6 mx-md-auto'} contentClassName={classNames(modalShadow, 'p-0 border-0 flat')}
+      size='md' toggle={toggle} className={'border-0 mt-6 mx-md-auto'} contentClassName={classNames(cardHeader, modalShadow, 'p-0 border-0 flat')}
       {...pick(props, Object.keys(Modal.propTypes))}>
       <ModalHeader close={<span className='cursor-pointer' onClick={toggle}>close</span>} tag='h4' toggle={toggle} className={cardHeader}>
         Withdrawal BTC from your Capacity Address
@@ -50,8 +50,8 @@ export default compose(
       <ModalBody className={classNames(cardHeader, 'p-0 p-sm-3')}>
         <Row>
           <Col sm='12'>
-            <small><p className={classNames('mt-1 mb-1 font-weight-bold', text)}>Capacity Address</p></small>
-            <h3>Current Capacity Balance: {capacityBalance} BTC</h3>
+            <p className={classNames('mt-1 mb-1 font-weight-bold', text)}>Capacity Address</p>
+            <small><p>Current Capacity Balance: {capacityBalance} BTC</p></small>
             <Input 
               className={classNames('flat', input)} 
               onChange={(e) => updateAmount(e.target.value)}
@@ -65,6 +65,7 @@ export default compose(
            
             <Button
               color='primary'
+              className='w-100 flat mt-3'
               size='md'
               disabled={isLoading}
             >

@@ -24,7 +24,7 @@ export default compose(
 )(({ affiliateId, secretKey, toggle, ...props }) => {
   return (
     <Modal
-      size='md' toggle={toggle} className={'border-0 mt-6 mx-md-auto'} contentClassName={classNames(modalShadow, 'p-0 border-0 flat')}
+      size='md' toggle={toggle} className={'border-0 mt-6 mx-md-auto'} contentClassName={classNames(modalShadow, cardHeader, 'p-0 border-0 flat')}
       {...pick(props, Object.keys(Modal.propTypes))}>
       <ModalHeader close={<span className='cursor-pointer' onClick={toggle}>close</span>} tag='h4' toggle={toggle} className={cardHeader}>
       Affiliate Account Info

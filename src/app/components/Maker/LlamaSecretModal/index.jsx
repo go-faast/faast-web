@@ -31,7 +31,7 @@ export default compose(
 )(({ secretKey, handleKeyIsSaved, toggle, ...props }) => {
   return (
     <Modal
-      size='md' toggle={toggle} className={'border-0 mt-6 mx-md-auto'} contentClassName={classNames(modalShadow, 'p-0 border-0 flat')}
+      size='md' toggle={toggle} className={'border-0 mt-6 mx-md-auto'} contentClassName={classNames(modalShadow, cardHeader, 'p-0 border-0 flat')}
       {...pick(props, Object.keys(Modal.propTypes))}>
       <ModalHeader close={undefined} tag='h4' toggle={toggle} className={cardHeader}>
         Your Maker Secret Key
@@ -42,15 +42,22 @@ export default compose(
             <small><p className={classNames('mt-1 mb-1 font-weight-bold', text)}>Maker Secret Key</p></small>
             <Input className={classNames('flat', input)} value={secretKey} type='text' autoFocus readOnly/>
           </Col>
-          <small><p className='text-danger font-weight-bold pl-3 pt-3'>
-            * Before continuing, write down your secret key somewhere offline and safe. You will not be shown this key again.
-          </p>
-          </small>
-          <Button
-            onClick={handleKeyIsSaved}
-          >
-            I have saved my secret key in a safe place
-          </Button>
+          <Col xs='12'>
+            <small><p className='text-danger font-weight-bold pl-3 pt-3'>
+              * Before continuing, write down your secret key somewhere offline and safe. You will not be shown this key again.
+            </p>
+            </small>
+          </Col>
+          <Col className='text-center' xs='12'>
+            <Button
+              onClick={handleKeyIsSaved}
+              color='primary'
+              className='w-100'
+            >
+              I have saved my secret key in a safe place
+            </Button>
+          </Col>
+          
         </Row>
       </ModalBody>
     </Modal>

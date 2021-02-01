@@ -25,7 +25,7 @@ const BinanceSetup = () => {
           <CardBody className={card}>
             <Row>
               <Col xs='12'>
-                <h5 className={classNames(text, 'mt-2')}>1) Enable 2FA and verify yourself</h5>
+                <h5 className={classNames(text, 'mt-2')}>1) Enable 2FA and verify yourself.</h5>
                 <div>
                   <img style={{ maxWidth: '100%' }} src={BinanceSetup1} />
                 </div>

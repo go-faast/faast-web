@@ -8,6 +8,7 @@ import {
 
 const initialState = {
   lastUpdated: undefined,
+  llamaSecret: undefined,
   balances: [],
   loggedIn: false,
   loadingData: false,
