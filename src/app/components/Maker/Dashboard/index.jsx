@@ -65,7 +65,7 @@ const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAdd
                       <p className={text}>
                         Before you can start earning rewards by fulfilling swaps, you need to set up your maker bot on a dedicated server, set up your exchange API accounts, and fund your maker.
                       </p>
-                      <ol className={text}>
+                      <ol className={classNames(text, 'pl-4')}>
                         <li>
                           <a href='/app/makers/setup/server' target='_blank'>Maker Bot Setup</a>
                         </li>
@@ -137,7 +137,7 @@ const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAdd
                         </Fragment>
                       ) : (
                         <Fragment>
-                          <p className='mt-3 mb-0' style={{ fontSize: 70 }}>☕️</p>
+                          <p className='mt-0 mb-0' style={{ fontSize: 70 }}>☕️</p>
                           <p style={{ fontSize: 20 }} className={classNames(text, 'mb-3')}>No rewards just yet.</p>
                         </Fragment>
                       )}

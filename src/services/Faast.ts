@@ -496,7 +496,7 @@ export const getMakerSwaps = (
       Authorization: `Bearer ${accessToken}`,
     },
   })
-  .then((swaps) => { console.log(swaps); return swaps })
+  .then((swaps) => { return swaps })
   .catch((e: any) => {
     log.error(e)
     throw new Error(e)

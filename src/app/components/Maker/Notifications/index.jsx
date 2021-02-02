@@ -2,27 +2,23 @@ import React from 'react'
 import { compose, setDisplayName } from 'recompose'
 import MakerLayout from 'Components/Maker/Layout'
 import NotificationsTable from 'Components/Maker/NotificationsTable'
+import { Row, Col } from 'reactstrap'
 import { createStructuredSelector } from 'reselect'
 import { connect } from 'react-redux'
-import { Row, Col } from 'reactstrap'
-import Link from 'Components/Link'
-import { statContainer } from '../Dashboard/style'
 import classNames from 'class-names'
 
-import { getMakerBalanceAlertsCount } from 'Selectors/maker'
+import { row, statContainer } from '../Dashboard/style'
 
-const Notifications = ({ balanceAlertCount }) => {
-  balanceAlertCount = 3
+import { getNotificationCount } from 'Selectors/maker'
+
+const Notifications = ({ notificationCount }) => {
   return (
     <MakerLayout className='pt-4'>
-      {balanceAlertCount > 0 ? (
-        <Row className={classNames(statContainer, 'mt-2 mb-4 p-3 text-center')}>
-          <Col xs='12'>
-            <Link to='/makers/balances' className='text-white'>You have coins that do not meet the minimum balance required to fulfill trades. Click here for more info.</Link>
-          </Col>
+      {notificationCount > 0 ? (
+        <Row className={classNames(row, statContainer, 'text-center mt-2 mb-3 py-2')}>
+          <Col>If you have any questions about these alerts shoot us an email at support@faa.st</Col>
         </Row>
       ) : null}
-      
       <NotificationsTable />
     </MakerLayout>
   )
@@ -31,7 +27,7 @@ const Notifications = ({ balanceAlertCount }) => {
 export default compose(
   setDisplayName('Notifications'),
   connect(createStructuredSelector({
-    balanceAlertCount: getMakerBalanceAlertsCount,
+    notificationCount: getNotificationCount,
   }), {
   }),
 )(Notifications)

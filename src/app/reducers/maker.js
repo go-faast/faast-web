@@ -12,7 +12,8 @@ const initialState = {
   balances: [],
   loggedIn: false,
   loadingData: false,
-  profile: {},
+  profile: {
+  },
   swapCount: undefined,
   loginError: false,
   swapsError: '',

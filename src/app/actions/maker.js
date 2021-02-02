@@ -2,7 +2,7 @@ import { newScopedCreateAction } from 'Utilities/action'
 import { push } from 'react-router-redux'
 import Faast from 'Services/Faast'
 import { getSession, clearSession } from 'Services/Auth'
-import { sessionStorageSetJson, sessionStorageGetJson } from 'Utilities/storage'
+import { sessionStorageSetJson, sessionStorageGetJson, sessionStorageClear } from 'Utilities/storage'
 
 import { isMakerLoggedIn, isMakerDataStale, getMakerProfile as selectMakerProfile, isAbleToRetractCapacity } from 'Selectors/maker'
 import Toastr from 'Utilities/toastrWrapper'
@@ -72,7 +72,6 @@ export const loginMaker = () => async (dispatch) => {
     dispatch(login())
     dispatch(push('/makers/dashboard'))
   } catch (err) {
-    console.log(err)
     dispatch(loginError(err))
     dispatch(makerLogout())
     Toastr.error(err.message)
@@ -82,8 +81,6 @@ export const loginMaker = () => async (dispatch) => {
 export const getAuth0User = () => async (dispatch) => {
   const accessToken = dispatch(getMakerAccessToken())
   const userId = getSession().tokenPayload && getSession().tokenPayload.sub
-  console.log('user id:', userId)
-  console.log(accessToken)
   const user = await Faast.getAuth0User(accessToken, userId)
   return user
 }
@@ -137,6 +134,7 @@ export const disableMaker = () => (dispatch) => {
   if (accessToken) {
     return Faast.disableMaker(accessToken)
       .then((profile) => {
+        Toastr.success('Your maker has been disabled.')
         return dispatch(updateProfile(profile))
       }).catch(() => {
         Toastr.error('Unable to disable maker. Please try again.')
@@ -148,6 +146,7 @@ export const enableMaker = () => (dispatch) => {
   const accessToken = dispatch(getMakerAccessToken())
   return Faast.enableMaker(accessToken)
     .then((profile) => {
+      Toastr.success('Your maker has been enabled.')
       return dispatch(updateProfile(profile))
     }).catch(() => {
       Toastr.error('Unable to enable maker. Please try again.')
@@ -226,6 +225,7 @@ export const restoreCachedMakerInfo = () => (dispatch, getState) => {
 
 export const makerLogout = () => (dispatch) => {
   clearSession()
+  sessionStorageClear()
   dispatch(resetMaker())
   dispatch(push('/makers/login'))
 }

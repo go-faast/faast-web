@@ -115,7 +115,7 @@ const MakerSettings = ({ makerId, isMakerDisabled, handleSwitch, isAbleToRetract
                     size='md' 
                     className='flat'
                     onClick={() => push('/makers/settings/retract')}
-                    disabled={isAbleToRetractCapacity}
+                    disabled={!isAbleToRetractCapacity}
                   >
                     Withdraw Capacity
                   </Button>

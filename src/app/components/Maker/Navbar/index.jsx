@@ -21,14 +21,14 @@ import config from 'Config'
 import withToggle from 'Hoc/withToggle'
 import { makerLogout } from 'Actions/maker'
 import { withAuth } from 'Components/Auth'
-import { isMakerLoggedIn, isLoadingData, isMakerOnline, isMakerDisabled, getMakerWarningsCount } from 'Selectors/maker'
+import { isMakerLoggedIn, isLoadingData, isMakerOnline, isMakerDisabled, getNotificationCount } from 'Selectors/maker'
 import LoadingFullScreen from 'Components/LoadingFullscreen'
 import { text } from '../style'
 
 import Icon from 'Components/Icon'
 import FaastLogo from 'Img/faast-logo.png'
 
-import { navbar, navbarBrand, navbarLink, active } from './style'
+import { navbar, navbarBrand, navbarLink, active, blob, green } from './style'
 
 const MakersNavBar = ({ logoutMaker, children, loggedIn, isLoadingData, isExpanded, toggleExpanded, 
   clickableLogo, isMakerOnline, warningCount, ...props }) => {
@@ -65,12 +65,12 @@ const MakersNavBar = ({ logoutMaker, children, loggedIn, isLoadingData, isExpand
                   </NavLink>
                 </NavItem>
                 <NavItem key='alerts'>
-                  <NavLink className={classNames(navbarLink, 'px-1 px-lg-2')} activeClassName={active} tag={RouterNavLink} to='/makers/notifications'>
+                  <NavLink className={classNames(navbarLink, 'px-1 px-lg-2')} activeClassName={active} tag={RouterNavLink} to='/makers/alerts'>
                     <i style={{ top: 2 }} className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-bell position-relative'/>
                     <span className='ml-2 nav-link-label d-sm-inline'>
                       Alerts {warningCount > -1 ? (
                         <div className='d-inline-block text-center' style={{ width: 18, height: 18, backgroundColor: '#fa483c', color: '#fff', borderRadius: '50%' }}>
-                          <small className='position-relative' style={{ top: -3 }}>{warningCount}</small>
+                          <small className='position-relative' style={{ top: -4, }}>{warningCount}</small>
                         </div>
                       ) : null}
                     </span>
@@ -85,8 +85,8 @@ const MakersNavBar = ({ logoutMaker, children, loggedIn, isLoadingData, isExpand
               </Nav>
             </Collapse>
             <div>
-              <div className='px-3 py-0 mr-lg-3 mr-2 d-sm-inline-block d-none' style={{ borderRadius: 20, backgroundColor: 'rgba(255,255,255,.1)' }}>
-                <div className='d-inline-block' style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: isMakerOnline ? '#00D8B8' : '#ccc' }}></div> <small>Maker {isMakerOnline ? 'Online' : 'Offline'}</small>
+              <div className='px-3 pt-0 mr-lg-3 mr-2 d-sm-inline-block d-none' style={{ borderRadius: 20, backgroundColor: 'rgba(255,255,255,.1)', paddingBottom: 2 }}>
+                <div className={classNames('d-inline-block mr-1', isMakerOnline && blob, isMakerOnline && green)} style={{ width: 8, height: 8, borderRadius: '50%', backgroundColor: isMakerOnline ? '#00D8B8' : '#ccc', }}></div> <small>Maker {isMakerOnline ? 'Online' : 'Offline'}</small>
               </div>
               <p onClick={logoutMaker} className={classNames(navbarLink, active, 'd-inline cursor-pointer mx-md-0 mx-3')}>
               Logout
@@ -118,7 +118,7 @@ export default compose(
     isLoadingData,
     isMakerOnline,
     isMakerDisabled,
-    warningCount: getMakerWarningsCount
+    warningCount: getNotificationCount
   }), {
     logoutMaker: makerLogout,
     push,

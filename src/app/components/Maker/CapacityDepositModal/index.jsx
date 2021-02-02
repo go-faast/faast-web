@@ -5,6 +5,7 @@ import { createStructuredSelector } from 'reselect'
 import { Modal, ModalBody, ModalHeader, Row, Col, Input } from 'reactstrap'
 import { pick } from 'lodash'
 import classNames from 'class-names'
+import QRCode from 'Components/DepositQRCode'
 
 import { getCapacityAddress } from 'Selectors/maker'
 
@@ -33,11 +34,14 @@ export default compose(
           <Col sm='12'>
             {capacityAddress ? (
               <div>
+                <div className='text-center'>
+                  <QRCode address={capacityAddress} size={150} />
+                </div>
                 <small>
                   <p className={classNames('mt-1 mb-1 font-weight-bold', text)}>Capacity Address</p>
                 </small>
                 <Input className={classNames('flat', input)} value={capacityAddress} type='text' autoFocus readOnly/>
-                <small><p className='text-danger font-weight-bold pl-3 pt-3'>
+                <small><p className='font-weight-bold pl-0 pt-3'>
                   * The amount of BTC you deposit to your capacity address is the maximum amount of swap value you will be able to fulfill at any given time.
                 </p>
                 </small>
