@@ -85,7 +85,7 @@ export const isAbleToRetractCapacity = createSelector(getCapacityBalance, isMake
   return capacityBalance && parseFloat(capacityBalance) > 0 && isDisabled && (Date.now() - lastDisabledAt.getTime()) > 259200000
 })
 export const getMakerSecret = createSelector(getMakerProfile, ({ llamaSecret }) => llamaSecret)
-export const isMakerActivated = createSelector(getMakerProfile, ({ isSuspended }) => !isSuspended)
+export const isMakerSuspended = createSelector(getMakerProfile, ({ isSuspended }) => isSuspended)
 export const isMakerOnline = createSelector(getMakerProfile, ({ isOnline }) => isOnline)
 export const getMakerStats = createSelector(getMakerState, ({ stats }) => stats)
 export const getMakerProfitUSD = createSelector(getMakerStats, (stats) => {

@@ -104,12 +104,13 @@ const MakerSettings = ({ makerId, isMakerDisabled, handleSwitch, isAbleToRetract
                 </Col>
                 <hr className='w-100 border-light'/>
                 <Col sm='12'>
-                  <small><p className={classNames('mt-1 mb-1 font-weight-bold', text)}>Withdraw BTC Capacity</p></small>
-                  <ol className={text}>
+                  <small><p className={classNames('mt-1 mb-1 font-weight-bold', text)}>Reduce BTC Capacity</p></small>
+                  <ol className={classNames(text, 'font-sm pl-4')}>
                     <li>Disable Maker</li>
                     <li>Wait 72 hours (Your maker must be disabled for 72 hours to ensure all of your in progress trades have been completed before withdrawing)</li>
-                    <li>Click the button below and enter the amount you would like to withdrawal</li>
+                    <li>Click the button below and enter the amount you would like to reduce</li>
                   </ol>
+                  <small><p className={classNames(text, 'font-weight-bold')}>* Reducing your capacity moves BTC from your capacity wallet to your exchange account. This reduces the maximum value of swaps you can fulfill at any one time.</p></small>
                   <Button 
                     color='primary' 
                     size='md' 
@@ -117,7 +118,7 @@ const MakerSettings = ({ makerId, isMakerDisabled, handleSwitch, isAbleToRetract
                     onClick={() => push('/makers/settings/retract')}
                     disabled={!isAbleToRetractCapacity}
                   >
-                    Withdraw Capacity
+                    Reduce Capacity
                   </Button>
                 </Col>
                 {swapMarginMin && swapMarginMax ? (
