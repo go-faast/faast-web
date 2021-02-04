@@ -496,7 +496,7 @@ export const getMakerSwaps = (
       Authorization: `Bearer ${accessToken}`,
     },
   })
-  .then((swaps) => { console.log(swaps); return swaps })
+  .then((swaps) => { return swaps })
   .catch((e: any) => {
     log.error(e)
     throw new Error(e)
@@ -539,12 +539,107 @@ export const getMakerStatistics = (
   })
 }
 
+export const getMakerBalanceTargets = (
+  accessToken: string,
+): Promise<void> => {
+  return fetchGet(`${apiUrl}/api/v2/public/maker/balanceTargets`,
+  undefined,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((balanceTargets) => balanceTargets)
+  .catch((e: any) => {
+    log.error(e)
+    throw new Error(e)
+  })
+}
+
 export const createMaker = (
   accessToken: string,
   maker: object,
 ): Promise<void> => {
   return fetchPost(`${apiUrl}/api/v2/public/maker/create`,
   { maker },
+  undefined,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((makerProfile) => makerProfile)
+  .catch((e: any) => {
+    log.error(e)
+    throw new Error(e)
+  })
+}
+
+export const disableMaker = (
+  accessToken: string,
+): Promise<void> => {
+  return fetchPost(`${apiUrl}/api/v2/public/maker/disable`,
+  undefined,
+  undefined,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((makerProfile) => makerProfile)
+  .catch((e: any) => {
+    log.error(e)
+    throw new Error(e)
+  })
+}
+
+export const enableMaker = (
+  accessToken: string,
+): Promise<void> => {
+  return fetchPost(`${apiUrl}/api/v2/public/maker/enable`,
+  undefined,
+  undefined,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((makerProfile) => makerProfile)
+  .catch((e: any) => {
+    log.error(e)
+    throw new Error(e)
+  })
+}
+
+export const retractCapacity = (
+  accessToken: string,
+  amount: number
+): Promise<void> => {
+  return fetchPost(`${apiUrl}/api/v2/public/maker/retract`,
+  {
+    amount
+  },
+  undefined,
+  {
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  })
+  .then((makerProfile) => makerProfile)
+  .catch((e: any) => {
+    log.error(e)
+    throw new Error(e)
+  })
+}
+
+export const updateMaker = (
+  accessToken: string,
+  data: number
+): Promise<void> => {
+  return fetchPost(`${apiUrl}/api/v2/public/maker/update`,
+  {
+    data
+  },
   undefined,
   {
     headers: {
@@ -600,7 +695,12 @@ export default {
   getMakerSwaps,
   getMakerProfile,
   getMakerStatistics,
+  updateMaker,
   postPartners,
   createMaker,
   getAuth0User,
+  enableMaker,
+  disableMaker,
+  retractCapacity,
+  getMakerBalanceTargets
 }

@@ -3,15 +3,17 @@ import {
   statsRetrieved, statsError, login, swapsRetrieved, swapsError, loginError,
   resetMaker, logout, updateProfile,
   swapsLoading, makerDataUpdated, loadingData,
-  updateBalances
+  updateBalances, removeSecretKey
 } from 'Actions/maker'
 
 const initialState = {
   lastUpdated: undefined,
+  llamaSecret: undefined,
   balances: [],
   loggedIn: false,
   loadingData: false,
-  profile: {},
+  profile: {
+  },
   swapCount: undefined,
   loginError: false,
   swapsError: '',
@@ -37,6 +39,7 @@ export default createReducer({
     statsError: '',
     stats: { ...stats },
   }),
+  [removeSecretKey]: (state) => ({ ...state, profile: { ...state.profile, llamaSecret: undefined } }),
   [statsError]: (state, error) => ({ ...state, statsError: error }),
   [swapsLoading]: (state) => ({ ...state, swapsLoading: true }),
   [swapsRetrieved]: (state, swaps) => ({ 

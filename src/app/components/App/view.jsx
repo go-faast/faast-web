@@ -39,10 +39,15 @@ import MakerBalances from 'Components/Maker/Balances'
 import MakerSettings from 'Components/Maker/Settings'
 import MakerRegister from 'Components/Maker/Signup'
 import MakerRegisterProfile from 'Components/Maker/SignupProfile'
-import MakerAccountModal from 'Components/Maker/AccountModal'
+import LlamaSecretModal from 'Components/Maker/LlamaSecretModal'
+import CapacityDepositModal from 'Components/Maker/CapacityDepositModal'
+import NotificationDepositModal from 'Src/app/components/Maker/NotificationDepositModal'
+import BalanceDepositModal from 'Src/app/components/Maker/BalanceDepositModal'
+import RetractCapacityModal from 'Components/Maker/RetractCapacityModal'
 import MakerSetup from 'Components/Maker/MakerSetup'
 import MakerExchangeSetup from 'Components/Maker/BinanceSetup'
 import MakerBalanceSetup from 'Components/Maker/BalanceSetup'
+import MakerNotifications from 'Components/Maker/Notifications'
 import { AuthenticatedRoute, AuthRoutes } from 'Components/Auth'
 
 import {
@@ -54,7 +59,8 @@ import {
   connectMobileWallet, settings, affiliateAcceptTerms, wallets, walletDepositModal,
   walletWithdrawalModal, assetNews, makerLogin, makerDashboard, makerSwaps, makerSettings,
   makerLoading, makerBalances, makerRegister, makerRegisterProfile, makerAccountModal,
-  makerSetup, makerExchangeSetup, makerBalanceSetup
+  makerSetup, makerExchangeSetup, makerBalanceSetup, capacityDepositModal, makerRetractCapacityModal, 
+  makerNotifications, makerNotifcationsDepositModal, makerBalanceDepositModal
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -105,6 +111,7 @@ const AppView = ({ hasNoWallets }) => {
         <AuthenticatedRoute path={makerSwaps.path} component={MakerSwaps} />
         <AuthenticatedRoute path={makerBalances.path} component={MakerBalances} />
         <AuthenticatedRoute path={makerSettings.path} component={MakerSettings} />
+        <AuthenticatedRoute path={makerNotifications.path} component={MakerNotifications} />
       
         {/* Legacy routes */}
         <Redirect exact from='/affiliates' to={affiliateLogin.path}/>
@@ -135,7 +142,19 @@ const AppView = ({ hasNoWallets }) => {
         <AffiliateAccountModal {...props}/>
       )}/>
       <ModalRoute closePath={makerDashboard.path} path={makerAccountModal.path} render={(props) => (
-        <MakerAccountModal {...props}/>
+        <LlamaSecretModal {...props}/>
+      )}/>
+      <ModalRoute closePath={makerDashboard.path} path={capacityDepositModal.path} render={(props) => (
+        <CapacityDepositModal {...props}/>
+      )}/>
+      <ModalRoute closePath={makerNotifications.path} path={makerNotifcationsDepositModal.path} render={(props) => (
+        <NotificationDepositModal {...props}/>
+      )}/>
+      <ModalRoute closePath={makerBalances.path} path={makerBalanceDepositModal.path} render={(props) => (
+        <BalanceDepositModal {...props}/>
+      )}/>
+      <ModalRoute closePath={makerSettings.path} path={makerRetractCapacityModal.path} render={(props) => (
+        <RetractCapacityModal {...props}/>
       )}/>
       <Footer />
     </Fragment>

@@ -14,16 +14,18 @@ import BalancesTable from 'Components/Maker/BalanceTable'
 import Units from 'Components/Units'
 import Loading from 'Components/Loading'
 import { getStats } from 'Actions/maker'
+import Link from 'Components/Link'
 import classNames from 'class-names'
 
-import { makerId, getMakerProfile, getMakerProfitUSD, getMakerProfitBTC } from 'Selectors/maker'
+import { makerId, getMakerProfile, getMakerProfitUSD, getMakerProfitBTC, getMakerSecret,
+  getTotalBalanceBTC, isMakerSuspended } from 'Selectors/maker'
 
-import { statContainer, row, statCol } from './style'
+import { statContainer, row, statCol, suspendedContainer } from './style'
 import { card, cardHeader, text, smallCard, input } from '../style'
 
 
-const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalances: { total: { BTC: balanceBTC = '-', USD: balanceUSD = '-' } = {} } = {}, 
-  swapsCompleted = '-', capacityMaximumBtc = '-', isRegistrationComplete }, makerProfitUSD, makerProfitBTC }) => {
+const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAddress, approxTotalBalances: { total: { USD: balanceUSD = '0' } = {} } = {}, 
+  swapsCompleted = '-', capacityMaximumBtc = '-', isRegistrationComplete }, makerProfitUSD, makerProfitBTC, isMakerSuspended }) => {
   const CapacityWalletRow = () => (
     <Card className={classNames(card, smallCard)}>
       <CardHeader className={cardHeader}>Capacity Wallet</CardHeader>
@@ -60,13 +62,19 @@ const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalanc
                   <Card className={classNames(card, smallCard)}>
                     <CardHeader className={cardHeader}>Setup Maker</CardHeader>
                     <CardBody>
-                      <p className={text}>Before you can start earning rewards by fulfilling swaps, you need to setup your maker on a cloud server, setup your exchange API accounts, and fund your maker. You can find guides below:</p>
-                      <ol className={text}>
+                      <p className={text}>
+                        Before you can start earning rewards by fulfilling swaps, you need to set up your maker bot on a dedicated server, set up your exchange API accounts, and fund your maker.
+                      </p>
+                      <span className={classNames(text, 'font-weight-bold')}>Steps to setup maker:</span>
+                      <ol className={classNames(text, 'pl-4 mt-2')}>
                         <li>
-                          <a href='/app/makers/setup/exchanges' target='_blank'>Setup your exchange API account</a>
+                          <a href='/app/makers/setup/server' target='_blank'>Maker Bot Setup</a>
                         </li>
                         <li>
-                          <a href='/app/makers/setup/server' target='_blank'>Setup your market maker on a cloud server</a>
+                          <a href='/app/makers/setup/exchanges' target='_blank'>Binance API Setup</a>
+                        </li>
+                        <li>
+                          <Link to={'/makers/dashboard/capacity'}>Send BTC to your capacity address</Link>
                         </li>
                       </ol>
                     </CardBody>
@@ -80,6 +88,13 @@ const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalanc
             </Fragment>
           ) : (
             <Fragment>
+              {isMakerSuspended && (
+                <Row className={classNames(row, suspendedContainer, 'text-center mt-3 py-2')}>
+                  <Col>
+                    <span>Your maker is currently suspended. Please contact support@faa.st for more details.</span>
+                  </Col>
+                </Row>
+              )}
               <Row className={classNames(row, statContainer, 'text-center mt-3')}>
                 <Col className={classNames('mt-xs-3 mt-md-0 mt-0', statCol)} sm='12' md='4'>
                   <div className={classNames('mx-auto')}>
@@ -90,7 +105,7 @@ const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalanc
                 <Col className={classNames('mt-0', statCol)} sm='12' md='4'>
                   <div className={classNames('mx-auto')}>
                     <p className='text-center mb-0'>Total Balance (BTC)</p>
-                    <p className='pt-0 mb-0'>{balanceBTC}</p>
+                    <p className='pt-0 mb-0'>{totalBalanceBTC}</p>
                   </div>
                 </Col>
                 <Col className={classNames('mt-xs-3 mt-md-0 mt-0', statCol)} sm='12' md='4'>
@@ -106,7 +121,7 @@ const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalanc
                   <Card className={classNames(card, smallCard)}>
                     <CardHeader className={cardHeader}>Rewards to Date</CardHeader>
                     <CardBody className='text-center'>
-                      {makerProfitUSD ? (
+                      {!isNaN(makerProfitUSD) && makerProfitUSD > 0 ? (
                         <Fragment>
                           <p className='my-3' style={{ fontSize: 70 }}>🎉</p>
                           <span style={{ fontSize: 50 }} className={text}>
@@ -121,7 +136,10 @@ const MakerDashboard = ({ profile, profile: { capacityAddress, approxTotalBalanc
                           ) : null}
                         </Fragment>
                       ) : (
-                        <Loading  />
+                        <Fragment>
+                          <p className='mt-0 mb-0' style={{ fontSize: 70 }}>☕️</p>
+                          <p style={{ fontSize: 20 }} className={classNames(text, 'mb-3')}>No rewards just yet.</p>
+                        </Fragment>
                       )}
                     </CardBody>
                   </Card>
@@ -148,12 +166,19 @@ export default compose(
     makerId,
     makerProfitUSD: getMakerProfitUSD,
     makerProfitBTC: getMakerProfitBTC,
+    makerSecret: getMakerSecret,
+    totalBalanceBTC: getTotalBalanceBTC,
+    isMakerSuspended
   }), {
     getStats,
     push: push,
   }),
   lifecycle({
     componentDidMount() {
+      const { makerSecret } = this.props
+      if (makerSecret) {
+        push('/makers/dashboard/account')
+      }
     }
   }),
 )(MakerDashboard)

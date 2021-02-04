@@ -94,7 +94,7 @@ const AffiliateSwapsTable = ({ swaps, size, areSwapsLoading, title }) => {
                 {size === 'small' && (
                   <CardFooter 
                     tag={Link} 
-                    to='/affiliates/swaps'
+                    to='/makers/swaps'
                     className={classNames(cardFooter, text, swaps.length <= 5 && 'position-absolute', 'p-2 text-center cursor-pointer d-block w-100')}
                     style={{ bottom: 0 }}
                   >

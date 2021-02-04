@@ -1,15 +1,16 @@
 import { newScopedCreateAction } from 'Utilities/action'
 import { push } from 'react-router-redux'
 import Faast from 'Services/Faast'
-import { getSession } from 'Services/Auth'
+import { getSession, clearSession } from 'Services/Auth'
 import { sessionStorageSetJson, sessionStorageGetJson, sessionStorageClear } from 'Utilities/storage'
 
-import { isMakerLoggedIn, isMakerDataStale } from 'Selectors/maker'
+import { isMakerLoggedIn, isMakerDataStale, getMakerProfile as selectMakerProfile, isAbleToRetractCapacity } from 'Selectors/maker'
 import Toastr from 'Utilities/toastrWrapper'
 
 const createAction = newScopedCreateAction(__filename)
 
 export const makerDataUpdated = createAction('MAKER_UPDATED')
+export const removeSecretKey = createAction('REMOVE_SECRET_KEY')
 export const login = createAction('MAKER_LOGIN')
 export const logout = createAction('MAKER_LOGOUT')
 export const loadingData = createAction('MAKER_LOADING_LOGIN')
@@ -64,7 +65,6 @@ export const getAllMakerData = () => (dispatch) => {
 export const loginMaker = () => async (dispatch) => {
   try {
     let user = await dispatch(getAuth0User())
-    user = user[0]
     if (user && (!user.app_metadata || user.app_metadata && !user.app_metadata.maker_id)) {
       return dispatch(push('/makers/register/profile'))
     }
@@ -73,7 +73,7 @@ export const loginMaker = () => async (dispatch) => {
     dispatch(push('/makers/dashboard'))
   } catch (err) {
     dispatch(loginError(err))
-    dispatch(push('/makers/login'))
+    dispatch(makerLogout())
     Toastr.error(err.message)
   }
 }
@@ -93,12 +93,24 @@ export const registerMaker = (profile) => async (dispatch) => {
     const makerProfile = await Faast.createMaker(accessToken, profile)
     dispatch(updateProfile(makerProfile))
     dispatch(login())
-    dispatch(push('/makers/dashboard'))
+    dispatch(push('/makers/dashboard/account'))
   } catch (err) {
     dispatch(loginError(err))
     dispatch(push('/makers/login'))
     Toastr.error('Unable to complete user signup. Please contact support@faa.st.')
   }
+}
+
+export const updateMaker = (data) => async (dispatch) => {
+  try {
+    const accessToken = dispatch(getMakerAccessToken())
+    const maker = await Faast.updateMaker(accessToken, data)
+    dispatch(updateProfile(maker))
+    return maker
+  } catch (err) {
+    Toastr.error('Unable to update your maker. Please try again later.')
+  }
+  
 }
 
 export const getMakerProfile = () => (dispatch) => {
@@ -116,6 +128,56 @@ export const getMakerProfile = () => (dispatch) => {
   }
   return
 }
+
+export const disableMaker = () => (dispatch) => {
+  const accessToken = dispatch(getMakerAccessToken())
+  if (accessToken) {
+    return Faast.disableMaker(accessToken)
+      .then((profile) => {
+        Toastr.success('Your maker has been disabled.')
+        return dispatch(updateProfile(profile))
+      }).catch(() => {
+        Toastr.error('Unable to disable maker. Please try again.')
+      })
+  }
+}
+
+export const enableMaker = () => (dispatch) => {
+  const accessToken = dispatch(getMakerAccessToken())
+  return Faast.enableMaker(accessToken)
+    .then((profile) => {
+      Toastr.success('Your maker has been enabled.')
+      return dispatch(updateProfile(profile))
+    }).catch(() => {
+      Toastr.error('Unable to enable maker. Please try again.')
+    })
+}
+
+export const retractCapacity = (amount) => (dispatch, getState) => {
+  const accessToken = dispatch(getMakerAccessToken())
+  const ableToRetractCapacity = isAbleToRetractCapacity(getState())
+  if (!ableToRetractCapacity) {
+    Toastr.error('You are unable to withdrawal from your capacity address. support@faa.st')
+  }
+  return Faast.retractCapacity(accessToken, amount)
+    .then(() => {
+      Toastr.success(`Successfully retracted ${amount} BTC. Your balance should be reflected shortly.`)
+    }).catch(() => {
+      Toastr.error('Unable to enable maker. Please try again.')
+    })
+}
+
+export const getBalanceTargets = () => (dispatch, getState) => {
+  const accessToken = dispatch(getMakerAccessToken())
+  const makerProfile = selectMakerProfile(getState())
+  return Faast.getMakerBalanceTargets(accessToken)
+    .then((balanceTargets) => {
+      dispatch(updateProfile({ ...makerProfile, balanceTargets }))
+    }).catch(() => {
+      Toastr.error('Unable to enable maker. Please try again.')
+    })
+}
+
 
 export const getMakerSwaps = (page, limit = 20) => (dispatch) => {
   const accessToken = dispatch(getMakerAccessToken())
@@ -162,8 +224,8 @@ export const restoreCachedMakerInfo = () => (dispatch, getState) => {
 }
 
 export const makerLogout = () => (dispatch) => {
+  clearSession()
   sessionStorageClear()
   dispatch(resetMaker())
-  dispatch(logout())
   dispatch(push('/makers/login'))
 }

@@ -66,7 +66,7 @@ const Features = ({ translations: { static: { features: t } } }) => {
         </Row>
       </Col>
       <div className={classNames(style.button, 'my-lg-0 my-4 text-center w-100')}>
-        <Button tag='a' href='/connect' className='text-white' color='primary'>{t.connectYourWallet}</Button>
+        <Button tag='a' href='/app/connect' className='text-white' color='primary'>{t.connectYourWallet}</Button>
       </div>
     </Row>
   )}

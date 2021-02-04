@@ -9,7 +9,7 @@ import LoginForm from './form'
 
 import { withAuth } from 'Components/Auth'
 import MakerLayout from 'Components/Maker/Layout'
-import { isMakerLoggedIn } from 'Selectors/maker'
+import { isMakerLoggedIn, makerId } from 'Selectors/maker'
 import LoadingFullscreen from 'Components/LoadingFullscreen'
 
 import { card, cardHeader, smallCard } from '../style'
@@ -37,15 +37,16 @@ export default compose(
   setDisplayName('MakerLogin'),
   withAuth(),
   connect(createStructuredSelector({
-    loggedIn: isMakerLoggedIn
+    loggedIn: isMakerLoggedIn,
+    makerId
   }), {
     push: push,
   }),
   withState('isLoading', 'updateIsLoading', true),
   lifecycle({
     componentDidMount() {
-      const { auth, updateIsLoading } = this.props
-      if (auth.isAuthenticated()) {
+      const { auth, updateIsLoading, makerId, push } = this.props
+      if (auth.isAuthenticated() && makerId) {
         push('/makers/login/loading')
       } else {
         auth.login()

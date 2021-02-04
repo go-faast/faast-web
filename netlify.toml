@@ -22,6 +22,7 @@
   [context.staging.environment]
     DEPLOY_ENV = "staging"
     SITE_ROOT = "https://staging.faast.us"
+    API_URL = "https://testapi.faa.st"
 
 [context.develop]
   [context.develop.environment]

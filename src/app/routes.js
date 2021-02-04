@@ -71,13 +71,18 @@ export const makerRegisterProfile = createPath('/makers/register/profile')
 export const makerLoading = createPath('/makers/login/loading')
 export const makerLoginCallback = createPath('/makers/login/callback')
 export const makerAccountModal = createPath('/makers/dashboard/account')
+export const capacityDepositModal = createPath('/makers/dashboard/capacity')
 export const makerSetup = createPath('/makers/setup/server')
 export const makerExchangeSetup = createPath('/makers/setup/exchanges')
 export const makerBalanceSetup = createPath('/makers/setup/balances')
 export const makerDashboard = createPath('/makers/dashboard')
 export const makerSwaps = createPath('/makers/swaps')
+export const makerBalanceDepositModal = createPath('/makers/balances/:symbol/:type/:address')
 export const makerBalances = createPath('/makers/balances')
 export const makerSettings = createPath('/makers/settings')
+export const makerNotifcationsDepositModal = createPath('/makers/alerts/deposit/:address')
+export const makerNotifications = createPath('/makers/alerts')
+export const makerRetractCapacityModal = createPath('/makers/settings/retract')
 
 export const connectMobileWallet = createPath(connect, '/mobile/connect/:walletType')
 export const connect = createPath('/connect')
@@ -129,5 +134,10 @@ export default {
   makerSettings,
   makerLoading,
   makerRegister,
-  makerBalanceSetup
+  makerBalanceSetup,
+  capacityDepositModal,
+  makerRetractCapacityModal,
+  makerNotifications,
+  makerNotifcationsDepositModal,
+  makerBalanceDepositModal
 }
