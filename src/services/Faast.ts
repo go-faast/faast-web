@@ -1,4 +1,4 @@
-import { fetchGet, fetchPost, fetchDelete } from 'Utilities/fetch'
+import { fetchGet, fetchPost } from 'Utilities/fetch'
 import { filterErrors } from 'Utilities/helpers'
 import { toBigNumber } from 'Utilities/convert'
 import { sessionStorageGet } from 'Utilities/storage'
@@ -23,7 +23,7 @@ const getAffiliateSettings = () => {
 }
 
 export const postFeedback = (type: string, answer: string, email: string,
-                             asset: string, assetInfo: string, hash: string ) => {
+  asset: string, assetInfo: string, hash: string) => {
   // tslint:disable-next-line:max-line-length
   return fetchGet('https://docs.google.com/forms/d/e/1FAIpQLSc5j0rBhIfuPvsbzeEQiwUM2G1J2NvfA_ApcrVy5UqcQDlThA/formResponse', {
     'entry.101588574': email,
@@ -37,7 +37,7 @@ export const postFeedback = (type: string, answer: string, email: string,
       accept: 'application/json',
     },
   }).then((r) => r)
-  .catch((e) => e)
+    .catch((e) => e)
 }
 
 export const postPartners = (data: { email: string, company: string, product: string }) => {
@@ -48,26 +48,26 @@ export const postPartners = (data: { email: string, company: string, product: st
     'entry.289487858': data.product,
   }, {
     headers: {
-    accept: 'application/json',
-  },
+      accept: 'application/json',
+    },
   }).then((r) => r)
-  .catch((e) => e)
+    .catch((e) => e)
 }
 
 export const getFastGasPrice = (): Promise<number> => {
-return fetchGet('https://ethgasstation.info/json/ethgasAPI.json')
-  .then((r) => {
+  return fetchGet('https://ethgasstation.info/json/ethgasAPI.json')
+    .then((r) => {
     // gas station returns values as multiples of 100Mwei
-    return r ? toBigNumber(r.fast).times(1e8) : undefined
-  })
-  .catch((e) => e)
+      return r ? toBigNumber(r.fast).times(1e8) : undefined
+    })
+    .catch((e) => e)
 }
 
 export const getInternationalRate = (symbol: string): Promise<number> => {
   return fetchGet(`https://api.bitaccess.co/v1/currency?from=USD&to=${symbol}&q=1`)
     .then((r) => r ? r.rate : toBigNumber(1))
     .catch((e) => e)
-  }
+}
 
 export function fetchAssets(symbols: []): Promise<any[]> {
   return fetchGet(`${apiUrl}/api/v2/public/currencies`, { include: 'marketInfo', symbols }, { retries: 2 })
@@ -86,7 +86,7 @@ export function fetchAssets(symbols: []): Promise<any[]> {
       if (!asset.decimals) {
         asset.decimals = 0
       }
-      return asset as any
+      return asset
     }))
 }
 
@@ -96,8 +96,8 @@ export const formatAssetMarketData = (r: any): any => {
     tags = null, cmc_rank: cmcRank = null, circulating_supply: availableSupply = null, quote = {} } = r.marketInfo
   const { USD = {} } = quote
   const { price = null, volume_24h: volume24h = null, percent_change_1h: percentChange1h = null,
-     percent_change_24h: percentChange24h = null, percent_change_7d: percentChange7d = null,
-     market_cap: marketCap = null } = USD
+    percent_change_24h: percentChange24h = null, percent_change_7d: percentChange7d = null,
+    market_cap: marketCap = null } = USD
   return ({
     name: r.name,
     symbol: r.symbol,
@@ -139,11 +139,11 @@ export const fetchPriceChart = (cmcIDno: number) => {
 
 export const fetchCoinNews = (symbols: string) => {
   return fetchGet('https://cors-anywhere.herokuapp.com/https://cryptopanic.com/api/v1/posts/',
-  {
-    auth_token: 'd0aea93a6e4c23f3ecac3246e99e9be621b55a17',
-    currencies: symbols,
-    kind: 'news',
-  })
+    {
+      auth_token: 'd0aea93a6e4c23f3ecac3246e99e9be621b55a17',
+      currencies: symbols,
+      kind: 'news',
+    })
 }
 
 export const fetchPairData = (pair: string, depositAmount?: string, withdrawalAmount?: string) =>
@@ -152,7 +152,7 @@ export const fetchPairData = (pair: string, depositAmount?: string, withdrawalAm
     affiliate_fixed_fee: getAffiliateSettings().affiliate_fixed_fee,
     deposit_amount: depositAmount,
     withdrawal_amount: withdrawalAmount,
-})
+  })
 
 export const fetchRestrictionsByIp = () => fetchGet(`${apiUrl}/api/v2/public/geoinfo`)
 
@@ -210,7 +210,7 @@ export const validateAddress = (address: string, symbol: string, extraId?: strin
     .then(({ valid, standardized, message }) => ({ valid, standardized, message }))
     .catch((e: any) => {
       log.error(e)
-      throw(e)
+      throw (e)
     })
 }
 
@@ -246,35 +246,35 @@ export const createNewOrder = async ({
   meta = {},
 }: CreateNewOrderParams): Promise<SwapOrder> => {
   return fetchPost(`${apiUrl}/api/v2/public/swap`, {
-  user_id: userId,
-  deposit_amount: sendAmount,
-  deposit_currency: sendSymbol,
-  withdrawal_address: receiveAddress,
-  withdrawal_currency: receiveSymbol,
-  withdrawal_amount: withdrawalAmount,
-  withdrawal_address_extra_id: receiveAddressExtraId,
-  refund_address_extra_id: refundAddressExtraId,
-  refund_address: refundAddress,
-  ...getAffiliateSettings(),
-  meta: {
-    appVersion,
-    path: typeof window !== 'undefined' ? window.location.pathname : undefined,
-    cfp: await getCfp(),
-    ...meta,
-  },
-}).then(formatOrderResult)
-  .catch((e: any) => {
-    log.error(e)
-    const errMsg = filterErrors(e)
-    throw new Error(errMsg)
-  })
+    user_id: userId,
+    deposit_amount: sendAmount,
+    deposit_currency: sendSymbol,
+    withdrawal_address: receiveAddress,
+    withdrawal_currency: receiveSymbol,
+    withdrawal_amount: withdrawalAmount,
+    withdrawal_address_extra_id: receiveAddressExtraId,
+    refund_address_extra_id: refundAddressExtraId,
+    refund_address: refundAddress,
+    ...getAffiliateSettings(),
+    meta: {
+      appVersion,
+      path: typeof window !== 'undefined' ? window.location.pathname : undefined,
+      cfp: await getCfp(),
+      ...meta,
+    },
+  }).then(formatOrderResult)
+    .catch((e: any) => {
+      log.error(e)
+      const errMsg = filterErrors(e)
+      throw new Error(errMsg)
+    })
 }
 
 type OrdersResult = {
   page: number,
   limit: number,
   total: number,
-  orders: object[],
+  orders: Object[],
 }
 
 export const fetchOrders = (
@@ -291,7 +291,7 @@ export const fetchOrders = (
     }),
   ]).then(([r1]: OrdersResult[]) =>
     r1.orders.map((order: OrdersResult) => (
-    formatOrder ? formatOrderResult(order) : order
+      formatOrder ? formatOrderResult(order) : order
     )))
     .catch((e: any) => {
       log.error(e)
@@ -316,16 +316,16 @@ export const getAffiliateStats = (
   const nonce = String(Date.now())
   const signature = createAffiliateSignature(undefined, key, nonce)
   return fetchGet(`${apiUrl}/api/v2/public/affiliate/stats`, null, {
-  headers: {
-    'affiliate-id': id,
-    nonce,
-    signature,
-  },
-}).then((stats) => stats)
-  .catch((e: any) => {
-    log.error(e)
-    throw e
-  })
+    headers: {
+      'affiliate-id': id,
+      nonce,
+      signature,
+    },
+  }).then((stats) => stats)
+    .catch((e: any) => {
+      log.error(e)
+      throw e
+    })
 }
 
 export const getAffiliateSwapPayouts = (
@@ -337,17 +337,17 @@ export const getAffiliateSwapPayouts = (
   const nonce = String(Date.now())
   const signature = createAffiliateSignature(undefined, key, nonce)
   return fetchGet(`${apiUrl}/api/v2/public/affiliate/withdrawals`,
-  { limit, page }, {
-  headers: {
-    'affiliate-id': id,
-    nonce,
-    signature,
-  },
-}).then((swaps) => swaps)
-  .catch((e: any) => {
-    log.error(e)
-    throw e
-  })
+    { limit, page }, {
+      headers: {
+        'affiliate-id': id,
+        nonce,
+        signature,
+      },
+    }).then((swaps) => swaps)
+    .catch((e: any) => {
+      log.error(e)
+      throw e
+    })
 }
 
 export const getAffiliateBalance = (
@@ -357,17 +357,17 @@ export const getAffiliateBalance = (
   const nonce = String(Date.now())
   const signature = createAffiliateSignature(undefined, key, nonce)
   return fetchGet(`${apiUrl}/api/v2/public/affiliate/balance`,
-  undefined, {
-  headers: {
-    'affiliate-id': id,
-    nonce,
-    signature,
-  },
-}).then((balance) => balance)
-  .catch((e: any) => {
-    log.error(e)
-    throw e
-  })
+    undefined, {
+      headers: {
+        'affiliate-id': id,
+        nonce,
+        signature,
+      },
+    }).then((balance) => balance)
+    .catch((e: any) => {
+      log.error(e)
+      throw e
+    })
 }
 
 export const getAffiliateAccount = (
@@ -377,17 +377,17 @@ export const getAffiliateAccount = (
   const nonce = String(Date.now())
   const signature = createAffiliateSignature(undefined, key, nonce)
   return fetchGet(`${apiUrl}/api/v2/public/affiliate/account`,
-  null, {
-  headers: {
-    'affiliate-id': id,
-    nonce,
-    signature,
-  },
-}).then((account) => account)
-  .catch((e: any) => {
-    log.error(e)
-    throw e
-  })
+    null, {
+      headers: {
+        'affiliate-id': id,
+        nonce,
+        signature,
+      },
+    }).then((account) => account)
+    .catch((e: any) => {
+      log.error(e)
+      throw e
+    })
 }
 
 export const getAffiliateExportLink = (
@@ -397,17 +397,17 @@ export const getAffiliateExportLink = (
   const nonce = String(Date.now())
   const signature = createAffiliateSignature(undefined, key, nonce)
   return fetchGet(`${apiUrl}/api/v2/public/affiliate/swaps/export`,
-  null, {
-  headers: {
-    'affiliate-id': id,
-    nonce,
-    signature,
-  },
-}).then((result) => result)
-  .catch((e: any) => {
-    log.error(e)
-    throw e
-  })
+    null, {
+      headers: {
+        'affiliate-id': id,
+        nonce,
+        signature,
+      },
+    }).then((result) => result)
+    .catch((e: any) => {
+      log.error(e)
+      throw e
+    })
 }
 
 export const initiateAffiliateWithdrawal = (
@@ -421,18 +421,18 @@ export const initiateAffiliateWithdrawal = (
   const nonce = String(Date.now())
   const signature = createAffiliateSignature(JSON.stringify(requestJSON), key, nonce)
   return fetchPost(`${apiUrl}/api/v2/public/affiliate/withdraw`, requestJSON,
-  undefined,
-{ headers: {
-  'affiliate-id': id,
-  nonce,
-  signature,
-  },
-})
-  .then((r) => r)
-  .catch((e: any) => {
-    log.error(e)
-    throw e
-  })
+    undefined,
+    { headers: {
+      'affiliate-id': id,
+      nonce,
+      signature,
+    },
+    })
+    .then((r) => r)
+    .catch((e: any) => {
+      log.error(e)
+      throw e
+    })
 }
 
 export const affiliateRegister = (
@@ -445,11 +445,11 @@ export const affiliateRegister = (
     affiliate_payment_address: address,
     contact_email: email,
   })
-  .then((res) => res)
-  .catch((e: any) => {
-    log.error(e)
-    throw e
-  })
+    .then((res) => res)
+    .catch((e: any) => {
+      log.error(e)
+      throw e
+    })
 }
 
 export const getAffiliateSwaps = (
@@ -461,19 +461,19 @@ export const getAffiliateSwaps = (
   const nonce = String(Date.now())
   const signature = createAffiliateSignature(undefined, key, nonce)
   return fetchGet(`${apiUrl}/api/v2/public/affiliate/swaps`,
-  { limit, page },
-  {
-    headers: {
-      'affiliate-id': id,
-      nonce,
-      signature,
-    },
-  })
-  .then((swaps) => swaps)
-  .catch((e: any) => {
-    log.error(e)
-    return e
-  })
+    { limit, page },
+    {
+      headers: {
+        'affiliate-id': id,
+        nonce,
+        signature,
+      },
+    })
+    .then((swaps) => swaps)
+    .catch((e: any) => {
+      log.error(e)
+      return e
+    })
 }
 
 export const createAffiliateSignature = (requestJSON: string | boolean, secret: string, nonce: string) => {
@@ -490,125 +490,125 @@ export const getMakerSwaps = (
   limit: number = 50,
 ): Promise<void> => {
   return fetchGet(`${apiUrl}/api/v2/public/maker/swaps`,
-  { limit, page },
-  {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  })
-  .then((swaps) => { return swaps })
-  .catch((e: any) => {
-    log.error(e)
-    throw new Error(e)
-  })
+    { limit, page },
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((swaps) => { return swaps })
+    .catch((e: any) => {
+      log.error(e)
+      throw new Error(e)
+    })
 }
 
 export const getMakerProfile = (
   accessToken: string,
 ): Promise<void> => {
   return fetchGet(`${apiUrl}/api/v2/public/maker/profile`,
-  undefined,
-  {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  })
-  .then((profile) => {
-    return profile
-  })
-  .catch((e: any) => {
-    log.error(e)
-    throw new Error(e)
-  })
+    undefined,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((profile) => {
+      return profile
+    })
+    .catch((e: any) => {
+      log.error(e)
+      throw new Error(e)
+    })
 }
 
 export const getMakerStatistics = (
   accessToken: string,
 ): Promise<void> => {
   return fetchGet(`${apiUrl}/api/v2/public/maker/statistics`,
-  undefined,
-  {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  })
-  .then((stats) => stats)
-  .catch((e: any) => {
-    log.error(e)
-    throw new Error(e)
-  })
+    undefined,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((stats) => stats)
+    .catch((e: any) => {
+      log.error(e)
+      throw new Error(e)
+    })
 }
 
 export const getMakerBalanceTargets = (
   accessToken: string,
 ): Promise<void> => {
   return fetchGet(`${apiUrl}/api/v2/public/maker/balanceTargets`,
-  undefined,
-  {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  })
-  .then((balanceTargets) => balanceTargets)
-  .catch((e: any) => {
-    log.error(e)
-    throw new Error(e)
-  })
+    undefined,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((balanceTargets) => balanceTargets)
+    .catch((e: any) => {
+      log.error(e)
+      throw new Error(e)
+    })
 }
 
 export const createMaker = (
   accessToken: string,
-  maker: object,
+  maker: Object,
 ): Promise<void> => {
   return fetchPost(`${apiUrl}/api/v2/public/maker/create`,
-  { maker },
-  undefined,
-  {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  })
-  .then((makerProfile) => makerProfile)
-  .catch((e: any) => {
-    log.error(e)
-    throw new Error(e)
-  })
+    { maker },
+    undefined,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((makerProfile) => makerProfile)
+    .catch((e: any) => {
+      log.error(e)
+      throw new Error(e)
+    })
 }
 
 export const disableMaker = (
   accessToken: string,
 ): Promise<void> => {
   return fetchPost(`${apiUrl}/api/v2/public/maker/disable`,
-  undefined,
-  undefined,
-  {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  })
-  .then((makerProfile) => makerProfile)
-  .catch((e: any) => {
-    log.error(e)
-    throw new Error(e)
-  })
+    undefined,
+    undefined,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((makerProfile) => makerProfile)
+    .catch((e: any) => {
+      log.error(e)
+      throw new Error(e)
+    })
 }
 
 export const enableMaker = (
   accessToken: string,
 ): Promise<void> => {
   return fetchPost(`${apiUrl}/api/v2/public/maker/enable`,
-  undefined,
-  undefined,
-  {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  })
-  .then((makerProfile) => makerProfile)
-  .catch((e: any) => {
-    log.error(e)
-    throw new Error(e)
-  })
+    undefined,
+    undefined,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((makerProfile) => makerProfile)
+    .catch((e: any) => {
+      log.error(e)
+      throw new Error(e)
+    })
 }
 
 export const retractCapacity = (
@@ -616,20 +616,20 @@ export const retractCapacity = (
   amount: number
 ): Promise<void> => {
   return fetchPost(`${apiUrl}/api/v2/public/maker/retract`,
-  {
-    amount
-  },
-  undefined,
-  {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
+    {
+      amount
     },
-  })
-  .then((makerProfile) => makerProfile)
-  .catch((e: any) => {
-    log.error(e)
-    throw new Error(e)
-  })
+    undefined,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((makerProfile) => makerProfile)
+    .catch((e: any) => {
+      log.error(e)
+      throw new Error(e)
+    })
 }
 
 export const updateMaker = (
@@ -637,37 +637,37 @@ export const updateMaker = (
   data: number
 ): Promise<void> => {
   return fetchPost(`${apiUrl}/api/v2/public/maker/update`,
-  {
-    data
-  },
-  undefined,
-  {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
+    {
+      data
     },
-  })
-  .then((makerProfile) => makerProfile)
-  .catch((e: any) => {
-    log.error(e)
-    throw new Error(e)
-  })
+    undefined,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((makerProfile) => makerProfile)
+    .catch((e: any) => {
+      log.error(e)
+      throw new Error(e)
+    })
 }
 
 export const getAuth0User = (
   accessToken: string,
 ): Promise<void> => {
   return fetchGet(`${apiUrl}/api/v2/public/maker/users`,
-  undefined,
-  {
-    headers: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  })
-  .then((user) => user)
-  .catch((e: any) => {
-    log.error(e)
-    throw new Error(e)
-  })
+    undefined,
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((user) => user)
+    .catch((e: any) => {
+      log.error(e)
+      throw new Error(e)
+    })
 }
 
 export default {
