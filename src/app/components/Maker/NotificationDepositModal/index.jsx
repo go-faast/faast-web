@@ -8,12 +8,15 @@ import classNames from 'class-names'
 import QRCode from 'Components/DepositQRCode'
 import Units from 'Components/Units'
 
-import { getBalanceAlertByAddress, getTotalBalanceBySymbol } from 'Selectors/maker'
+import { getBalanceAlertBySymbol, getTotalBalanceBySymbol } from 'Selectors/maker'
 
 import { modalShadow } from './style'
 import { cardHeader, input } from '../style'
 
-const getQuery = ({ match }) => match.params.address
+const getQuery = ({ match }) => ({
+  depositAddress: match.params.address,
+  symbol: match.params.symbol
+})
 
 export default compose(
   setDisplayName('NotificationDepositModal'),
@@ -21,17 +24,18 @@ export default compose(
     ...Modal.propTypes,
   }),
   withProps((props) => {
-    const depositAddress = getQuery(props)
+    const { depositAddress, symbol } = getQuery(props)
     return ({
       depositAddress,
+      symbol
     })
   }),
   connect(createStructuredSelector({
-    balanceAlert: (state, { depositAddress }) => getBalanceAlertByAddress(state, depositAddress),
+    balanceAlert: (state, { symbol }) => getBalanceAlertBySymbol(state, symbol),
   }), {
   }),
   connect(createStructuredSelector({
-    balance: (state, { balanceAlert: { symbol } = {} }) => getTotalBalanceBySymbol(state, symbol),
+    balance: (state, { symbol }) => getTotalBalanceBySymbol(state, symbol),
   }), {
   }),
 )(({ depositAddress, balanceAlert, balance, balanceAlert: { symbol, alert }, toggle, ...props }) => {

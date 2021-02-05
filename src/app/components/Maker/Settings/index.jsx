@@ -123,11 +123,11 @@ const MakerSettings = ({ makerId, isMakerDisabled, handleSwitch, isAbleToRetract
                 </Col>
                 {swapMarginMin && swapMarginMax ? (
                   <Fragment>
+                    <hr className='w-100 border-light'/>
                     <Col sm='12'>
                       <small><p className={classNames('mt-1 mb-1 font-weight-bold', text)}>Margin Range</p></small>
                       <span className={text}>Your maker will fulfill any swaps with a margin of <b>{swapMarginMin}%</b> - <b>{swapMarginMax}%.</b></span>
                     </Col>
-                    <hr className='w-100 border-light'/>
                   </Fragment>
                 ) : null}
                 <hr className='w-100 border-light'/>

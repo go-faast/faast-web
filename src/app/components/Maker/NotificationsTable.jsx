@@ -25,17 +25,17 @@ const WarningRow = ({
 }
 
 const BalanceAlertRow = ({
-  warning,
+  warning: { alert, symbol, address },
   hr,
   ...props
 }) => {
   return (
     <Fragment>
       <Col xs='10' {...props}>
-        <p className={classNames(text, 'pl-4 mb-0 pb-0')}><i className='fa fa-exclamation-circle text-danger mr-3' />{warning.alert}</p>
+        <p className={classNames(text, 'pl-4 mb-0 pb-0')}><i className='fa fa-exclamation-circle text-danger mr-3' />{alert}</p>
       </Col>
       <Col xs='2'>
-        <Button tag={Link} color='primary' size='sm' className='flat' to={`/makers/alerts/deposit/${warning.address}`}>Deposit {warning.symbol}</Button>
+        <Button tag={Link} color='primary' size='sm' className='flat' to={`/makers/alerts/deposit/${symbol}/${address}`}>Deposit {symbol}</Button>
       </Col>
       {hr && <hr className='w-100 border-light'/>}
     </Fragment>

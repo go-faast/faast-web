@@ -55,8 +55,9 @@ export const isMakerDisabled = createSelector(getMakerProfile, ({ isDisabled }) 
 export const makerLastDisabledAt = createSelector(getMakerProfile, ({ lastDisabledAt }) => lastDisabledAt)
 export const makerBalanceTargets = createSelector(getMakerProfile, ({ balanceTargets }) => balanceTargets)
 export const getMakerWarnings = createSelector(getMakerProfile, ({ warnings }) => warnings)
+export const getMakerEnabledAssets = createSelector(getMakerProfile, ({ assetsEnabled }) => assetsEnabled)
 export const getMakerWarningsCount = createSelector(getMakerWarnings, (warnings) => warnings && warnings.length)
-export const getBalanceAlerts = createSelector(getMakerProfile, getMakerBalances, ({ balanceTargets, detailedStatus }, balances) => {
+export const getBalanceAlerts = createSelector(getMakerProfile, getMakerBalances, ({ balanceTargets, detailedStatus, assetsEnabled }, balances) => {
   if (!balanceTargets) return []
   const wallets = detailedStatus && detailedStatus.balances && detailedStatus.balances.wallet
   if (!wallets) return []
@@ -73,10 +74,10 @@ export const getBalanceAlerts = createSelector(getMakerProfile, getMakerBalances
       })
     }
   }) : []
-  return alerts.filter(x => x)
+  return alerts.filter(x => x && assetsEnabled.indexOf(x.symbol) >= 0)
 })
-export const getBalanceAlertByAddress = createItemSelector(getBalanceAlerts, selectItemId, (alerts, address) => {
-  const alert = alerts.find(alert => alert.address == address)
+export const getBalanceAlertBySymbol = createItemSelector(getBalanceAlerts, selectItemId, (alerts, symbol) => {
+  const alert = alerts.find(alert => alert.symbol == symbol)
   return alert
 })
 export const getMakerBalanceAlertsCount = createSelector(getBalanceAlerts, (alerts) => alerts && alerts.length)
@@ -89,8 +90,9 @@ export const isMakerSuspended = createSelector(getMakerProfile, ({ isSuspended }
 export const isMakerOnline = createSelector(getMakerProfile, ({ isOnline }) => isOnline)
 export const getMakerStats = createSelector(getMakerState, ({ stats }) => stats)
 export const getMakerProfitUSD = createSelector(getMakerStats, (stats) => {
-  if (stats && !isNaN(stats.expenses)) {
-    const profit = stats.revenue && stats.revenue.maker_rewards_usd - stats.expenses.total_usd
+  console.log(stats.expenses)
+  if (stats && stats.expenses) {
+    const profit = stats.revenue && stats.revenue.maker_rewards_usd - stats.expenses.exchange_withdrawal.amount_usd
     return profit
   } else {
     return 0
@@ -98,7 +100,7 @@ export const getMakerProfitUSD = createSelector(getMakerStats, (stats) => {
 })
 export const getMakerProfitBTC = createSelector(getMakerStats, (stats) => {
   if (stats && stats.expenses) {
-    const profit = stats.revenue && stats.revenue.maker_rewards_btc - stats.expenses.total_btc
+    const profit = stats.revenue && stats.revenue.maker_rewards_btc - stats.expenses.exchange_withdrawal.amount_btc
     return profit
   } else {
     return 0

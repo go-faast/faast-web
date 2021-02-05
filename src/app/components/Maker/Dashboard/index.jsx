@@ -24,7 +24,7 @@ import { statContainer, row, statCol, suspendedContainer } from './style'
 import { card, cardHeader, text, smallCard, input } from '../style'
 
 
-const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAddress, approxTotalBalances: { total: { USD: balanceUSD = '0' } = {} } = {}, 
+const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAddress, approxTotalBalances: { total: { USD: balanceUSD = '0', BTC: balanceBTC = '0' } = {} } = {}, 
   swapsCompleted = '-', capacityMaximumBtc = '-', isRegistrationComplete }, makerProfitUSD, makerProfitBTC, isMakerSuspended }) => {
   const CapacityWalletRow = () => (
     <Card className={classNames(card, smallCard)}>
@@ -37,7 +37,7 @@ const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAdd
               <span>[Current Balance: </span>{capacityMaximumBtc} BTC]
             </p>
             <p style={{ fontWeight: 600 }} className={classNames('text-left mb-0', text)}>Capacity Address:</p>
-            <ClipboardCopyField className={input} value={capacityAddress} />
+            <ClipboardCopyField className={classNames(input, 'flat')} value={capacityAddress} autoFocus={false} />
             <small className={classNames('text-left d-block', text)}>Depositing more BTC to your capacity address will increase the swap value your maker can process.</small>
           </Fragment>
         ) : profile && !capacityAddress ? (
@@ -99,7 +99,7 @@ const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAdd
                 <Col className={classNames('mt-xs-3 mt-md-0 mt-0', statCol)} sm='12' md='4'>
                   <div className={classNames('mx-auto')}>
                     <p className='text-center mb-0'>Total Balance (USD)</p>
-                    <p className='pt-0 mb-0'>${balanceUSD}</p>
+                    <p className='pt-0 mb-0'>${((balanceUSD / balanceBTC) * (capacityMaximumBtc + balanceBTC)).toFixed(2)}</p>
                   </div>
                 </Col>
                 <Col className={classNames('mt-0', statCol)} sm='12' md='4'>
@@ -121,6 +121,7 @@ const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAdd
                   <Card className={classNames(card, smallCard)}>
                     <CardHeader className={cardHeader}>Rewards to Date</CardHeader>
                     <CardBody className='text-center'>
+                      {console.log(makerProfitUSD)}
                       {!isNaN(makerProfitUSD) && makerProfitUSD > 0 ? (
                         <Fragment>
                           <p className='my-3' style={{ fontSize: 70 }}>🎉</p>

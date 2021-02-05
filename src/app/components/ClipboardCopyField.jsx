@@ -25,10 +25,10 @@ export default compose(
       },
     }
   })
-)(({ handleFocus, handleRef, handleCopy, ...props }) => (
+)(({ handleFocus, handleRef, handleCopy, autoFocus = true, ...props }) => (
   <Row className='gutter-2 my-2'>
     <Col>
-      <Input type='text' autoFocus readOnly onFocus={handleFocus} innerRef={handleRef} {...props}/>
+      <Input type='text' autoFocus={autoFocus} readOnly onFocus={handleFocus} innerRef={handleRef} {...props}/>
     </Col>
     <Col xs='auto'>
       <Button color='link' className='p-2' onClick={handleCopy}><i className='fa fa-copy'/></Button>

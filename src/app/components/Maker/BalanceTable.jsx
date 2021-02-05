@@ -43,12 +43,12 @@ const BalanceTableRow = ({
       </td>
       {size == 'small' ? null : balanceType != 'total' ? (
         <td className='text-right pr-4'>
-          <Button tag={Link} color='primary' size='sm' className='flat' to={`/makers/balances/${symbol}/${balanceType}/${address}`}>{capitalizeFirstLetter(balanceType)} Address</Button>
+          <Button tag={Link} color='white' style={{ border: '1px solid #ebeff1' }} size='sm' className='flat' to={`/makers/balances/${symbol}/${balanceType}/${address}`}>{capitalizeFirstLetter(balanceType)} Address</Button>
         </td>
       ) : (
         <td className='text-right pr-4'>
-          <Button tag={Link} color='primary' size='sm' className='flat mr-2' to={`/makers/balances/${symbol}/${'wallet'}/${hotwalletAddress}`}>Wallet Address</Button>
-          <Button tag={Link} color='primary' size='sm' className='flat' to={`/makers/balances/${symbol}/${'exchange'}/${exchangeAddress}`}>Exchange Address</Button>
+          <Button tag={Link} color='white' style={{ border: '1px solid #ebeff1' }} size='sm' className='flat mr-2' to={`/makers/balances/${symbol}/${'wallet'}/${hotwalletAddress}`}>Wallet Address</Button>
+          <Button tag={Link} color='white' style={{ border: '1px solid #ebeff1' }} size='sm' className='flat' to={`/makers/balances/${symbol}/${'exchange'}/${exchangeAddress}`}>Exchange Address</Button>
         </td>
       )}
     </tr>
