@@ -23,6 +23,7 @@ const getAffiliateSettings = () => {
 }
 
 export const postFeedback = (type: string, answer: string, email: string,
+  // tslint:disable-next-line: align
   asset: string, assetInfo: string, hash: string) => {
   // tslint:disable-next-line:max-line-length
   return fetchGet('https://docs.google.com/forms/d/e/1FAIpQLSc5j0rBhIfuPvsbzeEQiwUM2G1J2NvfA_ApcrVy5UqcQDlThA/formResponse', {
@@ -274,7 +275,7 @@ type OrdersResult = {
   page: number,
   limit: number,
   total: number,
-  orders: Object[],
+  orders: object[],
 }
 
 export const fetchOrders = (
@@ -496,7 +497,7 @@ export const getMakerSwaps = (
         Authorization: `Bearer ${accessToken}`,
       },
     })
-    .then((swaps) => { return swaps })
+    .then((swaps) => swaps)
     .catch((e: any) => {
       log.error(e)
       throw new Error(e)
@@ -558,7 +559,7 @@ export const getMakerBalanceTargets = (
 
 export const createMaker = (
   accessToken: string,
-  maker: Object,
+  maker: object,
 ): Promise<void> => {
   return fetchPost(`${apiUrl}/api/v2/public/maker/create`,
     { maker },
@@ -613,11 +614,11 @@ export const enableMaker = (
 
 export const retractCapacity = (
   accessToken: string,
-  amount: number
+  amount: number,
 ): Promise<void> => {
   return fetchPost(`${apiUrl}/api/v2/public/maker/retract`,
     {
-      amount
+      amount,
     },
     undefined,
     {
@@ -634,11 +635,11 @@ export const retractCapacity = (
 
 export const updateMaker = (
   accessToken: string,
-  data: number
+  data: number,
 ): Promise<void> => {
   return fetchPost(`${apiUrl}/api/v2/public/maker/update`,
     {
-      data
+      data,
     },
     undefined,
     {
@@ -702,5 +703,5 @@ export default {
   enableMaker,
   disableMaker,
   retractCapacity,
-  getMakerBalanceTargets
+  getMakerBalanceTargets,
 }
