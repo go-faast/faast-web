@@ -26,10 +26,7 @@
     "overrides": [
         {
             "files": ["*.ts"],
-            "processor": "@typescript-eslint/parser",
-            "rules": {
-                "align": "off"
-            }
+            "processor": "@typescript-eslint/parser"
         }
     ],
     "rules": {
