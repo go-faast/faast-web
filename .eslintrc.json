@@ -4,6 +4,7 @@
         "node": true,
         "es6": true
     },
+    "exclude": ["**/*.ts", "**/*.tsx"],
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended"
@@ -22,12 +23,6 @@
     "parser": "babel-eslint",
     "plugins": [
         "react"
-    ],
-    "overrides": [
-        {
-            "files": ["*.ts"],
-            "processor": "@typescript-eslint/parser"
-        }
     ],
     "rules": {
         "indent": [
