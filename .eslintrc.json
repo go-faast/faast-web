@@ -4,7 +4,9 @@
         "node": true,
         "es6": true
     },
-    "exclude": ["**/*.ts", "**/*.tsx"],
+    "linterOptions": {
+        "exclude": ["**/*.js", "**/*.jsx", "**/*.json"]
+    },
     "extends": [
         "eslint:recommended",
         "plugin:react/recommended"
