@@ -78,7 +78,7 @@
     "ajv": "^5.5.2",
     "auth0-js": "^9.14.0",
     "autoprefixer": "^7.2.4",
-    "axios": "^0.19.0",
+    "axios": "^0.21.1",
     "babel-core": "^6.26.0",
     "babel-eslint": "^8.0.3",
     "babel-loader": "^7.1.2",
