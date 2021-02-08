@@ -1,0 +1,9 @@
+.minLink {
+  transition: all .25s ease-in-out;
+  text-decoration: none !important;
+  color: #fff !important;
+  opacity: 1;
+  &:hover {
+    opacity: .85;
+  }
+}

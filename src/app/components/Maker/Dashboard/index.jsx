@@ -68,10 +68,10 @@ const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAdd
                       <span className={classNames(text, 'font-weight-bold')}>Steps to setup maker:</span>
                       <ol className={classNames(text, 'pl-4 mt-2')}>
                         <li>
-                          <a href='/app/makers/setup/server' target='_blank'>Maker Bot Setup</a>
+                          <a href='https://app.gitbook.com/@faast/s/faast/market-maker-setup/how-to-setup-your-maker-server' target='_blank noreferrer'>Maker Bot Setup</a>
                         </li>
                         <li>
-                          <a href='/app/makers/setup/exchanges' target='_blank'>Binance API Setup</a>
+                          <a href='https://app.gitbook.com/@faast/s/faast/market-maker-setup/how-to-setup-your-binance-account-to-work-with-your-maker' target='_blank no referrer'>Binance API Setup</a>
                         </li>
                         <li>
                           <Link to={'/makers/dashboard/capacity'}>Send BTC to your capacity address</Link>

@@ -47,7 +47,7 @@ export default compose(
                 </small>
               </div>
             ) : (
-              <p className='text-center'>Your capacity address will be created and ready for deposits after you have finished setting up your Maker Bot.</p>
+              <p className='text-center'>Your capacity address will be created and ready for deposits after you have finished setting up your Maker Bot. Read more about capacity addresses <a href='https://app.gitbook.com/@faast/s/faast/market-maker-setup/fund-your-makers-capacity-address' target='_blank noreferrer'>here.</a></p>
             )} 
           </Col>
         </Row>
