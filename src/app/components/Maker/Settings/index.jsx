@@ -13,6 +13,7 @@ import { reduxForm, formValueSelector } from 'redux-form'
 import { makerId, getMakerProfile, isMakerDisabled, isAbleToRetractCapacity } from 'Selectors/maker'
 import { getAllAssetsArray } from 'Common/selectors/asset'
 import { disableMaker, enableMaker, updateMaker } from 'Actions/maker'
+import Toastr from 'Utilities/toastrWrapper'
 
 import MakerLayout from 'Components/Maker/Layout'
 import CoinIcon from 'Components/CoinIcon'
@@ -167,12 +168,6 @@ export default compose(
     assetList: assets ? assets.filter(({ deposit, receive }) => deposit && receive)
       .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl', 'marketCap', 'ERC20')) : []
   })),
-  reduxForm({
-    form: FORM_NAME,
-    enableReinitialize: true,
-    keepDirtyOnReinitialize: true,
-    updateUnregisteredFields: true,
-  }),
   withState('selectedAssets', 'updateSelectedAssets', ({ profile: { assetsEnabled } = [] }) => assetsEnabled),
   withState('isAssetSelectorOpen', 'toggleAssetSelector', false),
   withState('isLoading', 'updateIsLoading', false),
@@ -185,11 +180,18 @@ export default compose(
       }
     },
     onSubmit: ({ updateIsLoading, selectedAssets, updateMaker, assetCheckbox }) => async () => {
-      selectedAssets = selectedAssets.length == 0 || assetCheckbox ? null : selectedAssets
+      selectedAssets = selectedAssets && selectedAssets.length == 0 || assetCheckbox ? null : selectedAssets
       updateIsLoading(true)
       await updateMaker({ assetsEnabled: selectedAssets })
+      Toastr.success('You have successfully updated your enabled assets.')
       updateIsLoading(false)
     },
+  }),
+  reduxForm({
+    form: FORM_NAME,
+    enableReinitialize: true,
+    keepDirtyOnReinitialize: true,
+    updateUnregisteredFields: true,
   }),
   withHandlers({
     isAssetDisabled: () => ({ deposit, receive }) => !(deposit && receive),

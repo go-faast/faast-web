@@ -27,8 +27,9 @@ export const makerSwaps = createSelector(
   ({ swaps }, allAssets, allWallets, allTxs) => mapValues(swaps, createSwapExtender(allAssets, allWallets, allTxs)))
 
 export const makerSwapsArray = createSelector(makerSwaps, Object.values)
-export const getMakerBalances = createSelector(getMakerState, ({ balances, profile: { exchangeDepositAddresses } }) => { 
+export const getMakerBalances = createSelector(getMakerState, ({ balances, profile: { exchangeDepositAddresses, balanceTargets } }) => { 
   balances.forEach(balance => {
+    balance.minimumBalance = balanceTargets && balanceTargets[balance.asset] && balanceTargets[balance.asset].totalBalanceMinimum
     balance.exchangeAddress = exchangeDepositAddresses && exchangeDepositAddresses[balance.asset] && exchangeDepositAddresses[balance.asset].address
   })
   return balances
@@ -63,7 +64,7 @@ export const getBalanceAlerts = createSelector(getMakerProfile, getMakerBalances
   if (!wallets) return []
   const alerts = balances ? balances.map(({ asset, exchange, wallet }) => {
     const totalBalance = toBigNumber(exchange).plus(toBigNumber(wallet))
-    const minBalance = balanceTargets[asset].totalBalanceMinimum
+    const minBalance = balanceTargets[asset] ? balanceTargets[asset].totalBalanceMinimum : 0
     const balanceTarget = toBigNumber(minBalance)
     if (totalBalance.lt(balanceTarget)) {
       return ({
@@ -74,7 +75,7 @@ export const getBalanceAlerts = createSelector(getMakerProfile, getMakerBalances
       })
     }
   }) : []
-  return alerts.filter(x => x && assetsEnabled.indexOf(x.symbol) >= 0)
+  return alerts.filter(x => x && assetsEnabled && assetsEnabled.indexOf(x.symbol) >= 0)
 })
 export const getBalanceAlertBySymbol = createItemSelector(getBalanceAlerts, selectItemId, (alerts, symbol) => {
   const alert = alerts.find(alert => alert.symbol == symbol)
@@ -90,7 +91,6 @@ export const isMakerSuspended = createSelector(getMakerProfile, ({ isSuspended }
 export const isMakerOnline = createSelector(getMakerProfile, ({ isOnline }) => isOnline)
 export const getMakerStats = createSelector(getMakerState, ({ stats }) => stats)
 export const getMakerProfitUSD = createSelector(getMakerStats, (stats) => {
-  console.log(stats.expenses)
   if (stats && stats.expenses) {
     const profit = stats.revenue && stats.revenue.maker_rewards_usd - stats.expenses.exchange_withdrawal.amount_usd
     return profit

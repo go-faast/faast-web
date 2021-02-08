@@ -108,7 +108,8 @@ const MakerBalanceTable = ({ balances, size, isDropdownOpen, toggleDropdownOpen,
                 <thead>
                   <tr>
                     <th className='position-relative' style={{ left: 8 }}>Coin</th>
-                    <th>Amount</th>
+                    <th>Balance</th>
+                    <th>Minimum Balance</th>
                     <th>Balance (USD)</th>
                   </tr>
                 </thead>

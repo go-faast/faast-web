@@ -121,7 +121,6 @@ const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAdd
                   <Card className={classNames(card, smallCard)}>
                     <CardHeader className={cardHeader}>Rewards to Date</CardHeader>
                     <CardBody className='text-center'>
-                      {console.log(makerProfitUSD)}
                       {!isNaN(makerProfitUSD) && makerProfitUSD > 0 ? (
                         <Fragment>
                           <p className='my-3' style={{ fontSize: 70 }}>🎉</p>

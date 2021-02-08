@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { fetchGet, fetchPost } from 'Utilities/fetch'
 import { filterErrors } from 'Utilities/helpers'
 import { toBigNumber } from 'Utilities/convert'
