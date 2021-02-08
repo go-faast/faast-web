@@ -23,7 +23,7 @@ const Hero = ({ supportedAssets, translations, translations: { static: { hero: {
         <div className='position-relative' style={{ zIndex: 999 }}>
           <Fade duration={1200} distance='80px' bottom>
             <SwapWidget translations={translations} assets={supportedAssets} />
-            <div className='pt-3 text-lg-right text-center' style={{ maxWidth: 1140 }}>
+            <div className='pt-3 text-lg-right text-center position-relative' style={{ maxWidth: 1140, zIndex: -1 }}>
               <small className='py-1 px-4' style={{ backgroundColor: '#26282d', color: '#Ccc', borderRadius: 4 }}>
             Need a wallet? <a href='https://dl.edge.app/faast' target='_blank noreferrer'>Try <EdgeIcon style={{ width: 46, filter: 'brightness(1.3)'  }} src={EdgeIcon} />.</a>
               </small>
