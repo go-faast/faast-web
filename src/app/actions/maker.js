@@ -32,18 +32,15 @@ const getMakerAccessToken = () => () => {
 
 export const getStats = () => (dispatch) => {
   const accessToken = dispatch(getMakerAccessToken())
-  if (accessToken) {
-    return Faast.getMakerStatistics(accessToken)
-      .then((stats) => {
-        sessionStorageSetJson('state:maker_stats', stats)
-        dispatch(statsRetrieved(stats))
-      })
-      .catch((e) => { 
-        dispatch(statsError(e))
-        throw new Error(e)
-      })
-  }
-  return
+  return Faast.getMakerStatistics(accessToken)
+    .then((stats) => {
+      sessionStorageSetJson('state:maker_stats', stats)
+      dispatch(statsRetrieved(stats))
+    })
+    .catch((e) => { 
+      dispatch(statsError(e))
+      throw new Error(e)
+    })
 }
 
 export const getAllMakerData = () => (dispatch) => {
@@ -104,9 +101,9 @@ export const registerMaker = (profile) => async (dispatch) => {
 export const updateMaker = (data) => async (dispatch) => {
   try {
     const accessToken = dispatch(getMakerAccessToken())
-    const maker = await Faast.updateMaker(accessToken, data)
-    dispatch(updateProfile(maker))
-    return maker
+    await Faast.updateMaker(accessToken, data)
+    await dispatch(getMakerProfile())
+    return
   } catch (err) {
     Toastr.error('Unable to update your maker. Please try again later.')
   }
@@ -115,31 +112,26 @@ export const updateMaker = (data) => async (dispatch) => {
 
 export const getMakerProfile = () => (dispatch) => {
   const accessToken = dispatch(getMakerAccessToken())
-  if (accessToken) {
-    return Faast.getMakerProfile(accessToken)
-      .then((profile) => {
-        if (profile) {
-          dispatch(updateBalances(profile.balances))
-          sessionStorageSetJson('state:maker_balances', profile.balances)
-          sessionStorageSetJson('state:maker_profile', profile)
-          return dispatch(updateProfile(profile))
-        }
-      })
-  }
-  return
+  return Faast.getMakerProfile(accessToken)
+    .then((profile) => {
+      if (profile) {
+        dispatch(updateBalances(profile.balances))
+        sessionStorageSetJson('state:maker_balances', profile.balances)
+        sessionStorageSetJson('state:maker_profile', profile)
+        return dispatch(updateProfile(profile))
+      }
+    })
 }
 
 export const disableMaker = () => (dispatch) => {
   const accessToken = dispatch(getMakerAccessToken())
-  if (accessToken) {
-    return Faast.disableMaker(accessToken)
-      .then((profile) => {
-        Toastr.success('Your maker has been disabled.')
-        return dispatch(updateProfile(profile))
-      }).catch(() => {
-        Toastr.error('Unable to disable maker. Please try again.')
-      })
-  }
+  return Faast.disableMaker(accessToken)
+    .then((profile) => {
+      Toastr.success('Your maker has been disabled.')
+      return dispatch(updateProfile(profile))
+    }).catch(() => {
+      Toastr.error('Unable to disable maker. Please try again.')
+    })
 }
 
 export const enableMaker = () => (dispatch) => {
@@ -181,22 +173,19 @@ export const getBalanceTargets = () => (dispatch, getState) => {
 
 export const getMakerSwaps = (page, limit = 20) => (dispatch) => {
   const accessToken = dispatch(getMakerAccessToken())
-  if (accessToken) {
-    dispatch(swapsLoading())
-    return Faast.getMakerSwaps(accessToken, page, limit)
-      .then((swaps) => {
-        dispatch(swapHistoryTotalUpdated(swaps.total))
-        sessionStorageSetJson('state:maker_swap_history_total', swaps.total)
-        swaps = swaps && swaps.orders && swaps.orders.map(Faast.formatOrderResult)
-        sessionStorageSetJson('state:maker_swaps', swaps)
-        return dispatch(swapsRetrieved(swaps))
-      })
-      .catch((e) => {
-        dispatch(swapsError(e))
-        throw new Error(e)
-      })
-  }
-  return
+  dispatch(swapsLoading())
+  return Faast.getMakerSwaps(accessToken, page, limit)
+    .then((swaps) => {
+      dispatch(swapHistoryTotalUpdated(swaps.total))
+      sessionStorageSetJson('state:maker_swap_history_total', swaps.total)
+      swaps = swaps && swaps.orders && swaps.orders.map(Faast.formatOrderResult)
+      sessionStorageSetJson('state:maker_swaps', swaps)
+      return dispatch(swapsRetrieved(swaps))
+    })
+    .catch((e) => {
+      dispatch(swapsError(e))
+      throw new Error(e)
+    })
 }
 
 export const restoreCachedMakerInfo = () => (dispatch, getState) => {

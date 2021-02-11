@@ -168,7 +168,7 @@ export default compose(
     assetList: assets ? assets.filter(({ deposit, receive }) => deposit && receive)
       .map((asset) => pick(asset, 'symbol', 'name', 'iconUrl', 'marketCap', 'ERC20')) : []
   })),
-  withState('selectedAssets', 'updateSelectedAssets', ({ profile: { assetsEnabled } = [] }) => assetsEnabled),
+  withState('selectedAssets', 'updateSelectedAssets', ({ profile: { assetsEnabled } }) => assetsEnabled || []),
   withState('isAssetSelectorOpen', 'toggleAssetSelector', false),
   withState('isLoading', 'updateIsLoading', false),
   withHandlers({
@@ -207,7 +207,7 @@ export default compose(
       updateSelectedAssets(arr)
     },
     selectedAssetsDoesHaveERC20: ({ assetList, selectedAssets }) => () => {
-      const hasERC20 = assetList.filter(a => selectedAssets.indexOf(a.symbol) >= 0).some(a => a.ERC20)
+      const hasERC20 = assetList.filter(a => selectedAssets && selectedAssets.indexOf(a.symbol) >= 0).some(a => a.ERC20)
       return hasERC20
     },
     removeAsset: ({ selectedAssets, updateSelectedAssets }) => (sym) => {
@@ -230,7 +230,7 @@ export default compose(
       if (assetCheckbox && !prevProps.assetCheckbox) {
         updateSelectedAssets([])
       } else if (!assetCheckbox && prevProps.assetCheckbox) {
-        updateSelectedAssets(profile.assetsEnabled)
+        updateSelectedAssets(profile.assetsEnabled || [])
       }
     }
   })

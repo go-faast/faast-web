@@ -35,10 +35,10 @@ export type FetchParams = { [k: string]: any } | null
 export type FetchHeaders = { [k: string]: string }
 
 export interface FetchOptions {
-  retries?: number
-  retryDelay?: number
-  retryMultiplier?: number
-  allowConcurrent?: boolean
+  retries?: number,
+  retryDelay?: number,
+  retryMultiplier?: number,
+  allowConcurrent?: boolean,
   headers?: FetchHeaders,
   json?: string
 }
