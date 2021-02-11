@@ -140,7 +140,7 @@ export const fetchPriceChart = (cmcIDno: number) => {
 }
 
 export const fetchCoinNews = (symbols: string) => {
-  return fetchGet('https://cryptopanic.com/api/v1/posts',
+  return fetchGet('https://faast-cors-anywhere.herokuapp.com/https://cryptopanic.com/api/v1/posts/',
     {
       auth_token: 'd0aea93a6e4c23f3ecac3246e99e9be621b55a17',
       currencies: symbols,
