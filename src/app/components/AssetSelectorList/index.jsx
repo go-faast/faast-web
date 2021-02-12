@@ -188,13 +188,13 @@ export default compose(
     })
   }),
   withHandlers({
-    performSearch: ({ updateResults, fuse, applySortOrder, extendedAssets }) => (query) => {
+    performSearch: ({ updateResults, fuse, extendedAssets }) => (query) => {
       let results
       if (!query) {
         results = extendedAssets.filter(a => a.swapEnabled)
       } else {
         results = fuse.search(query)
-        results = applySortOrder(results)
+        results.sort((a, b) => a.disabled === b.disabled ? 0 : a.disabled ? 1 : -1)
         results = results.slice(0, MAX_RESULTS)
       }
       updateResults(results)

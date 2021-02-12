@@ -24,7 +24,7 @@ import { openViewOnlyWallet } from 'Actions/access'
 import { saveSwapWidgetInputs } from 'Actions/app'
 
 import { getRateMinimumDeposit, getRatePrice, isRateLoaded, getRateMaximumWithdrawal,
-  getRateMaximumDeposit, rateError, isRateStale, getRateMinimumWithdrawal } from 'Selectors/rate'
+  getRateMaximumDeposit, rateError, isRateStale, getRateMinimumWithdrawal, getRateWithdrawalFee } from 'Selectors/rate'
 import { getAllAssetSymbols, getAsset } from 'Selectors/asset'
 import { getWallet } from 'Selectors/wallet'
 import { areCurrentPortfolioBalancesLoaded } from 'Selectors/portfolio'
@@ -381,6 +381,7 @@ export default compose(
   connect(createStructuredSelector({
     rateLoaded: (state, { pair }) => isRateLoaded(state, pair),
     rateStale: (state, { pair }) => isRateStale(state, pair),
+    withdrawalFee: (state, { pair }) => getRateWithdrawalFee(state, pair),
     minimumSend: (state, { pair }) => getRateMinimumDeposit(state, pair),
     maximumSend: (state, { pair }) => getRateMaximumDeposit(state, pair),
     minimumReceive: (state, { pair }) => getRateMinimumWithdrawal(state, pair),
@@ -519,11 +520,16 @@ export default compose(
     }
     return {
       calculateReceiveEstimate: ({
-        receiveAsset, estimatedRate, setEstimatedField, updateURLParams, sendAsset
+        receiveAsset, estimatedRate, setEstimatedField, updateURLParams, sendAsset,
+        withdrawalFee
       }) => (sendAmount) => {
         if (estimatedRate && sendAmount) {
           sendAmount = toBigNumber(sendAmount).round(sendAsset.decimals)
-          const estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals)
+          let estimatedReceiveAmount = sendAmount.div(estimatedRate).round(receiveAsset.decimals).minus(withdrawalFee)
+          if (estimatedReceiveAmount.lt(0)) {
+            setEstimatedReceiveAmount(null)
+            return
+          }
           updateURLParams({ 
             toAmount: estimatedReceiveAmount ? parseFloat(estimatedReceiveAmount) : undefined,
             fromAmount: sendAmount ? parseFloat(sendAmount) : undefined
