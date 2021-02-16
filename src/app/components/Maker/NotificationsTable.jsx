@@ -18,7 +18,7 @@ const WarningRow = ({
 }) => {
   return (
     <Col xs='12' {...props}>
-      <p className={classNames(text, 'pl-4')}><i className='fa fa-exclamation-circle text-warning mr-3' />{warning}</p>
+      <p className={classNames(text, 'pl-4')}><i className='fa fa-exclamation-circle text-danger mr-3' />{warning}</p>
       {hr && <hr className='w-100 border-light'/>}
     </Col>
   )
@@ -32,7 +32,7 @@ const BalanceAlertRow = ({
   return (
     <Fragment>
       <Col xs='10' {...props}>
-        <p className={classNames(text, 'pl-4 mb-0 pb-0')}><i className='fa fa-exclamation-circle text-danger mr-3' />{alert}</p>
+        <p className={classNames(text, 'pl-4 mb-0 pb-0')}><i className='fa fa-exclamation-circle text-warning mr-3' />{alert}</p>
       </Col>
       <Col xs='2'>
         <Button tag={Link} color='primary' size='sm' className='flat' to={`/makers/alerts/deposit/${symbol}/${address}`}>Deposit {symbol}</Button>
@@ -46,24 +46,6 @@ const NotificationsTable = ({ warnings, balanceAlerts }) => {
   return (
     <Fragment>
       <Card className={classNames(card, 'mx-auto mb-4')}>
-        <CardHeader className={cardHeader}>Balance Alerts</CardHeader>
-        <CardBody className={classNames(balanceAlerts.length > 0 ? 'p-0' : 'text-center')}>
-          {balanceAlerts.length > 0 ? (
-            <Row className='py-3 align-items-center'>
-              {balanceAlerts.map((warning, i) => {
-                return (
-                  <BalanceAlertRow key={i} warning={warning} hr={i !== balanceAlerts.length - 1}/>
-                )
-              })}
-            </Row>
-          ) :
-            <div className='d-flex align-items-center justify-content-center'>
-              <p className={classNames('mb-0', text)}>You have the minimum required balances for all supported assets.</p>
-            </div>
-          }
-        </CardBody>
-      </Card>
-      <Card className={classNames(card, 'mx-auto')}>
         <CardHeader className={cardHeader}>General Alerts</CardHeader>
         <CardBody className={classNames(warnings.length > 0 ? 'p-0' : 'text-center')}>
           {warnings.length > 0 ? (
@@ -77,6 +59,24 @@ const NotificationsTable = ({ warnings, balanceAlerts }) => {
           ) :
             <div className='d-flex align-items-center justify-content-center'>
               <p className={classNames('mb-0', text)}>No alerts right now.</p>
+            </div>
+          }
+        </CardBody>
+      </Card>
+      <Card className={classNames(card, 'mx-auto')}>
+        <CardHeader className={cardHeader}>Balance Alerts</CardHeader>
+        <CardBody className={classNames(balanceAlerts.length > 0 ? 'p-0' : 'text-center')}>
+          {balanceAlerts.length > 0 ? (
+            <Row className='py-3 align-items-center'>
+              {balanceAlerts.map((warning, i) => {
+                return (
+                  <BalanceAlertRow key={i} warning={warning} hr={i !== balanceAlerts.length - 1}/>
+                )
+              })}
+            </Row>
+          ) :
+            <div className='d-flex align-items-center justify-content-center'>
+              <p className={classNames('mb-0', text)}>You have the minimum required balances for all supported assets.</p>
             </div>
           }
         </CardBody>

@@ -55,9 +55,6 @@ export default compose(
   withState('isLoading', 'updateLoading', false),
   withState('previousSearch', 'updatePreviousSearch', undefined),
   withHandlers({
-    updateURLParams: ({ updateQueryString }) => (params) => {
-      updateQueryString(params)
-    },
     checkQueryParams: () => () => {
       const urlParams = qs.parse(location.search)
       return urlParams
@@ -65,11 +62,10 @@ export default compose(
   }),
   withHandlers({
     handleRetrieveData: ({ searchType, updateLoading, updateJSON, getSwapsByAddress, 
-      getSwapByOrderId, query, updatePreviousSearch, handleShareableURL, updateURLParams }) => async () => {
+      getSwapByOrderId, query, updatePreviousSearch, handleShareableURL }) => async () => {
       let json
       updateLoading(true)
       updateJSON(undefined)
-      updateURLParams({ q: query, type: searchType })
       if (searchType === 'address') {
         json = await getSwapsByAddress(query)
         handleShareableURL()

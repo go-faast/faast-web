@@ -81,6 +81,7 @@ export const makerBalanceDepositModal = createPath('/makers/balances/:symbol/:ty
 export const makerBalances = createPath('/makers/balances')
 export const makerSettings = createPath('/makers/settings')
 export const makerNotifcationsDepositModal = createPath('/makers/alerts/deposit/:symbol/:address')
+export const makerMinimumBalancesModal = createPath('/makers/settings/minimums')
 export const makerNotifications = createPath('/makers/alerts')
 export const makerRetractCapacityModal = createPath('/makers/settings/retract')
 

@@ -55,28 +55,52 @@ export const getCapacityBalance = createSelector(getMakerProfile, ({ capacityMax
 export const isMakerDisabled = createSelector(getMakerProfile, ({ isDisabled }) => isDisabled)
 export const makerLastDisabledAt = createSelector(getMakerProfile, ({ lastDisabledAt }) => lastDisabledAt)
 export const makerBalanceTargets = createSelector(getMakerProfile, ({ balanceTargets }) => balanceTargets)
+export const makerBalanceTargetsArray = createSelector(makerBalanceTargets, (balanceTargets) => {
+  const keys = Object.keys(balanceTargets)
+  const minimums = keys.map(key => {
+    const min = balanceTargets[key].totalBalanceMinimum
+    return ({
+      symbol: key,
+      minimum: min
+    })
+  })
+  return minimums
+})
 export const getMakerWarnings = createSelector(getMakerProfile, ({ warnings }) => warnings)
 export const getMakerEnabledAssets = createSelector(getMakerProfile, ({ assetsEnabled }) => assetsEnabled)
 export const getMakerWarningsCount = createSelector(getMakerWarnings, (warnings) => warnings && warnings.length)
-export const getBalanceAlerts = createSelector(getMakerProfile, getMakerBalances, ({ balanceTargets, detailedStatus, assetsEnabled }, balances) => {
-  if (!balanceTargets) return []
-  const wallets = detailedStatus && detailedStatus.balances && detailedStatus.balances.wallet
-  if (!wallets) return []
-  const alerts = balances ? balances.map(({ asset, exchange, wallet }) => {
-    const totalBalance = toBigNumber(exchange).plus(toBigNumber(wallet))
-    const minBalance = balanceTargets[asset] ? balanceTargets[asset].totalBalanceMinimum : 0
-    const balanceTarget = toBigNumber(minBalance)
-    if (totalBalance.lt(balanceTarget)) {
-      return ({
-        symbol: asset,
-        alert: `Minimum ${asset} balance must be at least ${minBalance} ${asset}`,
-        target: balanceTarget,
-        address: wallets[asset] ? wallets[asset].address : ''
+export const getBalanceAlerts = createSelector(getMakerProfile, getMakerBalances, getCapacityBalance, 
+  ({ balanceTargets, detailedStatus, assetsEnabled }, balances, capacityBalance) => {
+    if (!balanceTargets) return []
+    const wallets = detailedStatus && detailedStatus.balances && detailedStatus.balances.wallet
+    if (!wallets) return []
+    let alerts = balances ? balances.map(({ asset, exchange, wallet }) => {
+      const totalBalance = toBigNumber(exchange).plus(toBigNumber(wallet))
+      const minBalance = balanceTargets[asset] ? balanceTargets[asset].totalBalanceMinimum : 0
+      const balanceTarget = toBigNumber(minBalance)
+      if (totalBalance.lt(balanceTarget)) {
+        return ({
+          symbol: asset,
+          alert: `Suggested minimum ${asset} balance is at least ${minBalance} ${asset}`,
+          target: balanceTarget,
+          address: wallets[asset] ? wallets[asset].address : ''
+        })
+      }
+    }) : []
+    if (assetsEnabled === null) assetsEnabled = Object.keys(balanceTargets)
+    alerts = alerts.filter(x => x && assetsEnabled && assetsEnabled.indexOf(x.symbol) >= 0)
+    const btcBalance = balances.find(balance => balance.asset == 'BTC')
+    if (btcBalance && toBigNumber(capacityBalance).gt(toBigNumber(btcBalance.exchange))) {
+      alerts.push({
+        symbol: 'BTC',
+        alert: `Your capacity address has ${capacityBalance} BTC and your
+        your exchange balance is ${btcBalance.exchange} BTC. It is recommended to hold an amount of BTC on the exchange that is at least as much as is locked in capacity in order to quickly fulfill orders and minimize volatility risk. `,
+        target: capacityBalance,
+        address: btcBalance.exchangeAddress
       })
     }
-  }) : []
-  return alerts.filter(x => x && assetsEnabled && assetsEnabled.indexOf(x.symbol) >= 0)
-})
+    return alerts
+  })
 export const getBalanceAlertBySymbol = createItemSelector(getBalanceAlerts, selectItemId, (alerts, symbol) => {
   const alert = alerts.find(alert => alert.symbol == symbol)
   return alert

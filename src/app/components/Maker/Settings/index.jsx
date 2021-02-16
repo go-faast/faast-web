@@ -17,6 +17,7 @@ import Toastr from 'Utilities/toastrWrapper'
 
 import MakerLayout from 'Components/Maker/Layout'
 import CoinIcon from 'Components/CoinIcon'
+import Link from 'Components/Link'
 import { card, cardHeader, input, text, smallCard } from '../style'
 import style from './style.scss'
 
@@ -42,6 +43,7 @@ const MakerSettings = ({ makerId, isMakerDisabled, handleSwitch, isAbleToRetract
                 <Col sm='12'>
                   <small><p className={classNames('mt-1 mb-1 font-weight-bold', text)}>Supported Assets</p></small>
                   <small className={classNames(text, 'd-block')}>Please remember you will be exposed to the price changes of assets you support.</small>
+                  <Link to='/makers/settings/minimums' className={'small font-weight-bold d-block'}>View suggested minimum balances for all assets</Link>
                   {selectedAssetsDoesHaveERC20(selectedAssets) && <small className={classNames(text, 'd-block')}>(ETH is required as it used to pay fees)</small>}
                   {selectedAssets && selectedAssets.length > 0 && (
                     <Fragment>

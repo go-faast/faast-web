@@ -44,7 +44,7 @@ export default compose(
       size='md' toggle={toggle} className={'border-0 mt-6 mx-md-auto'} contentClassName={classNames(cardHeader, modalShadow, 'p-0 border-0 flat')}
       {...pick(props, Object.keys(Modal.propTypes))}>
       <ModalHeader close={<span className='cursor-pointer' onClick={toggle}>close</span>} tag='h4' toggle={toggle} className={cardHeader}>
-        Deposit {symbol} to your Maker Address
+        Deposit {symbol}
       </ModalHeader>
       <ModalBody className={classNames(cardHeader, 'p-0 p-sm-3')}>
         <Row>
