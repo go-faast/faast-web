@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet'
 import { createStructuredSelector } from 'reselect'
 import { isDefaultPortfolioEmpty } from 'Selectors/portfolio'
 import { compose, setDisplayName, withPropsOnChange } from 'recompose'
+import { Row, Col } from 'reactstrap'
 import Layout from 'Components/Layout'
 import * as qs from 'query-string'
 import { withRouter } from 'react-router'
@@ -24,6 +25,16 @@ const SwapWidget = ({ orderId, blocked, stepOne, isDefaultPortfolioEmpty }) => (
       <Blocked/>
     ) : null}
     <Layout className='pt-3 p-0 p-sm-3'>
+      <Row 
+        tag={'a'}
+        href='https://academy.binance.com/en/glossary/bep-20'
+        target='_blank noreferrer'
+        className='px-3 py-2 mb-3 mx-0 custom-hover cursor-default' 
+        style={{ background: 'linear-gradient(45deg, #e0b01f 0%, #b88e11 100%)', borderRadius: 2, }}>
+        <Col>
+          <span className='text-white'>IMPORTANT: Faa.st does not support binance smart chain tokens. Any BEP-20 tokens sent to a Faa.st address will be lost forever.</span>
+        </Col>
+      </Row>
       {!orderId
         ? (<StepOne {...stepOne}/>) 
         : (<StepTwo orderId={orderId} />)}

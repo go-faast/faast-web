@@ -12,6 +12,7 @@ import { toBigNumber } from 'Utilities/numbers'
 import { createStatusLabel, CoinSymbol } from 'Components/TradeTable'
 import Loading from 'Components/Loading'
 import Units from 'Components/Units'
+import Expandable from 'Components/Expandable'
 
 import { getMakerSwaps } from 'Actions/maker'
 import { makerSwapsArray, areSwapsLoading } from 'Selectors/maker'
@@ -37,9 +38,9 @@ const TableRow = ({
       <td><span className='position-relative' style={{ left: 8 }}>{createStatusLabel(swap)}</span></td>
       {size === 'large' && (<td className='d-none d-sm-table-cell'>{createdAtFormatted}</td>)}
       <td className='d-none d-sm-table-cell'>
-        <CoinSymbol symbol={sendSymbol}/>
+        <Expandable shrunk={<CoinSymbol symbol={sendSymbol}/>} expanded={sendSymbol} />
         <i className='fa fa-long-arrow-right text-grey mx-2'/> 
-        <CoinSymbol symbol={receiveSymbol}/>
+        <Expandable shrunk={<CoinSymbol symbol={receiveSymbol}/>} expanded={receiveSymbol} />
       </td>
       {size === 'large' && (
         <td>{valueUsd && !toBigNumber(valueUsd).isNaN() && (toBigNumber(valueUsd).gt(0) || isComplete)
