@@ -33,7 +33,7 @@ export default compose(
     <Modal
       size='md' toggle={toggle} className={'border-0 mt-6 mx-md-auto'} contentClassName={classNames(modalShadow, cardHeader, 'p-0 border-0 flat')}
       {...pick(props, Object.keys(Modal.propTypes))}>
-      <ModalHeader close={undefined} tag='h4' toggle={toggle} className={cardHeader}>
+      <ModalHeader close={<span></span>} tag='h4' toggle={toggle} className={cardHeader}>
         Your Maker Secret Key
       </ModalHeader>
       <ModalBody className={classNames(cardHeader, 'p-0 p-sm-3')}>

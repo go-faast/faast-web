@@ -41,8 +41,9 @@ import MakerRegister from 'Components/Maker/Signup'
 import MakerRegisterProfile from 'Components/Maker/SignupProfile'
 import LlamaSecretModal from 'Components/Maker/LlamaSecretModal'
 import CapacityDepositModal from 'Components/Maker/CapacityDepositModal'
-import NotificationDepositModal from 'Src/app/components/Maker/NotificationDepositModal'
-import BalanceDepositModal from 'Src/app/components/Maker/BalanceDepositModal'
+import NotificationDepositModal from 'Components/Maker/NotificationDepositModal'
+import DeployModal from 'Components/Maker/DeployModal'
+import BalanceDepositModal from 'Components/Maker/BalanceDepositModal'
 import MinimumBalancesModal from 'Components/Maker/MinimumBalancesModal'
 import RetractCapacityModal from 'Components/Maker/RetractCapacityModal'
 import MakerSetup from 'Components/Maker/MakerSetup'
@@ -61,7 +62,8 @@ import {
   walletWithdrawalModal, assetNews, makerLogin, makerDashboard, makerSwaps, makerSettings,
   makerLoading, makerBalances, makerRegister, makerRegisterProfile, makerAccountModal,
   makerSetup, makerExchangeSetup, makerBalanceSetup, capacityDepositModal, makerRetractCapacityModal, 
-  makerNotifications, makerNotifcationsDepositModal, makerBalanceDepositModal, makerMinimumBalancesModal
+  makerNotifications, makerNotifcationsDepositModal, makerBalanceDepositModal, makerMinimumBalancesModal,
+  makerDeployContractModal
 } from 'Routes'
 
 const AppView = ({ hasNoWallets }) => {
@@ -150,6 +152,9 @@ const AppView = ({ hasNoWallets }) => {
       )}/>
       <ModalRoute closePath={makerNotifications.path} path={makerNotifcationsDepositModal.path} render={(props) => (
         <NotificationDepositModal {...props}/>
+      )}/>
+      <ModalRoute closePath={makerNotifications.path} path={makerDeployContractModal.path} render={(props) => (
+        <DeployModal {...props}/>
       )}/>
       <ModalRoute closePath={makerBalances.path} path={makerBalanceDepositModal.path} render={(props) => (
         <BalanceDepositModal {...props}/>

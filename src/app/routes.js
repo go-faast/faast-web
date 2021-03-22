@@ -80,6 +80,7 @@ export const makerSwaps = createPath('/makers/swaps')
 export const makerBalanceDepositModal = createPath('/makers/balances/:symbol/:type/:address')
 export const makerBalances = createPath('/makers/balances')
 export const makerSettings = createPath('/makers/settings')
+export const makerDeployContractModal = createPath('/makers/alerts/deploy/:symbol')
 export const makerNotifcationsDepositModal = createPath('/makers/alerts/deposit/:symbol/:address')
 export const makerMinimumBalancesModal = createPath('/makers/settings/minimums')
 export const makerNotifications = createPath('/makers/alerts')
@@ -140,5 +141,6 @@ export default {
   makerRetractCapacityModal,
   makerNotifications,
   makerNotifcationsDepositModal,
-  makerBalanceDepositModal
+  makerBalanceDepositModal,
+  makerDeployContractModal
 }

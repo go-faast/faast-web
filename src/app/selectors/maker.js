@@ -44,6 +44,7 @@ export const getTotalBalanceBySymbol = createItemSelector(getMakerBalances, sele
   return balance
 })
 export const getMakerProfile = createSelector(getMakerState, ({ profile }) => profile || {})
+export const hasMakerPassedScreening = createSelector(getMakerProfile, ({ hasPassedScreening, passedScreeningAt }) => hasPassedScreening && passedScreeningAt)
 export const getTotalBalanceBTC = createSelector(getMakerProfile, (profile) => { 
   const approxBTC = profile.approxTotalBalances && profile.approxTotalBalances.total.BTC || 0
   const feesOwed = profile.feesOwed || 0
@@ -67,6 +68,8 @@ export const makerBalanceTargetsArray = createSelector(makerBalanceTargets, (bal
   return minimums
 })
 export const getMakerWarnings = createSelector(getMakerProfile, ({ warnings }) => warnings)
+export const getNeedsMasterContractDeployment = createSelector(getMakerProfile, ({ needsMasterDepositDeployment }) => needsMasterDepositDeployment)
+export const needsMasterContractDeploymentCount = createSelector(getNeedsMasterContractDeployment, (symbols) => symbols.length)
 export const getMakerEnabledAssets = createSelector(getMakerProfile, ({ assetsEnabled }) => assetsEnabled)
 export const getMakerWarningsCount = createSelector(getMakerWarnings, (warnings) => warnings && warnings.length)
 export const getBalanceAlerts = createSelector(getMakerProfile, getMakerBalances, getCapacityBalance, 
@@ -105,8 +108,13 @@ export const getBalanceAlertBySymbol = createItemSelector(getBalanceAlerts, sele
   const alert = alerts.find(alert => alert.symbol == symbol)
   return alert
 })
+export const getMakerWalletBySymbol = createItemSelector(getMakerProfile, selectItemId, ({ detailedStatus }, symbol) => {
+  const wallets = detailedStatus && detailedStatus.balances && detailedStatus.balances.wallet
+  if (!wallets) return
+  return wallets[symbol] ? wallets[symbol].address : ''
+})
 export const getMakerBalanceAlertsCount = createSelector(getBalanceAlerts, (alerts) => alerts && alerts.length)
-export const getNotificationCount = createSelector(getMakerWarningsCount, getMakerBalanceAlertsCount, (warnings = 0, alerts = 0) => warnings + alerts)
+export const getNotificationCount = createSelector(getMakerWarningsCount, getMakerBalanceAlertsCount, needsMasterContractDeploymentCount, (warnings = 0, alerts = 0, deployments = 0) => warnings + alerts + deployments)
 export const isAbleToRetractCapacity = createSelector(getCapacityBalance, isMakerDisabled, makerLastDisabledAt, (capacityBalance, isDisabled, lastDisabledAt) => {
   return capacityBalance && parseFloat(capacityBalance) > 0 && isDisabled && (Date.now() - lastDisabledAt.getTime()) > 259200000
 })

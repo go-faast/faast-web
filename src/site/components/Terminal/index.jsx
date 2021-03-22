@@ -43,7 +43,7 @@ const Terminal = ({ response, theme, includeCopy, includeBg, translations: { sta
         <Fragment>
           <h1 className={classNames(homeStyle.heading, 'mb-4')}>{t.becomeAffiliate}</h1>
           <h3 className={classNames(homeStyle.description, 'pb-4 px-md-0 px-3')}>
-            {t.readyToMonetize} <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://faa.st/partners'>{t.affiliateProgram}</a>. {t.features}
+            {t.readyToMonetize} <a className={classNames(homeStyle.link, 'd-inline-block')} style={{ fontSize: 19 }} href='https://faa.st/partners'>{t.affiliateProgram}.</a> {t.features}
           </h3>
         </Fragment>
       )}

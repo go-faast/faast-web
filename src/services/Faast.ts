@@ -140,11 +140,9 @@ export const fetchPriceChart = (cmcIDno: number) => {
 }
 
 export const fetchCoinNews = (symbols: string) => {
-  return fetchGet('https://faast-cors-anywhere.herokuapp.com/https://cryptopanic.com/api/v1/posts/',
+  return fetchGet(`${apiUrl}/api/v2/public/news`,
     {
-      auth_token: 'd0aea93a6e4c23f3ecac3246e99e9be621b55a17',
-      currencies: symbols,
-      kind: 'news',
+      symbols,
     })
 }
 
@@ -558,6 +556,43 @@ export const getMakerBalanceTargets = (
     })
 }
 
+export const getMakerDepositContractEstimateCost = (
+  accessToken: string,
+  symbol: string,
+): Promise<void> => {
+  return fetchGet(`${apiUrl}/api/v2/public/maker/estimateDepositContractCost`,
+    { symbol },
+    {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((estimatedCost) => estimatedCost)
+    .catch((e: any) => {
+      log.error(e)
+      throw new Error(e)
+    })
+}
+
+export const deployMakerMasterContract = (
+  accessToken: string,
+  symbol: string,
+): Promise<void> => {
+  return fetchPost(`${apiUrl}/api/v2/public/maker/deployMasterDeposit`,
+   { symbol },
+   {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((tx) => tx)
+    .catch((e: any) => {
+      log.error(e)
+      throw new Error(e)
+    })
+}
+
+
 export const createMaker = (
   accessToken: string,
   maker: object,
@@ -705,4 +740,6 @@ export default {
   disableMaker,
   retractCapacity,
   getMakerBalanceTargets,
+  getMakerDepositContractEstimateCost,
+  deployMakerMasterContract,
 }

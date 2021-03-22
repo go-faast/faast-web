@@ -27,12 +27,13 @@ import { retrieveAssets } from 'Common/actions/asset'
 import classNames from 'class-names'
 
 import { blobs, blob, faq, numbers, subtitle, why, textContainer, sectionContainer, shadowLight,
-  sectionIntro, sectionTitle, sectionDescription, sectionLink, shadow, stackGradient, link } from './style.scss'
+  sectionIntro, sectionTitle, sectionDescription, sectionLink, shadow, stackGradient, link, heroTitle } from './style.scss'
 import homeStyle from '../Home1/style.scss'
+import { className } from 'Src/utilities/reflect'
 
 const blueColor = '#323540'
 
-const popularCoins = ['BTC', 'ETH', 'LTC', 'USDC', 'YFI', 'UNI']
+export const popularCoins = ['BTC', 'ETH', 'LTC', 'USDC', 'YFI', 'UNI']
 
 export default compose(
   setDisplayName('MarketMaker'),
@@ -151,7 +152,7 @@ export default compose(
         <Container>
         <Row>
           <Col sm='12' lg='6' className={classNames('text-left pl-md-5 pl-0 ml-4', 'mt-xs-5 mt-lg-5 pt-5')}>
-            <h1 className='hero-title mb-4' style={{ fontWeight: 'normal', fontSize: 48, fontWeight: 600 }}>
+            <h1 className={classNames('hero-title mb-4', heroTitle)} style={{ fontWeight: 'normal', fontSize: 48, fontWeight: 600 }}>
               Liquidity mining now available on Faa.st
             </h1>
             <p className='hero-subtitle mb-4' style={{ fontWeight: 'normal', color: '#B3BCD8' }}>

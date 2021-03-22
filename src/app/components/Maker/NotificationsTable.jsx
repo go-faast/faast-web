@@ -7,18 +7,18 @@ import { Row, Col, Card, CardHeader, CardBody, Button } from 'reactstrap'
 import classNames from 'class-names'
 import Link from 'Components/Link'
 
-import { getMakerWarnings, getBalanceAlerts } from 'Selectors/maker'
+import { getMakerWarnings, getBalanceAlerts, getNeedsMasterContractDeployment } from 'Selectors/maker'
 
 import { text, card, cardHeader } from './style'
 
 const WarningRow = ({
-  warning,
+  warning: { warning: warningText },
   hr,
   ...props
 }) => {
   return (
     <Col xs='12' {...props}>
-      <p className={classNames(text, 'pl-4')}><i className='fa fa-exclamation-circle text-danger mr-3' />{warning}</p>
+      <p className={classNames(text, 'pl-4')}><i className='fa fa-exclamation-circle text-danger mr-3' />{warningText}</p>
       {hr && <hr className='w-100 border-light'/>}
     </Col>
   )
@@ -42,9 +42,46 @@ const BalanceAlertRow = ({
   )
 }
 
-const NotificationsTable = ({ warnings, balanceAlerts }) => {
+const DeploymentAlertRow = ({
+  symbol,
+  hr,
+  ...props
+}) => {
   return (
     <Fragment>
+      <Col xs='9' {...props}>
+        <p className={classNames(text, 'pl-4 mb-0 pb-0')}><i className='fa fa-exclamation-circle text-warning mr-3' />
+          {symbol == 'ETH' ? 
+            `An ${symbol} deposit contract must be deployed in order to start fulfilling ERC20 swaps` : 
+            `A ${symbol} deposit contract must be deployed in order to start fulfilling ${symbol} swaps`
+          }
+        </p>
+      </Col>
+      <Col className='justify-content-end d-flex' xs='3'>
+        <Button tag={Link} color='primary' size='sm' className='flat' to={`/makers/alerts/deploy/${symbol}`}>Deploy {symbol} Contract</Button>
+      </Col>
+      {hr && <hr className='w-100 border-light'/>}
+    </Fragment>
+  )
+}
+
+const NotificationsTable = ({ warnings, balanceAlerts, masterDeploymentCoins }) => {
+  return (
+    <Fragment>
+      {masterDeploymentCoins && masterDeploymentCoins.length > 0 && (
+        <Card className={classNames(card, 'mx-auto mb-4')}>
+          <CardHeader className={cardHeader}>Deposit Contract Alerts</CardHeader>
+          <CardBody className={classNames('pt-0')}>
+            <Row className='pt-3'>
+              {masterDeploymentCoins.map((symbol, i) => {
+                return (
+                  <DeploymentAlertRow key={i}  symbol={symbol} hr={i !== masterDeploymentCoins.length - 1}/>
+                )
+              })}
+            </Row>
+          </CardBody>
+        </Card>
+      )}
       <Card className={classNames(card, 'mx-auto mb-4')}>
         <CardHeader className={cardHeader}>General Alerts</CardHeader>
         <CardBody className={classNames(warnings.length > 0 ? 'p-0' : 'text-center')}>
@@ -89,7 +126,8 @@ export default compose(
   setDisplayName('NotificationsTable'),
   connect(createStructuredSelector({
     warnings: getMakerWarnings,
-    balanceAlerts: getBalanceAlerts
+    balanceAlerts: getBalanceAlerts,
+    masterDeploymentCoins: getNeedsMasterContractDeployment
   }), {
   }),
   withRouter,

@@ -18,14 +18,16 @@ import Link from 'Components/Link'
 import classNames from 'class-names'
 
 import { makerId, getMakerProfile, getMakerProfitUSD, getMakerProfitBTC, getMakerSecret,
-  getTotalBalanceBTC, isMakerSuspended } from 'Selectors/maker'
+  getTotalBalanceBTC, isMakerSuspended, hasMakerPassedScreening } from 'Selectors/maker'
 
 import { statContainer, row, statCol, suspendedContainer } from './style'
 import { card, cardHeader, text, smallCard, input } from '../style'
+import Expandable from 'Components/Expandable'
 
 
-const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAddress, approxTotalBalances: { total: { USD: balanceUSD = '0', BTC: balanceBTC = '0' } = {} } = {}, 
-  swapsCompleted = '-', capacityMaximumBtc = '-', isRegistrationComplete }, makerProfitUSD, makerProfitBTC, isMakerSuspended }) => {
+const MakerDashboard = ({ totalBalanceBTC = '-', profile, makerHasPassedScreening, profile: { capacityAddress, feesOwedBtc, approxTotalBalances: { total: { USD: balanceUSD = '0', BTC: balanceBTC = '0' } = {} } = {}, 
+  swapsCompleted = '-', capacityMaximumBtc, isRegistrationComplete }, makerProfitUSD, makerProfitBTC, isMakerSuspended }) => {
+  const totalCapacityBalance = toBigNumber(capacityMaximumBtc).minus(toBigNumber(feesOwedBtc))
   const CapacityWalletRow = () => (
     <Card className={classNames(card, smallCard)}>
       <CardHeader className={cardHeader}>Capacity Wallet</CardHeader>
@@ -34,7 +36,18 @@ const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAdd
           <Fragment>
             <QRCode address={capacityAddress} size={150} />
             <p className={text}>
-              <span>[Current Balance: </span>{capacityMaximumBtc} BTC]
+              <span>[Current Balance: </span>
+              <Expandable 
+                expanded={(
+                  <div>
+                    <span>Total Capacity: {capacityMaximumBtc} BTC</span>
+                    <br/>
+                    <span>Fees Owed: {feesOwedBtc} BTC</span>
+                  </div>
+                )} 
+                shrunk={<Units value={totalCapacityBalance} 
+                  expand={false} />} 
+              /> BTC]
             </p>
             <p style={{ fontWeight: 600 }} className={classNames('text-left mb-0', text)}>Capacity Address:</p>
             <ClipboardCopyField className={classNames(input, 'flat')} value={capacityAddress} autoFocus={false} />
@@ -54,6 +67,19 @@ const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAdd
   return (
     <Fragment>
       <MakerLayout className='pt-3'>
+        {!makerHasPassedScreening && (
+          <Row 
+            tag={'span'}
+            className={classNames('px-3 py-2 mb-3 mx-0 custom-hover cursor-default text-center', statContainer)}
+            style={{ background: 'linear-gradient(45deg, #e0b01f 0%, #b88e11 100%)', borderRadius: 2, }}>
+            <Col>
+              <span className='text-white'>
+                <i className='fa fa-exclamation-circle mr-2' />
+                There was an issue setting up your maker account. Please contact support@faa.st for more information.
+              </span>
+            </Col>
+          </Row>
+        )}
         <Fragment>
           {profile && !isRegistrationComplete ? (
             <Fragment>
@@ -68,10 +94,10 @@ const MakerDashboard = ({ totalBalanceBTC = '-', profile, profile: { capacityAdd
                       <span className={classNames(text, 'font-weight-bold')}>Steps to setup maker:</span>
                       <ol className={classNames(text, 'pl-4 mt-2')}>
                         <li>
-                          <a href='https://app.gitbook.com/@faast/s/faast/market-maker-setup/how-to-setup-your-maker-server' target='_blank noreferrer'>Maker Bot Setup</a>
+                          <a href='https://app.gitbook.com/@faast/s/faast/market-maker-setup/how-to-setup-your-maker-server' target='_blank noreferrer'>Setup your maker bot server</a>
                         </li>
                         <li>
-                          <a href='https://app.gitbook.com/@faast/s/faast/market-maker-setup/how-to-setup-your-binance-account-to-work-with-your-maker' target='_blank no referrer'>Binance API Setup</a>
+                          <a href='https://app.gitbook.com/@faast/s/faast/market-maker-setup/how-to-setup-your-binance-account-to-work-with-your-maker' target='_blank no referrer'>Setup your Binance API settings</a>
                         </li>
                         <li>
                           <Link to={'/makers/dashboard/capacity'}>Send BTC to your capacity address</Link>
@@ -163,6 +189,7 @@ export default compose(
   setDisplayName('MakerDashboard'),
   connect(createStructuredSelector({
     profile: getMakerProfile,
+    makerHasPassedScreening: hasMakerPassedScreening,
     makerId,
     makerProfitUSD: getMakerProfitUSD,
     makerProfitBTC: getMakerProfitBTC,

@@ -16,11 +16,11 @@ const Hero = ({ supportedAssets, translations, translations: { static: { hero: {
     <Fragment>
       <Header theme='dark' headerColor='#191A1D' translations={translations} />
       <div style={{ backgroundColor: '#191A1D', minHeight: 700 }} className='jumbotron jumbotron-fluid hero-technology position-relative'>
-        <div className='px-md-0 px-2 pb-1 mt-lg-2 mt-0'>
+        <div className='px-md-0 px-2 pb-1 mt-lg-4 mt-0'>
           <h1 className={classNames('mt-0', style.header)} style={{ fontWeight: 600, color: '#EFEFEF' }}>{headline}</h1>
           <h5 className={style.subHeader}>{subtitle}</h5>
         </div>
-        <div className='position-relative' style={{ zIndex: 999 }}>
+        <div className='position-relative pt-1' style={{ zIndex: 999 }}>
           <Fade duration={1200} distance='80px' bottom>
             <SwapWidget translations={translations} assets={supportedAssets} />
             <div className='pt-3 text-lg-right text-center position-relative' style={{ maxWidth: 1140, zIndex: -1 }}>
@@ -31,7 +31,7 @@ const Hero = ({ supportedAssets, translations, translations: { static: { hero: {
           </Fade>
         </div>
         <div style={{ bottom: 0, zIndex: 1 }} className='position-absolute'>
-          <img style={{ width: '100vw', height: 260 }} src={HeroChart} />
+          <img style={{ width: '100vw', height: 130 }} src={HeroChart} />
         </div>
       </div>
     </Fragment>

@@ -9,6 +9,7 @@ import withTracker from 'Site/components/withTracker'
 
 import Features from 'Site/components/Features1'
 import DashboardSection from 'Site/components/DashboardSection'
+import MakerSection from 'Site/components/MakerSection'
 import Footer from 'Site/components/Footer1'
 import Hero from 'Site/components/Hero1'
 import Wallets from 'Site/components/Wallets'
@@ -47,6 +48,7 @@ export default compose(
     <div style={{ backgroundColor: '#26282D', overflowX: 'hidden' }}>
       <Hero supportedAssets={supportedAssets} translations={translations} className='mb-md-5 mb-0'/>
       <DashboardSection translations={translations} />
+      <MakerSection translations={translations} />
       <Wallets translations={translations} /> 
       <Features translations={translations} supportedAssets={supportedAssets} />
       <Reviews translations={translations} />

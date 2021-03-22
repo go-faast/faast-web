@@ -21,7 +21,7 @@ const DashboardSection = ({ translations: { static: { dashboard: t } } }) => {
       <Col 
         xs={{ order: 0, size: 12 }} 
         lg={{ order: 1, size: 6 }} 
-        className={classNames(style.textContainer, 'p-0 pr-5 pl-5 mb-lg-0 mb-3 align-self-center')}
+        className={classNames(style.textContainer, 'p-0 px-xs-5 px-3 mb-lg-0 mb-3 align-self-center')}
       >
         <Fade duration={1200} distance='80px' right>
           <h2 className={classNames(homeStyle.heading, 'mb-3')}>

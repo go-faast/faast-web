@@ -170,6 +170,26 @@ export const getBalanceTargets = () => (dispatch, getState) => {
     })
 }
 
+export const getMakerDepositContractEstimateCost = (symbol) => async (dispatch) => {
+  try {
+    const accessToken = dispatch(getMakerAccessToken())
+    const { costEstimate } = await Faast.getMakerDepositContractEstimateCost(accessToken, symbol)
+    return costEstimate
+  } catch (err) {
+    Toastr.error('Error estimating cost of deploying contract. Please try again.')
+  }
+}
+
+export const deployMasterContract = (symbol) => async (dispatch) => {
+  try {
+    const accessToken = dispatch(getMakerAccessToken())
+    const tx = await Faast.deployMakerMasterContract(accessToken, symbol)
+    return tx
+  } catch (err) {
+    Toastr.error('Error deploying the deposit contract. Please try again.')
+  }
+}
+
 
 export const getMakerSwaps = (page, limit = 20) => (dispatch) => {
   const accessToken = dispatch(getMakerAccessToken())

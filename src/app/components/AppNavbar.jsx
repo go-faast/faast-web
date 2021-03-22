@@ -87,7 +87,14 @@ const AppNavbar = ({ disablePortfolioLinks, children, isExpanded,
             </NavItem>
           ])}
           <NavItem key='swap'>
-            <NavLink className='px-1 px-lg-2' tag={RouterNavLink} to={queryString ? queryString : '/swap'}>
+            <NavLink 
+              className='px-1 px-lg-2' 
+              tag={RouterNavLink} 
+              to={queryString ? queryString : '/swap'}
+              isActive={(match, location) => {
+                return location.pathname.indexOf('swap') >= 0
+              }}
+            >
               <i className='d-inline d-md-none d-lg-inline nav-link-icon fa fa-exchange'/>
               <T tag='span' i18nKey='app.nav.swap' className='nav-link-label d-sm-inline'>Swap</T>
             </NavLink>
