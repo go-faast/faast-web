@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { Helmet } from 'react-helmet'
 import { createStructuredSelector } from 'reselect'
 import { isDefaultPortfolioEmpty } from 'Selectors/portfolio'
-import { compose, setDisplayName, withPropsOnChange } from 'recompose'
+import { compose, setDisplayName, withHandlers, withPropsOnChange, withState } from 'recompose'
 import { Row, Col } from 'reactstrap'
 import Layout from 'Components/Layout'
 import * as qs from 'query-string'
@@ -12,27 +12,31 @@ import { isAppBlocked } from 'Selectors'
 import Link from 'Components/Link'
 
 import Blocked from 'Components/Blocked'
+import ShutDown from 'Components/ShutDown'
 import StepOne from './StepOne'
 import StepTwo from './StepTwo'
 
-const SwapWidget = ({ orderId, blocked, stepOne, isDefaultPortfolioEmpty }) => (
+const SwapWidget = ({ orderId, blocked, stepOne, isDefaultPortfolioEmpty, toggleShutDownModal,
+  showShutDownMessage }) => (
   <Fragment>
     <Helmet>
       <title>Instantly and Safely Trade 70+ Cryptocurrencies - Faa.st</title>
       <meta name='description' content='Trade your crypto directly from your hardware or software wallet. Swap Bitcoin, Ethereum, Litecoin, Monero, Tron, and more with near-zero fees.' /> 
     </Helmet>
+    {showShutDownMessage && (
+      <ShutDown handleCloseModal={toggleShutDownModal} />
+    )}
     {blocked ? (
       <Blocked/>
     ) : null}
     <Layout className='pt-3 p-0 p-sm-3'>
       <Row 
-        tag={'a'}
-        href='https://academy.binance.com/en/glossary/bep-20'
-        target='_blank noreferrer'
-        className='px-3 py-2 mb-3 mx-0 custom-hover cursor-default' 
+        tag={'div'}
+        onClick={toggleShutDownModal}
+        className='px-3 py-2 mb-3 mx-0 custom-hover cursor-pointer text-center' 
         style={{ background: 'linear-gradient(45deg, #e0b01f 0%, #b88e11 100%)', borderRadius: 2, }}>
         <Col>
-          <span className='text-white'>IMPORTANT: Faa.st does not support binance smart chain tokens. Any BEP-20 tokens sent to a Faa.st address will be lost forever.</span>
+          <span className='text-white text-center'>On June 7th Faa.st will be shutting down its swapping service. Click for more details.</span>
         </Col>
       </Row>
       {!orderId
@@ -55,6 +59,12 @@ export default compose(
   }),{
   }),
   withRouter,
+  withState('showShutDownMessage', 'updateShowShutDownMessage', false),
+  withHandlers({
+    toggleShutDownModal: ({ showShutDownMessage, updateShowShutDownMessage }) => () => {
+      updateShowShutDownMessage(!showShutDownMessage)
+    }
+  }),
   withPropsOnChange(['location'], ({ location }) => {
     const urlParams = qs.parse(location.search)
     let { id, from, fromAmount, fromAddress, to, toAmount, toAddress } = urlParams
