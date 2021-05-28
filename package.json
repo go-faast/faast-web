@@ -205,7 +205,7 @@
     "webpack": "^3.5.5",
     "webpack-merge": "^4.1.2",
     "worker-loader": "^1.1.0",
-    "ws": "^5.1.0"
+    "ws": "^7.4.6"
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^4.14.2",
