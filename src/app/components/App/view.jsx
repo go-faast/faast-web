@@ -5,7 +5,6 @@ import Connect from 'Components/Connect'
 import TradeHistory from 'Components/TradeHistory'
 import WalletOpened from 'Components/WalletOpened'
 import Dashboard from 'Components/Dashboard'
-import Modify from 'Components/Modify'
 import SearchResults from 'Components/SearchResults'
 import ModalRoute from 'Components/ModalRoute'
 import TradeDetailModal from 'Components/TradeDetailModal'
@@ -52,7 +51,7 @@ import MakerNotifications from 'Components/Maker/Notifications'
 import { AuthenticatedRoute, AuthRoutes } from 'Components/Auth'
 
 import {
-  root, dashboard, rebalance, connect, viewOnlyAddress,
+  root, dashboard, connect, viewOnlyAddress,
   tradeHistory, tradeDetail, swapWidget, assetDetail, assetIndex,
   affiliateLogin, affiliateSignup, affiliateDashboard, affiliateSettings,
   affiliatePayouts, affiliateSwaps, affiliateAccountModal,
@@ -76,7 +75,6 @@ const AppView = ({ hasNoWallets }) => {
 
         {/* Routes requiring a connected wallet */}
         <WalletOpened path={dashboard.path} component={Dashboard}/>
-        <WalletOpened path={rebalance.path} component={Modify}/>
         <WalletOpened path={settings.path} component={Settings}/>
         <WalletOpened path={wallets.path} component={Wallets}/>
 
@@ -117,7 +115,6 @@ const AppView = ({ hasNoWallets }) => {
         {/* Legacy routes */}
         <Redirect exact from='/affiliates' to={affiliateLogin.path}/>
         <Redirect exact from='/balances' to={dashboard.path}/>
-        <Redirect exact from='/modify' to={rebalance.path}/>
 
         {/* Fallback for unknown routes */}
         <Redirect to={dashboard.path}/>

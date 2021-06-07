@@ -9,23 +9,17 @@ import Layout from 'Components/Layout'
 import * as qs from 'query-string'
 import { withRouter } from 'react-router'
 import { isAppBlocked } from 'Selectors'
-import Link from 'Components/Link'
 
 import Blocked from 'Components/Blocked'
 import ShutDown from 'Components/ShutDown'
-import StepOne from './StepOne'
-import StepTwo from './StepTwo'
 
-const SwapWidget = ({ orderId, blocked, stepOne, isDefaultPortfolioEmpty, toggleShutDownModal,
-  showShutDownMessage }) => (
+const SwapWidget = ({ blocked, toggleShutDownModal }) => (
   <Fragment>
     <Helmet>
       <title>Instantly and Safely Trade 70+ Cryptocurrencies - Faa.st</title>
       <meta name='description' content='Trade your crypto directly from your hardware or software wallet. Swap Bitcoin, Ethereum, Litecoin, Monero, Tron, and more with near-zero fees.' /> 
     </Helmet>
-    {showShutDownMessage && (
-      <ShutDown handleCloseModal={toggleShutDownModal} />
-    )}
+    <ShutDown handleCloseModal={toggleShutDownModal} />
     {blocked ? (
       <Blocked/>
     ) : null}
@@ -39,14 +33,6 @@ const SwapWidget = ({ orderId, blocked, stepOne, isDefaultPortfolioEmpty, toggle
           <span className='text-white text-center'>On June 7th Faa.st will be shutting down its swapping service. Click for more details.</span>
         </Col>
       </Row>
-      {!orderId
-        ? (<StepOne {...stepOne}/>) 
-        : (<StepTwo orderId={orderId} />)}
-      {!isDefaultPortfolioEmpty && (
-        <div className='text-center mt-3 font-sm'>
-          <Link to='/rebalance'>Want to swap multiple coins at once? Use our rebalance tool.</Link>
-        </div>
-      )}
     </Layout>
   </Fragment>
 )
@@ -61,8 +47,8 @@ export default compose(
   withRouter,
   withState('showShutDownMessage', 'updateShowShutDownMessage', false),
   withHandlers({
-    toggleShutDownModal: ({ showShutDownMessage, updateShowShutDownMessage }) => () => {
-      updateShowShutDownMessage(!showShutDownMessage)
+    toggleShutDownModal: ({ updateShowShutDownMessage }) => () => {
+      updateShowShutDownMessage(true)
     }
   }),
   withPropsOnChange(['location'], ({ location }) => {
