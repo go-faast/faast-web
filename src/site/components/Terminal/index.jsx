@@ -41,9 +41,9 @@ const Terminal = ({ response, theme, includeCopy, includeBg, translations: { sta
     <div style={{ backgroundImage: includeBg && theme == 'dark' ? `url(${GithubBg})` : includeBg && theme !== 'dark' ? `url(${GithubBgLight})` : null, paddingBottom: !includeBg && 0 }} className={classNames(homeStyle.sectionContainer, style.terminalSection, 'text-center mx-auto position-relative px-sm-0 px-2')}>
       {includeCopy && (
         <Fragment>
-          <h1 className={classNames(homeStyle.heading, 'mb-4')}>{t.becomeAffiliate}</h1>
+          <h1 className={classNames(homeStyle.heading, 'mb-4')}>Open Source</h1>
           <h3 className={classNames(homeStyle.description, 'pb-4 px-md-0 px-3')}>
-            {t.readyToMonetize} <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://faa.st/partners'>{t.affiliateProgram}</a>. {t.features}
+            Faa.st is a completely open source tool. Check out the <a className={classNames(homeStyle.link, 'd-inline-block')} href='https://github.com/go-faast/faast-web'>github repository</a> if you would like to run your own instance.
           </h3>
         </Fragment>
       )}

@@ -5,8 +5,6 @@ import siteConfig from 'Site/config'
 import classNames from 'class-names'
 import PropTypes from 'prop-types'
 
-import { betaTag } from '../Header/style.scss'
-
 import FooterChart from 'Img/footer-chart.svg'
 import LangLink from 'Components/LangLink'
 import EmailSub from 'Site/components/EmailSubscription1'
@@ -40,11 +38,10 @@ export default compose(
         <Col className={classNames(style.ctaContainer, 'mx-auto d-flex mb-5 px-md-5 px-0 pl-xs-4 pl-md-5 pl-3 py-md-0 py-4')}>
           <Row style={{ flex: 1 }} className='mx-0 px-0 justify-content-between align-items-center'>
             <Col className='p-0 m-0 d-flex' xs='12' md='6'>
-              <h2 className='text-white my-3'>{t.readyToTrade}</h2>
+              <h2 className='text-white my-3'>Manage your portfolio</h2>
             </Col>
             <Col className='p-0 m-0 mt-xs-3 mt-md-0 mt-0 d-flex justify-content-xs-start justify-content-md-end' xs='12' md='6'>
               <Button tag='a' href='/app/connect' className='text-white mr-3' color='primary'>{t.connectYourWallet}</Button>
-              <Button tag='a' href='https://api.faa.st' target='_blank' color='white'>{t.apiDocs}</Button>
             </Col>
           </Row>
         </Col>
@@ -55,11 +52,7 @@ export default compose(
             <div className='col-6 col-sm-6 col-md-2 col-xl-2 offset-xl-1 item px-3'>
               <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>Faa.st</h3>
               <ul>
-                <li><a className='text-white' href='/affiliates'>{t.affiliate}</a></li>
-                <li><a className='text-white' href='/partners'>Partners</a></li>
                 <li><a className='text-white font-xs' href='/app'>{t.portfolio}</a></li>
-                <li><a className='text-white' href='/app/swap'>{t.swap}</a></li>
-                <li><LangLink className='text-white' to='/market-maker'>{t.marketMaker} <sup className={classNames(betaTag, 'text-primary')}><i>{t.beta}</i></sup></LangLink></li>
                 <li><a className='text-white' href='/law-enforcement'>Law Enforcement</a></li>
                 <li><a className='text-white' href='https://status.faa.st' target='_blank noreferrer'>Status</a></li>
                 <li><a className='text-white' href='/blog'>{t.blog}</a></li>
@@ -91,8 +84,6 @@ export default compose(
               <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>{t.knowledge}</h3>
               <ul>
                 <li><a className='text-white' href='/knowledge'>Crypto knowledge base</a></li>
-                <li><a className='text-white' href='/knowledge/article/what-is-a-swap'>What is a swap?</a></li>
-                <li><a className='text-white' href='/knowledge/article/how-to-integrate-faast-api'>How to integrate Faa.st API</a></li>
                 <li><a className='text-white' href='/knowledge/article/supported-wallets'>Supported Wallets</a></li>
                 <li><a className='text-white' href='/knowledge/article/what-is-the-difference-between-an-ico-ito-and-ipo'>What are ICOs, ITOs and IPOs?</a></li>
                 <li><a className='text-white' href='/knowledge/article/what-is-the-bitcoin-halving'>What is the Bitcoin halving?</a></li>
@@ -101,7 +92,6 @@ export default compose(
             <div className='col-6 col-sm-6 col-md-2 col-xl-2 item px-3'>
               <h3 className='text-white mb-4' style={{ fontWeight: 'normal', fontSize: 20 }}>{t.resources}</h3>
               <ul>
-                <li><a href='https://api.faa.st/' target='_blank noopener noreferrer' style={{ color: 'rgb(255,255,255)' }}>{t.api}</a></li>
                 <li><a href='/static/faast-press-kit.zip' target='_blank noopener noreferrer' style={{ color: 'rgb(255,255,255)' }}>{t.pressKit}</a></li>
               </ul>
             </div>

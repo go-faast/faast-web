@@ -16,28 +16,28 @@ import homeStyle from 'Site/pages/Home1/style.scss'
 const Features = ({ translations: { static: { features: t } } }) => {
   const features = [{
     heading: t.private,
-    description: t.noRegistration,
+    description: 'No need to register an account — just connect your wallet.',
     icon: PrivacyFeature,
     fade: {
       left: true
     }
   }, {
     heading: t.secure,
-    description: t.tradeDirectly,
+    description: 'We never control your funds or see your private key.',
     icon: SecureFeature,
     fade: {
       top: true
     }
   }, {
     heading: t.simple,
-    description: t.swapMultiple,
+    description: 'View and track your portfolio, withdraw, and deposit with ease.',
     icon: FastFeature,
     fade: {
       bottom: true
     }
   }, {
-    heading: t.lowFees,
-    description: t.noFees,
+    heading: 'No fees',
+    description: 'No deposit or withdrawal fees.',
     icon: FeesFeature,
     fade: {
       right: true

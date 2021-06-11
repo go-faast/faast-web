@@ -28,7 +28,7 @@ const DashboardSection = ({ translations: { static: { dashboard: t } } }) => {
             {t.swap}
           </h2>
           <p className={homeStyle.description}>
-            {t.connect}
+            Connect your MetaMask, Trezor, Ledger, or wallet of choice to access our all-in-one portfolio management dashboard to track balances across multiple wallets, withdraw and deposit, and explore trending assets.
           </p>
           <a className={classNames(homeStyle.link, 'mb-3 d-inline-block')} href='/app/connect'>
             {t.connectYourWallet} <i className='fa fa-arrow-right' />
