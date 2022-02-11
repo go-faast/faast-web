@@ -75,7 +75,7 @@
     "@types/uuid": "3.4.4",
     "@types/webpack-env": "1.13.9",
     "accounting": "^0.4.1",
-    "ajv": "^5.5.2",
+    "ajv": "^6.12.3",
     "auth0-js": "^9.14.0",
     "autoprefixer": "^7.2.4",
     "axios": "^0.21.1",
